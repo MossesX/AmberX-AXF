@@ -287,7 +287,7 @@ export const retriesOf = (b) => W.attemptOf(b) - 1;
 
 const FILL_ROUNDS = 3;
 /** Queue work the dispatcher may start: queued, not on hold, steps left. */
-export const queueWork = (store) => store.builds.filter((b) => b.status === 'queued' && !b.deleted && !b.hidden && !BP.isHeld(b) && !W.isMarkedRunning(b) && BP.openSteps(b).length);
+export const queueWork = (store) => store.builds.filter((b) => b.flow !== 'pipeline-2' && b.status === 'queued' && !b.deleted && !b.hidden && !BP.isHeld(b) && !W.isMarkedRunning(b) && BP.openSteps(b).length);
 
 /**
  * One dispatcher tick: in-process when this process already holds the dispatcher's lock (AXF_PIPELINE_LOCKED=1, tests),
@@ -368,7 +368,9 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
     lastScan: { at: sc.at, builds: sc.builds.map((x) => ({ id: x.id, title: x.title, status: x.status, account: x.account, session: x.session, launchedAt: x.launchedAt,
       probe: { pid: x.probe.pid, tmux: x.probe.tmux, lastSeenAt: x.probe.lastSeenAt, exit: x.probe.exit, exitKind: x.probe.exitKind, limit: x.probe.limit },
       cause: x.decision.cause, stuck: x.decision.stuck, action: x.decision.action, attempt: x.decision.attempt, note: x.decision.note })) } }, env);
-  return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, fill, scan: sc };
+  // retired by itself: with no builds@1 build marked running and none in the Queue the pass has nothing to watch
+  // (Pipeline 2.0 builds are watched by the one Pipeline 2.0 watchdog, deploy/watchdog)
+  return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, fill, scan: sc, retired: !sc.builds.length && !queueWork(store).length };
 }
 
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;

@@ -26,8 +26,10 @@
  *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
  *   … set-status <build> <status> [--by who] [--demo]    set a status through the done-means-merged@1 guard: landed / built /
  *                                                        complete without merge + green CI + verify are refused (a note says why)
- *   … flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n]   pipeline-2@1: one status
- *                                                        change through the contract (forward-only; exit 1 = refused)
+ *   … flow <build> <status> [--step s] [--by who] [--why w] [--reset] [--account a] [--slot s] [--pr n]   pipeline-2@1:
+ *                                                        one status change through the contract (forward-only; exit 1 =
+ *                                                        refused). --reset (with --why): out of `failed` past the
+ *                                                        attempt ceiling, as attempt 1
  *   … demo <build>                                        demo-build@1 check, exit 1 if not demo (--demo above: a demo action)
  *   … dedupe-steps [--dry-run|--apply] [--from f] [b…]            step-dedupe: collapse repeated steps (done copy wins, collision
  *                                                        ids tidied), one journal revision per build; dry run by default
@@ -447,6 +449,9 @@ function exportAll(store) {
     ex[t.file] = { sig: sig(t.file), kind: t.kind, profile: t.profile, rev: store.rev };
   }
   sweepStaleRepoExports(ex);
+  // a build worktree's data home has no store file once the store is on axf-data, so nothing made its folder yet: without
+  // it every store read from a new worktree died here (ENOENT) and no hand build could tick a step
+  mkdirSync(dirname(exportsFile()), { recursive: true });
   writeFileSync(exportsFile(), `${JSON.stringify(ex, null, 1)}\n`);
 }
 /**
@@ -689,9 +694,12 @@ function withStoreOnce(fn, meta) {
   const start = foreign.length ? readStore() : before;
   const r = fn(normKeeping(JSON.parse(JSON.stringify(start))));
   const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
-  // pipeline-2@1 (framework/spec/PIPELINE-2.md): forward-only for every Pipeline 2.0 build and step; a backward move is
-  // refused (the old status stays), logged here and in the journal line; a hand-made forward move gets its at / by
-  const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli' });
+  // pipeline-2@1 (framework/spec/PIPELINE-2.md): the contract on every Pipeline 2.0 build and step (forward-only, the
+  // attempt ceiling, the archive rule, fixed steps). A refusal is strict: nothing of this write is kept for that build
+  // (the record stays as it was, plus one note), it is logged here and in the journal line, and comes back in `refused`
+  // (setFlowStatus throws on it); meta.strict === false keeps the content and drops only the status. A hand-made legal
+  // move gets its at / by
+  const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli', strict: meta.strict !== false });
   // S5-01: whatever fn, the guards or a merge rebuilt, a stored field this checkout does not know stays on its record
   const next = keepStore(start, flowed.store);
   if (flowed.refused.length) {
@@ -704,7 +712,7 @@ function withStoreOnce(fn, meta) {
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
-  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused] };
+  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused], flowRefused: flowed.refused };
 }
 
 // ------------------------------------------------------------------ pipeline-2@1: one status change, forward-only
@@ -714,9 +722,13 @@ export class FlowRefused extends Error { constructor(m, d = {}) { super(m); this
  * Move a Pipeline 2.0 build (or one of its steps, `step` = id or uid) to `to` through the contract, under the store
  * lock: at / by / attempt / log recorded, `extra` merged on success (account, slot, prNumber, worktree…). A move the
  * contract refuses throws FlowRefused (code 'backward') and writes nothing; the refusal is logged on stderr.
- * `mutate(build, store)` may change more of the build in the same write. → { build, step, rev }
+ * `mutate(build, store)` may change more of the build in the same write; when the store's guard refuses any of it (a
+ * step removed from a split build…) nothing is kept and FlowRefused is thrown as well.
+ *   reset: true    leave `failed` past the attempt ceiling, as attempt 1 (needs `why`: Brett's retry, an escalation)
+ *   resplit: true  split a waiting build again (`to` = split, no step past pending, needs `why`); `mutate` sets the steps
+ * → { build, step, rev }
  */
-export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', extra = null, mutate = null, action = 'flow-status' } = {}) {
+export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', extra = null, mutate = null, action = 'flow-status', reset = false, resplit = false } = {}) {
   let out = null;
   const r = withStore((s) => {
     const b = core.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 'not_found' });
@@ -724,12 +736,13 @@ export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', ex
     if (step) {
       const i = b.steps.findIndex((x) => x.id === step || x.uid === step);
       if (i < 0) throw Object.assign(new Error(`no step "${step}" in ${id}`), { code: 'not_found' });
-      const t = P2.transition(b.steps[i], to, { at, by, why, kind: 'step', extra });
+      const t = P2.transition(b.steps[i], to, { at, by, why, kind: 'step', extra, reset });
       if (!t.ok) { process.stderr.write(`builds-store: refused ${id}/${step} ${b.steps[i].status || '(none)'} → ${to}: ${t.why}\n`); throw new FlowRefused(`${id}/${step}: ${t.why}`, { id, step, from: b.steps[i].status, to }); }
       b.steps[i] = { ...t.rec, ...(t.rec.done && !b.steps[i].doneAt ? { doneAt: at } : {}), updatedAt: at, rev: (b.steps[i].rev ?? 1) + (t.same ? 0 : 1) };
     } else {
-      const t = P2.transition(b, to, { at, by, why, kind: 'build', extra });
+      const t = P2.transition(b, to, { at, by, why, kind: 'build', extra, reset, resplit });
       if (!t.ok) { process.stderr.write(`builds-store: refused ${id} ${b.status || '(none)'} → ${to}: ${t.why}\n`); throw new FlowRefused(`${id}: ${t.why}`, { id, from: b.status, to }); }
+      for (const k of ['failedFrom', 'archivedFrom']) if (!(k in t.rec)) delete b[k]; // cleared by the move
       Object.assign(b, t.rec);
     }
     if (mutate) mutate(b, s);
@@ -737,6 +750,8 @@ export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', ex
     return s;
   }, { by, action, note: clip(`${id}${step ? `/${step}` : ''} → ${to}${why ? `: ${why}` : ''}`, 500) });
   const b = core.findBuild(r.store, id);
+  const no = (r.flowRefused ?? []).filter((x) => x.id === b?.id);
+  if (no.length) throw new FlowRefused(`${id}${step ? `/${step}` : ''}: ${no.map((x) => x.why).join('; ')}`, { id, step, to, refused: no });
   out = { build: b, step: step ? b.steps.find((x) => x.id === step || x.uid === step) : null, rev: r.rev };
   return out;
 }
@@ -1042,13 +1057,13 @@ async function main(argv) {
     return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s) with repeated steps, ${r.total.before} → ${r.total.after} steps\n${rows.join('\n')}`);
   }
   if (cmd === 'flow') {
-    // pipeline-2@1: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n] [--worktree d]
+    // pipeline-2@1: flow <build> <status> [--step s] [--by who] [--why w] [--reset] [--account a] [--slot s] [--pr n] [--worktree d]
     const [id, to] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] ?? '' : ''; };
     if (!id || !to) { process.exitCode = 2; return out({ ok: false, error: 'usage: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n] [--worktree d]' }, 'usage: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n]'); }
     const extra = {}; for (const k of ['account', 'slot', 'worktree', 'branch', 'tmux']) if (gi(`--${k}`)) extra[k] = gi(`--${k}`);
     if (gi('--pr')) extra.prNumber = Number(gi('--pr'));
     try {
-      const r = setFlowStatus(id, to, { step: gi('--step'), by: gi('--by') || 'cli', why: gi('--why'), extra: Object.keys(extra).length ? extra : null });
+      const r = setFlowStatus(id, to, { step: gi('--step'), by: gi('--by') || 'cli', why: gi('--why'), reset: rest.includes('--reset'), extra: Object.keys(extra).length ? extra : null });
       const x = r.step ?? r.build;
       return out({ ok: true, id, step: r.step?.id ?? '', status: x.status, attempt: x.attempt ?? 1, label: P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build'), rev: r.rev }, `${id}${r.step ? `/${r.step.id}` : ''}: ${P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build')}`);
     } catch (e) { process.exitCode = e.code === 'backward' ? 1 : 2; return out({ ok: false, error: e.message, code: e.code || '' }, `refused: ${e.message}`); }

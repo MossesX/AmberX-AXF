@@ -25,7 +25,9 @@
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … attempts <id>                   done-means-merged@1: every attempt, the open failure, the evidence, the ladder's next rung
- *   … retry <id> [strategy] [--why w] Retry by hand: the ladder starts over (a strategy given runs at once, never above the pin)
+ *   … retry <id> [strategy] [--why w] Retry by hand: the ladder starts over (a strategy given runs at once, never above the pin).
+ *                                     A Pipeline 2.0 build: the build and its failed steps leave `failed` forward with
+ *                                     their attempt counts reset (the one way on after a give-up; no strategy)
  *   … where                           the tracker file in use
  *   … tick [--build <id>]             Pipeline 2.0 layer 1 (the cron every minute, deploy/watchdog/cron.mjs): one
  *                                     dispatcher round, under the dispatcher's lock. Without --build: the full round
@@ -94,7 +96,10 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
-  withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  const w = withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  // pipeline-2@1: a change the status contract refuses is not kept at all for that build, so it is an error here, never a silent "done"
+  const no = (w?.flowRefused ?? []).filter((x) => !change?.id || x.id === change.id);
+  if (no.length) throw Object.assign(new Error(`refused, nothing was changed: ${[...new Set(no.map((x) => x.why))].join('; ')}`), { code: 'refused', refused: no });
   return r;
 }
 
@@ -168,7 +173,7 @@ async function main(argv) {
     if (cmd === 'attempts') { const b = (await import('../../../../framework/plan/builds-store-core.mjs')).findBuild(loadStore(), real); if (!b) throw new Error(`no build "${id}"`); const v = pl.attemptsView(b); return out({ ok: true, id: b.id, status: b.status, ...v }, `${b.id}: ${b.status} · ${v.attempts.length} attempt(s)${v.failure ? ` · fixing ${v.failure.kind}: ${v.failure.why}` : ''}${v.escalation ? ` · escalated: ${v.escalation.why}` : ''}\n${v.attempts.map((a) => `  ${a.n} ${a.kind} ${a.strategy}${a.fixStrategy ? `:${a.fixStrategy}` : ''} ${a.model || '-'} ${a.account || a.source} ${a.result}`).join('\n')}`); }
     const wi = rest.indexOf('--why'); const strategy = rest[1] && !rest[1].startsWith('--') ? rest[1] : '';
     const r = pl.retryBuild(real, { strategy, by: process.env.AXF_ACTOR || 'cli', why: wi >= 0 ? rest[wi + 1] || '' : '' });
-    return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}` : ' · the next tick relaunches it'}`);
+    return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}` : ' · the next tick carries on'}`);
   }
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {

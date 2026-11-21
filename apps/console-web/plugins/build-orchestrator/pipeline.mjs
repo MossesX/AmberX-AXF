@@ -168,6 +168,8 @@ const profile = () => activeProfile().id;
 const live = (store) => store.builds.filter((b) => !b.deleted);
 /** The builds@1 dispatcher's builds: Pipeline 2.0 builds (flow pipeline-2) run on pipeline2.mjs, never on this path. */
 const legacyLive = (store) => live(store).filter((b) => b.flow !== P2.FLOW);
+/** Is the builds@1 dispatcher at work: a builds@1 build queued, building or being fixed? Pending ones alone are nobody's work yet. */
+export const legacyActive = (store) => legacyLive(store).some((b) => !b.hidden && ['queued', 'running', 'waiting', 'fixing'].includes(b.status));
 /**
  * Projects (projects@1): the tables and tabs show the active project's builds; the dispatcher runs the Queue of every
  * project that is not archived (switching projects never stops a build that is running or queued elsewhere).
@@ -1102,6 +1104,8 @@ export function escalated(store = loadStore()) {
  * A build with no open failure is queued again instead. → { id, status, strategy }
  */
 export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'console', why = '', noLaunch = false } = {}) {
+  // pipeline-2@1: a Pipeline 2.0 build has no ladder: its retry is the contract's reset (pipeline2.mjs retryBuild)
+  { const p2 = storeCore.findBuild(loadStore(), id); if (p2?.flow === P2.FLOW) return P2F.retryBuild(p2.id, { by, why }); }
   if (strategy && !(RL.isRung(strategy) && strategy !== 'escalate')) throw Object.assign(new Error(`strategy is one of ${[...BP.STRATEGIES.filter((x) => x !== 'escalate' && x !== 'fix'), ...BP.FIX_STRATEGIES.map((x) => `fix:${x}`)].join(', ')}`), { code: 2 });
   let out = null;
   withStore((s) => {
@@ -1338,7 +1342,9 @@ export function tick({ env = process.env } = {}) {
   // pulls main into its worktree); builds@1 builds already running carry on
   { const act = P2.activeBuild(live(loadStore())).active;
     if (act && plan.launches.length) { for (const l of plan.launches) plan.waits.push({ id: l.id, why: `one active build at a time: ${act.id} is ${P2.labelOf(act.status, act.attempt)}` }); plan.launches = []; } }
-  planAhead(store, accounts, settings);
+  // the builds@1 planner runs only while a builds@1 build is in the Queue or being built (with none it planned, and
+  // logged, builds this dispatcher will never start)
+  if (legacyActive(store)) planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
   for (const first of plan.launches) {

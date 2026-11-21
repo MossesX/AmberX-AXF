@@ -47,6 +47,8 @@ export const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES |
 let orchTickCmd = '';
 orchTickCmd = 'node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick'; // axf-plugin:build-orchestrator
 export const DEFAULT_TICK = orchTickCmd;
+/** The hand retry of a given-up build (the orchestrator's CLI, next to its tick): the one way on once the attempts are used up. */
+export const retryCommand = (build) => (DEFAULT_TICK ? `${DEFAULT_TICK.replace(/ tick$/, '')} retry ${build}` : '');
 /** The lander's statuses are nudged with one lander tick for that build (deploy/lander/run.mjs, under its own lock). */
 export const DEFAULT_LANDER_TICK = 'node deploy/lander/run.mjs tick';
 
@@ -184,10 +186,15 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   const writes = acting.filter(({ d }) => d.action !== 'nudge');
   if (writes.length) {
     try {
-      api.withStore((store) => {
-        for (const { issue, d } of writes) { const note = C.applyDecision(store, issue, d, { now }); if (note) actions.push({ build: issue.build, step: issue.step || '', kind: issue.kind, action: d.action, note }); }
+      const planned = [];
+      const w = api.withStore((store) => {
+        planned.length = 0; // the store may run this again on a conflict: only the last run counts
+        for (const { issue, d } of writes) { const note = C.applyDecision(store, issue, d, { now }); if (note) planned.push({ build: issue.build, step: issue.step || '', kind: issue.kind, action: d.action, note }); }
         return store;
       }, { by: C.BY, action: 'watchdog-heal', note: `${writes.length} fix(es)` });
+      // a fix the store's guard refused was not kept (nothing of it, for that build): logged as refused, never as done
+      const refused = new Set((w?.flowRefused ?? []).map((x) => x.id));
+      for (const a of planned) actions.push(refused.has(a.build) ? { ...a, action: 'store-refused', note: `Watchdog: the store refused its fix for ${a.build}${a.step ? ` / ${a.step}` : ''} (${a.action}); nothing was changed.` } : a);
     } catch (e) { actions.push({ action: 'store-write-failed', note: String(e.message || e).slice(0, 300) }); }
   }
   // re-run stuck transitions (layer 1 for that build), each one note on the build
@@ -205,7 +212,7 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   }
   // the one page: attempts used up
   for (const a of actions.filter((x) => x.action === 'give-up')) {
-    sendAlert({ source: C.BY, key: `watchdog:gave-up:${a.build}:${a.step}`, severity: 'error', title: `Watchdog could not heal ${a.build}${a.step ? ` / ${a.step}` : ''}`, body: `${a.note}\nFix: look at the build's notes; \`node deploy/watchdog/layer2.mjs scan\` shows what the watchdog sees.`, link: 'build-orchestrator.focus:watchdog', meta: { build: a.build, step: a.step } }, env);
+    sendAlert({ source: C.BY, key: `watchdog:gave-up:${a.build}:${a.step}`, severity: 'error', title: `Watchdog could not heal ${a.build}${a.step ? ` / ${a.step}` : ''}`, body: `${a.note}\nIt stays failed until you retry it: the attempts are used up and the status contract refuses every other move.\nFix: read the build's notes for why it failed, then ${retryCommand(a.build) ? `\`${retryCommand(a.build)}\` (or Retry in the console)` : 'retry it'}: the build and its failed steps start again with fresh attempt counts. \`node deploy/watchdog/layer2.mjs scan\` shows what the watchdog sees.`, link: 'build-orchestrator.focus:watchdog', meta: { build: a.build, step: a.step } }, env);
   }
   // the watchers watch each other: a layer-3 heartbeat older than 10 min restarts its timer
   const l3 = readJson(join(f.dir, 'l3-heartbeat.json'), null);

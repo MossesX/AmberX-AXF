@@ -64,11 +64,18 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
 ## Rules
 
 1. **Forward-only.** A status may only move to a later one in its flow (skips allowed). A backward move is refused by
-   the store: the record keeps its old status fields, the refusal goes to stderr and the write's journal line
-   (`builds-store: refused <id>[/<step>] <from> → <to>: …`). Nobody gets a silent no.
+   the store, and the refusal is strict: nothing of that write is kept for that build (rule 10). Nobody gets a silent no.
 2. **failed / attempt N.** `failed` may be entered from any status except the last (`landed` / `in-pr`). It keeps the
    attempt it failed on and records `failedFrom`. A retry leaves `failed` to `failedFrom` or later, never earlier, as
    attempt N + 1. There is no bench: a failed launch or a usage-limit exit retries at once on another account.
+   **The attempt ceiling** (`MAX_ATTEMPTS`, 5) is the contract's, so every writer is covered (the dispatcher, the main
+   pull, the lander, the watchdog): a record failed at attempt 5 has given up, and no move out of `failed` is accepted
+   except a **reset**: `transition(…, { reset: true, why })`, which starts the count again at 1 and marks its log line
+   `reset: true` with the reason. Two resets exist: Brett's retry (`orchestrator.mjs retry <build>`, the console's
+   Retry: the build and its failed steps) and the watchdog's one escalation of an Opus step to Fable. A setting may lower
+   the ceiling (the watchdog's `maxAttempts`), never raise it.
+   A build that failed while it waited its turn (`failedFrom: split`) with attempts left is activated like any waiting
+   build.
    Two named re-entries (Pipeline 2.0 integration, Nov 19 2026):
    - **Relaunch.** A step that failed at `ready`, `sending` or `building` may re-enter at `ready` (`RELAUNCH_FROM`):
      watchdog layer 2 puts it there with a pinned `account` (and `tried`, the accounts it already failed on).
@@ -84,7 +91,11 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
    active, except that build's own flow.
 5. **Status, never location.** The watchdog, lander, rules and gates read and act on these statuses, never on tabs,
    queues or which file a build is in.
-6. **Leaving the flow.** `archived` (or a soft delete) removes a build from the table; that is the only way out.
+6. **Leaving the flow.** `archived` (or a soft delete) removes a build from the table; that is the only way out, and
+   it is not a way back: an archived build keeps `archivedFrom` (and `failedFrom`, `attempt`) and returns only to the
+   status it was archived from, or to `failed` from it, exactly as it left. It never returns into the active place while
+   another build holds it. Only a build with no `flow` and no status log (a builds@1 build joining) may enter the flow at
+   any status; one that is in the flow but lost its status continues from the last status its log shows.
 8. **Emergency builds** (Brett, Nov 20 2026). A build carrying `emergency: { at, by }` was sent to emergency by Brett
    from his own signed-in console (`framework/cli/emergency-builds.mjs`: the console server's `AXF_APPROVER` +
    `AXF_APPROVER_VIA=console` for his click; a session, an agent, the console token, MCP, voice and an axHub approval
@@ -103,15 +114,43 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
    session on Fable, CI runs again on that head, and only then it merges. So every build that finishes after an
    emergency landing re-pulls main and re-runs CI before its own merge.
 
+10. **Refusals are whole.** `enforceFlow` is strict: when any part of a write breaks the contract for a build (its
+    status, a step's status, its steps), the whole write is dropped for that build. The record stays as it was, gets one
+    note (`Store: refused a write by <who>, nothing of it was kept: …`, never the same note twice in a row), the refusal
+    goes to stderr and the journal line, and `withStore` returns it in `refused` / `flowRefused`. `setFlowStatus` and
+    `orchestrator.mjs act` throw on it. Other builds in the same write are not affected. `withStore(fn, { strict: false })`
+    keeps the old behaviour (content kept, status dropped) for a caller that asks for it.
+11. **Steps are fixed once split.** From `split` on (and for a build that failed or was archived there or later) no
+    step is removed and none is replaced by another (steps are matched by `uid`, then by `id`); past `split` none is
+    added either (a build still waiting at `split` may take a new step). The one way to change them is the explicit
+    re-split, legal only while the build waits at `split` and no step is past `pending`:
+    `setFlowStatus(id, 'split', { resplit: true, why, mutate })`. The Steps view's divide, harvest and Restore default
+    refuse a split build up front with the reason (`stepsEditRefusal`).
+12. **Every step has a status.** A step that arrives without one keeps the one it had; a new step enters at `pending`.
+    The "every step …" tests (`everyStep`: every step has main, every step completed) ignore skipped steps
+    (`skip: true`), and the dispatcher treats a step with no status as `pending` (it gets main and a slot).
+13. **One step cap.** `STEP_MAX_MINUTES` (15) is the only step-size limit: the split prompt asks for it, `normDesign`
+    refuses a design over it, `fallbackDesign` caps at it, `splitParts` never joins steps past it (steps that share
+    files and would pass it stay separate rows), the builds@1 rules default (`maxStepMinutes`) reads it, and the
+    watchdog calls a `building` step hung at twice its own estimate with a silent log (`stepBudgetMinutes`).
+14. **One owner of the status.** No builds@1 code derives a status for a Pipeline 2.0 build: the store core asks
+    `ownsStatus(b)` at every derivation site (a ticked step, a Pending-list edit, the plan, an applied draft).
+15. **One watchdog, one dispatcher.** Pipeline 2.0 builds are dispatched only by `pipeline2.mjs` (inside the
+    orchestrator tick) and watched only by `deploy/watchdog` (layers 2 and 3), which imports this contract and has no
+    status lists, budgets for waiting, or forward-only rules of its own. A build waiting at `split` is never stuck while
+    any build holds the active place (`holdsActive`: a failed one holds it too). The builds@1 recovery watchdog and
+    stale-row watchdog skip Pipeline 2.0 builds, and the builds@1 planner runs only while a builds@1 build is queued or
+    building.
+
 ## Orchestrator flow (status core)
 
 - `pending` → `splitting`, a build with no build steps (every build Plan Studio sends): Fable designs the build steps
   from the title, body and `planning` (`p2SplitPrompt` in the orchestrator's pipeline-core, asked once on Fable through
-  the orchestrator's splitter). Each step has text, minutes (1 to 30) and a model (Fable or Opus); the answer must pass
+  the orchestrator's splitter). Each step has text, minutes (1 to 15, `STEP_MAX_MINUTES`) and a model (Fable or Opus); the answer must pass
   `normDesign` or none of it is used. Steps run at the same time in their own worktrees, so designed steps that share
-  files are joined into one row (`splitParts`). The build's note says how it was split.
+  files are joined into one row (`splitParts`) while the row stays inside the cap. The build's note says how it was split.
 - Fallback, when Fable cannot answer (no credits, no login, the split provider off, an answer that does not pass):
-  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 30, else 30; model by `modelFor`), or
+  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 15, else 15; model by `modelFor`), or
   one step for the whole plan when it has no planning steps. The note says why. Away from the VPS host (no logins) a
   planning-only build waits at `pending` for the host's tick instead of falling back.
 - `pending` → `splitting`, a build that already has steps (sent before this change): the steps are cut into as many

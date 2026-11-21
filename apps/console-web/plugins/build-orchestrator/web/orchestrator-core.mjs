@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { STEP_MAX_MINUTES } from '../../../../../framework/core/pipeline-status.mjs';
 import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
@@ -27,15 +28,15 @@ export const isFinished = (status) => status === 'built' || status === 'landing'
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: STEP_MAX_MINUTES };
 /**
- * Step size (Brett, Nov 13 2026: "the splitter cuts every build into steps of 10 minutes or less (was 30)"). 10 minutes
- * is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as 10). Steps are checkpoints
- * inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
- * Steps written before the change (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
- * is not flagged "needs split" all at once; a re-split makes them 10-minute steps.
+ * Step size: the one step cap, STEP_MAX_MINUTES of the Pipeline 2.0 status contract (15 minutes; Nov 13 2026 it was 10
+ * here and 30 there). It is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as the
+ * cap). Steps are checkpoints inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
+ * Steps written before Nov 14 2026 (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
+ * is not flagged "needs split" all at once; a re-split brings them under the cap.
  */
-export const STEP_MINUTES = 10;
+export const STEP_MINUTES = STEP_MAX_MINUTES;
 export const LEGACY_STEP_MINUTES = 30;
 export const TEN_MINUTE_STEPS_AT = '2026-11-14T00:00:00.000Z';
 /** The largest step the rules allow: the rule, capped at STEP_MINUTES. */
