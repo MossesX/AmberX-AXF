@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "skin-gallery",
+  "name": "Skin actions",
+  "version": "1.0.0",
+  "description": "The Skins toolbar: use the picked skin at the chosen scope, go back to the skin (drop the overrides), restore the scope to its default look (asks first, undoable once) and undo the last change.",
+  "author": "AmberX AXF",
+  "tags": ["page", "skin-gallery", "skins"],
+  "data": {
+    "scope": "view:skin-gallery",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "skin",
+        "label": "Skin",
+        "items": [
+          { "id": "use", "icon": "check", "label": "Use skin", "action": "handler:skin-gallery.use", "enabledWhen": "canUse", "priority": 300, "overflow": "never" },
+          { "id": "back", "icon": "arrow-left", "label": "Back to skin", "action": "handler:skin-gallery.back", "enabledWhen": "overridden", "priority": 260 },
+          { "id": "restore", "icon": "refresh", "label": "Restore to Default", "action": "handler:skin-gallery.restore", "enabledWhen": "scope", "confirm": "Restore this scope to its default look? You can undo it once.", "priority": 200 },
+          { "id": "undo", "icon": "undo", "label": "Undo", "action": "handler:skin-gallery.undo", "enabledWhen": "canUndo", "priority": 240 }
+        ]
+      }
+    ]
+  }
+}

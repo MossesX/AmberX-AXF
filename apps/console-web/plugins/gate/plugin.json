@@ -389,6 +389,7 @@
       "--fx-border",
       "--fx-border-w",
       "--fx-danger",
+      "--fx-dens-gap-3xl",
       "--fx-dens-gap-lg",
       "--fx-dens-gap-md",
       "--fx-dens-gap-sm",

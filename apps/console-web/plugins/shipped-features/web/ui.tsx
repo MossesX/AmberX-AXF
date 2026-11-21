@@ -244,7 +244,8 @@ export function ShippedFeaturesPage() {
   const sortedCol = colOf[view.sort.by];
   const sort: GridSort = sortedCol ? { col: sortedCol, dir: view.sort.dir === 'asc' ? 1 : -1 } : null;
   const onSort = (col: string | null) => { const by = col ? sortCol[col] : undefined; if (!by) return set({ sort: L.DEFAULT_VIEW.sort }); set({ sort: { by, dir: view.sort.by === by && view.sort.dir === 'desc' ? 'asc' : 'desc' } }); };
-  const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+  // text units: the columns hold text, and a compact spacing preset shrinks space-based tracks (n = the old space count)
+  const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
   const columns: GridColumn<L.Feature>[] = [
     { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__name">{f.name}</span> },
     { id: 'status', label: 'Status', width: W(14), sortable: true, render: (f) => <StatusChip rec={f} /> },
@@ -263,7 +264,7 @@ export function ShippedFeaturesPage() {
   const toggle = (id: string) => set({ expanded: view.expanded.includes(id) ? view.expanded.filter((x) => x !== id) : [...view.expanded, id] });
   const m = ledger.meta ?? {};
   return (
-    <div className="fx-stack axp-shipped">
+    <div className="fx-stack fx-stack--lg axp-shipped">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {total.all} features · {total.pending} pending · {total.live} live{total.editing ? ` · ${total.editing} being edited` : ''}{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>

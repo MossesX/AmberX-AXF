@@ -27,7 +27,8 @@ DEFAULTS: dict[str, Any] = {
     # count where a sentence starts ("check the queue", "can you check the queue"), so "I'd check that out" stays chat
     "actionWords": ["check", "open", "show me", "show", "run", "deploy", "redeploy", "restart", "merge", "land", "queue", "build", "rebuild",
                     "add", "remove", "delete", "install", "update", "fix", "find", "search", "look up", "look at", "read", "list", "edit", "change", "switch",
-                    "turn on", "turn off", "set", "send", "pull up", "take me to", "do the", "do a", "do an", "do it", "do that", "do this"],
+                    "turn on", "turn off", "set", "send", "pull up", "take me to", "take me", "go to", "go back", "go home", "navigate", "where am i",
+                    "do the", "do a", "do an", "do it", "do that", "do this"],
     # count anywhere in the message
     "liveWords": ["builds", "building", "orchestrator", "pending", "queue", "merge", "pr", "prs", "pull request", "ci", "github", "commit", "branch",
                   "vps", "server", "docker", "container", "containers", "deployed", "logs", "disk", "dns", "subdomain", "repo", "repository", "codebase",
@@ -73,16 +74,17 @@ def _has(text: str, word: str) -> bool:
 
 
 def _sentences(text: str) -> list[str]:
+    """Each sentence at every lead word stripped: "go to settings" is checked as itself and as "to settings", so a lead
+    word that is also the start of an action ("go to", "go back") still counts."""
     out = []
     for s in _SENTENCE.split(text):
         s = s.strip()
-        while True:
+        while s:
+            out.append(s)
             t = _LEAD.sub("", s, count=1)
             if t == s:
                 break
             s = t
-        if s:
-            out.append(s)
     return out
 
 

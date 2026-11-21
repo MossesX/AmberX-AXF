@@ -472,6 +472,24 @@ with c.websocket_connect("/p/nav/ws") as w:
 N._feeds = None
 check(N.feed("chat:Amber-terminal-nav")["items"][-1]["text"] == "second line", "feeds survive a restart (feeds.json)")
 
+tmux_calls = []
+def fake_tmux(argv, **kw):
+    tmux_calls.append(argv)
+    return R("axt-console-a1\t1761480000\t0\ttab\t\t\t\n")
+_which = S.shutil.which
+S.shutil.which = lambda exe: "/usr/bin/" + exe
+S.RUNNER = fake_tmux
+S.forget_console_tmux()
+first_ls = S.console_tmux(mine=True)
+S.console_tmux(mine=True)
+check(len(tmux_calls) == 1 and first_ls and first_ls[0]["where"] == "console", "console tmux ls is shared between nav sockets (one call per 3 s)")
+S.forget_console_tmux()
+S.console_tmux(mine=True)
+check(len(tmux_calls) == 2, "…and asked again once a tab opens or stops here")
+S.shutil.which = _which
+S.RUNNER = __import__("subprocess").run
+S.forget_console_tmux()
+
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
       and all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_dir()), "data files and folders private (public key and known_hosts inside a private folder)")

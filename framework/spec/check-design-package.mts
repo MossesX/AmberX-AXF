@@ -175,7 +175,10 @@ const amber = read('apps/console-web/src/assets/context-menu/amber.json').data;
 const items = amber.targets.default as { id: string; provider?: string; spacer?: boolean; action?: string }[];
 eq(validateAsset(read('apps/console-web/src/assets/context-menu/amber.json')).errors, [], 'amber validates');
 eq(amber.contributions, false, 'amber shows only its own items');
-eq(items[0]?.provider, 'amber.plugins', 'Plugins live list first');
+// the quick-action strip leads (edit, theme, reload: the context menu rebuild); the Plugins live list comes right under it
+const firstList = items.findIndex((i) => i.provider);
+eq(items[firstList]?.provider, 'amber.plugins', 'Plugins live list first under the quick actions');
+ok(items.slice(0, firstList).every((i) => /^(edit\.|swap:color-theme:|console\.refresh$)/.test(i.action ?? '')), 'only quick actions come before the Plugins list');
 eq(items.slice(-2).map((i) => i.spacer ?? i.action), [true, 'app.settings'], 'spacer then Settings at the bottom');
 for (const a of ['ashes.toggle', 'terminal.new', 'claude-handoff.open', 'plugin-switches.open', 'edit.cut', 'edit.copy', 'edit.paste', 'swap:color-theme:next', 'swap:color-theme:prev']) ok(items.some((i) => i.action === a), `amber has ${a}`);
 console.log(`check-design-package: ${n} checks passed`);

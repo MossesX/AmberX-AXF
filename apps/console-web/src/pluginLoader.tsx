@@ -8,8 +8,9 @@
  * there at startup, and opening any of them loads that plugin only. A plugin whose shape isn't known yet (first visit,
  * or its code changed: the content hash from `virtual:axf-plugin-hashes` differs) loads once at startup to learn it.
  *
- * Banners load first, in parallel (banner plugins are found by `banners` or by painting the banner in `register`), then
- * core plugins, pins and the most-used ones (src/lazyEngine.ts), then idle preloads. Loaded on-open plugins beyond the
+ * Nothing loads before the first paint. Then banners load first, in small waves (banner plugins are found by `banners`
+ * or by painting the banner in `register`), then core plugins, pins and the most-used ones in waves (src/lazyEngine.ts
+ * STARTUP_WAVES), then at idle time the plugins loaded only to learn their shape, then idle preloads. Loaded on-open plugins beyond the
  * cache size go back to their stand-in, least recently used first (the module stays in the browser, so it comes back
  * at once). Settings: Settings → Plugins → Plugin Manager → Lazy loader (config stored by the plugin-manager server
  * part, cached here so startup never waits for it).
@@ -25,7 +26,7 @@ import { Button, Note } from './axf/react';
 import { PluginViewHost } from './PluginSettingsGear';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
-import { CORE_PLUGINS, evictions, importOnce, isChunkLoadError, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
+import { CORE_PLUGINS, evictions, importOnce, inWaves, isChunkLoadError, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, STARTUP_WAVES, touch, type LazyConfig, type LazyMode, type StartItem, type StartReason, type UsageStat } from './lazyEngine';
 
 type WebModule = { plugin?: AxfWebLibrary };
 
@@ -341,31 +342,49 @@ class PluginLoader {
 
   /* --- startup --- */
 
+  /** Bumped by every boot: an older boot's waves stop once a newer one (the backend's enabled list) took over. */
+  private bootGen = 0;
+
   /**
-   * Start loading what loads at startup, for the enabled plugins: banners in parallel first, then the rest of the startup
-   * list in parallel, then (once idle) the idle picks. Safe to call again (already loaded ones are skipped).
+   * Start loading what loads at startup, for the enabled plugins. Nothing starts before the first paint (the shell
+   * paints with the cached stand-ins); then banners in small waves, then the rest of the startup list in waves, then at
+   * idle the plugins loaded only to learn their shape and the idle picks (STARTUP_WAVES, src/lazyEngine.ts). Safe to
+   * call again: a newer call takes over, already loaded or loading plugins are skipped.
    */
   boot(enabled: string[]) {
     write(KEYS.enabled, enabled);
     if (!this.bootedAt) this.bootedAt = performance.now();
+    const gen = ++this.bootGen;
+    const go = () => gen === this.bootGen;
+    afterFirstPaint(() => { if (go()) void this.runBoot(enabled, go); });
+  }
+
+  private async runBoot(enabled: string[], go: () => boolean) {
     const list = startupList({ enabled, cfg: this.config, banners: enabled.filter((f) => this.isBanner(f)), stats: this.stats, now: Date.now(), unknown: this.unknown(enabled) });
     const banners = list.filter((x) => x.reason === 'banner');
-    const rest = list.filter((x) => x.reason !== 'banner');
-    // Each group lands as one change: re-installing every library per plugin that arrives would block the page for
-    // minutes on a first visit (every plugin loads once to learn its shape).
-    const group = (items: typeof list) => {
+    const rest = list.filter((x) => x.reason !== 'banner' && x.reason !== 'learn');
+    const learn = list.filter((x) => x.reason === 'learn');
+    // Each wave lands as one change: re-installing every library per plugin that arrives would block the page for
+    // minutes on a first visit (every plugin loads once to learn its shape), and one change for everything made the
+    // banner wait on the slowest plugin.
+    const wave = (items: StartItem[]) => {
       this.hold++;
       return Promise.allSettled(items.map((x) => this.request(x.folder, x.reason))).finally(() => this.release());
     };
-    void group(banners).then(() => group(rest)).then(() => {
-      if (!this.readyAt) this.readyAt = performance.now();
-      this.bump();
-      idle(() => {
-        const picks = idlePicks({ enabled, cfg: this.config, loaded: new Set([...this.libs.keys()]), stats: this.stats, now: Date.now() });
-        // idle loads only fetch + evaluate: they become "cached" and install on first use
-        for (const f of picks) void this.prefetch(f);
-      });
-    });
+    const between = () => sleep(STARTUP_WAVES.gapMs);
+    if (!(await inWaves(banners, STARTUP_WAVES.banners, wave, { between, go }))) return;
+    await between();
+    if (!(await inWaves(rest, STARTUP_WAVES.rest, wave, { between, go }))) return;
+    if (!this.readyAt) this.readyAt = performance.now();
+    this.bump();
+    // Plugins whose shape isn't known yet (first visit, or changed by a deploy) load once to learn it, at idle time.
+    await idleWait(3000);
+    if (!(await inWaves(learn, STARTUP_WAVES.learn, wave, { between: () => idleWait(1500), go }))) return;
+    await idleWait(8000);
+    if (!go()) return;
+    const picks = idlePicks({ enabled, cfg: this.config, loaded: new Set([...this.libs.keys()]), stats: this.stats, now: Date.now() });
+    // idle loads only fetch + evaluate: they become "cached" and install on first use
+    await inWaves(picks, STARTUP_WAVES.learn, (fs) => Promise.allSettled(fs.map((f) => this.prefetch(f))), { between: () => idleWait(1500), go });
   }
 
   /** The folders a previous visit had enabled, so banner chunks can start before the backend answers. */
@@ -506,9 +525,25 @@ const stubFns = new Map<string, unknown>();
 let helpFor: (folder: string) => AxfWebLibrary['help'] | undefined = () => undefined;
 export function setHelpSource(f: typeof helpFor) { helpFor = f; }
 
-function idle(f: () => void) {
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Resolves when the browser is idle, at the latest after `timeoutMs` (no requestIdleCallback: after a short wait). */
+function idleWait(timeoutMs: number): Promise<void> {
   const ric = (globalThis as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-  if (ric) ric(f, { timeout: 8000 }); else setTimeout(f, 3000);
+  return new Promise((r) => { if (ric) ric(() => r(), { timeout: timeoutMs }); else setTimeout(r, Math.min(timeoutMs, 1000)); });
+}
+
+let painted = false;
+/**
+ * Run `f` once the page has painted at least once: two animation frames (the frame after the first commit), with a
+ * timer fallback because animation frames never fire in a background tab. Later calls run on the next tick.
+ */
+function afterFirstPaint(f: () => void) {
+  if (painted || typeof requestAnimationFrame === 'undefined') { setTimeout(f, 0); return; }
+  let done = false;
+  const go = () => { if (done) return; done = true; painted = true; f(); };
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(go, 0)));
+  setTimeout(go, 1000);
 }
 
 export const loader = new PluginLoader();

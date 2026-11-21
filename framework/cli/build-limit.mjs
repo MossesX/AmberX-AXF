@@ -139,6 +139,18 @@ export function poolOf(name, emergencyBuilds = []) {
 }
 
 /**
+ * Why a headless claude is no build and holds no place ('' = it counts): a test's stand-in from its /tmp/axf-limit-*
+ * sandbox, or a claude whose /tmp folder was deleted under it (it can do no work; the reaper ends it). These held
+ * real places for 10-15 hours (Nov 20 2026). A deleted build worktree still counts: the reaper judges that one.
+ */
+export function notABuild(p) {
+  const cwd = String(p.cwd ?? '');
+  if ([cwd, ...(p.argv ?? []).slice(0, 2)].some((a) => /^\/tmp\/axf-limit-/.test(String(a ?? '')))) return 'a build-limit test stand-in (/tmp/axf-limit-*)';
+  if (/ \(deleted\)$/.test(cwd) && /^\/(var\/)?tmp\//.test(cwd)) return 'its /tmp folder was deleted';
+  return '';
+}
+
+/**
  * What counts against the limit. facts: { procs: [{ pid, ppid, argv, cwd }], tmux: Map(name → { pid, created }) | null,
  * finished(name) → bool, reservations: [...], now, alive(pid) → bool, emergency: [build id…] (the grants) }. opts: { mode: 'launch' | 'run', self: session or
  * reservation id to leave out, only: RegExp on "<session> <cwd>" (tests) }.
@@ -156,11 +168,13 @@ export function countLive(facts, limit, opts = {}) {
   const ancestors = (pid) => { const out = []; let p = byPid.get(pid)?.ppid; for (let i = 0; p && p > 1 && i < 200; i++) { out.push(p); p = byPid.get(p)?.ppid; } return out; };
   const headless = procs.filter(isHeadlessClaude);
   const headSet = new Set(headless.map((p) => p.pid));
-  const items = []; const counted = new Set(); const coveredPids = new Set();
+  const items = []; const counted = new Set(); const coveredPids = new Set(); const ignored = [];
   const pool = (name) => poolOf(name, facts.emergency);
   for (const c of headless) {
     const up = ancestors(c.pid);
     if (up.some((a) => headSet.has(a))) continue; // a claude under another one: the outer one counts
+    const why = only ? '' : notABuild(c);
+    if (why) { ignored.push({ name: `pid ${c.pid}${c.cwd ? ` in ${c.cwd}` : ''}`, pid: c.pid, why }); up.forEach((a) => coveredPids.add(a)); coveredPids.add(c.pid); continue; }
     up.forEach((a) => coveredPids.add(a)); coveredPids.add(c.pid);
     const pane = up.map((a) => paneOf.get(a)).find(Boolean) ?? (paneOf.get(c.pid) || '');
     if (only && !only.test(`${pane} ${c.cwd ?? ''}`)) continue;
@@ -183,7 +197,7 @@ export function countLive(facts, limit, opts = {}) {
     if (r.id === opts.self || (r.session && r.session === opts.self) || (only && !only.test(`${r.session ?? ''} ${r.cwd ?? ''}`))) continue;
     items.push({ kind: 'reserved', pool: pool(r.session || r.name), name: r.session || r.name || r.id, pid: r.pid, since: r.at });
   }
-  return { ...poolCounts(items), items, keep };
+  return { ...poolCounts(items), items, keep, ignored };
 }
 /** How many items each pool holds: { live (the builds pool), emergency }. */
 export function poolCounts(items = []) { const emergency = items.filter((i) => i.pool === 'emergency').length; return { live: items.length - emergency, emergency }; }
@@ -318,7 +332,7 @@ export function hostFacts() {
 
 const SNAP_FRESH_MS = 90_000;
 function snapshot(f, limit, count, now = Date.now()) {
-  const v = { $axf: 'build-limit-live@1', at: new Date(now).toISOString(), host: hostname(), live: count.live, max: limit.maxBuilds, emergency: { live: count.emergency ?? 0, max: limit.emergencySlots }, items: count.items, slice: sliceStats() };
+  const v = { $axf: 'build-limit-live@1', at: new Date(now).toISOString(), host: hostname(), live: count.live, max: limit.maxBuilds, emergency: { live: count.emergency ?? 0, max: limit.emergencySlots }, items: count.items, ...(count.ignored?.length ? { ignored: count.ignored } : {}), slice: sliceStats() };
   try { writeJson(f.live, v); } catch { /* read-only store */ }
   return v;
 }
@@ -334,7 +348,7 @@ export function usage({ facts = null, mode = 'launch' } = {}) {
       writeJson(f.res, { reservations: count.keep });
       const snap = snapshot(f, limit, count, fx.now);
       const e = decide(count, limit, 'emergency');
-      return { ...decide(count, limit), emergency: { live: e.live, max: e.max, free: e.free }, items: count.items, at: snap.at, source: 'host', limit };
+      return { ...decide(count, limit), emergency: { live: e.live, max: e.max, free: e.free }, items: count.items, ignored: count.ignored, at: snap.at, source: 'host', limit };
     });
   }
   const snap = readJson(files().live, null);
@@ -343,7 +357,7 @@ export function usage({ facts = null, mode = 'launch' } = {}) {
   const eLive = fresh ? Number(snap.emergency?.live) || 0 : null;
   return { ok: live == null ? true : live < limit.maxBuilds, live, max: limit.maxBuilds, free: live == null ? null : Math.max(0, limit.maxBuilds - live),
     emergency: { live: eLive, max: limit.emergencySlots, free: eLive == null ? null : Math.max(0, limit.emergencySlots - eLive) },
-    items: snap?.items ?? [], at: snap?.at ?? null, source: fresh ? 'snapshot' : 'unknown', limit, slice: snap?.slice ?? null };
+    items: snap?.items ?? [], ignored: snap?.ignored ?? [], at: snap?.at ?? null, source: fresh ? 'snapshot' : 'unknown', limit, slice: snap?.slice ?? null };
 }
 
 /**
@@ -520,7 +534,7 @@ export function sliceStats() {
 export function status() {
   const u = usage();
   const snapStats = sliceStats() ?? u.slice ?? null; // the console container reads the host's numbers from the snapshot
-  return { $axf: 'build-limit-status@1', max: u.max, live: u.live, free: u.free, ok: u.ok, emergency: { ...u.emergency, builds: loadEmergency() }, source: u.source, at: u.at, items: u.items, limit: u.limit, slice: snapStats ? { name: SLICE, ...snapStats } : { name: SLICE, active: false } };
+  return { $axf: 'build-limit-status@1', max: u.max, live: u.live, free: u.free, ok: u.ok, emergency: { ...u.emergency, builds: loadEmergency() }, source: u.source, at: u.at, items: u.items, ignored: u.ignored ?? [], limit: u.limit, slice: snapStats ? { name: SLICE, ...snapStats } : { name: SLICE, active: false } };
 }
 
 /* ---------------- CLI ---------------- */
@@ -546,7 +560,7 @@ async function cli(argv) {
         `  emergency slots ${s.emergency.live ?? '?'}/${s.emergency.max} running (${s.emergency.free ?? '?'} free)${s.emergency.builds.length ? ` · granted: ${s.emergency.builds.map((g) => g.id).join(', ')}` : ''}`,
         `  slice ${SLICE}: CPU ${s.limit.cpuQuotaPct}% · memory max ${s.limit.memoryMaxGb} GB (high ${s.limit.memoryHighGb}) · tasks ${s.limit.tasksMax}${s.slice.memoryGb != null ? ` · now ${s.slice.memoryGb} GB, ${s.slice.tasks} tasks` : ' · not active here'}`,
         `  docker test runs (${s.limit.dockerImages}): ${s.limit.dockerCpus} CPUs, ${s.limit.dockerMemoryGb} GB each`,
-        ...s.items.map(itemLine)].join('\n'));
+        ...s.items.map(itemLine), ...s.ignored.map((i) => `  not counted ${i.name}: ${i.why}`)].join('\n'));
     }
     case 'admit': {
       const mode = f.mode === 'run' ? 'run' : 'launch';

@@ -51,7 +51,7 @@ export const plugin: AxfWebLibrary = {
   slots: { 'builds.toolbar': [{ id: 'plan-studio', order: 12, render: () => <OpenStudioButton /> }] },
   dialogs: { [DIALOG]: { title: 'New plan', icon: 'plus', render: (props, close) => <CaptureDialog close={close} text={typeof props.text === 'string' ? props.text : ''} /> } },
   views: { [VIEW]: { title: 'Plan Studio', icon: 'layout', keywords: ['plan', 'plans', 'planning', 'roadmap', 'catalog', 'features', 'ideas', 'parked', 'later', 'backlog', 'what to build'], render: () => <PlanStudioPage /> } },
-  nav: { label: 'Builds', items: [{ id: 'plan-studio', label: 'Plan Studio', icon: 'layout', view: 'plan-studio' }] },
+  nav: { label: 'Plan', items: [{ id: 'plan-studio', label: 'Plan Studio', icon: 'layout', view: 'plan-studio' }] },
   settingsTabs: [{ id: FOLDER, label: 'Plan Studio', icon: 'layout', parent: 'plugins', order: 42, description: 'Plans, the Catalog, the plan AI and voice.' }],
   settings: [{
     id: 'plan-studio.prefs', label: 'Plan Studio', icon: 'layout', tab: FOLDER, order: 10,

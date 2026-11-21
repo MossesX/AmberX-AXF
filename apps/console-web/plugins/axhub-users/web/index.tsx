@@ -20,5 +20,5 @@ export const plugin: AxfWebLibrary = {
   views: {
     'axhub-users': { title: 'Users', icon: 'user', keywords: ["accounts", "permissions", "roles"], render: () => <Users /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-users', label: 'Users', icon: 'user', view: 'axhub-users' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-users', label: 'Users', icon: 'user', view: 'axhub-users' }] },
 };

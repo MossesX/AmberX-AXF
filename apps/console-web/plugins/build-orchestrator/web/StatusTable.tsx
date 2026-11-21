@@ -205,7 +205,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
         <span className="oc-cell-title" title={r.title}>
           <strong>{r.title}</strong>
           {r.emergency && !phone && <EmergencyBadge by={r.emergencyBy} />}
-          {phone ? <span className="st-meta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
+          {phone ? <span className="st-rowmeta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
             : <span className="fx-small fx-muted fx-mono">{r.id}</span>}
         </span>
       ) },
@@ -259,7 +259,7 @@ function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone
       render: (s) => (
         <span className="oc-cell-title" title={s.title}>
           <span>{phone ? `${s.id} · ` : ''}{s.title || s.id}</span>
-          {phone && <span className="st-meta"><StatusBadge status={s.status} attempt={s.attempt} />{s.model && <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span>}{s.account && <span className="fx-small">{s.account}{s.slot ? ` · slot ${s.slot}` : ''}</span>}<StepTimer s={s} /></span>}
+          {phone && <span className="st-rowmeta"><StatusBadge status={s.status} attempt={s.attempt} />{s.model && <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span>}{s.account && <span className="fx-small">{s.account}{s.slot ? ` · slot ${s.slot}` : ''}</span>}<StepTimer s={s} /></span>}
         </span>
       ) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 8)', render: (s) => <StatusBadge status={s.status} attempt={s.attempt} /> },

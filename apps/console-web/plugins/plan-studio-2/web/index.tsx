@@ -111,7 +111,7 @@ export const plugin: AxfWebLibrary = {
     [DIALOGS.build]: { title: 'Send to the build orchestrator', icon: 'rocket', searchable: false, render: (props, close) => <BuildDialog props={props} close={close} /> },
   },
   views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline', 'roadmap', 'plan studio 2'], render: () => <PlanStudio2Page /> } },
-  nav: { label: 'Builds', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
+  nav: { label: 'Plan', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
   settingsTabs: [{ id: FOLDER, label: 'Plan Studio 2.0', icon: 'branch', parent: 'plugins', order: 43, description: 'The planning tree, its voice and defaults.' }],
   settings: [{
     id: 'plan-studio-2.prefs', label: 'Plan Studio 2.0', icon: 'branch', tab: FOLDER, order: 10,

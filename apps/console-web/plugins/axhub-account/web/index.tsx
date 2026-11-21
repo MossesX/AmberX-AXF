@@ -23,5 +23,5 @@ export const plugin: AxfWebLibrary = {
     'axhub-hub': { title: 'axHub', icon: 'external', keywords: ["axhub", "session", "sign in", "hub"], render: () => <HubView /> },
     'axhub-account': { title: 'Hub account', icon: 'key', keywords: ["password", "sign out", "browsers"], render: () => <HubAccount /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-hub', label: 'axHub', icon: 'external', view: 'axhub-hub' }, { id: 'axhub-account', label: 'Hub account', icon: 'key', view: 'axhub-account' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-hub', label: 'axHub', icon: 'external', view: 'axhub-hub' }, { id: 'axhub-account', label: 'Hub account', icon: 'key', view: 'axhub-account' }] },
 };

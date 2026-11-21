@@ -1,9 +1,8 @@
 /**
  * Plan Studio 2.0 voice: one spoken sentence in, one spoken reply out. Listening takes the microphone through
- * mic-lease@1 (`globalThis.__axfMicLease`, shared with AmberX dictation, notes and Agent voice; a copy of the lease is
- * made when this loads first), AmberX's native speech inside the Android shell, else the browser's recognizer. Speaking
- * goes through agent-voice@1 when installed (`axf:agent-voice.say`), else native speak, else Web Speech synthesis.
- * What was said is sent to the server's `say` (tree.mjs parseVoice), the same path AmberX's wake listener uses.
+ * mic-lease@1 (`globalThis.__axfMicLease`, shared with dictation, notes and Agent voice; a copy of the lease is made
+ * when this loads first), then the browser's recognizer. Speaking goes through agent-voice@1 when installed
+ * (`axf:agent-voice.say`), else Web Speech synthesis. What was said is sent to the server's `say` (tree.mjs parseVoice).
  */
 export const OWNER = 'plan-studio-2';
 const LEASE_KEY = '__axfMicLease';
@@ -28,21 +27,12 @@ export function micLease(): MicLease {
 }
 
 type Rec = { lang: string; interimResults: boolean; maxAlternatives: number; continuous: boolean; start(): void; stop(): void; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null; onend: (() => void) | null; onerror: ((e: { error?: string }) => void) | null };
-type NativeVoice = { listen(o: { lang: string; prompt?: string }): Promise<{ text: string }>; speak(o: { text: string; lang: string }): Promise<void> };
 const win = () => (typeof window === 'undefined' ? undefined : (window as unknown as Record<string, unknown>));
-function nativeVoice(): NativeVoice | null {
-  const cap = win()?.Capacitor as { isNativePlatform?: () => boolean; Plugins?: Record<string, unknown> } | undefined;
-  if (!cap?.isNativePlatform?.()) return null;
-  const n = cap.Plugins?.AmberxNative as NativeVoice | undefined;
-  return n && typeof n.listen === 'function' ? n : null;
-}
 const webRecognizer = () => ((win()?.SpeechRecognition ?? win()?.webkitSpeechRecognition ?? null) as (new () => Rec) | null);
-export const canListen = () => !!(nativeVoice() || webRecognizer());
+export const canListen = () => !!webRecognizer();
 
-/** One utterance from the device (native first, else Web Speech); '' when nothing was heard. */
+/** One utterance from the device (Web Speech); '' when nothing was heard. */
 export function listenOnce(lang = 'en-US', timeoutMs = 12_000): Promise<string> {
-  const n = nativeVoice();
-  if (n) return n.listen({ lang, prompt: 'Plan Studio 2.0 is listening' }).then((r) => r?.text ?? '').catch(() => '');
   const R = webRecognizer();
   if (!R) return Promise.reject(new Error('This device has no speech recognizer.'));
   return new Promise((done) => {
@@ -57,7 +47,7 @@ export function listenOnce(lang = 'en-US', timeoutMs = 12_000): Promise<string> 
   });
 }
 
-/** Say it: agent-voice@1, else AmberX native speak, else Web Speech. Resolves when done (estimated for agent-voice). */
+/** Say it: agent-voice@1, else Web Speech. Resolves when done (estimated for agent-voice). */
 export async function speakOut(text: string, { agentVoice = false, lang = 'en-US' } = {}): Promise<void> {
   if (!text) return;
   const w = win();
@@ -66,8 +56,6 @@ export async function speakOut(text: string, { agentVoice = false, lang = 'en-US
     await new Promise((r) => setTimeout(r, Math.min(20_000, 500 + text.split(/\s+/).length * 350)));
     return;
   }
-  const n = nativeVoice();
-  if (n) { await n.speak({ text, lang }).catch(() => undefined); return; }
   const synth = w?.speechSynthesis as SpeechSynthesis | undefined;
   const U = w?.SpeechSynthesisUtterance as (new (t: string) => SpeechSynthesisUtterance) | undefined;
   if (!synth || !U) return;

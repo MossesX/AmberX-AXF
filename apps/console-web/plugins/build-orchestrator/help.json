@@ -326,7 +326,7 @@
       {
         "target": "phone-fyi",
         "title": "Phone FYI",
-        "text": "Batched: one AmberX push per watchdog pass listing every fix. One push per fix: a push for each. A build the watchdog gave up on is always its own alert.",
+        "text": "Batched: one phone push per watchdog pass listing every fix. One push per fix: a push for each. A build the watchdog gave up on is always its own alert.",
         "kind": "field"
       },
       {
@@ -366,9 +366,9 @@
         "kind": "toggle"
       },
       {
-        "target": "tell-amberx-what-was-cleaned",
-        "title": "Tell AmberX what was cleaned",
-        "text": "On: each watchdog run that cleaned something sends one FYI to AmberX (Notifications panel: Watchdog cleaned stale rows).",
+        "target": "tell-the-phone-what-was-cleaned",
+        "title": "Tell the phone what was cleaned",
+        "text": "On: each watchdog run that cleaned something sends one FYI to the phone (Notifications panel: Watchdog cleaned stale rows).",
         "kind": "toggle"
       },
       {
