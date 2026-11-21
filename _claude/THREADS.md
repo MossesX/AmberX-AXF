@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 06:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 06:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:16 UTC · `fable-full-audit-ui-overhaul-conso` s2 undone (all) · orchestrator
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → build-complete (all) · headless
 - 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → merging-pr, note (all) · lander
 - 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` PR 867 (all) · lander
+- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pr-pulling-main (all) · lander
+- 2026-11-21 00:12 UTC · `fix-main-ci-red-after-s16-s7-hand-` → running-ci (all) · lander
 
 ## Token passes (log)
 

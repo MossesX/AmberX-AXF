@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10205,
- "updatedAt": "2026-11-21T00:11:57.795Z",
+ "rev": 10206,
+ "updatedAt": "2026-11-21T00:15:11.316Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344673,7 +344673,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "merging-pr",
+   "status": "running-ci",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -344681,7 +344681,7 @@
    "pr": "867",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:11:51.606Z",
+   "updatedAt": "2026-11-21T00:12:01.867Z",
    "builtAt": "",
    "notes": [
     {
@@ -345383,7 +345383,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 113,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345394,7 +345394,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:11:38.596Z",
+   "statusAt": "2026-11-21T00:12:01.867Z",
    "statusBy": "lander",
    "attempt": 7,
    "statusLog": [
@@ -345551,6 +345551,18 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: PR 1 of 1 (s1, s2, s3, s4, s5)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-21T00:11:56.344Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-21T00:12:01.867Z",
+     "by": "lander",
+     "attempt": 1
     }
    ]
   }
