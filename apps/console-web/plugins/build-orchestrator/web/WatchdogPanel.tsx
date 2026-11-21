@@ -100,7 +100,7 @@ export function WatchdogPanel() {
             <Section title="Lists it watches">
               {TABLE_KEYS.map((t) => <Switch key={t.key} label={t.label} checked={s[t.key]} disabled={busy === 'save'} onChange={(v) => void set({ [t.key]: v } as Partial<WatchdogSettings>)} />)}
             </Section>
-            <Switch label="Tell AmberX what was cleaned" checked={s.notify} disabled={busy === 'save'} onChange={(v) => void set({ notify: v })} hint="One FYI per run that cleaned something (Notifications panel: Watchdog cleaned stale rows)." />
+            <Switch label="Tell the phone what was cleaned" checked={s.notify} disabled={busy === 'save'} onChange={(v) => void set({ notify: v })} hint="One FYI per run that cleaned something (Notifications panel: Watchdog cleaned stale rows)." />
           </div>
         )}
         {tab === 'runs' && (

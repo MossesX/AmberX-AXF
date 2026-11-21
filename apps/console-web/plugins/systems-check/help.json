@@ -85,6 +85,12 @@
         "text": "Opens the Build orchestrator. Part of Systems check banner.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "save-anyway",
+        "title": "Save anyway",
+        "text": "Saves the key even though the test against the service failed. Use it when the service is down and you know the key is right.",
+        "kind": "button"
       }
     ],
     "intros": []

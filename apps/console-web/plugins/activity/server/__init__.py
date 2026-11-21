@@ -27,6 +27,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import builds_store
 import console_context as cx
 import plugin_services
 
@@ -53,18 +54,9 @@ def _services() -> list[tuple[str, Any]]:
     return out
 
 
-STORE_REL = Path("_claude") / "builds" / "store.json"
-
-
 def builds_store_file() -> Path:
-    """The one builds store (builds@1), found the way framework/cli/builds-store.mjs finds it: AXF_BUILDS_STORE, else
-    AXF_DATA_DIR/_claude/builds/store.json, else the repo's _claude/builds/store.json."""
-    if os.environ.get("AXF_BUILDS_STORE"):
-        return Path(os.environ["AXF_BUILDS_STORE"])
-    d = os.environ.get("AXF_DATA_DIR")
-    if d and d != "off":
-        return Path(d) / STORE_REL
-    return cx.ROOT / STORE_REL
+    """The builds store's local file (a test store, else the checkout's): read only before the Postgres cut."""
+    return builds_store.store_file()
 
 
 def build_status(store: Any, pid: str) -> str:
@@ -80,12 +72,10 @@ def build_status(store: Any, pid: str) -> str:
 
 
 def _pending_status(pid: str) -> str | None:
-    """A pending build's status, read from the builds store (Nov 1 2026; the old framework/plan/pending.json is only a
-    read-only export of it). None when the store can't be read."""
-    try:
-        return build_status(json.loads(builds_store_file().read_text("utf-8")), pid)
-    except (OSError, ValueError):
-        return None
+    """A pending build's status, read from the builds store (the axf-data tables once cut over; Pipeline 2.0: never a
+    store.json projection). None when the store can't be read."""
+    store = builds_store.read()
+    return None if store is None else build_status(store, pid)
 
 
 FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub") if r],
@@ -103,7 +93,7 @@ COMPLETE = complete.Completer(data_dir(), FEED.snapshot, FEED.config, FEED.dismi
                               changes=lambda: plugin_services.get(complete.CHANGES),
                               raise_alert=lambda a: cx.raise_alert(a))
 if os.environ.get("AXF_ACTIVITY_WATCH") != "off":
-    complete.start_watcher(COMPLETE)
+    complete.start_watcher(COMPLETE, enabled=lambda: bool(cx.plugin_enabled(FOLDER)))
 
 health.ensure(FEED, data_dir(), changes=lambda: plugin_services.get(complete.CHANGES))
 

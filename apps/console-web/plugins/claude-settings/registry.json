@@ -7,8 +7,8 @@
     { "id": "builds", "label": "Builds", "icon": "layers", "order": 30, "description": "How Claude starts and pays for builds." },
     { "id": "verification", "label": "Verification", "icon": "shield", "order": 40, "description": "How much Claude trusts the live builds store." },
     { "id": "talking", "label": "Talking", "icon": "mic", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
-    { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
-    { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "AmberX records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
+    { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the phone, and when it stays quiet." },
+    { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "The phone records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
     { "id": "headless", "label": "Headless sessions", "icon": "terminal", "order": 35, "description": "What a headless build takes in. Brief only: no CLAUDE.md, rules files, memory or settings-injected context; the brief the orchestrator writes is the whole input (headless-context@1)." },
     { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." },
     { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." }
@@ -53,6 +53,8 @@
       "description": "On: Claude starts a build as soon as it is in the orchestrator, without a card asking first." },
     { "key": "builds.maxParallel", "group": "builds", "label": "Max parallel builds", "kind": "number", "default": 3, "min": 1, "max": 12, "step": 1, "owner": "raise", "level": "developer",
       "description": "How many builds Claude runs at once (the VPS agent cap still applies on top)." },
+    { "key": "builds.briefMaxBytes", "group": "builds", "label": "Max launch brief size (bytes)", "kind": "number", "default": 122880, "min": 16384, "max": 1048576, "step": 1024, "level": "developer",
+      "description": "A launch brief bigger than this is trimmed (the step list first, then the rules block) and the build gets a note saying so. Brett's own words are never cut." },
     { "key": "builds.budgetPerBuildUsd", "group": "builds", "label": "Budget per build (USD)", "kind": "number", "default": 15, "min": 0, "max": 500, "step": 1, "owner": "raise", "level": "basic",
       "description": "A build that reaches this cost stops and notifies Brett. 0 = no cap. Anyone may lower it; only Brett raises it." },
     { "key": "builds.budgetDailyUsd", "group": "builds", "label": "Daily budget (USD)", "kind": "number", "default": 60, "min": 0, "max": 2000, "step": 5, "owner": "raise", "level": "basic",
@@ -100,7 +102,7 @@
       "description": "Push when a build adds items to UI Review (build name + how many; a tap opens that group)." },
 
     { "key": "recording.autoStart", "group": "recording", "label": "Record every session", "kind": "toggle", "default": true, "level": "basic",
-      "description": "When a voice, chat or console session starts, AmberX's recorder is asked to start for it. Headless builds never are. The recorder approval and Android's capture prompt still appear; the mic follows your own Record my mic too switch." },
+      "description": "When a voice, chat or console session starts, the phone's recorder is asked to start for it. Headless builds never are. The recorder approval and Android's capture prompt still appear; the mic follows your own Record my mic too switch." },
     { "key": "recording.transcribe", "group": "recording", "label": "Transcribe every part", "kind": "toggle", "default": true, "level": "basic",
       "description": "Each uploaded part is transcribed on the VPS (no model tokens, nothing sent elsewhere) and saved with its session, searchable in the Audio Output Recorder page." },
 

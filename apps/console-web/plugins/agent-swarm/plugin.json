@@ -45,6 +45,7 @@
       "_claude/THREADS.md",
       "deploy/claude-headless.sh",
       "install_steps.md",
+      "deploy/host-services/workers/agent-swarm.mjs",
       "framework/spec/PORTING.md"
     ]
   },

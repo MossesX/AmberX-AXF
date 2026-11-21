@@ -98,6 +98,10 @@
       },
       "description": "capabilities used when present (service:<name>@<v>); the plugin works without them"
     },
+    "deviceRoutes": {
+      "type": "boolean",
+      "description": "the plugin exports `device_router`, mounted at /api/plugins/<folder>/device/ without the console token; every route there authenticates its own caller (Phone Connect: the device token)"
+    },
     "enabledByDefault": {
       "type": "boolean"
     },

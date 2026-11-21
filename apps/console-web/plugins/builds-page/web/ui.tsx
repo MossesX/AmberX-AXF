@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, PageToolbar, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -230,6 +230,8 @@ export function BuildsPage() {
     addEventListener('focus', tick); document.addEventListener('visibilitychange', tick);
     return () => { window.clearInterval(t); removeEventListener('focus', tick); document.removeEventListener('visibilitychange', tick); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/builds.json)
+  useToolbarHandlers(VIEW, { 'builds.reload': async () => { await reload(); return { rev: s.state?.rev ?? null }; } });
   const state = s.state;
   if (!state) return <div className="fx-page axp-builds"><p className="fx-muted">{s.error || 'Loading the builds store…'}</p></div>;
   const prof = state.profiles.find((p) => p.id === state.profile);
@@ -244,11 +246,11 @@ export function BuildsPage() {
         </div>
       </header>
       <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />
-      <div className="axp-builds__bar" role="toolbar" aria-label="Builds view">
+      <PageToolbar view="builds" label="Builds view" className="axp-builds__bar">
         <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
         <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
         <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
-      </div>
+      </PageToolbar>
       <DraftBar state={state} />
       {/* other plugins' panels above the list (e.g. agent-slots: the queue of headless runs waiting for a slot) */}
       <Slot name="builds.top" props={{ profile: state.profile }} />
@@ -277,7 +279,7 @@ function DraftBar({ state }: { state: StateV }) {
   );
 }
 
-function StatusChip({ b }: { b: BuildV }) { return <Chip tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status] ?? b.status}</Chip>; }
+function StatusChip({ b }: { b: BuildV }) { return <span data-status={b.status}><Chip tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status] ?? b.status}</Chip></span>; }
 function Bar({ p, label }: { p: Progress; label: string }) {
   return <span className="axp-builds__bar-cell"><Meter small value={p.pct} active={p.active} done={p.pct === 100} label={label} /><span className="fx-small axp-builds__num" data-active={p.active || undefined}>{p.pct}%</span></span>;
 }
@@ -395,21 +397,26 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const one = picked.length === 1 ? picked[0] : null;
   const scopedBuild = scope ? state.builds.find((b) => b.id === scope) ?? null : one ? state.builds.find((b) => b.id === one.build) ?? null : null;
   const rearranged = shown.filter((b) => b.rearranged && b.hasDefault);
+  const allSelected = !!all.length && sel.length === all.length;
+  // the Steps toolbar (page-toolbar@1, assets/toolbar/builds-steps.json; slot steps of the Builds page)
+  usePublishPageState(VIEW, { steps: { total: all.length, selected: picked.length, one: !!one, allSelected, restorable: scopedBuild ? !!scopedBuild.rearranged : rearranged.length > 0 } });
+  useToolbarHandlers(VIEW, {
+    'builds.select-all': () => { setSel(allSelected ? [] : all.map((x) => x.uid)); return { selected: allSelected ? 0 : all.length }; },
+    'builds.divide': () => { if (!one) return null; setDialog({ kind: 'divide', step: one }); return { step: one.uid }; },
+    'builds.harvest': () => { if (!picked.length) return null; setDialog({ kind: 'harvest' }); return { steps: picked.length }; },
+    'builds.restore': () => { setDialog({ kind: 'restore', id: scopedBuild?.id ?? null }); return { build: scopedBuild?.id ?? null }; },
+  });
   return (
     <div className="axp-builds__steps-view">
-      <div className="axp-builds__bar" role="toolbar" aria-label="Steps selection">
+      <PageToolbar view="builds" slot="steps" label="Steps selection" className="axp-builds__bar">
         <SelectField label="Scope" value={scope} empty="Every build in the profile" options={state.builds.map((b) => ({ value: b.id, label: b.title }))} onChange={(v) => { setScope(v); setSel([]); }} className="axp-builds__pick" />
         <span className="fx-small fx-muted">{sel.length ? `${sel.length} selected` : isPhone() ? 'Long-press or tap to select' : 'Ctrl+click to select more, Shift+click for a range'}</span>
         <span className="axp-builds__grow" />
-        <Button size="sm" icon="check-circle" disabled={!all.length} onClick={() => setSel(sel.length === all.length ? [] : all.map((s) => s.uid))}>{sel.length === all.length && all.length ? 'Select none' : 'Select all'}</Button>
         <SelectField label="Priority" value="" empty="Set priority…" disabled={!picked.length}
           options={[{ value: 'P0', label: 'Urgent' }, { value: 'P1', label: 'High' }, { value: 'P2', label: 'Normal' }, { value: 'P3', label: 'Low' }]}
           onChange={(p) => { if (p) void setBuildPriority([...new Set(shown.filter((b) => b.steps.some((s) => sel.includes(s.uid))).map((b) => b.id))], p as Priority).then(() => rt.toast('Priority set on the selected steps\' builds', 'success'), (e: Error) => rt.toast(e.message, 'danger')); }} />
-        <Button size="sm" icon="layout" disabled={!one} title="Divide the selected step further" onClick={() => one && setDialog({ kind: 'divide', step: one })}>Divide</Button>
-        <Button size="sm" icon="cut" disabled={!picked.length} title="Take the selected steps into a new build (or split them into N)" onClick={() => setDialog({ kind: 'harvest' })}>Harvest</Button>
         {scopedBuild && <span className="axp-builds__inline"><Icon name="edit" size={12} /><InlineName label="Build name" value={scopedBuild.title} onSave={(title) => draft({ op: 'rename-build', id: scopedBuild.id, title })} /></span>}
-        <Button size="sm" icon="refresh" disabled={scopedBuild ? !scopedBuild.rearranged : !rearranged.length} title="Put the build(s) back to the breakdown the orchestrator first made" onClick={() => setDialog({ kind: 'restore', id: scopedBuild?.id ?? null })}>Restore default</Button>
-      </div>
+      </PageToolbar>
       <DataGrid<StepV> id="builds.steps" label="Steps" groups={groups} columns={columns} rowId={(s) => s.uid} rowLabel={stepName} hidden={[]} multi={sel}
         onRowClick={click} expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
         onToggleGroup={(id) => setCollapsed(collapsed.includes(id) ? collapsed.filter((x) => x !== id) : [...collapsed, id])}
@@ -462,7 +469,7 @@ export function StorePanel() {
   useEffect(() => { if (!s.state) void reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="fx-stack">
-      <p className="fx-small" style={{ margin: 0 }}>One builds store for every profile: <code className="fx-mono">_claude/builds/store.json</code>, every write versioned in <code className="fx-mono">_claude/builds/journal/</code>. The old Pending, queue and orchestrator files are read-only exports of it.</p>
+      <p className="fx-small" style={{ margin: 0 }}>One builds store for every profile, on Postgres (axf-data): every build, step and note is a row, every write a journal line. Nothing reads a store.json file any more.</p>
       {s.state && <ul className="fx-small axp-builds__notes">{s.state.profiles.map((p) => <li key={p.id}><strong>{p.name}</strong> <span className="fx-mono">{p.id}</span>: {p.builds} builds, {p.progress.pct}% ({p.progress.done}/{p.progress.total} steps)</li>)}</ul>}
     </div>
   );

@@ -59,6 +59,45 @@
         ]
       }
     },
+    "press run now on the auto-lander toolbar": {
+      "verb": "press",
+      "find": {
+        "q": "auto-lander run",
+        "kinds": [
+          "button"
+        ]
+      },
+      "toolbar": "auto-lander"
+    },
+    "tap the retry button in the auto lander toolbar": {
+      "verb": "press",
+      "find": {
+        "q": "auto lander retry",
+        "kinds": [
+          "button"
+        ]
+      },
+      "toolbar": "auto lander"
+    },
+    "what's on the auto-lander toolbar": null,
+    "list the gate rules toolbar": {
+      "verb": "list",
+      "find": {
+        "q": "gate rules",
+        "kinds": [
+          "toolbar"
+        ]
+      }
+    },
+    "show me the builds toolbar": {
+      "verb": "list",
+      "find": {
+        "q": "builds",
+        "kinds": [
+          "toolbar"
+        ]
+      }
+    },
     "go to plan studio": {
       "verb": "open",
       "find": {
@@ -277,6 +316,22 @@
     },
     "open the pipeline tab": {
       "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "press run now on the auto-lander toolbar": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "tap the retry button in the auto lander toolbar": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "list the gate rules toolbar": {
+      "verb": "list",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "show me the builds toolbar": {
+      "verb": "list",
       "address": "view:build-orchestrator/grid:builds/row:b1"
     },
     "go to plan studio": {

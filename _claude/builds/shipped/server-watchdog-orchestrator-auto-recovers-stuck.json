@@ -1,0 +1,543 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-17T19:28:19Z",
+ "build": {
+  "id": "server-watchdog-orchestrator-auto-recovers-stuck",
+  "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.",
+  "verbatim": true,
+  "at": "2026-11-13T11:45:00.916Z",
+  "source": "",
+  "by": "server-watchdog-orchestrator-auto-recovers-stuck",
+  "addenda": []
+ },
+ "brief": "# Build: server-watchdog-orchestrator-auto-recovers-stuck\n\n## Brett said (verbatim)\nAt: 2026-11-13T11:45:00.916Z\n> Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\n\n## What to build\nContinue build \"Server watchdog: orchestrator auto-recovers stuck or killed builds\" (server-watchdog-orchestrator-auto-recovers-stuck) — Phase 3, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 11:45):\n\"Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\"\nThis phase upgrades Opus → Fable: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/server-watchdog-orchestrator-auto-recovers-stuck · PR #772\nSteps in this phase (2 left, ~20 min):\n[ ] s22 (~10 min) Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by folding this build's watchdog into #780's files (one watchdog, both features). Run tests, push, land PR #772.\n[ ] s23-22 (~10 min) Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by folding this build's watchdog into #780's files (one watchdog, both features). Run tests, push, land PR #772.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-watchdog-orchestrator-auto-recovers-stuck \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n\n## Retry: attempt 1 (done-means-merged@1)\nThe last run failed: CI is red (CI is red (Build engine sweep (Node)). Needs a code fix.) at e8e115303e.\nThis attempt: fix (targeted). Fix the failing checks first: reproduce each one locally, fix the cause (not the check), commit, push, and confirm it passes before anything else.\nNever stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-server-watchdog-orchestrator-auto-recovers-stuck--joey",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-16T23:33:20.862Z",
+   "endedAt": "2026-11-16T23:51:09.364Z",
+   "exit": 0,
+   "costUsd": 7.598
+  },
+  {
+   "session": "axf-server-watchdog-orchestrator-auto-recovers-stuck--gina",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T03:32:22.314Z",
+   "endedAt": "2026-11-17T04:28:56.394Z",
+   "exit": 0,
+   "costUsd": 20.7566
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Design the watchdog@1 contract in framework/core/build-watchdog.mjs. A build counts as stuck when it is marked running or queued-running and has no live session: the pid is gone, the tmux session is missing, the heartbeat (lastSeenAt) is older than staleMin, or an exit code is recorded (143 killed, 137 OOM, 1 failed, usage limit). For each case, define the action: reset the running step, release the slot, requeue, retry on the same or another account, or give up after maxRetries and go back to Pending with a banner item. Also define the recovery record shape { at, buildId, phase, step, cause, exit, action, attempt, account, notified }.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T23:33:20.862Z",
+   "doneAt": "2026-11-16T23:42:18.364Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Add the JSON schema framework/schemas/build-watchdog.json and register recovery records on builds@1. This adds an optional `recoveries[]` on a build, which normBuild must keep, plus the journal kind `watchdog-recover`. Old records with no recoveries load unchanged, so no migration is needed. Show this in builds-store verify.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T23:42:18.364Z",
+   "doneAt": "2026-11-16T23:45:29.319Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add golden fixtures for the decision table (killed 143, exit 1, stale heartbeat, live session left alone, retry cap reached, usage limit moves to another account) and a check script. Wire the check into CI.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T23:45:29.319Z",
+   "doneAt": "2026-11-16T23:49:58.294Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Have deploy/claude-headless.sh record each run's end: exit code, signal, account and the time it ended. It writes them to the build's run record through builds-live.mjs (and a run-status file under the slot dir), so killed (143) and failed (1) runs leave evidence the watchdog can read.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T23:49:58.294Z",
+   "doneAt": "2026-11-17T03:35:23.157Z",
+   "actualMin": 225,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Add the liveness probe: framework/cli/agent-slots.mjs `alive <build>` checks pid, tmux session and slot heartbeat and returns JSON. Also free slots whose process is gone (orphan slot reaping).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:35:23.157Z",
+   "doneAt": "2026-11-17T03:36:35.298Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Add watchdog.mjs `scan` (dry run) to the build-orchestrator plugin. It reads the store, finds every running build, probes liveness, applies the build-watchdog.mjs decisions and prints the stuck builds with cause and planned action (--json).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:36:35.298Z",
+   "doneAt": "2026-11-17T03:38:04.506Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Add watchdog.mjs `run`, which applies the recoveries. It resets the stuck step to pending, releases the slot, sets the build back to queued through pipeline.mjs, appends a recoveries[] entry under the store lock and pushes it live with builds-live.mjs. It does this idempotently, using a per-build lock and a cooldown.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:38:04.506Z",
+   "doneAt": "2026-11-17T03:40:56.592Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Retry failed sessions. Crashes and kills are retried up to maxRetries (default 3). A usage limit or account error retries on the next worker through deploy/claude-workers.mjs route. When the cap is hit, the build goes to Pending with a note. The retry count lives on the build, not in memory.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:40:56.592Z",
+   "doneAt": "2026-11-17T03:41:57.146Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Keep every slot filled. After each recovery, and on every watchdog pass, call pipeline.mjs tick while free slots plus Queue work remain. If slots sit idle while the Queue is non-empty, record that as a recovery cause ('idle-slots') and fix it.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T03:41:57.146Z",
+   "doneAt": "2026-11-17T03:43:15.420Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Schedule it: add an `axf-watchdog` cron every minute (with flock) to the plugin's install.mjs and remove it in uninstall.mjs. Mount and add the env in the deploy install script. Make the plugin-lifecycle check pass.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:43:15.420Z",
+   "doneAt": "2026-11-17T03:45:29.300Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Send a phone FYI for every fix. Declare notify type `watchdog.fix` (FYI, low priority) and `watchdog.gave-up` (alert) in notify.json, and send each through axf.notify@1 to the AmberX app with build, cause, action and attempt. Set `notified` on the recovery record and batch several fixes in one pass into one push.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:45:29.300Z",
+   "doneAt": "2026-11-17T03:46:55.464Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Add the health@1 check 'Build watchdog' in systems-check. It goes red when the last pass is older than 3 minutes or a build gave up. Its auto-fix reinstalls the cron and runs one pass. A gave-up build becomes a banner item with Fix (requeue).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:46:55.464Z",
+   "doneAt": "2026-11-17T03:49:58.054Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Add Watchdog settings as a section of Settings → Plugins → Build orchestrator (level toolbar applies): on/off, interval, stale heartbeat minutes, max retries, retry on another account, FYI per fix or batched. Stored as plugin settings keys that watchdog.mjs reads.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:49:58.054Z",
+   "doneAt": "2026-11-17T03:53:35.993Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Add a Watchdog panel in Build orchestrator, built from framework controls and tokens only, in a TabGroup tab. It shows last pass, running builds with liveness, recent fixes (cause → action, attempt, notified) and a Run now toolbar (role=toolbar, aria-label). Each build view shows its recoveries list.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:53:35.993Z",
+   "doneAt": "2026-11-17T03:57:03.616Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Add the REST API: GET watchdog/status, GET watchdog/scan, POST watchdog/run, GET/PUT watchdog/settings, GET builds/<id>/recoveries on the build-orchestrator server routes.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:57:03.616Z",
+   "doneAt": "2026-11-17T03:58:12.709Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Add the same API on MCP, the CLI and voice: plugin-commands for the routes (watchdog_status/scan/run/settings), CLI `axf watchdog status|scan|run|set`, the voice/console actions `watchdog.run` and `watchdog.status`, and a console_show / console_open deep link target `build-orchestrator/watchdog` (plus `?build=<id>`).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:58:12.709Z",
+   "doneAt": "2026-11-17T04:03:07.637Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Write unit tests for watchdog.mjs against a temp store (AXF_DATA_DIR): killed 143 is requeued, exit 1 is retried, a stale heartbeat is reset, a live build is untouched, the cap sends the build to Pending, a usage limit goes to the next account, idle slots trigger a tick, one FYI per fix, and a second pass does nothing.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:03:07.637Z",
+   "doneAt": "2026-11-17T04:04:26.083Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Add an end-to-end test with a fake claude in HOME/.local/bin: launch it through claude-headless.sh, kill it (SIGTERM, 143), run watchdog run, then assert the build was requeued, the slot freed and refilled, the recovery recorded and the notify sent. Run the notify-control registry test.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:04:26.083Z",
+   "doneAt": "2026-11-17T04:07:45.207Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Write docs and the catalog: a Watchdog section in the plugin README, help entries, plugin.json/command/CLI-header descriptions for the glossary, and the _claude/builds/README.md recovery flow. Run glossary-index catalog.mjs --check, check-theme, check-controls, check-toolbars and check-chrome-assets.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:07:45.207Z",
+   "doneAt": "2026-11-17T04:10:07.477Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Submit the Watchdog panel to UI Review with 3 options (layout variants as assets under plugins/build-orchestrator/assets/), each with desktop and phone shots, in group 'server-watchdog-orchestrator-auto-recovers-stuck - <date>'.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:10:07.477Z",
+   "doneAt": "2026-11-17T04:25:33.055Z",
+   "actualMin": 15,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Finish: run all the checks (check-build-watchdog, builds-store verify, check-builds-store, plugin-lifecycle check, tracker --check, the unit and e2e tests). Write _claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md with before/after and how each feature is reached (REST, MCP, CLI, voice, deep link). Add a THREADS.md row, open the PR, link it with builds-live.mjs link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:25:33.055Z",
+   "doneAt": "2026-11-17T04:28:34.297Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by folding this build's watchdog into #780's files (one watchdog, both features). Run tests, push, land PR #772.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s23-22",
+   "text": "Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by folding this build's watchdog into #780's files (one watchdog, both features). Run tests, push, land PR #772.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/server-watchdog-orchestrator-auto-recovers-stuck",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 772,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/772"
+ },
+ "landedCommit": "",
+ "commits": [
+  "d9addba6dc9c73b32e85b5796db90ddb50cef6db",
+  "e8e115303e3a8783e4f5d2039cbe269d9213e4ae",
+  "e8db818780036e41fb3c6fcc1e87dd9f06a1c85d",
+  "7c51b48199108563350941debc0fe176341f2342",
+  "1de18138edf69860259621e1907cac6fdd7e5607",
+  "6b5f27c1f8fa3d576170637ada9df6875171c788",
+  "5720a7ba7326cba99aaf7156f49d4503805561de",
+  "5e1a24ce5ad4155eeed4436377654a93b1672074",
+  "420570d5a0ba7b7f13cd2226271a79837c29c08a",
+  "a78d938558ddaaeaf7138210a8827a6529c8a1b2",
+  "58f7487aee26e9fadddd846afb585bef9d4baf8a",
+  "a283abe9ddcb889a296b8f79b166253f5148f353",
+  "335757911c043962e0570ebf42c267476f9bc1bc",
+  "e1459b3f99d06e37a972ca821aa68b9ad3b6de63",
+  "d3c6785b0b479ea298403022e6e93731dd185b20",
+  "5c4248f8a5935795b8e8aced24848bb4a2396461",
+  "e80aa94be8040a6fa34dfd384762674f3ed01425",
+  "86abd53b70326afe606c8650f623891037f756c0",
+  "b88f3d9afdfb44388cb41abb30e907d02be02833",
+  "268e096e809f7c29f1040d0609808b56b7ce13a7",
+  "df14b485045fabf38038a6d3914471f867294cb2",
+  "adbd19737786b6cd726ca44db96aa6a23a29e481",
+  "63cdc8d3d00293b3b2ef5020d19b4d7003172be9",
+  "d9e7556a38d03a905bb0bd7827553165e44882ea"
+ ],
+ "mergedAt": "2026-11-17T19:07:59Z",
+ "landedAt": "2026-11-17T19:07:59Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11-p12.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md",
+  "_claude/builds/store.json",
+  "apps/console-web/plugins/build-orchestrator/README.md",
+  "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-cards.json",
+  "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-split.json",
+  "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-stacked.json",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/install.mjs",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+  "apps/console-web/plugins/build-orchestrator/server/watchdog.py",
+  "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+  "apps/console-web/plugins/build-orchestrator/test-watchdog.mjs",
+  "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+  "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/watchdog.tsx",
+  "apps/console-web/plugins/glossary-index/terms.json",
+  "apps/console-web/src/control/inventory.json",
+  "deploy/claude-headless.sh",
+  "deploy/install-console.sh",
+  "framework/cli/agent-slots.mjs",
+  "framework/cli/axf.mjs",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/core/build-pipeline.mjs",
+  "framework/core/build-watchdog.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/schemas/build-watchdog.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-watchdog.mjs",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/fixtures/build-watchdog.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/README.md",
+    "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-cards.json",
+    "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-split.json",
+    "apps/console-web/plugins/build-orchestrator/assets/container/build-watchdog-panel-lay-mwk6tob9-stacked.json",
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/install.mjs",
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+    "apps/console-web/plugins/build-orchestrator/server/watchdog.py",
+    "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+    "apps/console-web/plugins/build-orchestrator/test-watchdog.mjs",
+    "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+    "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/watchdog.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11-p12.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/agent-slots.mjs",
+    "framework/cli/axf.mjs",
+    "framework/cli/build-engine.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-watchdog.mjs",
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/fixtures/build-watchdog.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.mjs",
+    "framework/core/build-watchdog.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh",
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/terms.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-store-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-watchdog.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261117-049560ce",
+   "name": "Build watchdog panel: layout",
+   "status": "waiting",
+   "group": "g-20261117-d4191a56",
+   "url": "/review/r-20261117-049560ce"
+  }
+ ],
+ "cost": {
+  "usd": 28.3546,
+  "estimated": false,
+  "tokens": {
+   "input": 1400,
+   "output": 3225,
+   "cacheRead": 71391132,
+   "cacheWrite": 595523
+  }
+ },
+ "report": "_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md",
+ "open": [
+  "s22: Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by fold",
+  "s23-22: Merge origin/main (now has #780 stale-row watchdog). Resolve add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css by fold",
+  "The cron goes live with the next console deploy (`deploy/install-console.sh` runs `watchdog.mjs install-cron`). Until then the systems check shows Build watchdog red (\"hasn't run yet\"); its Auto fix installs it through axHub `vps.run`.",
+  "The first real pass will pick up the two builds the s6 scan found stuck on the VPS (`x.engine.dev`, `axf-data-postgres-real-tables-own`: no tmux, no claude) and retry them.",
+  "UI Review: Brett picks the Watchdog layout (stacked / cards / split); the pick becomes `DEFAULT_WATCHDOG_LAYOUT`.",
+  "`test-watchdog-e2e.sh` needs tmux and starts real (fake-claude) sessions, so it runs on the VPS, not in CI; the unit test runs in CI.",
+  "Kotlin twin of build-watchdog@1: deferred (framework/spec/PORTING.md, s3)."
+ ]
+}

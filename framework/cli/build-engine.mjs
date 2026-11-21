@@ -13,6 +13,8 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { voiceErrors } from '../core/engines/chat-audio.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../core/engines/toolbar-rules.mjs';
+import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
@@ -29,8 +31,11 @@ import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJs
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
+import { REGISTRY as HOST_SERVICES_REGISTRY, jsonSchemas as hostServicesJsonSchemas, modeJsonSchema as hostServiceModeJsonSchema } from '../core/host-services.mjs';
 import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
+import { jsonSchema as liveDemoJsonSchema } from '../core/live-demo.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { REGISTRY as PHONE_CONNECT_REGISTRY, jsonSchemas as phoneConnectJsonSchemas } from '../core/phone-connect.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -199,6 +204,10 @@ export function validateAsset(raw) {
   errors.push(...voiceErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
+  // page-toolbar@1: ONE validator shared with core (core/engines/toolbar-rules.mjs); both toolbar shapes
+  errors.push(...toolbarErrors(raw.type, raw.data));
+  // toolbar-list@1 → page-toolbar@1 (core/engines/toolbar-migrate.mjs): the migrated asset is valid and draws the same
+  errors.push(...toolbarMigrationErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
@@ -311,6 +320,7 @@ export function menuItemSchema() {
       checked: { type: 'string', pattern: `^(${MENU_SPEC.checkedKinds.join('|')}):.+$`, description: MENU_SPEC.optional_fields.checked },
       order: { type: 'number', description: MENU_SPEC.optional_fields.order },
       before: { type: 'string', minLength: 1 }, after: { type: 'string', minLength: 1 },
+      place: { enum: ['toolbar'], description: MENU_SPEC.optional_fields.place },
     },
   };
 }
@@ -332,6 +342,7 @@ export function validateMenuItems(items, path, depth = 0) {
     for (const k of ['provider', 'badge', 'before', 'after']) if (k in o && (typeof o[k] !== 'string' || !o[k])) errors.push(`${p}.${k} must be a non-empty string`);
     if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${MENU_SPEC.checkedKinds.map((k) => `${k}:<ref>`).join(', ')}`);
     if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
+    if ('place' in o && o.place !== 'toolbar') errors.push(`${p}.place must be "toolbar"`);
     if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
     if ('items' in o) {
       if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);
@@ -879,11 +890,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
+    // page-toolbar@1: scope, groups (items through $defs.toolbarItem) and overflow
+    if (type === 'toolbar') Object.assign(props, toolbarSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
-    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : type === 'toolbar' ? { toolbarItem: toolbarItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',
@@ -930,6 +943,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeFileSync(rlreg, JSON.stringify(RETRY_LADDER_REGISTRY, null, 2) + '\n'); written.push(rlreg); // done-means-merged@1 retry ladder
   // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
   const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
+  // demo-run@1: the guided live demo of the orchestrator (acts demo-act@1, results act-result@1, the state machine's events and summary)
+  const ldreg = join(FRAMEWORK_DIR, 'schemas/live-demo.json'); writeFileSync(ldreg, JSON.stringify(liveDemoJsonSchema(), null, 2) + '\n'); written.push(ldreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
@@ -942,9 +957,20 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
   for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);
+  // host-services@1: the console's server-side parts as systemd services on the VPS host (host-service@1 manifest, host-service-state@1, host-error@1) + the registry snapshot
+  // axf-data: not data (build-time generator: the JSON Schemas)
+  for (const [n, schema] of Object.entries(hostServicesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  // axf-data: not data (build-time generator: the registry snapshot)
+  const hsreg = join(FRAMEWORK_DIR, 'schemas/host-service.json'); writeFileSync(hsreg, JSON.stringify(HOST_SERVICES_REGISTRY, null, 2) + '\n'); written.push(hsreg);
+  // host-service-mode@1: the mode file (container / shadow / host per service) the console and every host runner read before a tick
+  // axf-data: not data (build-time generator: the mode file schema)
+  const hsmode = join(FRAMEWORK_DIR, 'schemas/host-service-mode.json'); writeFileSync(hsmode, JSON.stringify(hostServiceModeJsonSchema(), null, 2) + '\n'); written.push(hsmode);
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  // phone-connect@1: the phone as a paired device (phone-device, phone-pairing, phone-command, phone-result) + the registry snapshot the plugin's Python server reads
+  for (const [n, schema] of Object.entries(phoneConnectJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const pcreg = join(FRAMEWORK_DIR, 'schemas/phone-connect.json'); writeFileSync(pcreg, JSON.stringify(PHONE_CONNECT_REGISTRY, null, 2) + '\n'); written.push(pcreg);
   // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
   // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
+import { HostServiceGate } from '@console/hostServices';
+import { Button, Icon, PageToolbar, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -39,7 +40,40 @@ export function SwarmPage() {
   // a deep link (agent-swarm.chat-audio) picks the tab while the page is already open
   useEffect(() => { const on = (e: Event) => { const t = (e as CustomEvent<string>).detail; if (TABS.some((x) => x.id === t)) setTab(t as Tab); }; window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
   useEffect(() => { const on = () => setTab('crew'); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
-  if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
+  // the Breakroom toolbar (page-toolbar@1, assets/toolbar/agent-swarm.json): the selected agent is the open profile
+  const [agentId, setAgentId] = useState(() => consoleApi.readLocal<string>('swarm-profile', ''));
+  useEffect(() => { const on = (e: Event) => setAgentId(String((e as CustomEvent).detail ?? '')); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
+  const agent = state?.roster.agents.find((a) => a.id === agentId);
+  const agentState = agent ? state?.swarm.agents[agent.id] : undefined;
+  const unowned = (jobs.jobs ?? []).filter((j) => j.unassigned || !j.owners.length);
+  usePublishPageState('agent-swarm', {
+    tab, onJobTypes: tab === 'job-types', jobTypes: jobs.jobs?.length ?? 0, unowned: unowned.length,
+    spend: state ? core.fmtUsd(state.meter.total.usd) : '',
+    agent: agent ? { id: agent.id, name: agent.name, status: agentState?.status ?? '', paused: agentState?.status === 'off-duty' } : null,
+  });
+  useToolbarHandlers('agent-swarm', {
+    'agent-swarm.hire': async () => {
+      const j = unowned[0];
+      if (!j) return null;
+      const r = await api.post<Res<{ agent?: { name: string } }>>('jobs/hire', { jobType: j.id });
+      if (!r.ok) throw new Error(String(r.error ?? 'hire failed'));
+      rt.terminal.log('swarm', `hired ${r.agent?.name ?? ''} for ${j.id}`, 'ok');
+      await Promise.all([jobs.load(), load()]);
+      return { jobType: j.id, agent: r.agent?.name ?? '' };
+    },
+    'agent-swarm.run-job': () => { setTab('job-types'); return { tab: 'job-types', jobTypes: (jobs.jobs ?? []).map((j) => j.id) }; },
+    'agent-swarm.job-types': () => { setTab('job-types'); return { jobTypes: (jobs.jobs ?? []).map((j) => ({ id: j.id, owners: j.owners.map((o) => o.id) })) }; },
+    'agent-swarm.pause': async () => {
+      if (!agent) return null;
+      const status = agentState?.status === 'off-duty' ? 'on-duty' : 'off-duty';
+      await doAct({ action: 'status', agent: agent.id, status, note: agentState?.note ?? '' });
+      return { agent: agent.id, status };
+    },
+    'agent-swarm.card': () => { setTab('cards'); return agent ? { agent: agent.id } : null; },
+    'agent-swarm.budget': () => { setTab('cost'); return state ? { total: state.meter.total } : null; },
+  });
+  // the host-down note shows even when the page's own data cannot load, so the reason is on screen either way
+  if (!state) return <div className="fx-stack fx-stack--lg"><HostServiceGate service="agent-swarm" what="Agent jobs (Run, Hire, scheduled and CI-fix jobs) are launched by the host job runner: nothing new starts until it is back." /><div className="fx-empty">{error || 'Loading the agent swarm…'}</div></div>;
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
@@ -52,6 +86,8 @@ export function SwarmPage() {
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}
+      <HostServiceGate service="agent-swarm" what="Agent jobs (Run, Hire, scheduled and CI-fix jobs) are launched by the host job runner: nothing new starts until it is back." />
+      <PageToolbar view="agent-swarm" />
       <TabGroup id="agent-swarm.tabs" label="Agent swarm" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} allSkills={allSkills} onFeed={() => setTab('cost')} />}
       {tab === 'job-types' && <JobTypesTab jobs={jobs.jobs} error={jobs.error} reload={async () => { await Promise.all([jobs.load(), load()]); }} onAgent={openAgent} />}
@@ -82,7 +118,9 @@ function useGridPrefs(key: string, initial: GridSort) {
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** A grid column width in text units: the columns hold text, so they follow the type size, not the spacing scale (a compact
+ *  spacing preset shrank space-based tracks until the number columns overprinted each other). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 type AgentLine = { a: Agent; as: AgentState; sp: Spend | undefined; pay: Pay | undefined };
 
 function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {

@@ -1,24 +1,25 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "gate-lists-grid",
- "name": "gate-lists: Grid, two lines a row",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "DataGrid with the title and its detail under it on every row (rules: description; waiting: build and the gate's reason; history: why). Sortable columns, row detail opens under the row.",
- "tags": [
-  "ui-choice",
-  "choice-set:gate-lists",
-  "choice-option:grid"
- ],
- "data": {
-  "view": "grid",
-  "settingKey": "gate.view",
-  "appliesTo": [
-   "gate.rules",
-   "gate.waiting",
-   "gate.runs",
-   "gate.history"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "gate-lists-grid",
+  "name": "gate-lists: Grid, two lines a row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "DataGrid with the title and its detail under it on every row (rules: description; waiting: build and the gate's reason; history: why). Sortable columns, row detail opens under the row.",
+  "tags": [
+    "ui-choice",
+    "choice-set:gate-lists",
+    "choice-option:grid"
+  ],
+  "data": {
+    "view": "grid",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.rules",
+      "gate.waiting",
+      "gate.runs",
+      "gate.history"
+    ],
+    "builtFor": "plugin:gate"
+  }
 }

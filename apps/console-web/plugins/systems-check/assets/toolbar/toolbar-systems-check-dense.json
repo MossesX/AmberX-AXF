@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-systems-check-dense",
+  "name": "Systems check: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-systems-check",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:systems-check",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "checks",
+        "label": "Checks",
+        "items": [
+          {
+            "id": "run",
+            "icon": "refresh",
+            "label": "Run checks",
+            "action": "handler:systems-check.run",
+            "enabledWhen": "!busy",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "fix-all",
+            "icon": "zap",
+            "label": "Auto fix all",
+            "action": "handler:systems-check.fix-all",
+            "badge": "state:issues",
+            "enabledWhen": [
+              "issues>0",
+              "!busy"
+            ],
+            "confirm": "Run every Auto fix now?",
+            "priority": 280,
+            "overflow": "never"
+          },
+          {
+            "id": "mute",
+            "icon": "bell",
+            "label": "Mute",
+            "action": "handler:systems-check.mute",
+            "checked": "state:muted",
+            "priority": 200
+          },
+          {
+            "id": "source",
+            "icon": "code",
+            "label": "Open source",
+            "action": "handler:systems-check.source",
+            "enabledWhen": "selection.owner",
+            "priority": 160
+          }
+        ]
+      }
+    ]
+  }
+}

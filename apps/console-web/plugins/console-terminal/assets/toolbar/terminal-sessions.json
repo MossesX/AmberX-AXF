@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "terminal-sessions",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "description": "The Terminal and sessions toolbar: open a new tab, split a headless session with its context chain, jump into or mirror the front tab's tmux session, copy, clear, and send the selected text to a Claude Code tab.",
+  "author": "AmberX AXF",
+  "tags": ["page", "terminal", "sessions"],
+  "data": {
+    "scope": "view:terminal",
+    "slot": "sessions",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "groups": [
+      {
+        "id": "tabs",
+        "label": "Tabs",
+        "items": [
+          { "id": "new", "icon": "plus", "label": "New tab", "action": "handler:terminal.new-tab", "priority": 300, "overflow": "never" },
+          { "id": "split", "icon": "layout", "label": "Split", "action": "handler:terminal.split", "checked": "state:front.split", "badge": "state:front.splitLabel", "enabledWhen": "front.headless", "priority": 220 }
+        ]
+      },
+      {
+        "id": "session",
+        "label": "Session",
+        "items": [
+          { "id": "jump", "icon": "arrow-right", "label": "Jump into session", "action": "action:terminal.jump", "args": { "name": "$front.tmux", "where": "$front.where" }, "enabledWhen": "front.tmux", "priority": 260 },
+          { "id": "mirror", "icon": "eye", "label": "Mirror session", "action": "action:terminal.mirror", "args": { "name": "$front.tmux", "where": "$front.where" }, "enabledWhen": "front.tmux", "priority": 200 }
+        ]
+      },
+      {
+        "id": "text",
+        "label": "Text",
+        "items": [
+          { "id": "copy", "icon": "copy", "label": "Copy", "action": "handler:terminal.copy", "enabledWhen": "front.live", "priority": 180 },
+          { "id": "clear", "icon": "trash", "label": "Clear", "action": "handler:terminal.clear", "enabledWhen": "front.live", "priority": 150 },
+          { "id": "claude", "icon": "sparkles", "label": "Send to Claude", "action": "handler:terminal.send-to-claude", "enabledWhen": ["front.live", "claudeTabs>0"], "priority": 240 }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "retry-ladder@1",
+  "decision": "retry-decision@1",
+  "policy": "retry-policy@1",
+  "kinds": [
+    "crash",
+    "ci-red",
+    "clash",
+    "push-fail",
+    "stalled",
+    "fell-to-pending"
+  ],
+  "strategies": [
+    "retry",
+    "merge-main",
+    "fix",
+    "fresh-session",
+    "switch-model",
+    "switch-account",
+    "escalate"
+  ],
+  "fixStrategies": [
+    "targeted",
+    "regenerate",
+    "redo-step"
+  ],
+  "ladders": {
+    "crash": [
+      "retry",
+      "fresh-session",
+      "switch-account",
+      "switch-model",
+      "escalate"
+    ],
+    "ci-red": [
+      "fix:targeted",
+      "fix:regenerate",
+      "fresh-session",
+      "switch-model",
+      "switch-account",
+      "escalate"
+    ],
+    "clash": [
+      "merge-main",
+      "fix:targeted",
+      "fresh-session",
+      "switch-model",
+      "escalate"
+    ],
+    "push-fail": [
+      "retry",
+      "fresh-session",
+      "switch-account",
+      "escalate"
+    ],
+    "stalled": [
+      "fresh-session",
+      "switch-account",
+      "switch-model",
+      "escalate"
+    ],
+    "fell-to-pending": [
+      "retry",
+      "fresh-session",
+      "switch-model",
+      "switch-account",
+      "escalate"
+    ]
+  },
+  "defaults": {
+    "maxAttempts": 5,
+    "maxTotal": 10,
+    "retrySame": 1,
+    "backoff": {
+      "baseMin": 2,
+      "factor": 2,
+      "maxMin": 30
+    },
+    "attemptTimeoutMin": 45,
+    "stalledAfterMin": 20,
+    "ladders": {
+      "crash": [
+        "retry",
+        "fresh-session",
+        "switch-account",
+        "switch-model",
+        "escalate"
+      ],
+      "ci-red": [
+        "fix:targeted",
+        "fix:regenerate",
+        "fresh-session",
+        "switch-model",
+        "switch-account",
+        "escalate"
+      ],
+      "clash": [
+        "merge-main",
+        "fix:targeted",
+        "fresh-session",
+        "switch-model",
+        "escalate"
+      ],
+      "push-fail": [
+        "retry",
+        "fresh-session",
+        "switch-account",
+        "escalate"
+      ],
+      "stalled": [
+        "fresh-session",
+        "switch-account",
+        "switch-model",
+        "escalate"
+      ],
+      "fell-to-pending": [
+        "retry",
+        "fresh-session",
+        "switch-model",
+        "switch-account",
+        "escalate"
+      ]
+    },
+    "models": [
+      "Fable",
+      "Opus"
+    ]
+  },
+  "maxAttemptsRange": [
+    1,
+    10
+  ],
+  "maxTotalRange": [
+    1,
+    30
+  ],
+  "modelRank": {
+    "Opus": 0,
+    "Fable": 1
+  }
+}

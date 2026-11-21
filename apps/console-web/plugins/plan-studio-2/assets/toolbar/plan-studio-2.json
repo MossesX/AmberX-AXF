@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "plan-studio-2",
+  "name": "Plan Studio 2.0",
+  "version": "1.0.0",
+  "description": "The Plan Studio 2.0 toolbar: start a plan, undo the last delete, open or fold every row, export the whole tree as Markdown and reload it. The layout switcher rides on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "plan-studio-2", "plans"],
+  "data": {
+    "scope": "view:plan-studio-2",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "plans",
+        "label": "Plans",
+        "items": [
+          { "id": "new-plan", "icon": "plus", "label": "New plan", "action": "handler:plan-studio-2.new-plan", "priority": 300, "overflow": "never" },
+          { "id": "undo", "icon": "undo", "label": "Undo delete", "action": "handler:plan-studio-2.undo", "badge": "state:trash", "enabledWhen": "undoable", "priority": 260 }
+        ]
+      },
+      {
+        "id": "tree",
+        "label": "Tree",
+        "items": [
+          { "id": "expand", "icon": "chevron-down", "label": "Expand all", "action": "handler:plan-studio-2.expand", "enabledWhen": "loaded", "priority": 220 },
+          { "id": "collapse", "icon": "chevron-up", "label": "Collapse all", "action": "handler:plan-studio-2.collapse", "enabledWhen": "loaded", "priority": 210 },
+          { "id": "export", "icon": "download", "label": "Export Markdown", "action": "handler:plan-studio-2.export", "enabledWhen": "items", "priority": 180 },
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:plan-studio-2.reload", "priority": 150 }
+        ]
+      }
+    ]
+  }
+}

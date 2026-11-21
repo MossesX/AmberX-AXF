@@ -44,7 +44,7 @@ export const plugin: AxfWebLibrary = {
       ),
     },
   },
-  nav: { label: 'Plugins', items: [{ id: 'context-menu-designer', label: 'Context menu designer', icon: 'menu', view: 'context-menu-designer' }] },
+  nav: { label: 'Design', items: [{ id: 'context-menu-designer', label: 'Context menu designer', icon: 'menu', view: 'context-menu-designer' }] },
   contextMenu: [
     { id: 'context-menu-designer.default', target: 'default', order: 93, items: [{ id: 'context-menu-designer', label: 'Design this menu…', icon: 'menu', action: 'context-menu-designer.open' }] },
   ],

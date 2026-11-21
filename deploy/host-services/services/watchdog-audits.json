@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "watchdog-audits",
+  "title": "Store audits",
+  "description": "builds-store verify, the model gate audit and build-origin, at :17 and :47, one at a time. Cron, written by deploy/watchdog/cron.mjs.",
+  "kind": "tick",
+  "cron": "axf-watchdog-audits",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "runner": "deploy/watchdog/audits.mjs",
+  "health": {
+    "intervalSec": 1800,
+    "staleSec": 7200
+  },
+  "log": "/var/log/axf-watchdog-audits.log"
+}

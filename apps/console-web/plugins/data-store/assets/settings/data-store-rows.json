@@ -13,6 +13,8 @@
   "data": {
     "layout": "list",
     "header": "compact",
+    "search": false,
+    "descriptions": true,
     "levels": true,
     "defaultLevel": "basic",
     "view": "rows",
@@ -22,6 +24,7 @@
     ],
     "open": [
       "status"
-    ]
+    ],
+    "builtFor": "plugin:data-store"
   }
 }

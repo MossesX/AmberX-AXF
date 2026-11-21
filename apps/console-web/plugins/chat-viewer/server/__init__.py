@@ -178,7 +178,7 @@ def _timer() -> None:
     time.sleep(20)
     while True:
         mins = settings().get("intervalMin") or 0
-        if mins:
+        if mins and cx.plugin_enabled(FOLDER):  # a plugin that is turned off syncs nothing
             try:
                 run_sync()
             except Exception as e:  # noqa: BLE001 — a failed run is reported in the next status, never kills the timer

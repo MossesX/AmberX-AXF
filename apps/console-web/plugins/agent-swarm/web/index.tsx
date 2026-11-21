@@ -39,7 +39,7 @@ export const plugin: AxfWebLibrary = {
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },
   appMenu,
-  nav: { label: 'Builds', items: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', view: 'agent-swarm' }] },
+  nav: { label: 'AI & agents', items: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', view: 'agent-swarm' }] },
   // the orchestrator's (and every Builds page's) toolbar shows what the swarm has spent
   slots: { 'builds.toolbar': [{ id: 'agent-swarm.cost', order: 30, render: () => <SwarmCostChip /> }] },
   // the chat window's right-click menu: Color by vibe, with its check mark

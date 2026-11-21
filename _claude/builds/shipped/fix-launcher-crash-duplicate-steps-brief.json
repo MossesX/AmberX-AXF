@@ -1,0 +1,543 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-launcher-crash-duplicate-steps-brief",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-20T00:12:27Z",
+ "build": {
+  "id": "fix-launcher-crash-duplicate-steps-brief",
+  "title": "Fix launcher crash: duplicate steps + brief too big",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "That failed. Shouldn't the VPS be doing this on its own? Nothing should be sitting there.",
+  "verbatim": true,
+  "at": "2026-11-17T23:19:42.353Z",
+  "source": "",
+  "by": "fix-launcher-crash-duplicate-steps-brief",
+  "addenda": []
+ },
+ "brief": "# Build: fix-launcher-crash-duplicate-steps-brief\n\n## Brett said (verbatim)\nAt: 2026-11-17T23:19:42.353Z\n> That failed. Shouldn't the VPS be doing this on its own? Nothing should be sitting there.\n\n## What to build\nContinue build \"Fix launcher crash: duplicate steps + brief too big\" (fix-launcher-crash-duplicate-steps-brief) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 23:19):\n\"That failed. Shouldn't the VPS be doing this on its own? Nothing should be sitting there.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (128 left, ~19.1 h):\n[ ] s1 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s2 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s3 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s4 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s5 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s6 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s7 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s8 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s9 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s10 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s11 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s12 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s13 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s14 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s15 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s16 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s17 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s18 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s19 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s20 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s21 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s22 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s23 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s24 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s25 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s26 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s27 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s28 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s29 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s30 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s31 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s32 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s33 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s34 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s35 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s36 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s37 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s38 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s39 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s40 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s41 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s42 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s43 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s44 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s45 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s46 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s47 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s48 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s49 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s50 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s51 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s52 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s53 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s54 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s55 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s56 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s57 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s58 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s59 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s60 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s61 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s62 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s63 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s64 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s65-64 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s66-65 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s67-66 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s68-67 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s69-68 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s70-69 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s71-70 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s72-71 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s73-72 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s74-73 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s75-74 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s76-75 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s77-76 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s78-77 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s79-78 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s80-79 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s81-80 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s82-81 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s83-82 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s84-83 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s85-84 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s86-85 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s87-86 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s88-87 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s89-88 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s90-89 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s91-90 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s92-91 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s93-92 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s94-93 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s95-94 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s96-95 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s33-32 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s34-33 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s35-34 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s36-35 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s37-36 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s38-37 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s39-38 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s40-39 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s41-40 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s42-41 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s43-42 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s44-43 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s45-44 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s46-45 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s47-46 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s48-47 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\n[ ] s17-16 (~8 min) Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same\n[ ] s18-17 (~10 min) Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids\n[ ] s19-18 (~10 min) Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again\n[ ] s20-19 (~8 min) Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass\n[ ] s21-20 (~10 min) Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts\n[ ] s22-21 (~8 min) Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs\n[ ] s23-22 (~8 min) deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit\n[ ] s24-23 (~10 min) Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed\n[ ] s25-24 (~10 min) Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'\n[ ] s26-25 (~10 min) Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build\n[ ] s27-26 (~8 min) Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)\n[ ] s28-27 (~10 min) Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it\n[ ] s29-28 (~8 min) Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture\n[ ] s30-29 (~5 min) Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step\n[ ] s31-30 (~10 min) API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)\n[ ] s32-31 (~10 min) Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice\nRead first: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, framework/cli/builds-store.mjs, apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs, framework/core/build-pipeline.mjs, framework/spec/check-builds-store.mjs, _claude/builds/store.json, _claude/builds/journal/, framework/cli/builds-live.mjs, deploy/claude-headless.sh, deploy/test/claude-headless-brief.test.sh, deploy/test/fixtures/, apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs, apps/console-web/plugins/push-banner/land.mjs, framework/core/landing-line.mjs, framework/spec/check-landing-line.mjs, framework/spec/fixtures/landing-line.json, apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs, apps/console-web/plugins/build-orchestrator/server/, apps/console-web/plugins/build-orchestrator/plugin.json, framework/cli/axf.mjs, _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-launcher-crash-duplicate-steps-brief <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-launcher-crash-duplicate-steps-brief <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-launcher-crash-duplicate-steps-brief \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console ",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix-launcher-crash-duplicate-steps-brief--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-17T23:30:36.694Z",
+   "endedAt": "2026-11-18T00:33:45.424Z",
+   "exit": 0,
+   "costUsd": 22.6983
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:30:36.694Z",
+   "doneAt": "2026-11-17T23:36:49.344Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:36:49.344Z",
+   "doneAt": "2026-11-17T23:36:53.870Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:36:53.870Z",
+   "doneAt": "2026-11-17T23:36:58.572Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:36:58.572Z",
+   "doneAt": "2026-11-17T23:38:10.034Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:38:10.034Z",
+   "doneAt": "2026-11-17T23:39:37.567Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:39:37.567Z",
+   "doneAt": "2026-11-17T23:47:40.415Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:47:40.415Z",
+   "doneAt": "2026-11-17T23:48:33.158Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:48:33.158Z",
+   "doneAt": "2026-11-17T23:51:01.676Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:51:01.676Z",
+   "doneAt": "2026-11-17T23:54:21.265Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:54:21.265Z",
+   "doneAt": "2026-11-17T23:57:32.336Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:57:32.336Z",
+   "doneAt": "2026-11-17T23:58:40.378Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:58:40.378Z",
+   "doneAt": "2026-11-18T00:02:07.669Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-18T00:02:07.669Z",
+   "doneAt": "2026-11-18T00:03:18.575Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "2026-11-18T00:03:18.575Z",
+   "doneAt": "2026-11-18T00:05:14.121Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:05:14.121Z",
+   "doneAt": "2026-11-18T00:07:56.643Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s32-31",
+   "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:07:56.643Z",
+   "doneAt": "2026-11-18T00:12:42.640Z",
+   "actualMin": 5,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 827,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/827"
+ },
+ "landedCommit": "cf08a0b8c20415b3ef20b3f118898b88df3ccfbb",
+ "commits": [
+  "483ef582b9578f3b5f174f93529b1d42c507392e",
+  "c66aea5461933d7766a03ecd592220ca5fc21316",
+  "01248f5da26149c0b1ae14215af248d632e7df5d",
+  "0b16858ee717152cdaf098b879e2f95aa858b924",
+  "7cdcfc50ecd002384615b161b78549871784c01c",
+  "47d30d7f3b582331060cd59823f01aef73734a6d",
+  "10d8db8f6c1f285c63c165c9f5f9ae18a7b9647e",
+  "3284d5ecabb209b62842e1d390329133768186c5",
+  "c202c62672efe8623cc8884733fa59164279795d",
+  "58962fabe10a5c5153bb83f405576e5a681c6c07",
+  "25892364ad9ce1e8098b835f0017757e5857eea8",
+  "c73dad8991dcbb5f518d6f18905d53b000a7cce4",
+  "51552f4492600a8cc606e31c5bef5cf8b7334289",
+  "f17f092963f0dbf424439b61e5215f9a575c1b8e",
+  "c1db9135919535cb3991c92160fa38ab7602025d",
+  "0e9e29c5bffb1cf7edcabd36f618f8f04161a258",
+  "17357ae9e7a66a1bf9d39bb32b11936ad9fcb19b",
+  "c3c4df5cb031db3c0e841dc20440f0a888b6abf6",
+  "3dd83b03a10cea7ef11c7227d5d29fa504c7ff58",
+  "68addb2bc8b2afb99c122c11a1af55cb317ce097",
+  "cec29e2f73cfa83661fad3b580fcc8ea50b4d0e1",
+  "1e500cfd7b66faf73b6c1ea7f9f3b8d10c34f196",
+  "98b1655add8567665cf64ff21e623f91afa25889",
+  "80d2773a83ccf21ecdcb1e9f04979408835febd9",
+  "a39c5b9d3bd52cb42735c28cd9b0f7a2024bc2cf",
+  "7250b64c7d26eccbb4f270b0b12a092368104427"
+ ],
+ "mergedAt": "2026-11-18T09:06:06Z",
+ "landedAt": "2026-11-18T09:06:05Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md",
+  "_claude/memory/docs/auto-lander.md",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+  "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+  "apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/gate/plugin.json",
+  "apps/console-web/plugins/gate/server/routes.py",
+  "apps/console-web/plugins/maintenance/engine/profiles.mjs",
+  "apps/console-web/plugins/maintenance/engine/profiles.test.mjs",
+  "apps/console-web/plugins/maintenance/test.py",
+  "apps/console-web/plugins/notify-control/plugin.json",
+  "apps/console-web/plugins/orchestrator-demo/deps.mjs",
+  "apps/console-web/plugins/orchestrator-demo/help.json",
+  "apps/console-web/plugins/orchestrator-demo/plugin.json",
+  "apps/console-web/plugins/orchestrator-demo/test.mjs",
+  "apps/console-web/plugins/orchestrator-demo/web/DemoView.tsx",
+  "apps/console-web/plugins/orchestrator-demo/web/index.tsx",
+  "apps/console-web/plugins/orchestrator-demo/web/menu.ts",
+  "apps/console-web/plugins/phone-connect/plugin.json",
+  "apps/console-web/plugins/phone-connect/server/service.py",
+  "apps/console-web/plugins/phone-connect/shots.mjs",
+  "apps/console-web/plugins/phone-connect/web/index.tsx",
+  "apps/console-web/plugins/phone-connect/web/menu.ts",
+  "apps/console-web/plugins/phone-connect/web/settings.tsx",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/scripts/auto-lander-shots.mjs",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "deploy/auto-lander/auto-lander.mjs",
+  "deploy/auto-lander/ci-status.mjs",
+  "deploy/auto-lander/escalate.mjs",
+  "deploy/auto-lander/fix-session.mjs",
+  "deploy/auto-lander/merge-main.mjs",
+  "deploy/auto-lander/test/loop.test.mjs",
+  "deploy/claude-headless.sh",
+  "deploy/test/claude-headless-brief.test.sh",
+  "framework/assets/help/framework-drafts.json",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/build-pipeline.mjs",
+  "framework/plan/builds-merge-core.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/spec/AUTO-LANDER.md",
+  "framework/spec/DONE-MEANS-MERGED.md",
+  "framework/spec/LIVE-DEMO.md",
+  "framework/spec/check-builds-live.mjs",
+  "framework/spec/check-landing-line.mjs",
+  "framework/spec/fixtures/page-toolbar-voice.json",
+  "framework/spec/toolbar-actions-cases.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+    "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+    "apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/auto-lander/auto-lander.mjs",
+    "deploy/auto-lander/ci-status.mjs",
+    "deploy/auto-lander/escalate.mjs",
+    "deploy/auto-lander/fix-session.mjs",
+    "deploy/auto-lander/merge-main.mjs",
+    "deploy/auto-lander/test/loop.test.mjs",
+    "deploy/claude-headless.sh",
+    "deploy/test/claude-headless-brief.test.sh"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "orchestrator-demo",
+   "files": [
+    "apps/console-web/plugins/orchestrator-demo/deps.mjs",
+    "apps/console-web/plugins/orchestrator-demo/help.json",
+    "apps/console-web/plugins/orchestrator-demo/plugin.json",
+    "apps/console-web/plugins/orchestrator-demo/test.mjs",
+    "apps/console-web/plugins/orchestrator-demo/web/DemoView.tsx",
+    "apps/console-web/plugins/orchestrator-demo/web/index.tsx",
+    "apps/console-web/plugins/orchestrator-demo/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/AUTO-LANDER.md",
+    "framework/spec/DONE-MEANS-MERGED.md",
+    "framework/spec/LIVE-DEMO.md",
+    "framework/spec/check-builds-live.mjs",
+    "framework/spec/check-landing-line.mjs",
+    "framework/spec/fixtures/page-toolbar-voice.json",
+    "framework/spec/toolbar-actions-cases.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "phone-connect",
+   "files": [
+    "apps/console-web/plugins/phone-connect/plugin.json",
+    "apps/console-web/plugins/phone-connect/server/service.py",
+    "apps/console-web/plugins/phone-connect/shots.mjs",
+    "apps/console-web/plugins/phone-connect/web/index.tsx",
+    "apps/console-web/plugins/phone-connect/web/menu.ts",
+    "apps/console-web/plugins/phone-connect/web/settings.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "maintenance",
+   "files": [
+    "apps/console-web/plugins/maintenance/engine/profiles.mjs",
+    "apps/console-web/plugins/maintenance/engine/profiles.test.mjs",
+    "apps/console-web/plugins/maintenance/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "gate",
+   "files": [
+    "apps/console-web/plugins/gate/plugin.json",
+    "apps/console-web/plugins/gate/server/routes.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/scripts/auto-lander-shots.mjs",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/builds-store.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-merge-core.mjs",
+    "framework/plan/builds-store-core.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/auto-lander.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/registry.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notify-control",
+   "files": [
+    "apps/console-web/plugins/notify-control/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 22.6983,
+  "estimated": false,
+  "tokens": {
+   "input": 370,
+   "output": 2001,
+   "cacheRead": 33866922,
+   "cacheWrite": 296409
+  }
+ },
+ "report": "_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md",
+ "open": [
+  "`framework/core/build-pipeline.mjs` gained two optional records (`launchRetry`, `bounce`) on Opus; a Fable review of the build-pipeline@1 contract may want them in `framework/spec/BUILDS.md`.",
+  "Until this lands, the dispatcher in `/opt/axf` runs the old normalizer, which drops `pipeline.bounce` on its next write of Phone Connect (the s28 step and the queued status stay)."
+ ]
+}

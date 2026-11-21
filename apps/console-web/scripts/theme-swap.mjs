@@ -101,7 +101,8 @@ try {
       // comes out of a color-mix() with a transparent token (e.g. the default --fx-tab-bar-bg).
       const clear = (c) => /^rgba\(.*,\s*0\)$|\/\s*0\)$|^transparent$/.test(c);
       const v = { color: cs.color };
-      if (!clear(cs.backgroundColor)) v.background = cs.backgroundColor;
+      // the dim behind a dialog is black at the style theme's scrim opacity in every colour theme (--fx-scrim, axf.css)
+      if (!clear(cs.backgroundColor) && !e.classList.contains('fx-backdrop')) v.background = cs.backgroundColor;
       if (parseFloat(cs.borderTopWidth) > 0 && !clear(cs.borderTopColor)) v.border = cs.borderTopColor;
       out[name] = v;
     });

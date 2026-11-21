@@ -1,0 +1,17 @@
+{
+  "$axf": "host-service@1",
+  "id": "console-nightly",
+  "title": "Console nightly",
+  "description": "The nightly console run (console-nightly.mjs: checked every minute, runs once a night). Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-console-nightly",
+  "adopted": true,
+  "plugin": "console",
+  "runner": "deploy/console-nightly.mjs",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 600,
+    "freshness": false
+  },
+  "log": "/var/log/axf-console-nightly.log"
+}

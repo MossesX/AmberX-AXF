@@ -10,7 +10,7 @@ The feed is built from what actually shipped, never from a model:
                   (merge commits on origin/main, files from `git diff <first parent> <merge>`)
   deployed        a successful run of a deploy workflow on main after the merge (GitHub), else the `site` branch
                   (deploy.yml force-pushes it) having a commit after the merge; unknown stays null
-  builds          the builds store (_claude/builds/store.json): a build matches by its pr / branch fields, or a step's
+  builds          the builds store (builds_store.read(): the axf-data tables): a build matches by its pr / branch fields, or a step's
                   (orch-live-sync adds per-step branch / pr / merged fields: read when present). Store builds marked
                   merged with no PR found become items of their own.
   wording         the build report (_claude/builds/reports/<build or branch>.md): its title and first "what changed"
@@ -293,7 +293,9 @@ class Sources:
 
     # ---- repo files
     def store(self) -> dict[str, Any]:
-        s = storage.read_json(self.root() / "_claude" / "builds" / "store.json", {})
+        # the builds store itself (the axf-data tables once cut over; Pipeline 2.0: no store.json projection)
+        import builds_store
+        s = builds_store.read(self.root())
         return s if isinstance(s, dict) else {}
 
     def report(self, name: str) -> str:
@@ -332,14 +334,14 @@ class Sources:
         return {k: v[1] for k, v in out.items()}
 
     def fingerprint(self) -> str:
-        """Changes when the store or a report changes (cheap: mtimes only)."""
+        """Changes when the builds store (its rev: the tables once cut over) or a report changes."""
+        import builds_store
         r = self.root() / "_claude" / "builds"
-        parts = []
-        for p in [r / "store.json", r / "reports"]:
-            try:
-                parts.append(f"{p}:{p.stat().st_mtime_ns}")
-            except OSError:
-                parts.append(f"{p}:-")
+        parts = [f"builds:{builds_store.marker(self.root())}"]
+        try:
+            parts.append(f"{r / 'reports'}:{(r / 'reports').stat().st_mtime_ns}")
+        except OSError:
+            parts.append(f"{r / 'reports'}:-")
         return "|".join(parts)
 
 

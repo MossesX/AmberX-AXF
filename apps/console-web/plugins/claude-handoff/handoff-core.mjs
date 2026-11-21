@@ -632,7 +632,7 @@ export const SESSION_RULES = [
   'One agent: no sub-agents, parallel workers or deep-research fan-outs unless Brett asks for one by name.',
   'Ask Brett with tap-to-pick choices; he works from his phone, so lead with the result and keep it short.',
   'No secrets anywhere (repo, _claude, _data, chat): ask him for values, never guess them.',
-  'Android work is on hold except Voice Vault and AmberX app code.',
+  'Android work is on hold except Voice Vault app code.',
 ];
 
 /** Gaps a new account should know about; editable in the console (Tools → Claude handoff → Handoff Session notes). */

@@ -22,6 +22,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import host_mode
 import plugin_services
 
 router = APIRouter()
@@ -165,6 +166,9 @@ async def jobs_run(request: Request) -> dict[str, Any]:
         if not isinstance(k, str) or not INPUT_KEY.match(k) or not isinstance(v, str) or len(v) > 2000:
             raise HTTPException(400, f"bad input {k!r}")
         args += ["--input", f"{k}={v}"]
+    if not host_mode.container_runs("agent-swarm"):
+        # host-service agent-swarm (HOST-SERVICES.md): the host launches jobs; the console sends them over the socket
+        return _host("run-job", {"jobType": data["jobType"], "inputs": json.dumps(inputs), "dry": data.get("dry") is True})
     if data.get("dry") is True:
         args.append("--dry-run")
     return _run(*args, cli=JOBS)
@@ -174,7 +178,18 @@ async def jobs_run(request: Request) -> dict[str, Any]:
 async def jobs_hire(request: Request) -> dict[str, Any]:
     """One-tap hire for a job type nobody owns."""
     data = await _body(request)
+    if not host_mode.container_runs("agent-swarm"):
+        return _host("hire", {"jobType": data["jobType"]})
     return _run("hire", data["jobType"], cli=JOBS)
+
+
+def _host(action: str, args: dict[str, Any]) -> dict[str, Any]:
+    """Send a job to the agent-swarm host service; a dead host answers 503 host_service_down (HostServiceGate shows it)."""
+    import host_services  # noqa: PLC0415 — the console's host client, used only in host mode
+
+    r = host_services.client().action("agent-swarm", action, args, by="agent-swarm", reason={"title": f"Agent job: {action} {args.get('jobType', '')}", "description": "Breakroom → Jobs, sent to the host job runner."})
+    out = r.get("result")
+    return out if isinstance(out, dict) else {"ok": True, "result": out}
 
 
 class RosterService:

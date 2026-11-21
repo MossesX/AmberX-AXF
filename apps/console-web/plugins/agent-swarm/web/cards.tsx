@@ -49,7 +49,7 @@ const homeName = (a: Agent, jobs: JobRef[]) => jobs.find((j) => j.home)?.name ??
 
 export function CrewTab({ state, stats, act, jobsBy = {}, allSkills = [], onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; allSkills?: string[]; onFeed: (jobId: string) => void }) {
   const [open, setOpen] = useState<string>(() => consoleApi.readLocal('swarm-profile', ''));
-  const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); };
+  const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })); };
   // the agent-swarm.profile action (an avatar's right-click "Open employee card", anywhere in the console)
   useEffect(() => { const on = (e: Event) => setOpen(String((e as CustomEvent).detail ?? '')); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   const a = state.roster.agents.find((x) => x.id === open);

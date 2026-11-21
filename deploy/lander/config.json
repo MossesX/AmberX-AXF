@@ -1,0 +1,24 @@
+{
+  "$axf": "lander-config@1",
+  "sizeCapLines": 4000,
+  "flakyReruns": 1,
+  "backoffBaseMin": 2,
+  "backoffFactor": 2,
+  "backoffMaxMin": 30,
+  "ciNoneKickMin": 10,
+  "ciTimeoutMin": 120,
+  "fixTimeoutMin": 60,
+  "notifyAfterAttempts": 3,
+  "maxAttempts": 5,
+  "maxFixes": 2,
+  "fixStartTries": 5,
+  "cleanup": true,
+  "requiredChecks": [
+    "CI scope (what changed)",
+    "Build engine sweep (Node)",
+    "Web Dev Console (React/TS) + Python API",
+    "Gradle — framework modules, kernel tests, console APK"
+  ],
+  "workflow": "android.yml",
+  "mergeMethod": "merge"
+}

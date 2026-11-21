@@ -115,6 +115,32 @@ shared-data folder (`framework/plan/profiles/<id>/_claude/builds/orchestrator.js
 main: `check-profiles.mjs` fails CI for any unregistered folder, and builds-live takes such a folder off main on the next
 publish (Nov 13 2026, main-ci-red-test-sandbox-profile-export).
 
+## Demo builds (demo-build@1, the test-build sandbox, Nov 17 2026)
+
+The guided live demo (`framework/spec/LIVE-DEMO.md`) plays on throwaway builds. A demo build carries the tag `demo: true`
+and an id that starts with `demo-`; the two always agree (`framework/core/demo-build.mjs`):
+
+- **The tag comes from the id.** `normBuild` sets `demo: true` on every `demo-` id and leaves the field absent on every
+  other build; a record can never be made a demo build by writing the tag, nor a demo build made real by renaming (ids
+  never change). `validateStore` refuses a tag that disagrees with the id.
+- **Every surface marks them demo-only** from the id alone: the orchestrator and Pending projections carry `demo`
+  (read-only: an absorb never copies it), the queue projection's record carries `demo`, the dispatcher's plan marks
+  demo launches and waits and lists `demo` ids, the auto-lander's build record carries `demo`, every alert about a demo
+  build carries `meta.demo` and starts its title with `[demo]`, builds-live commit lines carry `[demo]`, and the console
+  rows (`pipeline.mjs row`, the board rows) carry `demo`.
+- **The guard.** A demo action is a store write made with `demo: true` in its meta (`withStore(fn, { demo: true })`,
+  `builds-store.mjs set-status … --demo`, every act of a demo run). It may touch demo builds only: if any added,
+  changed or removed build is not a demo build, the whole write is refused (`DemoGuardError`, code `not-demo-build`,
+  nothing saved). `builds-store.mjs demo <build>` answers the guard for one build (exit 1 when refused), and `verify`
+  counts the demo builds.
+- **The other way is open.** A demo build is an ordinary build to everything else (queue, dispatch, crash, watchdog,
+  lander, escalation), so the demo shows the real pipeline.
+
+**Migration:** none. Older records load unchanged: a `demo-` id gets its tag on read, anything else never does, and no
+build in the store carried the `demo-` prefix before this rule (new ids are made by the orchestrator from titles; a
+title starting with "demo" would have to be given on purpose). The store file is rewritten with the tag on the next
+write, as any other normalization.
+
 ## Versioning
 
 Every write: store `rev` + 1, changed records `rev` + 1, one line in the journal (`<YYYY-MM>.jsonl`) with each
@@ -123,6 +149,25 @@ over 100 MiB while the journal was a repo file, which would have stopped every l
 read never opens a multi-GB file); a full part is never rewritten and history reads them all. `builds-store.mjs history <id>` lists revisions, `restore <id> <rev>` puts
 a build back (itself a journalled write). Removals are soft; a record missing from a written state is put back deleted.
 Where the journal files live: *Journal home* below.
+
+Journal lines (Nov 21 2026, `framework/plan/builds-journal-core.mjs`): an add, delete or restore holds the build whole
+(`before`, `after`). A change to an existing build holds a diff (`{ id, op, rev, base, hash, diff: { set, unset, append,
+steps } }`: changed fields, list items added at the end, changed steps), with a full copy every 20 revisions of the
+build. A build's `journalHash` is the hash of the record as its last journal line left it; when the record no longer
+matches (a whole-record put, a writer from before the diffs), the next line is whole, so a diff always has its base in
+the journal. `history`, `restore` and the build-hook replay rebuild every revision; a diff whose base line is missing
+is reported as not restorable, never guessed. `builds-store.mjs journal rotate [--days 30] [--apply]` gzips local parts
+older than 30 days (`<part>.jsonl.gz`, read like the plain ones); it also runs when a write opens a new part.
+
+Old writers (Nov 21 2026): `normBuild` is a whitelist, so a session on an older checkout used to write builds back
+without the fields it did not know (a Pipeline 2.0 build's `planning`). The IO layer now carries every field it does not
+know through each read and write (store, build, step; `keepStore`), and stamps `storeVersion` on the store: a checkout
+whose `STORE_VERSION` is lower is refused (`stale_checkout`) until it pulls main. Raise `STORE_VERSION` when a release
+changes what a stored field means.
+
+Text transport: every helper that reads a request from stdin or a socket decodes it once (`framework/core/clip.mjs`
+`readText`), never chunk by chunk; `clip(text, n)` cuts without splitting an emoji. `builds-store.mjs repair-mojibake
+[--apply]` puts characters lost to U+FFFD back from the journal.
 
 ## Journal home (builds-journal@1)
 

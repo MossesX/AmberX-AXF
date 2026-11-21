@@ -71,7 +71,8 @@
 .axp-agent-manager__acts { flex-wrap: nowrap; align-items: center }
 .axp-agent-manager__morebtn { display: inline-flex; flex: none }
 .axp-agent-manager__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
-.axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-agent-manager__strip > .fx-small { margin-inline-start: var(--fx-dens-gap-sm) }
 .axp-agent-manager__tabpick { display: none; width: 100% }
 .axp-agent-manager__flat { display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-agent-manager__flatrow { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }

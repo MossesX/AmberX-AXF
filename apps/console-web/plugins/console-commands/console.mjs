@@ -9,6 +9,7 @@
  *   node console.mjs run      one command on stdin ({command, grants?, by?, clients}) → the answer as JSON (`deliver` = what to send)
  *   node console.mjs open <screen> [--focus <tab or build>] | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
  *                    | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
+ *                    | screenshot [--address <console-control address> | --selector <css>] [--out shot.png]   (the image + screen state)
  *                    | overlay expand | overlay collapse | overlay open <url>   (AmberX's overlay on Brett's phone, POST /api/console/overlay)
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
  *   --to recent|all|<client id>   which open console (default: the one used last)
@@ -17,6 +18,7 @@
  * Exit codes: 0 ok · 1 failed · 2 usage · 3 confirmation_required (a destructive action: the token and the command to repeat are printed).
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { randomBytes } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -74,7 +76,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | screenshot [--address a | --selector css] [--out file.png] | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
 export const OVERLAY_VERBS = ['expand', 'collapse', 'open'];
 
 /** `axf console …` words → a control@1 console command, or { error }. */
@@ -105,6 +107,11 @@ export function commandFromArgv(argv) {
     case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;
     case 'refresh': cmd = { ...act('console.nav', 'refresh', 'here'), input: { ...input, ...(f.hard ? { hard: true } : {}), ...(f.all ? { to: 'all' } : {}) } }; break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
+    case 'screenshot': case 'shot': {
+      const shotInput = { ...(typeof f.to === 'string' ? { to: f.to } : {}), ...(typeof f.address === 'string' ? { address: f.address } : {}), ...(typeof f.selector === 'string' ? { selector: f.selector } : {}) };
+      cmd = { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', ...(Object.keys(shotInput).length ? { input: shotInput } : {}) };
+      break;
+    }
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
     case 'list': case 'ls': {
       const kind = LIST_KINDS[rest[0]];
@@ -118,11 +125,45 @@ export function commandFromArgv(argv) {
   if (!cmd) return { error: USAGE };
   if (typeof f.by === 'string') cmd.by = f.by;
   if (typeof f.reason === 'string') cmd.reason = f.reason;
-  return { command: cmd, base: typeof f.remote === 'string' ? f.remote : '', json: !!f.json };
+  return { command: cmd, base: typeof f.remote === 'string' ? f.remote : '', json: !!f.json, ...(typeof f.out === 'string' ? { out: f.out } : {}) };
+}
+
+/** The screen state of a screenshot answer in one line. */
+export function formatShotState(st = {}) {
+  const parts = [`screen ${st.screenLabel || st.screen || '?'}${st.screenLabel && st.screen ? ` (${st.screen})` : ''}`];
+  const tabs = Object.entries(st.tabs ?? {}).map(([row, v]) => `${row.slice(row.lastIndexOf('/') + 1).replace(/^[a-z]+:/, '')}=${v}`);
+  if (tabs.length) parts.push(`tabs ${tabs.join(', ')}`);
+  if (st.dialog) parts.push(`dialog ${st.dialog}`);
+  if (st.settings) parts.push(`settings ${st.settings}`);
+  if (st.selection) parts.push(`selection ${st.selection}`);
+  if (st.scroll && typeof st.scroll.fraction === 'number') parts.push(`scroll ${Math.round(st.scroll.fraction * 100)}%`);
+  return parts.join(' · ');
+}
+
+/**
+ * Write a screenshot answer's images to files (`out`, or one temp file per console) and drop the image data from the
+ * answer. → the paths written.
+ */
+export function saveShots(r, out = '') {
+  const images = Array.isArray(r?.images) ? r.images : [];
+  const paths = images.map((img, i) => {
+    const p = out ? (images.length > 1 ? out.replace(/(\.png)?$/i, `-${i + 1}.png`) : out) : join(tmpdir(), `axf-console-shot-${img.client ?? i}-${Date.now().toString(36)}.png`);
+    writeFileSync(p, Buffer.from(String(img.data ?? ''), 'base64'));
+    delete img.data;
+    img.file = p;
+    return p;
+  });
+  return paths;
 }
 
 /** An answer as a person reads it. */
 export function formatAnswer(r) {
+  if (r.ok && r.action === 'screenshot' && r.target === 'console.nav') {
+    const files = (r.images ?? []).map((i) => `${i.file ?? '(not saved)'} ${i.width ?? '?'}×${i.height ?? '?'}`);
+    if (r.status === 'pending' || r.queued) return `pending: screenshot — ${r.message ?? 'no console answered yet'}`;
+    if (!files.length) return `✗ screenshot: ${r.message || (r.delivered ?? []).map((d) => d.message).join(' · ') || 'no image came back'}`;
+    return `✓ screenshot → ${files.join(' · ')}\n${formatShotState(r.state)}`;
+  }
   if (!r.ok) return r.code === 'confirmation_required' ? `${r.message}\nconfirm token: ${r.confirm}` : `${r.code}: ${r.message}`;
   if (r.op === 'list') {
     const rows = r.items ?? [];
@@ -130,7 +171,7 @@ export function formatAnswer(r) {
     if (r.target === 'console.clients') return rows.map((c) => `${c.id.padEnd(26)} ${(c.device || '').padEnd(8)} ${(c.here?.screen ?? '').padEnd(22)} ${c.lastUsed}  ${c.user}`).join('\n');
     return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
   }
-  if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
+  if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${k === 'tabs' && v && typeof v === 'object' ? Object.entries(v).map(([row, tab]) => `${row.slice(row.lastIndexOf('/') + 1).replace(/^[a-z]+:/, '')}=${tab}`).join(', ') : v}`).join(' · ') || 'unknown'}`;
   const sent = r.delivered ?? [];
   const what = r.item ? `${r.item.label} (${r.item.id})` : r.action;
   if (r.queued) return `queued: ${r.action} ${what} — ${r.message ?? 'waiting for a console'}`;
@@ -169,7 +210,7 @@ export async function main(argv) {
   if (argv[0] === 'console') argv = argv.slice(1);
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
-    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients', '  axf console overlay expand · axf console overlay open https://console.amberxai.com/?axf-view=ui-review',
+    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients', '  axf console screenshot · axf console screenshot --address view:settings --out shot.png', '  axf console overlay expand · axf console overlay open https://console.amberxai.com/?axf-view=ui-review',
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }
@@ -188,6 +229,7 @@ export async function main(argv) {
   const { command, json } = parsed;
   if (!command.by) command.by = process.env.AXF_ACTOR || `cli:${process.env.USER || 'user'}`;
   const r = await sendToConsole(command, parsed.base ? { base: parsed.base } : {});
+  if (command.action === 'screenshot' && Array.isArray(r.images)) saveShots(r, typeof parsed.out === 'string' ? parsed.out : '');
   console.log(json ? JSON.stringify(r, null, 1) : formatAnswer(r));
   if (!r.ok && r.code === 'confirmation_required') {
     if (!json) console.log(`repeat to run it: axf console ${argv.filter((a) => a !== '--json' && a !== 'console').map(sh).join(' ')} --confirm ${r.confirm}`);

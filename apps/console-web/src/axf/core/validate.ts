@@ -13,11 +13,14 @@ import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
+import { toolbarErrors } from './engines/toolbar-rules.mjs';
+import { toolbarMigrationErrors } from './engines/toolbar-migrate.mjs';
 import { demoAssetErrors } from './engines/demo-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
+import { builtForErrors } from './engines/settings-iface-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -130,12 +133,19 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...jobTypeErrors(raw.type, data));
   // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, data));
+  // page-toolbar@1: ONE validator shared with the build engine (core/engines/toolbar-rules.mjs); both toolbar shapes
+  errors.push(...toolbarErrors(raw.type, data));
+  // toolbar-list@1 → page-toolbar@1 (core/engines/toolbar-migrate.mjs): the migrated asset is valid and draws the same
+  errors.push(...toolbarMigrationErrors(raw.type, data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
+  // settings-iface@1: who a settings interface is built for (core/engines/settings-iface-rules.mjs); required, so a
+  // missing one is already reported by `required`
+  if (raw.type === 'settings' && 'builtFor' in data) errors.push(...builtForErrors(data.builtFor));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

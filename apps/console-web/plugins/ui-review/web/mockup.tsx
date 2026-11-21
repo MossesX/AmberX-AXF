@@ -68,7 +68,7 @@ function Block({ b, demo }: { b: MockupBlock; demo: MockupSpec['demo'] }) {
 
 export function MockupScreenView({ spec, screen }: { spec: MockupSpec; screen: MockupScreen }) {
   return (
-    <div className="fx-stack axp-ui-mock" data-axf-mockup={spec.build}>
+    <div className="fx-stack fx-stack--lg axp-ui-mock" data-axf-mockup={spec.build}>
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow"><Chip tone="warning">Predicted</Chip> {spec.title}</p>

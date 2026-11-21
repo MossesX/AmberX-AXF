@@ -33,7 +33,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('brand-library.open', () => rt.navigate(VIEW), { label: 'Open the brand library' });
   },
   views: { [VIEW]: { title: 'Brand library', icon: 'star', keywords: ['brand', 'logo', 'logos', 'animated', 'icon pack', 'icons', 'branding', 'mark'], render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: 'brand-library', label: 'Brand library', icon: 'star', view: 'brand-library' }] }, // = VIEW (literal so scripts/menu-reach.mts sees it)
+  nav: { label: 'Framework', items: [{ id: 'brand-library', label: 'Brand library', icon: 'star', view: 'brand-library' }] }, // = VIEW (literal so scripts/menu-reach.mts sees it)
   settingsTabs: [{ id: FOLDER, label: 'Brand library', icon: 'star', order: 34, parent: 'plugins' }],
   settingsPanels: [
     { id: 'brand-library.settings', tab: FOLDER, title: 'Brand library', icon: 'star', order: 10, render: () => <SettingsPanel /> },

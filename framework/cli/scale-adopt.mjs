@@ -15,7 +15,7 @@
  *   (`padding: 8`, `fontSize: 12`, `borderRadius: 4`) are px, as React reads them.
  *
  *   node framework/cli/scale-adopt.mjs [paths…] [--dry-run]
- *   (default: framework/ui, framework/react, framework/libs, apps/console-web/src + plugins, apps/amberx-droid/src)
+ *   (default: framework/ui, framework/react, framework/libs, apps/console-web/src + plugins)
  *
  * Lines with `theme-ok` or `scale-ok` are skipped. Run it again after adding a stylesheet; check-theme.mjs flags
  * whatever is left (rule `scale`).
@@ -28,7 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
 const dry = args.includes('--dry-run');
 const paths = args.filter((a) => !a.startsWith('--'));
-const DEFAULT_PATHS = ['framework/ui', 'framework/react', 'framework/libs', 'apps/console-web/src', 'apps/console-web/plugins', 'apps/amberx-droid/src'];
+const DEFAULT_PATHS = ['framework/ui', 'framework/react', 'framework/libs', 'apps/console-web/src', 'apps/console-web/plugins'];
 
 /** [upper bound (exclusive), step] — text sizes as a ratio of the parent's size. */
 export const TYPE_STEPS = [[0.725, '2xs'], [0.81, 'xs'], [0.89, 'sm'], [0.97, 'md'], [1.03, null], [1.2, 'lg'], [1.6, 'xl'], [2.3, '2xl']];

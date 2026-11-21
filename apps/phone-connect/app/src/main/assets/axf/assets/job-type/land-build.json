@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "land-build",
+  "name": "Fix a pull request so it can land",
+  "version": "2.0.0",
+  "description": "Fix a build's pull request so the lander can land it: resolve a code conflict with main, fix red CI or failing build rules, on the PR's own branch. Push to that branch only; never push to main and never merge. The lander (deploy/lander) runs CI on the push and does the merge.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "git"
+  ],
+  "data": {
+    "specialty": "landing",
+    "model": "fable",
+    "budget": {
+      "tokens": 400000,
+      "maxTurns": 50,
+      "usd": 6
+    },
+    "trigger": {
+      "kind": "on-demand"
+    },
+    "inputs": [
+      {
+        "id": "branch",
+        "label": "PR branch",
+        "required": true
+      },
+      {
+        "id": "build",
+        "label": "Build id",
+        "default": ""
+      },
+      {
+        "id": "checks",
+        "label": "What failed",
+        "default": "the failing checks on the pull request"
+      }
+    ],
+    "brief": "Fix branch {{branch}} (build {{build}}) so its pull request can land. What failed: {{checks}}.\n1. git fetch origin; work on {{branch}} only.\n2. A conflict with main: git merge origin/main (never rebase, never force), resolve every conflict keeping both sides' intent. Bookkeeping files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs).\n3. Red CI or failing build rules: reproduce the failing check, fix the code, rerun it until it passes.\n4. Commit and push to the PR branch only: git push origin HEAD:{{branch}}. Never push to main. Never open, merge or close a pull request: the lander runs CI on your push and merges.\n5. If it cannot be fixed, push nothing and say why.\nReport what you changed (commit), what failed and what still needs a person.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/land-build/{{stamp}}.md"
+    }
+  }
+}

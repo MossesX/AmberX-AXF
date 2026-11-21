@@ -1,6 +1,6 @@
 """The systems check's own health@1 checks (registered on start; other plugins add theirs through `axf.health@1`).
 
-Keys: Claude sign-in (Claude Code token), OpenAI and ElevenLabs keys when set, ntfy, the push path to AmberX, git push
+Keys: Claude sign-in (Claude Code token), OpenAI and ElevenLabs keys when set, ntfy, the push path to the phone, git push
 credentials on the VPS checkout. System: CI on main, stuck builds, veto calls denied or expired, containers restarting,
 disk over 85%, axf-data backups (axf_data.py). The GitHub, Anthropic, Hostinger, Coolify and axHub keys stay built-in checks (checks.py) and are tested
 live on every banner load; the monitor gives them `since`, `breaks` and the push too.
@@ -213,13 +213,13 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
     def push_path() -> dict[str, Any]:
         cfg = _read(_alerts_files()[0])
         if (cfg.get("sources") or {}).get("system") is False:
-            return {"status": "error", "summary": "System alerts are switched off in Settings → Alerts, so broken keys and checks never reach AmberX."}
+            return {"status": "error", "summary": "System alerts are switched off in Settings → Alerts, so broken keys and checks never reach the phone."}
         rules = (cfg.get("rules") or {}).get("channels") or {}
         bell = (rules.get("bell") or {"min": "info"}).get("min", "info")
         if bell == "off":
-            return {"status": "error", "summary": "The console's alert list is off, and that's what the AmberX app reads: nothing reaches your phone."}
-        return {"status": "ok", "summary": "Red items are raised as console alerts; the AmberX app turns them into phone notifications."}
-    reg.register({"id": "push-path", "label": "Push to AmberX", "service": "console", "order": 5, "run": push_path,
+            return {"status": "error", "summary": "The console's alert list is off, and that's what Phone Connect is sent from: nothing reaches your phone."}
+        return {"status": "ok", "summary": "Red items are raised as console alerts; Phone Connect turns them into phone notifications."}
+    reg.register({"id": "push-path", "label": "Push to the phone", "service": "console", "order": 5, "run": push_path,
                   "fix": {"type": "settings", "tab": "alerts", "label": "Open alert settings"},
                   "instructions": ["Settings → Alerts: turn the System source on and keep the bell on.", "AmberX → Monitor: Dev Console alerts on."]}, OWNER)
 

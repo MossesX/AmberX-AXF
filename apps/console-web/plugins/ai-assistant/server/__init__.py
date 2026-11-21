@@ -315,6 +315,8 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
             parts.append(persona)
     if any(t["name"].startswith("repo_") for t in tool_specs):
         parts.append("You can read the AXF repository with repo_list, repo_read and repo_search. Read files before making claims about the code, and cite paths.")
+    if any(t["name"] in tools.CONSOLE_NAMES for t in tool_specs):
+        parts.append("You can drive Brett's open console: when he asks to open, show or go to a screen, settings tab or dialog, do it with console_open, console_settings or console_dialog (console_list finds the right name; console_where says where he is) instead of telling him where to tap. Say in a few words what you opened. These tools only navigate: anything that changes data is his tap.")
     if cfg.get("instructions", "").strip() and not agent:
         parts.append(f"Owner instructions:\n{cfg['instructions'].strip()}")
     if st.get("systemPrompt", "").strip():
@@ -510,9 +512,10 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             else:
                 # Users get the agent's persona and model only: no agent tools (HTTP/MCP/container), no agent memory.
                 agent = {**agent, "tools": []}
-        groups = dict(cfg.get("tools", {}))
+        groups = {g: bool(cfg.get("tools", {}).get(g, g != "web")) for g in tools.GROUPS}
         if not me.admin:
-            groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
+            # Driving the console is the owner's alone (his open consoles); a hub user never gets those tools.
+            groups = {g: v and g != "console" and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
         context = contract.normalize_chat_context(body.get("context"))
         tool_on = st.get("tools", True) is not False
         base_specs = tools.specs(groups) if tool_on else []
@@ -599,7 +602,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 if name in agent_tools and svc:
                     res = str(svc.run_tool(agent_id, name, args, {"conversationId": cid, "turnId": turn_id, "stage": stage}))
                 elif name in tools.BUILTIN_NAMES and any(sp["name"] == name for sp in tool_specs):
-                    res = tools.run(name, args)
+                    res = tools.run(name, args, by=f"assistant:{(agent or {}).get('name') or cfg.get('assistantName') or 'Amber'}")
                 else:
                     raise ValueError(f"tool {name} is not available")
                 return True, res[:50_000]
