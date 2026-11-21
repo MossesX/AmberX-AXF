@@ -396,6 +396,11 @@ statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the stor
 Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
 `PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
 
+Lander repair (Nov 21 2026, audit findings L2-01..12): `normLanding` and `normLandFailure` keep the lander's new record
+fields (`landing.attempt`, `green`, `fixes`, a hand merge's `lastMerge.byHand` / `ci`, rules that could not run;
+`failure.attempt`, `needsBrett` / `stopped` / `resume`, `jobIds`, `log`, `of`, `fixStart`). No status, transition or
+fixture changed. **Kotlin twin deferred** with the rest of the contract: nothing on Android reads these records.
+
 Plan Studio Send fix (Nov 19 2026): plan-build@1 steps are planning only (no minutes or model needed); the engine adds
 `normPlanning`, `normDesign` (the splitting stage's check of Fable's build steps) and `fallbackDesign`, with fixture
 cases `normPlan`, `designs` and `fallbacks`. **Kotlin twin deferred** for the same reason: no Android surface sends

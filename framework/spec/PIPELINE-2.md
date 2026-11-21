@@ -56,10 +56,15 @@ steps and need no minutes or model; a model or minutes noted on a step goes alon
 (`claude/<build>--<step>`); `tmux` (the session name) while building; `tried` (accounts it failed on, last 10). `done`
 mirrors `completed` / `in-pr` for older readers.
 
-The lander's build fields (lander@1, kept by the store on Pipeline 2.0 builds): `landing` (`normLanding`: split,
-merged / closed PRs, CI re-runs, rules per head, CI kicks, `lastMerge`), `failure` (`normLandFailure`: kind, the
-status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged's record), `landedAt`, and with
-`landed` the done-means-merged evidence `mergedAt` + `landed { pr, sha, mergedAt, ci: success }`. Notes keep `by`.
+The lander's build fields (lander@1, kept by the store on Pipeline 2.0 builds): `landing` (`normLanding`: `attempt`,
+split, merged / closed PRs, CI re-runs, rules per head, CI kicks, `green` (the head CI and the rules passed on),
+`fixes` (fix sessions the PR in flight has had), `lastMerge`), `failure` (`normLandFailure`: kind, the status it failed
+in, attempt, retry, notBefore, the failing checks and their log tail…; builds@1 builds keep done-means-merged's
+record), `landedAt`, and with `landed` the done-means-merged evidence `mergedAt` + `landed { pr, sha, mergedAt, ci:
+success }`. Notes keep `by`.
+
+Two counters, never one: the build's `attempt` is the dispatcher's; a landing run counts its own failures in
+`landing.attempt`, starting at 0 when the lander takes the build at `build-complete`.
 
 ## Rules
 
@@ -101,7 +106,24 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
    main moved after CI went green (an emergency build landed, anything else merged; status-only commits do not count),
    the lander pulls the newest main into the PR (`landing.mainPull { head, at }`), a code conflict goes to a fix
    session on Fable, CI runs again on that head, and only then it merges. So every build that finishes after an
-   emergency landing re-pulls main and re-runs CI before its own merge.
+   emergency landing re-pulls main and re-runs CI before its own merge. Main and the PR head are read from GitHub
+   again right before the merge request itself, and only `landing.green.head` (the head CI and the build rules passed
+   on) merges: a head that moved, or a main that moved, sends the landing run back through `merging-pr` →
+   `pr-pulling-main` → `running-ci` without a failure.
+10. **GitHub's word on the PR comes first.** First thing in every lander tick (and in the builds reconciler), for
+   every build with a PR in flight: a PR merged by hand is recorded (`landing.merged`, `landing.lastMerge { sha, head,
+   byHand, ci }`) and the build goes on to its next PR or to `landed`; `landed` still needs CI green on that merge, so
+   a hand merge without green CI stops as `hand-merge` until CI is green. A PR closed without merging stops the build
+   once (`pr-closed`) until it is reopened or the build is re-sent.
+11. **The landing ladder has a top.** Green means every check run on the head (all pages) ended `success` and every
+   check named in the lander's `requiredChecks` has reported (success, or skipped by the CI scope). The build rules
+   gate fails closed: rules that could not run get one more try, then it is an `infra` failure. Red CI: re-run the
+   failed jobs once, then a fix session on Fable on the PR as it is (its brief: the PR branch, the failing checks,
+   their log tail, push to that branch only); a PR of several steps is split only when the fixes are used up and the
+   failing log names one step's files. After `maxFixes` fix sessions on a PR or `maxAttempts` failures in a landing
+   run the build stops: `failed` with `failure.retry: hold` and `failure.needsBrett`, shown on the systems check with
+   the failing check, at the back of the merge line. `node deploy/lander/run.mjs retry <build>` starts a new landing
+   run. After `landed` the build's merged step branches and worktrees are removed.
 
 ## Orchestrator flow (status core)
 
