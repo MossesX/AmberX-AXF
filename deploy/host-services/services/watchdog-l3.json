@@ -1,0 +1,17 @@
+{
+  "$axf": "host-service@1",
+  "id": "watchdog-l3",
+  "title": "Watchdog layer 3",
+  "description": "Keeps the orchestrator tick and the layer 2 watchdog alive and alerts only when it cannot heal them. Its own unit and timer, written by deploy/watchdog/cron.mjs.",
+  "kind": "tick",
+  "unit": "axf-watchdog-l3.service",
+  "timer": "axf-watchdog-l3.timer",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "runner": "deploy/watchdog/layer3.mjs",
+  "health": {
+    "intervalSec": 120,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-watchdog-l3.log"
+}

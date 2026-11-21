@@ -42,6 +42,8 @@
  *   axf install <library> [appDir] [--param key=value …] [--yes]
  *                               add a library to an app: interactive wizard asks for the required parameters,
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
+ *   axf host <list|status|restart|start|stop|run|action|mode|rollback|logs|settings> …   the console's host services
+ *                               (framework/cli/host-services.mjs: the host API socket, else loopback, else the console REST)
  *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
  *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
@@ -244,6 +246,13 @@ try {
     case 'claude-project': {
       const { run } = await import('./claude-project.mjs');
       await run(process.argv.slice(3));
+      break;
+    }
+    case 'host': {
+      // Host services (host-service@1): delegates to framework/cli/host-services.mjs (list, status, restart, mode, rollback, logs…).
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/host-services.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
       break;
     }
     case 'project': {
