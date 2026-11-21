@@ -30,6 +30,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { DataStoreError, NAMESPACES, LIMITS, PATTERNS, canonical, createDataStore, etagOf, httpBackend, kindOfFile } from './data-store.mjs';
+import { clip } from './clip.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PATHS = JSON.parse(readFileSync(join(REPO, 'framework/schemas/data-store-paths.json'), 'utf8'));
@@ -397,7 +398,7 @@ export function callSync(req) {
   const helper = process.env.AXF_DATA_CALL_SYNC || join(REPO, 'framework/cli/data-call.mjs');
   let text;
   try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: CALL_SYNC_MAX_BUFFER, timeout: 60000 }); }
-  catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${String(e.message).slice(0, 200)}`); }
+  catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${clip(String(e.message), 200)}`); }
   const r = JSON.parse(text.trim().split('\n').pop());
   if (!r.ok) throw new DataStoreError(r.code, r.message, { rev: r.rev, etag: r.etag });
   return r.result;

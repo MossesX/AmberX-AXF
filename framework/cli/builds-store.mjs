@@ -3,9 +3,16 @@
  * builds-store — the IO side of framework/plan/builds-store-core.mjs: the ONE builds store (builds@1), owned by the
  * Build orchestrator. Every builds list (orchestrator, Pending builds, build queue) reads and writes it here.
  *
- *   _claude/builds/store.json            the store (repo file, synced with the hub by claude-sync, committed)
- *   _claude/builds/journal/<YYYY-MM>[-pN].jsonl  every write, append-only: rev, when, who, what, and each changed build
- *                                        before and after. Nothing can vanish: any build can be put back from here.
+ * Where the store lives (since the cutover of Nov 18 2026): on axf-data, in the Postgres tables `builds`, `build_steps`,
+ * `build_notes` and `journal`, under the keys `builds/store.json` and `builds/journal/<YYYY-MM>`. Nothing in a checkout
+ * is the store: no store.json is written, and the old orchestrator.json export in the repo is no longer rewritten.
+ * The files below are what a checkout that has NOT moved to axf-data uses (local and shadow mode: tests, a dev machine):
+ *
+ *   _claude/builds/store.json            the store file (local / shadow mode only)
+ *   <journal home>/<YYYY-MM>[-pN].jsonl  every write, append-only: rev, when, who, what, and each changed build. A
+ *                                        change to an existing build is a diff, with a full copy every 20 revisions
+ *                                        (framework/plan/builds-journal-core.mjs); parts older than 30 days are
+ *                                        gzipped (`journal rotate`). Any build can be put back from here.
  *
  *   node framework/cli/builds-store.mjs                    status: builds per profile, rev, draft, journal size
  *   … migrate --dry [--report <file>]                      what the migration would do (report, nothing written)
@@ -25,6 +32,8 @@
  *   … dedupe-steps [--dry-run|--apply] [--from f] [b…]            step-dedupe: collapse repeated steps (done copy wins, collision
  *                                                        ids tidied), one journal revision per build; dry run by default
  *   … history <id>                                          every journal revision of one build
+ *   … journal status | migrate | verify | rotate [--days n] [--apply]   the journal's home, and gzip of old parts
+ *   … repair-mojibake [--apply] [--journal-dir d]           put back characters lost to U+FFFD from the journal (dry run by default)
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
  *   … draft <profile> | apply <profile> | discard <profile>  the Steps view draft
@@ -34,8 +43,11 @@
  * In a build worktree the store lives on the hub data store (worktreeHome), never in the checkout.
  * Live (Nov 3 2026, orch-live-sync): every write that changes a build is also queued for main (builds-live.mjs) and
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
- * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
- * exports of the store (see exportAll); nothing but the store writes them, and a direct edit is taken into the store.
+ * The old per-profile files (orchestrator.json, pending.json, build-queue.json) are READ-ONLY exports of the store
+ * (see exportAll) in local and shadow mode; a direct edit is taken into the store. In cutover the repo's
+ * orchestrator.json is not written at all (it only dirtied the live checkout).
+ * Old writers (S5-01): a field this checkout's code does not know is kept on every read and write (keepStore), and a
+ * checkout whose STORE_VERSION is older than the store's is refused (StoreTooNew) instead of writing it back poorer.
  *
  * data-store@1 (axf-data, Nov 15 2026: "the builds keep running" with the console down): the store and its journal
  * follow the mode of their keys (`builds/store.json`, `builds/journal/`; framework/core/data-store-mode.mjs, key-level
@@ -48,6 +60,7 @@
  * The cut itself: `node framework/cli/builds-data.mjs cutover --apply` (copy, verify counts, flip the keys under the lock).
  * After the cut no store.json is written anywhere (Pipeline 2.0, Nov 19 2026): readers ask the store, never the file.
  */
+import { gunzipSync, gzipSync } from 'node:zlib';
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -64,6 +77,8 @@ import * as files from '../core/data-files.mjs';
 import { DataStoreError } from '../core/data-store.mjs';
 import { DemoGuardError, demoGuard } from '../core/demo-build.mjs';
 import * as P2 from '../core/pipeline-status.mjs';
+import * as JC from '../plan/builds-journal-core.mjs';
+import { clip } from '../core/clip.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /**
@@ -110,21 +125,87 @@ const journalDirs = () => (testJournal() ? [testJournal()] : journalReadDirs().f
 export function journalParts() {
   const out = {};
   for (const d of journalDirs()) {
-    let names = []; try { names = readdirSync(d).filter((f) => f.endsWith('.jsonl')); } catch { continue; }
-    for (const f of names) { const k = f.slice(0, -6); const size = statSync(join(d, f)).size; const p = (out[k] ??= { files: [], size: 0 }); p.files.push(join(d, f)); p.size = Math.max(p.size, size); }
+    let names = []; try { names = readdirSync(d).filter((f) => PART_RE.test(f)); } catch { continue; }
+    for (const f of names) { const k = f.replace(PART_RE, ''); const size = statSync(join(d, f)).size; const p = (out[k] ??= { files: [], size: 0 }); p.files.push(join(d, f)); p.size = Math.max(p.size, size); }
   }
   return out;
 }
+/** A journal part file: `<key>.jsonl`, or `<key>.jsonl.gz` once rotated (rotateJournal). */
+const PART_RE = /\.jsonl(\.gz)?$/;
+const readPart = (f) => { const buf = readFileSync(f); return f.endsWith('.gz') ? gunzipSync(buf) : buf; };
 /** One part's lines: the union of every copy (home and the repo's old one), in order, each line once. */
 export function journalPartText(key) {
   const p = journalParts()[key]; if (!p) return '';
-  const texts = p.files.map((f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } });
+  const texts = p.files.map((f) => { try { return readPart(f).toString('utf8'); } catch { return ''; } });
   return texts.length === 1 ? texts[0] : merge.mergeJournalText(...texts);
 }
 
 export class StoreLocked extends Error {}
 /** cutover: someone else wrote a build we changed (or the store) on axf-data between our read and our write (withStore re-runs). */
 export class StoreConflict extends Error {}
+
+// ------------------------------------------------------------------ old writers: unknown fields and the store version (S5-01)
+/*
+ * normBuild / normStep / normalizeStore (builds-store-core.mjs) are whitelists: a field they do not know is dropped.
+ * Every writer normalises with its own copy of that code, so a session on an older checkout read the store, lost a
+ * newer field (a Pipeline 2.0 build's `planning`: the plan's steps never reached the splitter) and wrote the build
+ * back without it. Two guards, both here in the IO layer:
+ *   keepStore       whatever a record holds that this checkout's code does not know is carried through every read and
+ *                   every write, on the store, on a build and on a step. Such a field cannot be removed by leaving it
+ *                   out; code that knows it sets it to null.
+ *   STORE_VERSION   stamped on the store (`storeVersion`) by every write. A checkout whose number is lower than the
+ *                   store's is refused (StoreTooNew): pull main, then write. Raise it by one whenever a release
+ *                   changes what a stored field means, so that older code must not write at all.
+ */
+export const STORE_VERSION = 2;
+/** This checkout's builds-store code is older than the store it is asked to write (code 'stale_checkout'). */
+export class StoreTooNew extends Error { constructor(have, mine = STORE_VERSION) { super(`this checkout's builds store code is version ${mine}, the store is at version ${have}: update the checkout (pull main) before writing builds`); this.code = 'stale_checkout'; this.storeVersion = have; } }
+const versionOf = (store) => (Number.isInteger(store?.storeVersion) && store.storeVersion > 0 ? store.storeVersion : 1);
+function assertWritable(store) { if (versionOf(store) > STORE_VERSION) throw new StoreTooNew(versionOf(store)); }
+
+/** The field names a normaliser knows: everything it reads from a record or puts on its result, over every status. */
+function fieldsOf(norm, samples) {
+  const seen = new Set();
+  for (const sample of samples) {
+    const spy = new Proxy(sample, { get(t, k, r) { if (typeof k === 'string') seen.add(k); return Reflect.get(t, k, r); }, has(t, k) { if (typeof k === 'string') seen.add(k); return Reflect.has(t, k); } });
+    try { for (const k of Object.keys(norm(spy) ?? {})) seen.add(k); } catch { /* a sample the normaliser refuses names no fields */ }
+  }
+  return seen;
+}
+let knownMemo;
+function known() {
+  if (knownMemo) return knownMemo;
+  const statuses = [...new Set(['', ...core.STATUSES, ...(P2.BUILD_FLOW ?? []), ...(P2.STEP_FLOW ?? []), 'failed', 'archived'])];
+  const samples = statuses.flatMap((status) => [{ id: 'sample', status }, { id: 'sample', status, flow: P2.FLOW, deleted: true, done: true, rearranged: true, profiles: ['all'] }]);
+  knownMemo = {
+    store: new Set(Object.keys(core.emptyStore())),
+    // `demo` and `profile` are known to normBuild without being read from the record on every path
+    build: new Set([...fieldsOf((b) => core.normBuild(b), samples), 'demo', 'profile', 'defaultSteps']),
+    step: fieldsOf((x) => core.normStep(x, 0), samples),
+  };
+  return knownMemo;
+}
+const unknownOf = (rec, names) => (rec && typeof rec === 'object' && !Array.isArray(rec) ? Object.keys(rec).filter((k) => !names.has(k) && rec[k] !== undefined) : []);
+const carry = (from, to, names) => { for (const k of unknownOf(from, names)) if (!(k in to)) to[k] = JSON.parse(JSON.stringify(from[k])); return to; };
+const stepsByKey = (list) => { const m = new Map(); for (const x of Array.isArray(list) ? list : []) if (x && typeof x === 'object') for (const k of [x.uid, x.id]) if (k && !m.has(k)) m.set(k, x); return m; };
+/** `to` (a normalised build) with every field of `from` (the same build, as stored) that this code does not know. */
+export function keepBuild(from, to) {
+  if (!from || !to || typeof from !== 'object' || typeof to !== 'object') return to;
+  carry(from, to, known().build);
+  const old = stepsByKey(from.steps);
+  if (old.size) for (const x of to.steps ?? []) { const o = old.get(x.uid) ?? old.get(x.id); if (o) carry(o, x, known().step); }
+  return to;
+}
+/** `to` (a normalised store) with every unknown field of `from` (the store as read): top level, builds by id, steps. */
+export function keepStore(from, to) {
+  if (!from || !to || typeof from !== 'object' || typeof to !== 'object') return to;
+  carry(from, to, known().store);
+  const old = new Map((Array.isArray(from.builds) ? from.builds : []).filter((b) => b && typeof b === 'object' && b.id).map((b) => [b.id, b]));
+  if (old.size) for (const b of to.builds ?? []) keepBuild(old.get(b.id), b);
+  return to;
+}
+/** normalizeStore that loses nothing it does not know. */
+const normKeeping = (raw) => keepStore(raw, core.normalizeStore(raw));
 /** The store file's lock (a writer's, or the data cut-over's on the file it names): fn() runs while it is held. */
 export function withStoreLock(fn, waitMs, file = storeFile()) { const unlock = lock(file, waitMs); try { return fn(); } finally { unlock(); } }
 /**
@@ -188,7 +269,7 @@ function writeStoreRemote(before, after, changes, entry, { draftChanged, metaCha
   for (const [k, v] of Object.entries(core.compactStore(after))) if (!(k in head) && k !== 'builds' && JSON.stringify(v) !== JSON.stringify(before[k])) head[k] = v;
   // every row is stored normalized (rev, dates, lists in shape): a build a caller pushed raw reads back the same as it
   // would from the file, and its stored rev is what the next writer's ifRev will name
-  const lists = { builds: changes.map((c) => ({ key: c.id, ifRev: c.before ? c.before.rev : null, item: core.compactBuild(core.normBuild(c.after)) })) };
+  const lists = { builds: changes.map((c) => ({ key: c.id, ifRev: c.before ? c.before.rev : null, item: core.compactBuild(keepBuild(c.after, core.normBuild(c.after))) })) };
   const line = remoteJournalEntry(entry);
   const body = { head, lists, journal: { path: remoteJournalKey(entry).slice('builds/'.length), entry: line, idem: `rev-${entry.rev}-${entry.at}` } };
   try { remoteEtag = files.callSync({ op: 'patch', key, body }).record.etag; }
@@ -236,7 +317,7 @@ function readStore() {
   if (remoteOn()) {
     const r = files.callSync({ op: 'get', key: storeKey() });
     remoteEtag = r ? r.etag : '';
-    return healOrigins(core.normalizeStore(r ? r.data : core.emptyStore()));
+    return healOrigins(normKeeping(r ? r.data : core.emptyStore()));
   }
   const f = storeFile();
   if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) {
@@ -248,7 +329,7 @@ function readStore() {
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
     return migrateNow({ by: 'auto-migrate' }).store;
   }
-  return healOrigins(core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))));
+  return healOrigins(normKeeping(JSON.parse(readFileSync(f, 'utf8'))));
 }
 /** The store. If an old file was written directly since the last export, that write is taken into the store first. */
 export function loadStore() {
@@ -350,11 +431,15 @@ function sweepStaleRepoExports(ex) {
 export const storeText = (store) => `${JSON.stringify(core.compactStore(store), null, 1)}\n`;
 function exportAll(store) {
   const ex = readExports();
+  const cut = remoteOn();
   for (const t of exportTargets()) {
     const e = exportText(store, t.kind, t.profile);
     // Nothing to export (e.g. a profile without a queue) but the file exists: it was absorbed just before this, so
     // record it as seen. Unrecorded, it read as a foreign write forever and every read took the lock to absorb it.
     if (!e) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
+    // B4-09: after the cutover the repo's orchestrator.json is not an export any more (every reader asks the store); it
+    // was still rewritten on each write and left the live main checkout dirty. Seen, never written.
+    if (cut && t.kind === 'orchestrator' && hasRepoExport(t.profile)) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
     const { doc, text } = e;
     if (t.kind === 'orchestrator' && !doc.builds.length && !existsSync(t.file)) continue;
     let old = ''; try { old = readFileSync(t.file, 'utf8'); } catch { /* new */ }
@@ -393,7 +478,7 @@ export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
     if (!retired.length) return { changed: 0, report: null };
     const { store: merged, report } = core.mergeProfiles({ ...raw, builds: (raw.builds ?? []).map((b) => ({ ...b, order: { ...(b.order ?? {}) }, profiles: [...(b.profiles ?? [])], notes: [...(b.notes ?? [])] })) }, core.RETIRED_PROFILES, core.MERGED_PROFILE);
     const before = readStore();
-    const after = healOrigins(core.normalizeStore(merged));
+    const after = keepStore(before, healOrigins(core.normalizeStore(merged)));
     const saved = saveStore(before, after, { by, action: 'merge-profiles', note: `${report.from.map((p) => `${p.id} (${p.builds})`).join(', ')} → ${report.into}: ${report.moved} build(s)` });
     if (exportsOn()) exportAll(saved.store);
     return { changed: saved.changes.length, report, store: saved.store };
@@ -432,8 +517,14 @@ function ensureDirKeepingOwner(d) {
   if (process.getuid?.() === 0) { try { const st = statSync(p); for (const m of made) chownSync(m, st.uid, st.gid); } catch { /* best effort */ } }
 }
 
-function journal(entry) {
-  const line = `${JSON.stringify(entry)}\n`;
+/** The hash a build's `journalHash` holds: its stored form, without the hash itself. */
+const journalHashOf = (b) => { const { journalHash, ...rest } = core.compactBuild(b); return JC.hashOf(rest); };
+/** A build's full copy goes into the journal every this many of its revisions (AXF_BUILDS_JOURNAL_FULL moves it; 1 = always whole). */
+export const journalFullEvery = () => Number(process.env.AXF_BUILDS_JOURNAL_FULL) || JC.FULL_EVERY;
+
+/** One write's journal line. `entry` is the whole record (published live), `stored` what the journal keeps (slimEntry). */
+function journal(entry, stored = entry) {
+  const line = `${JSON.stringify(stored)}\n`;
   const mode = storeMode();
   // cutover: the line went with the store write (writeStoreRemote, one transaction); nothing is written here
   if (mode !== 'cutover') {
@@ -446,14 +537,44 @@ function journal(entry) {
       const sizes = Object.fromEntries(Object.entries(journalParts()).map(([k, p]) => [k, p.size]));
       part = merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax());
       const f = join(d, `${part}.jsonl`);
-      if (existsSync(f)) appendFileSync(f, line); else writeKeepingOwner(f, line);
+      const fresh = !existsSync(f);
+      if (fresh) writeKeepingOwner(f, line); else appendFileSync(f, line);
+      // a new part is the moment old ones are put away (gzip of parts older than 30 days); never fails the write
+      if (fresh) { try { rotateJournal({ apply: true, dir: d, locked: true }); } catch { /* next new part tries again */ } }
     } finally { unlock(); }
     // the axf-data key is the part's own (builds/journal/<part>) wherever the part lives (hub home, spool, repo)
     const key = testJournal() ? files.keyFor(join(d, `${part}.jsonl`)) : `builds/journal/${part}`;
-    if (mode === 'shadow' && key) remoteJournal(key, entry, true);
+    if (mode === 'shadow' && key) remoteJournal(key, stored, true);
   }
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
   if (entry.builds?.length) enqueueLive(entry);
+}
+
+/**
+ * Put away journal parts older than `days` (B4-07): `<part>.jsonl` → `<part>.jsonl.gz` in the same folder, the copy
+ * checked byte for byte before the plain file is removed. A part's age is its newest line (the file's mtime). Readers
+ * (history, restore, journalPartText, verifyJournal) read both forms. Dry run unless `apply`. Local files only: on
+ * axf-data the journal is rows of the `journal` table. → { apply, days, rotated: [{ part, bytes, gzBytes }], kept }
+ */
+export function rotateJournal({ apply = false, days = 30, dir = journalDir(), now = Date.now(), locked = false } = {}) {
+  const out = { apply, days, dir, rotated: [], kept: 0 };
+  if (!existsSync(dir)) return out;
+  const unlock = !apply || locked || testJournal() ? () => {} : lock(join(dir, '.journal'), 60000);
+  try {
+    for (const name of readdirSync(dir).filter((f) => f.endsWith('.jsonl')).sort()) {
+      const f = join(dir, name); const st = statSync(f);
+      if (now - st.mtimeMs < days * 86400000) { out.kept += 1; continue; }
+      const buf = readFileSync(f); const gz = gzipSync(buf, { level: 9 });
+      if (apply) {
+        const g = `${f}.gz`; const tmp = `${g}.tmp-${process.pid}`;
+        writeKeepingOwner(tmp, gz);
+        if (!gunzipSync(readFileSync(tmp)).equals(buf)) { rmSync(tmp, { force: true }); throw new Error(`journal rotate: ${name} did not read back the same, left as it was`); }
+        renameSync(tmp, g); rmSync(f);
+      }
+      out.rotated.push({ part: name.slice(0, -6), bytes: buf.length, gzBytes: gz.length });
+    }
+  } finally { unlock(); }
+  return out;
 }
 
 /**
@@ -471,7 +592,8 @@ export function adoptStore(next, { journals = {} } = {}) {
     // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
     // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
     // writer's revs, so an event a listener already took is skipped)
-    let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    let before = null; try { before = existsSync(f) ? normKeeping(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    if (before) { assertWritable(before); keepStore(before, next); }
     // done-means-merged@1: a status that arrives as landed / built / complete without the evidence is refused here too
     if (before) next = core.enforceDoneGuard(before, next, { by: 'builds-live' }).store;
     if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
@@ -492,7 +614,7 @@ export function adoptStore(next, { journals = {} } = {}) {
 /** cutover adopt: main's newer builds → the tables (withStore: row-level patch, re-read on a conflict). The ids taken. */
 export function adoptRemote(next) {
   let taken = [];
-  withStore((s) => { const m = merge.mergeStores(s, core.normalizeStore(next)); taken = m.taken; return m.taken.length ? m.store : s; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
+  withStore((s) => { const m = merge.mergeStores(s, normKeeping(next)); taken = m.taken; return m.taken.length ? m.store : s; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
   return taken;
 }
 /** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
@@ -515,17 +637,34 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   { const prev = new Map((before?.builds ?? []).map((b) => [b.id, b]));
     const touched = (after?.builds ?? []).filter((b) => JSON.stringify(b.steps) !== JSON.stringify(prev.get(b.id)?.steps)).map((b) => b.id);
     if (touched.length) { const d = core.dedupeStoreSteps(after, { ids: touched }); for (const r of d.report) process.stderr.write(`builds-store: ${r.id} had repeated steps: ${r.before} → ${r.after}\n`); } }
+  // S5-01: a checkout older than the store must not write it (it would write the builds back without what it does not know)
+  assertWritable(before);
   const now = new Date().toISOString();
   const changes = core.diffStores(before, after, now);
   const draftChanged = JSON.stringify(before.drafts) !== JSON.stringify(after.drafts);
   const metaChanged = JSON.stringify([before.meta, before.rules]) !== JSON.stringify([after.meta, after.rules]);
   if (!changes.length && !draftChanged && !metaChanged) return { store: before, changes: [], rev: before.rev };
-  after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
+  // each changed build is stored (and journalled) in the shape every later read gives it, so the next write's diff
+  // starts from exactly what this journal line holds (B4-07: a journal diff is only as good as its base)
+  // `journalHash` on a build = the hash of the record as its last journal line left it. A build whose record no longer
+  // matches (changed by a whole-record put, by a writer from before the diffs, by a heal on read) is journalled whole.
+  const chained = new Set();
+  { const at = new Map(after.builds.map((b, i) => [b, i]));
+    for (const c of changes) if (c.after && at.has(c.after)) {
+      const shaped = keepBuild(c.after, core.normBuild(c.after, { now }));
+      if (c.before?.journalHash && c.before.journalHash === journalHashOf(c.before)) chained.add(c.id);
+      shaped.journalHash = journalHashOf(shaped);
+      after.builds[at.get(c.after)] = shaped; c.after = shaped;
+    } }
+  after.rev = (before.rev ?? 0) + 1; after.updatedAt = now; after.storeVersion = STORE_VERSION;
   const entry = { rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) };
-  if (remoteOn()) writeStoreRemote(before, after, changes, entry, { draftChanged, metaChanged });
+  // B4-07: the stored line holds a diff of each changed build (a full copy every FULL_EVERY revisions); `entry` stays
+  // whole for the live publish and the hooks
+  const line = JC.slimEntry(entry, { fullEvery: journalFullEvery(), chained: (c) => chained.has(c.id) });
+  if (remoteOn()) writeStoreRemote(before, after, changes, line, { draftChanged, metaChanged });
   else { const f = storeFile(); mkdirSync(dirname(f), { recursive: true }); writeStoreFile(f, after); }
   foldOrigins(after);
-  journal(entry);
+  journal(entry, line);
   // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
   if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
@@ -545,19 +684,20 @@ export function withStore(fn, meta = {}) {
 function withStoreOnce(fn, meta) {
   const before = readStore();
   const foreign = [];
-  const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
+  const base = exportsOn() ? keepStore(before, absorbForeign(normKeeping(JSON.parse(JSON.stringify(before))), foreign)) : before;
   if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
   const start = foreign.length ? readStore() : before;
-  const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
+  const r = fn(normKeeping(JSON.parse(JSON.stringify(start))));
   const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
   // pipeline-2@1 (framework/spec/PIPELINE-2.md): forward-only for every Pipeline 2.0 build and step; a backward move is
   // refused (the old status stays), logged here and in the journal line; a hand-made forward move gets its at / by
   const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli' });
-  const next = flowed.store;
+  // S5-01: whatever fn, the guards or a merge rebuilt, a stored field this checkout does not know stays on its record
+  const next = keepStore(start, flowed.store);
   if (flowed.refused.length) {
     const text = flowed.refused.map((x) => `refused ${x.id}${x.step ? `/${x.step}` : ''} ${x.from || '(none)'} → ${x.to || '(none)'}: ${x.why}`);
     process.stderr.write(text.map((t) => `builds-store: ${t}\n`).join(''));
-    meta = { ...meta, note: [meta.note, ...text].filter(Boolean).join(' · ').slice(0, 2000) };
+    meta = { ...meta, note: clip([meta.note, ...text].filter(Boolean).join(' · '), 2000) };
   }
   // demo-build@1: a demo write (meta.demo, the live demo's acts) may touch demo builds only; anything else is refused whole
   if (meta.demo === true) { const bad = core.demoViolations(start, next); if (bad.length) throw new DemoGuardError(`demo action refused: ${bad.map((x) => x.id).join(', ')} ${bad.length === 1 ? 'is' : 'are'} not demo build(s) (id prefix ${core.DEMO_PREFIX}, tag demo: true)`, { builds: bad.map((x) => x.id), action: meta.action || '' }); }
@@ -595,7 +735,7 @@ export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', ex
     if (mutate) mutate(b, s);
     b.updatedAt = at;
     return s;
-  }, { by, action, note: `${id}${step ? `/${step}` : ''} → ${to}${why ? `: ${why}` : ''}`.slice(0, 500) });
+  }, { by, action, note: clip(`${id}${step ? `/${step}` : ''} → ${to}${why ? `: ${why}` : ''}`, 500) });
   const b = core.findBuild(r.store, id);
   out = { build: b, step: step ? b.steps.find((x) => x.id === step || x.uid === step) : null, rev: r.rev };
   return out;
@@ -712,9 +852,9 @@ export function verifyJournal(pointer, dir = journalHome().dir) {
   if (journalMode() !== 'hub' && journalMode() !== 'explicit') return { ok: true, checked: 0, failed: [], warning: 'journal: not checked (hub not mounted)' };
   const failed = [];
   for (const [k, e] of Object.entries(pointer.parts || {})) {
-    const f = join(dir, `${k}.jsonl`);
-    if (!existsSync(f)) { failed.push(`${k}: missing on the hub`); continue; }
-    const buf = readFileSync(f);
+    const f = [join(dir, `${k}.jsonl`), join(dir, `${k}.jsonl.gz`)].find((x) => existsSync(x)); // .gz: rotated (rotateJournal)
+    if (!f) { failed.push(`${k}: missing on the hub`); continue; }
+    const buf = readPart(f);
     if (e.sealed && (buf.length !== e.bytes || sha256(buf) !== e.sha256)) failed.push(`${k}: sealed part changed (${buf.length} bytes, pointer says ${e.bytes})`);
     if (!e.sealed && (buf.length < e.bytes || sha256(buf.subarray(0, e.bytes)) !== e.sha256)) failed.push(`${k}: open part lost lines (below its floor of ${e.bytes} bytes)`);
   }
@@ -765,16 +905,26 @@ export function migrateJournal({ apply = false } = {}) {
 /** Restore one build to the state it had at journal revision `rev` (itself a new, journalled write). */
 export function journalOf(id) {
   if (remoteOn()) return remoteJournalOf(id);
+  return JC.expandHistory(localJournalEntries(id), id);
+}
+/** Every local journal entry that names build `id` (cut to that build), from the parts in `dirs` or the journal's own. */
+function localJournalEntries(id, dirs = null) {
   const out = [];
-  for (const key of Object.keys(journalParts()).sort()) for (const line of journalPartText(key).split('\n')) {
-    if (!line.trim()) continue; let e; try { e = JSON.parse(line); } catch { continue; }
-    for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
+  const texts = dirs
+    ? dirs.flatMap((d) => { try { return readdirSync(d).filter((f) => PART_RE.test(f)).sort().map((f) => readPart(join(d, f)).toString('utf8')); } catch { return []; } })
+    : Object.keys(journalParts()).sort().map((key) => journalPartText(key));
+  for (const text of texts) for (const line of text.split('\n')) {
+    // a cheap test first: a part is tens of MB and most lines are about other builds
+    if (!line.trim() || !line.includes(JSON.stringify(id))) continue;
+    let e; try { e = JSON.parse(line); } catch { continue; }
+    const builds = (e.builds ?? []).filter((b) => b.id === id);
+    if (builds.length) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, builds });
   }
   return out;
 }
 /** journalOf on axf-data: every builds/journal/* key, oversized entries read from their record. */
 function remoteJournalOf(id) {
-  const out = [];
+  const found = [];
   let after = '';
   const keys = [];
   for (;;) { const l = files.callSync({ op: 'list', ns: 'builds', prefix: 'journal/', after }); keys.push(...l.items.filter((i) => i.kind === 'journal').map((i) => i.path)); if (!l.next) break; after = l.next; }
@@ -785,17 +935,19 @@ function remoteJournalOf(id) {
       for (const x of r.entries) {
         let e = x.entry;
         if (e.large) { const big = files.callSync({ op: 'get', key: e.large }); if (big) e = big.data; }
-        for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
+        const builds = (e.builds ?? []).filter((b) => b.id === id);
+        if (builds.length) found.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, builds });
       }
       if (!r.next) break; since = r.next;
     }
   }
-  return out.sort((a, b) => a.rev - b.rev);
+  return JC.expandHistory(found, id);
 }
 export function restoreBuild(id, rev, by = 'cli') {
   const h = journalOf(id).find((x) => x.rev === Number(rev));
+  if (h?.broken) throw new Error(`journal revision ${rev} of ${id} is a diff whose base revision is not in the journal: restore the nearest full copy instead (history marks them)`);
   if (!h?.after) throw new Error(`no journal revision ${rev} for ${id}`);
-  return withStore((s) => { s.builds = s.builds.filter((b) => b.id !== id); s.builds.push(core.normBuild(h.after)); return s; }, { by, action: 'restore', note: `${id} restored to journal rev ${rev}` });
+  return withStore((s) => { s.builds = s.builds.filter((b) => b.id !== id); s.builds.push(keepBuild(h.after, core.normBuild(h.after))); return s; }, { by, action: 'restore', note: `${id} restored to journal rev ${rev}` });
 }
 
 /**
@@ -833,6 +985,41 @@ export function dedupeStepsNow({ apply = false, ids = null, by = 'dedupe-steps',
   }
   const total = { before: plan.reduce((n, r) => n + r.before, 0), after: plan.reduce((n, r) => n + r.after, 0) };
   return { apply, builds: plan, total };
+}
+
+/**
+ * One-off repair of text damaged by B4-01 (a multi-byte character split at a 64 KB pipe boundary, stored as U+FFFD):
+ * every string of every build that holds U+FFFD gets its characters back from the newest journal revision of the same
+ * field that is clean (framework/plan/builds-journal-core.mjs repairText: matched by the text around the damage, so
+ * only the lost characters change). One journalled write per build. `apply: false` = the dry run. `journalDirs` reads
+ * local journal parts instead of the store's own journal (the hub's files are faster than paging axf-data).
+ * → { apply, builds: [{ id, fields: [{ path, fixed, left, before, after }] }], fixed, left }
+ */
+export function repairMojibakeNow({ apply = false, by = 'repair-mojibake', ids = null, journalDirs: dirs = null } = {}) {
+  const want = ids?.length ? new Set(ids) : null;
+  const report = [];
+  for (const b of loadStore().builds) {
+    if (want && !want.has(b.id)) continue;
+    const bad = JC.damagedStrings(core.compactBuild(b)); if (!bad.length) continue;
+    const history = (dirs ? JC.expandHistory(localJournalEntries(b.id, dirs), b.id) : journalOf(b.id)).filter((h) => h.after).reverse();
+    const fields = bad.map(({ path, value }) => {
+      const r = JC.repairText(value, history.map((h) => JC.valueAt(h.after, path)));
+      const i = Math.max(0, value.indexOf('\uFFFD') - 30);
+      return { path, text: JC.pathText(path), fixed: r.fixed, left: r.left, before: clip(value.slice(i), 80), after: clip(r.text.slice(i), 80), orig: value, value: r.text };
+    });
+    report.push({ id: b.id, revisions: history.length, fields });
+  }
+  if (apply) for (const row of report.filter((r) => r.fields.some((f) => f.fixed))) {
+    withStore((s) => {
+      const b = core.findBuild(s, row.id); if (!b) return s;
+      // only a string that is still exactly what the dry run saw is replaced (another writer may have changed it since)
+      for (const f of row.fields) if (f.fixed && JC.valueAt(b, f.path) === f.orig) JC.setAt(b, f.path, f.value);
+      b.updatedAt = new Date().toISOString();
+      return s;
+    }, { by, action: 'repair-mojibake', note: `${row.id}: ${row.fields.reduce((n, f) => n + f.fixed, 0)} character(s) put back from the journal` });
+  }
+  const sum = (k) => report.reduce((n, r) => n + r.fields.reduce((m, f) => m + f[k], 0), 0);
+  return { apply, builds: report.map((r) => ({ id: r.id, revisions: r.revisions, fields: r.fields.map(({ path, value, orig, ...f }) => f) })), fixed: sum('fixed'), left: sum('left') };
 }
 
 export const currentProfile = () => activeProfile().id;
@@ -902,10 +1089,10 @@ async function main(argv) {
       if (close) {
         const src = gi('--source') || 'auto-lander';
         const o = [...list].reverse().find((y) => y.result === 'started' && y.source === src);
-        if (o) { o.result = close === 'ok' ? 'ok' : 'failed'; o.endedAt = at; o.note = `${o.note ? `${o.note} ` : ''}${gi('--note') || (close === 'ok' ? 'Ok.' : 'Failed.')}`.slice(0, 600); closed = o; if (close === 'ok' && b.failure && ['clash', 'ci-red'].includes(b.failure.kind)) b.failure = null; }
+        if (o) { o.result = close === 'ok' ? 'ok' : 'failed'; o.endedAt = at; o.note = clip(`${o.note ? `${o.note} ` : ''}${gi('--note') || (close === 'ok' ? 'Ok.' : 'Failed.')}`, 600); closed = o; if (close === 'ok' && b.failure && ['clash', 'ci-red'].includes(b.failure.kind)) b.failure = null; }
       }
       b.attempts = BP.normAttempts(list);
-      if (added || closed) { b.updatedAt = at; if (added) b.notes.push({ text: `Attempt ${b.attempts.length} (${added.source}): ${added.kind} ${added.strategy}${added.fixStrategy ? ` (${added.fixStrategy})` : ''} → ${added.result}${added.note ? `: ${added.note.slice(0, 200)}` : ''}`, at }); }
+      if (added || closed) { b.updatedAt = at; if (added) b.notes.push({ text: `Attempt ${b.attempts.length} (${added.source}): ${added.kind} ${added.strategy}${added.fixStrategy ? ` (${added.fixStrategy})` : ''} → ${added.result}${added.note ? `: ${clip(added.note, 200)}` : ''}`, at }); }
       return x;
     }, { by, action: 'attempt', note: id });
     return out({ ok: true, added, closed }, `${id}: ${added ? `attempt added (${added.kind} ${added.strategy})` : 'nothing new'}${closed ? `; attempt ${closed.n} closed ${closed.result}` : ''}`);
@@ -931,8 +1118,16 @@ async function main(argv) {
     const sub = rest[0] || 'status';
     if (sub === 'migrate') { const r = migrateJournal({ apply: argv.includes('--apply') }); if (!r.ok) process.exitCode = 1; return out(r, `${r.dry ? 'dry run: ' : ''}${r.parts.length} part(s)${r.parts.reduce((a, p) => a + p.added, 0) ? `, ${r.parts.reduce((a, p) => a + p.added, 0)} byte(s) added on the hub` : ', the hub has every line'}${r.untracked ? `; ${r.untracked.length} repo part(s) untracked` : ''}${r.missing?.length ? `\n✗ ${r.missing.join('\n✗ ')}` : ''}`); }
     if (sub === 'verify') { const r = verifyJournal(readJson(join(REPO_ROOT, JOURNAL_POINTER_REL))); if (!r.ok) process.exitCode = 1; return out(r, r.warning || (r.ok ? `ok: ${r.checked} part(s) match the pointer` : r.failed.map((f) => `✗ ${f}`).join('\n'))); }
+    if (sub === 'rotate') { const di = rest.indexOf('--days'); const r = rotateJournal({ apply: rest.includes('--apply'), days: di >= 0 ? Number(rest[di + 1]) || 30 : 30 }); return out({ ok: true, ...r }, `${r.apply ? 'rotated' : 'dry run (--apply writes)'}: ${r.rotated.length} part(s) older than ${r.days} days${r.rotated.length ? ` (${r.rotated.map((x) => `${x.part} ${x.bytes} → ${x.gzBytes} bytes`).join(', ')})` : ''}, ${r.kept} kept`); }
     if (sub === 'status') { const p = journalParts(); return out({ ok: true, home: journalHome(), mode: journalMode(), parts: p }, `journal home ${journalDir()} (${journalMode()}): ${Object.keys(p).length} part(s)`); }
-    throw new Error('journal migrate [--apply] | verify | status');
+    throw new Error('journal migrate [--apply] | verify | status | rotate [--days n] [--apply]');
+  }
+  if (cmd === 'repair-mojibake') {
+    const ji = rest.indexOf('--journal-dir'); const dirs = rest.flatMap((a, i) => (a === '--journal-dir' && rest[i + 1] ? [resolve(rest[i + 1])] : []));
+    const r = repairMojibakeNow({ apply: rest.includes('--apply'), by: process.env.AXF_ACTOR || 'repair-mojibake', journalDirs: dirs.length ? dirs : null, ids: rest.filter((a, i) => !a.startsWith('--') && !(ji >= 0 && rest[i - 1] === '--journal-dir')) });
+    if (r.left) process.exitCode = 1;
+    const rows = r.builds.flatMap((b) => b.fields.map((f) => `${b.id} ${f.text}: ${f.fixed} put back${f.left ? `, ${f.left} with no clean copy in the journal` : ''}\n    was  …${f.before}\n    now  …${f.after}`));
+    return out({ ok: !r.left, ...r }, `${r.apply ? 'repaired' : 'dry run (--apply writes)'}: ${r.builds.length} build(s) with damaged text, ${r.fixed} character(s) put back, ${r.left} left\n${rows.join('\n')}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'done-means-merged') {
@@ -980,7 +1175,7 @@ async function main(argv) {
     const lines = reg.profiles.map((p) => { const pp = core.profileProgress(s, p.id); return `${p.id.padEnd(16)} ${String(core.buildsOf(s, p.id).length).padStart(4)} builds · ${pp.pct}% (${pp.done}/${pp.total}) · draft ${core.draftOf(s, p.id).ops.length} op(s)`; });
     return out({ ok: true, rev: s.rev, file: storeFile(), profiles: reg.profiles.map((p) => ({ id: p.id, builds: core.buildsOf(s, p.id).length, progress: core.profileProgress(s, p.id) })) }, `${storeFile()} rev ${s.rev} · ${s.builds.length} records\n${lines.join('\n')}`);
   }
-  if (cmd === 'history') { const h = journalOf(rest[0]); return out({ ok: true, history: h.map(({ after, ...x }) => x) }, h.map((x) => `rev ${x.rev} ${x.at} ${x.by} ${x.action} ${x.op} (build rev ${x.buildRev})`).join('\n') || 'no history'); }
+  if (cmd === 'history') { const h = journalOf(rest[0]); return out({ ok: true, history: h.map(({ after, ...x }) => x) }, h.map((x) => `rev ${x.rev} ${x.at} ${x.by} ${x.action} ${x.op} (build rev ${x.buildRev})${x.broken ? ' [diff without its base: not restorable]' : ''}`).join('\n') || 'no history'); }
   if (cmd === 'restore') { const r = restoreBuild(rest[0], rest[1]); return out({ ok: true, rev: r.rev }, `${rest[0]} restored (store rev ${r.rev})`); }
   if (cmd === 'progress') {
     const p = rest[0] || currentProfile();

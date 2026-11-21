@@ -99,7 +99,7 @@ try {
     const log = join(dir, 'calls.jsonl');
     const spy = join(dir, 'spy-data-call.mjs');
     writeFileSync(spy, `import { appendFileSync } from 'node:fs'; import { execFileSync } from 'node:child_process';
-let input = ''; for await (const c of process.stdin) input += c;
+const chunks = []; for await (const c of process.stdin) chunks.push(c); const input = Buffer.concat(chunks).toString('utf8');
 appendFileSync(${JSON.stringify(log)}, input + '\\n');
 process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT, 'framework/cli/data-call.mjs'))}], { input, maxBuffer: 1 << 30 }));`);
     process.env.AXF_DATA_CALL_SYNC = spy;
@@ -167,6 +167,69 @@ process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT,
     const j = await (await fetch(`${url}/v1/builds/journal/${month}?since=0`, { headers: H })).json();
     assert.equal(j.entries.at(-1).entry.action, 'adopt');
     assert.deepEqual(io.adoptRemote(main), [], 'adopting the same copy again changes nothing');
+  });
+  // ---- deep audit, repair part B (store transport and encoding); the rest: check-store-encoding.mjs
+  await t('B4-01 cutover: a write far over 64 KB with multi-byte characters round-trips byte for byte (data-call over a real pipe)', async () => {
+    const BAD = '�';
+    const text = 'a→é…“”🙂·'.repeat(30000); // ~600 KB: nine 64 KB pipe chunks, a character across each boundary
+    files.callSync({ op: 'put', key: 'builds/encoding-test.json', data: { text }, create: true });
+    const back = files.callSync({ op: 'get', key: 'builds/encoding-test.json' }).data.text;
+    assert.ok(!back.includes(BAD), 'no U+FFFD');
+    assert.ok(Buffer.from(back, 'utf8').equals(Buffer.from(text, 'utf8')), 'the same bytes');
+    // the same through the store: a build whose brief and notes make the write (and its journal line) far bigger
+    const brief = 'Settings → Appearance · “UI Review” … 🙂 '.repeat(700).trim();
+    const notes = Array.from({ length: 60 }, (_, i) => ({ text: `${i} ${'→·é…🙂'.repeat(300)}`, at: new Date().toISOString() }));
+    io.withStore((s) => { s.builds.push({ id: 'big-text', title: 'Big → text', status: 'pending', profile: 'all', origin: { said: 'go', brief, at: new Date().toISOString() }, notes, steps: [{ id: 's1', text: 'Move A → B' }] }); return s; }, { by: 'test', action: 'add' });
+    const b = io.loadStore().builds.find((x) => x.id === 'big-text');
+    assert.ok(!JSON.stringify(b).includes(BAD), 'the build has no U+FFFD');
+    assert.equal(b.origin.brief, brief); assert.deepEqual(b.notes.map((x) => x.text), notes.map((x) => x.text));
+    const h = io.journalOf('big-text');
+    assert.ok(!JSON.stringify(h).includes(BAD), 'nor has its journal line'); assert.equal(h.at(-1).after.origin.brief, brief);
+  });
+  await t('S5-01 cutover: a field this checkout does not know survives a tick; the patch names only the build that changed', async () => {
+    const cur = files.callSync({ op: 'get', key: 'builds/store.json' });
+    const raw = cur.data.builds.find((x) => x.id === 'b1'); raw.planningV2 = [{ text: 'from a newer release' }];
+    cur.data.builds.find((x) => x.id === 'b2').futureField = { keep: true };
+    files.callSync({ op: 'put', key: 'builds/store.json', data: cur.data, ifMatch: cur.etag });
+    const log = join(dir, 'patch-calls.jsonl'); const spy = join(dir, 'spy-patch-call.mjs');
+    writeFileSync(spy, `import { appendFileSync } from 'node:fs'; import { execFileSync } from 'node:child_process';
+const chunks = []; for await (const c of process.stdin) chunks.push(c); const input = Buffer.concat(chunks).toString('utf8');
+appendFileSync(${JSON.stringify(log)}, input + '\\n');
+process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT, 'framework/cli/data-call.mjs'))}], { input, maxBuffer: 1 << 30 }));`);
+    process.env.AXF_DATA_CALL_SYNC = spy;
+    try {
+      io.withStore((s) => { s.builds.find((x) => x.id === 'b1').title = 'b1 once'; return s; }, { by: 'test', action: 'tick' });
+      io.withStore((s) => { s.builds.find((x) => x.id === 'b1').title = 'b1 ticked'; return s; }, { by: 'test', action: 'tick' });
+    } finally { delete process.env.AXF_DATA_CALL_SYNC; }
+    const patches = readFileSync(log, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((r) => r.op === 'patch');
+    assert.equal(patches.length, 2);
+    assert.deepEqual(patches.map((p) => p.body.lists.builds.map((x) => x.key)), [['b1'], ['b1']], 'only the build the caller changed is sent');
+    assert.ok(patches[0].body.journal.entry.builds[0].after, 'B4-07: a record changed outside the journal (the put above) is journalled whole');
+    assert.ok(patches[1].body.journal.entry.builds[0].diff && !patches[1].body.journal.entry.builds[0].after, 'B4-07: the next tick is a diff');
+    const after = await remote('builds/store.json');
+    assert.equal(after.builds.find((x) => x.id === 'b1').title, 'b1 ticked');
+    assert.deepEqual(after.builds.find((x) => x.id === 'b1').planningV2, [{ text: 'from a newer release' }], 'the unknown field is still on the build');
+    assert.deepEqual(after.builds.find((x) => x.id === 'b2').futureField, { keep: true }, 'and on the build nobody touched');
+    assert.equal(after.storeVersion, io.STORE_VERSION, 'the store carries the writer\'s schema version');
+    assert.equal(io.journalOf('b1').at(-1).after.title, 'b1 ticked', 'history rebuilds the record from the diff');
+  });
+  await t('S5-01 cutover: a checkout older than the store is refused', async () => {
+    const cur = files.callSync({ op: 'get', key: 'builds/store.json' });
+    files.callSync({ op: 'put', key: 'builds/store.json', data: { ...cur.data, storeVersion: io.STORE_VERSION + 1 }, ifMatch: cur.etag });
+    assert.throws(() => io.withStore((s) => { s.builds.find((x) => x.id === 'b1').title = 'old code'; return s; }, { by: 'test', action: 'old' }), (e) => e instanceof io.StoreTooNew);
+    assert.equal((await remote('builds/store.json')).builds.find((x) => x.id === 'b1').title, 'b1 ticked', 'nothing written');
+    const again = files.callSync({ op: 'get', key: 'builds/store.json' });
+    files.callSync({ op: 'put', key: 'builds/store.json', data: { ...again.data, storeVersion: io.STORE_VERSION }, ifMatch: again.etag });
+  });
+  await t('B4-09 cutover: the repo\'s orchestrator.json export is not rewritten (it dirtied the live checkout)', async () => {
+    const orch = join(dir, '_claude/builds/orchestrator.json');
+    const sentinel = `${JSON.stringify({ $export: 'written before the cutover', builds: [] })}\n`;
+    writeFileSync(orch, sentinel);
+    Object.assign(process.env, { AXF_DATA_DIR: dir, AXF_BUILDS_EXPORT: '1' }); // exports on, every export file inside the scratch folder
+    try { add('after-the-cut'); } finally { delete process.env.AXF_DATA_DIR; delete process.env.AXF_BUILDS_EXPORT; }
+    assert.ok(ids(await remote('builds/store.json')).includes('after-the-cut'), 'the write landed');
+    assert.equal(readFileSync(orch, 'utf8'), sentinel, 'orchestrator.json is untouched');
+    assert.ok(existsSync(`${process.env.AXF_BUILDS_STORE}.exports.json`), 'the export pass did run');
   });
   await t('rollback: writes refused (read_only)', async () => {
     setMode('rollback');
