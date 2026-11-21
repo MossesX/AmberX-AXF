@@ -60,7 +60,7 @@ export const tookFocus = () => set({ focus: null });
 
 /* ---------------------------------------------------------------- writes */
 
-type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'say';
+type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'emergency' | 'say';
 async function post(op: Op, body: Record<string, unknown>, { quiet = false } = {}): Promise<OpResult> {
   set({ busy: true });
   try {
@@ -82,6 +82,8 @@ export const linkItem = (id: string, l: Partial<Link>) => post('link', { id, ...
 export const unlinkItem = (id: string, l: { type: string; ref: string }) => post('unlink', { id, ...l });
 export const importItems = (data: unknown, parent: string | null) => post('import', { data, parent });
 export const sendToBuild = (id: string, o: { preview?: boolean; buildId?: string; said?: string } = {}) => post('build', { id, ...o }, { quiet: !!o.preview }) as Promise<OpResult | BuildPreview>;
+/** Send as an emergency build: the server takes it from Brett's own signed-in console only (403 otherwise). */
+export const sendToEmergency = (id: string, o: { buildId?: string; said?: string } = {}) => post('emergency', { id, ...o });
 export const sayCommand = (text: string) => post('say', { text });
 export async function deleteItem(id: string): Promise<OpResult> {
   set({ busy: true });

@@ -36,6 +36,16 @@ await t('plugin@1 manifest, lifecycle, commands, web part, never the old Plan St
   }
 });
 
+await t('Send to emergency: a Brett-only route, never a registered action or a console-control target', () => {
+  const srv = readFileSync(join(here, 'server/__init__.py'), 'utf8');
+  assert.match(srv, /@router\.post\("\/emergency"\)[\s\S]{0,700}who = brett_click\(request\)\s+if not who:\s+raise HTTPException\(403/, 'POST /emergency refuses everyone but Brett\'s signed-in click');
+  assert.match(srv, /body\.pop\("emergency", None\)/, 'POST /build drops an emergency flag from the body');
+  // the button's words sit in a <span>: only buttons with plain-text words become console-control targets (remote presses)
+  assert.match(readFileSync(join(here, 'web/ui.tsx'), 'utf8'), /onClick=\{sendEmergency\}><span>\{armed \? 'Confirm: send to emergency' : 'Send to emergency'\}<\/span><\/Button>/);
+  assert.doesNotMatch(readFileSync(join(here, 'web/index.tsx'), 'utf8'), /emergency/i, 'no action, menu entry or deep link sends to emergency');
+  assert.match(readFileSync(join(here, 'tree.mjs'), 'utf8'), /if \(emergency && !preview\) \{ const o = ownerFrom\(env\); if \(!o\.ok\) throw new tc\.TreeError\('forbidden'/, 'the CLI checks who asks before it writes anything');
+});
+
 // ---------------------------------------------------------------- core
 let s = tc.emptyState();
 await t('starts empty; add at any depth; default child kinds', () => {
