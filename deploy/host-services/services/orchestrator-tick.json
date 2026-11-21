@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "orchestrator-tick",
+  "title": "Orchestrator tick",
+  "description": "Pipeline 2.0 layer 1: the dispatcher. Splits new builds, watches the queue, accounts and agent slots, starts the next headless session, runs the before and after build rules. Cron, written by deploy/watchdog/cron.mjs.",
+  "kind": "tick",
+  "cron": "axf-orchestrator-tick",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "runner": "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-orchestrator-tick.log"
+}

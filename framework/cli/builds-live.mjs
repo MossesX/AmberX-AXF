@@ -51,6 +51,7 @@ import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeO
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
+import { containerRuns } from './host-mode.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -187,6 +188,8 @@ export function flushLiveSoon() {
     if (existsSync(outboxFile()) && !storeOnTables()) { try { toConsole({ [STORE_REL]: storeText(readStoreNow()) }); } catch { /* the next publish brings it */ } }
     return;
   }
+  // host-service builds-live (HOST-SERVICES.md): in host mode the host runner publishes the outbox; this copy only queues.
+  if (!containerRuns('builds-live')) return;
   if (env('AXF_BUILDS_LIVE_SYNC') === '1') { flushLive(); return; }
   try {
     const c = spawn(process.execPath, [SELF, 'flush', '--quiet'], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env: process.env });

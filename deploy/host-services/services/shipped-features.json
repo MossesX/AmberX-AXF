@@ -1,0 +1,27 @@
+{
+  "$axf": "host-service@1",
+  "id": "shipped-features",
+  "title": "Shipped features watcher",
+  "description": "Keeps the feature ledger (SQLite) current from new build events, recent PRs and the deploy log, and ships manifests for newly landed builds, whether or not the console is up. The console's Shipped features grid reads the same ledger.",
+  "kind": "daemon",
+  "unit": "axf-shipped-features.service",
+  "plugin": "shipped-features",
+  "runner": "deploy/host-services/workers/shipped-features.mjs",
+  "sudo": [
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task shipped-sync", "why": "ledger sync: writes .axf-console/plugins/shipped-features/ledger.sqlite in the root-owned checkout" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task shipped-landed", "why": "ship manifests of newly landed builds through the builds store" }
+  ],
+  "health": { "intervalSec": 120, "timeoutMs": 5000, "staleSec": 1800 },
+  "actions": [
+    { "id": "sync", "title": "Sync now", "description": "New build events, recent PRs and the deploy log into the ledger.", "timeoutMs": 600000 },
+    { "id": "ship-landed", "title": "Ship landed builds", "description": "Gather and send manifests for builds that landed without one.", "timeoutMs": 600000 }
+  ],
+  "settings": {
+    "intervalSec": { "type": "integer", "default": 120, "min": 30, "max": 3600, "title": "Sync every (s)" },
+    "shipLanded": { "type": "boolean", "default": true, "title": "Ship manifests for landed builds on each pass" }
+  },
+  "replaces": [
+    { "kind": "loop", "name": "_maybe_sync", "where": "apps/console-web/plugins/shipped-features/server/__init__.py" }
+  ],
+  "after": ["builds-live"]
+}

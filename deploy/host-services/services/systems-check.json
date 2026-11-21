@@ -1,0 +1,35 @@
+{
+  "$axf": "host-service@1",
+  "id": "systems-check",
+  "title": "Systems check runner",
+  "description": "Runs the host checks that touch Docker, disk or git (the console doctor's report, disk use, Docker space, the checkout's git state) on a timer and runs their Auto fixes from a fixed list, so a dead console is still seen and fixed. Checks that only read console state stay in the container.",
+  "kind": "daemon",
+  "unit": "axf-systems-check.service",
+  "plugin": "systems-check",
+  "runner": "deploy/host-services/workers/systems-check.mjs",
+  "sudo": [
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task doctor-report", "why": "the host report (console-doctor.sh --report): mosh, tmux, Docker, the update cron, Claude, git auth, volumes" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task git-status", "why": "the checkout's git state (root-owned repo)" },
+    { "cmd": "/usr/bin/docker system df", "why": "Docker space use for the disk check" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task console-install", "why": "Auto fix host-docker / host-update-cron: re-run the console installer" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task claude-pick-install", "why": "Auto fix host-claude-pick" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task keyfile-perms", "why": "Auto fix host-anthropic-keyfile: chmod 600 /root/.anthropic-key" }
+  ],
+  "health": { "intervalSec": 300, "timeoutMs": 5000, "staleSec": 2700 },
+  "actions": [
+    { "id": "run-checks", "title": "Run host checks now", "timeoutMs": 180000 },
+    { "id": "fix", "title": "Auto fix", "description": "Run one host check's fix from the whitelist.", "confirm": true, "timeoutMs": 900000,
+      "args": { "check": { "type": "enum", "required": true, "values": ["host-report", "host-docker", "host-update-cron", "host-anthropic-keyfile", "host-claude-pick"] } } },
+    { "id": "checks", "title": "Last results", "modes": ["container", "shadow", "host"] }
+  ],
+  "settings": {
+    "intervalSec": { "type": "integer", "default": 300, "min": 60, "max": 3600, "title": "Run every (s)" },
+    "diskWarnPct": { "type": "integer", "default": 85, "min": 50, "max": 99, "title": "Disk warning at %" },
+    "diskErrorPct": { "type": "integer", "default": 95, "min": 50, "max": 99, "title": "Disk error at %" }
+  },
+  "replaces": [
+    { "kind": "cron", "name": "axf-doctor", "where": "deploy/install-console.sh (console-doctor.sh --report every 15 minutes)" },
+    { "kind": "thread", "name": "Jobs._run", "where": "apps/console-web/plugins/systems-check/server/hostfix.py (Auto fix through Mosses and vps.run for the fixes listed in HOST_FIXES)" }
+  ],
+  "after": ["hub-sync"]
+}

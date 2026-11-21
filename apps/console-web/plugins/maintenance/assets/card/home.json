@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "maintenance-home",
+  "name": "Maintenance",
+  "version": "1.0.0",
+  "description": "Maintenance on Home: Server health: disk, memory, swap, load, alert levels, last clean-up run.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Maintenance",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "maintenance",
+      "command": "status"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}
