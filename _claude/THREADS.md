@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Fix main CI, red after the s16 + s7 hand lands (`fix-main-ci-red-after-s16-s7-hand-`, Fable; Brett Nov 20, run 44801650701 on `7f12868`): the axhub-web fold left check-plugin-catalog crashing (axhub kind has no `into`) and axhub-approvals without a token-registry block; underneath, settings-iface defaults for the six axhub-* plugins, help for eight hub-page controls, hub-pages relay log through data_store, request page description, decision numbers in hubPages/test.mjs. s1–s4 fixed it in parallel, s5 merged them (three clashes, s4 side kept), every CI check that covers the changed files passes; report `_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md` | ready to land | `claude/fix-main-ci-red-after-s16-s7-hand---s5` |  | lander opens the one PR; its CI run is the green that counts | 2026-11-20 |
 | VPS reaper: the VPS kills its own ghosts (`vps-reaper-ghosts`): `framework/cli/reaper.mjs` (vps-reaper@1) every 2 min by cron (`deploy/cron/axf-reaper`) and before every dispatcher tick, launch, auto-land, auto-lander and merge-queue pass; kills finished `claude -p` still running (wrapper records a clean finish, run handed to the lander), dead tmux axf-*, ghost agent slots (host gone / pid reused / settled build), ownerless heavy locks, leftover test servers on ports, stale /tmp/axf-limit-* and leaked state tmp files; never a working build (log/meter within 20 min, background tasks up to 90 min); every kill in reaper.jsonl + AmberX Automatic fixes note + phone FYI (pipeline.reaper); first live pass cleared 27 ghosts + 326 temp files | review | `claude/vps-reaper-ghosts` | #840 | landing: CI on the PR, then the merge queue; the cron goes live with the next console deploy (install-console.sh) | 2026-11-18 |
 | Fix launcher crash: duplicate steps + brief too big (`fix-launcher-crash-duplicate-steps-brief`): steps merged by text + dedupe guard on every write (16 steps had grown to 2,682); live store cleaned (29 builds, 8,139 → 340 steps); launcher feeds the brief on stdin (no E2BIG); brief cap `builds.briefMaxBytes`; launch-crash auto-retry with backoff + systems check item; land-clash bounce (Phone Connect #787 requeued with a merge-main step); report `_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md` | review | `claude/fix-launcher-crash-duplicate-steps-brief` | #827 | landing: CI on the PR, then merge; until it lands, writers on the old merge can re-add repeats (the guard here heals them) | 2026-11-18 |
 | VPS never gives up (`vps-never-gives-up-fix-land-every-build`, Opus): the retry ladder walks until every rung is tried (attempt caps lifted to the contract ceilings, `untilExhausted`), then the build is marked Failed in the same tick; FYI push on every attempt (`pipeline.attempt`) | in-pr | `claude/vps-never-gives-up-fix-land-every-build` | (VPS opens it) | landing: CI on the PR, then merge. Report `_claude/builds/reports/vps-never-gives-up-fix-land-every-build.md` | 2026-11-18 |
@@ -836,91 +837,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 06:34 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 06:34 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:37 UTC · `fable-full-audit-ui-overhaul-conso` s4 done (all) · orchestrator
-- 2026-11-20 06:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 06:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:52 UTC · `fable-full-audit-ui-overhaul-conso` s5 done (all) · orchestrator
-- 2026-11-20 06:52 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s5 (all) · builds-live
-- 2026-11-20 06:53 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:53 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:54 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 06:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 06:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:05 UTC · `pipeline-2-0-fully-autonomous-buil` added (0 steps) (all) · plan-studio-2
-- 2026-11-20 07:05 UTC · `pipeline-2-0-fully-autonomous-buil` → splitting (all) · orchestrator
-- 2026-11-20 07:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:06 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:06 UTC · `fable-full-audit-ui-overhaul-conso` → building, note (all) · foreign-write
-- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` added (0 steps) (all) · foreign-write
-- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · orchestrator
-- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` → pending, note (all) · foreign-write
-- 2026-11-20 07:07 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · orchestrator
-- 2026-11-20 07:08 UTC · `fable-full-audit-ui-overhaul-conso` s6 done (all) · orchestrator
-- 2026-11-20 07:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 07:09 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · orchestrator
-- 2026-11-20 07:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 07:09 UTC · `fable-full-audit-ui-overhaul-conso` s6 done, → building, note (all) · foreign-write
-- 2026-11-20 07:09 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · foreign-write
-- 2026-11-20 07:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 07:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 07:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:13 UTC · `fable-full-audit-ui-overhaul-conso` s6 undone (all) · orchestrator
-- 2026-11-20 07:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:17 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:18 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:20 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:24 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:36 UTC · `fable-full-audit-ui-overhaul-conso` s6 done (all) · ops-slots-watchdog-cleanup
-- 2026-11-20 07:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:42 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 07:48 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 07:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:49 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 07:50 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 07:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:53 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:58 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 07:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 08:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 08:22 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 08:25 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 08:26 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 08:26 UTC · `fable-full-audit-ui-overhaul-conso` s9 done (all) · orchestrator
-- 2026-11-20 08:26 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:26 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:27 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 08:33 UTC · `fable-full-audit-ui-overhaul-conso` s10 done (all) · orchestrator
@@ -1236,6 +1152,91 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 00:48 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
 - 2026-11-21 00:49 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
 - 2026-11-21 00:51 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 00:52 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 00:54 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 00:55 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 00:55 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 00:56 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
+- 2026-11-21 00:56 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 00:57 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
+- 2026-11-21 00:59 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:02 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:03 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 01:04 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
+- 2026-11-21 01:06 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:08 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:09 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:10 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 01:11 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
+- 2026-11-21 01:11 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:12 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 01:13 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
+- 2026-11-21 01:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:18 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:19 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 01:20 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
+- 2026-11-21 01:21 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:23 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:24 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:25 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 01:26 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
+- 2026-11-21 01:27 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:28 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 01:29 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
+- 2026-11-21 01:30 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:34 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:35 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 01:36 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
+- 2026-11-21 01:36 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:39 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:40 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:41 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 01:42 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
+- 2026-11-21 01:43 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:44 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 01:45 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
+- 2026-11-21 01:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:51 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:52 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 01:53 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 01:53 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:56 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 01:57 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 01:58 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 01:59 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 02:00 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 02:01 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 02:02 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 02:13 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
+- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand-` merged, note (all) · reconciler
+- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand` added (5 steps) (all) · orchestrator
+- 2026-11-21 03:45 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
+- 2026-11-21 05:04 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
+- 2026-11-21 05:04 UTC · `ci-speed-ci-failure-reports-lean` → split (all) · amber
+- 2026-11-21 05:04 UTC · `nov-20-fix-list-voice-console-cont` → split (all) · amber
+- 2026-11-21 05:05 UTC · `plan-studio-live-progress-one-stor` → split (all) · amber
+- 2026-11-21 05:05 UTC · `console-tabs-plugins-open-in-tabs-` → split (all) · amber
+- 2026-11-21 05:09 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
+- 2026-11-21 05:15 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-21 05:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 05:16 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
+- 2026-11-21 05:16 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 05:16 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 05:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-21 05:19 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 05:20 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-21 05:20 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 05:20 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 05:20 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 05:21 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-21 05:21 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 05:21 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
+- 2026-11-21 05:21 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 05:22 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 05:22 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 06:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
+- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · console
+- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · foreign-write
 
 ## Token passes (log)
 

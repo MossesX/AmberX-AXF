@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T00:51:43.605Z",
+ "updatedAt": "2026-11-21T07:00:42.999Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -55,11 +55,152 @@
    "steps": []
   },
   {
+   "id": "fix-main-ci-red-after-s16-s7-hand",
+   "title": "Fix main CI (red after s16 + s7 hand lands)",
+   "category": "",
+   "detail": "",
+   "status": "landing",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
+   "pr": "#867",
+   "mergedAt": "2026-11-21T02:24:10Z",
+   "createdAt": "2026-11-20T23:41:14.451Z",
+   "updatedAt": "2026-11-21T02:25:44Z",
+   "builtAt": "2026-11-20T23:58:56Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (orchestrator): it was started outside the builds store and landed as 9d30f6dae.",
+     "at": "2026-11-21T02:25:44Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-main-ci-red-after-s16-s7-hand rev 1 sent to Shipped features (orchestrator): landed 9d30f6dae, 4 file(s), 6 test line(s), 0 open.",
+     "at": "2026-11-21T02:25:44Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by orchestrator): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T02:25:47.976Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s5\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s5 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s5.\n\n## Your step\nTests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR\n\nFiles: _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:36:29.276Z",
+     "note": "",
+     "uid": "st-mwpsd9zc0164hd",
+     "createdAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s2",
+     "text": "Run 44801650701 on 7f128689.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:14:42.202Z",
+     "note": "",
+     "uid": "st-mwpsd9zc02htlz",
+     "createdAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix it, CI green, land.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-21T00:08:11.808Z",
+     "note": "",
+     "uid": "st-mwpsd9zc03j2ph",
+     "createdAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s4",
+     "text": "Every step on Fable.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:43:32.724Z",
+     "note": "",
+     "uid": "st-mwpsd9zc04sfqp",
+     "createdAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:51:54.493Z",
+     "note": "",
+     "uid": "st-mwpsd9zc05lwz8",
+     "createdAt": "2026-11-21T02:25:44Z"
+    }
+   ]
+  },
+  {
    "id": "console-tabs-plugins-open-in-tabs-",
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,7 +208,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:43:32.609Z",
+   "updatedAt": "2026-11-21T05:22:01.800Z",
    "builtAt": "",
    "notes": [
     {
@@ -85,6 +226,126 @@
     {
      "text": "Split by Fable into 14 steps (400 min, 9 Fable).",
      "at": "2026-11-21T00:43:30.956Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T00:52:01.672Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T00:55:02.396Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T00:56:01.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 2.",
+     "at": "2026-11-21T00:57:02.199Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:08:01.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:11:01.292Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:12:01.737Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 3.",
+     "at": "2026-11-21T01:13:01.864Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:23:02.170Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:27:02.143Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:28:01.966Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 4.",
+     "at": "2026-11-21T01:29:01.173Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:39:01.532Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:43:02.002Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:44:01.972Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 5.",
+     "at": "2026-11-21T01:45:02.382Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:56:02.160Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T02:00:02.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T02:01:02.038Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T02:02:01.702Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:16:01.451Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T05:21:01.688Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T05:22:01.800Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -430,7 +691,7 @@
    "title": "Plan Studio live progress: one store, steps check off in place",
    "category": "",
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -438,7 +699,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T00:40:53.700Z",
+   "updatedAt": "2026-11-21T05:22:01.800Z",
    "builtAt": "",
    "notes": [
     {
@@ -460,6 +721,121 @@
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T00:51:01.497Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T00:54:01.950Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T00:55:02.396Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 2.",
+     "at": "2026-11-21T00:56:01.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:06:01.987Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:09:02.213Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T01:10:02.346Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 3.",
+     "at": "2026-11-21T01:11:01.292Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:21:01.782Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:24:02.257Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T01:25:01.608Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 4.",
+     "at": "2026-11-21T01:26:01.732Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:36:02.116Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:40:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:41:01.737Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 5.",
+     "at": "2026-11-21T01:42:01.466Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:53:02.223Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:57:01.557Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T01:58:01.819Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T01:59:01.652Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:16:01.451Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T05:21:01.688Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T05:22:01.800Z",
      "by": "watchdog"
     }
    ],
@@ -754,16 +1130,17 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "failed",
+   "status": "archived",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
    "pr": "867",
+   "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:42:49.539Z",
+   "updatedAt": "2026-11-21T07:00:39.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -939,6 +1316,42 @@
      "text": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)",
      "at": "2026-11-21T00:42:49.539Z",
      "by": "lander"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 9: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T02:13:43.553Z",
+     "by": "lander"
+    },
+    {
+     "text": "Reconciler: PR #867 merged",
+     "at": "2026-11-21T02:25:32.979Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 10: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T03:45:10.075Z",
+     "by": "lander"
+    },
+    {
+     "text": "Refused failed → landed (asked by amber): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T05:04:46.942Z"
+    },
+    {
+     "text": "Refused failed → landed (asked by amber): landed needs CI green on the merge commit: landed.ci is none. Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T05:09:28.602Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 13: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T05:16:28.766Z",
+     "by": "lander"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 15: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T06:47:44.372Z",
+     "by": "lander"
+    },
+    {
+     "text": "Moved to the Archive from failed (console): Brett Nov 21: PR #867 merged and main CI green on the merge commit (runs 44855694846, 44855694897); the store refuses 'landed' because landed.ci keeps resetting to none. Archiving frees the one active slot so the queued builds start..",
+     "at": "2026-11-21T07:00:39.565Z"
     }
    ],
    "approvals": [],
@@ -1061,7 +1474,7 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -1069,7 +1482,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T00:49:01.769Z",
+   "updatedAt": "2026-11-21T05:21:01.688Z",
    "builtAt": "",
    "notes": [
     {
@@ -1110,6 +1523,106 @@
     {
      "text": "Watchdog: build retried at split, attempt 2.",
      "at": "2026-11-21T00:49:01.769Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T00:59:01.792Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:02:01.988Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T01:03:01.741Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 3.",
+     "at": "2026-11-21T01:04:01.798Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:15:01.432Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:18:01.792Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:19:01.722Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 4.",
+     "at": "2026-11-21T01:20:01.918Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:30:02.237Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:34:02.242Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:35:02.326Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 5.",
+     "at": "2026-11-21T01:36:02.116Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T01:47:01.278Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:51:02.044Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T01:52:01.292Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T01:53:02.223Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:15:02.508Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:19:01.189Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T05:20:03.140Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T05:21:01.688Z",
      "by": "watchdog"
     }
    ],
@@ -1368,7 +1881,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T14:46:02.057Z",
+   "updatedAt": "2026-11-21T05:21:01.688Z",
    "builtAt": "",
    "notes": [
     {
@@ -1462,6 +1975,26 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
      "at": "2026-11-20T14:46:02.057Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:15:02.508Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:19:01.189Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T05:20:03.140Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T05:21:01.688Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],

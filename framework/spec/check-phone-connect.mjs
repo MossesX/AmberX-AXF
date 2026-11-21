@@ -3,7 +3,7 @@
  * phone-connect@1 conformance (PHONE-CONNECT.md; Brett, Nov 17 2026: "You gonna build it or what?").
  *   1. the engine replays fixtures/phone-connect.json: record validation (device, pairing, command, result), makeCommand
  *      (aliases, fixed policy, ttl, forbidden arguments), toWire / fromWire, the dispatch order, personOnly decisions,
- *      presence words, the url rule, the pairing flow (issue → claim → rotate → revoke; a session never claims),
+ *      presence words, the url rule (own sites), the link verdict (a rejected token is never retried), the pairing flow (issue → claim → rotate → revoke; a session never claims),
  *      the AmberX migration
  *   2. the wire error codes are frozen: the fixture's `errors` table never changes meaning (a changed or dropped code fails)
  *   3. the registry snapshot (schemas/phone-connect.json) and the four JSON Schemas (schemas/json/phone-*.schema.json)
@@ -163,7 +163,11 @@ export const CASES = {
   },
   urls: {
     'own origin': { url: `${ORIGIN}/builds?x=1`, device: device() },
-    'own origin, other host': { url: 'https://axhub.amberxai.com/approvals/1', device: device() },
+    'own site, other host (the hub)': { url: 'https://axhub.amberxai.com/approvals/1', device: device() },
+    'own site, the bare domain': { url: 'https://amberxai.com/', device: device() },
+    'own site look-alike': { url: 'https://evilamberxai.com/', device: device() },
+    'own site as a prefix of another domain': { url: 'https://amberxai.com.evil.example/', device: device() },
+    'outside the own site': { url: 'https://github.com/MossesX', device: device() },
     'allowlist hit': { url: 'https://axhub.amberxai.com/approvals/1', device: device({ urlPolicy: { mode: 'allowlist', allowlist: ['axhub.amberxai.com'] } }) },
     'allowlist miss': { url: 'https://evil.example/', device: device({ urlPolicy: { mode: 'allowlist', allowlist: ['axhub.amberxai.com'] } }) },
     'any': { url: 'https://evil.example/', device: device({ urlPolicy: { mode: 'any', allowlist: [] } }) },
@@ -181,6 +185,22 @@ export const CASES = {
     'AmberX phone with no id': { old: { name: 'Galaxy' } },
   },
   autoApprove: ['recorder.start', 'vps.run', 'open_url', 'github.create_pr'],
+  // what the phone does after one hello / next reply: [reply, bare 401 / 403 answers in a row before it]
+  link: {
+    'command waiting': [{ status: 200, code: '' }, 0],
+    'nothing waiting (204)': [{ status: 204, code: '' }, 0],
+    'bad device token (denied)': [{ status: 403, code: 'denied' }, 0],
+    'revoked in the console': [{ status: 410, code: 'revoked' }, 0],
+    'record gone or migrated (unpaired)': [{ status: 409, code: 'unpaired' }, 0],
+    'bare 401, first': [{ status: 401, code: '' }, 0],
+    'bare 401, second': [{ status: 401, code: '' }, 1],
+    'bare 401, third in a row ends it': [{ status: 401, code: '' }, 2],
+    'bare 403, third in a row ends it': [{ status: 403, code: '' }, 2],
+    'console restarted (404)': [{ status: 404, code: '' }, 0],
+    'console down (503)': [{ status: 503, code: 'unavailable' }, 0],
+    'no network': [{ status: 0, code: 'unavailable' }, 0],
+    'wrong protocol header (invalid)': [{ status: 400, code: 'invalid' }, 0],
+  },
 };
 
 /** The pairing flow with a seeded random source: every output is reproducible. */
@@ -287,6 +307,8 @@ export function generate() {
   out.urls = Object.fromEntries(Object.entries(CASES.urls).map(([n, c]) => [n, { ...c, error: P.urlErrors(c.url, c.device, ORIGIN) }]));
   out.migration = Object.fromEntries(Object.entries(CASES.migration).map(([n, c]) => [n, { ...c, device: P.migrateDevice(c.old, T0), valid: fields(P.validateDevice(P.migrateDevice(c.old, T0))), hello: P.helloErrors(P.migrateDevice(c.old, T0)) }]));
   out.autoApprove = Object.fromEntries(CASES.autoApprove.map((t) => [t, { alone: P.autoApprovable(t), inAll: P.autoApprovable(t, { all: true }) }]));
+  out.link = Object.fromEntries(Object.entries(CASES.link).map(([n, [reply, uncoded]]) => [n, { reply, uncoded, verdict: P.linkVerdict(reply, uncoded) }]));
+  out.ownSites = Object.fromEntries(['console.amberxai.com', 'AXHUB.amberxai.com:8443', 'amberxai.com', 'evilamberxai.com', 'amberxai.com.evil.example', ''].map((h) => [h, P.ownSite(h)]));
   out.pairingFlow = pairingFlow();
   out.errors = P.ERROR_CODES;
   out.aliases = P.ALIASES;
@@ -326,7 +348,11 @@ ok(want.make['amberx.open_url alias is deprecated'].deprecated === 'amberx.open_
 ok(want.make['unknown command'].error?.code === 'not_found', 'an unknown command is not_found');
 ok(want.commands['policy lies (recorder.start as allow)'].ok === false, 'policy is fixed per command');
 ok(want.autoApprove['recorder.start'].alone === false && want.autoApprove['vps.run'].inAll === false && want.autoApprove.open_url.inAll === true, 'NEVER_AUTO / NOT_IN_ALL');
-for (const [n, c] of Object.entries(want.urls)) ok(/^(own origin|allowlist hit|any)$/.test(n) ? c.error === null : c.error?.code === (/^(not a url|empty|too long)$/.test(n) ? 'validation' : 'denied'), `url rule "${n}"`, JSON.stringify(c.error));
+for (const [n, c] of Object.entries(want.urls)) ok(/^(own origin|own site, other host \(the hub\)|own site, the bare domain|allowlist hit|any)$/.test(n) ? c.error === null : c.error?.code === (/^(not a url|empty|too long)$/.test(n) ? 'validation' : 'denied'), `url rule "${n}"`, JSON.stringify(c.error));
+const verdicts = Object.fromEntries(Object.entries(want.link).map(([n, c]) => [n, c.verdict]));
+ok(['bad device token (denied)', 'revoked in the console', 'record gone or migrated (unpaired)', 'bare 401, third in a row ends it', 'bare 403, third in a row ends it'].every((n) => verdicts[n] === 'rejected'), 'a rejected token ends the retry loop', JSON.stringify(verdicts));
+ok(['bare 401, first', 'bare 401, second', 'console down (503)', 'no network', 'wrong protocol header (invalid)'].every((n) => verdicts[n] === 'retry') && verdicts['console restarted (404)'] === 'hello', 'everything else backs off and retries (404 greets again)', JSON.stringify(verdicts));
+ok(Object.values(verdicts).every((v) => P.LINK_VERDICTS.includes(v)), 'every verdict is a LINK_VERDICTS word');
 
 // 2. wire error codes are frozen
 const FROZEN = { invalid: false, denied: false, not_found: false, unavailable: true, validation: false, unexpected: false, timeout: true, confirmation_required: false, offline: true, unpaired: false, revoked: false, consent_required: true, expired: false };

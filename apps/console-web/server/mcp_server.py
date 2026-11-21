@@ -1090,12 +1090,16 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
-        `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted."""
+        `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted.
+        With a paired phone online (and its Follow switch on) the console also comes to the front on the phone at that
+        screen: `phone` in the answer says so."""
         if ADDRESS_RE.match(target.strip()):
             st = await follow("state")
             if not st.get("on"):
                 return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
-            return {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
+            r = {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
+            ph = await anyio.to_thread.run_sync(lambda: follow_call("phone", {"address": target.strip()}))
+            return {**r, **({"phone": ph["phone"]} if ph.get("phone") else {})}
         return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)
 
     @mcp.tool(annotations=READ)
@@ -1310,11 +1314,15 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
             return {"ok": True, **svc.state()}
+        if op == "phone":  # the paired phone follows too (console_show with an address); a no-op without one
+            return {"ok": True, "phone": svc.phone(str(args.get("address") or ""), "amber (mcp)") if hasattr(svc, "phone") else None}
         return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)", focus=str(args.get("focus") or ""))
     import urllib.error
     import urllib.request
     base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber
     auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+    if op == "phone":  # stdio mode: the console's own show already covers the phone
+        return {"ok": True, "phone": None}
     req = (urllib.request.Request(base + "state", headers=auth) if op == "state" else
            urllib.request.Request(base + "show", data=json.dumps({**args, "by": "amber (mcp)"}).encode(), method="POST", headers={"content-type": "application/json", **auth}))
     try:

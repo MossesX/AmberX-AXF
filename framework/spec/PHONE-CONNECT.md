@@ -41,7 +41,7 @@ side, the hub's relay, and the Kotlin twin when Android work resumes.
 | `owner` | the hub user who claimed the pairing (required once paired; always a person, never a session) |
 | `token` | `{ prefix, hash, issuedAt, rotatedAt }`: the device token at rest (see Pairing). The token itself is never stored. |
 | `watch` | `{ on, ring }`: the foreground watch and whether a new approval rings |
-| `urlPolicy` | `{ mode: own · allowlist · any, allowlist: [hosts] }`; default `own` |
+| `urlPolicy` | `{ mode: own · allowlist · any, allowlist: [hosts] }`; default `own` = the console's host plus every host on the console's own site (`OWN_SITES`: amberxai.com, so the hub and the apps open too; `ownSite(host)`) |
 | `pairedAt` / `lastSeenAt` / `revokedAt` / `updatedAt` | ISO date-times or `''` |
 | `capabilityState` | what each capability last reported, keyed by capability (`recorder@1`: running, since, session, parts, queue, mic) |
 | `migratedFrom` | `{ deviceId, app, at }` once, set by the AmberX migration |
@@ -96,6 +96,16 @@ unpaired ──issue──▶ pending ──claim──▶ paired ──revoke�
   404 = the server restarted, hello again), `ack` when a command is taken, `answer` with the result. Backoff 5 s ·
   15 s · 30 s · 60 s on failures. Online = polled within 45 s. A command not acked within 20 s is `timeout`
   (retryable); one not answered within its `ttl` is `timeout`.
+- **A rejected token is never retried** (Nov 21 2026; Fable audit F8: a phone sent a dead token 73 times in 2 h and
+  sat disconnected without saying so). `linkVerdict(reply, uncoded)` says what the phone does after each `hello` /
+  `next` reply: `ok`, `hello` (404: greet again), `retry` (the next backoff step) or `rejected`. `rejected` is a wire
+  code in `LINK.rejectedCodes` (`denied` · `revoked` · `unpaired`), at once, or a bare 401 / 403 with no wire code (a
+  proxy or the sign-in wall answered, not the plugin) `LINK.rejectLimit` (3) times in a row. On `rejected` the phone
+  stops the loop, drops the token, and shows "Disconnected: tap to re-pair" (a notification and its pairing screen);
+  pairing again is the only way back. The console answers a refused token with `detail.reason: "pair"`, records it
+  (when, how often, the token's prefix, never the token), shows `link.state: disconnected` on `status` / `presence`
+  with a Re-pair button, raises one banner alert and turns its systems check red. The console's wall lets the device
+  routes through its token gate: they carry the device token, never the console token, and check it themselves.
 
 ### phone-command@1 (the command envelope)
 
@@ -110,7 +120,7 @@ unpaired ──issue──▶ pending ──claim──▶ paired ──revoke�
 | --- | --- | --- | --- | --- |
 | `open_url` | `url` (required, ≤2000), `where` overlay · browser, `browser` chrome · default | allow | `open-url@1` | `browser.open` |
 | `notify` | `kind` fyi · fix · alert (required), `title` (required, ≤120), `body` (≤600), `url`, `notifyId` (required: the notify-types@1 id that cleared the console's alert hub), `priority` normal · high | allow | `notify@1` | `notify.show` |
-| `approval` | `approvalId` (required, uuid), `kind` approval · veto, `tool`, `summary` (≤600), `url` (the hub page, rebuilt from the id), `secondsLeft`, `actions` ⊆ approve · deny · shelve | allow | `approvals@1` | `approval.show` |
+| `approval` | `approvalId` (required, uuid), `kind` approval · veto, `tool`, `title` (≤120, the caller's one line), `summary` (≤600), `rev` (the hub's revision, sent back with the decision), `url` (the hub page, rebuilt from the id), `secondsLeft`, `actions` ⊆ approve · deny · shelve | allow | `approvals@1` | `approval.show` |
 | `recorder.start` | `session` (required, ≤120), `group`, `note` | **confirm** | `recorder@1` | `recorder.start` |
 | `recorder.stop` | none | allow | `recorder@1` | `recorder.stop` |
 | `recorder.status` | none | allow (read only) | `recorder@1` | `recorder.status` |
@@ -123,7 +133,22 @@ ways, Brett Nov 8 2026). `ttl` defaults per command (`TTL`: open_url 60 s, notif
 
 `open_url` with `where: overlay` (the default) goes to the AXF Console app's floating overlay first when that app is
 installed with its toolbar on (console-overlay@1, `apps/console-droid/OVERLAY.md` → "With Phone Connect"); the result
-then says `how: "console-overlay"`. Otherwise, and always for `where: browser`, the phone opens the page itself.
+then says `how: "console-overlay"`. Otherwise, and always for `where: browser`, the phone opens the page itself, in
+Chrome for `browser: chrome` (the default browser when Chrome is not installed), and brings it to the front:
+`how: "direct"` when Android lets the app start it (the app is in front, or Brett allowed it to display over other
+apps), else `how: "notification"`: a high-priority notification that opens the page with one tap (Android blocks
+activity starts from the background).
+
+**Approvals pop up on the phone** (Nov 21 2026). The console server watches the hub's approvals feed itself
+(`approvals.py` in the plugin, through approvals-relay@1 `pending()`: the console's owner sign-in, read only), so it
+works with no console open. Each new approval or veto countdown is queued once as an `approval` command while a paired
+phone is online; one that failed before Brett answered is sent again while it still waits (at most 3 times). The phone
+shows a high-priority notification with the command's `actions` on it. A tap on an action is the decision (below); a
+tap on the body opens that approval in the console (`<origin>/?axf-open=hub.review:<id>`, rebuilt from the id).
+
+**Follow Amber on the phone.** A Follow Amber show of a screen or settings tab also queues `open_url` for
+`<origin>/?axf-open=<console-control@1 address>` (capability `axf.phone@1` `follow()`; the plugin's `follow` switch,
+on by default), so the console comes to the front on the phone at that screen.
 
 Three things a command can never carry:
 
@@ -174,7 +199,9 @@ An approval is decided only by Brett's own tap on the phone. The engine's `decis
 uuid, `auth.kind` is `device` (it arrived over the device token) and `data.decision` is one of the command's `actions`.
 Otherwise `denied`, and the decision is dropped: a session, an agent, a console action, an MCP tool, the CLI or a
 voice phrase cannot approve, deny or shelve, and neither can the device on its own. The console relays the decision to
-the hub's approval api as the owner; the hub keeps its own guard. Auto-approval rules on the phone never cover
+the hub's approval api as the owner; the hub keeps its own guard. On the phone the tap is an action button on the
+approval notification (Approve · Deny · Shelve): Android asks for the phone to be unlocked first, the lock screen says
+only "Approval waiting", and the outcome ("Approved.", or why nothing was decided) replaces the prompt. Auto-approval rules on the phone never cover
 `recorder.start`, `vps.run` or any destructive tool (`NEVER_AUTO`, `NOT_IN_ALL`, as AmberX's `HubRules`).
 
 ## Wire error codes
@@ -204,11 +231,12 @@ revoke, command, ack, result, error). The plugin's data folder maps there (`data
 ## API (everything comes with an API)
 
 The plugin phase exposes each feature four ways, the same command underneath: REST `/api/plugins/phone-connect/…` <!-- axf-plugin:phone-connect -->
-(`status`, `devices`, `devices/{id}`, `pair`, `pair/cancel`, `devices/{id}/revoke`, `…/rotate`, `…/forget`, `open`,
-`notify`, `recorder/start|stop|status`, `voice`, `commands`, `commands/{id}`), MCP `phone_*` (plugin commands), CLI
+(`status`, `presence`, `devices`, `devices/{id}`, `pair`, `pair/cancel`, `devices/{id}/revoke`, `…/rotate`, `…/forget`, `open`,
+`open-url` (an amberxai.com page in Chrome, in front; MCP `phone_open_url`), `notify`, `recorder/start|stop|status`, `voice`, `commands`, `commands/{id}`), MCP `phone_*` (plugin commands), CLI
 `axf phone …`, voice ("open the console on my phone", "start recording Build review"). Deep link: `console_open` target
 `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect`, rows `row:device/<id>`. State: `GET status`
-(presence, watch, capabilities, recorder state), `GET devices` and `GET state` (all of it plus the addresses). Approve / deny / shelve are not on any of them.
+(presence, link, watch, capabilities, the approvals watcher, recorder state), `GET presence` (MCP `phone_status`: paired,
+online, last check-in; what Amber reads before she calls the phone), `GET devices` and `GET state` (all of it plus the addresses). Approve / deny / shelve are not on any of them.
 
 ## Migration from AmberX
 
@@ -236,5 +264,10 @@ console goes through approvals-relay@1 (the approvals banner) with the console's
 
 ## Deferred
 
-- Kotlin twin (`ai.amberx.axf.phoneconnect`, `PhoneConnectEngine.kt`) and the companion app: Android on hold (PORTING.md).
+- Kotlin twin (`ai.amberx.axf.phoneconnect`, `PhoneConnectEngine.kt`): still deferred (PORTING.md). The companion app
+  (`apps/phone-connect`) keeps the rules it needs in `LinkRules.kt` (codes, the url shape, the backoff ladder,
+  `verdict` = `linkVerdict`) with a unit test on the fixture's cases.
+- Taking a prompt off the phone when the approval was decided elsewhere (the console, the hub): there is no "clear"
+  command yet. A countdown's prompt goes by itself when it ends; a plain approval's stays until tapped, and a tap on
+  one already decided says so.
 - The console plugin, axHub `phone` relay, plugin removals (wake-listener, output-recorder) and AmberX retirement: later phases of this build.

@@ -2437,7 +2437,7 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md)."
+    "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md). Build phone-connect-popups (Nov 21 2026, Brett: \"Make it do the job\"): a refused device key is never retried (engine linkVerdict; phone and console both say Disconnected: re-pair) and the wall's token gate lets the device routes through; MCP phone_open_url (an amberxai.com page in Chrome, in front, or a one-tap notification) and phone_status (paired, online, last check-in); new axHub approvals and veto countdowns pop up on the phone with Approve / Deny, console closed (server watcher over approvals-relay@1 pending()); Follow Amber also opens the console on the phone (follow switch, on by default). App 0.2.0."
   },
   "cx.settings.ifacedefault": {
     "status": "built",

@@ -149,6 +149,12 @@
         "target": "the-hubs-approvals-page",
         "title": "The hub's approvals page",
         "text": "Opens the approvals page on the hub."
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Filter the log by veto passes: every call that ran under any pass, or only the calls of one pass when you came here from it. With or without shows them all.",
+        "kind": "field"
       }
     ]
   }
