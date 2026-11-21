@@ -837,7 +837,6 @@ VPS). The session reads the rules and this file first, as usual.
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
 - 2026-11-20 06:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 06:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:34 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 06:34 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:37 UTC · `fable-full-audit-ui-overhaul-conso` s4 done (all) · orchestrator
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 00:46 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · foreign-write
 - 2026-11-21 00:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
 - 2026-11-21 00:48 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
+- 2026-11-21 00:49 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
 
 ## Token passes (log)
 
