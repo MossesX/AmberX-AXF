@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10272,
- "updatedAt": "2026-11-21T01:56:34.666Z",
+ "rev": 10273,
+ "updatedAt": "2026-11-21T01:57:31.794Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351034,6 +351034,11 @@
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T01:53:02.223Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:57:01.557Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -351551,7 +351556,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
