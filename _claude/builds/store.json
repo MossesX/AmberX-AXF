@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10241,
- "updatedAt": "2026-11-21T01:13:11.210Z",
+ "rev": 10242,
+ "updatedAt": "2026-11-21T01:13:23.876Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349894,7 +349894,7 @@
    "pr": "867",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:42:49.539Z",
+   "updatedAt": "2026-11-21T01:13:12.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -350143,7 +350143,14 @@
     "notBefore": "2026-11-21T01:12:19.837Z",
     "failing": [
      "feature-status-tracker"
-    ]
+    ],
+    "fix": {
+     "at": "2026-11-21T01:13:06.094Z",
+     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
+     "session": "",
+     "exit": 3,
+     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
+    }
    },
    "landing": {
     "rules": {
@@ -350625,7 +350632,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
