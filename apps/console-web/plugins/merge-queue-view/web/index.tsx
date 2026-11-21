@@ -77,7 +77,7 @@ function OwnQueue() {
       <span className="fx-stack"><strong>{r.build}</strong><span className="fx-muted fx-small">{r.title}</span></span>
     ) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 40)', sortable: true, sortValue: (r) => r.status, render: (r) => (
-      <span className="fx-stack"><Chip tone={tone(r.status)}>{statusLabel(r)}</Chip>{r.statusAt && <span className="fx-muted fx-small">{since(r.statusAt, now)}</span>}</span>
+      <span className="fx-stack"><span data-status={r.status}><Chip tone={tone(r.status)}>{statusLabel(r)}</Chip></span>{r.statusAt && <span className="fx-muted fx-small">{since(r.statusAt, now)}</span>}</span>
     ) },
     { id: 'prs', label: 'PRs', width: 'calc(var(--fx-space) * 30)', render: (r) => (
       <span className="fx-stack"><span>{r.prs.length ? r.prs.map((p) => `#${p.pr}${p.state === 'merged' ? ' merged' : p.state === 'closed' ? ' closed' : ''}`).join(', ') : 'none yet'}</span><span className="fx-muted fx-small">{r.waiting.length} step(s) not in a PR</span></span>
@@ -89,7 +89,7 @@ function OwnQueue() {
   const detail = (r: Row) => (
     <div className="fx-stack" data-axf-target={`panel:merge-queue.steps=${r.build}`}>
       {r.steps.map((s) => (
-        <span key={s.id} className="fx-row"><Chip tone={s.status === 'in-pr' ? 'success' : s.status === 'failed' ? 'danger' : undefined}>{s.status === 'in-pr' && s.prNumber ? `added to PR #${s.prNumber}` : s.status || 'pending'}</Chip><strong>{s.id}</strong><span className="fx-muted fx-small">{[s.model, s.slot != null ? `slot ${s.slot}` : ''].filter(Boolean).join(' · ')}</span></span>
+        <span key={s.id} className="fx-row" data-status-row><span data-status={s.status || 'pending'}><Chip tone={s.status === 'in-pr' ? 'success' : s.status === 'failed' ? 'danger' : undefined}>{s.status === 'in-pr' && s.prNumber ? `added to PR #${s.prNumber}` : s.status || 'pending'}</Chip></span><strong>{s.id}</strong><span className="fx-muted fx-small">{[s.model, s.slot != null ? `slot ${s.slot}` : ''].filter(Boolean).join(' · ')}</span></span>
       ))}
     </div>
   );

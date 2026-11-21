@@ -401,7 +401,7 @@ function Roadmap({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }
                 <span className="axp-plan-studio__rdate">{p.targetDate ? fmtDay(p.targetDate) : '—'}</span>
                 <span className="axp-plan-studio__rtitle">{p.title}</span>
                 <span className="axp-plan-studio__bar" aria-label={`${t.progress}% done`}><span style={{ width: `${t.progress}%` }} /></span>
-                <Chip tone={statusInfo(p.status).tone || undefined}>{statusInfo(p.status).label}</Chip>
+                <span data-status={p.status}><Chip tone={statusInfo(p.status).tone || undefined}>{statusInfo(p.status).label}</Chip></span>
               </button></li>
             );
           })}</ul>

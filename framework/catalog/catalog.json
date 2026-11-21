@@ -2699,6 +2699,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.statusstyles",
+              "title": "Status styles: animations and styling for every status (whole row or text only, a preset library, own presets, a style per status, moving or still badges)",
+              "note": "apps/console-web/plugins/status-styles (Nov 21 2026): display only, a generated token-only stylesheet keyed on data-status; off under reduced motion",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
