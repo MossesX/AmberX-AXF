@@ -566,7 +566,7 @@ async def settings_get() -> JSONResponse:
 
 @router.put("/settings")
 async def settings_set(request: Request) -> JSONResponse:
-    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|history)."""
+    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|passes|history)."""
     return await _write("settings_set", request)
 
 

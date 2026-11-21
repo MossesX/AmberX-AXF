@@ -46,7 +46,7 @@ export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
-  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'build-cap', 'history'], default: 'rules', title: 'Tab it opens on' },
+  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'build-cap', 'passes', 'history'], default: 'rules', title: 'Tab it opens on' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });

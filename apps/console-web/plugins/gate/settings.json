@@ -23,6 +23,7 @@
         "build-rules",
         "auto-lander",
         "build-cap",
+        "passes",
         "history"
       ],
       "default": "rules",

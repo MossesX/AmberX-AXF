@@ -24,6 +24,11 @@
         "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
       },
       {
+        "target": "vps-configuration",
+        "title": "VPS Configuration settings",
+        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+      },
+      {
         "target": "rules",
         "title": "Rules",
         "text": "Every gate rule with its on/off switch, severity and settings."
@@ -277,6 +282,131 @@
         "title": "axf gate build-cap",
         "text": "`axf gate build-cap` shows the three numbers and the note; `axf gate build-cap set stepsInParallel 4` changes steps in parallel. The hard cap and emergency slots are not settable from the CLI.",
         "kind": "control"
+      },
+      {
+        "target": "passes",
+        "title": "Passes",
+        "text": "The one home for passes: veto passes (start one, approve or deny a request, revoke, undo, the longest pass), the hub's timed passes and the Go pass. Same calls as the pass MCP tools, `axf pass …` and “start a pass for 30 minutes”."
+      },
+      {
+        "target": "view:gate/tab:passes",
+        "title": "Passes",
+        "text": "A veto pass lets commands run without the veto countdown for a while. Pick a scope and the minutes (never more than the longest pass), start it, and revoke or undo it from the list. Passes moved here from Token control and from the axHub passes pages.",
+        "kind": "screen"
+      },
+      {
+        "target": "veto-passes",
+        "title": "Veto passes",
+        "text": "Start a pass, see what is on and waiting per scope, approve, deny, revoke or undo, and set the longest pass."
+      },
+      {
+        "target": "axhub-passes",
+        "title": "axHub passes",
+        "text": "The hub's timed passes: what each covers, time left, extend, revoke, and the calls that ran under it."
+      },
+      {
+        "target": "go-pass",
+        "title": "Go pass",
+        "text": "One pass for a whole Claude session that can't reach axHub: go for some hours, or end it now."
+      },
+      {
+        "target": "scope",
+        "title": "Scope",
+        "text": "What the pass covers. Everything is every command on every plugin; a narrower scope covers only token changes there."
+      },
+      {
+        "target": "minutes",
+        "title": "Minutes",
+        "text": "How long the pass lasts, from 1 to the longest pass. A longer number is cut to the longest pass."
+      },
+      {
+        "target": "reason",
+        "title": "Reason",
+        "text": "Optional: why the pass is needed. It is kept with the pass."
+      },
+      {
+        "target": "include-irreversible-deletes",
+        "title": "Include irreversible deletes",
+        "text": "Hard deletes nothing can bring back also skip the confirm while this pass is on. Off, they still confirm."
+      },
+      {
+        "target": "start-pass",
+        "title": "Start pass",
+        "text": "Starts the pass for the scope and minutes picked. From Brett's signed-in console it is on at once; anyone else files a request he approves."
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Turns a waiting request into a pass."
+      },
+      {
+        "target": "deny",
+        "title": "Deny",
+        "text": "Refuses a waiting request. Nothing changes."
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Puts back every change made under this pass in one go, and says what could not be rolled back."
+      },
+      {
+        "target": "revoke",
+        "title": "Revoke",
+        "text": "Ends the pass now. Calls go back to the veto countdown."
+      },
+      {
+        "target": "longest-pass-minutes",
+        "title": "Longest pass",
+        "text": "How long a veto pass may last at most (1 to 240 minutes). A longer request is cut to this."
+      },
+      {
+        "target": "time-zone",
+        "title": "Time zone",
+        "text": "The time zone the plain answers use (“until 10:42 AM”), for example America/New_York."
+      },
+      {
+        "target": "note-optional-shown-in-the-pass",
+        "title": "Note",
+        "text": "Optional: what the pass is for. Shown in the pass.",
+        "kind": "field"
+      },
+      {
+        "target": "go-for-h",
+        "title": "Go",
+        "text": "Starts the pass for the hours you picked. Sessions without the hub may work until it ends."
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Opens the approvals log filtered to every call that ran under a pass instead of waiting on the veto countdown."
+      },
+      {
+        "target": "min-from-now",
+        "title": "Extend",
+        "text": "Keeps the pass on for that many minutes from now. The calls it covers keep running at once until the new end."
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Opens the approvals log filtered to the calls that ran under this pass."
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "Which service the pass covers, for example axf-console. Only calls from that service run under it.",
+        "kind": "field"
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope",
+        "text": "The control@1 targets the pass covers, comma separated; * matches anything, so tokens.* covers every token. Leave it empty when you list tools instead.",
+        "kind": "field"
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools",
+        "text": "The tools the pass covers, comma separated. Empty means every tool inside the scope. Destructive tools never run under a pass.",
+        "kind": "field"
       },
       {
         "target": "auto-lander-server",

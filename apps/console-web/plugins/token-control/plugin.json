@@ -46,6 +46,7 @@
       "AXF_NO_TTY_APPROVAL"
     ],
     "mentions": [
+      "apps/console-web/plugins/gate/web/passesState.ts",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/THREADS.md",

@@ -15,6 +15,7 @@ import { appMenu } from './menu';
 import { VIEW_KEY } from './rows';
 import { registerSettingTargets } from './settingsStore';
 import { registerBuildCap } from './buildCapState';
+import { registerPasses } from './passesState';
 
 export const plugin: AxfWebLibrary = {
   id: PLUGIN_ID, // must equal plugin.json "id"
@@ -27,6 +28,10 @@ export const plugin: AxfWebLibrary = {
   views: {
     gate: { title: 'VPS Configuration', icon: 'shield', render: () => <GateView />, keywords: ['vps configuration', 'vps config', 'gate and rules', 'gate & rules', 'gate', 'rules', 'build cap', 'veto passes', 'passes', 'auto-lander'] },
     [VIEW_ALIAS]: { title: 'VPS Configuration', icon: 'shield', render: () => <GateAlias /> },
+    // the pages of the axHub passes plugin, folded into the Passes tab (Nov 21 2026): their addresses open it, so the
+    // hub pages' own links (`go(rt, 'passes')`), old `#/passes` links and saved shortcuts still land
+    'axhub-passes': { title: 'Passes', icon: 'clock', keywords: ['pass', 'veto', 'allow', 'timer'], render: () => <GateAlias tab="passes" passTab="hub" /> },
+    'axhub-go-pass': { title: 'Go pass', icon: 'check', keywords: ['go', 'pass', 'session', 'rules', 'threads'], render: () => <GateAlias tab="passes" passTab="go" /> },
   },
   dialogs: {
     [CHECK_PR_DIALOG]: { title: 'Check a PR', icon: 'search', render: (props) => <CheckPrDialog pr={String(props.pr ?? '')} />, searchable: false },
@@ -45,5 +50,5 @@ export const plugin: AxfWebLibrary = {
     { id: 'gate.screen-links', tab: FOLDER, title: 'On the VPS Configuration screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); },
+  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); registerPasses(rt); },
 };

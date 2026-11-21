@@ -79,3 +79,23 @@ disabled with the reason); `stepsInParallel` is open.
 | CLI | `axf gate build-cap` | `axf gate build-cap set stepsInParallel <n>` |
 | Voice / actions | `vps.build-cap.status`, `vps.build-cap.open` | `vps.build-cap.set:<key>:<n>` |
 | console-control@1 | `setting:vps.buildCap.maxBuilds \| emergencySlots \| stepsInParallel` | the same, `set` |
+
+## Passes
+
+**Passes** tab (`tab:gate.tabs=passes`, sub-tabs `tab:gate.passes.tabs=veto | hub | go`): the one home for passes.
+
+- **Veto passes** (control-pass@1; moved from Token control → Passes, Nov 21 2026): start a pass (scope, minutes held
+  to the longest-pass setting, reason, irreversible deletes), approve / deny a request, revoke, undo, what is on per
+  scope, recent passes, and the longest-pass setting. The passes still belong to the control@1 runner (the Token
+  control plugin's `pass/*` routes); `web/passesState.ts` calls them, owner actions with Brett's session first. The
+  pass banner stays with Token control.
+- **axHub passes** and **Go pass** (`web/HubPasses.tsx`, `web/HubGoPass.tsx`): the two pages of the `axhub-passes`
+  plugin, which was removed. This plugin provides `view:axhub-passes`, `view:axhub-go-pass`, the actions
+  `axhub-passes.open` / `axhub-go-pass.open` and the Apps → axHub menu entries, so every old link still opens them.
+
+| Reach | Read | Change |
+| --- | --- | --- |
+| REST | `GET /api/plugins/token-control/pass/status`, `pass/settings` | `POST pass/grant \| approve \| deny \| revoke \| undo`, `PUT pass/settings` |
+| MCP / CLI | the control@1 pass tools and `axf pass …` (unchanged) | the same |
+| Voice / actions | `vps.passes.status`, `vps.passes.open[:veto\|hub\|go]` | `vps.passes.grant:<minutes>[:<scope>]`, `vps.passes.revoke[:<scope>]`, `vps.passes.max:<minutes>` |
+| console-control@1 | `setting:vps.passes.maxMinutes \| timeZone \| scope \| minutes \| reason \| irreversible` | the same, `set`; buttons `vps-pass-start`, `vps-pass-settings-save`, `vps-pass-approve-<scope>` … |
