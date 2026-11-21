@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10300,
- "updatedAt": "2026-11-21T06:58:01.904Z",
+ "rev": 10301,
+ "updatedAt": "2026-11-21T07:00:42.999Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350050,7 +350050,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "failed",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -350059,7 +350059,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T06:57:52.243Z",
+   "updatedAt": "2026-11-21T07:00:39.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -350267,6 +350267,10 @@
      "text": "Lander: failed in running-ci, attempt 15: the fix session (agent) pushed nothing in 60 min",
      "at": "2026-11-21T06:47:44.372Z",
      "by": "lander"
+    },
+    {
+     "text": "Moved to the Archive from failed (console): Brett Nov 21: PR #867 merged and main CI green on the merge commit (runs 44855694846, 44855694897); the store refuses 'landed' because landed.ci keeps resetting to none. Archiving frees the one active slot so the queued builds start..",
+     "at": "2026-11-21T07:00:39.565Z"
     }
    ],
    "approvals": [],
@@ -350830,7 +350834,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 134,
+   "rev": 135,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350841,8 +350845,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T06:57:52.243Z",
-   "statusBy": "amber",
+   "statusAt": "2026-11-21T07:00:39.570Z",
+   "statusBy": "console",
    "attempt": 16,
    "failedFrom": "running-ci",
    "statusLog": [
@@ -351046,6 +351050,12 @@
      "by": "amber",
      "attempt": 16,
      "why": "Brett Nov 21: PR #867 merged, main CI green on the merge commit"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-21T07:00:39.570Z",
+     "by": "console",
+     "attempt": 16
     }
    ]
   },
