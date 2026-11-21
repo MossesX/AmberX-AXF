@@ -499,6 +499,13 @@ def ensure_health() -> bool:
 
 ensure_health()
 
+# ---- the build watchdog (build-watchdogs@1): every watch through one set of routes under /watchdogs and one systems
+# check item (server/watchdogs.py). The two blocks below are the row cleaner's and the session watch's own routes.
+from . import watchdogs as _watchdogs  # noqa: E402
+
+router.include_router(_watchdogs.router_for(FOLDER, brett_click))
+_watchdogs.ensure_health(FOLDER)
+
 # ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
 from . import watchdog as _watchdog  # noqa: E402
 
