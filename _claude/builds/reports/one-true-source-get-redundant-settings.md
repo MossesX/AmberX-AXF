@@ -155,6 +155,14 @@ image is rebuilt (nightly deploy). The enforcer starts writing the host marker o
 is next run (it copies `build-limit.mjs` to `/usr/local/lib/axf`); until then the container rule alone keeps the
 count right.
 
+**Clash with another build.** `one-true-source-for-every-setting` (Brett: "All settings need one true fucking source.";
+failed at step 9 of 20, branch unmerged) plans the same thing on a larger scale and uses the same file paths with a
+different contract (`settings-source@1`: an owner for every key, a resolver, a Python twin, a Sources view). This build
+lands first and covers its agent-cap, sessions-per-account and CI-check parts. It was not built together with this one:
+12 steps and about 6 hours are left on it and its branch is 22,000 lines that never passed CI. A note on that build
+says exactly what to do before it runs again: merge main, keep one registry (fold this one's four sources in), drop
+the work it repeats, and re-scope its steps 10, 11 and 18.
+
 **Known gaps.**
 
 - The retry counters (`maxRuns`, the watchdogs' `maxRetries` / `maxAttempts`, the lander's) are listed as distinct, not
