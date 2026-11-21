@@ -241,6 +241,11 @@ export function migrateSettings(env = process.env) {
   }
   return lines;
 }
+/** On the host (the side that sees the logins): move settings still kept as copies to their one key, before anything reads them. */
+function migrateOnHost(env = process.env) {
+  if (!seesAccounts(env)) return;
+  try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); }
+}
 export const loadOwnAccounts = () => { const j = readJson(files().accounts, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
 export function saveOwnAccount(name, patch) {
   if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
@@ -1377,9 +1382,9 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
     for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
   } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
   for (const b of reapBuilds({ env })) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  migrateOnHost(env);
   const store = loadStore(); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
-  if (read.source === 'host') { try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); } }
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
   const findings = read.accounts.map((v) => P.checkAccount(v, read.rows.find((r) => r.name === v.name)));
   const sum = P.checkSummary(findings, fixes);
@@ -1418,10 +1423,10 @@ export function tick({ env = process.env } = {}) {
   try { failures = detectFailures({ ended, env }); } catch (e) { logLine({ event: 'detect-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
+  migrateOnHost(env);
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
-  if (read.source === 'host') { try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); } }
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   // done-means-merged@1: every fixing build gets the ladder's next strategy (a relaunch, a wait, or escalation)
   let retries = [];
