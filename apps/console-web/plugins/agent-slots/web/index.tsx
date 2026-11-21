@@ -33,7 +33,7 @@ const LEVEL_TONE: Record<Level, 'danger' | 'warning' | undefined> = { boss: 'dan
 
 interface Rule { match: string; level: Level }
 interface Settings { hardMax?: number; maxAgentsSet?: number; maxAgents: number; maxHeavy: number; minFreeGb: number; closeFinishedAfterSec: number; pollSec: number; priorityRules: Rule[]; guardWarnTrips: number; swapWarnMb: number; swapWarnMin: number }
-interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; build?: string; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number }
+interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; build?: string; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number; /** 'emergency' = it waits for, or holds, an emergency slot (counted apart from the cap) */ pool?: 'emergency' }
 interface Hard { max: number; live: number | null; free: number | null; source?: string; at?: string | null; error?: string }
 interface HardItem { kind: 'session' | 'claude' | 'setup' | 'reserved'; pool?: 'builds' | 'emergency'; name: string; pid?: number; since?: string }
 interface HardLimit { max: number; live: number | null; free: number | null; source: string; at: string | null; items: HardItem[]; canEdit: boolean; error?: string
@@ -120,7 +120,7 @@ function QueuePanel() {
               {status.queue.map((q) => (
                 <li key={q.id} data-axf-target={`row:queued-${q.id}`} className="axp-slots__row">
                   <span className="axp-slots__pos" aria-label={`Position ${q.position}`}>#{q.position}</span>
-                  <span className="axp-slots__name"><b>{q.name}</b><span className="fx-small fx-muted">{q.kind === 'swarm' ? 'swarm job' : 'headless session'}{q.by ? ` · ${q.by}` : ''} · waiting {ago(q.enqueuedAt)}</span></span>
+                  <span className="axp-slots__name"><b>{q.name}</b><span className="fx-small fx-muted">{q.pool === 'emergency' ? 'emergency slot · ' : ''}{q.kind === 'swarm' ? 'swarm job' : 'headless session'}{q.by ? ` · ${q.by}` : ''} · waiting {ago(q.enqueuedAt)}</span></span>
                   <PriorityTag build={q.build || q.name} fallback={<Chip tone={LEVEL_TONE[q.priority]}>{LEVEL_LABEL[q.priority] ?? q.priority}</Chip>} />
                   <span className="axp-slots__acts">
                     <Button size="sm" icon="chevron-up" disabled={busy === q.id || q.position === 1} onClick={() => void act(q.id, 'up')}>Move up</Button>
@@ -134,7 +134,7 @@ function QueuePanel() {
             <details className="axp-slots__running" open>
               <summary className="fx-small">Holding a slot ({running.length})</summary>
               <ul className="axp-slots__list">
-                {running.map((r) => <li key={r.id} data-axf-target={`row:running-${r.id}`} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><PriorityTag build={r.build || r.name} fallback={<Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip>} /></li>)}
+                {running.map((r) => <li key={r.id} data-axf-target={`row:running-${r.id}`} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.pool === 'emergency' ? 'emergency slot · ' : ''}{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><PriorityTag build={r.build || r.name} fallback={<Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip>} /></li>)}
               </ul>
             </details>
           )}
