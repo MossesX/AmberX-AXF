@@ -56,6 +56,7 @@ export const KNOWN_BANNERS: readonly string[] = [
   'claude-accounts', 'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plan-studio', 'plugins-menu',
   'project-switcher', 'skin-gallery', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'shipped-features', 'console-terminal',
   'notify-control', // no chip, but its register() plays sound and pop-ups and answers the browser senders
+  'status-styles', // no chip, but its register() puts the status stylesheet on every page
 ];
 
 const clampInt = (v: unknown, lo: number, hi: number, d: number) => {

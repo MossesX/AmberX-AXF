@@ -2456,5 +2456,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build fable-full-audit-ui-overhaul-conso s16 (Nov 20 2026; Brett Nov 19: fold the axHub web UI into the console). Six console plugins in module axHub (nav section axHub + app menu Apps → axHub): axhub-approvals (Approvals grid with held calls, Request page, Approvals log, hub.review:<id>), axhub-passes (Go pass, Passes), axhub-apps (catalog), axhub-users, axhub-handoff (runs + live progress), axhub-account (hub session + account). Shared kit src/hubPages (relay client, HubGate, routes axhub-<page>, old #/<route> addresses); console server relay server/hub_pages.py to the hub's /auth/api/* + /apps.json: wall admin browser only (its axhub_session, else owner sign-in AXF_HUB_RELAY_USER/PASSWORD), writes same-origin JSON, CSRF read server-side and never sent to the page, writes logged. apps/axhub-web archived (ARCHIVED.md, project status archived), off CI, its catalog app-plugin kind and plugin-commands home retired; VPS clean-up is systems check host item host-axhub-web-retired. Tests: server/test_hub_pages.py (22), src/hubPages/test.mjs (234). Deleting the folder itself is a follow-up (≈60 framework references: schemas' app lists, shared assets, fixtures, Kotlin test)."
+  },
+  "cx.statusstyles": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build status-styles-plugin (Nov 21 2026; Brett: animations and styling states for every status level, for builds and every step). Console plugin status-styles (Settings → Plugins → Status styles; REST /api/plugins/status-styles, control@1 status-styles.*): a row style, a badge style and an animated-badge switch per status (Pipeline 2.0 builds and steps, Scoring risk, Fast merge, Post-merge CI, Rolling back, Rolled back, Plan Studio, own ids); 66 presets (whole row or text only) in assets/status-style/library.json plus own saved presets; web/core.ts builds one token-only stylesheet keyed on data-status (innermost row via :has), stopped under reduced motion; badge packs read data-status-animated and data-badge-animated / data-badge-static. Tests: test.mts, test.py."
   }
 }
