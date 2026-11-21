@@ -21,9 +21,10 @@ single grant `control.console.navigate`, so its runner refuses anything that wou
 tabs and dialogs open, navigation-only actions run, nothing else. When no console is open, Console commands' own
 delivery applies (queue + wake through AmberX where that is installed).
 
-With a paired phone (capability axf.phone@1, when a plugin provides it and its own switch is on), a show also brings
-the console to the front on the phone at the same screen: `phone` in the answer says what the phone did. Like every
-show it only navigates, and it is skipped for dialogs and actions.
+With a paired phone (capability axf.phone@1), Console commands sends the show to the console on the phone: down its
+stream when it is shown, else the phone brings it to the front once, on the whole command (screen, tab, focus). The
+phone's "Follow Amber on the phone" switch off = a show never brings it forward. `phone` in the answer says what
+happened there. One show = one delivery: nothing here asks the phone a second time.
 
 Approvals are never decided here: the console's pop-up reads the hub's feed and a tap goes through the approvals
 banner's relay with Brett's own browser session (lib-approvals / veto@1). This server holds no hub session.
@@ -64,6 +65,8 @@ CLIENT_MAX = 64
 _lock = threading.Lock()
 _clients: dict[str, dict[str, Any]] = {}
 _recent: deque[dict[str, Any]] = deque(maxlen=30)
+_last_show: list[tuple[float, dict[str, Any]]] = []  # the last show frame, for a follow stream that opens right after it
+SHOW_CATCHUP_S = 15.0
 
 
 def _data() -> Path:
@@ -102,11 +105,15 @@ def save_state(on: bool, by: str) -> dict[str, Any]:
 
 # ---------------------------------------------------------------------- follow clients (one stream per console tab)
 
-def broadcast(frame: dict[str, Any]) -> int:
-    """Send a follow-amber@1 frame to every open follow stream; → how many got it."""
+def broadcast(frame: dict[str, Any], catch_up: bool = False) -> int:
+    """Send a follow-amber@1 frame to every open follow stream; → how many got it. `catch_up`: a follow stream that
+    opens within SHOW_CATCHUP_S gets it too (the page the phone just opened for the show connects a moment after the
+    show landed there, and would miss its highlight)."""
     msg = {"$axf": FRAME, "at": _now_iso(), **frame}
     n = 0
     with _lock:
+        if catch_up:
+            _last_show[:] = [(time.time(), msg)]
         for c in _clients.values():
             q, loop = c.get("queue"), c.get("loop")
             if q is not None and loop is not None:
@@ -153,8 +160,10 @@ def _open(kind: str, name: str, to: str, by: str, focus: str = "") -> dict[str, 
     inp = {k: v for k, v in {"to": to if to and to != "recent" else "", "focus": focus if kind == "screen" else ""}.items() if v}
     if inp:
         cmd["input"] = inp
-    # navigate only: the runner refuses anything that would change data
-    r = svc.run(cmd, NAVIGATE, by)
+    # navigate only: the runner refuses anything that would change data. Console commands sends it to the console on
+    # the paired phone (bringing it to the front once, on the whole command: screen, tab and focus) or, with no phone,
+    # to the console Brett used last; `pull` = the phone's Follow switch allows bringing it forward.
+    r = svc.run(cmd, NAVIGATE, by, pull=_phone_follow_on())
     if "status" in r:  # Console commands tried every live console, queued and woke one itself: its answer is the truth
         return r
     if r.get("ok") and not r.get("queued") and "delivered" in r and not _acked(r):
@@ -164,39 +173,16 @@ def _open(kind: str, name: str, to: str, by: str, focus: str = "") -> dict[str, 
     return r
 
 
-def phone_address(kind: str, name: str, item: dict[str, Any] | None = None) -> str:
-    """The console-control@1 address (or action deep link) a show lands on, for the phone's `?axf-open=`: a screen is
-    `view:<id>`, a settings tab `view:settings/tab:settings.tabs=<tab>` (a plugin's sub-tab under its parent), a
-    waiting approval `hub.review:<id>`. '' for what has no address (dialogs, actions)."""
-    item = item if isinstance(item, dict) else {}
-    iid = _text(item.get("id"), 120) or name
-    if not iid or any(ch in iid for ch in " ?&#"):
-        return ""
-    if kind == "screen":
-        return "" if iid.startswith("build:") else f"view:{iid}"
-    if kind == "settings":
-        parent, tab = _text(item.get("parent"), 60), iid
-        if not parent and "/" in iid:  # "plugins/<plugin>"
-            parent, tab = iid.split("/", 1)
-        return f"view:settings/tab:settings.tabs={parent}/subtab:settings.subtabs={tab}" if parent else f"view:settings/tab:settings.tabs={tab}"
-    if kind == "approval":
-        return f"hub.review:{iid}"
-    return ""
-
-
-def to_phone(address: str, by: str = "amber") -> dict[str, Any] | None:
-    """Bring the console to the front on the paired phone at `address` (axf.phone@1 `follow`). None when no plugin
-    provides a phone or there is nothing to open; the phone's own switch and presence decide the rest. Never raises."""
-    if not address:
-        return None
+def _phone_follow_on() -> bool:
+    """May a show bring the console on the paired phone to the front? The phone's own "Follow Amber on the phone"
+    switch (axf.phone@1 status features.follow); on when no phone plugin says otherwise."""
     phone = plugin_services.get("axf.phone@1")
-    if phone is None or not hasattr(phone, "follow"):
-        return None
+    if phone is None or not hasattr(phone, "status"):
+        return True
     try:
-        r = phone.follow(address, by={"kind": "agent", "who": _text(by, 160) or "amber", "via": "console"})
-    except Exception as e:  # noqa: BLE001 — the phone never stops a show
-        return {"ok": False, "shown": False, "message": f"the phone could not be asked ({type(e).__name__})"}
-    return {k: r[k] for k in ("ok", "shown", "message") if k in r}
+        return ((phone.status() or {}).get("features") or {}).get("follow", True) is not False
+    except Exception:  # noqa: BLE001 — a broken phone plugin never stops a show
+        return True
 
 
 def _acked(r: dict[str, Any]) -> bool:
@@ -233,6 +219,9 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
                 break
         if not r.get("ok"):
             r = {**{x: v for x, v in r.items() if x not in ("op", "path", "action")}, "shown": False, **base, "tried": tried, "status": "failed"}
+        elif r.get("status") in ("held", "superseded"):
+            # left alone on purpose (Brett just left the app, or the phone's Follow switch is off) or replaced by a newer show
+            r = {"ok": True, "shown": False, "status": r["status"], **base, "kind": k, "delivery": r.get("delivery") or {}, "message": str(r.get("message") or "")}
         elif r.get("queued") or r.get("status") == "pending":
             # not on screen yet: never say "opened" for something only waiting for a console
             r = {"ok": True, "shown": False, "queued": bool(r.get("queued")), "status": "pending", **base, "kind": k, "delivery": r.get("delivery") or {},
@@ -240,16 +229,15 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
         else:
             item = r.get("item") or {}
             label = item.get("label") or name
-            n = broadcast({"type": "show", "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by})
+            n = broadcast({"type": "show", "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by}, catch_up=True)
             fx = str(r.get("focus") or "")
             r = {"ok": True, "shown": True, "status": "delivered", **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
                  **({"focus": fx} if fx else {}),
                  "message": f"opened {label}" + (f" on {fx}" if fx else "") + (f" and highlighted {highlight}" if highlight else "")}
-        if r.get("ok") and k in ("screen", "settings"):
-            # delivered or still waiting for a console: either way the phone opens the console there
-            ph = to_phone(phone_address(k, name, raw.get("item")), by)
-            if ph is not None:
-                r["phone"] = ph
+        if (raw.get("delivery") or {}).get("phone") or (raw.get("delivery") or {}).get("how") in ("phone", "held"):
+            # the console on the phone took it (or was left alone on purpose): one delivery, said once
+            d = raw.get("delivery") or {}
+            r["phone"] = {"ok": bool(raw.get("ok")), "shown": r.get("status") == "delivered", "how": d.get("how", ""), "message": str(raw.get("message") or r.get("message") or "")[:300]}
     with _lock:
         _recent.appendleft({"at": _now_iso(), "by": by, "kind": r.get("kind", k), "target": name, "ok": bool(r.get("ok")), "shown": bool(r.get("shown")), "message": _text(r.get("message"))})
     return r
@@ -336,6 +324,9 @@ async def stream(request: Request, client: str = "") -> StreamingResponse:
     loop = asyncio.get_running_loop()
     with _lock:
         _clients[cid] = {"queue": q, "loop": loop, "since": time.time()}
+        for at, m in _last_show:
+            if time.time() - at <= SHOW_CATCHUP_S:
+                q.put_nowait(m)
     st = load_state()
 
     async def gen():
@@ -371,11 +362,6 @@ class FollowAmber:
 
     def approval(self, aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
         return approval(aid, by, say)
-
-    def phone(self, address: str, by: str = "amber") -> dict[str, Any] | None:
-        """The phone half of a show for callers that open a console-control@1 address themselves (console_show with
-        an address): a no-op when Follow Amber is off."""
-        return to_phone(address, by) if load_state()["on"] else None
 
 
 plugin_services.provide("follow-amber@1", FollowAmber(), folder=FOLDER)

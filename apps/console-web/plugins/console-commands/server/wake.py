@@ -102,7 +102,8 @@ def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
     try:
         import plugin_services
         phone = plugin_services.get("axf.phone@1")
-        local = phone.hub_tool(TOOL, {"url": target, "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
+        # the console app's overlay first (it comes to the front by itself); the browser only when it can't take it
+        local = phone.hub_tool(TOOL, {"url": target, "where": "overlay", "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
     except Exception:  # noqa: BLE001 — the hub path below still works
         local = None
     if local is not None:

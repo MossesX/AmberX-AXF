@@ -236,7 +236,7 @@ wait_for(lambda: len(WOKEN) >= 1)
 q = client.get("/api/console/queue").json()["items"]
 eq([x["state"] for x in q], ["queued"], "the command is queued, the call waits")
 eq(len(WOKEN), 1, "AmberX asked to open the console after a few seconds of nothing")
-ok(WOKEN[0][0] == f"https://console.amberxai.com/?axf-cmd={q[0]['id']}" and WOKEN[0][1] == "chrome", f"deep link with the command id, Chrome ({WOKEN})")
+ok(WOKEN[0][0] == f"https://console.amberxai.com/?axf-cmd={q[0]['id']}&axf-via=phone" and WOKEN[0][1] == "chrome", f"deep link with the command id, Chrome ({WOKEN})")
 woke_got: list[dict] = []
 client.post("/api/console/hello", json={"client": "woke-0001", "device": "phone", "catalog": CATALOG, "pick": q[0]["id"], "used": True})
 client.post("/api/console/hello", json={"client": "woke-0001", "device": "phone", "catalog": CATALOG, "pick": q[0]["id"]})  # a second hello (reload)
@@ -389,7 +389,7 @@ fake_cx.raise_alert = lambda a: alerts.append(a) or {}
 fake_cx.resolve_alerts = lambda k: resolved.append(k)
 sys.modules["console_context"] = fake_cx
 cc._fallback_alert("cq-1", "couldn't reach axHub")
-ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1"), "the fallback alert is loud and opens the waiting command")
+ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1&axf-via=phone"), "the fallback alert is loud and opens the waiting command")
 cc._fallback_clear()
 eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
@@ -464,7 +464,7 @@ r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "ac
 eq((r["ok"], r["status"], r["queued"], r["delivery"]["tried"]), (True, "pending", True, ["sleep-0001"]), f"truthful: pending, queued, who was tried ({r.get('delivery')})")
 ok("not shown yet" in r["message"], f"the answer never says opened ({r['message']})")
 ok(wait_for(lambda: len(WOKEN) > woken_before, 5), "AmberX asked to open the console straight after the tries")
-ok(WOKEN[-1][0].endswith(f"?axf-cmd={r['delivery']['id']}"), "the wake link carries the queued command")
+ok(WOKEN[-1][0].endswith(f"?axf-cmd={r['delivery']['id']}&axf-via=phone"), "the wake link carries the queued command")
 # the sleeping tab wakes in time and does it after all: its late ack settles the queued copy (it never runs twice)
 mid = sleepy_got[-1]["id"]
 eq(client.post("/api/console/ack", json={"client": "sleep-0001", "id": mid, "ok": True, "message": "opened Plan Studio"}).json().get("late"), True, "a late ack is recorded")

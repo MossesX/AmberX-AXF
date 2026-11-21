@@ -999,14 +999,16 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=NAVIGATE)
     async def console_open(screen: str, focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
-        """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
-        answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio"), its title ("Plan
+        """Open a screen in Brett's Dev Console: the console on his paired phone (Phone Connect brings it to the front
+        once, on the whole screen + tab + focus), or with no phone paired the live one he used last; to="all" for
+        every open one, or a client id. `screen` = the view id ("plan-studio"), its title ("Plan
         Studio") or a few words ("plan studio", "orchestrator"); plugins' screens count. Or a console-control@1 address
         ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>"): opened and focused. A tab or item on the screen:
         "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
-        Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
-        console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
+        Read `status`: delivered (a console acked it), pending (the phone is bringing the console up; it runs there
+        when it opens), held (Brett just left the app on his phone: not pulled back), superseded (a newer open took
+        its place) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
         if ADDRESS_RE.match(screen.strip()):
             return await _control_focus(screen.strip() if not focus else f"{screen.strip()}/{focus}", "focus", to)
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to, focus=focus)})
@@ -1091,15 +1093,14 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
         `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted.
-        With a paired phone online (and its Follow switch on) the console also comes to the front on the phone at that
-        screen: `phone` in the answer says so."""
+        With a paired phone online, the show goes to the console on the phone (brought to the front once, on the
+        whole address; its Follow switch off = never brought forward): `phone` in the answer says so."""
         if ADDRESS_RE.match(target.strip()):
             st = await follow("state")
             if not st.get("on"):
                 return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
-            r = {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
-            ph = await anyio.to_thread.run_sync(lambda: follow_call("phone", {"address": target.strip()}))
-            return {**r, **({"phone": ph["phone"]} if ph.get("phone") else {})}
+            # one delivery: Console commands sends it to the console on the paired phone (or the one used last)
+            return {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
         return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)
 
     @mcp.tool(annotations=READ)
@@ -1314,15 +1315,11 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
             return {"ok": True, **svc.state()}
-        if op == "phone":  # the paired phone follows too (console_show with an address); a no-op without one
-            return {"ok": True, "phone": svc.phone(str(args.get("address") or ""), "amber (mcp)") if hasattr(svc, "phone") else None}
         return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)", focus=str(args.get("focus") or ""))
     import urllib.error
     import urllib.request
     base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber
     auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
-    if op == "phone":  # stdio mode: the console's own show already covers the phone
-        return {"ok": True, "phone": None}
     req = (urllib.request.Request(base + "state", headers=auth) if op == "state" else
            urllib.request.Request(base + "show", data=json.dumps({**args, "by": "amber (mcp)"}).encode(), method="POST", headers={"content-type": "application/json", **auth}))
     try:

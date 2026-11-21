@@ -695,9 +695,11 @@ class PhoneCapability:
             return None
         args = dict(arguments or {})
         if cmd == "open_url":
-            # a caller that names a browser wants the page in that browser (chrome | default), in front; else the overlay first
-            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay",
-                    **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
+            # A caller that names a browser wants the page in that browser (chrome | default), in front; else the overlay
+            # first. `where: overlay` with a browser = the console app's overlay first, that browser when it can't
+            # (the console wake: the overlay comes to the front by itself, a browser started from the background can't).
+            where = args.get("where") if args.get("where") in ("overlay", "browser") else "browser" if args.get("browser") else "overlay"
+            args = {"url": str(args.get("url") or ""), "where": where, **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
         else:
             args = {}
         try:
@@ -750,6 +752,15 @@ def app_outdated(d: dict | None) -> bool:
     return bool(d) and parts(d.get("appVersion")) < parts(MIN_APP)
 
 
+def front_blocked(d: dict) -> bool:
+    """Did the last page this phone opened wait as a notification (Android blocked the start from the background)?"""
+    for c in S.commands(d["deviceId"], limit=50):  # newest first
+        if c.get("command") != "open_url" or c.get("status") != "done":
+            continue
+        return str(((command_view(c).get("result") or {}).get("data") or {}).get("how") or "") == "notification"
+    return False
+
+
 def health_probe(at: str = "") -> dict[str, Any]:
     at = at or now()
     paired = S.paired()
@@ -770,6 +781,11 @@ def health_probe(at: str = "") -> dict[str, Any]:
         if app_outdated(d):
             return {"status": "warn", "summary": f"{d['name']} runs Phone Connect {d.get('appVersion') or '?'}: update it to {MIN_APP} or newer for Approve / Deny on the notification and pages in front.",
                     "details": [f"On the phone: {APP_WHERE}, install it over the old one.", "Open Phone Connect once afterwards; it keeps its pairing."],
+                    "link": f"row:device/{d['deviceId']}"}
+        if front_blocked(d):
+            return {"status": "warn", "summary": f"{d['name']} can't bring the console to the front by itself: Android held the last page back, so it waited as a notification to tap.",
+                    "details": ["On the phone: open Phone Connect, tap Allow opening pages in front, switch it on in Android's screen.",
+                                "Or install the AXF Console app and keep its floating overlay on: Phone Connect opens the console there, in front."],
                     "link": f"row:device/{d['deviceId']}"}
         return {"status": "ok", "summary": f"{d['name']} is online (Phone Connect).", "details": []}
     silent = (E.ms(at) - E.ms(d["lastSeenAt"])) / 1000 if E.is_timestamp(d.get("lastSeenAt")) else 1e9
