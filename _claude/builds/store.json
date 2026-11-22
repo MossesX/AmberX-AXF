@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10340,
- "updatedAt": "2026-11-22T06:01:06.597Z",
+ "rev": 10341,
+ "updatedAt": "2026-11-22T06:45:16.469Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146975,7 +146975,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-22T05:55:13.590Z",
+   "updatedAt": "2026-11-22T06:26:10.893Z",
    "builtAt": "",
    "notes": [
     {
@@ -147173,6 +147173,14 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s12 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T05:55:13.590Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:13.652Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:10.893Z"
     }
    ],
    "approvals": [
@@ -147221,7 +147229,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "watchdog: fresh-session for stalled as s12",
+    "note": "launch failed: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
     "route": "",
     "dispatchedAt": "2026-11-21T23:16:55.908Z",
     "planned": {
@@ -147231,7 +147239,9 @@
      "at": "2026-11-17T19:06:06.682Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "2026-11-21T23:16:55.908Z",
     "heldAt": "",
     "heldBy": "",
@@ -147240,26 +147250,6 @@
     "budgetUsd": 0,
     "spentUsd": 0
    },
-   "attempts": [
-    {
-     "n": 1,
-     "kind": "stalled",
-     "strategy": "fresh-session",
-     "fixStrategy": "",
-     "model": "Opus",
-     "account": "",
-     "session": "",
-     "step": "s12",
-     "head": "",
-     "pr": 681,
-     "startedAt": "2026-11-22T05:55:13.590Z",
-     "endedAt": "",
-     "result": "started",
-     "log": "",
-     "note": "Watchdog: fresh-session queued as s12",
-     "source": "pipeline"
-    }
-   ],
    "shipped": {
     "id": "sm-pass-approval-hook-deep-link-amberx-notification",
     "rev": 1,
@@ -147570,7 +147560,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 156,
+   "rev": 158,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204039,15 +204029,15 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "building",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/orchestrator-settings-collapsible-split--s5",
+   "branch": "claude/orchestrator-settings-collapsible-split",
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T02:17:29.063Z",
+   "updatedAt": "2026-11-22T06:45:01.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -204367,8 +204357,16 @@
      "at": "2026-11-22T01:56:50.101Z"
     },
     {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:56:59.376Z"
+    },
+    {
      "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s10--paulie, shared account login)",
      "at": "2026-11-22T01:57:20.091Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:57:36.089Z"
     },
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
@@ -204405,6 +204403,10 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
      "at": "2026-11-22T01:59:23.138Z"
+    },
+    {
+     "text": "Reconciler: PR #636 names s3, s4, s5, s6, s8 done",
+     "at": "2026-11-22T01:59:50.249Z"
     },
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--s4--sully: brief only · start 9.6K tokens ($0.02) · cost $0.07 · 2 turns · 6 tools, MCP none",
@@ -204447,12 +204449,50 @@
      "at": "2026-11-22T02:15:18.218Z"
     },
     {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T02:15:32.676Z"
+    },
+    {
+     "text": "Reconciler: PR #636 names s3, s4, s5, s6, s8 done",
+     "at": "2026-11-22T02:15:54.757Z"
+    },
+    {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--s8--earl: brief only · start 9.6K tokens ($0.02) · cost $0.05 · 2 turns · 6 tools, MCP none",
      "at": "2026-11-22T02:16:34.570Z"
     },
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.05",
      "at": "2026-11-22T02:16:38.349Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T06:39:01.718Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T06:42:01.998Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at building, attempt 2: building did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-22T06:43:01.595Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at building, attempt 3.",
+     "at": "2026-11-22T06:44:01.802Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T06:45:01.249Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T06:45:01.249Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -204461,6 +204501,24 @@
      "from": "Fable",
      "to": "Opus",
      "at": "2026-11-15T00:48:38.619Z",
+     "by": "auto",
+     "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-22T01:57:41.166Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 3,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-22T01:58:22.316Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -204493,11 +204551,11 @@
      "at": "2026-11-22T00:49:56.836Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "",
+     "reason": "all-done",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-orchestrator-settings-collapsible-split--paulie",
-     "phase": ""
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -204511,10 +204569,10 @@
     "route": "",
     "dispatchedAt": "2026-11-21T23:26:54.170Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-22T03:48:09.783Z",
+     "at": "2026-11-17T19:06:06.682Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -204524,12 +204582,22 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-22T02:16:26.311Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-orchestrator-settings-collapsible-split--s8--earl",
+     "phase": ""
+    }
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwfbqn7f016rdh",
+     "uid": "st-mwr5x4bx1ldaon",
      "title": "",
      "text": "New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.",
      "model": "Fable",
@@ -204545,9 +204613,117 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 14,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T01:43:43.192Z",
+     "statusAt": "2026-11-22T01:43:43.135Z",
+     "statusBy": "orchestrator",
+     "attempt": 5,
+     "failedFrom": "sending",
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:33:25.877Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:33:36.747Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "worktree for orchestrator-settings-collapsible-split--s1: fatal: 'claude/orchestrator-settings-collapsible-split--s1' is already used by worktree at '/root/axf-builds/orchestrator-settings-collapsible-split--s1'"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:33:43.395Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:37:39.263Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:38:00.486Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: lock launching (heartbeat 2026-11-22T01:37:51.952Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:38:19.932Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:38:24.353Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-orchestrator-settings-collapsible-split--s1--joey on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:38:30.841Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:39:02.503Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at building, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:42:27.517Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:42:32.744Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; claude pid 813564; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:43:38.426Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:43:43.135Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; claude pid 813564; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
+      }
+     ],
+     "status": "failed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s1",
+     "branch": "claude/orchestrator-settings-collapsible-split--s1"
     },
     {
      "id": "s2",
@@ -204569,7 +204745,66 @@
      "note": "",
      "rev": 8,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:46:32.208Z"
+     "updatedAt": "2026-11-22T01:46:32.208Z",
+     "statusAt": "2026-11-22T01:46:32.154Z",
+     "statusBy": "headless",
+     "attempt": 2,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:33:50.949Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:33:58.845Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:37:53.949Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:38:10.287Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s2 already has a live session: lock launching (heartbeat 2026-11-22T01:38:00.179Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:38:45.026Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-orchestrator-settings-collapsible-split--s2--paulie on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T01:46:32.154Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s2",
+     "branch": "claude/orchestrator-settings-collapsible-split--s2",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s2--paulie"
     },
     {
      "id": "s3",
@@ -204591,7 +204826,66 @@
      "note": "",
      "rev": 8,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:42:10.080Z"
+     "updatedAt": "2026-11-22T01:42:10.080Z",
+     "statusAt": "2026-11-22T01:42:10.013Z",
+     "statusBy": "headless",
+     "attempt": 2,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:34:08.156Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:34:16.744Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:39:14.660Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:39:28.554Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s3 already has a live session: lock launching (heartbeat 2026-11-22T01:39:20.769Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:39:45.228Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-orchestrator-settings-collapsible-split--s3--sully on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T01:42:10.013Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s3",
+     "branch": "claude/orchestrator-settings-collapsible-split--s3",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s3--sully"
     },
     {
      "id": "s4",
@@ -204613,7 +204907,73 @@
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T03:48:05.409Z",
+     "statusAt": "2026-11-22T02:02:12.432Z",
+     "statusBy": "headless",
+     "attempt": 2,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:34:24.062Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:34:32.596Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:44:56.493Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:45:21.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s4--earl on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:57:50.335Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:58:17.386Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T02:02:12.432Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s4",
+     "branch": "claude/orchestrator-settings-collapsible-split--s4",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s4--sully"
     },
     {
      "id": "s5",
@@ -204633,9 +204993,61 @@
      "done": true,
      "doneAt": "2026-11-22T01:54:50.020Z",
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:54:50.407Z"
+     "updatedAt": "2026-11-22T01:57:29.649Z",
+     "statusAt": "2026-11-22T01:57:29.597Z",
+     "statusBy": "headless",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:34:39.776Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:34:50.110Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:45:32.875Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:45:59.859Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s5--gina on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T01:57:29.597Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s5",
+     "branch": "claude/orchestrator-settings-collapsible-split--s5",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s5--gina"
     },
     {
      "id": "s6",
@@ -204657,7 +205069,59 @@
      "note": "",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:53:37.168Z"
+     "updatedAt": "2026-11-22T01:53:37.168Z",
+     "statusAt": "2026-11-22T01:53:37.111Z",
+     "statusBy": "headless",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:34:57.555Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:35:10.653Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:46:51.706Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:47:09.349Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s6--rhonda on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T01:53:37.111Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s6",
+     "branch": "claude/orchestrator-settings-collapsible-split--s6",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s6--rhonda"
     },
     {
      "id": "s7",
@@ -204679,7 +205143,203 @@
      "note": "",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T03:48:05.409Z",
+     "statusAt": "2026-11-22T02:07:53.615Z",
+     "statusBy": "orchestrator",
+     "attempt": 5,
+     "failedFrom": "sending",
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:35:18.458Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:35:29.809Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:49:17.648Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:49:33.913Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s7--gina on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:59:01.517Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-orchestrator-settings-collapsible-split--s7--gina is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:59:30.943Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T01:59:36.969Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T02:00:30.148Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:00:38.797Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T02:01:24.295Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:01:29.127Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T02:01:51.394Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:01:56.009Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T02:02:02.651Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "attempt 5 of 5 failed on Opus at building: raised to Fable with a fresh attempt count",
+       "reset": true
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:02:31.295Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:02:35.550Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:03:29.946Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:03:34.586Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:04:50.002Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:04:54.397Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T02:06:02.061Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at sending, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:06:47.771Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:06:52.112Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:07:49.015Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:07:53.615Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      }
+     ],
+     "status": "failed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s7",
+     "branch": "claude/orchestrator-settings-collapsible-split--s7",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s8",
@@ -204704,11 +205364,150 @@
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T03:48:05.409Z",
+     "statusAt": "2026-11-22T02:17:29.063Z",
+     "statusBy": "headless",
+     "attempt": 5,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:35:44.427Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:35:51.440Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:52:52.265Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:53:15.502Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s8--lenny on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:01:01.864Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-orchestrator-settings-collapsible-split--s8--lenny is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T02:02:02.651Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:09:47.638Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:09:52.079Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s8 already has a live session: lock axf-orchestrator-settings-collapsible-split--s8--lenny (heartbeat 2026-11-22T01:53:13.627Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:10:53.180Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:10:57.744Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s8 already has a live session: lock axf-orchestrator-settings-collapsible-split--s8--lenny (heartbeat 2026-11-22T01:53:13.627Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T02:12:02.063Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at sending, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:12:52.631Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-22T02:12:57.220Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s8 already has a live session: lock axf-orchestrator-settings-collapsible-split--s8--lenny (heartbeat 2026-11-22T01:53:13.627Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T02:14:01.971Z",
+       "by": "watchdog",
+       "attempt": 5,
+       "why": "retry forward at sending, attempt 5"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T02:14:49.985Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T02:15:13.772Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "axf-orchestrator-settings-collapsible-split--s8--earl on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T02:17:29.063Z",
+       "by": "headless",
+       "attempt": 5,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s8",
+     "branch": "claude/orchestrator-settings-collapsible-split--s8",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s8--earl",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s9",
-     "uid": "st-mwlw36h004c4ei",
+     "uid": "st-mwr5x4by1tancl",
      "title": "",
      "text": "Auto-lander fix, attempt 1: make CI green on claude/orchestrator-settings-collapsible-split so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 59fab543d (claude/orchestrator-settings-collapsible-split):\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption\nFrom \"CI build errors\" #1:\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-accent (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-border (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-border-w (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-danger (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-dens-gap-lg (its files read it; run token-registry.mjs manifest gate --write)\nBrett said (verbatim): \"orchestrator settings needs a collapsible section for split, with all the splitting options, and one option splits it so it runs multiple parallel builds simultaneously to speed it up\"",
      "model": "Fable",
@@ -204724,9 +205523,61 @@
      "done": true,
      "doneAt": "2026-11-22T01:57:41.166Z",
      "note": "",
-     "rev": 2,
+     "rev": 8,
      "createdAt": "2026-11-18T08:58:49.324Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T01:59:44.977Z",
+     "statusAt": "2026-11-22T01:59:44.919Z",
+     "statusBy": "headless",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:35:57.702Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:36:14.337Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:56:20.245Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:56:45.912Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s9--joey on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T01:59:44.919Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s9",
+     "branch": "claude/orchestrator-settings-collapsible-split--s9",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s9--joey"
     },
     {
      "id": "s10",
@@ -204748,7 +205599,59 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-21T23:25:27.398Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z"
+     "updatedAt": "2026-11-22T03:48:05.409Z",
+     "statusAt": "2026-11-22T02:00:57.060Z",
+     "statusBy": "headless",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:53.079Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-22T01:36:29.095Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-22T01:36:42.797Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:56:53.593Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-22T01:57:13.189Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s10--paulie on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-22T02:00:57.060Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s10",
+     "branch": "claude/orchestrator-settings-collapsible-split--s10",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s10--paulie"
     }
    ],
    "profiles": [
@@ -204759,29 +205662,28 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 188,
+   "rev": 266,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "builtAt": "",
     "createdAt": "2026-11-13T18:41:12.834Z",
     "estimate": "",
-    "model": "Fable",
+    "model": "Opus",
     "planId": "",
     "prefixSteps": true,
     "source": "console",
     "status": "pending",
     "stepAt": {
      "st-mwfbqn7f016rdh": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4bx1m1bqr": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1nfp9z": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1o4ms3": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1pmmnl": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1qqvwq": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1rkz6s": "2026-11-13T18:42:36.411Z",
-     "st-mwr5x4by1s1osi": "2026-11-13T18:42:36.411Z",
-     "st-mwlw36h004c4ei": "2026-11-18T08:58:49.324Z",
-     "st-mwr5x4by1unn6n": "2026-11-21T23:25:27.398Z"
+     "st-mwfbqn7f02oog4": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f03t8eu": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f04nsh6": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f05bivd": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f060j55": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f078c4a": "2026-11-13T18:42:36.411Z",
+     "st-mwfbqn7f08cbe1": "2026-11-13T18:42:36.411Z",
+     "st-mwl2bvr1028b4q": "2026-11-17T19:05:47.792Z"
     }
    },
    "queue": null,
@@ -204789,7 +205691,76 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-22T06:44:01.802Z",
+   "statusBy": "watchdog",
+   "attempt": 3,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-22T01:32:02.435Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-22T01:32:54.956Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "10 steps for 6 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-22T01:33:15.828Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "no other build is active"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-22T01:36:49.414Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-22T01:37:07.135Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "models assigned"
+    },
+    {
+     "status": "sending",
+     "at": "2026-11-22T01:37:46.692Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "sending s1"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-22T01:38:37.800Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "s1 is in a slot"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-22T06:43:01.595Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "building did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-22T06:44:01.802Z",
+     "by": "watchdog",
+     "attempt": 3,
+     "why": "retry forward at building, attempt 3"
+    }
+   ]
   },
   {
    "id": "console-app-part-2-native-floating",
@@ -213592,7 +214563,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213600,8 +214571,8 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-22T04:55:11.673Z",
-   "builtAt": "2026-11-22T05:46:02.707Z",
+   "updatedAt": "2026-11-22T06:05:21.089Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -213834,6 +214805,10 @@
     {
      "text": "Watchdog: landing for 4 h: PR #659 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T04:55:11.673Z"
+    },
+    {
+     "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s11 (Opus) and moved it back to the Queue: attempt 1.",
+     "at": "2026-11-22T06:05:21.089Z"
     }
    ],
    "approvals": [
@@ -214138,6 +215113,28 @@
      "rev": 4,
      "createdAt": "2026-11-21T23:05:26.563Z",
      "updatedAt": "2026-11-22T00:34:45.193Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwrfxiv901wdpi",
+     "title": "",
+     "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 h: PR #659 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/context-menus-plugin-one-true-source, get every check green and push; the PR is #659.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-22T06:13:09.733Z",
+     "updatedAt": "2026-11-22T06:13:09.957Z"
     }
    ],
    "profiles": [
@@ -214148,7 +215145,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214170,7 +215167,8 @@
      "st-mwff2uh607i17v": "2026-11-13T20:16:04.552Z",
      "st-mwff2uh608xlhn": "2026-11-13T20:16:04.552Z",
      "st-mwlw36h405gho8": "2026-11-18T08:58:49.324Z",
-     "st-mwr0ngv81l45g4": "2026-11-21T23:05:26.563Z"
+     "st-mwr0ngv81l45g4": "2026-11-21T23:05:26.563Z",
+     "st-mwrfxiv901wdpi": "2026-11-22T06:05:21.089Z"
     }
    },
    "queue": null,
@@ -255685,7 +256683,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwjuvk4n0y6u0k",
+     "uid": "st-mwre2x8l1lmcgg",
      "title": "",
      "text": "Survey current main for intent and seams: read the archived branch diff (git log/diff of toolbar-widgets-attach-any-banner-style) for intent only, plus framework/core/engines (banner widget host, attach/snap rules), framework/react/tapConfirm.ts, framework/ui/axf.css banner section, schemas/customize.json style targets; write the design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md (contract, settings keys, addresses) and commit",
      "model": "Fable",
@@ -255708,12 +256706,25 @@
      "doneAt": "2026-11-16T23:00:17.335Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:00:17.680Z"
+     "createdAt": "2026-11-22T05:21:22.629Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
-     "uid": "st-mwjuvk4n0zdtvr",
+     "uid": "st-mwre2x8l1mocvl",
      "title": "",
      "text": "Schema: extend the toolbar asset type and widget attach model in framework/schemas/asset-types.json so a toolbar declares a widget slot list (widget id, side, order, banner widget style + shape ref); regenerate JSON Schemas (axf.mjs schemas) and commit",
      "model": "Fable",
@@ -255734,7 +256745,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:04:20.780Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255751,7 +256762,7 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwjuvk4n10ylf7",
+     "uid": "st-mwre2x8l1nnhv4",
      "title": "",
      "text": "Reference engine: toolbar-widget host engine in framework/core/engines (resolve attached widgets per toolbar id, apply banner widget style/shape tokens, snap-not-overlap sizing order: sides size to content, flexible piece shrinks first, overflow scroll-snap); export from core index; commit",
      "model": "Fable",
@@ -255772,7 +256783,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:10:40.813Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255789,7 +256800,7 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwjuvk4n115dc7",
+     "uid": "st-mwre2x8l1oxmya",
      "title": "",
      "text": "Settings keys + migration: per-toolbar keys axf.toolbar.<id>.widgets (list) and defaults; migrate any existing banner-only widget placements so nothing moves; validators agree (core validator + project-check); commit",
      "model": "Fable",
@@ -255810,7 +256821,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:14:59.851Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255827,7 +256838,7 @@
     },
     {
      "id": "s5",
-     "uid": "st-mwjuvk4n12ozzj",
+     "uid": "st-mwre2x8l1p3oen",
      "title": "",
      "text": "Fixtures: add framework/spec/fixtures/toolbar-widgets.json golden outputs, regenerate with gen-fixtures.mts, record the Kotlin twin as a deferred gap in framework/spec/PORTING.md; commit",
      "model": "Fable",
@@ -255848,12 +256859,25 @@
      "doneAt": "2026-11-16T23:24:12.634Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:24:13.139Z"
+     "createdAt": "2026-11-22T05:21:22.629Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s6",
-     "uid": "st-mwjuvk4n1314im",
+     "uid": "st-mwre2x8l1qn5tc",
      "title": "",
      "text": "Engine check: framework/spec/check-toolbar-widgets.mts (attach, detach, reorder, style/shape resolution, snap/overflow cases, fixture match); run it; commit",
      "model": "Opus",
@@ -255873,7 +256897,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255890,7 +256914,7 @@
     },
     {
      "id": "s7",
-     "uid": "st-mwjuvk4n14kqem",
+     "uid": "st-mwre2x8l1r0nuy",
      "title": "",
      "text": "React host: ToolbarWidgetSlot component in framework/react that renders attached widgets inside any role=toolbar element through the existing banner widget frame (same classes/tokens, any banner widget style + shape), registered data-axf-target addresses toolbar:<id>/widget:<wid>; commit",
      "model": "Opus",
@@ -255911,7 +256935,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255928,7 +256952,7 @@
     },
     {
      "id": "s8",
-     "uid": "st-mwjuvk4n155jo7",
+     "uid": "st-mwre2x8l1sli69",
      "title": "",
      "text": "CSS: snap-not-overlap rules for widgets in toolbars in framework/ui/axf.css (tokens only, no var() fallbacks, color-mix opacity tokens); run check-theme.mjs and check-controls.mjs; commit",
      "model": "Opus",
@@ -255948,11 +256972,24 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-22T06:05:07.015Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s9",
-     "uid": "st-mwjuvk4n16tlbz",
+     "uid": "st-mwre2x8l1tjat3",
      "title": "",
      "text": "Wire the slot into the framework toolbar path (AxfProvider/Toolbars plugin toolbar wrapper) so every toolbar with a settings id gets it automatically, tap-to-confirm untouched; run check-toolbars.mjs; commit",
      "model": "Opus",
@@ -255974,7 +257011,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -255991,7 +257028,7 @@
     },
     {
      "id": "s10",
-     "uid": "st-mwjuvk4n1717jn",
+     "uid": "st-mwre2x8l1uvuw0",
      "title": "",
      "text": "Context menu UI: toolbar right-click/long-press adds 'Attach widget…' (widget picker + style/shape picker) and per-widget 'Style…', 'Move', 'Detach' via ChromeContext; framework controls only; commit",
      "model": "Opus",
@@ -256012,7 +257049,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256029,7 +257066,7 @@
     },
     {
      "id": "s11",
-     "uid": "st-mwjuvk4n18xlck",
+     "uid": "st-mwre2x8l1vz327",
      "title": "",
      "text": "Drag/drop: accept a widget dropped on any toolbar (drop-target@1) and reorder within/between toolbars with snap; commit",
      "model": "Opus",
@@ -256050,7 +257087,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256067,7 +257104,7 @@
     },
     {
      "id": "s12",
-     "uid": "st-mwjuvk4n192t5b",
+     "uid": "st-mwre2x8l1wjjj6",
      "title": "",
      "text": "Toolbar settings panel: 'Widgets' section in the toolbar's settings interface (chrome-toolbar settings asset) listing attached widgets with style, shape, order, detach; settings asset update in framework/assets/settings/chrome-toolbar; commit",
      "model": "Opus",
@@ -256088,7 +257125,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256105,7 +257142,7 @@
     },
     {
      "id": "s13",
-     "uid": "st-mwjuvk4n1adhuw",
+     "uid": "st-mwre2x8l1xo8ln",
      "title": "",
      "text": "API REST: toolbars plugin server routes GET /api/plugins/toolbars/widgets[?toolbar=], POST attach|detach|move|style; state readable; destructive detach needs confirm; commit",
      "model": "Opus",
@@ -256125,7 +257162,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256142,7 +257179,7 @@
     },
     {
      "id": "s14",
-     "uid": "st-mwjuvk4n1budif",
+     "uid": "st-mwre2x8l1ym59q",
      "title": "",
      "text": "API console-control + MCP: register addresses (toolbar:<id>/widget:<wid>, setting:axf.toolbar.<id>.widgets), console actions toolbar.widget.attach|detach|move|style, plugin-commands MCP tools, console_show deep link target; run check-console-control.mjs; commit",
      "model": "Opus",
@@ -256163,7 +257200,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256180,7 +257217,7 @@
     },
     {
      "id": "s15",
-     "uid": "st-mwjuvk4n1c6w3g",
+     "uid": "st-mwre2x8l1zx6hh",
      "title": "",
      "text": "API CLI + voice: axf toolbar widgets list|attach|detach|move|style (framework/cli) and AmberX voice intents mapping to the same console actions; commit",
      "model": "Opus",
@@ -256202,7 +257239,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-19T02:23:41.261Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256219,7 +257256,7 @@
     },
     {
      "id": "s16",
-     "uid": "st-mwjuvk4n1d321u",
+     "uid": "st-mwre2x8l20k1at",
      "title": "",
      "text": "Server tests: test the REST routes and MCP tool parity (same results through REST/MCP/CLI); commit",
      "model": "Opus",
@@ -256240,7 +257277,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-19T02:23:41.261Z",
+     "updatedAt": "2026-11-22T06:05:07.015Z",
      "statusAt": "2026-11-22T05:21:20.957Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -256257,7 +257294,7 @@
     },
     {
      "id": "s17",
-     "uid": "st-mwjuvk4n1elbp9",
+     "uid": "st-mwre2x8l21tan5",
      "title": "",
      "text": "Rebake console + shared apps (rebake.mjs, shared-assets.mjs bake), backfill chrome settings copies, regenerate tracker/catalog entries and glossary descriptions; run their --check commands; commit",
      "model": "Opus",
@@ -256279,11 +257316,24 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-19T02:23:41.261Z"
+     "updatedAt": "2026-11-22T06:05:07.015Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s18",
-     "uid": "st-mwjuvk4n1fy34j",
+     "uid": "st-mwrfn5o81ln39k",
      "title": "",
      "text": "UI Review: shoot desktop + phone (widgets on the console toolbar, the attach menu, the settings Widgets section) and submit with 3 options as assets (style presets) via review.mjs submit --choices, group named after the build; commit assets",
      "model": "Opus",
@@ -256302,26 +257352,25 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T22:49:23.111Z",
-     "statusAt": "2026-11-22T05:21:20.957Z",
-     "statusBy": "orchestrator",
+     "rev": 2,
+     "createdAt": "2026-11-22T06:05:05.869Z",
+     "updatedAt": "2026-11-22T06:05:10.360Z",
+     "statusAt": "2026-11-22T06:05:10.308Z",
+     "statusBy": "foreign-write",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-22T05:21:20.957Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
+       "at": "2026-11-22T06:05:10.308Z",
+       "by": "foreign-write",
+       "attempt": 1
       }
      ],
      "status": "pending"
     },
     {
      "id": "s19",
-     "uid": "st-mwjuvk4n1gtk36",
+     "uid": "st-mwrfn5o81m2jr3",
      "title": "",
      "text": "Tests, report and PR: run check-toolbar-widgets.mts, check-widgets.mts, check-theme/controls/toolbars/chrome-assets/console-control, validate --framework, tracker --check; write _claude/builds/reports/attach-widgets-to-any-toolbar-banner.md (API reach per feature: deep link, state, actions, REST/MCP/CLI/voice), THREADS row, open the PR and link it with builds-live.mjs link; hand to the merge queue",
      "model": "Opus",
@@ -256340,19 +257389,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T22:49:23.111Z",
-     "statusAt": "2026-11-22T05:21:20.957Z",
-     "statusBy": "orchestrator",
+     "rev": 2,
+     "createdAt": "2026-11-22T06:05:05.869Z",
+     "updatedAt": "2026-11-22T06:05:10.360Z",
+     "statusAt": "2026-11-22T06:05:10.308Z",
+     "statusBy": "foreign-write",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-22T05:21:20.957Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
+       "at": "2026-11-22T06:05:10.308Z",
+       "by": "foreign-write",
+       "attempt": 1
       }
      ],
      "status": "pending"
@@ -256366,7 +257414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 148,
+   "rev": 150,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297002,7 +298050,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T06:00:53.122Z",
+   "updatedAt": "2026-11-22T06:26:08.030Z",
    "builtAt": "",
    "notes": [
     {
@@ -297100,6 +298148,14 @@
     {
      "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T06:00:53.122Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:11.573Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:08.030Z"
     }
    ],
    "approvals": [],
@@ -297145,7 +298201,7 @@
      "note": "Split by Claude into 11 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "launch failed: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
     "route": "",
     "dispatchedAt": "2026-11-17T21:43:26.212Z",
     "planned": {
@@ -297480,7 +298536,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328985,7 +330041,7 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -328993,7 +330049,7 @@
    "pr": "#845",
    "mergedAt": "2026-11-22T04:31:16Z",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-22T05:46:10.765Z",
+   "updatedAt": "2026-11-22T06:45:12.847Z",
    "builtAt": "2026-11-22T04:31:04.596Z",
    "notes": [
     {
@@ -329115,6 +330171,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-22T06:00:31.120Z"
+    },
+    {
+     "text": "Watchdog: PR #845 merged 2026-11-22 04:31 and the build never heard: the merge is recorded, CI on 9604283922 is next.",
+     "at": "2026-11-22T06:05:17.258Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 9604283922: landed.",
+     "at": "2026-11-22T06:45:12.847Z"
     }
    ],
    "approvals": [],
@@ -329180,6 +330244,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 845,
+    "sha": "960428392242d8ae253c6fb1d8be1a26322d938c",
+    "mergedAt": "2026-11-22T04:31:16Z",
+    "ci": "success",
+    "ciAt": "2026-11-22T06:45:12.847Z",
+    "ciRun": "commit@960428392242d8ae253c6fb1d8be1a26322d938c",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "steps": [
     {
@@ -329348,18 +330423,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "Brett",
-    "planId": "",
-    "createdAt": "2026-11-18T12:27:40.646Z",
     "builtAt": "2026-11-22T04:31:04.596Z",
+    "createdAt": "2026-11-18T12:27:40.646Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "Brett",
+    "status": "complete",
     "stepAt": {
      "st-mwm3ldy001ue9l": "2026-11-18T12:28:57.431Z",
      "st-mwm3ldy002zfqb": "2026-11-18T12:28:57.431Z",
@@ -332219,7 +333294,7 @@
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-22T05:15:17.532Z",
+   "updatedAt": "2026-11-22T06:38:30.802Z",
    "builtAt": "",
    "notes": [
     {
@@ -332305,6 +333380,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s3 (Opus) and moved it back to the Queue: attempt 2.",
      "at": "2026-11-22T05:15:17.532Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T06:38:30.802Z"
     }
    ],
    "approvals": [],
@@ -332439,7 +333518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332505,7 +333584,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T06:01:04.786Z",
+   "updatedAt": "2026-11-22T06:26:05.446Z",
    "builtAt": "",
    "notes": [
     {
@@ -333003,6 +334082,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T05:21:04.435Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:08.925Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:05.446Z"
     }
    ],
    "approvals": [
@@ -333198,7 +334285,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 146,
+   "rev": 148,
    "deleted": false,
    "deletedAt": "",
    "pending": {

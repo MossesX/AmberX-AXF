@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T06:01:06.597Z",
+ "updatedAt": "2026-11-22T06:45:16.469Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106082,7 +106082,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-22T05:55:13.590Z",
+   "updatedAt": "2026-11-22T06:26:10.893Z",
    "builtAt": "",
    "notes": [
     {
@@ -106280,6 +106280,14 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s12 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T05:55:13.590Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:13.652Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:10.893Z"
     }
    ],
    "approvals": [
@@ -135845,15 +135853,16 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "building",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
-   "branch": "claude/orchestrator-settings-collapsible-split--s5",
+   "branch": "claude/orchestrator-settings-collapsible-split",
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T02:17:29.063Z",
+   "updatedAt": "2026-11-22T06:45:01.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -136173,8 +136182,16 @@
      "at": "2026-11-22T01:56:50.101Z"
     },
     {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:56:59.376Z"
+    },
+    {
      "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s10--paulie, shared account login)",
      "at": "2026-11-22T01:57:20.091Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:57:36.089Z"
     },
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
@@ -136211,6 +136228,10 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
      "at": "2026-11-22T01:59:23.138Z"
+    },
+    {
+     "text": "Reconciler: PR #636 names s3, s4, s5, s6, s8 done",
+     "at": "2026-11-22T01:59:50.249Z"
     },
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--s4--sully: brief only · start 9.6K tokens ($0.02) · cost $0.07 · 2 turns · 6 tools, MCP none",
@@ -136253,12 +136274,50 @@
      "at": "2026-11-22T02:15:18.218Z"
     },
     {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T02:15:32.676Z"
+    },
+    {
+     "text": "Reconciler: PR #636 names s3, s4, s5, s6, s8 done",
+     "at": "2026-11-22T02:15:54.757Z"
+    },
+    {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--s8--earl: brief only · start 9.6K tokens ($0.02) · cost $0.05 · 2 turns · 6 tools, MCP none",
      "at": "2026-11-22T02:16:34.570Z"
     },
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.05",
      "at": "2026-11-22T02:16:38.349Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T06:39:01.718Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T06:42:01.998Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at building, attempt 2: building did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-22T06:43:01.595Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at building, attempt 3.",
+     "at": "2026-11-22T06:44:01.802Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T06:45:01.249Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T06:45:01.249Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -136267,6 +136326,24 @@
      "from": "Fable",
      "to": "Opus",
      "at": "2026-11-15T00:48:38.619Z",
+     "by": "auto",
+     "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-22T01:57:41.166Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 3,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-22T01:58:22.316Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -136301,7 +136378,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwfbqn7f016rdh",
+     "uid": "st-mwr5x4bx1ldaon",
      "createdAt": "2026-11-13T18:42:36.411Z"
     },
     {
@@ -136456,7 +136533,7 @@
      "done": true,
      "doneAt": "2026-11-22T01:57:41.166Z",
      "note": "",
-     "uid": "st-mwlw36h004c4ei",
+     "uid": "st-mwr5x4by1tancl",
      "createdAt": "2026-11-18T08:58:49.324Z"
     },
     {
@@ -142529,7 +142606,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -142537,8 +142614,8 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-22T04:55:11.673Z",
-   "builtAt": "2026-11-22T05:46:02.707Z",
+   "updatedAt": "2026-11-22T06:05:21.089Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -142771,6 +142848,10 @@
     {
      "text": "Watchdog: landing for 4 h: PR #659 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T04:55:11.673Z"
+    },
+    {
+     "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s11 (Opus) and moved it back to the Queue: attempt 1.",
+     "at": "2026-11-22T06:05:21.089Z"
     }
    ],
    "approvals": [
@@ -142989,6 +143070,25 @@
      "note": "",
      "uid": "st-mwr0ngv81l45g4",
      "createdAt": "2026-11-21T23:05:26.563Z"
+    },
+    {
+     "id": "s21",
+     "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 h: PR #659 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/context-menus-plugin-one-true-source, get every check green and push; the PR is #659.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwrfxiv901wdpi",
+     "createdAt": "2026-11-22T06:13:09.733Z"
     }
    ]
   },
@@ -173240,8 +173340,8 @@
      "done": true,
      "doneAt": "2026-11-16T23:00:17.335Z",
      "note": "",
-     "uid": "st-mwjuvk4n0y6u0k",
-     "createdAt": "2026-11-16T22:49:23.111Z"
+     "uid": "st-mwre2x8l1lmcgg",
+     "createdAt": "2026-11-22T05:21:22.629Z"
     },
     {
      "id": "s2",
@@ -173262,7 +173362,7 @@
      "done": true,
      "doneAt": "2026-11-16T23:04:20.483Z",
      "note": "",
-     "uid": "st-mwjuvk4n0zdtvr",
+     "uid": "st-mwre2x8l1mocvl",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173284,7 +173384,7 @@
      "done": true,
      "doneAt": "2026-11-16T23:10:40.452Z",
      "note": "",
-     "uid": "st-mwjuvk4n10ylf7",
+     "uid": "st-mwre2x8l1nnhv4",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173306,7 +173406,7 @@
      "done": true,
      "doneAt": "2026-11-16T23:14:59.469Z",
      "note": "",
-     "uid": "st-mwjuvk4n115dc7",
+     "uid": "st-mwre2x8l1oxmya",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173329,8 +173429,8 @@
      "done": true,
      "doneAt": "2026-11-16T23:24:12.634Z",
      "note": "",
-     "uid": "st-mwjuvk4n12ozzj",
-     "createdAt": "2026-11-16T22:49:23.111Z"
+     "uid": "st-mwre2x8l1p3oen",
+     "createdAt": "2026-11-22T05:21:22.629Z"
     },
     {
      "id": "s6",
@@ -173350,7 +173450,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:23:57.826Z",
      "note": "",
-     "uid": "st-mwjuvk4n1314im",
+     "uid": "st-mwre2x8l1qn5tc",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173372,7 +173472,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:31:50.033Z",
      "note": "",
-     "uid": "st-mwjuvk4n14kqem",
+     "uid": "st-mwre2x8l1r0nuy",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173393,7 +173493,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:33:36.929Z",
      "note": "",
-     "uid": "st-mwjuvk4n155jo7",
+     "uid": "st-mwre2x8l1sli69",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173416,7 +173516,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:37:28.049Z",
      "note": "",
-     "uid": "st-mwjuvk4n16tlbz",
+     "uid": "st-mwre2x8l1tjat3",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173438,7 +173538,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:44:17.646Z",
      "note": "",
-     "uid": "st-mwjuvk4n1717jn",
+     "uid": "st-mwre2x8l1uvuw0",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173460,7 +173560,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:48:51.850Z",
      "note": "",
-     "uid": "st-mwjuvk4n18xlck",
+     "uid": "st-mwre2x8l1vz327",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173482,7 +173582,7 @@
      "done": true,
      "doneAt": "2026-11-18T15:53:04.633Z",
      "note": "",
-     "uid": "st-mwjuvk4n192t5b",
+     "uid": "st-mwre2x8l1wjjj6",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173503,7 +173603,7 @@
      "done": true,
      "doneAt": "2026-11-18T16:00:07.801Z",
      "note": "",
-     "uid": "st-mwjuvk4n1adhuw",
+     "uid": "st-mwre2x8l1xo8ln",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173525,7 +173625,7 @@
      "done": true,
      "doneAt": "2026-11-18T16:05:33.131Z",
      "note": "",
-     "uid": "st-mwjuvk4n1budif",
+     "uid": "st-mwre2x8l1ym59q",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173548,7 +173648,7 @@
      "done": true,
      "doneAt": "2026-11-18T16:11:17.327Z",
      "note": "",
-     "uid": "st-mwjuvk4n1c6w3g",
+     "uid": "st-mwre2x8l1zx6hh",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173570,7 +173670,7 @@
      "done": true,
      "doneAt": "2026-11-18T16:14:06.727Z",
      "note": "",
-     "uid": "st-mwjuvk4n1d321u",
+     "uid": "st-mwre2x8l20k1at",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173593,7 +173693,7 @@
      "done": true,
      "doneAt": "2026-11-18T16:20:22.038Z",
      "note": "",
-     "uid": "st-mwjuvk4n1elbp9",
+     "uid": "st-mwre2x8l21tan5",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
     {
@@ -173615,8 +173715,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjuvk4n1fy34j",
-     "createdAt": "2026-11-16T22:49:23.111Z"
+     "uid": "st-mwrfn5o81ln39k",
+     "createdAt": "2026-11-22T06:05:05.869Z"
     },
     {
      "id": "s19",
@@ -173637,8 +173737,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjuvk4n1gtk36",
-     "createdAt": "2026-11-16T22:49:23.111Z"
+     "uid": "st-mwrfn5o81m2jr3",
+     "createdAt": "2026-11-22T06:05:05.869Z"
     }
    ]
   },
@@ -199852,7 +199952,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T06:00:53.122Z",
+   "updatedAt": "2026-11-22T06:26:08.030Z",
    "builtAt": "",
    "notes": [
     {
@@ -199950,6 +200050,14 @@
     {
      "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T06:00:53.122Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:11.573Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:08.030Z"
     }
    ],
    "approvals": [],
@@ -209501,7 +209609,7 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -209509,7 +209617,7 @@
    "pr": "#845",
    "mergedAt": "2026-11-22T04:31:16Z",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-22T05:46:10.765Z",
+   "updatedAt": "2026-11-22T06:45:12.847Z",
    "builtAt": "2026-11-22T04:31:04.596Z",
    "notes": [
     {
@@ -209631,6 +209739,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-22T06:00:31.120Z"
+    },
+    {
+     "text": "Watchdog: PR #845 merged 2026-11-22 04:31 and the build never heard: the merge is recorded, CI on 9604283922 is next.",
+     "at": "2026-11-22T06:05:17.258Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 9604283922: landed.",
+     "at": "2026-11-22T06:45:12.847Z"
     }
    ],
    "approvals": [],
@@ -211585,7 +211701,7 @@
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-22T05:15:17.532Z",
+   "updatedAt": "2026-11-22T06:38:30.802Z",
    "builtAt": "",
    "notes": [
     {
@@ -211671,6 +211787,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s3 (Opus) and moved it back to the Queue: attempt 2.",
      "at": "2026-11-22T05:15:17.532Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T06:38:30.802Z"
     }
    ],
    "approvals": [],
@@ -211760,7 +211880,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T06:01:04.786Z",
+   "updatedAt": "2026-11-22T06:26:05.446Z",
    "builtAt": "",
    "notes": [
     {
@@ -212258,6 +212378,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T05:21:04.435Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:08.925Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:05.446Z"
     }
    ],
    "approvals": [
