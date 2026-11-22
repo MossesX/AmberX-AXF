@@ -102,7 +102,7 @@ t('per-build caps: pipeline.maxParallel and pipeline.budgetUsd hold the build, n
 t('auto-queue takes only split Pending builds that clash with no running build', () => {
   const running = [{ id: 'r', status: 'running', steps: [{ id: 's1', model: 'Opus', files: ['shared.mjs'] }] }];
   const pending = [{ id: 'unsplit', status: 'pending', steps: [] }, { id: 'clash', status: 'pending', steps: [{ id: 's1', model: 'Opus', files: ['shared.mjs'] }] }, { id: 'clear', status: 'pending', steps: [{ id: 's1', model: 'Opus', files: ['own.mjs'] }] }];
-  const r = p.planFill({ slots: SLOTS, accounts: ACC, running, pending, settings: { autoQueue: true }, now: NOW });
+  const r = p.planFill({ slots: SLOTS, accounts: ACC, running, pending, settings: { autoQueuePending: true }, now: NOW });
   assert.deepEqual(r.launches.map((l) => l.id), ['clear']);
   assert.deepEqual(r.waits.map((w) => [w.id, w.why]), [['unsplit', 'no steps yet: waiting for the split'], ['clash', 'files clash with running build r (shared.mjs)']]);
 });

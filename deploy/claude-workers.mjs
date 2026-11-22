@@ -340,7 +340,10 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, usage: null, usageLeft: 1, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
   const ro = roster(cfg, base);
   // buildPick on every row: the dispatcher reads the rows (or the host's snapshot of them), never workers.json itself
-  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
+  // buildingSet: the cap was saved (not the built-in default), so it is the one "sessions per account" value (settings-sources@1)
+  const rawCfg = readJson(paths(env).config) ?? {};
+  const buildingSet = (n) => rawCfg?.limits?.building !== undefined || rawCfg?.perAccount?.[n]?.building !== undefined;
+  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, buildingSet: buildingSet(a.name), queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
   return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, buildAccount: cfg.buildAccount, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
 }

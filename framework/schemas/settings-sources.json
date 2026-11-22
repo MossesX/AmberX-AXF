@@ -1,0 +1,125 @@
+{
+  "$axf": "settings-sources@1",
+  "readme": "One true source (Brett, Nov 21 2026): a console setting is stored under exactly one key. This registry lists every setting that once had a second copy: the one key it is stored under now, the one wording every screen uses, and the old keys, which stay readable (read aliases, so a store that still carries one keeps working) but are never written again. `node framework/cli/check-settings-sources.mjs` (CI) fails when an alias is stored or registered again, when a retired wording comes back in a screen, or when two registered settings share a label. A new setting that would repeat one of these jobs is added here as an alias of it, never as its own key. The audit behind it: `node framework/cli/settings-audit.mjs`. A plugin ships its own part as `settings-sources.json` in its folder (same shape; the check reads both), and names a file of a plugin as `plugin:<folder>/<file>`.",
+  "sources": [
+    {
+      "id": "builds.atOnce",
+      "label": "Builds at once",
+      "meaning": "How many headless builds (Claude sessions, swarm jobs) run at once on the VPS. The VPS enforces it; the queue books against the same number.",
+      "store": {
+        "file": "<agent-slots dir>/build-limit.json",
+        "key": "maxBuilds",
+        "module": "framework/cli/build-limit.mjs"
+      },
+      "owner": "Brett only (his signed-in console, or the CLI at a terminal)",
+      "edit": [
+        "Settings → Plugins → Agent cap → Builds at once",
+        "Builds → VPS Configuration → Build cap → Builds at once (the same key; console-control setting:vps.buildCap.maxBuilds reads it, the owner-only save is never a command)",
+        "Agent cap plugin API: PUT hard-limit {maxBuilds} (Brett's signed-in console only; owner-only, so never a console-control command)",
+        "node framework/cli/build-limit.mjs set maxBuilds=N (at a terminal)"
+      ],
+      "read": [
+        "Agent cap plugin API: GET hard-limit, GET status (cap, hard.live); plugin commands hard-limit / status (MCP, voice)",
+        "node framework/cli/build-limit.mjs status --json",
+        "node framework/cli/agent-slots.mjs status --json"
+      ],
+      "aliases": [
+        {
+          "key": "maxAgents",
+          "store": "<agent-slots dir>/settings.json",
+          "module": "framework/cli/agent-slots.mjs",
+          "was": "Max running agents",
+          "migration": "migrateBuildsAtOnce() in framework/cli/agent-slots.mjs → a settings-migrated line in <agent-slots dir>/build-limit.log.jsonl"
+        }
+      ],
+      "retiredWording": [
+        "Max running agents",
+        "Hard limit: builds at once",
+        "VPS hard build limit",
+        "VPS limit",
+        "Hard cap"
+      ]
+    }
+  ],
+  "distinct": [
+    {
+      "keys": [
+        "pipeline stepsInParallel"
+      ],
+      "label": "Steps in parallel",
+      "why": "Steps of the one active Pipeline 2.0 build sent out at once, under Builds at once. Builds on the builds@1 dispatcher never read it: their cap is the Claude setting builds.maxParallelPerBuild (below)."
+    },
+    {
+      "keys": [
+        "builds.maxParallelPerBuild"
+      ],
+      "label": "Max parallel steps per build",
+      "why": "Fill every slot (BUILD-PARALLEL): step sessions a builds@1 build may run beside its own session. Pipeline 2.0 builds never read it: their cap is pipeline stepsInParallel, which counts every step of the active build. A build is on one flow or the other, so the two never apply to the same build."
+    },
+    {
+      "keys": [
+        "pipeline maxRuns"
+      ],
+      "label": "Sessions per build before it stops",
+      "why": "Counts every session a build has had. The recovery watchdog's count restarts at each ticked step; Pipeline 2.0, the lander and the retry ladder count attempts of their own units."
+    },
+    {
+      "keys": [
+        "recovery watchdog maxRetries"
+      ],
+      "label": "Max retries",
+      "why": "See pipeline maxRuns."
+    },
+    {
+      "keys": [
+        "agent-slots maxHeavy"
+      ],
+      "label": "Heavy steps at once",
+      "why": "Vite builds, docker test runs and Playwright: a different resource from builds."
+    },
+    {
+      "keys": [
+        "build-limit emergencySlots"
+      ],
+      "label": "Emergency slots",
+      "why": "A second pool, counted apart from Builds at once."
+    }
+  ],
+  "sameName": {
+    "readme": "A key name the audit finds in more than one store passes only when listed here: `oneStore` = the folders hold one store between them (an allow-list or default table of the same file in another language), `differentSettings` = the same name on settings that are not the same thing. Anything else fails CI until one becomes the source and the other its alias (sources above), or the reason is written down here.",
+    "oneStore": [
+      {
+        "stores": [
+          "plugin:agent-slots",
+          "framework/cli"
+        ],
+        "why": "The plugin server's allow-list for the engine's one settings file (<agent-slots dir>/settings.json)."
+      },
+      {
+        "stores": [
+          "plugin:plugin-manager",
+          "apps/console-web/src"
+        ],
+        "why": "The lazy-loading defaults of one document, in Python for the server and TypeScript for the shell."
+      },
+      {
+        "stores": [
+          "plugin:build-orchestrator",
+          "framework/core"
+        ],
+        "why": "The recovery watchdog's settings file on top of build-watchdog@1's defaults: one file."
+      }
+    ],
+    "differentSettings": {
+      "enabled": "The on/off switch of separate features, each in its own file.",
+      "on": "The on/off switch of separate features, each in its own file.",
+      "sound": "The activity banner's done sound and the approvals alarm are separate sounds.",
+      "tools": "The assistant's chat-mode tool policy and the headless launcher's tool list are separate lists.",
+      "intervalMin": "How often two unrelated jobs run (the recovery watchdog, the chat viewer's sync).",
+      "project": "The recorder's target project and hub sync's project are separate picks.",
+      "graceMin": "Three watchdogs, each with its own grace period: the recovery watchdog (build-watchdog@1), watchdog 2 and the reaper.",
+      "maxAttempts": "Attempts of different units: a Pipeline 2.0 step (watchdog 2), a landing run (lander, auto-lander policy), a retry ladder rung.",
+      "user": "The host account a host service runs as (host-services@1 manifest default) and the terminal's SSH login name are separate things."
+    }
+  }
+}

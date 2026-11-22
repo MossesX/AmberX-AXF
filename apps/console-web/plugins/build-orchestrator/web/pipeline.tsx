@@ -218,15 +218,15 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
                 </div>
                 {a.email && <p className="fx-small fx-muted">{a.email}</p>}
                 <div className="pd-meta">
-                  <span title="Sessions running on this account / its parallel cap"><Icon name="play" size={13} />{a.running}/{a.parallel} running</span>
+                  <span title="Sessions running on this account / its Sessions per account"><Icon name="play" size={13} />{a.running}/{a.parallel} running</span>
                   {a.kind === 'api' && a.api?.spend && <span title="Spend today / this week against the caps"><Icon name="chart" size={13} />${a.api.spend.day.toFixed(2)}{a.api.spend.dayCap ? `/${a.api.spend.dayCap}` : ''} today · ${a.api.spend.week.toFixed(2)}{a.api.spend.weekCap ? `/${a.api.spend.weekCap}` : ''} week</span>}
                   {a.kind === 'api' ? (a.api?.usable ? <span title="Takes a build set to API, or overflow when it is on"><Icon name="check" size={13} />ready for API jobs</span> : <span className="oc-flag" title={a.api?.why}><Icon name="alert" size={13} />{a.api?.why}</span>)
                     : !a.usable && <span className="oc-flag" title={a.why}><Icon name="alert" size={13} />{a.why}</span>}
                 </div>
                 <div className="fx-row fx-row--wrap">
                   <Button size="sm" tone="neutral" icon="zap" disabled={busy === a.name} title={`Fable access is from the ${a.fableFrom}; tap to set it by hand (on, off) or back to auto`} onClick={() => act('pipeline/account', { name: a.name, fable: a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on' }, `${a.name}: Fable ${a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on'}`)}>Toggle Fable</Button>
-                  <Button size="sm" tone="neutral" icon="minus" disabled={busy === a.name || a.parallel <= 1} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel - 1 }, `${a.name}: ${a.parallel - 1} at once`)}>Less parallel</Button>
-                  <Button size="sm" tone="neutral" icon="plus" disabled={busy === a.name || a.parallel >= 12} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel + 1 }, `${a.name}: ${a.parallel + 1} at once`)}>More parallel</Button>
+                  <Button size="sm" tone="neutral" icon="minus" disabled={busy === a.name || a.parallel <= 1} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel - 1 }, `${a.name}: ${a.parallel - 1} sessions at once`)}>Fewer sessions</Button>
+                  <Button size="sm" tone="neutral" icon="plus" disabled={busy === a.name || a.parallel >= 20} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel + 1 }, `${a.name}: ${a.parallel + 1} sessions at once`)}>More sessions</Button>
                   <Button size="sm" tone="neutral" icon={a.why === 'switched off for the pipeline' ? 'check' : 'x'} disabled={busy === a.name} onClick={() => act('pipeline/account', { name: a.name, use: a.why === 'switched off for the pipeline' ? 'on' : 'off' }, `${a.name}: ${a.why === 'switched off for the pipeline' ? 'back in' : 'off'}`)}>Toggle use</Button>
                 </div>
               </article>

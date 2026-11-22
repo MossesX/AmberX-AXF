@@ -735,7 +735,7 @@
      }
     ],
     "settings": {
-     "autoQueue": true,
+     "autoQueuePending": true,
      "budget": {
       "capUsd": 10,
       "spentUsd": 9.5,
@@ -1049,7 +1049,7 @@
      }
     ],
     "settings": {
-     "autoQueue": true
+     "autoQueuePending": true
     }
    },
    "parallelCapAndClaimedMain": {
@@ -1708,7 +1708,7 @@
      }
     ],
     "settings": {
-     "autoQueue": true
+     "autoQueuePending": true
     }
    }
   }

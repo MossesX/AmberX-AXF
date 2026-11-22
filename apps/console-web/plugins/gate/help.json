@@ -244,7 +244,7 @@
       {
         "target": "build-cap",
         "title": "Build cap",
-        "text": "How many builds the VPS runs at once: the hard cap, the emergency slots and the orchestrator's steps in parallel side by side, with what runs now. A note says so when the numbers disagree. Same values as `axf gate build-cap`, the vps_build_cap MCP tools and “what is the build cap”."
+        "text": "How many builds the VPS runs at once: Builds at once, the emergency slots and the orchestrator's steps in parallel side by side, with what runs now. A note says so when the numbers disagree. Same values as `axf gate build-cap`, the vps_build_cap MCP tools and “what is the build cap”."
       },
       {
         "target": "view:gate/tab:build-cap",
@@ -253,19 +253,19 @@
         "kind": "screen"
       },
       {
-        "target": "hard-cap-builds-at-once",
-        "title": "Hard cap",
-        "text": "The most builds the VPS ever runs at once (1 to 64). Sessions, MCP and voice can read it; only Brett's signed-in console can change it."
+        "target": "builds-at-once",
+        "title": "Builds at once",
+        "text": "The most builds the VPS ever runs at once (1 to 64). The same setting as Settings → Plugins → Agent cap → Builds at once: one stored key. Sessions, MCP and voice can read it; only Brett's signed-in console can change it."
       },
       {
         "target": "emergency-slots",
         "title": "Emergency slots",
-        "text": "Extra places only an emergency build may take, counted apart from the hard cap (0 to 8, 0 = off). Only Brett's signed-in console can change it."
+        "text": "Extra places only an emergency build may take, counted apart from Builds at once (0 to 8, 0 = off). Only Brett's signed-in console can change it."
       },
       {
         "target": "steps-in-parallel",
         "title": "Steps in parallel",
-        "text": "How many steps of one build the orchestrator sends at once (1 to 12). Above the hard cap it changes nothing: only the hard cap's number run."
+        "text": "How many steps of one build the orchestrator sends at once (1 to 12). Above Builds at once it changes nothing: only that many run."
       },
       {
         "target": "refresh",

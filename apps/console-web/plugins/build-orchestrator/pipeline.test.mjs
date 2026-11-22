@@ -98,7 +98,7 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.deepEqual(r.queue, ['q1', 'q2', 'q3', 'q4']);
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable'], ['q2', 'w-pro', 'Opus']], 'Opus work keeps the Fable account free');
   assert.deepEqual(r.waits.map((w) => w.id), ['q3', 'q4']);
-  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
+  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /Builds at once reached \(1\/3 booked\)/);
   assert.equal(r.idle, null);
 });
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
@@ -303,7 +303,7 @@ t('authRecovered: a health answer newer than the failure that signs in; once', (
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
-  assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
+  assert.equal(s.parallelPerAccount, 20); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
 });
 
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")

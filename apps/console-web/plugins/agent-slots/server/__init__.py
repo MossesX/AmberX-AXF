@@ -41,7 +41,9 @@ CLI = ROOT / "framework" / "cli" / "agent-slots.mjs"
 LIMIT_CLI = ROOT / "framework" / "cli" / "build-limit.mjs"
 LIMIT_KEYS = {"maxBuilds", "emergencySlots", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
 ID = re.compile(r"^[A-Za-z0-9-]{1,80}$")
-SETTING_KEYS = {"maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
+# maxAgents is retired: Builds at once is the one key, build-limit.json maxBuilds (PUT hard-limit); settings still carry it to read.
+RETIRED_KEYS = {"maxAgents": "Builds at once is one setting now: PUT hard-limit {maxBuilds} (Brett only, Settings → Plugins → Agent cap)"}
+SETTING_KEYS = {"maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
 CACHE_S = 3
 _cache: dict[str, Any] = {"at": 0.0, "value": None}
 _lock = threading.Lock()
@@ -80,7 +82,7 @@ def health_probe(s: dict[str, Any] | None = None, now_ms: float | None = None) -
     details = [f"Slots {s.get('used', 0)}/{s.get('cap', '?')}, {s.get('queued', 0)} queued; {mem.get('availGb', '?')} GB free (floor {mem.get('floorGb', '?')} GB)."]
     hard = s.get("hard") or {}
     if hard.get("max"):
-        details.append(f"VPS hard build limit: {hard.get('live', '?')}/{hard['max']} running ({hard.get('source', '?')}).")
+        details.append(f"Builds at once: {hard.get('live', '?')}/{hard['max']} running ({hard.get('source', '?')}).")
     problems = []
     if trips >= int(cfg.get("guardWarnTrips") or 5):
         problems.append(f"the memory guard held new sessions {trips} times in the last hour")
@@ -88,9 +90,9 @@ def health_probe(s: dict[str, Any] | None = None, now_ms: float | None = None) -
         problems.append(f"swap has been in use for {int(swap_min)} min ({(s.get('swap') or {}).get('mb', 0)} MB)")
     if problems:
         return {"status": "warn", "summary": "The VPS is short of memory: " + "; ".join(problems) + ".", "details": details + [
-            "Lower Max running agents or Max heavy steps (Settings → Plugins → Agent cap), or stop idle containers."]}
+            "Lower Builds at once or Max heavy steps (Settings → Plugins → Agent cap), or stop idle containers."]}
     if hard.get("max") and hard.get("source") == "unknown":
-        return {"status": "warn", "summary": "The VPS hard build limit enforcer isn't reporting: the limit still refuses launches, but the console can't show live usage and stray builds aren't moved into the capped slice.",
+        return {"status": "warn", "summary": "The VPS build limit enforcer isn't reporting: the limit still refuses launches, but the console can't show live usage and stray builds aren't moved into the capped slice.",
                 "details": details + ["On the VPS as root: `systemctl status axf-build-limit.timer`; if it is missing, `sudo bash /opt/axf/deploy/install-build-limit.sh`."]}
     return {"status": "ok", "summary": f"Memory fine: slots {s.get('used', 0)}/{s.get('cap', '?')}, {mem.get('availGb', '?')} GB free.", "details": details}
 
@@ -110,7 +112,7 @@ def ensure_health() -> bool:
         reg.register({"id": HEALTH_ID, "label": "VPS memory for headless agents", "service": "vps", "order": 60, "severity": "warn",
                       "run": lambda: health_probe(),
                       "breaks": "New headless sessions and builds wait in the queue while memory is short; running ones slow down in swap.",
-                      "instructions": ["Settings → Plugins → Agent cap: lower Max running agents / Max heavy steps, or raise the memory floor.",
+                      "instructions": ["Settings → Plugins → Agent cap: lower Builds at once / Max heavy steps, or raise the memory floor.",
                                        "On the VPS: `node framework/cli/agent-slots.mjs status` shows what holds the slots."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the cap works without its health item
         return False
@@ -138,8 +140,9 @@ async def put_settings(request: Request) -> dict[str, Any]:
     if not isinstance(body, dict):
         raise HTTPException(400, "send a JSON object")
     patch = {k: v for k, v in body.items() if k in SETTING_KEYS}
+    retired = [k for k in body if k in RETIRED_KEYS]
     if not patch:
-        raise HTTPException(400, f"nothing to save (keys: {', '.join(sorted(SETTING_KEYS))})")
+        raise HTTPException(400, RETIRED_KEYS[retired[0]] if retired else f"nothing to save (keys: {', '.join(sorted(SETTING_KEYS))})")
     code, out, err = _run("set", "--json", json.dumps(patch))
     if code != 0:
         raise HTTPException(400, err[-400:] or "refused")
@@ -199,7 +202,7 @@ def get_hard_limit(request: Request) -> dict[str, Any]:
 async def put_hard_limit(request: Request) -> dict[str, Any]:
     """Brett only: change the hard build limit or the slice / docker caps (his signed-in console, not the console token)."""
     if not _owner(request):
-        raise HTTPException(403, "Only Brett sets the hard build limit, from his own signed-in console (Settings → Plugins → Agent cap). Sessions, MCP and voice can read it.")
+        raise HTTPException(403, "Only Brett sets Builds at once and the VPS build limits, from his own signed-in console (Settings → Plugins → Agent cap). Sessions, MCP and voice can read it.")
     body = await request.json()
     if not isinstance(body, dict):
         raise HTTPException(400, "send a JSON object")

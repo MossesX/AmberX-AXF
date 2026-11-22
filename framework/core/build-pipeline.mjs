@@ -538,8 +538,8 @@ export const FILL_DEFAULTS = Object.freeze({
   maxParallelPerBuild: 3,
   /** Launches one planning round may make, whatever the slots say (a runaway guard). */
   maxLaunchesPerRound: 12,
-  /** Pending builds are queued and launched by the planner (the Claude setting builds.launchWithoutAsking). */
-  autoQueue: false,
+  /** Split Pending builds that clash with nothing running are queued and launched by the planner (the Claude setting builds.autoQueuePending). */
+  autoQueuePending: false,
   /** Subscriptions first, then API accounts when every subscription account is full or out. */
   apiOverflow: true,
   /** Optional budget for API launches this round: { capUsd, spentUsd, perLaunchUsd }; null = no cap here (the account's own caps still hold). */
@@ -580,7 +580,7 @@ function noAccountLine(accounts, model) {
  *   slots     agent-slots status: { free, used, cap, hard: { max, live, free }, memory: { availGb, floorGb } }
  *   accounts  the pipeline's account views (pickAccount)                 settings  FILL_DEFAULTS overrides
  *   running   builds@1 records in Building (running / waiting)          queue     queued builds (any order)
- *   pending   pending builds (used only when settings.autoQueue)
+ *   pending   pending builds (used only when settings.autoQueuePending)
  * Order: 1. ready steps of running builds that carry an explicit `after` list and are not `parallel: never` (a step
  * without a list is sequential and belongs to the build's own session, as does the first ready step when no step is
  * claimed yet); a step that shares a file with the session's step or with one launched this round is held back, and a
@@ -651,7 +651,7 @@ export function planFill({ slots = {}, accounts = [], running = [], queue = [], 
     if (take(nextModel(b), b, { kind: 'build', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `next in the Queue (${priorityOf(b)})` })) occupy(b);
   }
   // 3. Pending, only when auto-queue is on: split builds whose files no running build is on
-  if (st.autoQueue) {
+  if (st.autoQueuePending) {
     const p = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending')
       .sort((a, b) => prioRank(priorityOf(a)) - prioRank(priorityOf(b)) || str(a.createdAt).localeCompare(str(b.createdAt)));
     for (const b of p) {

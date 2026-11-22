@@ -184,7 +184,29 @@ const accounts = [{ name: 'w', kind: 'subscription', usable: true, fable: true, 
 const plan = P.plan({ builds, accounts, slots: { free: 5, used: 0, cap: 8 } });
 ok(!plan.launches.some((l) => l.id === 'pend'), 'plan: a Pending build is never launched');
 const full = P.plan({ builds, accounts, slots: { free: 0, used: 2, cap: 8, hard: { max: 3, live: 3, free: 0 } } });
-ok(!full.launches.length && /hard build limit reached \(3\/3/.test(full.waits.find((w) => w.id === 'que')?.why ?? ''), `plan: at the hard limit nothing launches: ${JSON.stringify(full.waits)}`);
+ok(!full.launches.length && /Builds at once reached \(3\/3 running/.test(full.waits.find((w) => w.id === 'que')?.why ?? ''), `plan: at the hard limit nothing launches: ${JSON.stringify(full.waits)}`);
+
+// the build host: only the machine the enforcer runs on counts its own processes. The console container has `ps` too, and
+// counting its (empty) process list as the host's read "0 builds running" while builds ran and overwrote the snapshot.
+{
+  const hostFile = join(process.env.AXF_SLOTS_DIR, 'build-limit-host.json'); const liveFile = join(process.env.AXF_SLOTS_DIR, 'build-limit-live.json');
+  const { hostname } = await import('node:os');
+  ok(L.isBuildHost(), 'no marker, own store: this side counts (a fresh host, a test)');
+  writeFileSync(hostFile, JSON.stringify({ host: 'the-vps' }));
+  eq([L.isBuildHost(), L.hostFacts()], [false, null], 'the marker names another machine: this side never counts its own processes');
+  const snap = { $axf: 'build-limit-live@1', at: new Date().toISOString(), host: 'the-vps', live: 5, max: 6, emergency: { live: 1, max: 2 }, items: [{ kind: 'session', pool: 'builds', name: 'axf-x', pid: 1 }] };
+  writeFileSync(liveFile, JSON.stringify(snap));
+  const u = L.usage();
+  eq([u.live, u.source, u.emergency.live, u.items.length], [5, 'snapshot', 1, 1], 'it reads the host\'s snapshot: 5 running, not 0');
+  eq(JSON.parse(readFileSync(liveFile, 'utf8')).live, 5, 'and leaves the snapshot alone');
+  eq(L.status().live, 5, 'status shows the same count');
+  writeFileSync(liveFile, JSON.stringify({ ...snap, at: new Date(Date.now() - 10 * 60e3).toISOString() }));
+  eq([L.usage().live, L.usage().source], [null, 'unknown'], 'a stale snapshot is unknown, never zero');
+  writeFileSync(hostFile, JSON.stringify({ host: hostname() }));
+  ok(L.isBuildHost() && L.hostFacts() !== null, 'the marker names this machine: it counts');
+  process.env.AXF_BUILD_LIMIT_HOST = 'off'; ok(!L.isBuildHost(), 'AXF_BUILD_LIMIT_HOST=off overrides'); delete process.env.AXF_BUILD_LIMIT_HOST;
+  rmSync(hostFile, { force: true }); rmSync(liveFile, { force: true });
+}
 
 // end to end: the real launcher, the soft cap switched off, real tmux, a fake claude. Limit 2: two start, the third is refused.
 const hasTmux = !spawnSync('tmux', ['-V']).error && spawnSync('ps', ['-V']).status === 0;

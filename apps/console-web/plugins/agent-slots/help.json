@@ -27,15 +27,15 @@
         "draft": true
       },
       {
-        "target": "vps-hard-build-limit",
-        "title": "VPS hard build limit",
-        "text": "How many headless builds may really run on the VPS at once. The VPS counts live claude -p sessions itself and refuses the next launch past the limit, whoever asks (dispatcher, axHub, swarm, a hand launch). All builds share one CPU and memory budget (the axf-builds.slice), and docker test runs get their own CPU and memory cap. Only Brett changes these, from his own signed-in console.",
+        "target": "vps-build-limits",
+        "title": "VPS build limits",
+        "text": "What the VPS itself enforces for headless builds. Builds at once is how many may run together: the VPS counts live claude -p sessions itself and refuses the next launch past the limit, whoever asks (dispatcher, axHub, swarm, a hand launch). All builds share one CPU and memory budget (the axf-builds.slice), and docker test runs get their own CPU and memory cap. Only Brett changes these, from his own signed-in console.",
         "kind": "control"
       },
       {
-        "target": "hard-limit-builds-at-once",
-        "title": "Hard limit: builds at once",
-        "text": "The most builds the VPS lets run together (default 8). The Max running agents setting can be lower, never higher.",
+        "target": "builds-at-once",
+        "title": "Builds at once",
+        "text": "How many builds (headless sessions and swarm jobs) run together (default 8). One setting: the VPS refuses the next one past it and the queue holds it until a place frees. Only Brett changes it.",
         "kind": "field"
       }
     ],

@@ -202,7 +202,7 @@ try {
   });
   t('build cap: the three numbers side by side, the note when they disagree, ranges, owner-only keys', async () => {
     const C = await import('./build-cap.mjs');
-    assert.deepEqual(C.capNote({ hardCap: 4, stepsInParallel: 6 }), { effective: 4, note: 'Steps in parallel is 6 but the hard cap is 4: only 4 run at once.' });
+    assert.deepEqual(C.capNote({ hardCap: 4, stepsInParallel: 6 }), { effective: 4, note: 'Steps in parallel is 6 but Builds at once is 4: only 4 run at once.' });
     assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 4 }).note, '');
     assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 2 }).effective, 2);
     assert.deepEqual(C.capNote({ hardCap: null, stepsInParallel: undefined }), { effective: null, note: '' });
@@ -211,7 +211,7 @@ try {
     assert.deepEqual(c.ownerOnly, ['maxBuilds', 'emergencySlots']);
     assert.equal(C.checkValue('stepsInParallel', '3'), 3);
     assert.throws(() => C.checkValue('stepsInParallel', 13), /1 to 12/); assert.throws(() => C.checkValue('stepsInParallel', '2.5'), /whole number/); assert.throws(() => C.checkValue('nope', 1), /unknown setting/);
-    assert.match(C.line(c), /hard cap 4 .* emergency slots 2 .* steps in parallel 6\nSteps in parallel is 6/);
+    assert.match(C.line(c), /builds at once 4 .* emergency slots 2 .* steps in parallel 6\nSteps in parallel is 6/);
     // the CLI never writes an owner-only key, and says who can
     const r = spawnSync(process.execPath, [join(HERE, 'build-cap.mjs'), 'set', 'maxBuilds', '9', '--json'], { encoding: 'utf8' });
     assert.equal(r.status, 1); assert.equal(JSON.parse(r.stdout).code, 'forbidden');

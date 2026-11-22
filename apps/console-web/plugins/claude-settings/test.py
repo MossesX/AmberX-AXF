@@ -164,11 +164,11 @@ ok(next(s for s in get()["settings"] if s["key"] == "builds.launchWithoutAsking"
 r = put({"noWait.enabled": True, "noWait.duration": "1h"}, ADMIN)
 ok(r.status_code == 200 and all_pass().get("approvedVia") == "console", "admin login turns No wait on with a real pass")
 ok(put({"noWait.enabled": False}, ADMIN).status_code == 200 and not all_pass(), "and off again")
-ok(put({"builds.maxParallel": 6}, ADMIN).status_code == 200, "admin login raises Max parallel builds")
+ok(put({"builds.budgetPerBuildUsd": 40}, ADMIN).status_code == 200, "admin login raises the budget per build")
 ok(put({"builds.launchWithoutAsking": True}, wall_session(sig_ok=False)).status_code == 403, "a forged wall signature is still only the token: refused")
 ok(put({"builds.launchWithoutAsking": True}, wall_session("conrad", "user")).status_code == 403, "a non-admin wall user is refused")
 ok(put({"builds.launchWithoutAsking": True}, {k: v for k, v in ADMIN.items() if k != "origin"}).status_code == 403, "a cross-site (no origin) session write is refused")
-ok(put({"builds.maxParallel": 12}).status_code == 403, "the bare console token (Claude sessions, MCP) still can't raise")
+ok(put({"builds.budgetPerBuildUsd": 400}).status_code == 403, "the bare console token (Claude sessions, MCP) still can't raise")
 os.environ["CLAUDECODE"] = "1"
 ok(put({"builds.launchWithoutAsking": True}, ADMIN).status_code == 403, "inside a Claude session even the admin headers don't count")
 os.environ.pop("CLAUDECODE", None)

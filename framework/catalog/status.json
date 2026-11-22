@@ -2271,6 +2271,12 @@
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
   },
+  "cx.settings.onesource": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "settings-sources@1 (Brett, Nov 21 2026): one stored key and one wording per console setting. framework/schemas/settings-sources.json plus each plugin's own part; framework/cli/settings-audit.mjs (inventory), framework/cli/check-settings-sources.mjs (CI). Merged: Builds at once (build-limit maxBuilds; agent-slots maxAgents is a read alias), Sessions per account (claude-workers limits.building; the pipeline's parallelPerAccount, an account's parallel and the Claude setting builds.maxParallel are read aliases), Launch builds without asking and the brief size (the Claude settings; the pipeline file's copies are read aliases). Migrations keep the value saved last and log a settings-migrated line in the owning journal. build-limit: only the build host counts its own processes. Console/VPS only: no Kotlin twin."
+  },
   "cx.buildengine.hardlimit": {
     "status": "built",
     "wave": 1,

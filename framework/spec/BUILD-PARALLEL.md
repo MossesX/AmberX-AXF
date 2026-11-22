@@ -77,7 +77,7 @@ list order. `model` narrows to one pin.
    `pipeline.maxParallel` (else `maxParallelPerBuild`, 3) parallel sessions beyond the main one.
 2. **Queue builds** by priority (P0 first), then queue time (`queueOrder`); equal priority and queue time fall back to
    creation time. Held builds are skipped and say so; unsplit builds wait for the split.
-3. **Pending builds** when `autoQueue` is on, by priority then creation time, only when **split** (steps present) and
+3. **Pending builds** when `autoQueuePending` is on, by priority then creation time, only when **split** (steps present) and
    with **no clash**: a Pending build whose open steps touch a file an open step of a running build (or of a build
    launched this round) touches waits (`files clash with running build r1 (path)`). Off: the planner reports how many
    wait for Brett.
