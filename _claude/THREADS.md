@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
 - 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
 - 2026-11-20 21:53 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
 - 2026-11-20 21:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · pipeline
 - 2026-11-22 01:17 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
 - 2026-11-22 01:17 UTC · `group-chat-audio-hear-agents-talk-while` → pending, note (all) · reconciler
+- 2026-11-22 01:48 UTC · `stop-push-storm-builds-live-pushes-build` s3 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 
