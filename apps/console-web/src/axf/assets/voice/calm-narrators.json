@@ -1,0 +1,66 @@
+{
+  "$axf": "asset@1",
+  "type": "voice",
+  "id": "calm-narrators",
+  "name": "Calm narrators",
+  "version": "1.0.0",
+  "description": "A quieter cast for long builds: one steady narrator voice, slightly slow, the crew told apart only by small pitch steps dealt from the pool.",
+  "author": "AmberX AXF",
+  "tags": [
+    "voice",
+    "agents",
+    "group-chat",
+    "calm"
+  ],
+  "data": {
+    "default": {
+      "label": "Narrator",
+      "prefer": [],
+      "lang": "en-US",
+      "gender": "any",
+      "rate": 0.9,
+      "pitch": 1.0,
+      "volume": 1
+    },
+    "agents": {
+      "boss": {
+        "label": "Boss",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "any",
+        "rate": 0.85,
+        "pitch": 0.85,
+        "volume": 1
+      }
+    },
+    "pool": [
+      {
+        "label": "Narrator low",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "any",
+        "rate": 0.9,
+        "pitch": 0.9,
+        "volume": 1
+      },
+      {
+        "label": "Narrator",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "any",
+        "rate": 0.9,
+        "pitch": 1.0,
+        "volume": 1
+      },
+      {
+        "label": "Narrator high",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "any",
+        "rate": 0.9,
+        "pitch": 1.1,
+        "volume": 1
+      }
+    ]
+  }
+}

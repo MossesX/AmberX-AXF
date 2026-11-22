@@ -403,6 +403,78 @@
         "text": "Builds a new tool. Part of Agent manager.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "voices",
+        "title": "Voices",
+        "text": "Every agent and persona with the voice it speaks with. Change one, or Match all from hints. Agents with no voice of their own use their persona's. Group chat audio and Agent voice both use these.",
+        "kind": "tab"
+      },
+      {
+        "target": "voice-from",
+        "title": "Voice from",
+        "text": "Where the voice comes from: this device's own voices (free, offline), OpenAI or ElevenLabs (need a key in Agent voice → Cloud voices).",
+        "kind": "field"
+      },
+      {
+        "target": "voice",
+        "title": "Voice",
+        "text": "The voice from the list for the chosen provider. Empty on a device means the device's default voice.",
+        "kind": "field"
+      },
+      {
+        "target": "hint",
+        "title": "Hint",
+        "text": "Describe the voice in plain words (cat-like, calm, deep british narrator). Match from hint uses it.",
+        "kind": "field"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "How fast this agent talks, 50% to 200%.",
+        "kind": "field"
+      },
+      {
+        "target": "pitch",
+        "title": "Pitch",
+        "text": "How high or low this agent's voice is, 0% to 200%. Cloud voices use it when the line is spoken on the device, such as in group chat audio.",
+        "kind": "field"
+      },
+      {
+        "target": "match-from-hint",
+        "title": "Match from hint",
+        "text": "Picks the voice from the list that fits the hint best and sets speed and pitch to match.",
+        "kind": "button"
+      },
+      {
+        "target": "match-all-from-hints",
+        "title": "Match all from hints",
+        "text": "Matches a voice for every agent and persona that has a hint but no voice picked yet.",
+        "kind": "button"
+      },
+      {
+        "target": "preview",
+        "title": "Preview",
+        "text": "Says a line in this voice. Cloud voices play through Agent voice when the agent may use cloud voices, otherwise on this device.",
+        "kind": "button"
+      },
+      {
+        "target": "reset",
+        "title": "Reset",
+        "text": "Clears the picked voice, speed and pitch; the hint stays.",
+        "kind": "button"
+      },
+      {
+        "target": "change",
+        "title": "Change",
+        "text": "Opens the voice picker for this agent or persona.",
+        "kind": "button"
+      },
+      {
+        "target": "save-voice",
+        "title": "Save voice",
+        "text": "Saves this voice. Group chat audio uses it from the next line.",
+        "kind": "button"
       }
     ],
     "intros": []

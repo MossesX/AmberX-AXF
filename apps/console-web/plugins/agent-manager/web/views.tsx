@@ -3,19 +3,20 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
+import { TAB_EVENT, VoicesTab } from './voices-tab';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   MEMORY_HELP, call, del, download, fmtTime, isDangerousTool, post, refresh, remove, save, streamWorkflow, validate,
   type Addon, type Agent, type Cache, type Coll, type MemItem, type MemScope, type MemStats, type Run, type Status, type Training, type Validation, type Workflow,
 } from './api';
 
-type Tab = 'agents' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
+type Tab = 'agents' | 'skills' | 'personas' | 'voices' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' },
+  { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' }, { id: 'voices', label: 'Voices', icon: 'mic' },
   { id: 'tools', label: 'Tools', icon: 'zap' }, { id: 'training', label: 'Training', icon: 'download' }, { id: 'workflows', label: 'Workflows', icon: 'branch' },
   { id: 'memory', label: 'Memory', icon: 'layers' }, { id: 'addons', label: 'Add-ons', icon: 'package' }, { id: 'runs', label: 'Runs', icon: 'clock' },
 ];
@@ -24,6 +25,8 @@ export function AgentManagerView() {
   const rt = useRuntime();
   const { cache, status } = useData();
   const [tab, setTab] = useState<Tab>('agents');
+  // deep links (actions agent-manager.voices, agent-manager.tab:<id>) switch the section
+  useEffect(() => { const on = (e: Event) => { const t = (e as CustomEvent<string>).detail as Tab; if (TABS.some((x) => x.id === t)) setTab(t); }; window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
   const [err, setErr] = useState('');
   useEffect(() => { void refresh().catch((e: Error) => setErr(e.message)); }, []);
   // UI-editor rule: whenever the view opens or comes back into focus, reload what is saved now (another tab may have saved).
@@ -57,11 +60,13 @@ export function AgentManagerView() {
       )}
       <select className="fx-input axp-agent-manager__tabpick" value={tab} onChange={(e) => setTab(e.target.value as Tab)} aria-label="Section">{TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
       <TabGroup id="agent-manager.tabs" label="Agent manager sections" className="axp-agent-manager__tabs" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
+      <PageToolbar view="agent-manager" />
       {!cache ? <LoadingSkeleton /> : (
         <>
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}
           {tab === 'skills' && <CollTab coll="skills" cache={cache} status={status} wizardKind="skill" render={(v, set) => <SkillForm v={v} set={set} tools={cache.tools} />} />}
           {tab === 'personas' && <div className="fx-stack fx-stack--lg"><CollTab coll="personas" cache={cache} status={status} render={(v, set) => <PersonaForm v={v} set={set} />} /><CollTab coll="lingo" cache={cache} status={status} render={(v, set) => <LingoForm v={v} set={set} />} /></div>}
+          {tab === 'voices' && <VoicesTab />}
           {tab === 'tools' && <CollTab coll="tools" cache={cache} status={status} wizardKind="tool" render={(v, set) => <ToolForm key={String(v.id ?? 'new')} v={v} set={set} status={status} cache={cache} />} extra={(v) => v.id ? <ToolTester id={String(v.id)} /> : null} blank={{ kind: 'builtin', config: {} }} />}
           {tab === 'training' && <CollTab coll="training" cache={cache} status={status} wizardKind="training" render={(v, set) => <TrainingForm v={v} set={set} cache={cache} status={status} />} extra={(v) => v.id ? <TrainingRunner job={v as unknown as Training} /> : null} blank={{ sources: [], schedule: 'manual' }} />}
           {tab === 'workflows' && <CollTab coll="workflows" cache={cache} status={status} render={(v, set) => <WorkflowForm v={v} set={set} cache={cache} />} extra={(v) => v.id ? <WorkflowRunner wf={v as unknown as Workflow} /> : null} blank={{ mode: 'sequential', steps: [] }} />}

@@ -8327,6 +8327,67 @@
             }
           }
         },
+        "voice": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Voice cast (Agents)",
+          "properties": {
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "groups": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "pick": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "asset": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "default.rate": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "default.pitch": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "agents": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "pool": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "demonstration": {
           "type": "object",
           "additionalProperties": false,

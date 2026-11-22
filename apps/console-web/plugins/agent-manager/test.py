@@ -436,6 +436,35 @@ check(svc.get_agent("voice-a")["voice"]["hint"] == "cat-like" and "Sample replie
 c.delete("/am/c/skills/lib.skill")
 check(c.get("/am/c/skills/lib.skill/versions").json()["items"] == [], "deleting an item deletes its versions")
 
+# Voice picker: providers, catalogue, hint matcher, set / match / clear a slot, speed and pitch
+vx = sys.modules["axf_console_plugins.agent_manager.voices"]
+check(vx.match("cat-like", "openai")["voiceId"] == "nova" and vx.match("cat-like", "openai")["pitch"] > 1.1, "cat-like → a bright playful voice, higher pitch")
+calm = vx.match("calm", "openai")
+check(calm["voiceId"] in ("echo", "sage", "shimmer") and calm["rate"] < 1, "calm → a calm voice, a little slower")
+check(vx.match("deep man", "openai")["voiceId"] == "onyx", "deep man → Onyx")
+dev = [{"name": "Daniel", "lang": "en-GB"}, {"name": "Samantha", "lang": "en-US"}, {"name": "Anna", "lang": "de-DE"}]
+check(vx.match("cat-like woman", "browser", dev)["voiceId"] == "Samantha", "device voices: a female hint picks a female name")
+check(vx.match("calm british man", "browser", dev)["voiceId"] == "Daniel", "device voices: accent + gender")
+check(vx.match("calm", "browser", [])["voiceId"] == "" and vx.match("calm", "browser", [])["rate"] == 0.9, "no device list yet: speed and pitch only")
+check(vx.hint_traits("")["traits"] == [] and vx.hint_traits("")["rate"] == 1.0, "no hint: neutral")
+vi = c.get("/am/voices").json()
+check([p["id"] for p in vi["providers"]] == ["browser", "openai", "elevenlabs"] and len(vi["openai"]) == 11 and any(r["id"] == "voice-a" and r["from"] == "persona" for r in vi["roster"]), "GET voices: providers, OpenAI voices, every employee")
+check(c.post("/am/voices/match", json={"hint": "cat-like", "provider": "openai"}).json()["match"]["voiceId"] == "nova", "POST voices/match")
+check(c.post("/am/voices/match", json={"hint": "x", "provider": "nope"}).status_code == 400, "unknown provider refused")
+check(len(c.post("/am/voices/catalogue", json={"provider": "browser", "voices": dev}).json()["voices"]) == 3, "POST voices/catalogue with a device list")
+r = c.put("/am/voice/agents/voice-a", json={"hint": "calm", "provider": "openai", "match": True}).json()
+check(r["item"]["voice"]["provider"] == "openai" and r["item"]["voice"]["voiceId"] in ("echo", "sage", "shimmer") and r["item"]["voice"]["rate"] == 0.9 and r["match"]["why"], "PUT voice … match: true fills voice, speed, pitch")
+r = c.put("/am/voice/agents/voice-a", json={"rate": 9, "pitch": -1}).json()["item"]["voice"]
+check(r["rate"] == 2.0 and r["pitch"] == 0.0 and r["hint"] == "calm", "speed and pitch are clamped; the rest of the slot is kept")
+check(c.get("/am/voices").json()["roster"][0] is not None and next(x for x in c.get("/am/voices").json()["roster"] if x["id"] == "voice-a")["from"] == "agent", "an agent's own voice wins over its persona's")
+check(c.put("/am/voice/agents/voice-a", json={"provider": "nope"}).status_code == 400, "PUT voice refuses an unknown provider")
+check(c.put("/am/voice/skills/x", json={}).status_code == 404 and c.put("/am/voice/agents/nobody", json={}).status_code == 404, "voices only on agents / personas that exist")
+check(c.put("/am/voice/agents/voice-a", json={"clear": True}).json()["item"]["voice"] is None, "clear: true empties the slot")
+pr = c.put(f"/am/voice/personas/{pv['id']}", json={"provider": "browser", "voiceId": "Samantha", "pitch": 1.3}).json()["item"]
+check(pr["voiceSlot"] == {"provider": "browser", "voiceId": "Samantha", "hint": "cat-like", "pitch": 1.3}, "persona slot set (only the given tuning is kept)")
+check(svc.get_agent("voice-a")["voice"]["voiceId"] == "Samantha", "the agent speaks with its persona's voice again")
+check(sys.modules["axf.contracts.agents"].validate_item("agents", {"name": "T", "voice": {"rate": "1.5", "pitch": "x"}}).item["voice"] == {"provider": "", "voiceId": "", "hint": "", "rate": 1.5}, "contract: rate/pitch numbers only")
+
 # Mosses's axhub_call: every console Auto fix goes through it (never approves; the hub decides)
 ht = sys.modules["axf_console_plugins.agent_manager.hubtools"]
 tk = sys.modules["axf_console_plugins.agent_manager.toolkit"]

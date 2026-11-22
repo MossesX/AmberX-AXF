@@ -21,9 +21,9 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1151,
+    "categories": 49,
+    "groups": 291,
+    "options": 1156,
     "limits": 4,
     "sections": [
       "Themes",
@@ -34,6 +34,7 @@
       "Widgets",
       "System",
       "Brand",
+      "Agents",
       "Demos",
       "Look"
     ]
@@ -3262,6 +3263,32 @@
             "front",
             "back",
             "labels"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "voice",
+      "label": "Voice cast",
+      "section": "Agents",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "default.rate",
+            "default.pitch",
+            "agents",
+            "pool"
           ]
         }
       ],

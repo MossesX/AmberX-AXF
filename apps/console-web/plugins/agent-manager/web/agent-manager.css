@@ -101,3 +101,7 @@
 :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabs { display: none } :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabpick { display: block }
 .axp-agent-manager__cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+
+/* Voices tab and picker */
+.axp-agent-manager__voice-head > :last-child { margin-inline-start: auto }
+.axp-agent-manager__voice-row { padding: var(--fx-dens-gap-lg) }

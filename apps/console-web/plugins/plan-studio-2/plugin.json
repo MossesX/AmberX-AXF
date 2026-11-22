@@ -107,5 +107,28 @@
     "builtAt": "2026-11-16"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-accent",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-danger",
+      "--fx-dens-gap-2xl",
+      "--fx-dens-gap-lg",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-dens-gap-xl",
+      "--fx-dens-gap-xs",
+      "--fx-font-size",
+      "--fx-muted",
+      "--fx-opacity-tint",
+      "--fx-radius-sm",
+      "--fx-size-icon-button-size",
+      "--fx-surface",
+      "--fx-type-scale-sm",
+      "--fx-type-scale-xs"
+    ]
+  }
 }

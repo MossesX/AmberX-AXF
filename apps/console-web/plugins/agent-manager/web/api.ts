@@ -9,7 +9,7 @@ export type Coll = 'agents' | 'skills' | 'personas' | 'lingo' | 'tools' | 'workf
 interface Base { id: string; name: string; origin?: string; createdAt?: number; updatedAt?: number; tags?: string[]; forkedFrom?: string }
 export interface MemoryCfg { type?: string; record?: string; topK?: number; window?: number; maxItems?: number; decayDays?: number; scope?: string; embedProfile?: string }
 export interface ModelCfg { profile?: string; model?: string; temperature?: number; max_tokens?: number }
-export interface Voice { provider?: string; voiceId?: string; hint?: string }
+export interface Voice { provider?: string; voiceId?: string; hint?: string; rate?: number; pitch?: number }
 export interface Agent extends Base { voice?: Voice | null; icon?: string; description?: string; enabled?: boolean; personaId?: string; lingoIds?: string[]; skillIds?: string[]; toolIds?: string[]; delegates?: string[]; instructions?: string; model?: ModelCfg; memory?: MemoryCfg }
 export interface Skill extends Base { description?: string; instructions?: string; triggers?: string[]; examples?: { input: string; output: string }[]; toolIds?: string[] }
 export interface Persona extends Base { role?: string; voice?: string; tone?: string; traits?: string[]; rules?: string[]; samples?: string[]; voiceSlot?: Voice | null }

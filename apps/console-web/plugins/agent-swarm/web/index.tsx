@@ -8,6 +8,8 @@ import { appMenu } from './menu';
 import { PROFILE_EVENT } from './cards';
 import { writeLocal } from '@console/api';
 import { SectionOwnersPanel } from './sections';
+import * as player from './chat-audio';
+import { registerAudioActions, registerAudioVoice } from './audio-actions';
 
 function Desks() {
   const filled = useSlotFilled('swarm.settings.desks');
@@ -28,6 +30,11 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
     // the Breakroom (group chat, Jobs) from other plugins: agent-swarm.open
     rt.actions.register('agent-swarm.open', () => rt.navigate('agent-swarm'), { label: 'Open the Breakroom', searchable: false });
+    // group chat audio: this device's player (chat-audio.ts); the skin's voice cast is the active `voice` slot
+    player.start({ device: rt.settings.get(player.AUDIO_KEYS.device) !== false, skinPick: () => String((rt.getState().active as Record<string, string>).voice ?? '') });
+    rt.settings.onChange(player.AUDIO_KEYS.device, () => player.setDevice(rt.settings.get(player.AUDIO_KEYS.device) !== false));
+    registerAudioActions(rt);
+    void registerAudioVoice('ai.amberx.axf.console.agent-swarm');
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },
@@ -41,6 +48,7 @@ export const plugin: AxfWebLibrary = {
     id: 'agent-swarm.chat', label: 'Group chat', icon: 'palette', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.colorByVibe, label: 'Color by vibe', kind: 'toggle', default: false, description: 'Color every group-chat message by its vibe score: light near 1, darkest at the vibe ceiling.' },
+      { key: player.AUDIO_KEYS.device, label: 'Play group chat audio on this device', kind: 'toggle', default: true, description: 'When group chat audio is on, this device reads new messages aloud. Turn it off here to keep this device quiet while another one plays.' },
       { key: KEYS.vibeColor, label: 'Vibe base colour', kind: 'choice', default: 'accent', options: VIBE_COLORS.map((c) => ({ value: c, label: c })), description: 'The theme colour the vibe shades are mixed from.' },
     ],
   }],

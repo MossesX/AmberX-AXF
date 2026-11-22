@@ -556,6 +556,13 @@
         "text": "Shows “Microphone & cloud voices”. Part of Agent voice.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "view:agent-voice",
+        "title": "Agent voice",
+        "text": "Agents speak: a per-agent voice and narrator console (device voices on the phone or browser, cloud voices from OpenAI or ElevenLabs with keys kept on the server; speed, pitch, volume, presets, read modes, code / link / number / emoji rules, pauses, emphasis, intro and outro, chime, pronunciations, p",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

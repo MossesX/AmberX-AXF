@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "agent-manager",
+  "name": "Agent manager",
+  "version": "1.0.0",
+  "description": "The Agent manager page toolbar: open the Voices section and match every agent's and persona's voice from its hint. Each button runs the same console action the Voices tab, the CLI, MCP and AmberX voice use (agent-manager.voices, agent-manager.voice.match-all).",
+  "author": "AmberX AXF",
+  "tags": ["page", "agent-manager", "voices"],
+  "data": {
+    "scope": "view:agent-manager",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "groups": [
+      {
+        "id": "voices",
+        "label": "Voices",
+        "items": [
+          { "id": "open-voices", "icon": "user", "label": "Voices", "action": "action:agent-manager.voices", "priority": 300, "overflow": "never" },
+          { "id": "match-all", "icon": "sparkles", "label": "Match all from hints", "action": "action:agent-manager.voice.match-all", "priority": 280 }
+        ]
+      }
+    ]
+  }
+}

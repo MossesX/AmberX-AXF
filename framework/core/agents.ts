@@ -62,7 +62,9 @@ export const MEMORY_TOOL_NAMES = ['memory_search', 'memory_save'] as const;
 
 /* ---------------------------------------------------------------- types */
 
-export interface AgentVoice { provider: string; voiceId: string; hint: string }
+/** The voice slot. rate (0.5-2) and pitch (0-2) are optional and only kept when set (1 = the voice as it is). */
+export interface AgentVoice { provider: string; voiceId: string; hint: string; rate?: number; pitch?: number }
+export const VOICE_RANGES = { rate: [0.5, 2], pitch: [0, 2] } as const;
 export interface AgentModel { profile?: string; model?: string; temperature?: number; max_tokens?: number }
 export interface AgentMemoryConfig {
   type?: MemoryType; record?: string; topK?: number; window?: number; maxItems?: number; decayDays?: number; scope?: string; embedProfile?: string; minScore?: number;
@@ -116,7 +118,12 @@ export function toLines(v: unknown, maxItems: number = AGENT_LIMITS.listItems, m
 }
 function cleanVoice(v: unknown): AgentVoice {
   const o = isObj(v) ? v : {};
-  return { provider: str(o.provider, AGENT_LIMITS.voice), voiceId: str(o.voiceId, AGENT_LIMITS.voice), hint: str(o.hint, AGENT_LIMITS.voice) };
+  const out: AgentVoice = { provider: str(o.provider, AGENT_LIMITS.voice), voiceId: str(o.voiceId, AGENT_LIMITS.voice), hint: str(o.hint, AGENT_LIMITS.voice) };
+  for (const k of ['rate', 'pitch'] as const) {
+    const n = typeof o[k] === 'number' ? o[k] as number : typeof o[k] === 'string' && o[k] !== '' ? Number(o[k]) : NaN;
+    if (Number.isFinite(n)) out[k] = Math.round(Math.min(VOICE_RANGES[k][1], Math.max(VOICE_RANGES[k][0], n)) * 100) / 100;
+  }
+  return out;
 }
 function cleanTags(v: unknown): string[] | undefined {
   if (v === undefined) return undefined;

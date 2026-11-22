@@ -36,6 +36,7 @@ from axf.contracts import agents as contract  # noqa: E402
 from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
 from . import hubtools  # noqa: E402,F401 — registers Mosses's axhub_call builtin before add-ons are checked
 from . import vinny  # noqa: E402 — Vinny's command book (vinny-commands@1), provides axf.vinny@1
+from . import voices  # noqa: E402 — the voice picker: providers, catalogue, hint matcher
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -436,6 +437,87 @@ def export_all() -> dict[str, Any]:
         prov[sec] = [{k: v for k, v in it.items() if k not in ("createdAt", "updatedAt", "origin", "log", "status", "lastRun", "lastAdded", "nextRun")}
                      for it in store.items(sec).values() if it.get("origin", "user") == "user"]
     return {"$axf": contract.AGENT_ADDON_TAG, "id": "library-export", "name": "Agent library export", "version": "1.0.0", "description": "Everything made in this console's agent manager.", "provides": prov}
+
+
+# ---------------------------------------------------------------- voices (the voice slot picker)
+
+VOICE_COLLS = {"agents": "voice", "personas": "voiceSlot"}
+
+
+def _voice_coll(coll: str) -> str:
+    if coll not in VOICE_COLLS:
+        raise HTTPException(404, "voices are set on agents or personas")
+    return VOICE_COLLS[coll]
+
+
+def voice_roster() -> list[dict[str, Any]]:
+    """Every employee (agents + personas) with its own voice slot and the one it speaks with (agents inherit their
+    persona's slot when theirs is empty)."""
+    personas = store.items("personas")
+    out: list[dict[str, Any]] = []
+    for a in sorted(store.items("agents").values(), key=lambda x: str(x.get("name", x["id"])).lower()):
+        own = a.get("voice") or None
+        p = personas.get(str(a.get("personaId") or "")) or {}
+        inh = p.get("voiceSlot") or None
+        use = own if own and (own.get("voiceId") or own.get("provider")) else (inh if inh and (inh.get("voiceId") or inh.get("provider")) else own or inh)
+        out.append({"kind": "agent", "id": a["id"], "name": a.get("name", a["id"]), "voice": own, "speaks": use, "from": "agent" if use is own else "persona", "personaId": a.get("personaId") or ""})
+    for p in sorted(personas.values(), key=lambda x: str(x.get("name", x["id"])).lower()):
+        out.append({"kind": "persona", "id": p["id"], "name": p.get("name", p["id"]), "voice": p.get("voiceSlot") or None, "speaks": p.get("voiceSlot") or None, "from": "persona"})
+    return out
+
+
+@router.get("/voices")
+def voices_info() -> dict[str, Any]:
+    """The providers, OpenAI's voices with their traits, and every employee's voice slot."""
+    return {"providers": voices.PROVIDERS, "openai": voices.catalogue("openai"), "roster": voice_roster()}
+
+
+@router.post("/voices/catalogue")
+def voices_catalogue(body: dict[str, Any]) -> dict[str, Any]:
+    """A provider's voices with traits; device (browser) and ElevenLabs lists are sent by the caller as `voices`."""
+    try:
+        return {"provider": body.get("provider", "browser"), "voices": voices.catalogue(str(body.get("provider") or "browser"), body.get("voices"))}
+    except ValueError as e:
+        raise _err(e) from None
+
+
+@router.post("/voices/match")
+def voices_match(body: dict[str, Any]) -> dict[str, Any]:
+    """Best voice, speed and pitch for a hint ("cat-like", "calm") from one provider's voices."""
+    try:
+        return {"match": voices.match(str(body.get("hint") or ""), str(body.get("provider") or "browser"), body.get("voices"))}
+    except ValueError as e:
+        raise _err(e) from None
+
+
+@router.put("/voice/{coll}/{iid}")
+def set_voice(coll: str, iid: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Set an agent's or persona's voice slot. Body: any of provider, voiceId, hint, rate, pitch; `match: true` fills
+    voiceId / rate / pitch from the hint (with `voices` for device or ElevenLabs lists); `clear: true` empties it."""
+    field = _voice_coll(coll)
+    try:
+        rec = store.get(coll, iid)
+        if body.get("clear"):
+            slot: dict[str, Any] | None = None
+            found = None
+        else:
+            slot = {**(rec.get(field) or {}), **{k: body[k] for k in ("provider", "voiceId", "hint", "rate", "pitch") if k in body}}
+            found = None
+            if body.get("match"):
+                prov = str(slot.get("provider") or "browser")
+                found = voices.match(str(slot.get("hint") or ""), prov, body.get("voices"))
+                slot.update({"provider": prov, "rate": found["rate"], "pitch": found["pitch"]})
+                if found["voiceId"] or prov != "browser":
+                    slot["voiceId"] = found["voiceId"]
+            if slot.get("provider") and slot["provider"] not in voices.PROVIDER_IDS:
+                raise ValueError(f"unknown voice provider {slot['provider']!r} (one of {', '.join(voices.PROVIDER_IDS)})")
+        item = _validate(coll, {**rec, field: slot})
+        library.record(coll, rec, "voice set" if slot else "voice cleared")
+        return {"item": store.upsert(coll, item), "match": found}
+    except HTTPException:
+        raise
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
 
 
 # ---------------------------------------------------------------- agents

@@ -93,6 +93,7 @@ function tabRows(files, ps, viewOfPlugin) {
   const out = [];
   for (const f of files) {
     const src = read(f);
+    let consts;
     let i = 0;
     while ((i = src.indexOf('<TabGroup', i)) >= 0) {
       const end = findTagEnd(src, i);
@@ -100,7 +101,9 @@ function tabRows(files, ps, viewOfPlugin) {
       i = end;
       if (SKIP_ATTR.test(tag)) continue;
       const line = src.slice(0, src.indexOf(tag)).split('\n').length;
-      const lit = tag.match(/\bid=(?:"([^"]+)"|\{'([^']+)'\}|\{"([^"]+)"\})/);
+      const named0 = tag.match(/\bid=\{(\w+)\}/)?.[1];
+      const known = named0 ? (consts ??= fileConsts(f, src)).get(named0) : undefined;
+      const lit = tag.match(/\bid=(?:"([^"]+)"|\{'([^']+)'\}|\{"([^"]+)"\})/) ?? (known ? [null, known] : null);
       const dyn = !lit && /\bid=\{/.test(tag);
       const id = lit ? (lit[1] ?? lit[2] ?? lit[3]) : dyn ? (tag.match(/\bid=\{`([^`$]*)/)?.[1] ?? '') + '*' : null;
       // tabs declared inline, or in a const array the tag names (tabs={TABS})
@@ -190,6 +193,22 @@ function settingsTabs(files, ps) {
 }
 
 const tabAddress = (id, parent) => (parent ? `${SETTINGS_VIEW}/${TAB_ROW}=${enc(parent)}/${SUB_ROW}=${enc(id)}` : `${SETTINGS_VIEW}/${TAB_ROW}=${enc(id)}`);
+
+/** String constants a file declares or imports by name from a relative module (`import { ID } from './core.mjs'`). */
+function fileConsts(f, src) {
+  const m = constsOf(src);
+  for (const imp of src.matchAll(/import\s*(?:type\s*)?\{([^}]*)\}\s*from\s*'(\.[^']+)'/g)) {
+    const base = resolve(dirname(f), imp[2]);
+    const file = [base, `${base}.ts`, `${base}.tsx`, `${base}.mjs`, base.replace(/\.m?js$/, '.ts')].find((p) => existsSync(p) && statSync(p).isFile());
+    if (!file) continue;
+    const theirs = constsOf(read(file));
+    for (const spec of imp[1].split(',')) {
+      const [name, alias] = spec.replace(/^\s*type\s+/, '').trim().split(/\s+as\s+/);
+      if (name && theirs.has(name)) m.set(alias ?? name, theirs.get(name));
+    }
+  }
+  return m;
+}
 
 /** `const X = 'a.b'` and `const K = { show: 'a.b', … }` in one file. */
 function constsOf(src) {

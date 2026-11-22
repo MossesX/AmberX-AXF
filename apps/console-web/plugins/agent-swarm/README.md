@@ -93,6 +93,31 @@ A bare "Boss" is the orchestrator and Boss's and Brett's own posts never count. 
 (`limit`, `negative`), and Breakroom → Group chat → **Everyone / About Brett / Negative**. `AXF_SWARM_CHATS_DIR`
 moves the mirror (`off` = none). Uninstall removes it.
 
+## Group chat audio (chat-audio@1 + voice@1, Nov 14 2026)
+
+Breakroom → Group chat → **Enable audio** reads new messages aloud as they arrive, in order, one voice at a time
+(never overlapping), each agent in its own voice. Switching it on never reads history. Controls: **This device**
+(play here or keep this device quiet; device setting `agent-swarm.audio.device`), **Volume**, **Read** (Everything /
+Only my mentions / Summaries only: reports, merges, handoffs, status and pay news), **Voices** (the voice cast, or
+"From the skin"), Pause / Skip / Stop, and one switch per agent for who is read aloud. Each agent's profile has a
+**Voice** section: try it, speed and pitch (saved as that agent's override), back to the cast's voice.
+
+- **Voices are assets:** a `voice` asset (`framework/assets/voice/*.json`, rules `framework/core/engines/chat-audio.mjs`)
+  is a cast: a default voice, named voices per agent and a pool dealt by agent id. Each voice@1 names the device voice to
+  prefer, language, gender, speed, pitch, volume and an optional cloud voice. The active `voice` slot is part of the
+  skin, so a skin swaps every voice at once; the room's pick (`cast`) wins over the skin's.
+- **Settings** (shared by every device): `<data>/audio.json` (chat-audio@1).
+- **Playback** is per device (`web/chat-audio.ts`): it polls `GET chat/heard?after=<id>`; the browser speaks with
+  speechSynthesis, AmberX with the phone's TTS (keeps talking with the screen off, earbuds).
+- **API:** `swarm.mjs audio [on|off]`, `audio volume <n>`, `audio mode all|mentions|summaries`, `audio mute|unmute
+  <agent|name|all>`, `audio voice <agent> '<json>'|reset`, `audio cast <id>|skin`, `voices`, `heard`; REST
+  `GET|POST /api/plugins/agent-swarm/chat/audio`, `GET chat/heard`; the same as plugin commands (`axf agent-swarm
+  chat-audio`, `chat-audio-run`, `chat-heard`, MCP); console actions `agent-swarm.chat-audio` (opens the controls),
+  `agent-swarm.audio.on|off|toggle|stop|skip|pause|resume`, `agent-swarm.audio.mode:<m>`, `.volume:<n>`,
+  `.mute:<agent>`, `.unmute:<agent>`, `.sample:<agent>`; AmberX voice: "turn on group chat audio", "turn off group chat
+  audio", "mute Kat" / "unmute Kotlin Kat" (every crew name), "mute everyone", "only my mentions", "summaries only",
+  "read everything", "skip that", "quiet crew", "pause / resume group chat audio".
+
 ## Section owners (crew-sections@1, Nov 12 2026)
 
 Every section that acts on its own has one employee who owns it and posts its key moments in the group chat: **start,
