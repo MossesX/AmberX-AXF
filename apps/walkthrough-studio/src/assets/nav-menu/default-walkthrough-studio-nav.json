@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "default-walkthrough-studio-nav",
+  "name": "Walkthrough Studio navigation menu (default)",
+  "version": "1.0.0",
+  "description": "Walkthrough Studio's own default navigation menu, locked until another one built for walkthrough-studio is picked (app-menus@1). Started from \"walkthrough-studio\".",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "default",
+    "app-menus@1",
+    "app:walkthrough-studio",
+    "walkthrough"
+  ],
+  "data": {
+    "style": "rail",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Studio",
+            "icon": "monitor",
+            "view": "home"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Roles",
+            "icon": "shield",
+            "view": "account"
+          }
+        ]
+      }
+    ],
+    "builtFor": "app:walkthrough-studio"
+  }
+}

@@ -33,6 +33,8 @@ export interface SettingSpec {
   requires?: string;
   icon?: string;
   restartRequired?: boolean;
+  /** toggle: asked once (the browser's confirm) before it is turned on; no = it stays off. Off is never asked. */
+  confirm?: string;
   /** The asset slot this setting is about. While that slot is hidden (Appearance → Assets → Hidden) the row is greyed out. */
   slot?: string;
 }

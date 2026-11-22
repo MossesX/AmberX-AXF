@@ -363,7 +363,7 @@ export function buildInventory() {
   const ps = plugins();
   const views = [];
   const seen = new Set();
-  const nav = json(join(APP, 'src/assets/nav-menu/console-nav.json')).data.sections ?? [];
+  const nav = json(join(APP, 'src/assets/nav-menu/default-console-web-nav.json')).data.sections ?? [];
   const navOf = new Map();
   for (const s of nav) for (const it of s.items ?? []) if (it.view) navOf.set(it.view, { section: s.label, label: it.label, id: it.id });
 
