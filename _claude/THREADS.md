@@ -843,11 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:36 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:36 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:36 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 04:37 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 - 2026-11-22 04:37 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
 - 2026-11-22 04:37 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
@@ -1243,6 +1238,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 09:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 09:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 09:05 UTC · `one-true-source-get-redundant-settings` → landed, note (all) · watchdog
+- 2026-11-22 09:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · builds-live
+- 2026-11-22 09:05 UTC · `context-menus-plugin-one-true-source` → running, note (all) · builds-live
+- 2026-11-22 09:05 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-22 09:05 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · builds-live
+- 2026-11-22 09:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
