@@ -9,7 +9,7 @@ import * as S from './store';
 import './context-menus.css';
 
 /*
- * Context menus (web part): Plugins → Context menus. On start every menu on the hub is registered as a context-menu
+ * Context menus (web part): Design → Context menus. On start every menu on the hub is registered as a context-menu
  * asset and the one the app shows is swapped in; the capability `context-menus@1` is published for other plugins' web
  * parts. Actions (also MCP / CLI / voice through plugin-commands): context-menus.open [tab] | .generate <level> [app]
  * | .preview <level> [app] | .apply [draft id] | .use <menu id> | .zones | .say "<sentence>".
@@ -89,7 +89,7 @@ export const plugin: AxfWebLibrary = {
       render: () => { const f = focus; focus = {}; return <ContextMenusPage focus={f} />; },
     },
   },
-  nav: { label: 'Plugins', items: [{ id: 'context-menus', label: 'Context menus', icon: 'menu', view: 'context-menus' }] },
+  nav: { label: 'Design', items: [{ id: 'context-menus', label: 'Context menus', icon: 'menu', view: 'context-menus' }] },
   contextMenu: [
     { id: 'context-menus.zone', target: 'context-menus-zone', items: [{ id: 'context-menus-zone-open', label: 'Map this zone…', icon: 'target', action: 'context-menus.zones' }] },
   ],
