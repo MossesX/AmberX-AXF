@@ -40,7 +40,7 @@ export const TABS = [
   { id: 'archive', label: 'All builds', filter: {} }, { id: 'deleted', label: 'All builds', filter: {} },
 ] as const satisfies readonly { id: string; label: string; filter: Partial<Filters> }[];
 /** Settings panels that used to be tabs: a deep link to one opens Settings → Plugins → Build orchestrator. */
-export const SETTINGS_TABS = ['accounts', 'watchdog', 'groups', 'approvals', 'rules'] as const;
+export const SETTINGS_TABS = ['accounts', 'watchdog', 'groups', 'approvals', 'rules', 'split'] as const;
 
 /** A tab id from before Pipeline 2.0, or a contract status: the table takes it as its filter. */
 export function openTab(t: string) {

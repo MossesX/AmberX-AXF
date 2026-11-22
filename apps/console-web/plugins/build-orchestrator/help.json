@@ -426,6 +426,18 @@
         "title": "Watchdog on (every watch)",
         "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
         "kind": "toggle"
+      },
+      {
+        "target": "split-section",
+        "title": "Split",
+        "text": "Every option for how a request is split into steps and builds, in one collapsible section: how a build is split (Claude, rules: one step per line, or off). Changes save at once. Same settings by REST / MCP pipeline-settings-set or pipeline.mjs set.",
+        "kind": "card"
+      },
+      {
+        "target": "how-a-build-is-split",
+        "title": "How a build is split",
+        "text": "Claude cuts a request into short steps with one quick call; Rules makes one step per line of the request, no model; Off leaves the steps for you to write. Saves as soon as you pick.",
+        "kind": "field"
       }
     ],
     "intros": []
