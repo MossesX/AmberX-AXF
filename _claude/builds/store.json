@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10329,
- "updatedAt": "2026-11-22T01:56:43.685Z",
+ "rev": 10330,
+ "updatedAt": "2026-11-22T02:56:10.682Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203338,7 +203338,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "building",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203659,8 +203659,7 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-22T01:56:40.726Z",
-     "by": "store"
+     "at": "2026-11-22T01:56:40.726Z"
     }
    ],
    "approvals": [
@@ -203762,115 +203761,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-13T19:27:47.885Z",
-     "statusAt": "2026-11-22T01:43:43.135Z",
-     "statusBy": "orchestrator",
-     "attempt": 5,
-     "failedFrom": "sending",
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:33:25.877Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:33:36.747Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "worktree for orchestrator-settings-collapsible-split--s1: fatal: 'claude/orchestrator-settings-collapsible-split--s1' is already used by worktree at '/root/axf-builds/orchestrator-settings-collapsible-split--s1'"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:33:43.395Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:37:39.263Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:38:00.486Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: lock launching (heartbeat 2026-11-22T01:37:51.952Z)"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:38:19.932Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:38:24.353Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "axf-orchestrator-settings-collapsible-split--s1--joey on hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:38:30.841Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:39:02.503Z",
-       "by": "watchdog",
-       "attempt": 4,
-       "why": "retry forward at building, attempt 4"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:42:27.517Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:42:32.744Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; claude pid 813564; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:43:38.426Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:43:43.135Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; claude pid 813564; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
-      }
-     ],
-     "status": "failed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s1",
-     "branch": "claude/orchestrator-settings-collapsible-split--s1"
+     "updatedAt": "2026-11-13T19:27:47.885Z"
     },
     {
      "id": "s2",
@@ -203892,66 +203783,7 @@
      "note": "",
      "rev": 8,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:46:32.208Z",
-     "statusAt": "2026-11-22T01:46:32.154Z",
-     "statusBy": "headless",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:33:50.949Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:33:58.845Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:37:53.949Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:38:10.287Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s2 already has a live session: lock launching (heartbeat 2026-11-22T01:38:00.179Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:38:45.026Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "axf-orchestrator-settings-collapsible-split--s2--paulie on hulu0241"
-      },
-      {
-       "status": "completed",
-       "at": "2026-11-22T01:46:32.154Z",
-       "by": "headless",
-       "attempt": 2,
-       "why": "session ended cleanly"
-      }
-     ],
-     "status": "completed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s2",
-     "branch": "claude/orchestrator-settings-collapsible-split--s2",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s2--paulie"
+     "updatedAt": "2026-11-22T01:46:32.208Z"
     },
     {
      "id": "s3",
@@ -203973,66 +203805,7 @@
      "note": "",
      "rev": 8,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:42:10.080Z",
-     "statusAt": "2026-11-22T01:42:10.013Z",
-     "statusBy": "headless",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:34:08.156Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:34:16.744Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:39:14.660Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-22T01:39:28.554Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s3 already has a live session: lock launching (heartbeat 2026-11-22T01:39:20.769Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:39:45.228Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "axf-orchestrator-settings-collapsible-split--s3--sully on hulu0241"
-      },
-      {
-       "status": "completed",
-       "at": "2026-11-22T01:42:10.013Z",
-       "by": "headless",
-       "attempt": 2,
-       "why": "session ended cleanly"
-      }
-     ],
-     "status": "completed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s3",
-     "branch": "claude/orchestrator-settings-collapsible-split--s3",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s3--sully"
+     "updatedAt": "2026-11-22T01:42:10.080Z"
     },
     {
      "id": "s4",
@@ -204054,52 +203827,7 @@
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
      "rev": 6,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:45:21.957Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:34:24.062Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:34:32.596Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:44:56.493Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:45:21.957Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "axf-orchestrator-settings-collapsible-split--s4--earl on hulu0241"
-      }
-     ],
-     "status": "building",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s4",
-     "branch": "claude/orchestrator-settings-collapsible-split--s4",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s4--earl"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s5",
@@ -204121,52 +203849,7 @@
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:54:50.407Z",
-     "statusAt": "2026-11-22T01:45:59.859Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:34:39.776Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:34:50.110Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:45:32.875Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:45:59.859Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "axf-orchestrator-settings-collapsible-split--s5--gina on hulu0241"
-      }
-     ],
-     "status": "building",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s5",
-     "branch": "claude/orchestrator-settings-collapsible-split--s5",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s5--gina"
+     "updatedAt": "2026-11-22T01:54:50.407Z"
     },
     {
      "id": "s6",
@@ -204188,59 +203871,7 @@
      "note": "",
      "rev": 7,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:53:37.168Z",
-     "statusAt": "2026-11-22T01:53:37.111Z",
-     "statusBy": "headless",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:34:57.555Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:35:10.653Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:46:51.706Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:47:09.349Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "axf-orchestrator-settings-collapsible-split--s6--rhonda on hulu0241"
-      },
-      {
-       "status": "completed",
-       "at": "2026-11-22T01:53:37.111Z",
-       "by": "headless",
-       "attempt": 1,
-       "why": "session ended cleanly"
-      }
-     ],
-     "status": "completed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s6",
-     "branch": "claude/orchestrator-settings-collapsible-split--s6",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s6--rhonda"
+     "updatedAt": "2026-11-22T01:53:37.168Z"
     },
     {
      "id": "s7",
@@ -204262,52 +203893,7 @@
      "note": "",
      "rev": 6,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:55:54.278Z",
-     "statusAt": "2026-11-22T01:49:33.913Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:35:18.458Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:35:29.809Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:49:17.648Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:49:33.913Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "axf-orchestrator-settings-collapsible-split--s7--gina on hulu0241"
-      }
-     ],
-     "status": "building",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s7",
-     "branch": "claude/orchestrator-settings-collapsible-split--s7",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s7--gina"
+     "updatedAt": "2026-11-22T01:55:54.278Z"
     },
     {
      "id": "s8",
@@ -204332,52 +203918,7 @@
      "note": "PR #636 (claude/orchestrator-settings-collapsible-split)",
      "rev": 6,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:53:15.502Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:35:44.427Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:35:51.440Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:52:52.265Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-22T01:53:15.502Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "axf-orchestrator-settings-collapsible-split--s8--lenny on hulu0241"
-      }
-     ],
-     "status": "building",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s8",
-     "branch": "claude/orchestrator-settings-collapsible-split--s8",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s8--lenny"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s9",
@@ -204399,44 +203940,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T08:58:49.324Z",
-     "updatedAt": "2026-11-18T08:58:50.628Z",
-     "statusAt": "2026-11-22T01:56:20.245Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:35:57.702Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:36:14.337Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-22T01:56:20.245Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      }
-     ],
-     "status": "sending",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s9",
-     "branch": "claude/orchestrator-settings-collapsible-split--s9"
+     "updatedAt": "2026-11-18T08:58:50.628Z"
     },
     {
      "id": "s10",
@@ -204458,36 +203962,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-21T23:25:27.398Z",
-     "updatedAt": "2026-11-22T01:36:42.868Z",
-     "statusAt": "2026-11-22T01:36:42.797Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:53.079Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-22T01:36:29.095Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-22T01:36:42.797Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s10",
-     "branch": "claude/orchestrator-settings-collapsible-split--s10"
+     "updatedAt": "2026-11-22T01:36:42.868Z"
     }
    ],
    "profiles": [
@@ -204527,62 +204002,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "flow": "pipeline-2",
-   "statusAt": "2026-11-22T01:38:37.800Z",
-   "statusBy": "orchestrator",
-   "attempt": 2,
-   "statusLog": [
-    {
-     "status": "failed",
-     "at": "2026-11-22T01:32:02.435Z",
-     "by": "watchdog",
-     "attempt": 1,
-     "why": "pending did not move after 2 re-run(s) of the transition (4 min past its budget)"
-    },
-    {
-     "status": "split",
-     "at": "2026-11-22T01:32:54.956Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "10 steps for 6 slots"
-    },
-    {
-     "status": "pulling-main",
-     "at": "2026-11-22T01:33:15.828Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "no other build is active"
-    },
-    {
-     "status": "assigning-models",
-     "at": "2026-11-22T01:36:49.414Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "every step has main"
-    },
-    {
-     "status": "ready",
-     "at": "2026-11-22T01:37:07.135Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "models assigned"
-    },
-    {
-     "status": "sending",
-     "at": "2026-11-22T01:37:46.692Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "sending s1"
-    },
-    {
-     "status": "building",
-     "at": "2026-11-22T01:38:37.800Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "s1 is in a slot"
-    }
-   ]
+   "copies": []
   },
   {
    "id": "console-app-part-2-native-floating",
@@ -221108,7 +220528,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "split",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -221367,20 +220787,7 @@
      "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:32:58.219Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:58.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s2",
@@ -221402,20 +220809,7 @@
      "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:32:58.219Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:58.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s3",
@@ -221437,20 +220831,7 @@
      "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:32:58.219Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:58.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s4",
@@ -221472,20 +220853,7 @@
      "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-18T08:58:49.324Z",
-     "updatedAt": "2026-11-22T01:53:55.982Z",
-     "statusAt": "2026-11-22T01:32:58.219Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:58.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
+     "updatedAt": "2026-11-22T01:53:55.982Z"
     },
     {
      "id": "s5",
@@ -221507,20 +220875,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T23:35:38.134Z",
-     "updatedAt": "2026-11-22T01:32:07.825Z",
-     "statusAt": "2026-11-22T01:32:58.219Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-22T01:32:58.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
+     "updatedAt": "2026-11-22T01:32:07.825Z"
     }
    ],
    "profiles": [
@@ -221556,27 +220911,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "flow": "pipeline-2",
-   "statusAt": "2026-11-22T01:33:00.527Z",
-   "statusBy": "orchestrator",
-   "attempt": 2,
-   "statusLog": [
-    {
-     "status": "failed",
-     "at": "2026-11-22T01:32:02.435Z",
-     "by": "watchdog",
-     "attempt": 1,
-     "why": "pending did not move after 2 re-run(s) of the transition (4 min past its budget)"
-    },
-    {
-     "status": "split",
-     "at": "2026-11-22T01:33:00.527Z",
-     "by": "orchestrator",
-     "attempt": 2,
-     "why": "5 steps for 6 slots"
-    }
-   ]
+   "copies": []
   },
   {
    "id": "orchestrator-checks-shipped-features-2",
@@ -267720,7 +267055,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -267728,7 +267063,7 @@
    "pr": "#824",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-22T01:27:23.473Z",
+   "updatedAt": "2026-11-22T02:56:08.126Z",
    "builtAt": "",
    "notes": [
     {
@@ -267814,6 +267149,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-hide-any-asset--lenny, shared account login)",
      "at": "2026-11-22T01:27:23.473Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-22T02:56:08.126Z"
     }
    ],
    "approvals": [
@@ -268350,7 +267689,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
