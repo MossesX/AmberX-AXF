@@ -16,6 +16,8 @@ import type { pluginApi } from '@console/plugins';
 import * as T from './status-table-core.mjs';
 import type { StepRow, TableRow } from './status-table-core.mjs';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
+import { FileBuildForm } from './file-build';
+import { parallelAskOf, parallelChoices } from './orchestrator-core.mjs';
 import './status-table.css';
 
 type Api = ReturnType<typeof pluginApi>;
@@ -114,6 +116,30 @@ const tone = (s: string) => TONE[s] ?? (T.MERGE_QUEUE.includes(s as never) ? 'wa
 const PHONE_HIDDEN = ['status', 'steps', 'model', 'account', 'slot', 'timer', 'pr'];
 const PHONE_STEP_HIDDEN = ['id', 'status', 'model', 'account', 'slot', 'timer', 'pr'];
 
+/**
+ * A build's own parallel ask (Nov 13 2026: "split into N parallel"): Split settings decide, one build, or split into
+ * 2-12 parallel builds, through POST pipeline/parallel. Shown until the build is split in parallel or starts building;
+ * a build with no step done is split again on the next tick.
+ */
+function ParallelAsk({ api, r, onChanged }: { api: Api; r: TableRow; onChanged: () => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const pick = async (v: string) => {
+    setBusy(true);
+    try {
+      const res = await api.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id: r.id, parts: v });
+      if (!res.ok) throw new Error(res.error ?? 'not saved');
+      rt.toast(`${r.id}: ${res.note ?? v}${res.resplit ? ' (split again on the next tick)' : ''}`, 'success', 'Build orchestrator'); onChanged();
+    } catch (e) { rt.toast((e as Error).message, 'danger', 'Build orchestrator'); } finally { setBusy(false); }
+  };
+  return (
+    <div className="st-parallel" data-help="parallel-ask">
+      <SelectField className="st-pick" label="Parallel split (this build)" value={parallelAskOf(r.parallelParts)} options={parallelChoices()} disabled={busy} onChange={(v) => void pick(v)}
+        hint="This build only: beats the Split settings. Parallel builds run at the same time in separate slots." />
+    </div>
+  );
+}
+
 /** The rows, polled from GET /table while the page is visible (landed ones only when a filter asks for them). */
 function useTableRows(api: Api, landed: boolean) {
   const [rows, setRows] = useState<TableRow[] | null>(null);
@@ -197,6 +223,17 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     'builds.filter-status': () => { const i = statuses.indexOf(f.status as never); const next = statuses[i + 1] ?? ''; set('status', next); return { statusFilter: next }; },
   });
 
+  // Ask for a build (file-build.tsx): POST pipeline/request with the per-build parallel ask; true when it was filed
+  const [filing, setFiling] = useState(false);
+  const fileBuild = async (body: Record<string, unknown>, what: string): Promise<boolean> => {
+    setFiling(true);
+    try {
+      const r = await api.post<{ ok: boolean; error?: string; id?: string }>('pipeline/request', body);
+      if (!r.ok) throw new Error(r.error ?? 'not filed');
+      rt.toast(r.id ? `${what}: ${r.id}` : what, 'success', 'Build orchestrator'); void reload(); return true;
+    } catch (e) { rt.toast((e as Error).message, 'danger', 'Build orchestrator'); return false; } finally { setFiling(false); }
+  };
+
   const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
   const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && v);
   const cols: GridColumn<TableRow>[] = [
@@ -232,6 +269,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
         {filtered && <Button size="sm" icon="x" onClick={() => setF((x) => ({ ...NO_FILTERS, landed: x.landed }))}>Clear filters</Button>}
       </div>
       {!queue && <PageToolbar view="build-orchestrator" slot="pipeline" label="Builds: actions on the picked build" />}
+      {!queue && <FileBuildForm busy={filing} onFile={fileBuild} />}
       {error && <div className="pl-note is-warn" role="status"><Icon name="alert" size={14} />{error}</div>}
       <p className="st-live fx-small fx-muted" aria-live="polite"><span className="st-live__dot" aria-hidden="true" />{rows == null ? 'Loading the builds…' : `Live from the builds store${rev != null ? ` · rev ${rev}` : ''} · ${shown.length} of ${all.length}${queue ? ' · read-only' : ''}`}</p>
       {rows != null && (
@@ -279,6 +317,7 @@ function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone
         {r.branch && <><dt>Branch</dt><dd className="fx-mono">{r.branch}</dd></>}
       </dl>
       {canSend && T.canSendEmergency(r) && <SendToEmergency api={api} id={r.id} onSent={onChanged} />}
+      {canSend && T.canAskParallel(r) && <ParallelAsk api={api} r={r} onChanged={onChanged} />}
       {rows.length ? (
         <div className="oc-subgrid">
           <DataGrid id={`orch-status-steps-${r.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${r.title}`} compact dataset={false}

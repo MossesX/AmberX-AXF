@@ -43,3 +43,8 @@ export function apply(state: any, change: any): { state: any; build?: any; log: 
 export type ParallelFamily = { lead: string; leadTitle: string; role: 'lead' | 'part'; part: number; of: number; landing: 'together' | 'own'; parts: { id: string; part: number; title: string; status: string; done: number; total: number; finished: boolean }[]; done: number; total: number; partsFinished: number; percent: number };
 export function parallelFamily(build: any, builds: any[]): ParallelFamily | null;
 export function familyLine(f: ParallelFamily | null): string;
+export const PARALLEL_ASK_MAX: number;
+export function parallelChoices(max?: number): { value: string; label: string }[];
+export function parallelAskOf(parts: number | string | null | undefined): string;
+export function parallelAskLabel(value: number | string | null | undefined): string;
+export function requestBody(f: { title?: string; detail?: string; said?: string; priority?: string; parallel?: string; queue?: boolean }): { title: string; queue: boolean; detail?: string; said?: string; priority?: string; parallel?: string };

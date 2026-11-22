@@ -37,6 +37,10 @@ export const LEGACY_BUILD = Object.freeze({ running: 'building', waiting: 'build
 const str = (v) => (typeof v === 'string' ? v : '');
 const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Math.floor(Number(v)) : 0);
 
+/** Statuses before a build starts building: its per-build parallel ask ("split into N parallel") may still change. */
+const BEFORE_BUILD = ['pending', 'splitting', 'split', 'pulling-main', 'assigning-models', 'ready'];
+/** May this row still take a per-build parallel ask: not split in parallel yet and not started building. */
+export const canAskParallel = (r) => !!r && !r.parallelRole && BEFORE_BUILD.includes(r.status);
 /** Sent to emergency by Brett (pipeline-2@1 `emergency: { at, by }`): the row carries the Emergency badge. */
 export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
 /** May this row still be sent to emergency: a Pipeline 2.0 build that has not landed and is not one already. */
@@ -127,6 +131,9 @@ export function buildRow(b) {
     slot: common(steps.map((s) => s.slot)) || str(pipe.slot),
     prNumber: prNumber(b), pr: /^https?:\/\//.test(str(b.pr)) ? str(b.pr) : '', branch: str(b.branch),
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
+    // the build's own parallel ask (pipeline.parallelParts: 0 = Split settings, 1 = one build, N = N parallel builds) and
+    // its role once split in parallel ('lead' | 'part' | '')
+    parallelParts: Math.min(num(pipe.parallelParts), 12), parallelRole: ['lead', 'part'].includes(str(pipe.parallel?.role)) ? str(pipe.parallel.role) : '',
   };
 }
 

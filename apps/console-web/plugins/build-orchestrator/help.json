@@ -426,6 +426,42 @@
         "title": "Watchdog on (every watch)",
         "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
         "kind": "toggle"
+      },
+      {
+        "target": "file-build",
+        "title": "Ask for a build",
+        "text": "Files a build with the orchestrator: it gets an id, is split into steps, and the dispatcher starts it when its turn comes. Split into picks how this one build is split. Same as POST pipeline/request, MCP pipeline-request or pipeline.mjs request.",
+        "kind": "card"
+      },
+      {
+        "target": "what-brett-said-his-exact-words",
+        "title": "What Brett said",
+        "text": "His exact words, kept on the build unedited. Optional. \"split into 3 parallel\" in these words also asks for a parallel split.",
+        "kind": "field"
+      },
+      {
+        "target": "split-into",
+        "title": "Split into",
+        "text": "How this build is split, beating the Split settings for it only. Split settings decide (default), One build (never split in parallel), or Split into 2 to 12 parallel builds: they run at the same time in separate slots, a shared contract step runs first and an integration step merges and tests them at the end.",
+        "kind": "field"
+      },
+      {
+        "target": "file-the-build",
+        "title": "File the build",
+        "text": "Files the build with what you filled in. It shows in the table at once.",
+        "kind": "button"
+      },
+      {
+        "target": "parallel-ask",
+        "title": "Parallel split (this build)",
+        "text": "This build's own parallel split, beating the Split settings: Split settings decide, One build, or Split into 2 to 12 parallel builds. A build with no step done is split again on the next tick. Gone once the build is split in parallel or starts building. Same as POST pipeline/parallel or pipeline.mjs parallel <id> <N|off|default>.",
+        "kind": "card"
+      },
+      {
+        "target": "parallel-split-this-build",
+        "title": "Parallel split (this build)",
+        "text": "Pick how this one build is split: the Split settings, one build, or 2 to 12 parallel builds that run at the same time. Saves at once.",
+        "kind": "field"
       }
     ],
     "intros": []

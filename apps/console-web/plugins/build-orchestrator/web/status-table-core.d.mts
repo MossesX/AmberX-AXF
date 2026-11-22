@@ -2,7 +2,7 @@
 export type BuildStatus = 'pending' | 'splitting' | 'split' | 'pulling-main' | 'assigning-models' | 'ready' | 'sending' | 'building' | 'build-complete' | 'merging-pr' | 'pr-pulling-main' | 'running-ci' | 'merging-main' | 'landed' | 'failed';
 export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'building' | 'completed' | 'in-pr' | 'failed';
 export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string };
-export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string };
+export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; parallelParts: number; parallelRole: '' | 'lead' | 'part' };
 export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];
@@ -12,6 +12,8 @@ export const LEGACY_BUILD: Readonly<Record<string, BuildStatus | null>>;
 export const DATE_RANGES: Readonly<Record<string, string>>;
 export function statusLabel(status: string, attempt?: number): string;
 export function isEmergency(b: unknown): boolean;
+/** May this row still take a per-build parallel ask: not split in parallel yet and not started building. */
+export function canAskParallel(r: Pick<TableRow, 'status' | 'parallelRole'> | null | undefined): boolean;
 export function canSendEmergency(r: Pick<TableRow, 'flow' | 'emergency' | 'status'> | null | undefined): boolean;
 export function buildStatus(b: unknown): BuildStatus | null;
 export function stepStatus(s: unknown, build: BuildStatus | null): StepStatus;

@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
@@ -9,6 +9,7 @@ import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, R
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
+import { openFileBuild } from './file-build';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
@@ -74,6 +75,8 @@ export const plugin: AxfWebLibrary = {
       // the Watchdog tab (deep link build-orchestrator/watchdog, optionally ?build=<id>: that build's row and its fixes)
       const wd = /^watchdog(?:(?:\?build=|\/|:)([a-z0-9][a-z0-9._-]{0,79}))?$/i.exec(id);
       if (wd) { consoleApi.writeLocal('orch-watchdog-build', wd[1] ?? ''); rt.dispatch('settings.open:build-orchestrator'); return; }
+      // Ask for a build (build-orchestrator/file-build): the filing form above the table, opened and flashed
+      if (/^(file-build|ask-for-a-build|new-build)$/i.test(id)) { flashWhenReady(openFileBuild, 5000); return; }
       if (settingsTab(id)) { rt.dispatch('settings.open:build-orchestrator'); return; }
       if (tabOf(id) === 'merge-queue') { rt.navigate('merge-queue'); return; }
       if (openTab(tabOf(id))) return;
@@ -96,6 +99,15 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('watchdog.run', async ([arg]) => {
       try { const build = decodeURIComponent(arg ?? '').trim(); rt.toast(passLine(await runWatchdogs(build ? { build } : {})), 'success'); } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
+    rt.actions.register('build-orchestrator.file-build', () => void open('file-build'), { label: 'Build orchestrator: ask for a build (the filing form, with Split into N parallel)', effect: 'navigate' });
+    // the per-build parallel ask: build-orchestrator.parallel:<build>|<2-12 | off | default> (same as POST pipeline/parallel)
+    rt.actions.register('build-orchestrator.parallel', ([arg]) => {
+      const [id = '', parts = ''] = decodeURIComponent(arg ?? '').split('|').map((x) => x.trim());
+      if (!id || !parts) { rt.toast('Say which build and how many parts: <build>|<2-12, off or default>', 'warning'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id, parts })
+        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id}: ${r.note ?? parts}${r.resplit ? ' (split again on the next tick)' : ''}`, 'success'); })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: split one build into N parallel builds (<build>|<2-12, off or default>)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: show builds in a status (old tab names map onto status filters)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.merge-queue', () => rt.navigate('merge-queue'), { label: 'Open the merge queue (read-only)', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,

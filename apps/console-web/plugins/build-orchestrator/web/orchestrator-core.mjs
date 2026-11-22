@@ -242,6 +242,41 @@ export function familyLine(f) {
   return `Parallel: ${f.of} part${f.of === 1 ? '' : 's'} · ${f.partsFinished}/${f.of} finished · ${f.done}/${f.total} steps (${f.percent}%) · ${f.landing === 'own' ? 'lands in order, one PR per part' : 'lands together through the lead'}`;
 }
 
+/**
+ * The per-build parallel ask (Nov 13 2026: "split into N parallel"), as the filing form and each build's Parallel picker
+ * offer it. A choice is what POST pipeline/request takes as `parallel` and POST pipeline/parallel as `parts`:
+ * 'default' = the Split settings decide, 'off' = one build, '2'..'12' = split into that many parallel builds.
+ * pipeline.parallelParts stores it as 0 / 1 / N (build-pipeline@1 normParallelParts).
+ */
+export const PARALLEL_ASK_MAX = 12;
+export function parallelChoices(max = PARALLEL_ASK_MAX) {
+  const top = Math.max(2, Math.min(PARALLEL_ASK_MAX, Number.isInteger(max) ? max : PARALLEL_ASK_MAX));
+  const out = [{ value: 'default', label: 'Split settings decide' }, { value: 'off', label: 'One build (no parallel split)' }];
+  for (let n = 2; n <= top; n++) out.push({ value: String(n), label: `Split into ${n} parallel builds` });
+  return out;
+}
+/** pipeline.parallelParts (0 / 1 / N) → its choice value. */
+export function parallelAskOf(parts) {
+  const n = typeof parts === 'string' && parts.trim() !== '' ? Number(parts) : parts;
+  if (!Number.isInteger(n) || n < 1) return 'default';
+  return n === 1 ? 'off' : String(Math.min(n, PARALLEL_ASK_MAX));
+}
+/** A choice value → its short label for a card ("Parallel: settings" / "one build" / "3 parts"). */
+export function parallelAskLabel(value) {
+  const v = parallelAskOf(value === 'off' ? 1 : value === 'default' ? 0 : value);
+  return v === 'default' ? 'settings' : v === 'off' ? 'one build' : `${v} parts`;
+}
+/** The request body for POST pipeline/request from the filing form; parallel is left out when the settings decide. */
+export function requestBody({ title = '', detail = '', said = '', priority = '', parallel = 'default', queue = true } = {}) {
+  const body = { title: String(title).trim(), queue: queue !== false };
+  if (String(detail).trim()) body.detail = String(detail).trim();
+  if (String(said).trim()) body.said = String(said).trim();
+  if (['P0', 'P1', 'P2', 'P3'].includes(priority)) body.priority = priority;
+  const v = parallelAskOf(parallel === 'off' ? 1 : parallel === 'default' ? 0 : parallel);
+  if (v !== 'default') body.parallel = v;
+  return body;
+}
+
 /** Steps over the size limit or without an estimate (the small-steps rule). */
 export function splitCheck(build, rules = DEFAULT_RULES) {
   const reasons = [];
