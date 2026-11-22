@@ -843,7 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:37 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · builds-live
 - 2026-11-22 04:37 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · builds-live
 - 2026-11-22 04:37 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · builds-live
 - 2026-11-22 04:37 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · builds-live
@@ -1243,6 +1242,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 09:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · pipeline
 - 2026-11-22 09:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · pipeline
 - 2026-11-22 09:05 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · pipeline
+- 2026-11-22 09:05 UTC · `one-true-source-get-redundant-settings` → complete, note (all) · verify
 
 ## Token passes (log)
 

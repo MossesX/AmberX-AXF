@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10349,
- "updatedAt": "2026-11-22T09:05:49.263Z",
+ "rev": 10350,
+ "updatedAt": "2026-11-22T09:06:06.807Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -348254,7 +348254,7 @@
    "title": "One true source: get the redundant settings out",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I have so many redundant UIs. They can conflict with each other and we got problems.\" \"The settings can only exist in one place. They might be able to set them in multiple places, but they have to exist in one place, one true source.\" \"Unless they're worded a little bit differently and they just conflict with each other.\" \"Let's run Fable to fix all that. Get all the redundant settings out.\" Plan: one-home-per-setting-kill-the-redundant-settings-79kj. Example from today: the build cap is spread over Agent cap (VPS hard build limit, max running agents), the Build orchestrator settings (stepsInParallel, parallelPerAccount, maxRuns) and the VPS Configuration build cap section; Brett raised the hard limit to 6 and max running agents still said 4. Several screens may edit a setting, but each setting is stored once and every screen reads and writes that one value.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -348262,7 +348262,7 @@
    "pr": "#888",
    "mergedAt": "2026-11-22T06:24:35Z",
    "createdAt": "2026-11-21T20:04:08.140Z",
-   "updatedAt": "2026-11-22T09:05:14.697Z",
+   "updatedAt": "2026-11-22T09:05:48.244Z",
    "builtAt": "2026-11-22T06:23:34.310Z",
    "notes": [
     {
@@ -348376,6 +348376,10 @@
     {
      "text": "Watchdog: merged and CI is green on 8ce46bff6c: landed.",
      "at": "2026-11-22T09:05:14.697Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T09:05:48.244Z"
     }
    ],
    "approvals": [],
@@ -348489,9 +348493,9 @@
     "ci": "success",
     "ciAt": "2026-11-22T09:05:14.697Z",
     "ciRun": "commit@8ce46bff6c19c42bb6edf6a32cb2742896ef22a6",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-22T09:05:48.244Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-one-true-source-get-redundant-settings",
@@ -348619,7 +348623,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
