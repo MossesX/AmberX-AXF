@@ -840,136 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand-` merged, note (all) · reconciler
-- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand` added (5 steps) (all) · orchestrator
-- 2026-11-21 03:45 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 05:04 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
-- 2026-11-21 05:04 UTC · `ci-speed-ci-failure-reports-lean` → split (all) · amber
-- 2026-11-21 05:04 UTC · `nov-20-fix-list-voice-console-cont` → split (all) · amber
-- 2026-11-21 05:05 UTC · `plan-studio-live-progress-one-stor` → split (all) · amber
-- 2026-11-21 05:05 UTC · `console-tabs-plugins-open-in-tabs-` → split (all) · amber
-- 2026-11-21 05:09 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
-- 2026-11-21 05:15 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:16 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 05:16 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:16 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 05:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:19 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:20 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-21 05:20 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 05:20 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:20 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 05:21 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 05:22 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:22 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 06:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · console
-- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · foreign-write
-- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` → queued (all) · amber-voice
-- 2026-11-21 19:16 UTC · `rename-gate-rules-to-vps-configuration` → running, note (all) · pipeline
-- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` branch claude/rename-gate-rules-to-vps-configuration (all) · pipeline
-- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 19:28 UTC · `fable-rebuild-1-2-vps-host-services-move` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:28 UTC · `fable-rebuild-2-2-both-watchdogs-one` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` added (3 steps) (all) · amber-voice
-- 2026-11-21 19:29 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued (all) · amber-voice
-- 2026-11-21 19:29 UTC · `fable-rebuild-2-2-both-watchdogs-one` → queued (all) · amber-voice
-- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` → queued (all) · amber-voice
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` → running, note (all) · pipeline
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` branch claude/fable-rebuild-1-2-vps-host-services-move (all) · pipeline
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` → running, note (all) · pipeline
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` branch claude/fable-rebuild-2-2-both-watchdogs-one (all) · pipeline
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` → running, note (all) · pipeline
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` branch claude/rip-out-plan-studio-1-keep-only-plan (all) · pipeline
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 19:40 UTC · `approval-rules-vps-configuration-veto` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:41 UTC · `approval-rules-vps-configuration-veto` → queued (all) · amber-voice
-- 2026-11-21 19:47 UTC · `phone-connect-open-straight-phone-no-tap` added (3 steps) (all) · amber-voice
-- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · amber-voice
-- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` → queued (all) · amber-voice
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` → running, note (all) · pipeline
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` branch claude/approval-rules-vps-configuration-veto (all) · pipeline
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 20:02 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` added (4 steps) (all) · amber-voice
-- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` → queued (all) · amber-voice
-- 2026-11-21 20:26 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
-- 2026-11-21 20:29 UTC · `rename-gate-rules-to-vps-configuration` → fixing, note (all) · pipeline
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · pipeline
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · pipeline
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` branch claude/phone-connect-open-straight-phone-no-tap (all) · pipeline
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` → landing, note (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` → running, note (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` branch claude/one-true-source-get-redundant-settings (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
-- 2026-11-21 21:16 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
-- 2026-11-21 21:19 UTC · `approval-rules-vps-configuration-veto` → fixing, note (all) · pipeline
-- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` PR #883, merged, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` PR #882, merged, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `approval-rules-vps-configuration-veto` s4 done, PR #885, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `phone-connect-open-straight-phone-no-tap` PR #886, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:25 UTC · `rebuild-fresh-main-hide-any-asset` → fixing, note (all) · watchdog
-- 2026-11-21 21:25 UTC · `postgres-part-b-plan-plan-studio-catalog` → landing, note (all) · watchdog
-- 2026-11-21 21:25 UTC · `fix-main-ci-red-after-s16-s7-hand` note (all) · watchdog
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` → landing, note (all) · pipeline
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 21:35 UTC · `fix-refreshing-console-jumps-back` → fixing, note (all) · watchdog
-- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed, note (all) · watchdog
-- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → complete, note (all) · verify
-- 2026-11-21 21:40 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:41 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:41 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:45 UTC · `banner-widget-shapes-plus-change-icon` → fixing, note (all) · watchdog
-- 2026-11-21 21:46 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:46 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:46 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:50 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:51 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:51 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:55 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:56 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:56 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → landed, note (all) · watchdog
-- 2026-11-21 22:05 UTC · `fix-main-ci-red-after-s16-s7-hand` → landed, note (all) · watchdog
-- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → complete, note (all) · verify
-- 2026-11-21 22:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
-- 2026-11-21 22:05 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · builds-live
-- 2026-11-21 22:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 22:05 UTC · `fix-main-ci-red-after-s16-s7-hand` → complete, note (all) · verify
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
-- 2026-11-21 22:06 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · builds-live
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 22:07 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:07 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
-- 2026-11-21 22:08 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:09 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
-- 2026-11-21 22:25 UTC · `icon-picker-every-banner-settings-widget` → fixing, note (all) · watchdog
 - 2026-11-21 22:25 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · watchdog
 - 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` added (3 steps) (all) · amber-voice
 - 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` → queued (all) · amber-voice
@@ -1240,6 +1110,136 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-22 02:56 UTC · `rebuild-fresh-main-hide-any-asset` → pending, note (all) · reconciler
+- 2026-11-22 01:57 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:57 UTC · `approval-rules-save-apply-default-don-t` → complete, note (all) · verify
+- 2026-11-22 01:57 UTC · `orchestrator-settings-collapsible-split` s4 undone (all) · orchestrator
+- 2026-11-22 01:58 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:58 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:58 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:58 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:58 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:59 UTC · `orchestrator-settings-collapsible-split` s7 undone, note (all) · watchdog
+- 2026-11-22 01:59 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:59 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:00 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:00 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:01 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:01 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 02:01 UTC · `orchestrator-settings-collapsible-split` s8 undone, note (all) · watchdog
+- 2026-11-22 02:02 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 02:02 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 02:03 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 02:03 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 02:03 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 02:04 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 02:04 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 02:04 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 02:05 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 02:05 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 02:05 UTC · `one-true-source-get-redundant-settings` → fixing, note (all) · watchdog
+- 2026-11-22 02:06 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 02:06 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 02:06 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 02:07 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 02:07 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 02:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 02:11 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:11 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:12 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:12 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 02:14 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 02:15 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:15 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · watchdog
+- 2026-11-22 02:16 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:16 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:16 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:16 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 02:21 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:25 UTC · `terminal-main-tab-streaming-console-s` → queued, note (all) · watchdog
+- 2026-11-22 02:26 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:29 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-22 02:29 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:29 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · pipeline
+- 2026-11-22 02:29 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-22 02:31 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:35 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-22 02:36 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:41 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:45 UTC · `auto-lander-never-wait-missing-ui-review` → queued, note (all) · watchdog
+- 2026-11-22 02:46 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:51 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 02:55 UTC · `rebuild-fresh-main-hide-any-asset` s17 undone, → queued (all) · foreign-write
+- 2026-11-22 02:56 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · pipeline
+- 2026-11-22 03:02 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:03 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:04 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:05 UTC · `rebuild-fresh-main-hide-any-asset` → pending (all) · foreign-write
+- 2026-11-22 03:05 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:05 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:05 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:05 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · watchdog
+- 2026-11-22 03:06 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:06 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:06 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:07 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:07 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:07 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:07 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-22 03:08 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:08 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:08 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:09 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:09 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:09 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:10 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:10 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:10 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:11 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 03:11 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 03:11 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 03:11 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-22 03:12 UTC · `rebuild-fresh-main-hide-any-asset` → failed, note (all) · watchdog
+- 2026-11-22 03:12 UTC · `rebuild-fresh-main-hide-any-asset` → split (all) · orchestrator
+- 2026-11-22 03:15 UTC · `plan-studio-2-open-button-working-deep` → queued, note (all) · watchdog
+- 2026-11-22 03:25 UTC · `every-plugin-gets-own-default-toolbar` → queued, note (all) · watchdog
+- 2026-11-22 03:35 UTC · `every-app-gets-own-locked-default` → queued, note (all) · watchdog
+- 2026-11-22 03:35 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-22 03:35 UTC · `every-app-gets-own-locked-default` → running, note (all) · orchestrator
+- 2026-11-22 03:35 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
+- 2026-11-22 03:45 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · watchdog
+- 2026-11-22 03:45 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-22 03:45 UTC · `one-build-time-always-split-to-fill` → running, note (all) · orchestrator
+- 2026-11-22 03:46 UTC · `attach-widgets-to-any-toolbar-banner` → running (all) · foreign-write
+- 2026-11-22 03:46 UTC · `stop-push-storm-builds-live-pushes-build` → complete (all) · foreign-write
+- 2026-11-22 03:46 UTC · `urgent-all-data-to-postgres-builds-store` s1 undone, s2 undone, s3 undone, s5 undone, note (all) · foreign-write
+- 2026-11-22 03:46 UTC · `attach-widgets-to-any-toolbar-banner` → running (all) · foreign-write
+- 2026-11-22 03:46 UTC · `urgent-all-data-to-postgres-builds-store` s1 undone, s2 undone, s3 undone, s5 undone, → running, note (all) · foreign-write
+- 2026-11-22 03:46 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
+- 2026-11-22 03:46 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
+- 2026-11-22 03:47 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `orchestrator-settings-collapsible-split` s1 undone, s7 undone, s10 done, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `move-server-side-console-parts-onto-vps` → complete, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `rebuild-fresh-main-hide-any-asset` s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s15 undone, s16 undone, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `plan-studio-2-open-button-working-deep` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `every-app-gets-own-locked-default` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-split-id` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `nov-20-fix-list-voice-console-cont` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-true-source-get-redundant-settings` → complete, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `approval-rules-save-apply-default-don-t` → complete, note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-split-id` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 
 ## Token passes (log)
 
