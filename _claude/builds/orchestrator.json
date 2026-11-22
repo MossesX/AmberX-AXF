@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T00:36:19.248Z",
+ "updatedAt": "2026-11-22T00:36:39.414Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213667,7 +213667,7 @@
    "title": "Fable rebuild 2/2: both watchdogs in one build",
    "category": "Fable rebuilds",
    "detail": "Fresh on main. Plan: fable-rebuild-2-3-server-watchdog-stuck-or-kille-3g05. Old PRs #772 and #780 are reference only; both added a watchdog.mjs in the build-orchestrator plugin, so do it as one.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213675,7 +213675,7 @@
    "pr": "#883",
    "mergedAt": "2026-11-21T21:17:51Z",
    "createdAt": "2026-11-21T19:28:54.704Z",
-   "updatedAt": "2026-11-22T00:35:36.124Z",
+   "updatedAt": "2026-11-22T00:36:26.010Z",
    "builtAt": "2026-11-21T21:18:07.790Z",
    "notes": [
     {
@@ -213721,6 +213721,10 @@
     {
      "text": "Watchdog: merged and CI is green on 611f0e2c44: landed.",
      "at": "2026-11-22T00:35:36.124Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T00:36:26.010Z"
     }
    ],
    "approvals": [],
@@ -214134,7 +214138,7 @@
    "title": "Phone Connect: open straight on the phone, no tap-to-open notification",
    "category": "Phone Connect",
    "detail": "Brett, Nov 21: \"I get the notification, it says tap to open on your phone. Why can't it just open? That's what the overlay is for.\" He has the overlay (draw over other apps) permission granted. When Amber sends a screen or an approval (console_show / console_open wake), the Phone Connect app must come to the front by itself at that screen. Today it posts a 'Tap Open on your phone' notification instead.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214142,7 +214146,7 @@
    "pr": "#886",
    "mergedAt": "2026-11-21T22:18:48Z",
    "createdAt": "2026-11-21T19:47:33.297Z",
-   "updatedAt": "2026-11-22T00:35:41.048Z",
+   "updatedAt": "2026-11-22T00:36:31.149Z",
    "builtAt": "2026-11-21T22:58:30.392Z",
    "notes": [
     {
@@ -214212,6 +214216,10 @@
     {
      "text": "Watchdog: merged and CI is green on d4306f70d2: landed.",
      "at": "2026-11-22T00:35:41.048Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T00:36:31.149Z"
     }
    ],
    "approvals": [],
