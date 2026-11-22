@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10327,
- "updatedAt": "2026-11-22T01:56:11.238Z",
+ "rev": 10328,
+ "updatedAt": "2026-11-22T01:56:25.428Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203346,7 +203346,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T01:55:53.671Z",
+   "updatedAt": "2026-11-22T01:56:20.245Z",
    "builtAt": "",
    "notes": [
     {
@@ -203719,14 +203719,14 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-22T01:55:08.959Z",
+     "at": "2026-11-22T01:56:10.913Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-orchestrator-settings-collapsible-split--s5--gina",
-     "phase": ""
+     "session": "axf-orchestrator-settings-collapsible-split--s7--gina",
+     "phase": "Phase 1"
     }
    },
    "steps": [
@@ -204388,7 +204388,7 @@
      "rev": 1,
      "createdAt": "2026-11-18T08:58:49.324Z",
      "updatedAt": "2026-11-18T08:58:50.628Z",
-     "statusAt": "2026-11-22T01:36:14.337Z",
+     "statusAt": "2026-11-22T01:56:20.245Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -204412,9 +204412,17 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-22T01:56:20.245Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s9",
      "branch": "claude/orchestrator-settings-collapsible-split--s9"
     },
@@ -204478,7 +204486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 180,
+   "rev": 182,
    "deleted": false,
    "deletedAt": "",
    "pending": {
