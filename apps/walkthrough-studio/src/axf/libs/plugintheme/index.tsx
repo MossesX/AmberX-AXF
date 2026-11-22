@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import './plugintheme.css';
-import { Button, Checkbox, Chip, ColorField, Container, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, useEditorSync, useRuntime } from '../../react';
+import { Button, Checkbox, Chip, ColorField, Container, HubSkinLockNote, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, SkinScope, useEditorSync, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import type { ColorThemeData, StyleThemeData } from '../../core';
@@ -80,9 +80,12 @@ function currentPlugin(rt: AxfRuntime): string | null {
 
 /* ---------------- scope + stylesheet ---------------- */
 
-/** A plugin UI root: no box of its own, carries the scope attribute. */
+/**
+ * A plugin UI root: no box of its own, carries the scope attribute, and is the plugin level of the skin chain
+ * (skin-coverage@1): a skin picked for this plugin in Settings → Appearance → Where draws only inside it.
+ */
 export function PluginScope({ id, children }: { id: string; children: ReactNode }) {
-  return <div className="fx-plugin-scope" {...{ [PLUGIN_ATTR]: id }}>{children}</div>;
+  return <SkinScope kind="plugin" id={id} className="fx-plugin-scope" attrs={{ [PLUGIN_ATTR]: id }}>{children}</SkinScope>;
 }
 
 function apply(rt: AxfRuntime) {
@@ -194,9 +197,12 @@ export function PluginThemePanel({ id, name }: { id: string; name: string }) {
   return (
     <div className="fx-stack axf-plugintheme" {...{ [EDITOR_ATTR]: id }}>
       <p className="fx-muted" style={{ margin: 0 }}>{name} uses the app’s theme. Switch the override on to give it its own tokens on top of that theme: only what you change here is overridden, the rest follows the app (and a theme swap).</p>
+      <HubSkinLockNote />
       <fieldset className="axf-plugintheme__fieldset" disabled={locked}>
         <Switch label="Theme override" hint={look.on ? `${n} token${n === 1 ? '' : 's'} overridden in ${name}’s pages, dialogs, windows and settings.` : 'Off: the app’s theme.'} checked={look.on} onChange={(on) => save({ ...look, on })} />
-        {lookLocked && look.on && <Note tone="warning">The look is locked (Settings → Appearance → Lock the look): the override is kept but not applied until it is unlocked.</Note>}
+        {lookLocked && look.on && <Note tone="warning">{rt.appearanceLockReason() === 'hub'
+          ? 'Following axHub (Settings → Appearance → Get my skin only from axHub): the override is kept but not applied until that is off.'
+          : 'The look is locked (Settings → Appearance → Lock the look): the override is kept but not applied until it is unlocked.'}</Note>}
         {look.on && (
           <Container title={`Theme override tokens${n ? ` (${n} changed)` : ''}`} icon="sliders" collapsible defaultOpen>
             <div className="fx-stack">

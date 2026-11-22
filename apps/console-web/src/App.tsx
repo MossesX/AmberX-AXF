@@ -47,7 +47,7 @@ const ashesLibrary = createAshesLibrary({
   ),
 });
 
-/** Views the shell can show. The console-nav asset references these ids. */
+/** Views the shell can show. The default-console-web-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'chart', render: () => <Tracker /> },
