@@ -841,14 +841,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 01:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 01:25 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · watchdog
-- 2026-11-22 01:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 01:26 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` → running, note (all) · pipeline
-- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-22 01:28 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
 - 2026-11-22 01:29 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-22 01:29 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · watchdog
 - 2026-11-22 01:31 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
@@ -1241,6 +1233,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 04:36 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
 - 2026-11-22 04:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 04:37 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:37 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:37 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:37 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · builds-live
+- 2026-11-22 04:37 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · builds-live
+- 2026-11-22 04:37 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · builds-live
+- 2026-11-22 04:37 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · builds-live
+- 2026-11-22 04:37 UTC · `one-build-time-always-split-to-fill` note (all) · builds-live
+- 2026-11-22 04:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
