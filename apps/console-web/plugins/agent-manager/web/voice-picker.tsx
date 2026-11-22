@@ -39,11 +39,14 @@ export async function deviceVoices(): Promise<{ id: string; name: string; lang: 
   return read();
 }
 
+/** Cloud voice lists and previews go through Agent voice (its keys); without it, previews play on this device. */
+const VOICE_PLUGIN = 'agent-voice'; // axf-plugin:agent-voice
+
 /** A provider's raw voice list: device voices here, OpenAI's from this plugin, ElevenLabs' through Agent voice (its key). */
 export async function providerVoices(provider: string): Promise<{ id: string; name: string; lang?: string }[]> {
   if (provider === 'browser') return deviceVoices();
   if (provider === 'openai') return (await call<{ openai: CatalogueVoice[] }>('voices')).openai;
-  const r = await pluginFetch('agent-voice', `voices/${provider}`);
+  const r = await pluginFetch(VOICE_PLUGIN, `voices/${provider}`);
   const j = await r.json().catch(() => ({})) as { voices?: { id: string; name: string; category?: string }[]; detail?: string };
   if (!r.ok) throw new Error(j.detail ?? `the ${provider} voices could not be listed (is Agent voice installed with a key?)`);
   return (j.voices ?? []).map((v) => ({ id: v.id, name: v.name, description: v.category ?? '' }));
@@ -58,7 +61,7 @@ let previewN = 0;
 export async function previewVoice(slot: Voice, text: string, agentId?: string): Promise<string> {
   const rate = slot.rate ?? 1; const pitch = slot.pitch ?? 1;
   if (slot.provider && slot.provider !== 'browser' && agentId) {
-    const r = await pluginFetch('agent-voice', 'tts', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agentId, text, provider: slot.provider, voice: slot.voiceId, rate }) });
+    const r = await pluginFetch(VOICE_PLUGIN, 'tts', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agentId, text, provider: slot.provider, voice: slot.voiceId, rate }) });
     if (r.ok) { const url = URL.createObjectURL(await r.blob()); const a = new Audio(url); a.onended = () => URL.revokeObjectURL(url); await a.play(); return ''; }
     const j = await r.json().catch(() => ({})) as { detail?: string };
     // fall through to the device so the speed and pitch can still be heard

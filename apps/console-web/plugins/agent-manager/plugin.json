@@ -45,7 +45,8 @@
     ],
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/agent-swarm/swarm.mjs"
     ]
   },
   "opens": "main"

@@ -40,7 +40,8 @@
     ],
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/agent-manager/web/voice-picker.tsx"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },

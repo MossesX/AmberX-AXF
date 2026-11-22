@@ -136,7 +136,7 @@ export function loadAudio(roster = loadRoster()) { return audio.normSettings(rea
  * lends its voice slot ({provider, voiceId, hint, rate, pitch}, persona slot when its own is empty). It sits between
  * the cast and the room's per-agent override: cast < Agent manager voice < room override.
  */
-export const amDir = () => process.env.AXF_AGENT_MANAGER_DIR || join(ROOT, '.axf-console/plugins/agent-manager');
+export const amDir = () => process.env.AXF_AGENT_MANAGER_DIR || join(ROOT, '.axf-console/plugins/agent-manager'); // axf-plugin:agent-manager (optional: no Agent manager, no folder, every agent keeps its cast voice)
 const filled = (v) => v && typeof v === 'object' && (v.voiceId || v.provider || v.rate !== undefined || v.pitch !== undefined);
 export function slotVoices(roster = loadRoster()) {
   const items = (c) => Object.values(readJson(join(amDir(), `${c}.json`), { items: {} })?.items ?? {});
