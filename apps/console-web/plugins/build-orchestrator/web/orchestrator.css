@@ -100,3 +100,8 @@ button.oc-model { cursor: pointer }
 .axp-build-orchestrator__wd-rows > li.is-done, .axp-build-orchestrator__wd-rows > li.is-complete { border-left-color: var(--fx-success) }
 .axp-build-orchestrator__wd-rows > li.is-remove { border-left-color: var(--fx-warning) }
 .axp-build-orchestrator__wd-rows > li.is-skipped { color: var(--fx-muted) }
+
+/* Split section (Nov 13 2026): one collapsible block (.pd-add from the console) for every split option; layout only */
+.oc-split .fx-stack { gap: var(--fx-dens-gap-lg) }
+.oc-split__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg) }
+.oc-split__row > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 12) }
