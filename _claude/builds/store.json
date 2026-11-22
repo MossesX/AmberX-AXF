@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10350,
- "updatedAt": "2026-11-22T09:06:06.807Z",
+ "rev": 10351,
+ "updatedAt": "2026-11-22T11:40:12.466Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -298093,7 +298093,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T08:58:30.844Z",
+   "updatedAt": "2026-11-22T11:38:31.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -298215,6 +298215,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T08:58:30.844Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T11:38:31.043Z"
     }
    ],
    "approvals": [],
@@ -298595,7 +298599,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333667,7 +333671,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T09:05:10.335Z",
+   "updatedAt": "2026-11-22T11:40:10.093Z",
    "builtAt": "",
    "notes": [
     {
@@ -334185,6 +334189,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T09:05:10.335Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T11:40:10.093Z"
     }
    ],
    "approvals": [
@@ -334380,7 +334388,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 151,
+   "rev": 152,
    "deleted": false,
    "deletedAt": "",
    "pending": {
