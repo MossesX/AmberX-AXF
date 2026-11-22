@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-21 01:58 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:59 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 02:00 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
 - 2026-11-21 02:01 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
 - 2026-11-21 02:02 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
 - 2026-11-21 02:13 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 01:55 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · watchdog
 - 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-22 01:55 UTC · `approval-rules-save-apply-default-don-t` → landed, note (all) · watchdog
+- 2026-11-22 01:56 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
+- 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · builds-live
+- 2026-11-22 01:56 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · builds-live
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10326,
- "updatedAt": "2026-11-22T01:55:42.101Z",
+ "rev": 10327,
+ "updatedAt": "2026-11-22T01:56:11.238Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184280,7 +184280,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184289,7 +184289,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
    "updatedAt": "2026-11-22T01:49:02.874Z",
-   "builtAt": "",
+   "builtAt": "2026-11-22T01:49:02.874Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -184522,6 +184522,26 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T01:49:02.874Z"
+    },
+    {
+     "text": "Dispatch gate: always-fill-every-slot-when-slots-are still has axf-always-fill-every-slot-when-slots-are--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-22T00:47:43.014Z"
+    },
+    {
+     "text": "Fixing: it stalled on s28 (no sign of life from axf-always-fill-every-slot-when-slots-are--earl for 20 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-22T01:28:08.779Z"
+    },
+    {
+     "text": "Headless run axf-always-fill-every-slot-when-slots-are--earl: brief only · start 14.8K tokens ($0.04) · cost $21.14 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-22T01:37:10.591Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $21.14",
+     "at": "2026-11-22T01:37:20.492Z"
+    },
+    {
+     "text": "Session axf-always-fill-every-slot-when-slots-are--earl on hulu0241 finished: every step done.",
+     "at": "2026-11-22T01:40:20.773Z"
     }
    ],
    "approvals": [
@@ -185280,12 +185300,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-22T01:36:32.935Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-22T00:15:24.961Z",
-     "updatedAt": "2026-11-22T00:15:24.961Z"
+     "updatedAt": "2026-11-22T01:36:33.744Z"
     }
    ],
    "profiles": [
@@ -185296,7 +185316,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203326,7 +203346,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T01:55:29.118Z",
+   "updatedAt": "2026-11-22T01:55:53.671Z",
    "builtAt": "",
    "notes": [
     {
@@ -203616,6 +203636,19 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--s5--gina: brief only · start 9.6K tokens ($0.02) · cost $2.62 · 65 turns · 6 tools, MCP none",
      "at": "2026-11-22T01:55:29.118Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.70",
+     "at": "2026-11-22T01:55:36.742Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.62",
+     "at": "2026-11-22T01:55:45.401Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (orchestrator-settings-collapsible-split is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:56:06.093Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -204199,7 +204232,7 @@
     },
     {
      "id": "s7",
-     "uid": "st-mwfbqn7f078c4a",
+     "uid": "st-mwr5x4by1rkz6s",
      "title": "",
      "text": "orchestrator settings needs a collapsible section for split, with all the splitting options, and one option splits it so it runs multiple parallel builds simultaneously to speed it up",
      "model": "Opus",
@@ -204213,11 +204246,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-15T01:14:08.226Z",
+     "doneAt": "2026-11-22T01:55:53.671Z",
      "note": "",
-     "rev": 2,
+     "rev": 6,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-15T01:14:08.752Z",
+     "updatedAt": "2026-11-22T01:55:54.278Z",
      "statusAt": "2026-11-22T01:49:33.913Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -204445,7 +204478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 176,
+   "rev": 180,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221055,14 +221088,14 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "running",
+   "status": "split",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-22T01:41:06.229Z",
+   "updatedAt": "2026-11-22T01:53:55.919Z",
    "builtAt": "",
    "notes": [
     {
@@ -221194,12 +221227,40 @@
      "at": "2026-11-22T00:37:44.193Z"
     },
     {
-     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
-     "at": "2026-11-22T01:41:06.229Z"
-    },
-    {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-22T01:17:54.689Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-22T01:16:06.690Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T01:28:01.478Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T01:31:02.538Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-22T01:32:02.435Z"
+    },
+    {
+     "text": "Store: refused a write by orchestrator, nothing of it was kept: s1 step s1 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 w",
+     "at": "2026-11-22T01:33:05.820Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (group-chat-audio-hear-agents-talk-while is split (Pending): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-22T01:39:37.374Z"
+    },
+    {
+     "text": "Reconciler: PR #671 names s1, s2, s3, s4 done",
+     "at": "2026-11-22T01:53:55.919Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-22T01:41:06.229Z"
     }
    ],
    "approvals": [],
@@ -221228,18 +221289,18 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-22T01:41:05.088Z",
+     "at": "2026-11-22T01:02:59.740Z",
      "exit": 0,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 1,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-group-chat-audio-hear-agents-talk-while--rhonda",
-     "phase": ""
+     "phase": "Phase 1"
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-21T23:38:24.707Z",
     "planned": {
@@ -221253,12 +221314,22 @@
     "pickedAt": "2026-11-21T23:38:24.707Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-22T01:02:12.601Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-group-chat-audio-hear-agents-talk-while--rhonda",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwfwdp4y04a733",
+     "uid": "st-mwr5x8mn1vgef3",
      "title": "",
      "text": "Voice profile per agent (voice@1 asset), TTS playback queue for group chat messages, mute/volume/modes",
      "model": "Opus",
@@ -221272,15 +221343,28 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-14T04:34:06.633Z",
-     "note": "",
+     "doneAt": "2026-11-22T01:53:55.919Z",
+     "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-14T04:34:07.150Z"
+     "updatedAt": "2026-11-22T01:53:55.982Z",
+     "statusAt": "2026-11-22T01:32:58.219Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:58.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
-     "uid": "st-mwfwdp4y056wfy",
+     "uid": "st-mwr5x8mo1wjz4r",
      "title": "",
      "text": "Enable-audio switch and controls in the group chat on console and AmberX Android (background audio)",
      "model": "Opus",
@@ -221294,15 +221378,28 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-14T04:39:27.392Z",
-     "note": "",
+     "doneAt": "2026-11-22T01:53:55.919Z",
+     "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-14T04:39:27.636Z"
+     "updatedAt": "2026-11-22T01:53:55.982Z",
+     "statusAt": "2026-11-22T01:32:58.219Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:58.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
-     "uid": "st-mwfwdp4y066i5r",
+     "uid": "st-mwr5x8mo1xlhe9",
      "title": "",
      "text": "Full API + voice commands, tests desktop and phone, help, PR",
      "model": "Opus",
@@ -221316,37 +221413,28 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-14T04:49:37.473Z",
-     "note": "",
+     "doneAt": "2026-11-22T01:53:55.919Z",
+     "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
      "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-14T04:49:37.767Z"
+     "updatedAt": "2026-11-22T01:53:55.982Z",
+     "statusAt": "2026-11-22T01:32:58.219Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:58.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
-     "uid": "st-mwja99ke019f5e",
-     "title": "",
-     "text": "Voice picker for every employee in the Agent manager (agents + personas), FULLY BATTERIES INCLUDED, MULTIPLE providers: OpenAI TTS, ElevenLabs, Google Cloud TTS, Azure Speech, Amazon Polly, Deepgram Aura, Cartesia, PlayHT, plus free/local (browser speech, Piper/Kokoro on the VPS) so it works with no key. Provider manager: add/remove providers, store each provider's API key in the hub credential store (encrypted, never in code), test-connection button, status badge. Fill the existing voice slot {provider, voiceId, hint}: live voice list per provider, preview button, speed and pitch, auto-match from the hint ('cat-like', 'calm'), fallback to local voice if a provider fails. Each agent speaks in its own voice in group chat audio. REST/MCP/CLI/voice parity, tests, then land with the one-at-a-time lander.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": true,
-     "done": true,
-     "doneAt": "2026-11-16T13:23:49.717Z",
-     "note": "",
-     "rev": 4,
-     "createdAt": "2026-11-16T13:12:10.444Z",
-     "updatedAt": "2026-11-16T13:23:50.059Z"
-    },
-    {
-     "id": "s9",
-     "uid": "st-mwlw36h606n9p3",
+     "uid": "st-mwr5x8mo1ygpjg",
      "title": "",
      "text": "Auto-lander fix, attempt 1: make CI green on claude/group-chat-audio-hear-agents-talk-while so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on be998cbfb (claude/group-chat-audio-hear-agents-talk-while):\n- AmberX — web app in the Capacitor Android shell (APK + native unit tests) › Native unit tests + debug APK\n- Build engine sweep (Node) › Run node framework/cli/help-coverage.mjs --check\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption",
      "model": "Opus",
@@ -221360,15 +221448,28 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T19:38:22.344Z",
-     "note": "",
-     "rev": 1,
+     "doneAt": "2026-11-22T01:53:55.919Z",
+     "note": "PR #671 (claude/group-chat-audio-hear-agents-talk-while)",
+     "rev": 2,
      "createdAt": "2026-11-18T08:58:49.324Z",
-     "updatedAt": "2026-11-18T08:58:50.634Z"
+     "updatedAt": "2026-11-22T01:53:55.982Z",
+     "statusAt": "2026-11-22T01:32:58.219Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:58.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
-     "id": "s6",
-     "uid": "st-mwr1qaon1l1rte",
+     "id": "s5",
+     "uid": "st-mwr5x8mo1zbc4d",
      "title": "",
      "text": "Land this build (watchdog, attempt 1: retry). The push or the PR failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ)). Run the same approach again: the failure looked transient. Merge origin/main into claude/group-chat-audio-hear-agents-talk-while, get every check green and push; the PR is #671.",
      "model": "Opus",
@@ -221386,7 +221487,20 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T23:35:38.134Z",
-     "updatedAt": "2026-11-21T23:35:38.134Z"
+     "updatedAt": "2026-11-22T01:32:07.825Z",
+     "statusAt": "2026-11-22T01:32:58.219Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T01:32:58.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -221397,7 +221511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221422,7 +221536,27 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-22T01:33:00.527Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-22T01:32:02.435Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-22T01:33:00.527Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "5 steps for 6 slots"
+    }
+   ]
   },
   {
    "id": "orchestrator-checks-shipped-features-2",
