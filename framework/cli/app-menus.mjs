@@ -20,6 +20,7 @@ import { APP_MENU_KINDS, APP_MENU_LABELS, auditAppMenus, menuBuiltForOf, menuCho
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+// axf-data: not data (build-time generator: app menu assets and manifests in the repo)
 const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
 const TYPES = Object.values(APP_MENU_KINDS);
 
