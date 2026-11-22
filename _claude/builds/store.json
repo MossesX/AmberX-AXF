@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10331,
- "updatedAt": "2026-11-22T03:48:15.835Z",
+ "rev": 10332,
+ "updatedAt": "2026-11-22T03:48:37.851Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146930,7 +146930,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-22T02:15:27.364Z",
+   "updatedAt": "2026-11-22T03:48:12Z",
    "builtAt": "2026-11-22T03:48:01.521Z",
    "notes": [
     {
@@ -147104,6 +147104,10 @@
     {
      "text": "Watchdog: landing for 3 h: PR #681 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T02:15:27.364Z"
+    },
+    {
+     "text": "Shipped manifest sm-pass-approval-hook-deep-link-amberx-notification rev 1 sent to Shipped features (orchestrator): PR #681, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-22T03:48:12Z"
     }
    ],
    "approvals": [
@@ -147167,6 +147171,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-pass-approval-hook-deep-link-amberx-notification",
+    "rev": 1,
+    "at": "2026-11-22T03:48:12Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -147450,7 +147460,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 152,
+   "rev": 153,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -185304,7 +185314,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212800,7 +212810,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-22T03:05:39.344Z",
+   "updatedAt": "2026-11-22T03:48:14Z",
    "builtAt": "2026-11-22T03:48:01.521Z",
    "notes": [
     {
@@ -213014,6 +213024,10 @@
     {
      "text": "Watchdog: landing for 3 h: PR #659 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T03:05:39.344Z"
+    },
+    {
+     "text": "Shipped manifest sm-context-menus-plugin-one-true-source rev 1 sent to Shipped features (orchestrator): PR #659, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-22T03:48:14Z"
     }
    ],
    "approvals": [
@@ -213085,6 +213099,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-context-menus-plugin-one-true-source",
+    "rev": 1,
+    "at": "2026-11-22T03:48:14Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -213319,7 +213339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265687,7 +265707,7 @@
    "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-21T19:59:07.522Z",
+   "updatedAt": "2026-11-22T03:48:17Z",
    "builtAt": "2026-11-22T03:46:28.881Z",
    "notes": [
     {
@@ -265813,6 +265833,10 @@
     {
      "text": "Superseded by fable-rebuild-1-2-vps-host-services-move (branch claude/fable-rebuild-1-2-vps-host-services-move): the same work rebuilt fresh on main, with the lander, orchestrator tick and watchdogs adopted as they run today. PR #828 is not to be merged; it is closed once the rebuild lands.",
      "at": "2026-11-21T19:58:59.588Z"
+    },
+    {
+     "text": "Shipped manifest sm-move-server-side-console-parts-onto-vps rev 1 sent to Shipped features (orchestrator): PR #828, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-22T03:48:17Z"
     }
    ],
    "approvals": [
@@ -265892,6 +265916,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-move-server-side-console-parts-onto-vps",
+    "rev": 1,
+    "at": "2026-11-22T03:48:17Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -266565,7 +266595,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -324756,7 +324786,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "fixing",
+   "status": "split",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -324764,7 +324794,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-22T00:25:27.631Z",
+   "updatedAt": "2026-11-22T03:45:44.530Z",
    "builtAt": "",
    "notes": [
     {
@@ -324918,6 +324948,47 @@
     {
      "text": "Watchdog: landing for 4 days: PR #836 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T00:25:27.631Z"
+    },
+    {
+     "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s13 (Opus) and moved it back to the Queue: attempt 1.",
+     "at": "2026-11-22T02:55:17.897Z"
+    },
+    {
+     "text": "Attempt 2: fresh-session on hulu0241 (Opus): axf-approval-pass-covers-every-call--gina. It stalled (landing for 4 days: PR #836 is still open and nothing moved it): a fresh session (attempt 1 of 10).",
+     "at": "2026-11-22T02:55:15.853Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-approval-pass-covers-every-call--gina, shared account login)",
+     "at": "2026-11-22T02:55:38.413Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--gina: brief only · start 13.6K tokens ($0.04) · cost $18.23 · 312 turns · 6 tools, MCP none",
+     "at": "2026-11-22T03:28:59.823Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 2 runs, $35.31",
+     "at": "2026-11-22T03:29:07.666Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-22T03:29:18.646Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T03:40:02.857Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T03:44:01.921Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-22T03:45:01.702Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (approval",
+     "at": "2026-11-22T03:48:32.175Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -324938,23 +325009,32 @@
     "session": "",
     "link": "",
     "by": "approval-pass-covers-every-call",
-    "brief": "# Build: approval-pass-covers-every-call\n\n## Brett said (verbatim)\nAt: 2026-11-18T01:41:28.108Z\n> Why do I keep getting approvals when I set a pass?\n\n## What to build\nContinue build \"Approval pass covers every call, including VPS commands and stops\" (approval-pass-covers-every-call) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-18 01:41):\n\"Why do I keep getting approvals when I set a pass?\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step approval-pass-covers-every-call <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step approval-pass-covers-every-call <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note approval-pass-covers-every-call \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- The axHub badge is red unless settings come live from axHub (Oct 24 2026, Brett): any axHub status badge or indicator starts red and turns green only while the app is reading its settings live from axHub right now (a fresh read of the hub's settings document succeeded, and a developer app's own hub source is ready). Repo copies, cached copies, local settings, a signed-out session or a read older than two check periods are red. Library: `framework/libs/hubstatus` (`hubLive` in `core.ts`).\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "brief": "# Build: approval-pass-covers-every-call\n\n## Brett said (verbatim)\nAt: 2026-11-18T01:41:28.108Z\n> Why do I keep getting approvals when I set a pass?\n\n## What to build\nBuild \"Approval pass covers every call, including VPS commands and stops\" (approval-pass-covers-every-call) is complete.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step approval-pass-covers-every-call <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note approval-pass-covers-every-call \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- The axHub badge is red unless settings come live from axHub (Oct 24 2026, Brett): any axHub status badge or indicator starts red and turns green only while the app is reading its settings live from axHub right now (a fresh read of the hub's settings document succeeded, and a developer app's own hub source is ready). Repo copies, cached copies, local settings, a signed-out session or a read older than two check periods are red. Library: `framework/libs/hubstatus` (`hubLive` in `core.ts`).\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n\n## Retry: attempt 1 (done-means-merged@1)\nThe last run failed: the session stalled (no sign of life) (landing for 4 days: PR #836 is still open and nothing moved it).\nThis attempt: fresh-session. This is a fresh session after the earlier one failed: start by reading `git status`, `git log origin/main..HEAD` and the tail of the previous run log, then continue at the first open step. Do not repeat what the earlier attempt tried.\nNever stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-18T01:41:33.750Z",
-    "queuedBy": "console",
-    "account": "",
+    "queuedAt": "2026-11-22T02:55:17.897Z",
+    "queuedBy": "watchdog",
+    "account": "hulu0241",
     "session": "",
     "slot": "",
-    "model": "",
+    "model": "Opus",
     "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "launchedAt": "2026-11-22T02:55:15.853Z",
+    "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-22T03:29:06.904Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 1,
+     "account": "hulu0241",
+     "session": "axf-approval-pass-covers-every-call--gina",
+     "phase": ""
+    },
     "split": {
      "at": "2026-11-18T01:46:23.048Z",
      "by": "orchestrator",
@@ -324963,14 +325043,14 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
+    "note": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-22T02:55:15.853Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T01:48:41.734Z",
+     "at": "2026-11-22T03:30:58.982Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
@@ -324982,24 +325062,54 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-18T08:06:49.748Z",
+     "at": "2026-11-22T03:28:46.399Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
      "session": "axf-approval-pass-covers-every-call--gina",
-     "phase": "Phase 2"
+     "phase": ""
     }
    },
-   "failure": {
-    "kind": "stalled",
-    "at": "2026-11-22T00:25:27.631Z",
-    "why": "landing for 4 days: PR #836 is still open and nothing moved it",
-    "head": "",
-    "step": "",
-    "exit": null
-   },
+   "attempts": [
+    {
+     "n": 1,
+     "kind": "stalled",
+     "strategy": "fresh-session",
+     "fixStrategy": "",
+     "model": "Opus",
+     "account": "",
+     "session": "",
+     "step": "s13",
+     "head": "",
+     "pr": 836,
+     "startedAt": "2026-11-22T02:55:17.897Z",
+     "endedAt": "",
+     "result": "started",
+     "log": "",
+     "note": "Watchdog: fresh-session queued as s13",
+     "source": "pipeline"
+    },
+    {
+     "n": 2,
+     "kind": "stalled",
+     "strategy": "fresh-session",
+     "fixStrategy": "",
+     "model": "Opus",
+     "account": "hulu0241",
+     "session": "axf-approval-pass-covers-every-call--gina",
+     "step": "",
+     "head": "",
+     "pr": 836,
+     "startedAt": "2026-11-22T02:55:15.853Z",
+     "endedAt": "",
+     "result": "started",
+     "log": "",
+     "note": "It stalled (landing for 4 days: PR #836 is still open and nothing moved it): a fresh session (attempt 1 of 10).",
+     "source": "pipeline"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -325021,7 +325131,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:50:27.623Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
@@ -325043,7 +325166,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:50:27.623Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
@@ -325065,7 +325201,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:50:27.623Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
@@ -325087,7 +325236,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:50:27.623Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s5",
@@ -325109,29 +325271,55 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:58:55.834Z"
+     "updatedAt": "2026-11-18T06:58:55.834Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s6",
-     "uid": "st-mwlgr9vm069d2n",
+     "uid": "st-mwranxp01qqtzm",
      "title": "",
-     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "text": "- Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.\n- Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "8 min",
+     "estimate": "14 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-18T06:43:48.640Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T06:58:55.834Z"
+     "done": false,
+     "doneAt": "",
+     "note": "Part 6: 2 plan steps in one session (they touch the same files).",
+     "rev": 1,
+     "createdAt": "2026-11-22T03:45:44.532Z",
+     "updatedAt": "2026-11-22T03:45:44.532Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s7",
@@ -325153,7 +325341,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:16:05.126Z"
+     "updatedAt": "2026-11-18T07:16:05.126Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s8",
@@ -325175,7 +325376,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:59:08.944Z"
+     "updatedAt": "2026-11-18T07:59:08.944Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s9",
@@ -325197,32 +325411,23 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:59:08.944Z"
+     "updatedAt": "2026-11-18T07:59:08.944Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s10",
-     "uid": "st-mwlgr9vm0aiolk",
-     "title": "",
-     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "6 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-18T07:08:40.022Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:59:08.944Z"
-    },
-    {
-     "id": "s11",
      "uid": "st-mwlgr9vm0bp70i",
      "title": "",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
@@ -325241,10 +325446,23 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:59:08.944Z"
+     "updatedAt": "2026-11-18T07:59:08.944Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
-     "id": "s12",
+     "id": "s11",
      "uid": "st-mwlgr9vm0cf0t7",
      "title": "",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
@@ -325263,7 +325481,55 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T13:25:15.718Z"
+     "updatedAt": "2026-11-18T13:25:15.718Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwranxp01w0x3t",
+     "title": "",
+     "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #836 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/approval-pass-covers-every-call, get every check green and push; the PR is #836.",
+     "model": "Opus",
+     "why": "watchdog ladder: fresh-session",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-22T02:55:17.897Z",
+     "updatedAt": "2026-11-22T03:45:07.768Z",
+     "statusAt": "2026-11-22T03:45:42.900Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T03:45:42.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -325274,7 +325540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -325306,7 +325572,27 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-22T03:45:44.530Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-22T03:45:01.702Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-22T03:45:44.530Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "12 steps for 6 slots"
+    }
+   ]
   },
   {
    "id": "one-landing-line-pull-main-merge-one",
@@ -328632,7 +328918,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-22T03:47:55.810Z",
+   "updatedAt": "2026-11-22T03:48:30.339Z",
    "builtAt": "",
    "notes": [
     {
@@ -328782,6 +329068,14 @@
     {
      "text": "Landing blocked, needs Brett's call: superseded by pipeline-2@1 on main (Nov 19, PIPELINE-2.md, 32 commits). PR #846 is 1721 commits behind; merging main gives 19 conflicts, the core ones in pipeline.mjs (dispatcher tick: split-plan part runs + main-lock@1 vs P2F.advance + P2.activeBuild), builds-store-core.mjs and build-hook.mjs (both add a 'splitting' status with different meanings), model-gate.mjs and dispatch-gate.mjs (per-part tokens vs per-step tokens). Landing both would run two competing one-build-at-a-time pipelines in the live dispatcher. Merge aborted, nothing pushed. Options: (1) close #846 as superseded (recommended); (2) re-scope to port only the require-split-id gate (gate-rules + Failed-tab gateReason) onto pipeline-2@1 as a small new build; (3) port the expandable per-part badge row onto the P2 builds table. Attempt: fresh-session after a 3-day stall.",
      "at": "2026-11-22T03:47:55.810Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.54",
+     "at": "2026-11-22T03:48:25.913Z"
+    },
+    {
+     "text": "Headless run axf-one-build-time-always-split-to-fill--lenny: brief only · start 15.1K tokens ($0.05) · cost $0.54 · 17 turns · 6 tools, MCP none",
+     "at": "2026-11-22T03:48:30.339Z"
     }
    ],
    "approvals": [
@@ -328852,14 +329146,14 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-18T18:11:05.041Z",
+     "at": "2026-11-22T03:48:12.504Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-one-build-time-always-split-to-fill--gina",
-     "phase": "Phase 2"
+     "session": "axf-one-build-time-always-split-to-fill--lenny",
+     "phase": ""
     }
    },
    "attempts": [
@@ -329603,7 +329897,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {

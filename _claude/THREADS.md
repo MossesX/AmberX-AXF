@@ -840,16 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-21 22:25 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · watchdog
-- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` added (3 steps) (all) · amber-voice
-- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` → queued (all) · amber-voice
-- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` → running, note (all) · pipeline
-- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` branch claude/approval-rules-save-apply-default-don-t (all) · pipeline
-- 2026-11-21 22:30 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `approval-rules-save-apply-default-don-t` note (all) · amber-voice
-- 2026-11-21 22:31 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
 - 2026-11-21 22:33 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
 - 2026-11-21 22:38 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
 - 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
@@ -1240,6 +1230,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 03:48 UTC · `approval-rules-save-apply-default-don-t` → complete, note (all) · foreign-write
 - 2026-11-22 03:48 UTC · `one-build-time-always-split-split-id` note (all) · foreign-write
 - 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-22 03:48 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-22 03:48 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-22 03:48 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-22 03:48 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
+- 2026-11-22 03:48 UTC · `banner-widget-shapes-plus-change-icon` note (all) · builds-live
+- 2026-11-22 03:48 UTC · `icon-picker-every-banner-settings-widget` note (all) · builds-live
+- 2026-11-22 03:48 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-22 03:48 UTC · `approval-pass-covers-every-call` note (all) · builds-live
 
 ## Token passes (log)
 
