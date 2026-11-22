@@ -5,7 +5,7 @@
   "description": "AXF Console for Android: a thin native shell around the live web console, with a floating toolbar over every app. Replaces AmberX.",
   "kind": "app",
   "status": "active",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "platforms": [
     "android"
   ],

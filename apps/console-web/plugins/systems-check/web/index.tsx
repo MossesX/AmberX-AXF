@@ -21,7 +21,9 @@ function startOnce() {
   started = true;
   let tries = 0;
   const go = () => { // after the backend health check answers (up to ~15 s)
-    if (api.isBackendUp() || tries++ > 30) { void loadSystemCheck(true); void loadWhatsNew(); return; }
+    // Not forced: a forced check runs every plugin's self-checks (a node process each) on every page load and every
+    // open tab; the plain one still tests the keys live and shares the server's cached run (found by the console suite).
+    if (api.isBackendUp() || tries++ > 30) { void loadSystemCheck(false, true); void loadWhatsNew(); return; }
     setTimeout(go, 500);
   };
   setTimeout(go, 400);

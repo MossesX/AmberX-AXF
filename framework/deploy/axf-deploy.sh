@@ -264,23 +264,27 @@ axf_systemd_unit() {
   printf '%s\n' "$_axf_to/$(basename "$_axf_src")"
 }
 
-# axf_auto_lander_install DIR [--dry-run] → the server auto-lander (auto-lander@1) as a systemd service + timer: installs
-# deploy/systemd/axf-auto-lander.{service,timer} from DIR, reloads systemd and enables the timer (every minute).
-# --dry-run (or AXF_DEPLOY_DRY=1): writes the units to $AXF_SYSTEMD_DIR, runs one `auto-lander.mjs tick --dry-run`
-# against $AXF_AUTO_LANDER_DIR (AXF_AUTO_LANDER_ONLY=<build> limits it to one build) and prints the systemctl calls instead of running them.
-axf_auto_lander_install() {
-  local _axf_dir="$1" _axf_dry="${AXF_DEPLOY_DRY:-}"
+# axf_lander_install DIR [--dry-run] → the lander (lander@1, deploy/lander/run.mjs) as a systemd service + timer: installs
+# deploy/systemd/axf-lander.{service,timer} from DIR, reloads systemd and enables the timer (every minute). The retired
+# auto-lander@1 timer (axf-auto-lander) is stopped and its units removed, so a deploy never runs two landers.
+# --dry-run (or AXF_DEPLOY_DRY=1): writes the units to $AXF_SYSTEMD_DIR, runs one `run.mjs tick --dry-run` against
+# $AXF_LANDER_DIR (AXF_LANDER_ONLY=<build> limits it to one build) and prints the systemctl calls instead of running them.
+axf_lander_install() {
+  local _axf_dir="$1" _axf_dry="${AXF_DEPLOY_DRY:-}" _axf_sd="${AXF_SYSTEMD_DIR:-/etc/systemd/system}"
   [ "${2:-}" = "--dry-run" ] && _axf_dry=1
-  [ -f "$_axf_dir/deploy/auto-lander/auto-lander.mjs" ] || { echo "axf_auto_lander_install: $_axf_dir has no deploy/auto-lander" >&2; return 1; }
-  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-auto-lander.service" "$_axf_dir" >/dev/null
-  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-auto-lander.timer" "$_axf_dir" >/dev/null
+  [ -f "$_axf_dir/deploy/lander/run.mjs" ] || { echo "axf_lander_install: $_axf_dir has no deploy/lander" >&2; return 1; }
+  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-lander.service" "$_axf_dir" >/dev/null
+  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-lander.timer" "$_axf_dir" >/dev/null
   if [ -n "$_axf_dry" ]; then
+    echo "systemctl disable --now axf-auto-lander.timer"
     echo "systemctl daemon-reload"
-    echo "systemctl enable --now axf-auto-lander.timer"
-    (cd "$_axf_dir" && node deploy/auto-lander/auto-lander.mjs tick --dry-run --json ${AXF_AUTO_LANDER_ONLY:+--only "$AXF_AUTO_LANDER_ONLY"} >/dev/null)
+    echo "systemctl enable --now axf-lander.timer"
+    (cd "$_axf_dir" && node deploy/lander/run.mjs tick --dry-run --json ${AXF_LANDER_ONLY:+--only "$AXF_LANDER_ONLY"} >/dev/null)
     return
   fi
-  touch /var/log/axf-auto-lander.log
+  systemctl disable --now axf-auto-lander.timer axf-auto-lander.service >/dev/null 2>&1 || true
+  rm -f "$_axf_sd/axf-auto-lander.service" "$_axf_sd/axf-auto-lander.timer"
+  touch /var/log/axf-lander.log
   systemctl daemon-reload
-  systemctl enable --now axf-auto-lander.timer
+  systemctl enable --now axf-lander.timer
 }

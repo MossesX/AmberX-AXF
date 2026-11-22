@@ -14,7 +14,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   views: { [VIEW]: { title: 'Shipped features', icon: 'check-circle', render: () => <ShippedFeaturesPage /> } },
-  nav: { label: 'Builds', items: [{ id: VIEW, label: 'Shipped features', icon: 'check-circle', view: VIEW }] },
+  nav: { label: 'Plan', items: [{ id: VIEW, label: 'Shipped features', icon: 'check-circle', view: VIEW }] },
   settingsTabs: [{ id: FOLDER, label: 'Shipped features', icon: 'check-circle', order: 90, parent: 'plugins' }],
   register(rt) {
     const tick = () => { api.call<{ active?: number }>('summary').then((r) => rt.setBadge(ACTIVE_BADGE, Number(r.active) || 0), () => rt.setBadge(ACTIVE_BADGE, 0)); };

@@ -154,16 +154,17 @@ axf_deploy_log "$T/d/log.jsonl" 'Bad Target' abc1234 2>/dev/null; axf_deploy_log
 eq "$(wc -l < "$T/d/log.jsonl" | tr -d ' ')" 2 "deploy log refuses a bad target or sha"
 node -e 'const D=require("fs").readFileSync(process.argv[1],"utf8");import("'"$HERE"'/../core/deploy-log.mjs").then(m=>{const r=m.parseLog(D);process.exit(r.records.length===2&&r.skipped===0&&r.records.every(x=>m.validateDeploy(x).ok)?0:1)})' "$T/d/log.jsonl" && ok || fail "deploy log lines parse as deploy-log@1"
 
-# ---- systemd units + the auto-lander installer (dry run: no root, no systemctl, no network)
+# ---- systemd units + the lander installer (dry run: no root, no systemctl, no network)
 ROOT="$(cd "$HERE/../.." && pwd)"
 SD="$T/systemd"
-eq "$(AXF_SYSTEMD_DIR="$SD" axf_systemd_unit "$ROOT/deploy/systemd/axf-auto-lander.timer" /opt/axf)" "$SD/axf-auto-lander.timer" "unit installed path"
-OUT="$(AXF_SYSTEMD_DIR="$SD" AXF_AUTO_LANDER_DIR="$T/al" AXF_AUTO_LANDER_ONLY=none-such axf_auto_lander_install "$ROOT" --dry-run)"
-grep -q "systemctl enable --now axf-auto-lander.timer" <<<"$OUT" && ok || fail "auto-lander dry run prints the enable"
-grep -q "^ExecStart=/usr/bin/env node $ROOT/deploy/auto-lander/auto-lander.mjs tick$" "$SD/axf-auto-lander.service" && ok || fail "service ExecStart points at the checkout"
-! grep -q "@DIR@" "$SD/axf-auto-lander.service" "$SD/axf-auto-lander.timer" && ok || fail "no @DIR@ left in the units"
-grep -q "^Restart=on-failure" "$SD/axf-auto-lander.service" && grep -q "^OnUnitActiveSec=60s" "$SD/axf-auto-lander.timer" && ok || fail "restart on failure, every minute"
-[ -f "$T/al/service.json" ] && grep -q '"lastTick"' "$T/al/service.json" && ok || fail "the dry-run tick ran"
-command -v systemd-analyze >/dev/null && { systemd-analyze verify "$SD/axf-auto-lander.timer" >/dev/null 2>&1 || true; ok; } || ok
+printf '{"$axf":"builds@1","rev":1,"builds":[]}' > "$T/store.json"
+eq "$(AXF_SYSTEMD_DIR="$SD" axf_systemd_unit "$ROOT/deploy/systemd/axf-lander.timer" /opt/axf)" "$SD/axf-lander.timer" "unit installed path"
+OUT="$(AXF_SYSTEMD_DIR="$SD" AXF_LANDER_DIR="$T/lander" AXF_BUILDS_STORE="$T/store.json" AXF_BUILDS_LIVE=0 AXF_LANDER_ONLY=none-such axf_lander_install "$ROOT" --dry-run)"
+grep -q "systemctl enable --now axf-lander.timer" <<<"$OUT" && ok || fail "lander dry run prints the enable"
+grep -q "systemctl disable --now axf-auto-lander.timer" <<<"$OUT" && ok || fail "the retired auto-lander timer is stopped"
+grep -q "^ExecStart=/usr/bin/env node $ROOT/deploy/lander/run.mjs tick$" "$SD/axf-lander.service" && ok || fail "service ExecStart points at the checkout"
+! grep -q "@DIR@" "$SD/axf-lander.service" "$SD/axf-lander.timer" && ok || fail "no @DIR@ left in the units"
+grep -q "^Restart=on-failure" "$SD/axf-lander.service" && grep -q "^OnUnitActiveSec=60s" "$SD/axf-lander.timer" && ok || fail "restart on failure, every minute"
+command -v systemd-analyze >/dev/null && { systemd-analyze verify "$SD/axf-lander.timer" >/dev/null 2>&1 || true; ok; } || ok
 
 echo "axf-deploy self-test: $pass checks passed"

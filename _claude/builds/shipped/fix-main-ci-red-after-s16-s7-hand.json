@@ -1,0 +1,203 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-main-ci-red-after-s16-s7-hand",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-21T02:25:44Z",
+ "build": {
+  "id": "fix-main-ci-red-after-s16-s7-hand",
+  "title": "Fix main CI (red after s16 + s7 hand lands)",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Fix main CI (red after s16 + s7 hand lands): step s5\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s5 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s5.\n\n## Your step\nTests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR\n\nFiles: _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix-main-ci-red-after-s16-s7-hand---s5--earl",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-20T23:41:14.451Z",
+   "endedAt": "2026-11-20T23:52:20.602Z",
+   "exit": 0,
+   "costUsd": 3.7218
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-20T23:14:42.202Z",
+   "doneAt": "2026-11-20T23:36:29.276Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Run 44801650701 on 7f128689.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-20T23:41:14.451Z",
+   "doneAt": "2026-11-20T23:14:42.202Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Fix it, CI green, land.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-20T23:51:54.493Z",
+   "doneAt": "2026-11-21T00:08:11.808Z",
+   "actualMin": 16,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Every step on Fable.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-20T23:36:29.276Z",
+   "doneAt": "2026-11-20T23:43:32.724Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-20T23:43:32.724Z",
+   "doneAt": "2026-11-20T23:51:54.493Z",
+   "actualMin": 8,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 867,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/867"
+ },
+ "landedCommit": "9d30f6dae7815abaa4d5b7bd3c906643c2fce8bd",
+ "commits": [
+  "1e1f8a4632d7d28e18f55bc7cbed3b30fc956d74",
+  "9d2e95fb4671160c54e95a3e8e66e0b1f0219a49",
+  "a6c895e177c35dea0dc97a735294de116c50f8be",
+  "6f88ed04f6f9a526327ea0ed5e05d7c9e9678ee8",
+  "94fa152f605660e598b135109a9c4874ab9d9849",
+  "a6f70bf4a69ce65bb7b324576aca838197ae458f",
+  "67b7af2c3365ff91a8e5bad48b6a178a5e76e68a",
+  "fd2039cb841f064d6f6068df8a5b16e3be70aa26",
+  "4201e32b6de634602a3222e3c4f77a9e375fe1e7",
+  "6c05d0286bb68e1b8c9e7a0853031d9a80d48f6a",
+  "fd3651e883fae7abe0afd18be87df67c46973681",
+  "cdf35febf96f85707f94925fabf19e957ca8d3bd",
+  "fc539abebeacbb27d334b1f298e323888f631869",
+  "5f4beff97aed6b15be16e94ee5f826315992d100",
+  "d834afc7231ccc228a1183381378654424886489",
+  "377dce32985013196c8f2630909248d60a66a757",
+  "d42692a391d7d9b043fd8eebe618f8dc322495c3"
+ ],
+ "mergedAt": "2026-11-21T02:24:10Z",
+ "landedAt": "2026-11-20T23:58:56Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md",
+  "_claude/builds/store.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "check-plugin-catalog.mjs: 58 passed (was the crash)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-token-registry.mjs: 326 tokens registered, 300 read, manifests and fixture current (was the second red)",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "check-settings-iface.mjs 25 ok · help-coverage.mjs --check console-web 1773/1773 · check-help.mts 285 checks",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-json-data-writes.mjs none new · check-plugin-pages.mjs 62 heads ok · check-theme.mjs 1445 files ok",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "hubPages/test.mjs 234/234 (via tsx) · test_hub_pages.py 22 · test_data_store.py ok · check-data-store.mjs 68 ok",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "axf.mjs validate --framework 599 assets · tracker.mjs --check · plugins.mjs --check · check-plugin-settings · check-controls · check-console-control · check-skin-coverage · check-component-tokens · check-asset-overrides · check-plugin-commands 59: all pass",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 3.7218,
+  "estimated": false,
+  "tokens": {
+   "input": 1602,
+   "output": 373,
+   "cacheRead": 2347308,
+   "cacheWrite": 80814
+  }
+ },
+ "report": "_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md",
+ "open": []
+}

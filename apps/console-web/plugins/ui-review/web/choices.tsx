@@ -114,9 +114,11 @@ export function AskClient() {
   return null;
 }
 
-export function AskDialog({ ask }: { ask: Ask }) {
+export function AskDialog({ ask }: { ask?: Ask }) {
   const rt = useRuntime();
-  const answer = (count: number) => api.post('choices/answer', { id: ask.id, count }).then(() => rt.closeDialog(), (e: Error) => rt.toast(e.message, 'danger'));
+  // opened by id with no question (console_dialog, the search palette): say so instead of crashing the console
+  if (!ask) return <Note tone="info">No build is asking how many options to make right now.</Note>;
+  const answer =(count: number) => api.post('choices/answer', { id: ask.id, count }).then(() => rt.closeDialog(), (e: Error) => rt.toast(e.message, 'danger'));
   return (
     <div className="fx-stack">
       <p>How many options should <b>{ask.build || ask.title || 'this build'}</b> make? No answer and it makes {ask.default}.</p>

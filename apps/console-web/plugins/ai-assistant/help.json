@@ -263,6 +263,12 @@
         "text": "Installs it with. Part of AI assistant.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "remove-this-model",
+        "title": "Remove this model",
+        "text": "Takes this provider and model out of the comparison. At least two stay.",
+        "kind": "button"
       }
     ],
     "intros": []

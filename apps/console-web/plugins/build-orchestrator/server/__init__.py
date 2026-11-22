@@ -30,6 +30,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 
 import plugin_services
+import readcache  # server/readcache.py: one shared, single-flight read per source + the cap on node spawns
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "orchestrator.mjs"
@@ -47,17 +48,27 @@ APPROVER_KEYS = ("AXF_APPROVER", "AXF_APPROVER_VIA")
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 
 
+def _node_json(cmd: list[str], timeout: float, **kw: Any) -> dict[str, Any]:
+    """Run a node CLI that prints one JSON line last. A CLI that times out or can't start is an answer
+    ({ok: false, error, timeout?}), never an exception: an uncaught TimeoutExpired was a raw 500 after 30-60 s."""
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout, **kw)
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "timeout": True, "error": f"{Path(cmd[1]).name} took longer than {timeout:g} s (the host is busy); try again"}
+    except OSError as e:
+        return {"ok": False, "error": f"{Path(cmd[1]).name} could not start: {e}"[:600]}
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
 def _run(*args: str, approver: str = "") -> dict[str, Any]:
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}  # never inherited: only Brett's click sets them
     if approver:
         env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
-    proc = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
-    return res
+    return _node_json(["node", str(CLI), *args, "--json"], 60, env=env)
 
 
 def brett_click(request: Request) -> str:
@@ -78,10 +89,31 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+# ---- the one status-driven table (status-table@1, Pipeline 2.0): compact rows from the builds store on axf-data
+TABLE_CLI = Path(__file__).resolve().parent.parent / "status-table.mjs"
+TABLE_CACHE_S = 4  # every open console polls; one store read serves them all
+
+
+@router.get("/table")
+def status_table(queue: bool = False, landed: bool = False, since: int | None = None) -> dict[str, Any]:
+    """Builds as rows (status, steps done/total, model, account, slot, PR, status `at`), the merge queue with queue=1.
+    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new."""
+    # Shared and single-flight: every console and tab polling at once costs one node process per cache miss, and a
+    # stale table is served at once while it refreshes in the background (refresh no longer waits on the CLI).
+    args = [*(["--queue"] if queue else []), *(["--landed"] if landed else [])]
+    res = readcache.cached(f"build-orchestrator:table:{int(queue)}{int(landed)}",
+                           lambda: _node_json(["node", str(TABLE_CLI), *args, "--json"], 60), ttl=TABLE_CACHE_S)
+    if res.get("timeout"):
+        raise HTTPException(503, res["error"])
+    if res.get("ok") and since is not None and res.get("rev") == since:
+        return {"ok": True, "unchanged": True, "rev": since}
+    return res
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5
-_priority_cache: dict[str, Any] = {"at": 0.0, "value": None}
+PRIORITY_KEY = "build-orchestrator:priority"
 
 
 def _priority_sources() -> dict[str, Any]:
@@ -106,28 +138,30 @@ def _priority_sources() -> dict[str, Any]:
     return out
 
 
-def _priority(*args: str, sources: bool = False) -> dict[str, Any]:
+def _priority_raw(*args: str, sources: bool = False) -> dict[str, Any]:
     cmd = ["node", str(PRIORITY_CLI), *args, "--json"]
     if sources:
         cmd.append("--sources")
     body = json.dumps(_priority_sources()) if sources else None
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=30, input=body)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    return _node_json(cmd, 30, input=body)
+
+
+def _checked(res: dict[str, Any]) -> dict[str, Any]:
     if not res.get("ok"):
-        raise HTTPException(404 if "no build" in str(res.get("error")) else 400, str(res.get("error") or "priority failed")[:400])
+        code = 503 if res.get("timeout") else 404 if "no build" in str(res.get("error")) else 400
+        raise HTTPException(code, str(res.get("error") or "priority failed")[:400])
     return res
+
+
+def _priority(*args: str, sources: bool = False) -> dict[str, Any]:
+    return _checked(_priority_raw(*args, sources=sources))
 
 
 @router.get("/priority")
 def priority_list() -> dict[str, Any]:
     """Every build's priority tag and how much waits on it (cached: every tag on every screen reads this one list)."""
-    if _priority_cache["value"] is None or time.time() - _priority_cache["at"] > PRIORITY_CACHE_S:
-        _priority_cache.update(value=_priority("list", sources=True), at=time.time())
-    return _priority_cache["value"]
+    # shared and single-flight: a screen full of tags, in every tab, costs one node process per cache miss
+    return _checked(readcache.cached(PRIORITY_KEY, lambda: _priority_raw("list", sources=True), ttl=PRIORITY_CACHE_S))
 
 
 @router.get("/priority/{build}")
@@ -148,7 +182,7 @@ async def priority_set(request: Request) -> dict[str, Any]:
     if not names or not priority:
         raise HTTPException(400, "needs builds and priority")
     res = _priority("set", *names, priority, "--by", brett_click(request) or "console")
-    _priority_cache.update(value=None)
+    readcache.invalidate(PRIORITY_KEY)
     return res
 
 
@@ -168,12 +202,7 @@ def headless_runs(build: str) -> dict[str, Any]:
     can read them, else the end-of-run notes the launcher wrote on the build."""
     if len(build) > 80 or not build.replace("-", "").replace("_", "").replace(".", "").isalnum():
         raise HTTPException(400, "bad build id")
-    proc = subprocess.run(["node", str(CONTEXT_CLI), "runs", "--build", build, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
-    out = proc.stdout.strip().splitlines()
-    try:
-        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    return _node_json(["node", str(CONTEXT_CLI), "runs", "--build", build, "--json"], 30)
 
 
 @router.post("/act")
@@ -188,7 +217,9 @@ async def act(request: Request) -> dict[str, Any]:
     if not isinstance(change, dict) or not isinstance(change.get("action"), str):
         raise HTTPException(400, "a change needs an action")
     change.pop("approver", None)  # who approves comes from the sign-in, never from the body
-    return _run("act", json.dumps(change), approver=brett_click(request))
+    res = _run("act", json.dumps(change), approver=brett_click(request))
+    readcache.invalidate("build-orchestrator:table:")  # the next table read shows the change, not a stale copy
+    return res
 
 
 # ---- what Brett said (build-origin@1): framework/cli/build-origin.mjs, zero tokens
@@ -198,14 +229,9 @@ SAID_MAX = 8000
 
 
 def _origin(*args: str) -> dict[str, Any]:
-    proc = subprocess.run(["node", str(ORIGIN_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    res = _node_json(["node", str(ORIGIN_CLI), *args, "--json"], 60)
     if not res.get("ok"):
-        raise HTTPException(404 if "no build" in str(res.get("error", "")) else 400, str(res.get("error", "failed")))
+        raise HTTPException(503 if res.get("timeout") else 404 if "no build" in str(res.get("error", "")) else 400, str(res.get("error", "failed")))
     return res
 
 
@@ -306,7 +332,7 @@ def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | No
         return {"status": "warn", "summary": "The builds reconciler hasn't run lately: PRs and branches may not be linked to their builds.", "details": details + [
             "It runs at session start and every 10 min (cron axf-builds-reconcile). Run it: `node framework/cli/builds-reconcile.mjs --apply`."]}
     if report.get("error"):
-        return {"status": "warn", "summary": f"The builds reconciler couldn't read GitHub: {str(report.get('error'))[:200]}", "details": details}
+        return {"status": "warn", "summary": f"The builds reconciler has a problem: {str(report.get('error'))[:200]}", "details": details}
     if prs or branches:
         lines = [f"PR #{p.get('number')} {p.get('branch')}: {p.get('title')}" for p in prs[:12]] + [f"branch {b.get('branch')} ({b.get('ahead')} commits, no PR)" for b in branches[:12]]
         return {"status": "warn", "summary": f"{len(prs)} open PR(s) and {len(branches)} branch(es) belong to no build.", "details": details + lines + [
@@ -472,6 +498,13 @@ def ensure_health() -> bool:
 
 
 ensure_health()
+
+# ---- the build watchdog (build-watchdogs@1): every watch through one set of routes under /watchdogs and one systems
+# check item (server/watchdogs.py). The two blocks below are the row cleaner's and the session watch's own routes.
+from . import watchdogs as _watchdogs  # noqa: E402
+
+router.include_router(_watchdogs.router_for(FOLDER, brett_click))
+_watchdogs.ensure_health(FOLDER)
 
 # ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
 from . import watchdog as _watchdog  # noqa: E402
@@ -676,6 +709,55 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     """{id}: Queue → Pending (a queued build that has not started)."""
     body = await _json_body(request)
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+EMERGENCY_CLI = ROOT / "framework" / "cli" / "emergency-builds.mjs"
+EMERGENCY_ONLY_BRETT = ("Only Brett sends a build to emergency, from his own signed-in console (Build orchestrator or Plan Studio 2.0). "
+                        "The console token, MCP, voice and sessions cannot.")
+
+
+def _emergency(*args: str, approver: str = "") -> dict[str, Any]:
+    """Run framework/cli/emergency-builds.mjs. `approver` (Brett's click) is the only way AXF_APPROVER is ever set."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    proc = subprocess.run(["node", str(EMERGENCY_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(403 if proc.returncode == 3 else 400 if proc.returncode == 2 else 500, str(res.get("error") or "emergency failed")[:400])
+    return res
+
+
+@router.get("/pipeline/emergency")
+def pipeline_emergency_list(request: Request) -> dict[str, Any]:
+    """The emergency builds (sent by Brett: they skip the line, build in the 2 emergency slots and land first), each
+    with its status and whether its slot grant is on file. `canSend` = this request is Brett's own signed-in console."""
+    return {**_emergency("list"), "canSend": bool(brett_click(request))}
+
+
+@router.post("/pipeline/emergency")
+async def pipeline_emergency(request: Request) -> dict[str, Any]:
+    """{id}: send a Pipeline 2.0 build to emergency. Brett only, from his own signed-in console session: the console
+    token (MCP, REST commands, voice) and every session are refused with 403. The build is tagged emergency, skips the
+    one-active-build line, builds in the emergency slot pool (2 places beside the orchestrator's) and lands first."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, EMERGENCY_ONLY_BRETT)
+    body = await _json_body(request)
+    readcache.invalidate("build-orchestrator:table:")
+    return _emergency("send", _build_id(body.get("id")), approver=who)
+
+
+@router.post("/pipeline/emergency/clear")
+async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
+    """{id}: an emergency build becomes an ordinary build again (the tag and the slot grant go; running sessions finish)."""
+    body = await _json_body(request)
+    readcache.invalidate("build-orchestrator:table:")
+    return _emergency("clear", _build_id(body.get("id")))
 
 
 BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
@@ -994,20 +1076,16 @@ class ConsoleFocus:
         self._mtime = -1.0
         self._ids: set[str] = set()
 
-    def store(self) -> Path:
-        return ROOT / "_claude" / "builds" / "store.json"
+    REMOTE_TTL_S = 30.0
 
     def ids(self) -> set[str]:
-        try:
-            mt = self.store().stat().st_mtime
-        except OSError:
-            return set()
-        if mt != self._mtime:
-            try:
-                self._ids = {str(b.get("id")) for b in json.loads(self.store().read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
-            except (OSError, ValueError):
-                self._ids = set()
-            self._mtime = mt
+        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
+        # projection), at most every REMOTE_TTL_S seconds
+        import builds_store
+        if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
+            return self._ids
+        self._ids = {str(b.get("id")) for b in builds_store.builds() if b.get("id")}
+        self._mtime = time.monotonic()
         return self._ids
 
     def resolve(self, path: str) -> dict[str, Any] | None:

@@ -4,6 +4,8 @@
     pairings/<code>.json      phone-pairing@1
     commands/<id>.json        phone-command@1 + {"results": [phone-result@1 …], "status": queued|sent|acked|done|failed}
     settings.json             per-feature switches (Settings → Plugins → Phone Connect)
+    link.json                 the last device token the console refused (when, how often, why): "disconnected, re-pair"
+    approvals.json            which waiting axHub approvals were already pushed to the phone (one prompt per approval)
     log.jsonl                 one line per issue, claim, revoke, command, ack, result, error (never a token)
 """
 from __future__ import annotations
@@ -18,11 +20,12 @@ LOCK = threading.RLock()
 
 # Per-feature switches; every one on by default. Open: a later feature adds its key here (the UI lists them all).
 FEATURES: dict[str, dict[str, Any]] = {
-    "open_url": {"label": "Open pages", "description": "The console and agents may open a page on the phone (inside its url policy)."},
+    "open_url": {"label": "Open pages", "description": "The console and agents may open a page on the phone (inside its url policy). It opens by itself; a notification to tap is only the fallback."},
     "notify": {"label": "Notifications", "description": "FYIs, fix updates and alerts that pass the Notifications panel reach the phone."},
-    "approval": {"label": "Approval prompts", "description": "Approvals and veto countdowns show on the phone; only your tap there decides."},
+    "approval": {"label": "Approval prompts", "description": "Approvals and veto countdowns float over whatever is on the phone's screen with Approve and Deny on them (and as a notification); only your tap there decides."},
     "recorder": {"label": "Audio recorder", "description": "Start, stop and read the phone's audio-output recorder (a start always asks you first)."},
     "voice": {"label": "Voice line", "description": "The console assistant may say a line or listen once through the phone."},
+    "follow": {"label": "Follow Amber on the phone", "description": "When Follow Amber is on and Amber shows a screen, the console also comes to the front on the phone at that screen."},
 }
 FEATURE_OF = {"open_url": "open_url", "notify": "notify", "approval": "approval", "recorder.start": "recorder",
               "recorder.stop": "recorder", "recorder.status": "recorder", "voice": "voice"}
@@ -144,6 +147,36 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
 
 def feature_on(command_name: str) -> bool:
     return settings()["features"].get(FEATURE_OF.get(command_name, ""), True)
+
+
+def feature(key: str) -> bool:
+    """A feature switch by its own key (the ones that are not one command: `follow`)."""
+    return settings()["features"].get(key, True)
+
+
+# ---- link (the last refused device token) + approvals already pushed
+
+def link() -> dict[str, Any]:
+    v = _pd().read_json("link.json", {})
+    return v if isinstance(v, dict) else {}
+
+
+def save_link(v: dict[str, Any]) -> dict[str, Any]:
+    with LOCK:
+        _pd().write_json("link.json", v)
+    return v
+
+
+def approvals() -> dict[str, Any]:
+    v = _pd().read_json("approvals.json", {})
+    v = v if isinstance(v, dict) else {}
+    return {**v, "pushed": v.get("pushed") if isinstance(v.get("pushed"), dict) else {}}
+
+
+def save_approvals(v: dict[str, Any]) -> dict[str, Any]:
+    with LOCK:
+        _pd().write_json("approvals.json", v)
+    return v
 
 
 def log(entry: dict[str, Any]) -> None:

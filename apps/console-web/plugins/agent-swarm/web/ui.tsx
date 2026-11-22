@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { HostServiceGate } from '@console/hostServices';
 import { Button, Icon, PageToolbar, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
@@ -68,7 +69,8 @@ export function SwarmPage() {
     'agent-swarm.card': () => { setTab('cards'); return agent ? { agent: agent.id } : null; },
     'agent-swarm.budget': () => { setTab('cost'); return state ? { total: state.meter.total } : null; },
   });
-  if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
+  // the host-down note shows even when the page's own data cannot load, so the reason is on screen either way
+  if (!state) return <div className="fx-stack fx-stack--lg"><HostServiceGate service="agent-swarm" what="Agent jobs (Run, Hire, scheduled and CI-fix jobs) are launched by the host job runner: nothing new starts until it is back." /><div className="fx-empty">{error || 'Loading the agent swarm…'}</div></div>;
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
@@ -81,6 +83,7 @@ export function SwarmPage() {
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}
+      <HostServiceGate service="agent-swarm" what="Agent jobs (Run, Hire, scheduled and CI-fix jobs) are launched by the host job runner: nothing new starts until it is back." />
       <PageToolbar view="agent-swarm" />
       <TabGroup id="agent-swarm.tabs" label="Agent swarm" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} allSkills={allSkills} onFeed={() => setTab('cost')} />}
@@ -112,7 +115,9 @@ function useGridPrefs(key: string, initial: GridSort) {
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** A grid column width in text units: the columns hold text, so they follow the type size, not the spacing scale (a compact
+ *  spacing preset shrank space-based tracks until the number columns overprinted each other). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 type AgentLine = { a: Agent; as: AgentState; sp: Spend | undefined; pay: Pay | undefined };
 
 function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {

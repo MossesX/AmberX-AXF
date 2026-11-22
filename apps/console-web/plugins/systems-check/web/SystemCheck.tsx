@@ -97,8 +97,12 @@ function showCreditsSwitch(r: Report | null) {
   runtime.dispatch(f?.action || `settings.open:${f?.tab ?? 'plugins'}`);
 }
 
-/** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
-export async function loadSystemCheck(force = false) {
+/**
+ * Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything (Check again, after a fix).
+ * `routine`: with AI on, refresh a stale saved routine afterwards (on by default with `force`; console start asks
+ * for it without forcing, so a page load never runs the whole check again: the server shares one run across tabs).
+ */
+export async function loadSystemCheck(force = false, routine = force) {
   if (!api.isBackendUp()) return;
   st.loading = true; emit();
   try { st.report = await call<Report>(force ? 'check?force=1' : 'check?keys=1'); st.error = ''; st.unauthorized = false; }
@@ -106,7 +110,7 @@ export async function loadSystemCheck(force = false) {
   st.loading = false; emit();
   const r = st.report;
   showCreditsSwitch(r);
-  if (force && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
+  if (routine && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
 }
 
 /** With AI on: Mosses reads the codebase and refreshes the saved routine (only when the code changed), then re-checks. */
@@ -398,7 +402,7 @@ export function SystemBanner() {
 /** Mount once in the shell: runs the check when the console loads and when the token changes. */
 export function useSystemCheckOnLoad() {
   useEffect(() => {
-    const t = setTimeout(() => void loadSystemCheck(true), 400); // after the backend health check
+    const t = setTimeout(() => void loadSystemCheck(false, true), 400); // after the backend health check (not forced: see startOnce)
     const onToken = () => void loadSystemCheck(true);
     globalThis.addEventListener(api.TOKEN_CHANGED, onToken);
     return () => { clearTimeout(t); globalThis.removeEventListener(api.TOKEN_CHANGED, onToken); };

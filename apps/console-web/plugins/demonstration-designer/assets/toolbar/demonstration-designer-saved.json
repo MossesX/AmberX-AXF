@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "demonstration-designer-saved",
+  "name": "Saved pitches",
+  "version": "1.0.0",
+  "description": "The Saved pitches toolbar: read the saved pitches again.",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "demonstration-designer",
+    "saved"
+  ],
+  "data": {
+    "scope": "view:demonstration-designer",
+    "slot": "saved",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "saved",
+        "label": "Saved",
+        "items": [
+          {
+            "id": "refresh",
+            "icon": "refresh",
+            "label": "Refresh",
+            "action": "handler:demonstration-designer.refresh",
+            "priority": 300,
+            "overflow": "never"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "demonstration-designer",
+  "name": "Pitch actions",
+  "version": "1.0.0",
+  "description": "The open pitch's toolbar: play it (pressed while it plays; press again to stop), export it as a video, copy its share link and delete it (asks first).",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "demonstration-designer",
+    "pitch"
+  ],
+  "data": {
+    "scope": "view:demonstration-designer",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "pitch",
+        "label": "Pitch",
+        "items": [
+          {
+            "id": "play",
+            "icon": "play",
+            "label": "Play",
+            "action": "handler:demonstration-designer.play",
+            "checked": "state:playing",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "export",
+            "icon": "monitor",
+            "label": "Export video",
+            "action": "handler:demonstration-designer.export",
+            "enabledWhen": "!playing",
+            "priority": 260
+          },
+          {
+            "id": "share",
+            "icon": "external",
+            "label": "Copy share link",
+            "action": "handler:demonstration-designer.share",
+            "enabledWhen": "!busy",
+            "priority": 240
+          }
+        ]
+      },
+      {
+        "id": "danger",
+        "label": "Delete",
+        "items": [
+          {
+            "id": "delete",
+            "icon": "trash",
+            "label": "Delete",
+            "action": "handler:demonstration-designer.delete",
+            "destructive": true,
+            "confirm": "Delete this pitch?",
+            "enabledWhen": "!busy",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

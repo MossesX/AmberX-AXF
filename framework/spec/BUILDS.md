@@ -150,6 +150,25 @@ read never opens a multi-GB file); a full part is never rewritten and history re
 a build back (itself a journalled write). Removals are soft; a record missing from a written state is put back deleted.
 Where the journal files live: *Journal home* below.
 
+Journal lines (Nov 21 2026, `framework/plan/builds-journal-core.mjs`): an add, delete or restore holds the build whole
+(`before`, `after`). A change to an existing build holds a diff (`{ id, op, rev, base, hash, diff: { set, unset, append,
+steps } }`: changed fields, list items added at the end, changed steps), with a full copy every 20 revisions of the
+build. A build's `journalHash` is the hash of the record as its last journal line left it; when the record no longer
+matches (a whole-record put, a writer from before the diffs), the next line is whole, so a diff always has its base in
+the journal. `history`, `restore` and the build-hook replay rebuild every revision; a diff whose base line is missing
+is reported as not restorable, never guessed. `builds-store.mjs journal rotate [--days 30] [--apply]` gzips local parts
+older than 30 days (`<part>.jsonl.gz`, read like the plain ones); it also runs when a write opens a new part.
+
+Old writers (Nov 21 2026): `normBuild` is a whitelist, so a session on an older checkout used to write builds back
+without the fields it did not know (a Pipeline 2.0 build's `planning`). The IO layer now carries every field it does not
+know through each read and write (store, build, step; `keepStore`), and stamps `storeVersion` on the store: a checkout
+whose `STORE_VERSION` is lower is refused (`stale_checkout`) until it pulls main. Raise `STORE_VERSION` when a release
+changes what a stored field means.
+
+Text transport: every helper that reads a request from stdin or a socket decodes it once (`framework/core/clip.mjs`
+`readText`), never chunk by chunk; `clip(text, n)` cuts without splitting an emoji. `builds-store.mjs repair-mojibake
+[--apply]` puts characters lost to U+FFFD back from the journal.
+
 ## Journal home (builds-journal@1)
 
 Status: designed Nov 17 2026 (build `stop-auto-lander-committing-tracking` s1, Fable); implemented by its steps s8–s10.

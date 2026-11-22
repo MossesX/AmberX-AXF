@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.phone-connect",
   "name": "Phone Connect",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Pairs the Phone Connect companion app (phone-connect@1) with this console and sends it work: open a page, show a notification, show an approval prompt, start / stop / ask the audio-output recorder, say a line or listen once. Pairing is a one-time code from Settings → Plugins → Phone Connect claimed on the phone with your own hub sign-in; the phone then holds a device token you can revoke at any time. Approvals shown on the phone are decided only by your own tap there (personOnly): no session, agent, MCP tool, CLI or voice phrase can approve or deny. Every action is reachable four ways: REST /api/plugins/phone-connect/…, MCP phone_connect_*, `axf phone …` and voice (phone.*). Replaces the AmberX app for push, open-url and the recorder.",
+  "description": "Pairs the Phone Connect companion app (phone-connect@1) with this console and sends it work: open a page, show a notification, show an approval prompt, start / stop / ask the audio-output recorder, say a line or listen once. Pairing is a one-time code from Settings → Plugins → Phone Connect claimed on the phone with your own hub sign-in; the phone then holds a device token you can revoke at any time. Approvals shown on the phone are decided only by your own tap there (personOnly): no session, agent, MCP tool, CLI or voice phrase can approve or deny. New axHub approvals and veto countdowns pop up on the phone with Approve and Deny, console open or not; Follow Amber also brings the console to the front on the phone. Every action is reachable four ways: REST /api/plugins/phone-connect/…, MCP phone_connect_* (plus phone_open_url and phone_status), `axf phone …` and voice (phone.*). Replaces the AmberX app for push, open-url and the recorder.",
   "targets": [
     "axf-console"
   ],
@@ -61,9 +61,9 @@
       {
         "route": "GET /status",
         "id": "status",
-        "title": "Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder",
+        "title": "Phone Connect status: the paired phone's presence, the link (connected / disconnected: re-pair), the pending pairing code, feature switches, the approvals watcher and the recorder",
         "readOnly": true,
-        "description": "Reads Phone Connect in short: whether the paired phone is online, the pairing code still waiting to be claimed, which phone features are switched on, and the recorder's last state."
+        "description": "Reads Phone Connect in short: whether the paired phone is online, whether its link needs a re-pair, the pairing code still waiting to be claimed, which phone features are switched on, what the approvals watcher last did, and the recorder's last state."
       },
       {
         "route": "GET /state",
@@ -110,6 +110,45 @@
         "id": "open-url",
         "title": "Open a page on the phone (https, inside the phone's url policy)",
         "description": "Asks the paired phone to open an https page, if the phone's url policy allows that address. The answer carries the phone's ack."
+      },
+      {
+        "route": "POST /open-url",
+        "id": "open-page",
+        "tool": "phone_open_url",
+        "title": "Open an amberxai.com page on the paired phone in Chrome (or the default browser) and bring it to the front",
+        "description": "Opens an https page on one of Brett's own sites (amberxai.com: the console, axHub, the apps) on the paired phone, in Chrome or the default browser, in front. Where Android blocks a start from the background, the phone posts a high-priority notification that opens it with one tap; the answer's `how` says which (direct, notification). Call phone_status first to know whether a phone is there.",
+        "input": {
+          "type": "object",
+          "required": [
+            "url"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "https address on amberxai.com or one of its subdomains, up to 2000 characters"
+            },
+            "browser": {
+              "enum": [
+                "chrome",
+                "default"
+              ],
+              "default": "chrome",
+              "description": "chrome (falls back to the default browser when Chrome is not installed) or the phone's default browser"
+            }
+          }
+        },
+        "output": "{ok, opened (true only when the phone says it is on screen), notified (only the tap-to-open notification), how: direct|console-overlay|console-app|notification, why: no-permission|launch-failed, status, id, message}",
+        "navigate": true
+      },
+      {
+        "route": "GET /presence",
+        "id": "presence",
+        "tool": "phone_status",
+        "readOnly": true,
+        "title": "Is a phone paired and online, and when did it last check in",
+        "description": "Reads whether a phone is paired with Phone Connect, whether it is online right now, when it last checked in (lastSeenAt, lastSeenAgo) and whether the link needs Brett (link.state: connected, offline, disconnected = re-pair, not-paired). Read this before calling the phone.",
+        "output": "{paired, online, presence, lastSeenAt, lastSeenAgo, device, link: {state, message}, canOpenPages}"
       },
       {
         "route": "POST /notify",
@@ -160,20 +199,20 @@
         "id": "command-result",
         "title": "One command with its ack and result (wait=<s> holds until it is done)",
         "readOnly": true,
-        "description": "Reads one command with its ack and result. With wait=<seconds> the call holds until the phone has finished it or the wait runs out."
+        "description": "Reads one command with its ack and result. With wait=<seconds> the call holds until the phone has finished it or the wait runs out. An open_url command also carries opened: {answered, opened, notified, how, why, message}: opened only when the phone says the page is on screen, notified when it only posted the tap-to-open notification."
       },
       {
         "route": "GET /settings",
         "id": "settings",
-        "title": "The per-feature switches (open_url, notify, approval, recorder, voice)",
+        "title": "The per-feature switches (open_url, notify, approval, recorder, voice, follow)",
         "readOnly": true,
-        "description": "Reads the per-feature switches that say which commands the phone accepts: open_url, notify, approval, recorder and voice."
+        "description": "Reads the per-feature switches: which commands the phone accepts (open_url, notify, approval, recorder, voice) and whether Follow Amber also opens on the phone (follow)."
       },
       {
         "route": "POST /settings",
         "id": "set-features",
-        "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice: bool}}",
-        "description": "Switches phone features on or off ({features: {open_url, notify, approval, recorder, voice: true or false}}). A feature that is off refuses its commands."
+        "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice|follow: bool}}",
+        "description": "Switches phone features on or off ({features: {open_url, notify, approval, recorder, voice, follow: true or false}}). A feature that is off refuses its commands; follow off keeps Follow Amber on the console only."
       },
       {
         "route": "POST /pair/confirm",
@@ -239,8 +278,8 @@
     "defines": []
   },
   "builtWith": {
-    "model": "opus",
-    "builtAt": "2026-11-17"
+    "model": "fable",
+    "builtAt": "2026-11-21"
   },
   "help": "help.json",
   "opens": false,

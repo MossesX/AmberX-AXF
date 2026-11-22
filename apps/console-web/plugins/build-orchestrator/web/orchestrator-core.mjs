@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { STEP_MAX_MINUTES } from '../../../../../framework/core/pipeline-status.mjs';
 import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
@@ -27,15 +28,15 @@ export const isFinished = (status) => status === 'built' || status === 'landing'
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: STEP_MAX_MINUTES };
 /**
- * Step size (Brett, Nov 13 2026: "the splitter cuts every build into steps of 10 minutes or less (was 30)"). 10 minutes
- * is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as 10). Steps are checkpoints
- * inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
- * Steps written before the change (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
- * is not flagged "needs split" all at once; a re-split makes them 10-minute steps.
+ * Step size: the one step cap, STEP_MAX_MINUTES of the Pipeline 2.0 status contract (15 minutes; Nov 13 2026 it was 10
+ * here and 30 there). It is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as the
+ * cap). Steps are checkpoints inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
+ * Steps written before Nov 14 2026 (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
+ * is not flagged "needs split" all at once; a re-split brings them under the cap.
  */
-export const STEP_MINUTES = 10;
+export const STEP_MINUTES = STEP_MAX_MINUTES;
 export const LEGACY_STEP_MINUTES = 30;
 export const TEN_MINUTE_STEPS_AT = '2026-11-14T00:00:00.000Z';
 /** The largest step the rules allow: the rule, capped at STEP_MINUTES. */
@@ -123,7 +124,9 @@ function normBuild(b) {
     title: str(o.title, 300) || 'Untitled build',
     category: str(o.category, 60),
     detail: str(o.detail, 8000),
-    status: STATUSES.includes(o.status) ? o.status : 'pending',
+    // a Pipeline 2.0 build keeps its flow's status as it is (building, build-complete…): never read as builds@1
+    status: o.flow === 'pipeline-2' && /^[a-z-]{1,40}$/.test(str(o.status)) ? o.status : STATUSES.includes(o.status) ? o.status : 'pending',
+    ...(o.flow === 'pipeline-2' ? { flow: 'pipeline-2' } : {}),
     hidden: o.hidden === true,
     source: str(o.source, 40) || 'console',
     pendingId: str(o.pendingId, 80),
@@ -220,6 +223,9 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
+  // Pipeline 2.0 (pipeline-2@1): the flow owns the status (building, then build-complete when every step's session has
+  // ended). A ticked step never derives a builds@1 status: `act step` tried `running` and the store refused it.
+  if (build.flow === 'pipeline-2') return build.status;
   if (['blocked', 'failed', 'archived', 'fixing', 'escalated', 'landed', 'complete'].includes(build.status)) return build.status; // done-means-merged@1: set with their records, never from the steps
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
   if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.mergedAt ? 'landed' : 'landing'; // built without ticking its steps
@@ -232,7 +238,7 @@ export function derivedStatus(build, rules) {
 
 export function counts(builds) {
   const c = Object.fromEntries(STATUSES.map((s) => [s, 0]));
-  for (const b of builds) c[b.status] += 1;
+  for (const b of builds) if (b.status in c) c[b.status] += 1; // a Pipeline 2.0 status is not a builds@1 count
   return c;
 }
 

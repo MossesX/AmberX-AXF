@@ -6,7 +6,7 @@
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented } from '@console/axf/react';
+import { Button, Chip, IconButton, ModelBadge, PageToolbar, PriorityTag, Segmented, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
@@ -100,25 +100,29 @@ function GridView() {
   const byFeature = useMemo(() => new Map((data?.features ?? []).map((f) => [f.id, f])), [data]);
   const n = useMemo(() => counts(rows), [rows]);
   const toggle = (k: string) => setOpen((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/changes-grid.json)
+  usePublishPageState(VIEW, { loaded: !!data, expanded: open.size, rows: rows.length });
+  useToolbarHandlers(VIEW, {
+    'changes-grid.reload': () => { reload(); return { reloading: true }; },
+    'changes-grid.collapse': () => { const n2 = open.size; setOpen(new Set()); return { collapsed: n2 }; },
+  });
 
   return (
-    <div className="fx-stack axp-changes-grid">
+    <div className="fx-stack fx-stack--lg axp-changes-grid">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds{data ? ` · ${rows.length} rows · ${n.changes} changes · ${n.features} features` : ' · loading…'}</p>
           <h1>Changes &amp; features</h1>
           <p className="fx-muted axp-changes-grid__lede" title="Every change from the codebase log and every planned feature in one grid, newest first.">Every change and planned feature, newest first.</p>
         </div>
-        <IconButton icon="refresh" label="Reload" onClick={reload} />
       </header>
-      <div className="axp-changes-grid__bar" role="toolbar" aria-label="Filter the grid">
+      <PageToolbar view="changes-grid" className="axp-changes-grid__bar">
         <input className="fx-input axp-changes-grid__search" type="search" placeholder="Search names, ids, status, model…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
         <Segmented label="Show" size="sm" value={show} onChange={setShow} options={[{ value: 'all', label: 'Both' }, { value: 'changes', label: 'Changes' }, { value: 'features', label: 'Features' }]} />
         <select className="fx-input axp-changes-grid__sort" value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label="Sort">
           <option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Name</option>
         </select>
-        <IconButton icon="chevron-up" label="Collapse all" onClick={() => setOpen(new Set())} disabled={!open.size} />
-      </div>
+      </PageToolbar>
       {data && !data.changesOk ? <p className="fx-small fx-muted">The changes log isn’t available (Codebase changes plugin off or its log unreachable); showing features only.</p> : null}
       {!data ? <p className="fx-empty">Loading…</p> : !rows.length ? <p className="fx-empty">Nothing matches.</p> : null}
       {rows.length ? (
@@ -166,7 +170,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('changes-grid.open', () => rt.navigate(VIEW), { label: 'Open the changes & features grid' });
   },
   views: { [VIEW]: { title: 'Changes & features', icon: 'list', keywords: ['changes', 'features', 'grid', 'threads', 'history', 'log', 'built'], render: () => <GridView /> } },
-  nav: { label: 'Builds', items: [{ id: VIEW, label: 'Changes & features', icon: 'list', view: VIEW }] },
+  nav: { label: 'Plan', items: [{ id: VIEW, label: 'Changes & features', icon: 'list', view: VIEW }] },
   contextMenu: [{ id: 'changes-grid.default', target: 'default', order: 93, items: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', action: 'changes-grid.open' }] }],
   settingsTabs: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', parent: 'plugins', order: 45, description: 'One grid of every change and feature.' }],
   settingsPanels: [{ id: 'changes-grid.lifecycle', tab: 'changes-grid', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],

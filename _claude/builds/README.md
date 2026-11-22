@@ -121,25 +121,26 @@ session on code from before build-origin@1 can't drop it: the next read heals th
 the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
 `axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
 
-## Live on main (since Nov 3 2026)
+## Live on main (since Nov 3 2026; one snapshot per landing since Nov 21 2026)
 
-Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".
-Since Nov 18 2026 (build stop-push-storm-builds-live-pushes-build) that means once per build end, not once per write:
-a push per write put a commit on main for every tick, note and heartbeat and woke every app deploy each time.
+The store is the live copy: the console, the banners and every session read it, and a write shows there at once. Main
+only holds a **projection** of it for history. Until Nov 21 2026 every store write was pushed to main as its own
+status-only commit; that put 896 `Builds live: … [skip ci]` commits on main in 24 hours (audit finding B4-06), so main
+moved about every 90 seconds and every PR was always behind it. Now (`framework/cli/builds-live.mjs`):
 
-- **Every write** (step ticked, status, note, branch, PR) goes into the local store and journal at once, is queued in
-  the outbox (`store.json.live-outbox.jsonl`), and is copied straight into the console's checkout (`/opt/axf`) on the
-  same machine, so the orchestrator, the dispatcher and the banners see it now. No commit, no push.
-- **A build end** (status becomes `built` / `landing` = every step done, `landed`, `complete`, `failed`,
-  `escalated`, `archived` = cancelled, or the build is deleted) publishes the whole outbox to **main** as one
-  status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on.
-- `builds-live.mjs flush` and `sync --now` publish at once; `AXF_BUILDS_LIVE_PUSH=every` brings back a push per write.
+- every store write that changes a build is **queued** in the outbox next to the store: no commit, no push. With a file
+  store the console's checkout (`/opt/axf`) takes the changed builds at once as a file copy; on the tables it has them;
+- the outbox goes to main as **one** status-only commit (`Builds live: … [skip ci]`) when a build in it reaches
+  `landed`, when it has held changes for a day (the daily snapshot, `AXF_BUILDS_LIVE_SNAPSHOT_HOURS`, default 24) or
+  when it has grown past `AXF_BUILDS_LIVE_OUTBOX_MAX_MB` (default 16); `builds-live.mjs flush` or `sync --now` publish
+  on demand. `sync` without `--now` (session start, the reconciler) only takes main's newer builds;
+- a publish is what it was: fetched main + this checkout's changed builds, merged per build and per step **newer wins**
+  (`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
+  log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+  come back into the checkout and into the console's checkout;
+- `AXF_BUILDS_LIVE_PUSH=every` restores a push per write (the checks use it; not for production).
 
-A publish (`framework/cli/builds-live.mjs`): fetched main + this checkout's changed builds, merged per build and per step **newer wins**
-(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
-log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
-come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
-through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
+Code still goes through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
 
 - **Status:** `built` = every step done, the build's PR not merged yet ("Built · awaiting merge"); `complete` once the
   PR merged (`mergedAt`) or when the build has no PR.
@@ -149,12 +150,11 @@ through the branch and its PR. The console's auto-update skips the rebuild when 
   start (`.claude/settings.json` hook), every 10 min on the VPS (cron `axf-builds-reconcile`), and by hand.
 - **Merging a branch:** the builds files merge newer-wins through the `axf-builds` git driver (`.gitattributes`,
   registered per clone by `builds-live.mjs install`); a PR that conflicts only there: `builds-live.mjs heal <branch>`.
-- **Broken:** changes that can't reach main stay queued (`builds-live.mjs status` shows the queue, the push mode and
-  whether a build end is due); a queue waiting for its build end is normal. The systems check item
-  **Builds reach main live** turns red when a due publish failed for 15 min, amber for orphan PRs/branches or a reconciler that hasn't run.
+- **Broken:** a publish that can't reach main keeps the outbox and says why (`builds-live.mjs status`: `stuck`, last
+  error). Changes waiting for the next landing are normal (`queued`, `due` empty), not a fault.
 
 ```bash
-node framework/cli/builds-live.mjs sync [--now]         # session start: take main's newer builds (sends what is newer here only when a build end is queued, or --now)
+node framework/cli/builds-live.mjs sync [--now]         # session start: take main's newer builds (--now: publish first)
 node framework/cli/builds-live.mjs status | flush       # outbox, last publish, last error / publish now
 node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
@@ -257,7 +257,7 @@ node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrad
 node framework/cli/model-gate.mjs audit                                                     # upgrades approved so far, and by whom # axf-plugin:build-orchestrator
 ```
 
-Every tick reaches the console at once and main at the build's end (see *Live on main*); never trust a branch's or main's export alone: run
+Every tick goes live to main by itself (see *Live on main*); never trust a branch's or main's export alone: run
 `builds-live.mjs sync` (the session-start hook does) before reading. Console: **Builds → Build orchestrator** (tabs Builds,
 Approvals, Rules).
 

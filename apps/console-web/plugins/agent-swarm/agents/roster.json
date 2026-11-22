@@ -7,7 +7,7 @@
    "$axf": "agent@1", "id": "kat", "name": "Kotlin Kat", "role": "Android engineer", "skill": "kotlin-compose",
    "specialty": "Kotlin kernel twins and Jetpack Compose screens",
    "keywords": ["kotlin", "compose", "android", "gradle", "kernel", "apk", "jetpack"],
-   "paths": ["framework/android/", "apps/console/", "apps/voicevault/", "apps/amberx-droid/", "**/*.kt", "**/*.kts"],
+   "paths": ["framework/android/", "apps/console/", "apps/voicevault/", "**/*.kt", "**/*.kts"],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(git diff:*)", "Bash(git status:*)"],
    "maxTurns": 40, "tokenBudget": 600000, "salary": 25, "hiredAt": "2026-10-31",
    "avatar": { "face": "round", "hair": 2, "gear": "headphones", "hue": 0 },
@@ -123,7 +123,7 @@
   },
   {
    "$axf": "agent@1", "id": "lenny", "name": "Landin' Lenny", "role": "Lander", "skill": "landing", "jobsOnly": true, "skills": ["*"], "home": "land-build",
-   "specialty": "Lands finished builds: merge main, retest, push; settles bookkeeping clashes, reports code clashes",
+   "specialty": "Fixes pull requests so they can land: merge conflicts with main, red CI, failing build rules; pushes to the PR branch only, never to main",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Grep", "Glob", "Bash(git:*)", "Bash(node:*)"],
    "maxTurns": 50, "tokenBudget": 400000, "salary": 20, "hiredAt": "2026-11-01",
@@ -164,7 +164,7 @@
     {
    "$axf": "agent@1", "id": "gizmo", "name": "Gizmo", "role": "All-rounder · AmberX companion", "skill": "companion",
    "specialty": "Brett's companion and guide in AmberX: chat, talk mode, crew link, small fixes anywhere",
-   "keywords": ["companion", "gizmo", "amberx", "chat", "assistant", "guide", "crew"], "paths": ["apps/amberx-droid/src/plugins/companion/", "framework/libs/claude-session/"],
+   "keywords": ["companion", "gizmo", "amberx", "chat", "assistant", "guide", "crew"], "paths": ["framework/libs/claude-session/"],
    "models": ["opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(git diff:*)", "Bash(git status:*)"],
    "maxTurns": 40, "tokenBudget": 400000, "salary": 8, "hiredAt": "2026-11-03",
    "avatar": {"face": "round", "hair": 3, "gear": "headphones", "hue": 200},

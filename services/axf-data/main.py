@@ -11,6 +11,8 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   DELETE /v1/<key>                          same preconditions; leaves a tombstone
   GET    /v1/<ns>                           data-list@1 (?prefix= &after= &limit= &deleted=1); `plugins/<folder>` too
   POST   /v1/<key>:append                   { entries } ; Idempotency-Key
+  POST   /v1/<key>:patch                    data-patch@1: { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? } on a
+                                            table-backed record (the builds store): only the named rows are locked and rewritten
   GET    /v1/<ns>:manifest                  one namespace of data-manifest@1
   POST   /v1/snapshot                       { namespaces?, mode? } → data-manifest@1 + snapshots/<id>.tar
   GET    /v1/snapshot/<id> | <id>.tar       the manifest | the archive
@@ -180,6 +182,14 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
             body = await _json(req)
             entries = body.get('entries') if isinstance(body, dict) else None
             return st.append(ns, path, entries, caller, req.headers.get('idempotency-key') or '')
+        if action == 'patch' and req.method == 'POST':
+            # data-patch@1: some rows of a keyed list (the builds store's builds), the head fields given and one journal
+            # line in one transaction; only the named rows are locked (pg.py PgStore.patch, store.py the document twin)
+            p.need('put', ns, path)
+            body = await _json(req)
+            if isinstance(body, dict) and isinstance(body.get('journal'), dict):
+                p.need('append', ns, str(body['journal'].get('path') or ''))
+            return st.patch(ns, path, body, caller)
         if action:
             raise DataError('invalid_key', f'unknown action :{action}', ns=ns, path=path)
         if req.method == 'GET':

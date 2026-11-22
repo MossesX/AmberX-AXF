@@ -153,6 +153,19 @@ async function main() {
   const mu = merge.mergeBuild(base, newerUndo);
   check(!mu.steps[3].done && mu.steps[0].done, 'a newer undo wins for that step only');
   check(mu.branch === base.branch, 'a blank branch never wipes a set one');
+  { // pipeline-2@1: a stale copy that ticked a step (newer rev, no runtime fields) never strips the step's status contract
+    const st = (o) => ({ uid: 'u1', id: 's1', text: 'Part 1', model: 'Opus', estimate: '10 min', ...o });
+    const live = { id: 'p', title: 'p', flow: 'pipeline-2', status: 'building', statusAt: '2026-11-20T06:57:04.000Z', statusLog: [{ status: 'ready', at: '2026-11-20T06:50:00.000Z', by: 'o', attempt: 1 }, { status: 'building', at: '2026-11-20T06:57:04.000Z', by: 'o', attempt: 1 }], attempt: 1, updatedAt: '2026-11-20T06:57:04.000Z', rev: 5, notes: [],
+      steps: [st({ status: 'building', statusAt: '2026-11-20T06:57:04.000Z', attempt: 3, tmux: 'axf-p--s1--earl', worktree: '/w/p--s1', branch: 'claude/p--s1', account: 'a', updatedAt: '2026-11-20T06:57:04.000Z', rev: 4 })] };
+    const ticked = { ...JSON.parse(JSON.stringify(live)), status: 'running', statusLog: live.statusLog.slice(0, 1), updatedAt: '2026-11-20T07:08:34.000Z', rev: 6,
+      steps: [st({ status: 'ready', statusAt: '2026-11-20T04:54:19.000Z', attempt: 1, done: true, doneAt: '2026-11-20T07:08:34.000Z', updatedAt: '2026-11-20T07:08:34.000Z', rev: 5 })] };
+    for (const [m, how] of [[merge.mergeBuild(live, ticked), 'stale copy newer'], [merge.mergeBuild(ticked, live), 'other order']]) {
+      const s1 = m.steps[0];
+      check(s1.done === true && s1.status === 'building' && s1.tmux === 'axf-p--s1--earl' && s1.worktree === '/w/p--s1' && s1.account === 'a' && s1.attempt === 3, `pipeline-2 merge (${how}): the tick survives, status / tmux / worktree / account / attempt kept (${JSON.stringify({ d: s1.done, st: s1.status, t: s1.tmux, a: s1.attempt })})`);
+      check(m.status === 'building', `pipeline-2 merge (${how}): the build keeps its flow status (${m.status})`);
+    }
+    check(merge.liveStatus({ flow: 'pipeline-2', status: 'building', steps: [{ done: true }] }) === 'building', 'liveStatus never derives a builds@1 status for a pipeline-2 build');
+  }
   check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"2"}\n{"at":"1"}\n{"at":"3"}\n', 'journal union: the first file as it is, then each new line once');
   // done-means-merged@1: all done = landing until merged, landed once merged (with or without a PR: never complete without the verify)
   check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'landing' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'landed' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'landing', 'liveStatus: landing until merged, landed once merged, never built or complete');
@@ -260,32 +273,64 @@ async function main() {
   check(!existsSync(leaked), 'a repo export of a hub-only profile from an older version is swept');
   check(!existsSync(join(ROOT, '_claude/builds/profiles/hub-only')), 'nothing was written into the real repo');
 
-  // 14. push mode end (the default since Nov 18 2026): ticks wait in the outbox, the console's checkout takes them at
-  // once (file copy), and the first build end publishes everything queued as one commit
+  // 14. push mode landed (the default since Nov 21 2026, audit B4-06): ticks, notes and links wait in the outbox, the
+  // console's checkout takes them at once (file copy), and the landing publishes everything queued as ONE commit
   git(T, 'clone', '-q', join(T, 'remote.git'), 'e'); git(T, 'clone', '-q', join(T, 'remote.git'), 'f');
   const E = join(T, 'e'); const F = join(T, 'f');
-  const endEnv = { AXF_BUILDS_LIVE_PUSH: 'end', AXF_CONSOLE_ROOT: F };
-  const mainCount = () => { fetchA(); return git(A, 'rev-list', '--count', 'origin/main'); };
+  const landEnv = { AXF_BUILDS_LIVE_PUSH: '', AXF_CONSOLE_ROOT: F };
+  const mainCount = () => { fetchA(); return Number(git(A, 'rev-list', '--count', 'origin/main')); };
+  const liveSt = (extra = {}) => JSON.parse(run(E, LIVE, ['status', '--json'], { ...landEnv, ...extra }).stdout);
+  const fStore = () => JSON.parse(readFileSync(join(F, STORE_REL), 'utf8'));
   const before14 = mainCount();
-  r = run(E, ORCH, ['act', JSON.stringify({ action: 'add', id: 'w', title: 'Build w', steps: [{ id: 's1', text: 'one', model: 'Opus' }, { id: 's2', text: 'two', model: 'Opus' }] })], endEnv);
-  check(r.status === 0, `add w (end mode): ${r.stderr}`);
-  r = run(E, ORCH, ['act', 'step', 'w', 's1', 'done'], endEnv); check(r.status === 0, `tick w s1 (end mode): ${r.stderr}`);
-  check(mainCount() === before14, 'end mode: an add and a tick make no commit on main');
-  st = JSON.parse(run(E, LIVE, ['status', '--json'], endEnv).stdout);
-  check(st.push === 'end' && st.queued === 2 && !st.endQueued && !st.stuck, `end mode: both changes queued, not due (${JSON.stringify(st).slice(0, 160)})`);
-  const fw = JSON.parse(readFileSync(join(F, STORE_REL), 'utf8')).builds.find((b) => b.id === 'w');
-  check(fw && stepsDone(JSON.parse(readFileSync(join(F, STORE_REL), 'utf8')), 'w') === 's1', 'end mode: the console checkout has the tick at once');
-  r = run(E, LIVE, ['sync'], endEnv);
-  check(r.status === 0 && mainCount() === before14 && /held/.test(r.stdout), `end mode: sync pulls only and holds the queue (${r.stdout.trim()})`);
-  r = run(E, ORCH, ['act', 'step', 'w', 's2', 'done'], endEnv); check(r.status === 0, `tick w s2 (end mode): ${r.stderr}`);
-  check(Number(mainCount()) === Number(before14) + 1, 'end mode: the build end makes exactly one commit');
+  r = run(E, LIVE, ['pull'], landEnv); check(r.status === 0, `pull into e: ${r.stdout}${r.stderr}`);
+  r = run(E, ORCH, ['act', JSON.stringify({ action: 'add', id: 'w', title: 'Build w', steps: [{ id: 's1', text: 'one', model: 'Opus' }, { id: 's2', text: 'two', model: 'Opus' }] })], landEnv);
+  check(r.status === 0, `add w (landed mode): ${r.stderr}`);
+  r = run(E, ORCH, ['act', 'step', 'w', 's1', 'done'], landEnv); check(r.status === 0, `tick w s1 (landed mode): ${r.stderr}`);
+  r = run(E, ORCH, ['act', 'note', 'w', 'a note while it runs'], landEnv); check(r.status === 0, `note w (landed mode): ${r.stderr}`);
+  check(mainCount() === before14, 'landed mode: an add, a tick and a note make no commit on main');
+  st = liveSt();
+  check(st.push === 'landed' && st.queued === 3 && st.due === '' && !st.stuck, `landed mode: the changes are queued, not due, not stuck (${JSON.stringify(st).slice(0, 200)})`);
+  check(fStore().builds.some((b) => b.id === 'w') && stepsDone(fStore(), 'w') === 's1', 'landed mode: the console checkout has the tick at once (live status without a push)');
+  r = run(E, LIVE, ['sync'], landEnv);
+  check(r.status === 0 && mainCount() === before14 && /held/.test(r.stdout), `landed mode: sync (session start, reconciler) pulls only and holds the queue (${r.stdout.trim()})`);
+  r = run(E, ORCH, ['act', 'step', 'w', 's2', 'done'], landEnv); check(r.status === 0, `tick w s2 (landed mode): ${r.stderr}`);
+  r = run(E, LIVE, ['link', 'w', '--branch', 'claude/w', '--pr', '77'], landEnv); check(r.status === 0, `link w (landed mode): ${r.stderr}`);
+  r = run(E, LIVE, ['link', 'w', '--merged'], landEnv); check(r.status === 0, `merged w, no CI yet (landed mode): ${r.stderr}`);
+  check(mainCount() === before14 && liveSt().due === '', 'landed mode: every step done, a PR and a merge without CI evidence (landing) still make no commit');
+  r = run(E, LIVE, ['link', 'w', '--sha', 'abc1234', '--ci', 'success'], landEnv); check(r.status === 0, `land w (landed mode): ${r.stderr}`);
+  check(mainCount() === before14 + 1, `landed mode: the landing makes exactly one commit (${mainCount() - before14})`);
   const w = mainStore().builds.find((b) => b.id === 'w');
-  check(w && stepsDone(mainStore(), 'w') === 's1,s2' && w.status === 'landing', `end mode: main has w with both steps (${w?.status})`);
-  check(JSON.parse(run(E, LIVE, ['status', '--json'], endEnv).stdout).queued === 0, 'end mode: outbox empty after the build end');
-  r = run(E, ORCH, ['act', 'note', 'w', 'a note after the end'], endEnv);
-  check(mainCount() === String(Number(before14) + 1), 'end mode: a note after the end waits again');
-  r = run(E, LIVE, ['flush'], endEnv);
-  check(r.status === 0 && Number(mainCount()) === Number(before14) + 2, 'end mode: flush publishes on demand');
+  check(w?.status === 'landed' && stepsDone(mainStore(), 'w') === 's1,s2' && w.pr === '#77' && w.notes.some((n) => n.text === 'a note while it runs'), `landed mode: main has w landed with everything that was queued (${w?.status})`);
+  check(/Builds live: .*\[skip ci\]/.test(git(A, 'log', '-1', '--format=%s', 'origin/main')), 'landed mode: the snapshot is still a status-only [skip ci] commit');
+  st = liveSt();
+  check(st.queued === 0 && st.due === '' && !existsSync(join(E, `${STORE_REL}.live-outbox.jsonl.due`)), 'landed mode: outbox empty and no longer due after the landing');
+  r = run(E, ORCH, ['act', 'note', 'w', 'a note after the landing'], landEnv);
+  check(mainCount() === before14 + 1 && liveSt().queued === 1, 'landed mode: a note after the landing waits again');
+  // the daily snapshot: changes held for the snapshot period go out with the next write or sync
+  check(liveSt({ AXF_BUILDS_LIVE_SNAPSHOT_HOURS: '0.0000001' }).due === 'snapshot' && liveSt({ AXF_BUILDS_LIVE_SNAPSHOT_HOURS: '0' }).due === '', 'landed mode: a held outbox is due as a snapshot after the period (0 = never)');
+  check(liveSt({ AXF_BUILDS_LIVE_OUTBOX_MAX_MB: '0.00001' }).due === 'full', 'landed mode: an outbox past the size cap is due');
+  r = run(E, LIVE, ['sync'], { ...landEnv, AXF_BUILDS_LIVE_SNAPSHOT_HOURS: '0.0000001' });
+  check(r.status === 0 && mainCount() === before14 + 2 && liveSt().queued === 0, `landed mode: the snapshot publishes the held changes as one commit (${r.stdout.trim()})`);
+  r = run(E, ORCH, ['act', 'note', 'w', 'one more'], landEnv);
+  r = run(E, LIVE, ['flush'], landEnv);
+  check(r.status === 0 && mainCount() === before14 + 3, 'landed mode: flush publishes on demand');
+  r = run(E, ORCH, ['act', 'note', 'w', 'and another'], landEnv);
+  r = run(E, LIVE, ['sync', '--now'], landEnv);
+  check(r.status === 0 && mainCount() === before14 + 4 && liveSt().queued === 0, `landed mode: sync --now publishes on demand (${r.stdout.trim()})`);
+  // a protected main: the snapshot goes to the configured push target (the deploy key's URL), not to the fetch remote
+  git(E, 'remote', 'set-url', '--push', 'origin', join(T, 'no-such-remote.git'));
+  r = run(E, ORCH, ['act', 'note', 'w', 'through the push target'], landEnv);
+  r = run(E, LIVE, ['flush'], landEnv);
+  check(r.status !== 0 && mainCount() === before14 + 4 && liveSt().queued === 1 && liveSt().stuck, `a push that cannot reach main keeps the outbox and says so (${r.stdout.trim().slice(0, 80)})`);
+  const pushCfg = join(T, 'builds-live-push.json'); writeFileSync(pushCfg, JSON.stringify({ url: join(T, 'remote.git') }));
+  check(liveSt({ AXF_BUILDS_LIVE_PUSH_CONFIG: pushCfg }).pushVia === 'deploy-key' && liveSt().pushVia === 'remote', 'status says which way the snapshot is pushed');
+  r = run(E, LIVE, ['flush'], { ...landEnv, AXF_BUILDS_LIVE_PUSH_CONFIG: pushCfg });
+  check(r.status === 0 && mainCount() === before14 + 5 && liveSt().queued === 0 && !liveSt().stuck, `the push target takes the snapshot when the remote refuses it (${r.stdout.trim().slice(0, 80)}${r.stderr.trim().slice(0, 80)})`);
+  // the pure rule: which journal entries land a build
+  const liveMod = await import('../cli/builds-live.mjs');
+  const ent = (before, after) => ({ builds: [{ id: 'q', op: 'change', before: before && { status: before }, after: after && { status: after } }] });
+  check(liveMod.landsBuild(ent('landing', 'landed')) && liveMod.landsBuild(ent('running', 'complete')) && liveMod.landsBuild(ent(null, 'landed')), 'landsBuild: a status that moves to landed (or straight to complete) lands the build');
+  check(!liveMod.landsBuild(ent('landed', 'complete')) && !liveMod.landsBuild(ent('landed', 'landed')) && !liveMod.landsBuild(ent('running', 'landing')) && !liveMod.landsBuild(ent('running', 'failed')) && !liveMod.landsBuild(ent('running', 'archived')) && !liveMod.landsBuild(ent('running', null)) && !liveMod.landsBuild({}), 'landsBuild: landed → complete, landing, failed, archived and a delete are not landings');
 
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });

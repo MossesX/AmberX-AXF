@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Gate & rules: the one implementation behind every transport (framework/spec/GATE.md). The console's REST routes
+ * VPS Configuration: the one implementation behind every transport (framework/spec/GATE.md). The console's REST routes
  * (server/routes.py), the MCP tools (plugin-commands → those routes) and the CLI (`axf gate …`) all end in `run(op, input)`
  * here, so the same input gives the same record everywhere (the CLI-vs-MCP parity test checks it).
  *
@@ -42,11 +42,11 @@ export function buildRulesVerdict(build, { dir } = {}) {
 
 export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
-/** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
+/** The plugin's own settings (Settings → Plugins → VPS Configuration): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
-  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
+  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'build-cap', 'approvals', 'passes', 'history'], default: 'rules', title: 'Tab it opens on' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
@@ -143,7 +143,7 @@ export function createGate(opts = {}) {
       const build = String(i.build || (i.branch || snap?.head || '').replace(/^claude\//, '') || '').slice(0, 120);
       const br = i.build || i.branch ? buildRulesVerdict(build, { dir: i.rulesDir }) : null;
       if (br?.failing.length) {
-        const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → Gate & rules → Build rules).`;
+        const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → VPS Configuration → Build rules).`;
         return { ok: true, ...v, pass: false, held: false, blockedBy: v.blockedBy || 'build-rules', reasons: [...(v.reasons || []), reason], buildRules: br, known };
       }
       return { ok: true, ...v, ...(br ? { buildRules: br } : {}), known };
@@ -207,19 +207,21 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
     return r.ok || r.code === 'confirmation_required' ? 0 : 1;
   }
   if (argv[0] === 'auto-lander') return autoLanderCli(argv.slice(1));
+  if (argv[0] === 'build-cap') return (await import('./build-cap.mjs')).main(argv.slice(1));
+  if (argv[0] === 'approvals') return (await import('./approval-rules.mjs')).main(argv.slice(1));
   return cli(argv, g, { out, err });
 }
 
 /** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
-export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'settings', 'help']);
+export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'build-cap', 'approvals', 'settings', 'help']);
 
 /**
  * `axf gate auto-lander status|show <build>|run [--now]|retry <build>|fix <build>|pause|resume|settings|set <key> <value>`:
- * the server auto-lander's own CLI (deploy/auto-lander/auto-lander.mjs), the same commands REST, MCP and voice call.
- * `run` asks the service for a tick (as the console does); `run --now` ticks here at once.
+ * the lander's own CLI (deploy/lander/run.mjs, Pipeline 2.0; it replaced deploy/auto-lander on Nov 19 2026), the
+ * same commands REST, MCP and voice call. `run` asks the service for a tick (as the console does); `run --now` ticks here.
  */
 export async function autoLanderCli(argv) {
-  const al = await import('../../../../deploy/auto-lander/auto-lander.mjs');
+  const al = await import('../../../../deploy/lander/run.mjs');
   const [cmd = 'status', ...rest] = argv;
   const known = ['status', 'show', 'run', 'retry', 'fix', 'pause', 'resume', 'settings', 'set'];
   if (!known.includes(cmd)) { console.error(`axf gate auto-lander ${known.join('|')}`); return 2; }
@@ -238,6 +240,8 @@ const USAGE = [
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
   'axf gate settings [get] | settings set <key> <value>',
+  'axf gate build-cap [status] | build-cap set stepsInParallel <n>',
+  'axf gate approvals [status] | approvals add <service> <match> <allow|veto|confirm|deny|hold> [seconds] | edit <service> <n> <field> <value> | remove <service> <n> | move <service> <n> <to> | clear-own <service> [on|off] | default | discard [service]',
   'axf gate auto-lander status | show <build> | run [--now] | retry <build> | fix <build> | pause | resume | settings | set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',
   'axf gate build-rules get <id> | on <id> | off <id> | delete <id> [--confirm <token>]',

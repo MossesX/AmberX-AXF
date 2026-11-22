@@ -27,7 +27,19 @@
     "landed",
     "complete",
     "escalated",
-    "archived"
+    "archived",
+    "splitting",
+    "split",
+    "pulling-main",
+    "assigning-models",
+    "ready",
+    "sending",
+    "building",
+    "build-complete",
+    "merging-pr",
+    "pr-pulling-main",
+    "running-ci",
+    "merging-main"
   ],
   "repos": [
     "amberx-axf",

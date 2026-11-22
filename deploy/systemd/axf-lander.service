@@ -1,0 +1,26 @@
+# axf-lander.service — the lander (lander@1, deploy/lander/run.mjs; Pipeline 2.0): one tick lands the one build at
+# build-complete: every step in one PR, main pulled in, CI once (the gate's build rules included), merged, landed;
+# failures retry forward by themselves. Installed by axf_lander_install (framework/deploy/axf-deploy.sh), called from
+# deploy/install-console.sh; @DIR@ is the checkout (/opt/axf). Started every minute by axf-lander.timer; the tick holds
+# its own lock file, so an overlapping start does nothing. Log: journalctl -u axf-lander (and /var/log/axf-lander.log).
+[Unit]
+Description=AXF lander: land finished builds in one PR, on their own
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=AXF_LAND_REPO=@DIR@
+Environment=AXF_CONSOLE_ROOT=@DIR@
+Environment=AXF_ACTOR=lander
+ExecStart=/usr/bin/env node @DIR@/deploy/lander/run.mjs tick
+StandardOutput=append:/var/log/axf-lander.log
+StandardError=append:/var/log/axf-lander.log
+TimeoutStartSec=25min
+Restart=on-failure
+RestartSec=60s
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
