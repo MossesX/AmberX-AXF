@@ -105,3 +105,4 @@ button.oc-model { cursor: pointer }
 .oc-split .fx-stack { gap: var(--fx-dens-gap-lg) }
 .oc-split__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg) }
 .oc-split__row > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 12) }
+.oc-split__parallel { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-lg) }

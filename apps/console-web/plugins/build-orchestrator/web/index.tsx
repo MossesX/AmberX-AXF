@@ -10,6 +10,7 @@ import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
 import { SplitSettings, openSplitSection } from './split-settings';
+import { ParallelSplitFields } from './parallel-split-fields';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
@@ -202,7 +203,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog: build sessions live', icon: 'shield', order: 20, render: () => <WatchdogStatusPanel /> },
     { id: 'build-orchestrator.groups', tab: 'build-orchestrator', title: 'Groups', icon: 'folder', order: 30, render: () => <GroupsPanel /> },
     { id: 'build-orchestrator.approvals', tab: 'build-orchestrator', title: 'Approvals', icon: 'check', order: 40, render: () => <ApprovalsPanel /> },
-    { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 45, render: () => <SplitSettings api={pipeApi} open /> },
+    { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 45, render: () => <SplitSettings api={pipeApi} open><ParallelSplitFields api={pipeApi} /></SplitSettings> },
     { id: 'build-orchestrator.rules', tab: 'build-orchestrator', title: 'Rules', icon: 'settings', order: 50, render: () => <RulesPanel /> },
     { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog: left-over rows, runs and cleanups log', icon: 'shield', order: 21, render: () => <WatchdogPanel /> },
     { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],

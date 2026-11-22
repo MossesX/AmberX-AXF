@@ -430,7 +430,7 @@
       {
         "target": "split-section",
         "title": "Split",
-        "text": "Every option for how a request is split into steps and builds, in one collapsible section: how a build is split (Claude, rules: one step per line, or off). Changes save at once. Same settings by REST / MCP pipeline-settings-set or pipeline.mjs set.",
+        "text": "Every option for how a request is split into steps and builds, in one collapsible section: how a build is split (Claude, rules: one step per line, or off) and the parallel split (independent parts run as builds at the same time: auto, ask or off, max parts, contract first, integration last). Changes save at once. Same settings by REST / MCP pipeline-settings-set or pipeline.mjs set.",
         "kind": "card"
       },
       {
@@ -438,6 +438,30 @@
         "title": "How a build is split",
         "text": "Claude cuts a request into short steps with one quick call; Rules makes one step per line of the request, no model; Off leaves the steps for you to write. Saves as soon as you pick.",
         "kind": "field"
+      },
+      {
+        "target": "parallel-split",
+        "title": "Parallel split",
+        "text": "The orchestrator cuts a request into independent parts that each run as their own build, at the same time, in separate slots, to finish sooner. Ask: the parts wait in Pending for you to queue them; Auto: they are queued at once; Off: every request stays one build. A shared contract step runs first so the parts don't clash, and an integration step at the end merges and tests them together. Same as pipeline.mjs set parallelSplit=auto|ask|off and REST / MCP pipeline-settings-set.",
+        "kind": "card"
+      },
+      {
+        "target": "max-parallel-parts",
+        "title": "Max parallel parts",
+        "text": "The most part builds one request is split into: 2 to 12, default 4. Same as pipeline.mjs set parallelMax=N.",
+        "kind": "field"
+      },
+      {
+        "target": "shared-contract-step-first",
+        "title": "Shared contract step first",
+        "text": "On: the lead build's first step writes the shared names, schemas and routes, and the parts wait for it before they start. Same as pipeline.mjs set parallelContract=true|false.",
+        "kind": "toggle"
+      },
+      {
+        "target": "integration-step-last",
+        "title": "Integration step last",
+        "text": "On: once every part is done, the lead's last step merges every part's branch, tests them together and opens the PR. Same as pipeline.mjs set parallelIntegrate=true|false.",
+        "kind": "toggle"
       }
     ],
     "intros": []

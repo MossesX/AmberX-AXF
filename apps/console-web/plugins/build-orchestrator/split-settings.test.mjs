@@ -23,7 +23,7 @@ assert.match(split, /<details className="pd-add oc-split" id=\{SPLIT_SECTION_ID\
 assert.match(split, /export const SPLIT_SECTION_ID = 'orch-split-settings'/);
 assert.match(split, /data-help="split-section"/);
 // its own settings panel, opened expanded
-assert.match(index, /id: 'build-orchestrator\.split', tab: 'build-orchestrator', title: 'Split'.*<SplitSettings api=\{pipeApi\} open \/>/);
+assert.match(index, /id: 'build-orchestrator\.split', tab: 'build-orchestrator', title: 'Split'.*<SplitSettings api=\{pipeApi\} open( \/)?>/);
 // the deep link: an action and the open(arg) route both land on the panel and open the block
 assert.match(index, /rt\.actions\.register\('build-orchestrator\.split-settings'/);
 assert.match(index, /\/\^split\(-settings\)\?\$\/i\.test\(id\).*flashWhenReady\(openSplitSection/);
