@@ -35,6 +35,11 @@ button.oc-model { cursor: pointer }
 .oc-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100%; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-sm) }
 :where([data-fx-small]) .oc-bar__pick { flex: 1 1 calc(var(--fx-font-size) * 9) }
 
+/* Split section (Nov 13 2026): a collapsible block (.pd-add from the console); layout only */
+.oc-split .fx-stack { gap: var(--fx-dens-gap-lg) }
+.oc-split__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg) }
+.oc-split__row > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 12) }
+
 /* Pipeline tab (Nov 8 2026): layout only; every control is a framework control */
 .pl-strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .pl-stat { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm) }
@@ -53,6 +58,8 @@ button.oc-model { cursor: pointer }
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
 
+/* Parallel split family note (Nov 13 2026): layout only */
+.oc-family { gap: var(--fx-dens-gap-sm) }
 /* Custom groups and tabs (Nov 13 2026): layout plus the group's colour dot; every control is a framework control */
 .og-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
 .og-counts { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }

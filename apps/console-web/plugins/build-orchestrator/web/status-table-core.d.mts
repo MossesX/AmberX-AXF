@@ -2,7 +2,7 @@
 export type BuildStatus = 'pending' | 'splitting' | 'split' | 'pulling-main' | 'assigning-models' | 'ready' | 'sending' | 'building' | 'build-complete' | 'merging-pr' | 'pr-pulling-main' | 'running-ci' | 'merging-main' | 'landed' | 'failed';
 export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'building' | 'completed' | 'in-pr' | 'failed';
 export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string };
-export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string };
+export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; parallel?: { role?: string; lead?: string; part?: number; parts?: string[]; of?: number; landing?: string } };
 export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];

@@ -208,6 +208,40 @@ export function progress(build) {
   return { total, done, skipped, minutesLeft, byModel, switches };
 }
 
+/**
+ * A parallel split's family (Nov 13 2026, build orchestrator-settings-collapsible-split): the lead and its parts,
+ * linked through pipeline.parallel (build-pipeline@1). Works on store builds (steps = array) and pipeline rows
+ * (steps = { done, total }). Combined progress counts every step of the lead and of every part (skipped = done);
+ * `landing` together = the lead's integration step lands them as one PR, own = each part on its own PR in part order.
+ * null for a build that is not part of a parallel split.
+ */
+export function parallelFamily(build, builds) {
+  const p = build?.pipeline?.parallel; if (!p || (p.role !== 'lead' && p.role !== 'part')) return null;
+  const all = Array.isArray(builds) ? builds : [];
+  const leadId = p.role === 'lead' ? build.id : String(p.lead || '');
+  const lead = p.role === 'lead' ? build : all.find((x) => x.id === leadId) ?? null;
+  const lp = lead?.pipeline?.parallel ?? null;
+  const ids = lp?.parts?.length ? lp.parts : all.filter((x) => x.pipeline?.parallel?.role === 'part' && x.pipeline.parallel.lead === leadId).sort((a, c) => (a.pipeline.parallel.part || 0) - (c.pipeline.parallel.part || 0)).map((x) => x.id);
+  const count = (b) => {
+    if (!b) return { done: 0, total: 0 };
+    if (Array.isArray(b.steps)) return { done: b.steps.filter((s) => s.done || s.skip).length, total: b.steps.length };
+    const s = b.steps ?? {}; return { done: Math.max(0, (s.total || 0) - (s.left ?? (s.total || 0) - (s.done || 0))), total: s.total || 0 };
+  };
+  const ended = (b) => !!b && (b.deleted || ['built', 'complete', 'archived'].includes(b.status));
+  const parts = ids.map((id, i) => { const x = all.find((y) => y.id === id) ?? null; const c = count(x); return { id, part: i + 1, title: x?.title ?? '', status: x?.status ?? 'missing', done: c.done, total: c.total, finished: ended(x) }; });
+  const lc = count(lead);
+  const done = lc.done + parts.reduce((t, x) => t + x.done, 0); const total = lc.total + parts.reduce((t, x) => t + x.total, 0);
+  return { lead: leadId, leadTitle: lead?.title ?? '', role: p.role, part: p.role === 'part' ? p.part || 0 : 0, of: parts.length || p.of || 0,
+    landing: lp?.landing === 'own' ? 'own' : 'together', parts, done, total, partsFinished: parts.filter((x) => x.finished).length,
+    percent: total ? Math.round((done / total) * 100) : 0 };
+}
+
+/** A family's one-line summary: "Parallel: 3 parts · 2/3 finished · 14/30 steps (47%) · lands together". */
+export function familyLine(f) {
+  if (!f) return '';
+  return `Parallel: ${f.of} part${f.of === 1 ? '' : 's'} · ${f.partsFinished}/${f.of} finished · ${f.done}/${f.total} steps (${f.percent}%) · ${f.landing === 'own' ? 'lands in order, one PR per part' : 'lands together through the lead'}`;
+}
+
 /** Steps over the size limit or without an estimate (the small-steps rule). */
 export function splitCheck(build, rules = DEFAULT_RULES) {
   const reasons = [];
