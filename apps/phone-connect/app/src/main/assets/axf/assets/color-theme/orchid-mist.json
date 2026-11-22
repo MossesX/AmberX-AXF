@@ -24,9 +24,9 @@
       "accentText": "#ffffff",
       "accentSoft": "rgba(112,45,190,0.1)",
       "danger": "#ce2732",
-      "success": "#218c5a",
-      "warning": "#b87614",
-      "info": "#1686b6",
+      "success": "#1d7c50",
+      "warning": "#976211",
+      "info": "#14759f",
       "focus": "#702dbe",
       "shadow": "rgba(36,21,50,0.12)"
     }

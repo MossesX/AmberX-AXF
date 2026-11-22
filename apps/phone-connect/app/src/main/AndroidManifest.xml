@@ -5,9 +5,23 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- "Display over other apps", Brett's own switch in Android settings: with it a page the console opens comes to the
+         front at once (Android's exemption from the background-start block); without it a one-tap notification does. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!-- Playback capture is filed under RECORD_AUDIO by Android; the recorder never opens the microphone itself. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- The AXF Console app's floating overlay opens console pages first (console-overlay@1, ConsoleOverlay.kt). -->
+    <queries>
+        <package android:name="ai.amberx.consoleapp" />
+        <!-- Pages open in Chrome when the command asks for it (Pages.kt), else in the default browser. -->
+        <package android:name="com.android.chrome" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
     <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
     <application
         android:name=".App"
@@ -49,7 +63,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- The watch: keeps the link to the console open (phone-connect@1). -->
+        <!-- The watch: keeps the link to the console open (phone-connect@1) and carries Approve / Deny taps to it. -->
         <service
             android:name=".watch.WatchService"
             android:exported="false"

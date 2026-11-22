@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "md-studio",
+  "name": "MD Studio",
+  "version": "1.0.0",
+  "description": "The MD Studio toolbar: save the active file, switch editing on or off for it, pick a pane layout and reload the file list. The Browse / Read / Write / IDE view switch rides on the same bar; the Markdown formatting row stays with each editor pane (a split shows several).",
+  "author": "AmberX AXF",
+  "tags": ["page", "md-studio", "docs"],
+  "data": {
+    "scope": "view:md-studio",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "file",
+        "label": "Active file",
+        "items": [
+          { "id": "save", "icon": "save", "label": "Save", "action": "handler:md-studio.save", "priority": 300, "overflow": "never" },
+          { "id": "edit", "icon": "edit", "label": "Edit", "action": "handler:md-studio.toggle-edit", "priority": 280 }
+        ]
+      },
+      {
+        "id": "studio",
+        "label": "Studio",
+        "items": [
+          { "id": "layouts", "icon": "layout", "label": "Pane layouts", "action": "handler:md-studio.layouts", "priority": 200 },
+          { "id": "reload", "icon": "refresh", "label": "Reload files", "action": "handler:md-studio.reload", "priority": 180 }
+        ]
+      }
+    ]
+  }
+}

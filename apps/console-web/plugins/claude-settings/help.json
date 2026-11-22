@@ -89,6 +89,11 @@
         "title": "Tabs show",
         "text": "What the tabs show: words, icons or both. Saved for this device.",
         "kind": "field"
+      },
+      {
+        "target": "open-approval-rules",
+        "title": "Open Approval rules",
+        "text": "Opens Builds → VPS Configuration → Approval rules, where the default (a veto countdown only on VPS shell commands) is applied as rules."
       }
     ],
     "intros": []

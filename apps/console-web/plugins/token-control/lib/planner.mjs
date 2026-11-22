@@ -1,8 +1,8 @@
 /**
  * Planner targets of control@1 (planner.plans, planner.builds).
  *
- * planner.plans  plan@1 plans through the plans@1 provider's module (Plan Studio's plans.mjs: the same store, history
- *                and rules as its page, its CLI and claude.ai sessions). `add` files a plan as parked unless a status
+ * planner.plans  plans through the plans@1 provider's module (Plan Studio 2.0's plans.mjs: the planning tree's `plan`
+ *                items, the same store and rules as its page, its CLI and voice). `add` files a plan as parked unless a status
  *                is given (the "put it in a plan for later" rule); `build` turns one into an orchestrator build.
  * planner.builds builds@1 records through the orchestrator@1 provider (orchestrator.mjs act/load: the one builds store,
  *                every write journalled; Pending, the queue and the Build manager follow). `select.profile` /
@@ -56,11 +56,13 @@ async function runPlans(c) {
       const r = await wrap(() => ps.savePlan({ ...p, ...c.value, id: p.id }, { by: c.by ?? 'token-control', kind: 'save', note: c.reason ?? 'Changed through Token control', force: true }));
       return { changed: !r.unchanged, item: r.plan };
     }
-    case 'remove': { need(); await wrap(() => ps.deletePlan(c.path)); return { removed: 1, note: 'the plan\'s history stays: act restore brings it back' }; }
+    case 'remove': { need(); await wrap(() => ps.deletePlan(c.path)); return { removed: 1, note: 'in the trash with everything under it: act restore (or the page\'s Undo) brings it back' }; }
     case 'act': {
-      const p = need();
       const input = c.input ?? {};
       const by = c.by ?? 'token-control';
+      // a deleted plan is not there to be named: restore brings the newest deleted one back (the provider's undo)
+      if (c.action === 'restore' && ps.restoreDeleted && !ps.getPlan(c.path)) { const r = await wrap(() => ps.restoreDeleted(input.trashId ?? '')); return { changed: true, item: r.plan }; }
+      const p = need();
       switch (c.action) {
         case 'park': { const r = await wrap(() => ps.savePlan({ ...p, status: 'parked' }, { by, kind: 'save', note: c.reason ?? 'Parked', force: true })); return { changed: !r.unchanged, item: r.plan }; }
         case 'build': { const r = await wrap(() => ps.turnIntoBuild(p.id, { profile: input.profile || undefined, buildId: input.buildId || undefined, by })); return { changed: true, item: r.plan, build: r.build }; }

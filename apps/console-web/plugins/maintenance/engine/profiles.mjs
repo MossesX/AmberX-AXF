@@ -15,7 +15,7 @@
  * this audit and only re-judges the `keep` items it is allowed to (see server/profiles.py).
  *
  * Apply writes ONE builds store write (journalled, live to main like every store write): done → complete (date +
- * proof in a note), not-needed / duplicate → archived (never deleted), merge → open steps folded into the target, then
+ * proof in a note; only with the done-means-merged@1 proof, else skipped and reported), not-needed / duplicate → archived (never deleted), merge → open steps folded into the target, then
  * archived. Copied trackers and plans are moved into the run's archive folder. Every run keeps an undo record with the
  * builds as they were; one undo per run puts them back (a build changed since is left alone and reported). Afterwards
  * the orchestrator is re-planned (framework/cli/builds-reconcile.mjs --apply), best effort.
@@ -36,6 +36,7 @@ import { fileURLToPath } from 'node:url';
 import { BASE_PROFILE, REPO_ROOT, TRACKER_REL, emptyProfileFile, persistRoot, profileRel, readProfiles } from '../../../../../framework/cli/persist.mjs';
 import { loadStore, readStoreNow, withStore } from '../../../../../framework/cli/builds-store.mjs';
 import { compactBuild, normBuild, normStep } from '../../../../../framework/plan/builds-store-core.mjs';
+import { guardStatus } from '../../../../../framework/core/build-pipeline.mjs';
 
 export const SCHEMA = 'profile-cleanup@1';
 export const VERDICTS = ['keep', 'done', 'not-needed', 'duplicate', 'merge'];
@@ -265,6 +266,10 @@ export function apply(run, { skip = [], by = 'console', at = now() } = {}) {
         const before = snap(b);
         const entry = { key: it.key, id: b.id, verdict: it.verdict, before };
         if (it.verdict === 'done') {
+          // done-means-merged@1: complete needs the merged PR, green CI on the merge commit and a passed verify; the
+          // store would refuse anything less, so a build without that proof is left as it is and reported
+          const g = guardStatus(b, 'complete');
+          if (!g.ok) { record.skipped.push({ key: it.key, why: `not completed: ${g.why}` }); continue; }
           b.status = 'complete'; b.builtAt = b.builtAt || at;
           b.notes.push(note(`Maintenance clean-up ${date}: done already. ${it.reason}${proofText(it.proof)}. Run ${run}.`, at));
         } else if (it.verdict === 'merge') {

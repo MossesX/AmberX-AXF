@@ -1,6 +1,6 @@
-# Gate & rules
+# VPS Configuration
 
-Builds → **Gate & rules**. The rules a pull request must pass before it lands on main, the auto-lander that lands it,
+Builds → **VPS Configuration**. The rules a pull request must pass before it lands on main, the auto-lander that lands it,
 and the history of every change to either. Contract: `framework/spec/GATE.md` (gate-rules@1).
 
 ## Rules
@@ -29,4 +29,4 @@ Every rule change and lander action: who, when, what it was before and after, an
 - Voice: "open the gate", "turn off the UI Review rule", "can 705 land", "pause the lander", "land 705 now".
 
 ## Settings
-Settings → Plugins → Gate: how often the open tab refreshes, how many History entries are kept, which tab it opens on.
+Settings → Plugins → VPS Configuration: how often the open tab refreshes, how many History entries are kept, which tab it opens on.

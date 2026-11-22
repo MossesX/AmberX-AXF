@@ -6,7 +6,7 @@
  * Inline element editing: click an element in the sandbox (Pick element) and the token list narrows to that element.
  */
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
-import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { ELEMENT_LABELS } from '@console/axf/core/engines/token-registry.mjs';
 import * as api from './api';
 import type { Session, UiListItem, UiPick } from './api';
@@ -172,21 +172,26 @@ export function SkinEditorView() {
   const listed = useMemo(() => visibleTokens(tokens, level, element, q), [tokens, level, element, q]);
   const groups = useMemo(() => groupByElement(listed), [listed]);
   const edits = Object.keys(state).length;
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/skin-editor.json)
+  usePublishPageState('skin-editor', { ui: !!ui, picking, element, undoable: !!head?.parent && !busy, edits });
+  useToolbarHandlers('skin-editor', {
+    'skin-editor.pick-screen': () => { rt.dispatch('skin-editor.pick'); return { picking: 'screen' }; },
+    'skin-editor.pick-element': () => { setPicking((p) => !p); return { picking: !picking }; },
+    'skin-editor.every-element': () => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); return { element: '' }; },
+    'skin-editor.undo': async () => { await undo(); return { undone: true }; },
+    'skin-editor.registry': () => { rt.navigate('token-registry'); return { opened: 'token-registry' }; },
+  });
 
   return (
     <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1><p className="fx-muted" title="Edit a skin token by token with a live sandbox preview of any screen, keep a snapshot after each change, revert to any snapshot and export the skin.">Edit a skin token by token with a live preview.</p></div></header>
-      <div className={`${P}__bar`} role="toolbar" aria-label="Skin editor">
+      <PageToolbar view="skin-editor" className={`${P}__bar`}>
         <SelectField label="UI" value={ui ? api.uiKey(ui) : ''} onChange={(k) => { const u = allUis.find((x) => api.uiKey(x) === k); if (u) void choose(u); }} options={[{ value: '', label: 'Pick a UI…' }, ...allUis.map((u) => ({ value: api.uiKey(u), label: `${u.kind}: ${u.label}` }))]} />
-        <Button size="sm" icon="eye" title="Click a screen anywhere in the console to load it here" onClick={() => rt.dispatch('skin-editor.pick')}>Pick on screen</Button>
-        <Button size="sm" icon="layers" title="Click a control inside the sandbox to edit its tokens" onClick={() => setPicking((p) => !p)} aria-pressed={picking}>{picking ? 'Click a control…' : 'Pick element'}</Button>
-        {element && <><Chip tone="accent">{ELEMENT_LABELS[element] ?? element}</Chip><IconButton icon="x" label="Every element" onClick={() => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); }} /></>}
-        <span className={`${P}__grow`} />
-        <Button size="sm" icon="undo" disabled={!head?.parent || busy} onClick={() => void undo()}>Undo</Button>
-        <Button size="sm" icon="list" title="Browse every token in the system" onClick={() => rt.navigate('token-registry')}>Token registry</Button>
+        {element && <Chip tone="accent">{ELEMENT_LABELS[element] ?? element}</Chip>}
+        {picking && <Chip tone="accent">Click a control…</Chip>}
         <Chip>{edits} edit{edits === 1 ? '' : 's'} · {session?.chain.length ?? 0} snapshot{session?.chain.length === 1 ? '' : 's'}</Chip>
-      </div>
+      </PageToolbar>
       {msg && <Note tone="danger">{msg}</Note>}
       <div className={`${P}__body`}>
         <div ref={sandboxRef} className={`${P}__sandbox ${picking ? `${P}__sandbox--picking` : ''}`} style={cssVars(state)} onClickCapture={onSandboxClick} data-axf-sandbox={ui ? api.uiKey(ui) : ''}>
@@ -197,7 +202,7 @@ export function SkinEditorView() {
           <TabGroup id="skin-editor-panels" label="Skin editor panels" value={panel} onChange={(p) => { setPanel(p); rt.settings.set(PANEL_KEY, p); }} tabs={PANELS.map((p) => ({ value: p.value, label: p.label, icon: p.icon }))} />
           {panel === 'tokens' && (
             <>
-              <div className={`${P}__bar`} role="toolbar" aria-label="Token level">
+              <div className={`${P}__bar`} role="search" aria-label="Token level">
                 <Segmented label="Level" size="sm" value={level} onChange={(l) => { setLevel(l); rt.settings.set(LEVEL_KEY, l); }} options={LEVELS.map((l) => ({ value: l.value, label: l.label, title: l.title }))} />
                 <input className="fx-input" placeholder="Find a token" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a token" />
               </div>

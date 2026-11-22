@@ -26,13 +26,14 @@ import { join, relative, resolve } from 'node:path';
 import { describeOptions } from './build-options.mjs';
 import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listModules, listTemplates, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
 import { dataPath } from './persist.mjs';
+import { readText } from '../core/clip.mjs';
 
 export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ?? '', apps = 'apps', log = console.log } = {}) {
   const ROOT = resolve(FRAMEWORK_DIR, '..');
   const APPS = resolve(ROOT, apps);
   const safeDir = (d) => { const p = resolve(APPS, d ?? ''); if (!p.startsWith(APPS)) throw new Error('dir must be inside the apps folder'); return p; };
   const json = (res, body, status = 200) => { res.writeHead(status, { 'content-type': 'application/json', 'access-control-allow-origin': '*' }); res.end(JSON.stringify(body)); };
-  const readBody = (req) => new Promise((ok) => { let s = ''; req.on('data', (c) => (s += c)); req.on('end', () => { try { ok(s ? JSON.parse(s) : {}); } catch { ok({}); } }); });
+  const readBody = (req) => readText(req).then((s) => { try { return s ? JSON.parse(s) : {}; } catch { return {}; } }, () => ({})); // decoded once: a character split across two chunks stays whole (B4-01)
 
   const server = createServer(async (req, res) => {
     const url = new URL(req.url, 'http://x');

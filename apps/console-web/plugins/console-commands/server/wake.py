@@ -96,18 +96,31 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "opened": opened, "notified": notified, "message": message}
 
 
+def phone_outcome(local: dict[str, Any]) -> dict[str, Any]:
+    """Phone Connect's answer (axf.phone@1 `hub_tool`) → {ok, opened, notified, how, message, via}, saying only what the
+    phone reported: `opened` when it said the page is on screen, `notified` when it only posted the tap-to-open
+    notification, neither when it has not answered yet (the command stays queued and the console alert goes up)."""
+    ok = bool(local.get("ok"))
+    o = local.get("opened") if isinstance(local.get("opened"), dict) else {}
+    if not o:  # an older plugin without the phone's own account: its "done" is not proof of anything on screen
+        return {"ok": ok, "opened": False, "notified": False, "how": "", "message": str(local.get("output") or ""), "via": "phone"}
+    return {"ok": ok, "opened": ok and o.get("opened") is True, "notified": ok and o.get("notified") is True, "how": str(o.get("how") or ""),
+            "message": str(o.get("message") or local.get("output") or ""), "via": "phone"}
+
+
 def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
     """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
     # Phone Connect first (axf.phone@1): a paired, online phone opens it itself; AmberX through axHub otherwise
     try:
         import plugin_services
         phone = plugin_services.get("axf.phone@1")
-        local = phone.hub_tool(TOOL, {"url": target, "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
+        # where: overlay = the console app first (its overlay, or the app itself in front, started from the background);
+        # the browser only when there is no console app on the phone
+        local = phone.hub_tool(TOOL, {"url": target, "where": "overlay", "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
     except Exception:  # noqa: BLE001 — the hub path below still works
         local = None
     if local is not None:
-        done = bool(local.get("ok")) and (local.get("command") or {}).get("status") == "done"
-        return {"ok": bool(local.get("ok")), "opened": done, "notified": bool(local.get("ok")) and not done, "message": str(local.get("output") or ""), "via": "phone"}
+        return phone_outcome(local)
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
     if not tok:

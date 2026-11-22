@@ -23,7 +23,7 @@ import { ANIMATION_ENUMS, ANIMATION_PREFS_KEY, ANIMATION_RANGES, SKIN_ANIMATIONS
 import { at, readLook, writeLook } from './skins.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
+const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web' };
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 

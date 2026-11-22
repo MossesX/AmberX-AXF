@@ -28,7 +28,7 @@
         "text": "Runs the command with the JSON input above, as the console. One that deletes answers with a confirm token first; press again to send it."
       },
       {
-        "target": "pc-refresh",
+        "target": "action:handler:plugin-commands.refresh",
         "title": "Refresh",
         "text": "Reads every plugin's commands again (they also update by themselves when a plugin is installed, removed, or turned on or off)."
       },

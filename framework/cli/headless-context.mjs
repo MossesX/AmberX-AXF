@@ -32,6 +32,7 @@ import { compose as composeRulesBrief, launchContext } from '../core/rules-brief
 import { load as loadRulesBriefs } from './rules-brief.mjs';
 import { settingsFile } from './upgrade-policy.mjs';
 import { costUsd, loadPricing } from './model-pricing.mjs';
+import { loadStore } from './builds-store.mjs';
 
 const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '..', '..'));
 export const RULE_FILES = ['_claude/shared/rules/RULES.md', '_claude/rules/RULES.md'];
@@ -160,9 +161,12 @@ export function parseRunNote(text, at = '') {
   if (!m) return null;
   return { session: m[1], briefOnly: m[2] === 'brief only', startTokens: m[3] ? Math.round(Number(m[3]) * (m[4] ? 1000 : 1)) : null, startCostUsd: m[5] ? Number(m[5]) : null, costUsd: Number(m[6]), at, from: 'note' };
 }
+/** The build's notes, from the builds store itself (the axf-data tables once cut over; Pipeline 2.0: no store.json). */
 export function noteRuns(buildId, env = process.env) {
-  const f = env.AXF_BUILDS_STORE || join(ROOT, '_claude', 'builds', 'store.json');
-  const b = (readJson(f)?.builds ?? []).find((x) => x.id === buildId);
+  let store = null;
+  if (env.AXF_BUILDS_STORE) store = readJson(env.AXF_BUILDS_STORE); // a test store
+  else { try { store = loadStore(); } catch { store = null; } }
+  const b = (store?.builds ?? []).find((x) => x.id === buildId);
   return (b?.notes ?? []).map((n) => parseRunNote(n.text, n.at)).filter(Boolean).reverse();
 }
 

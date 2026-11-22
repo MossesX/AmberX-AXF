@@ -29,6 +29,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
+import builds_store
 import plugin_services
 
 from . import crew
@@ -38,7 +39,7 @@ HEADLESS = "axf.headless@1"
 ROSTER = "axf.swarm-roster@1"
 SNAPSHOT_TTL = 2.0
 LIVE_EVERY = 2.0
-STORE = crew.ROOT / "_claude" / "builds" / "store.json"
+STORE: Path | None = None  # a test store file; None = the builds store itself (builds_store.read(): the tables)
 BUILDS_ROOT = os.environ.get("AXF_BUILDS_ROOT", "/root/axf-builds")
 
 _lock = threading.Lock()
@@ -83,7 +84,7 @@ def snapshot(force: bool = False) -> dict[str, Any]:
             return _cache["value"]
         sessions, meters, source = _sessions(now)
         roster = _roster()
-        value = crew.snapshot(sessions, meters, crew.store_builds(STORE), roster, now)
+        value = crew.snapshot(sessions, meters, crew.store_builds(STORE if STORE is not None else builds_store.read()), roster, now)
         value["source"] = {**source, "roster": bool(roster)}
         body = json.dumps({k: v for k, v in value.items() if k != "now"}, sort_keys=True, default=str)
         _cache.update(at=now, value=value, sig=hashlib.sha1(body.encode()).hexdigest())

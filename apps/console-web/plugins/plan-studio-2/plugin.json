@@ -6,10 +6,9 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). The original Plan Studio is untouched.",
+  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). It is the one Plan Studio: it provides plans@1 (plans.mjs), so control@1 planner.plans, \"put it in a plan for later\" and the orchestrator read and write this tree.",
   "targets": [
-    "axf-console",
-    "amberx-droid"
+    "axf-console"
   ],
   "provides": [
     "view:plan-studio-2",
@@ -18,7 +17,8 @@
     "dialog:plan-studio-2.move",
     "dialog:plan-studio-2.link",
     "dialog:plan-studio-2.build",
-    "service:plan-tree@1"
+    "service:plan-tree@1",
+    "service:plans@1"
   ],
   "scopes": [
     "ROUTES"
@@ -42,6 +42,9 @@
     "mentions": [
       "apps/console-web/plugins/README.md",
       "apps/console-web/plugins/wake-listener/catalog.mjs",
+      "framework/cli/project-seed.mjs",
+      "framework/spec/CONTROL.md",
+      "_claude/shared/rules/RULES.md",
       ".github/workflows/android.yml",
       "_claude/memory/docs/rebuilds/fable-rebuild-plan-studio-cleared-out.md"
     ]
@@ -56,22 +59,23 @@
       { "route": "GET /find", "id": "find", "title": "Find items", "description": "Words → matching items, best first; each hit's `focus` opens it in the console (plan-studio-2.focus).", "readOnly": true },
       { "route": "GET /export", "id": "export", "title": "Export as Markdown or JSON", "description": "The whole tree or one branch as Markdown (`format=md`) or a plan-tree-export@1 JSON (`format=json`).", "readOnly": true },
       { "route": "POST /add", "id": "add", "title": "Add an item", "description": "A new plan, section, step, note, list or list item, inside `parent` (an id or words; empty = top level) at `index`." },
-      { "route": "POST /rename", "id": "rename", "title": "Rename an item" },
+      { "route": "POST /rename", "id": "rename", "title": "Rename an item", "description": "Gives an item (by id or by words in its title) a new title. Its children, links and place in the tree stay as they are." },
       { "route": "POST /edit", "id": "edit", "title": "Edit an item", "description": "Change title, body, status, done, priority, tags, model, minutes, kind or collapsed." },
       { "route": "POST /move", "id": "move", "title": "Move an item", "description": "Into another item (`parent`, empty = top level) at `index`; everything under it moves along." },
       { "route": "POST /nudge", "id": "nudge", "title": "Move an item up or down", "description": "One place among its siblings: delta -1 (up) or 1 (down)." },
       { "route": "POST /indent", "id": "indent", "title": "Indent an item", "description": "Into the sibling above it." },
       { "route": "POST /outdent", "id": "outdent", "title": "Outdent an item", "description": "Out to after its parent." },
       { "route": "POST /duplicate", "id": "duplicate", "title": "Duplicate an item", "description": "A copy of it and everything under it, right after it." },
-      { "route": "DELETE /item/{id}", "id": "delete", "title": "Delete an item (to the trash, undo brings it back)", "destructive": true, "confirm": true },
+      { "route": "DELETE /item/{id}", "id": "delete", "title": "Delete an item (to the trash, undo brings it back)", "description": "Moves an item and everything under it to the trash; undo brings it back where it was.", "destructive": true, "confirm": true },
       { "route": "POST /undo", "id": "undo", "title": "Undo a delete", "description": "Brings the newest deleted item (or `trashId`) back where it was." },
       { "route": "POST /link", "id": "link", "title": "Link an item", "description": "An explicit link to a to-do, build, note, Shipped feature, another plan item or a URL. Never a sync." },
-      { "route": "POST /unlink", "id": "unlink", "title": "Remove a link" },
+      { "route": "POST /unlink", "id": "unlink", "title": "Remove a link", "description": "Removes one link from an item. The linked to-do, build, note or page itself is not changed." },
       { "route": "POST /collapse", "id": "collapse", "title": "Collapse or expand", "description": "One item (`id`) or everything (`all: true`); `collapsed: false` expands." },
       { "route": "POST /import", "id": "import", "title": "Import items", "description": "A plan-tree-export@1 (or a list of items) under `parent`; ids are made new." },
-      { "route": "POST /build", "id": "build", "title": "Send to the build orchestrator", "description": "The item's open steps become a pending build's steps; `preview: true` shows the build without writing it." },
+      { "route": "POST /build", "id": "build", "title": "Send to the build orchestrator", "description": "The item becomes one pending Pipeline 2.0 build (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps); `preview: true` shows it without writing it." },
+      { "route": "POST /emergency", "id": "emergency", "title": "Send as an emergency build", "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Like Send to the build orchestrator, and the build is tagged emergency: it skips the line, builds in the 2 emergency slots and lands first." },
       { "route": "POST /say", "id": "say", "title": "Say a plan command", "description": "One spoken sentence (new plan X, add a step Y to X, rename X to Y, delete X, undo, move X into Y, mark X done, send X to the build orchestrator, find X, open X) → the matching change, with what to say back." },
-      { "route": "DELETE /all", "id": "clear", "title": "Clear everything (the trash too)", "destructive": true, "confirm": true }
+      { "route": "DELETE /all", "id": "clear", "title": "Clear everything (the trash too)", "description": "Deletes every item and empties the trash. This cannot be undone.", "destructive": true, "confirm": true }
     ]
   },
   "tokens": {

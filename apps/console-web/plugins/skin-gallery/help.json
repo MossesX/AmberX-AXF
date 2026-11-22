@@ -29,22 +29,22 @@
         "text": "Shows the preview at desktop or phone width. Nothing is saved until you tap Use skin."
       },
       {
-        "target": "skin-gallery.use",
+        "target": "action:handler:skin-gallery.use",
         "title": "Use skin",
         "text": "Switches the picked scope to the skin you are previewing. Undo puts it back."
       },
       {
-        "target": "skin-gallery.back",
+        "target": "action:handler:skin-gallery.back",
         "title": "Back to skin",
         "text": "Drops every change made on top of the skin at this scope, so it shows as it ships. The skin stays."
       },
       {
-        "target": "skin-gallery.restore",
+        "target": "action:handler:skin-gallery.restore",
         "title": "Restore to Default",
         "text": "Puts this scope back to its default: no hub-wide skin, the app's saved look, or the screen / plugin following its parent. Undo puts it back."
       },
       {
-        "target": "skin-gallery.undo",
+        "target": "action:handler:skin-gallery.undo",
         "title": "Undo",
         "text": "Takes back the last Use, Back or Restore. Only one step is kept."
       },
@@ -151,7 +151,7 @@
           },
           {
             "say": "Use skin switches it. Undo takes it back.",
-            "target": "skin-gallery.use"
+            "target": "action:handler:skin-gallery.use"
           }
         ]
       }

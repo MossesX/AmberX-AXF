@@ -1,0 +1,15 @@
+{
+  "$axf": "host-service@1",
+  "id": "build-watchdog",
+  "title": "Build watchdog",
+  "description": "One cron for every watch of the Build orchestrator's watchdog (build-watchdogs@1): build sessions that are stuck or were killed, builds standing in one status too long, rows left on a list after their PR merged or closed. Every minute; each watch runs when it is on and due. Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-build-watchdog",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-build-watchdog.log"
+}

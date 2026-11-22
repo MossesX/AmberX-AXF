@@ -252,6 +252,19 @@ export const PROGRESS_WIDTH: Record<'compact' | 'regular' | 'wide', number> = { 
 export function progressWidth(w: unknown): number { return PROGRESS_WIDTH[w as keyof typeof PROGRESS_WIDTH] ?? PROGRESS_WIDTH.regular; }
 /** Theme switch: the color theme to swap to from the active one (dark while light is active or neither; light while dark is). */
 export function themeSwitchNext(active: unknown, light: unknown, dark: unknown): string { return active === dark ? String(light) : String(dark); }
+/**
+ * Theme switch pair: the light / dark pair a switch toggles inside. Its own pair while the colour theme in force is one
+ * of the two; otherwise the first other switch's pair that holds the colour theme in force (a look such as the AmberX
+ * design packages brings its own day / night themes, and the banner's switch must stay inside them instead of jumping
+ * to an unrelated theme); otherwise its own pair.
+ */
+export function themeSwitchPair(active: unknown, own: { light?: unknown; dark?: unknown }, others: ReadonlyArray<{ light?: unknown; dark?: unknown }> = []): { light: string; dark: string } {
+  const pair = (p: { light?: unknown; dark?: unknown }) => ({ light: String(p?.light ?? ''), dark: String(p?.dark ?? '') });
+  const mine = pair(own);
+  if (typeof active !== 'string' || !active || active === mine.light || active === mine.dark) return mine;
+  const hit = others.find((p) => p && (p.light === active || p.dark === active) && p.light && p.dark && p.light !== p.dark);
+  return hit ? pair(hit) : mine;
+}
 /** Image address a logo/avatar may show: https, http, data:image or an app path (starts with / or ./), else null. */
 export function imageSrc(src: unknown): string | null {
   const s = typeof src === 'string' ? src.trim() : '';

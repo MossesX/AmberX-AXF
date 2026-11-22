@@ -113,6 +113,7 @@ def pair_confirm(hello: dict, person: dict | None, at: str = "") -> dict[str, An
         S.save_pairing(r["pairing"])
         S.save_device(r["device"])
     S.log({"at": at, "op": "claim", "ok": True, "deviceId": r["device"]["deviceId"], "by": person})
+    clear_rejection()
     _alert("pair", r["device"]["deviceId"], f"{r['device']['name']} is paired with the console", "info")
     return {"ok": True, "token": r["token"], "device": device_view(r["device"], at), "origin": origin(), "link": E.LINK, "hub": E.HUB}
 
@@ -250,7 +251,11 @@ def send(command: str, arguments: dict | None, by: dict, device_id: str = "", ap
 def command_view(c: dict) -> dict[str, Any]:
     results = c.get("results") or []
     last = results[-1] if results else None
-    return {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    v = {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    if c.get("command") == "open_url":
+        # what really happened, the same words on every surface (REST, MCP, `axf phone command`, voice)
+        v["opened"] = opened_how(v)
+    return v
 
 
 def sweep(at: str = "") -> int:
@@ -293,6 +298,72 @@ def commands(device_id: str = "", limit: int = 50) -> dict[str, Any]:
 
 # ---- the phone's side of the link (device token; PHONE-CONNECT.md → The link)
 
+REJECTED_KEEP_S = 7 * 86400  # a refused token older than this no longer reads as "disconnected"
+REPAIR = {"reason": "pair"}  # machine-readable on every refused token: the phone stops retrying and asks to re-pair
+
+
+def device_for(token: str, at: str = "") -> dict:
+    """`device_by_token` for the phone's own routes: a refused token is recorded (status → link "disconnected", one
+    banner alert, the systems check) and answered with `detail.reason: "pair"` so the phone stops retrying with it."""
+    try:
+        return device_by_token(token)
+    except PhoneError as e:
+        if e.err.get("code") in E.LINK["rejectedCodes"]:
+            if E.is_token(token):  # only a real device key counts as a phone; anything else is just a wrong caller
+                note_rejection(token, e.err["code"], at)
+            raise PhoneError({**e.err, "detail": {**(e.err.get("detail") or {}), **REPAIR}}) from None
+        raise
+
+
+def note_rejection(token: str, code: str, at: str = "") -> dict[str, Any]:
+    """One refused device token: when, how often, why, its prefix (never the token) and the phone it once belonged to."""
+    at = at or now()
+    prefix = token[: E.HUB["tokenPrefixChars"]]
+    h = E.sha256hex(token)
+    was = next((d for d in S.devices() if d.get("revokedHash") == h), None)
+    with S.LOCK:
+        old = S.link().get("rejected") or {}
+        fresh = not old or old.get("prefix") != prefix
+        rec = {"at": at, "first": at if fresh else old.get("first") or at, "count": 1 if fresh else int(old.get("count") or 0) + 1,
+               "code": code, "prefix": prefix, "deviceId": (was or {}).get("deviceId", ""), "name": (was or {}).get("name", "")}
+        S.save_link({"rejected": rec})
+    if fresh:
+        S.log({"at": at, "op": "rejected", "code": code, "prefix": prefix, "deviceId": rec["deviceId"]})
+        _alert("rejected", prefix, f"{rec['name'] or 'A phone'} is trying to connect with an old key: re-pair it in Settings → Plugins → Phone Connect", "warning")
+    return rec
+
+
+def clear_rejection() -> None:
+    """A phone greeted or paired again: the refused key is history, and its banner alert goes."""
+    rej = S.link().get("rejected")
+    if not rej:
+        return
+    S.save_link({})
+    try:
+        import console_context as cx
+        cx.resolve_alerts([f"phone-connect:rejected:{rej.get('prefix', '')}"])
+    except Exception:  # noqa: BLE001 — an alert that can't be resolved never stops the call
+        pass
+
+
+def link_state(d: dict | None, at: str = "") -> dict[str, Any]:
+    """The link in one word for every surface: connected · offline · disconnected (a refused token after the phone was
+    last seen: it will not come back by itself, re-pair) · not-paired."""
+    at = at or now()
+    rej = S.link().get("rejected") or None
+    if rej and (E.ms(at) - E.ms(rej["at"])) / 1000 > REJECTED_KEEP_S:
+        rej = None
+    if d and E.is_online(d, at):
+        return {"state": "connected", "message": f"{d['name']} is connected.", "rejected": None, "repair": ""}
+    seen_at = (d or {}).get("lastSeenAt") or ""
+    if rej and (not E.is_timestamp(seen_at) or E.ms(rej["at"]) > E.ms(seen_at)):
+        who = rej.get("name") or (d or {}).get("name") or "The phone"
+        return {"state": "disconnected", "message": f"Disconnected: {who} used a key the console no longer accepts. Tap to re-pair.", "rejected": rej, "repair": PAIR_ADDRESS}
+    if d:
+        return {"state": "offline", "message": f"{d['name']} is {E.presence(d, at)}.", "rejected": None, "repair": ""}
+    return {"state": "not-paired", "message": "No phone is paired. Tap to pair.", "rejected": None, "repair": PAIR_ADDRESS}
+
+
 def device_by_token(token: str) -> dict:
     """The phone a device token belongs to: `revoked`, `unpaired` or `denied` otherwise (never says which phone)."""
     if not E.is_token(token):
@@ -328,6 +399,7 @@ def hello(d: dict, body: dict, at: str = "") -> dict[str, Any]:
         nd["app"] = "phone-connect-droid"
     S.save_device(nd)
     _resolve_offline(nd)
+    clear_rejection()
     return {"ok": True, "deviceId": nd["deviceId"], "watch": nd["watch"], "urlPolicy": nd["urlPolicy"], "features": S.settings()["features"],
             "rotate": bool(nd.get("rotateRequested")), "hub": E.HUB, "link": E.LINK}
 
@@ -400,7 +472,8 @@ def relay_decision(c: dict, r: dict, at: str) -> dict[str, Any]:
     d = S.device(c["deviceId"]) or {}
     owner = (d.get("owner") or {}).get("who", "") if isinstance(d.get("owner"), dict) else ""
     tap = {"kind": "phone-tap", "auth": "device", "by": r["by"], "deviceId": c["deviceId"], "owner": owner,
-           "approvalId": c["arguments"]["approvalId"], "prompt": c["arguments"].get("kind", "approval"), "decision": r["data"]["decision"]}
+           "approvalId": c["arguments"]["approvalId"], "prompt": c["arguments"].get("kind", "approval"), "decision": r["data"]["decision"],
+           **({"rev": c["arguments"]["rev"]} if isinstance(c["arguments"].get("rev"), int) else {})}
     if relay is None:
         out = {"ok": False, "code": "unavailable", "message": "The approvals banner is off, so the console can't pass your tap on. Open the approval on axHub."}
     else:
@@ -458,10 +531,106 @@ def status(at: str = "") -> dict[str, Any]:
     return {"ok": True, "$axf": "phone-connect-status@1", "at": at, "paired": bool(d), "device": device_view(d, at) if d else None,
             "presence": E.presence(d, at) if d else "not paired", "online": E.is_online(d, at) if d else False,
             "devices": len(S.devices()), "pairing": pairing_view(current_pairing(at), at), "features": S.settings()["features"],
+            "link": link_state(d, at), "lastSeenAt": (d or {}).get("lastSeenAt", ""), "approvals": _approvals_last(),
             "recorder": rec or {"running": False}, "origin": origin()}
 
 
+def _approvals_last() -> dict[str, Any]:
+    from . import approvals  # late: approvals.py imports this module
+    return approvals.last()
+
+
 SETTINGS_ADDRESS = "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect"
+PAIR_ADDRESS = f"{SETTINGS_ADDRESS}/tab:phone-connect.tabs=pair"
+
+
+def presence(at: str = "") -> dict[str, Any]:
+    """Is a phone there before Amber calls (MCP `phone_status`): paired, online, when it last checked in, and whether
+    the link needs Brett (a refused key = re-pair). Read only; never a token."""
+    at = at or now()
+    d = default_device()
+    seen_at = (d or {}).get("lastSeenAt") or ""
+    feats = S.settings()["features"]
+    return {"ok": True, "$axf": "phone-connect-presence@1", "at": at, "paired": bool(d), "online": bool(d) and E.is_online(d, at),
+            "presence": E.presence(d, at) if d else "not paired", "lastSeenAt": seen_at,
+            "lastSeenAgo": E.ago(seen_at, at) if E.is_timestamp(seen_at) else "",
+            "device": {k: d.get(k) for k in ("deviceId", "name", "appVersion", "capabilities")} if d else None,
+            "link": link_state(d, at), "features": feats, "appOutdated": app_outdated(d),
+            "canOpenPages": bool(d) and E.is_online(d, at) and feats.get("open_url", True) and "open-url@1" in (d.get("capabilities") or [])}
+
+
+# ---- open a page and bring it to the front (MCP `phone_open_url`)
+
+BROWSERS = E.COMMANDS["open_url"]["arguments"]["browser"]["enum"]
+WHERES = E.COMMANDS["open_url"]["arguments"]["where"]["enum"]
+OPEN_WAIT_S = 8.0
+HOW_WORDS = {"direct": "It is open and in front.", "console-overlay": "It is open in the console app's overlay.",
+             "console-app": "The console app is open on it, in front.",
+             "notification": "Android would not let it open by itself, so a high-priority notification is on the phone: one tap opens it.",
+             "full-screen-intent": "A high-priority notification is on the phone: one tap opens it."}
+NOTIFIED_HOWS = ("notification", "full-screen-intent")
+WHY_WORDS = {"no-permission": "Not opened: Phone Connect may not display over other apps, so a notification is on the phone and one tap opens it. Allow it on the app's screen and pages open by themselves.",
+             "launch-failed": "Not opened: the phone was allowed to open it but nothing came to the front, so a notification is on the phone and one tap opens it."}
+
+
+def opened_how(c: dict[str, Any]) -> dict[str, Any]:
+    """What the phone really did with one open_url command, never more than it said: {answered, opened, notified, how,
+    why, message}. `opened` is true only when the phone answered that the page is on screen; a tap-to-open
+    notification is `notified`, not opened (an app before 0.3.0 answered `opened: true` for both, so `how` decides);
+    no answer yet is neither."""
+    res = c.get("result") or {}
+    data = res.get("data") or {}
+    answered = c.get("status") == "done"
+    how = str(data.get("how") or "")
+    notified = answered and (how in NOTIFIED_HOWS or data.get("notified") is True)
+    opened = answered and not notified and data.get("opened") is not False
+    if not answered:
+        message = "Sent to the phone; it has not answered yet, so nothing says it opened (read the command for its result)."
+    elif notified:
+        message = WHY_WORDS.get(str(data.get("why") or ""), HOW_WORDS["notification"])
+    elif opened:
+        message = HOW_WORDS.get(how, "The phone opened it.")
+    else:
+        message = "The phone took it and opened nothing (an overlay verb, or nothing to open)."
+    return {"answered": answered, "opened": opened, "notified": notified, "how": how, "why": str(data.get("why") or ""), "message": message}
+
+
+def open_page(url: Any, browser: Any = "", by: dict | None = None, device_id: str = "", wait_s: float = OPEN_WAIT_S) -> dict[str, Any]:
+    """Open an https page on one of Brett's own sites (amberxai.com) on the paired phone, in Chrome or the default
+    browser, in front. Waits a few seconds for the phone's answer, so the caller hears what really happened:
+    `opened` with `how: direct` (in front), or `notified` with `how: notification` and `why` (it did not open; a
+    notification waits for one tap). No answer in time is neither."""
+    browser = str(browser or "chrome")
+    if browser not in BROWSERS:
+        fail("validation", f"browser must be one of {', '.join(BROWSERS)}")
+    if not isinstance(url, str) or not url.strip():
+        fail("validation", "url is needed: an https amberxai.com address")
+    url = url.strip()
+    try:
+        scheme, host, _ = E._host(url)  # noqa: SLF001 — the engine's own url reader
+    except (ValueError, KeyError):
+        scheme, host = "", ""
+    if scheme == "https:" and not E.own_site(host):
+        fail("denied", f"{host} is not one of your own sites ({', '.join(E.OWN_SITES)}): this tool opens only those")
+    r = send("open_url", {"url": url, "where": "browser", "browser": browser}, by or {"kind": "service", "who": "console", "via": "console"}, device_id)
+    c = _wait(r["id"], wait_s)
+    res = c.get("result") or {}
+    if c["status"] == "failed":
+        raise PhoneError((res.get("error") or E.wire_error("unexpected", "the phone failed to open it")))
+    o = opened_how(c)
+    return {"ok": True, "id": r["id"], "status": c["status"], "opened": o["opened"], "notified": o["notified"], "how": o["how"], "why": o["why"],
+            "browser": browser, "url": url, "message": o["message"]}
+
+
+def _wait(cid: str, wait_s: float) -> dict[str, Any]:
+    """The command once it is done or failed, or as it stands when the wait runs out."""
+    import time
+    end = time.time() + max(0.0, wait_s)
+    c = command(cid)["command"]
+    while time.time() < end and c["status"] not in ("done", "failed"):
+        time.sleep(0.25)
+        c = command(cid)["command"]
+    return c
 
 
 def state(at: str = "") -> dict[str, Any]:
@@ -471,7 +640,7 @@ def state(at: str = "") -> dict[str, Any]:
     devs = devices(at)
     return {"ok": True, "$axf": "phone-connect-state@1", "status": status(at), "devices": devs, "settings": S.settings(),
             "commands": [command_view(c) for c in S.commands(limit=20)],
-            "links": {"settings": SETTINGS_ADDRESS, "tabs": {t: f"tab:phone-connect.tabs={t}" for t in ("pair", "phones", "features", "activity")},
+            "links": {"settings": SETTINGS_ADDRESS, "tabs": {t: f"tab:phone-connect.tabs={t}" for t in ("pair", "phones", "features", "activity")},  # axf-not-plugin:activity (a tab of this panel)
                       "devices": {d["deviceId"]: f"row:device/{d['deviceId']}" for d in devs},
                       "features": {k: f"setting:phone-connect.feature.{k}" for k in S.FEATURES},
                       "actions": {"open": "phone.open", "device": "phone.device:<deviceId>", "tab": "phone.tab:<pair|phones|features|activity>"}}}
@@ -522,6 +691,28 @@ class PhoneCapability:
     def command(self, cid: str) -> dict[str, Any]:
         return command(cid)
 
+    def presence(self) -> dict[str, Any]:
+        return presence()
+
+    def follow(self, address: str, *, by: dict | None = None) -> dict[str, Any]:
+        """Follow Amber on the phone: bring the console to the front there at a console-control@1 address (or an
+        action deep link such as `hub.review:<id>`). A no-op when the switch is off or no phone is online. Only ever
+        opens the console's own page; never raises."""
+        address = str(address or "").strip()[:500]
+        if not address:
+            return {"ok": False, "shown": False, "message": "nothing to show"}
+        if not S.feature("follow"):
+            return {"ok": True, "shown": False, "message": "Follow Amber on the phone is off (Settings → Plugins → Phone Connect → Features)"}
+        if not self.available():
+            return {"ok": True, "shown": False, "message": f"the phone is {status()['presence']}"}
+        from urllib.parse import quote
+        url = f"{origin()}/?axf-open={quote(address, safe=':/=.,_-')}"
+        try:
+            r = send("open_url", {"url": url}, by or {"kind": "service", "who": "follow", "via": "console"})
+        except PhoneError as e:
+            return {"ok": False, "shown": False, "message": e.err["message"], "error": e.err}
+        return {"ok": True, "shown": True, "id": r["id"], "url": url, "message": "the phone is opening the console there"}
+
     # axHub tool names that the console answers from the paired phone first (callers keep their names). recorder_start
     # is not here: its approval is the hub's (decision #108); the hub's adapter relays it with the approvalId.
     HUB_TOOLS = {"amberx.open_url": "open_url", "phone.open_url": "open_url", "amberx.recorder_stop": "recorder.stop",
@@ -535,7 +726,11 @@ class PhoneCapability:
             return None
         args = dict(arguments or {})
         if cmd == "open_url":
-            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay"}
+            # a caller that names only a browser wants the page in that browser (chrome | default), in front; one that
+            # says where: overlay gets the console app first (its overlay, or the app in front), the browser after it
+            where = args.get("where") if args.get("where") in WHERES else "browser" if args.get("browser") else "overlay"
+            args = {"url": str(args.get("url") or ""), "where": where,
+                    **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
         else:
             args = {}
         try:
@@ -554,9 +749,10 @@ class PhoneCapability:
         data = res.get("data") or {}
         if cmd == "recorder.status":
             data = data or (status().get("recorder") or {})
-        text = {"open_url": "Phone Connect opened it on the phone" if c["status"] == "done" else "Phone Connect sent it to the phone",
+        opened = opened_how(c) if cmd == "open_url" else None
+        text = {"open_url": (opened or {}).get("message", ""),
                 "recorder.stop": "Phone Connect stopped the recorder", "recorder.status": json_text(data)}[cmd]
-        return {"ok": True, "output": text, "command": c, "data": data}
+        return {"ok": True, "output": text, "command": c, "data": data, **({"opened": opened} if opened else {})}
 
     def push_alert(self, alert: dict[str, Any], notify_id: str = "", url: str = "") -> dict[str, Any]:
         """The alert hub's phone channel: one console alert (it already passed axf.notify@1) as a phone notification."""
@@ -572,11 +768,33 @@ class PhoneCapability:
 
 HEALTH_ID = "phone-connect"
 OFFLINE_RED_S = 600  # paired and watched, but silent this long = red
+# The first app build that opens the console straight on the phone (the tap-to-open notification only as the fallback,
+# and it says so) and floats a held approval over the screen with Approve / Deny on it. An older app still works, but
+# a console wake arrives as a notification to tap and approvals only as a notification.
+MIN_APP = "0.3.0"
+APP_WHERE = "axHub → Apps → Phone Connect → Download (https://axhub.amberxai.com/apps)"
+
+
+def app_outdated(d: dict | None) -> bool:
+    """Is this phone's app older than MIN_APP? Unknown or odd versions count as old."""
+    def parts(v: Any) -> tuple[int, ...]:
+        try:
+            return tuple(int(x) for x in str(v or "").split("-")[0].split("."))
+        except ValueError:
+            return ()
+    return bool(d) and parts(d.get("appVersion")) < parts(MIN_APP)
 
 
 def health_probe(at: str = "") -> dict[str, Any]:
     at = at or now()
     paired = S.paired()
+    ls = link_state(default_device(), at)
+    if ls["state"] == "disconnected":
+        rej = ls["rejected"]
+        return {"status": "error", "summary": "A phone is trying to connect with an old key: re-pair it in Settings → Plugins → Phone Connect. Until then approvals, pages and notifications don't reach it.",
+                "details": [f"The console refused its key {rej['count']} time(s), last {E.ago(rej['at'], at)} ({rej['code']}).",
+                            "On the phone: open Phone Connect, tap Re-pair, type the new code.", "Auto fix makes the code and sends you a notice with it."],
+                "link": PAIR_ADDRESS}
     if not paired:
         revoked = [d for d in S.devices() if d.get("state") == "revoked"]
         return {"status": "warn", "summary": "No phone is paired with Phone Connect: pushes, approvals on the phone and the recorder can't reach you." + (" The last one was revoked." if revoked else ""),
@@ -584,6 +802,10 @@ def health_probe(at: str = "") -> dict[str, Any]:
                 "link": SETTINGS_ADDRESS}
     d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
     if E.is_online(d, at):
+        if app_outdated(d):
+            return {"status": "warn", "summary": f"{d['name']} runs Phone Connect {d.get('appVersion') or '?'}: update it to {MIN_APP} or newer so the console opens by itself (no notification to tap) and approvals float on screen with Approve / Deny.",
+                    "details": [f"On the phone: {APP_WHERE}, install it over the old one.", "Open Phone Connect once afterwards; it keeps its pairing."],
+                    "link": f"row:device/{d['deviceId']}"}
         return {"status": "ok", "summary": f"{d['name']} is online (Phone Connect).", "details": []}
     silent = (E.ms(at) - E.ms(d["lastSeenAt"])) / 1000 if E.is_timestamp(d.get("lastSeenAt")) else 1e9
     pres = E.presence(d, at)
@@ -598,8 +820,8 @@ def health_fix(at: str = "") -> dict[str, Any]:
     hub (axf.notify@1 decides where it goes: web push / ntfy, AmberX while it exists)."""
     at = at or now()
     paired = S.paired()
-    if not paired:
-        p = current_pairing(at) or pair_start({"kind": "service", "who": "systems-check", "via": "console"}, at)["pairing"]
+    if not paired or link_state(default_device(), at)["state"] == "disconnected":
+        p = current_pairing(at) or pair_start({"kind": "service", "who": "systems-check", "via": "console"}, at)["pairing"]  # axf-not-plugin:systems-check (actor name)
         _alert("pair", "notice", f"Pair your phone: code {p['code']} in the Phone Connect app (10 min)", "warning")
         return {"state": "done", "message": f"Pairing code {p['code']} issued and sent as a notice.", "link": SETTINGS_ADDRESS}
     d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
@@ -623,7 +845,10 @@ def ensure_health() -> bool:
         reg.register({"id": HEALTH_ID, "label": "Phone Connect (phone paired and online)", "service": "phone", "order": 45, "severity": "warn",
                       "run": lambda: health_probe(),
                       "breaks": "Without a paired, online phone, notifications, approval prompts on the phone, open-a-page and the audio recorder can't reach you.",
-                      "instructions": ["Settings → Plugins → Phone Connect → New code.", "Open the Phone Connect app, type the code, sign in to axHub when it asks.", "Switch Watch on so the link stays open."],
+                      "instructions": [f"Install or update the Phone Connect app ({MIN_APP} or newer) on the phone: {APP_WHERE}.",
+                                       "Settings → Plugins → Phone Connect → New code (or Re-pair when it says disconnected).",
+                                       "Open the Phone Connect app, sign in to axHub when it asks, type the code, tap Pair.", "Switch Watch on so the link stays open.",
+                                       "For pages that come to the front by themselves: in the app, tap Allow opening pages in front."],
                       "autoFix": {"label": "Re-send the pairing notice", "run": lambda: health_fix()}}, "phone-connect")
     except Exception:  # noqa: BLE001 — the plugin works without its health item
         return False

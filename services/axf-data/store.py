@@ -362,6 +362,45 @@ class Store:
         return {'$axf': 'data-list@1', 'ns': ns, 'prefix': prefix, 'items': [_frame(r) for r in page],
                 'next': page[-1]['path'] if len(rows) > limit else '', 'total': total}
 
+    def patch(self, ns: str, path: str, body: dict, caller: Caller) -> dict:
+        """data-patch@1 on the SQLite engine: the document twin of pg.PgStore.patch. The record is read, the named items
+        replaced or added (ifRev checked against each item's `rev`), the head fields set, then written with the etag read;
+        the journal line follows. One process lock covers it, so no writer slips between the read and the write."""
+        import tables as T  # noqa: WPS433 (tables imports this module)
+        cur0 = self._row(ns, path)
+        if not cur0 or cur0['deleted']:
+            raise DataError('not_found', f'{ns}/{path} not found: put the document first', ns=ns, path=path)
+        if cur0['kind'] != 'record':
+            raise DataError('invalid_key', f"{ns}/{path} is a {cur0['kind']}", ns=ns, path=path)
+        t = T.table_for(ns, path, 'record', 'application/json', b'{}')
+        try:
+            p = T.check_patch(body, t if isinstance(t, T.DocTable) else None)
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        journal = p['journal']
+        if journal:
+            self._kind_ok(ns, 'journal', journal['path'])
+        with self.lock:
+            self.read_only_check(ns, path)
+            cur = self._row(ns, path)
+            doc = json.loads(self.body_of(cur) or b'{}')
+            if not isinstance(doc, dict):
+                raise DataError('invalid_body', f'{ns}/{path} is not an object: nothing to patch', ns=ns, path=path)
+            conflicts = []
+            for lkey, changes in p['lists'].items():
+                conflicts += T.rev_conflicts(changes, T.doc_revs(doc, lkey, t.lists[lkey], [ch['key'] for ch in changes]))
+            if conflicts:
+                raise DataError('conflict', f"{ns}/{path}: {len(conflicts)} item(s) changed since they were read: {', '.join(c['key'] for c in conflicts[:10])}",
+                                ns=ns, path=path, rev=cur['rev'], etag=cur['etag'])
+            before = {lkey: {it.get(t.lists[lkey].key) for it in (doc.get(lkey) or []) if isinstance(it, dict)} for lkey in p['lists']}
+            new = T.apply_patch_doc(doc, t, p['head'], p['lists'])
+            added = sum(1 for lkey, chs in p['lists'].items() for ch in chs if ch['key'] not in before[lkey])
+            frame = self.put(ns, path, canonical(new).encode('utf-8'), 'application/json', caller, if_match=cur['etag'])
+            jout = None
+            if journal:
+                jout = self.append(ns, journal['path'], [journal['entry']], caller, idempotency_key=journal.get('idem') or '')
+            return {'$axf': 'data-patch@1', 'record': frame, 'applied': sum(len(c) for c in p['lists'].values()), 'added': added, 'journal': jout}
+
     def append(self, ns: str, path: str, entries: list, caller: Caller, idempotency_key: str = '') -> dict:
         self._kind_ok(ns, 'journal', path)
         if not isinstance(entries, list) or not entries:

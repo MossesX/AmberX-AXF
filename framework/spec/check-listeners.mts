@@ -17,7 +17,7 @@ const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
 console.log('listeners (listener@1)');
 
 // ---- baked copies
-for (const app of ['console-web', 'amberx-droid']) {
+for (const app of ['console-web']) {
   for (const f of ['core.ts', 'index.ts', 'library.json', 'cases.json', 'registry.json']) check(src(`../../apps/${app}/src/axf/libs/listeners/${f}`) === src(`../libs/listeners/${f}`), `${app} bakes the current ${f}`);
 }
 

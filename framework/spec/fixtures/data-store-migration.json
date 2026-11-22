@@ -471,11 +471,12 @@
       "from": "<projects>/amberx-axf/_data/tracker.json",
       "to": "console/tracker.json",
       "kind": "record",
-      "policy": "copy",
+      "policy": "rebuild",
       "writers": [
         "framework/cli/tracker.mjs"
       ],
-      "count": "files"
+      "count": "none",
+      "notes": "generated from the feature catalog (catalog_features; the tracker view on axf-data): not copied, rebuilt by tracker.mjs"
     },
     {
       "id": "console-misc",

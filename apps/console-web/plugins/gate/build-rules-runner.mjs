@@ -24,6 +24,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { createStore } from './gate-store.mjs';
 import { record } from './history.mjs';
 
@@ -57,9 +58,23 @@ export function checkerOf(rule) {
   return { kind: 'none', why: c ? `checker ${c} runs in its own place` : 'no check' };
 }
 
-/** The rules a phase runs: enabled, that phase; before / after take vps rules only, the gate takes every doer. */
+/**
+ * Command checks never run at launch or at a build's end hook (Pipeline 2.0, Nov 19 2026): a `before` / `after` vps
+ * rule whose check is a command line (`builds-store.mjs verify`, a CI check) runs at the gate instead, which the lander
+ * runs once per green PR head inside its running-ci step. At launch it ran on every dispatcher tick, from old worktrees,
+ * in heavy slots. Fixers (home card, help stub, THREADS row) stay in their phase: they shape what the session builds.
+ */
+export const DEFERRED_PHASES = Object.freeze(['before', 'after']);
+export const deferredToGate = (r) => DEFERRED_PHASES.includes(r.phase) && r.doer === 'vps' && checkerOf(r).kind === 'command';
+
+/**
+ * The rules a phase runs: enabled, that phase; before / after take vps rules only (command checks left to the gate),
+ * the gate takes every doer plus the deferred command checks.
+ */
 export function rulesFor(store, phase, only = []) {
-  return BR.normStore(store).rules.filter((r) => r.enabled && r.phase === phase && (phase === 'gate' || r.doer === 'vps') && (!only.length || only.includes(r.id)));
+  return BR.normStore(store).rules.filter((r) => r.enabled && (!only.length || only.includes(r.id)) && (phase === 'gate'
+    ? r.phase === 'gate' || deferredToGate(r)
+    : r.phase === phase && r.doer === 'vps' && !deferredToGate(r)));
 }
 
 async function runCheck(rule, ctx, dryRun) {
@@ -133,11 +148,8 @@ export function touchedPlugins(branch, cwd = ROOT) {
 /** A build's record from the builds store (read only), for the fixers' context: plugins = the folders its branch touches. */
 export function buildContext(id, extra = {}) {
   let rec = {};
-  try {
-    const f = process.env.AXF_BUILDS_STORE || join(ROOT, '_claude/builds/store.json');
-    const s = JSON.parse(readFileSync(f, 'utf8'));
-    rec = (s.builds || []).find((b) => b.id === id) || {};
-  } catch { /* no store */ }
+  // the builds store itself (builds-store.mjs: the axf-data tables once cut over; Pipeline 2.0, no store.json)
+  try { rec = (loadStore().builds || []).find((b) => b.id === id) || {}; } catch { /* no store */ }
   const clean = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined && v !== ''));
   const b = { id, title: rec.title || '', branch: rec.branch || '', pr: rec.pr || '', text: rec.detail || '', status: rec.status || '', mergedAt: rec.mergedAt || '', ...clean };
   if (!Array.isArray(b.plugins)) b.plugins = touchedPlugins(b.branch) ?? [];

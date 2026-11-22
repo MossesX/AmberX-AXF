@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, importOnce, isChunkLoadError, type UsageStat } from '../src/lazyEngine.ts';
+import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, importOnce, isChunkLoadError, waves, inWaves, STARTUP_WAVES, type UsageStat } from '../src/lazyEngine.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { f(); n++; console.log(`ok ${n} ${name}`); };
@@ -116,6 +116,29 @@ t('dev: each plugin entry is its own HMR boundary; hashes cover every plugin wit
   await assert.rejects(importOnce(async () => { calls++; throw new Error('boom'); }, 1));
   assert.equal(calls, 1, 'other errors are not retried');
   n++; console.log(`ok ${n} chunk-load errors: one retry, then "New version, reload"`);
+}
+
+// Startup waves (audit F3, Nov 2026): a refresh fired every banner plugin at once and the banner waited on the slowest.
+{
+  assert.deepEqual(waves([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]]);
+  assert.deepEqual(waves([], 4), []);
+  assert.deepEqual(waves([1, 2], 0), [[1], [2]], 'size below 1 counts as 1');
+  assert.ok(STARTUP_WAVES.banners >= 1 && STARTUP_WAVES.banners <= 6, 'banner waves stay small');
+  // never more than one wave in flight; a failing wave doesn't stop the next; between runs only between waves
+  let inFlight = 0, peak = 0, gaps = 0;
+  const seen: number[] = [];
+  const ok = await inWaves([1, 2, 3, 4, 5, 6, 7], 3, async (w) => {
+    inFlight += w.length; peak = Math.max(peak, inFlight);
+    await new Promise((r) => setTimeout(r, 2));
+    seen.push(...w); inFlight -= w.length;
+    if (w.includes(4)) throw new Error('boom');
+  }, { between: async () => { gaps++; } });
+  assert.equal(ok, true); assert.equal(peak, 3); assert.deepEqual(seen, [1, 2, 3, 4, 5, 6, 7]); assert.equal(gaps, 2);
+  // a newer boot takes over: the old one stops before its next wave
+  let live = true; const ran: number[][] = [];
+  const done = await inWaves([1, 2, 3, 4], 2, async (w) => { ran.push(w); live = false; }, { go: () => live });
+  assert.equal(done, false); assert.deepEqual(ran, [[1, 2]]);
+  n++; console.log(`ok ${n} startup waves: one wave at a time, failures don't stop the rest, a newer boot takes over`);
 }
 
 console.log(`${n} checks passed`);

@@ -12,7 +12,7 @@
       "title": "Framework help packs copied into every app",
       "run": ["node", "framework/cli/help-coverage.mjs", "--sync"],
       "check": null,
-      "outputs": ["apps/console-web/src/assets/help", "apps/axhub-web/src/assets/help", "apps/amberx-droid/src/assets/help", "apps/walkthrough-studio/src/assets/help"]
+      "outputs": ["apps/console-web/src/assets/help", "apps/axhub-web/src/assets/help", "apps/walkthrough-studio/src/assets/help"]
     },
     "rebake": {
       "title": "Baked framework copy of one app (src/axf + axf.lock.json)",

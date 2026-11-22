@@ -203,7 +203,7 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       logLine(req, `requested ${minutes} min${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
       return {
         changed: true, item: view(req), text: passSentence(req, now, timeZone),
-        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or on Token control → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
+        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or in Builds → VPS Configuration → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
     case 'approve': case 'deny': {

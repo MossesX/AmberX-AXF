@@ -1,0 +1,77 @@
+# axf-host@.service — the template every host service runs from (host-service@1, framework/spec/HOST-SERVICES.md).
+# deploy/install-host-services.sh renders it once per manifest into /etc/systemd/system/axf-<id>.service (the unit name
+# the manifest and the console know), replacing %i with the service id, @DIR@ with the checkout (/opt/axf), @DATA@ with
+# the shared data folder and @NNP@ with `yes` (the manifest declares no sudo line) or `no` (it does: sudo is setuid, and
+# only the commands in /etc/sudoers.d/axf-host are allowed). It can also run as a real template instance
+# (systemctl start axf-host@<id>) for a one-off test.
+#
+# One small Node daemon, deploy/host-services/axf-hostd.mjs: loads the manifest, runs the worker, serves
+# /run/axf-host/%i.sock (host-api: api.sock + 127.0.0.1:7788), writes its heartbeat and logs JSON lines to journald
+# (journalctl -u axf-%i).
+[Unit]
+Description=AXF host service %i (axf-hostd)
+Documentation=file://@DIR@/framework/spec/HOST-SERVICES.md
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Type=simple
+User=axf-host
+Group=axf-host
+WorkingDirectory=@DIR@
+EnvironmentFile=-/etc/axf-host/env
+EnvironmentFile=-/etc/axf-host/%i.env
+Environment=AXF_HOST_ROOT=@DIR@
+# The state folder lives in the shared data folder, which on the VPS is inside a Docker volume: /var/lib/docker lets only
+# root through, so axf-host could never reach it by its real path. systemd (as root) binds that one folder to a path the
+# service user can reach; root tasks (bin/axf-task) and the console keep using the real path, and see the same files.
+Environment=AXF_HOST_DATA=@STATE@
+BindPaths=@DATA@/host-services:@STATE@/host-services
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/env node @DIR@/deploy/host-services/axf-hostd.mjs %i
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5s
+TimeoutStopSec=30s
+Nice=5
+
+# Logs: stdout lines start with <level>, so journald keeps the priority.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=axf-%i
+SyslogLevelPrefix=true
+
+# The socket folder, shared by every host service (and mounted into the axf-console container). Kept across restarts
+# of any one unit; group axf-host, setgid so every socket in it is in the group the console runs with.
+RuntimeDirectory=axf-host
+RuntimeDirectoryMode=2770
+RuntimeDirectoryPreserve=yes
+UMask=0007
+
+# Hardening. The whole file system is read-only except the checkout, the shared data folder and what sudo needs.
+NoNewPrivileges=@NNP@
+ProtectSystem=strict
+ReadWritePaths=@DIR@ @DATA@ @STATE@ -/run/sudo -/var/lib/sudo -/var/log/axf-%i.log
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID CAP_AUDIT_WRITE CAP_DAC_OVERRIDE CAP_CHOWN CAP_FOWNER CAP_KILL
+MemoryMax=1G
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

@@ -6,7 +6,7 @@
  * incident), launch N, then the N+1st is refused by the VPS (real tmux sessions named axf-limittest-*, a fake claude).
  *   node framework/spec/check-build-limit.mjs
  */
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -69,11 +69,25 @@ const res = [
   { id: 'r4', mode: 'run', pid: 500, session: 'axf-limittest-d', at: new Date(now).toISOString() },  // alive, no claude yet: counts
   { id: 'r5', mode: 'run', pid: 999, at: new Date(now).toISOString() },                                // gone: dropped
   { id: 'r6', mode: 'launch', session: 'axf-limittest-old', at: new Date(now - 3600e3).toISOString() }, // expired
+  { id: 'r7', mode: 'launch', pid: 998, session: 'axf-limittest-refused', at: new Date(now).toISOString() }, // launcher gone, no session: dropped
+  { id: 'r8', mode: 'launch', pid: 500, session: 'axf-limittest-starting', at: new Date(now).toISOString() }, // launcher alive: counts
 ];
 c = L.countLive({ ...base, reservations: res }, lim, {});
-eq(c.keep.map((r) => r.id), ['r2', 'r4'], 'reservations: open ones kept');
-eq(c.live, 4, 'run mode: session + loose claude + two reservations');
-eq(L.decide(c, lim), { ok: false, live: 4, max: 3, free: 0 }, 'over the limit: refused');
+eq(c.keep.map((r) => r.id), ['r2', 'r4', 'r8'], 'reservations: open ones kept; a launch whose launcher died with no session is not (a refused launch never holds a place)');
+eq(c.live, 5, 'run mode: session + loose claude + three reservations');
+eq(L.decide(c, lim), { ok: false, live: 5, max: 3, free: 0 }, 'over the limit: refused');
+// ghosts hold no place: a test stand-in from /tmp/axf-limit-*, a claude whose /tmp folder was deleted; a claude in a deleted build worktree still counts (the reaper judges it), and under `only` (this
+// test's own end-to-end run) the stand-ins count as builds
+const ghosts = [
+  { pid: 600, ppid: 1, comm: 'sh', argv: ['/bin/sh', '/tmp/axf-limit-q1/bin/claude', '-p', 'x'], cwd: '/tmp/axf-limit-q1/a (deleted)' },
+  { pid: 601, ppid: 1, comm: 'claude', argv: ['claude', '-p'], cwd: '/tmp/gone (deleted)' },
+  { pid: 602, ppid: 1, comm: 'claude', argv: ['claude', '-p'], cwd: '/root/axf-builds/x (deleted)' },
+];
+c = L.countLive({ procs: ghosts, tmux: new Map(), now, alive: () => true }, lim, { mode: 'launch' });
+eq(c.items.map((i) => i.pid), [602], 'ghosts: only the deleted-worktree claude counts; stand-ins and deleted /tmp folders do not');
+eq(c.ignored.map((i) => i.pid), [600, 601], 'ghosts: listed as not counted, with why');
+ok(/test stand-in/.test(c.ignored[0].why) && /deleted/.test(c.ignored[1].why), `ghosts: why ${JSON.stringify(c.ignored)}`);
+eq(L.countLive({ procs: ghosts, tmux: new Map(), now, alive: () => true }, lim, { mode: 'launch', only: /axf-limit-/ }).items.map((i) => i.pid), [600], 'under only (the test itself) its stand-ins count');
 
 // admit: N pass, N+1 refused, under one lock
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
@@ -83,6 +97,54 @@ eq(got.map((g) => g.ok), [true, true, true, false], 'limit 3: three admitted, th
 ok(L.release(got[0].id), 'release a reservation');
 ok(L.admit({ mode: 'launch', session: 'axf-limittest-x5', facts: { ...empty, now: Date.now() } }).ok, 'a released place is free again');
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+
+// emergency slots: a second pool, counted apart from maxBuilds (orchestrator N + emergency 2), Brett only
+{
+  eq([L.DEFAULTS.emergencySlots, L.normLimit({}).emergencySlots, L.normLimit({ emergencySlots: 99 }).emergencySlots, L.normLimit({ emergencySlots: 0 }).emergencySlots], [2, 2, 8, 0], 'emergency slots: default 2, clamped, 0 switches the pool off');
+  eq(L.normLimit({ emergencySlots: 2, maxBuilds: 4 }).maxBuilds, 4, 'emergency slots never change maxBuilds');
+  eq(['axf-limittest-rush--s1', 'rush--s2', 'axf-rush', 'axf-limittest-rush2--s1', 'axf-limittest-other--s1', 'axf-limittest-rushed', ''].map((nm) => L.poolOf(nm, ['rush'])),
+    ['emergency', 'emergency', 'emergency', 'builds', 'builds', 'builds', 'builds'], 'pool: a granted build\'s own sessions only (<build> or <build>--<step>)');
+  eq(L.poolOf('axf-limittest-rush--s1', []), 'builds', 'pool: no grant, no emergency place');
+  throws(() => L.grantEmergency('rush', { by: 'claude' }), /only Brett/, 'a session (no owner) cannot grant an emergency place');
+  throws(() => L.grantEmergency('Bad Id', { by: 'brett', owner: true }), /not a build id/, 'a grant needs a build id');
+  eq(L.loadEmergency(), [], 'nothing granted after the refusals');
+  eq(L.grantEmergency('rush', { by: 'brett', owner: true }).map((g) => [g.id, g.by]), [['rush', 'brett']], 'Brett grants it');
+  eq(L.grantEmergency('rush', { by: 'brett', owner: true }).length, 1, 'granting twice keeps one grant');
+  ok(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').includes('"granted":"rush"'), 'the grant is journalled');
+  // counting: 3 ordinary sessions fill maxBuilds 3; emergency sessions are counted in their own pool
+  const t0 = Date.now();
+  const tmE = new Map([['axf-limittest-n1', { pid: 100, created: t0 - 3600e3 }], ['axf-limittest-n2', { pid: 200, created: t0 - 3600e3 }], ['axf-limittest-n3', { pid: 300, created: t0 - 3600e3 }], ['axf-limittest-rush--s1', { pid: 400, created: t0 - 3600e3 }]]);
+  const prE = [sh(100, 1), claude(101, 100), sh(200, 1), claude(201, 200), sh(300, 1), claude(301, 300), sh(400, 1), claude(401, 400)];
+  const fxE = { procs: prE, tmux: tmE, finished: () => false, now: t0, alive: (p) => prE.some((x) => x.pid === p), emergency: ['rush'] };
+  const cE = L.countLive(fxE, lim, {});
+  eq([cE.live, cE.emergency, cE.items.map((i) => i.pool)], [3, 1, ['builds', 'builds', 'builds', 'emergency']], 'counted apart: 3 in the builds pool, 1 in the emergency pool');
+  eq([L.decide(cE, lim).ok, L.decide(cE, lim, 'emergency')], [false, { ok: true, live: 1, max: 2, free: 1 }], 'the builds pool is full, the emergency pool has a place');
+  eq(L.countLive({ ...fxE, emergency: [] }, lim, {}).live, 4, 'without the grant the same session counts against maxBuilds');
+  // admit: the pool follows the session name; neither pool lends to the other
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+  const fresh = () => ({ ...fxE, now: Date.now(), alive: () => true }); // the launcher of a reservation is this test: alive
+  const refusedOrdinary = L.admit({ mode: 'launch', session: 'axf-limittest-n4', pid: process.pid, facts: fresh() });
+  eq([refusedOrdinary.ok, refusedOrdinary.pool, refusedOrdinary.live, refusedOrdinary.max], [false, 'builds', 3, 3], 'orchestrator slots busy: an ordinary launch is refused, it never takes an emergency place');
+  const e2 = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s2', pid: process.pid, facts: fresh() });
+  eq([e2.ok, e2.pool, e2.live, e2.max], [true, 'emergency', 1, 2], 'the emergency build starts anyway, in the emergency pool');
+  const e3 = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s3', pid: process.pid, facts: fresh() });
+  eq([e3.ok, e3.pool, e3.live, e3.max], [false, 'emergency', 2, 2], 'emergency 2 of 2: the third emergency launch is refused');
+  // the ordinary pool empties: an emergency build still may not take one of the orchestrator's places
+  const idle = { procs: [sh(400, 1), claude(401, 400)], tmux: new Map([['axf-limittest-rush--s1', { pid: 400, created: t0 - 3600e3 }]]), finished: () => false, now: Date.now(), alive: () => true, emergency: ['rush'] };
+  const lent = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s3', pid: process.pid, facts: idle });
+  eq([lent.ok, lent.pool, lent.live], [false, 'emergency', 2], 'emergency full with the orchestrator idle: still refused (the pools never lend)');
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+  const u = L.usage({ facts: fresh() });
+  eq([u.live, u.max, u.free, u.emergency], [3, 3, 0, { live: 1, max: 2, free: 1 }], 'usage: both pools, each with its own cap');
+  eq(JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-live.json'), 'utf8')).emergency, { live: 1, max: 2 }, 'the snapshot the console reads carries the emergency pool');
+  eq(L.saveLimit({ emergencySlots: 0 }, { by: 'brett', owner: true }).emergencySlots, 0, 'Brett can switch the pool off');
+  eq(L.admit({ mode: 'launch', session: 'axf-limittest-rush--s2', pid: process.pid, facts: fresh() }).ok, false, 'pool off: no emergency place');
+  L.saveLimit({ emergencySlots: 2 }, { by: 'brett', owner: true });
+  throws(() => L.saveLimit({ emergencySlots: 6 }, { by: 'claude' }), /only Brett/, 'a session cannot resize the emergency pool');
+  ok(L.revokeEmergency('rush', { by: 'test' }) && !L.revokeEmergency('rush'), 'a grant is taken back once');
+  eq(L.poolOf('axf-limittest-rush--s1', L.emergencyIds()), 'builds', 'after the revoke its sessions are ordinary again');
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+}
 
 // docker and the slice
 eq(L.dockerArgs('node:22', L.normLimit({ dockerCpus: 1.5, dockerMemoryGb: 3 })), ['--cpus=1.5', '--memory=3g', '--memory-swap=3g', '--cgroup-parent=axf-builds.slice'], 'node:22 gets limits and the slice');
@@ -130,7 +192,9 @@ if (hasTmux) {
   L.saveLimit({ maxBuilds: 2 }, { by: 'test', owner: true });
   delete process.env.AXF_SLOTS_TMUX;
   const bin = join(tmp, 'bin'); mkdirSync(bin);
-  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
+  // the stand-in ends by itself once its folder is gone, this test is gone, or after 3 min: it can never outlive the run
+  // (Nov 20 2026: stand-ins waiting on a "go" file in a deleted /tmp/axf-limit-* folder held real build places for hours)
+  writeFileSync(join(bin, 'claude'), `#!/bin/sh\nd="$PWD"; n=0\nwhile [ ! -f "$d/go" ]; do\n  [ -d "$d" ] || exit 1; kill -0 ${process.pid} 2>/dev/null || exit 1\n  n=$((n + 1)); [ $n -gt 900 ] && exit 1\n  sleep 0.2\ndone\necho '{"type":"result","result":"done"}'\n`);
   chmodSync(join(bin, 'claude'), 0o755);
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_SLOTS: 'off', AXF_WATCH_LIVE: 'off', AXF_AGENT_BOOK: 'off', AXF_OWN_LOGIN: 'off', AXF_WORKERS: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_BUILD_SLICE: 'off', AXF_LOGIN_NOTE: 'off', AXF_BUILD_LIMIT_POLL: '1', AXF_BUILD_ID: '', AXF_AGENT: '', AXF_AGENT_NAME: '', HOME: join(tmp, 'home') }; // HOME: the launcher puts ~/.local/bin (the real claude) first on PATH
   mkdirSync(join(tmp, 'home'), { recursive: true });
@@ -139,6 +203,10 @@ if (hasTmux) {
   const launch = (k) => { const d = (dirs[k] = join(tmp, k)); mkdirSync(d, { recursive: true }); writeFileSync(join(d, 'brief.md'), 'hi'); return spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', `${tag}-${k}`, '--brief', 'brief.md', '--log', 'run.log', '--', '--model', 'opus'], { cwd: d, env, encoding: 'utf8', timeout: 60_000 }); };
   const until = async (fn, ms = 30_000) => { const t = Date.now() + ms; while (Date.now() < t) { if (fn()) return true; await new Promise((r) => setTimeout(r, 250)); } return false; };
   const live = () => L.usage().live;
+  const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+  // every process started from this test's sandbox: a stand-in claude (argv) or anything with its cwd there
+  const sandboxProcs = (under = tmp) => (spawnSync('ps', ['-e', '-o', 'pid=,args='], { encoding: 'utf8' }).stdout || '').split('\n').map((l) => /^\s*(\d+)\s+(.*)$/.exec(l)).filter(Boolean)
+    .map((m) => ({ pid: Number(m[1]), args: m[2] })).filter((p) => p.pid !== process.pid && (p.args.includes(under) || (() => { try { return readlinkSync(`/proc/${p.pid}/cwd`).startsWith(under); } catch { return false; } })()));
   try {
     const a = launch('a');
     ok(a.status === 0 && /^started axf-limittest-/m.test(a.stdout), `first launch starts: ${a.stdout}${a.stderr}`);
@@ -158,10 +226,24 @@ if (hasTmux) {
     ok(await until(() => live() === 1), `after it closes the count drops: ${JSON.stringify(L.usage().items)}`);
     const c4 = launch('d');
     ok(c4.status === 0 && /^started axf-limittest-/m.test(c4.stdout), `then a new launch starts: ${c4.stdout}${c4.stderr}`);
-    writeFileSync(join(dirs.b, 'go'), ''); if (dirs.d) writeFileSync(join(dirs.d, 'go'), '');
+    // the launcher fix: a killed session ends its quiet claude (bash ran its HUP trap only after the pipeline ended, and
+    // nothing in the pipeline got the HUP, so the claude, its pane and its build place stayed)
+    const dClaude = () => L.usage({ mode: 'run' }).items.find((i) => i.kind === 'session' && i.name.startsWith(`axf-${tag}-d`))?.pid;
+    ok(await until(() => dClaude()), `the fourth run's claude runs: ${JSON.stringify(L.usage().items)}`);
+    const dPid = dClaude();
+    spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-d`]);
+    ok(await until(() => !alive(dPid), 10_000), `tmux kill-session ends its claude -p (pid ${dPid}), no "go" written`);
+    ok(await until(() => !sandboxProcs(dirs.d).length, 10_000), `nothing of the killed session is left: ${JSON.stringify(sandboxProcs(dirs.d))}`);
+    writeFileSync(join(dirs.b, 'go'), '');
   } finally {
-    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-${k}`]); }
+    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); }
+    // a session renamed by the launcher is still ours: by prefix
+    for (const n of (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout || '').split('\n')) if (n.startsWith(`axf-${tag}-`)) spawnSync('tmux', ['kill-session', '-t', `=${n}`]);
+    // the folder goes only once nothing runs from it any more (a process left in a deleted folder is a ghost)
+    await until(() => !sandboxProcs().length, 10_000);
+    for (const p of sandboxProcs()) { try { process.kill(p.pid, 'SIGKILL'); } catch { /* gone */ } }
   }
+  ok(!sandboxProcs().length, `no process outlives the test: ${JSON.stringify(sandboxProcs())}`);
 } else console.log('(tmux or ps missing: skipped the claude-headless.sh end-to-end checks)');
 
 rmSync(tmp, { recursive: true, force: true });

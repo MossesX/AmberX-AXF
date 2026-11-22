@@ -18,16 +18,16 @@
       "surface2": "#f9faf9",
       "surface3": "#eaeeea",
       "text": "#1b281b",
-      "muted": "#637963",
+      "muted": "#5e735e",
       "border": "#dbe1db",
-      "accent": "#178250",
+      "accent": "#167e4d",
       "accentText": "#ffffff",
-      "accentSoft": "rgba(23,130,80,0.1)",
+      "accentSoft": "rgba(22,126,77,0.1)",
       "danger": "#ce2732",
-      "success": "#218c5a",
-      "warning": "#b87614",
-      "info": "#1686b6",
-      "focus": "#178250",
+      "success": "#1d7c50",
+      "warning": "#976211",
+      "info": "#14759f",
+      "focus": "#167e4d",
       "shadow": "rgba(21,50,21,0.12)"
     }
   }

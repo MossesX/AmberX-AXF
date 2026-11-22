@@ -10,6 +10,8 @@
  *   <PageToolbar />                       the toolbar of the enclosing view (main slot); nothing when the page has none
  *   <PageToolbar slot="auto-lander" />    one of several on the page
  *   <PageToolbar fallback={<div …>}>     keep the handwritten bar until the page has an asset
+ *   <PageToolbar view="x"><input …/></PageToolbar>   the page's own fields ride on the shared bar (and stay drawn, as a
+ *                                         plain group, when the page has no asset or no runtime yet)
  *   <PageToolbar assetId="editor-classic" label="Page toolbar" />   a named asset (what AssetToolbar does)
  * `children` fill the search spot when the asset says showSearch (or sit at the end of the bar).
  */
@@ -29,21 +31,21 @@ export interface PageToolbarProps {
   assetId?: string | null;
   /** accessible name (default: the asset's name) */
   label?: string;
-  /** drawn instead when the page has no toolbar asset */
+  /** drawn instead when the page has no toolbar asset (default: the children, so a page's fields never disappear) */
   fallback?: ReactNode;
   /** the search box or extra controls */
   children?: ReactNode;
   className?: string;
 }
 
-export function PageToolbar({ view, slot, assetId, label, fallback = null, children, className = '' }: PageToolbarProps) {
+export function PageToolbar({ view, slot, assetId, label, fallback, children, className = '' }: PageToolbarProps) {
   const hook = usePageToolbar(view, slot, assetId);
   const { toolbar } = hook;
   const hookRef = useRef(hook);
   hookRef.current = hook;
   // announce the live toolbar under its settings id (the API lists, reads and presses it through the same hook)
   useEffect(() => (toolbar ? registerLiveToolbar(toolbar.id, { hook: () => hookRef.current, view: hook.page.view ?? null }) : undefined), [toolbar?.id, hook.page.view]); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!toolbar) return <>{fallback}</>;
+  if (!toolbar) return <>{fallback !== undefined ? fallback : children ? <div className={`fx-row fx-row--wrap ${className}`.trim()} role="group" aria-label={label}>{children}</div> : null}</>;
   return <PageToolbarView hook={hook} toolbar={toolbar} label={label} className={className}>{children}</PageToolbarView>;
 }
 
@@ -124,7 +126,7 @@ export function PageToolbarButton({ button: b, variant, onPress }: { button: Res
       onClick={onPress}
     >
       {variant !== 'labels' && <Icon name={b.enabled ? b.icon : 'lock'} size={16} />}
-      {variant !== 'icons' && <span>{b.label}</span>}
+      {variant !== 'icons' && <span className="fx-toolbtn__label">{b.label}</span>}
       {b.badge && <span className="fx-toolbtn__badge" aria-hidden="true">{b.badge}</span>}
     </button>
   );

@@ -497,6 +497,7 @@ def kill_tmux(name: str, where: str) -> dict[str, Any]:
     else:
         raise ValueError("where is vps or console")
     _headless_cache["value"] = None
+    forget_console_tmux()
     store.log({"op": "kill", "tmux": name, "where": where, "ok": r.returncode == 0})
     if r.returncode != 0:
         raise KeyError(((r.stderr or "").strip().splitlines() or ["no such session"])[-1][:200])
@@ -609,15 +610,35 @@ def headless_sessions() -> dict[str, Any]:
     return {**v, "items": [x for x in v["items"] if x["name"].startswith("axf-")][:40]}
 
 
+CONSOLE_TMUX_TTL = 3.0
+_console_tmux_cache: dict[Any, tuple[float, list[dict[str, Any]]]] = {}
+_console_tmux_lock = threading.Lock()
+
+
 def console_tmux(mine: bool = False) -> list[dict[str, Any]]:
-    """The console's own persistent tabs (axt-… in this container's tmux); with `mine`, its other tmux sessions too."""
+    """The console's own persistent tabs (axt-… in this container's tmux); with `mine`, its other tmux sessions too.
+    Shared for CONSOLE_TMUX_TTL seconds: every open nav socket ticks every 3 s, and they all ask the same question."""
     if not shutil.which("tmux"):
         return []
-    try:
-        r = RUNNER(["tmux", "ls", "-F", LS_FORMAT], capture_output=True, text=True, timeout=5, env=clean_env(), stdin=subprocess.DEVNULL)
-    except (OSError, subprocess.TimeoutExpired):
-        return []
-    return [{**x, "where": "console"} for x in parse_ls(r.stdout if r.returncode == 0 else "", mine=mine)]
+    key = (mine, id(RUNNER))
+    with _console_tmux_lock:  # single-flight: one `tmux ls` however many sockets tick at once
+        hit = _console_tmux_cache.get(key)
+        if hit and time.monotonic() - hit[0] < CONSOLE_TMUX_TTL:
+            return [dict(x) for x in hit[1]]
+        try:
+            r = RUNNER(["tmux", "ls", "-F", LS_FORMAT], capture_output=True, text=True, timeout=5, env=clean_env(), stdin=subprocess.DEVNULL)
+        except (OSError, subprocess.TimeoutExpired):
+            return []
+        out = [{**x, "where": "console"} for x in parse_ls(r.stdout if r.returncode == 0 else "", mine=mine)]
+        _console_tmux_cache.clear()
+        _console_tmux_cache[key] = (time.monotonic(), out)
+        return [dict(x) for x in out]
+
+
+def forget_console_tmux() -> None:
+    """Drop the shared `tmux ls` answer (a tab was opened or stopped here)."""
+    with _console_tmux_lock:
+        _console_tmux_cache.clear()
 
 
 _meter_cache: dict[str, Any] = {"at": 0.0, "key": "", "value": None}

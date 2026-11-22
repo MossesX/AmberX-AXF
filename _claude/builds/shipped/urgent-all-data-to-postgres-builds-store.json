@@ -1,0 +1,320 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-all-data-to-postgres-builds-store",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "gate",
+ "shippedAt": "2026-11-19T03:49:14Z",
+ "build": {
+  "id": "urgent-all-data-to-postgres-builds-store",
+  "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
+  "profile": "all",
+  "category": "data",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 3, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store · PR #848\nSteps in this phase (1 left, ~15 min):\n[x] s3 (~25 min) Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed\n[x] s4 (~30 min) s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over\n[x] s5 (~15 min) Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write\n[skip] s6 (~30 min) s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over\n[skip] s10 (~30 min) s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over\n[ ] s8 (~15 min) Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-urgent-all-data-to-postgres-builds-store--lenny",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-18T19:51:27.608Z",
+   "endedAt": "2026-11-18T19:59:18.423Z",
+   "exit": 0,
+   "costUsd": 1.1224
+  },
+  {
+   "session": "axf-urgent-all-data-to-postgres-builds-store--joey",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-18T20:59:50.527Z",
+   "endedAt": "2026-11-18T22:58:32.052Z",
+   "exit": 0,
+   "costUsd": 26.2802
+  },
+  {
+   "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-19T00:37:13.325Z",
+   "endedAt": "2026-11-19T02:32:34.435Z",
+   "exit": 0,
+   "costUsd": 8.5563
+  },
+  {
+   "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-19T02:43:03.046Z",
+   "endedAt": "2026-11-19T03:47:18.731Z",
+   "exit": 0,
+   "costUsd": 0.9087
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Inventory every JSON/JSONL data file and file-backed namespace (repo _claude/, .axf-console/, /projects/*/_data); list owner, writer and target table",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-18T19:51:27.608Z",
+   "doneAt": "2026-11-18T19:57:55.426Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Builds: Postgres tables for builds, steps, notes, journal; builds-store.mjs and the console server read/write them with row-level locking; migrate store.json + journal, verify counts",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-18T19:57:55.426Z",
+   "doneAt": "2026-11-18T22:57:27.033Z",
+   "actualMin": 180,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-18T22:57:27.033Z",
+   "doneAt": "2026-11-19T01:41:01.880Z",
+   "actualMin": 164,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-19T01:41:01.880Z",
+   "doneAt": "2026-11-19T02:03:16.121Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-19T02:03:16.121Z",
+   "doneAt": "2026-11-19T02:06:19.217Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-19T02:06:19.217Z",
+   "doneAt": "2026-11-19T03:45:28.420Z",
+   "actualMin": 99,
+   "done": true
+  }
+ ],
+ "branch": "claude/urgent-all-data-to-postgres-builds-store",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 848,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/848"
+ },
+ "landedCommit": "212fb1f83d476ba2a4e1558a44a9be90297e812d",
+ "commits": [
+  "7a29d61c8303b182163aa4dacccf554850b8ce0e",
+  "7a9f91350e56d57af8b52c7a3aa4929a11f6d5a0",
+  "c9e65617afe426f2663331fe2dcf5633f1cbdb1a",
+  "6acb5345fd934a53d8ea3625329e74c638099b21",
+  "dab6d1fe51c9c1a8245082f327eb878ac3397c9e",
+  "1c0f309ab5572d93983167d855e3d3954e23eef1",
+  "2c4d4d4d3a1b7cd3745b46aaf5d6e4b5a225533b",
+  "669937bdb89a462aa7d7a7e2df7431dc1e30dddd",
+  "27911eff5b87bfd2625ae287c1d2fa1e589a7d2f",
+  "add3df4861356571133fd4bdc01d0cd019ac768b",
+  "208b8444ea9399cdcd1909edb3b8d9345ac12582",
+  "a0dd2a4501fe4690e703ac27be805406dcea72fb",
+  "468fb483d3448afc5309b9e8f0e6294b4d1650e6",
+  "9782515efd48c73c457c6f7642634203c8d70784"
+ ],
+ "mergedAt": "2026-11-19T00:25:51Z",
+ "landedAt": "2026-11-19T02:42:47Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/server/data_store.py",
+  "deploy/install-data.sh",
+  "framework/cli/agent-slots.mjs",
+  "framework/cli/builds-data.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/data-call.mjs",
+  "framework/cli/data-mode.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/data-files.mjs",
+  "framework/core/data-store-mode.mjs",
+  "framework/core/data-store.mjs",
+  "framework/schemas/data-store.json",
+  "framework/spec/DATA-INVENTORY.md",
+  "framework/spec/DATA-STORE.md",
+  "framework/spec/check-agent-slots-data.mjs",
+  "framework/spec/check-builds-store-data.mjs",
+  "framework/spec/check-data-store-mode.mjs",
+  "framework/spec/check-json-data-writes.mjs",
+  "framework/spec/fixtures/data-store-mode.json",
+  "framework/spec/json-data-writes.baseline.json",
+  "services/axf-data/README.md",
+  "services/axf-data/engine.py",
+  "services/axf-data/main.py",
+  "services/axf-data/pg.py",
+  "services/axf-data/store.py",
+  "services/axf-data/tables.py",
+  "services/axf-data/test_pg.py",
+  "services/axf-data/test_store.py"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/DATA-INVENTORY.md",
+    "framework/spec/DATA-STORE.md",
+    "framework/spec/check-agent-slots-data.mjs",
+    "framework/spec/check-builds-store-data.mjs",
+    "framework/spec/check-data-store-mode.mjs",
+    "framework/spec/check-json-data-writes.mjs",
+    "framework/spec/fixtures/data-store-mode.json",
+    "framework/spec/json-data-writes.baseline.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/agent-slots.mjs",
+    "framework/cli/builds-data.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs",
+    "framework/cli/data-call.mjs",
+    "framework/cli/data-mode.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "services",
+   "files": [
+    "services/axf-data/engine.py",
+    "services/axf-data/main.py",
+    "services/axf-data/pg.py",
+    "services/axf-data/store.py",
+    "services/axf-data/tables.py",
+    "services/axf-data/test_pg.py",
+    "services/axf-data/test_store.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/data-files.mjs",
+    "framework/core/data-store-mode.mjs",
+    "framework/core/data-store.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "services/axf-data/README.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/data_store.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/data-store.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-data.sh"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/urgent-all-data-to-postgres-builds-store.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 36.8676,
+  "estimated": false,
+  "tokens": {
+   "input": 3256,
+   "output": 4523,
+   "cacheRead": 56471378,
+   "cacheWrite": 797739
+  }
+ },
+ "report": "_claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+ "open": [
+  "`ConsoleFocus` (`apps/console-web/plugins/build-orchestrator/server/__init__.py`) still reads build ids from the file for `build:<id>` focus; after the flip it should ask the store through the CLI.",
+  "A patch assembles the whole record once for its etag (3–4 s at 1 000 builds); an incremental etag is a later step.",
+  "`test_backup_routes` in `test_pg.py` needs `pg_dump` on the test host (CI has it; the VPS host does not).",
+  "Baked framework copies (`apps/*/src/axf/core/data-files.mjs` …) are refreshed by `rebake.mjs` / CI's bake step, not here.",
+  "The hub part `2026-11-p7` keeps its two torn lines; the journal on axf-data is the complete set of parseable entries."
+ ]
+}

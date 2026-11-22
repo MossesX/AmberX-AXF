@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# axf-task — the fixed root tasks host services may ask for through sudo (one line each in /etc/sudoers.d/axf-host).
+# A task name is the only argument; there is nothing else to pass, so a whitelist line can never be widened. Each task
+# runs the same repo code root already runs on this host (the lander, the installers) against the checkout this
+# script lives in. Root-owned like the rest of /opt/axf; the axf-host account cannot change it.
+#   sudo -n /opt/axf/deploy/host-services/bin/axf-task <task>
+set -euo pipefail
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd)"
+cd "$DIR"
+export PATH=/usr/local/bin:/usr/bin:/bin AXF_CONSOLE_ROOT="$DIR" AXF_HOST_SIDE=1 AXF_ACTOR="host:${1:-}"
+# The shared data folder, as the console sees it (/projects/amberx-axf/_data): the installer writes where it is.
+P="$(sed -n 's/^AXHUB_PROJECTS_DIR=//p' /etc/axf-host/env 2>/dev/null | head -1 || true)"
+[ -n "$P" ] && export AXHUB_PROJECTS_DIR="$P"
+DATA="${AXHUB_PROJECTS_DIR:+$AXHUB_PROJECTS_DIR/amberx-axf/_data}"; DATA="${DATA:-$DIR/_data}"
+JOBS="apps/console-web/plugins/agent-swarm/jobs.mjs"
+case "${1:-}" in
+  builds-live-flush) exec node framework/cli/builds-live.mjs flush --quiet ;;
+  builds-live-pull) exec node framework/cli/builds-live.mjs pull ;;
+  builds-live-sync) exec node framework/cli/builds-live.mjs sync ;;
+  shipped-sync) export AXF_SHIPPED_FEATURES_DIR="$DIR/.axf-console/plugins/shipped-features"; exec node apps/console-web/plugins/shipped-features/ledger/ledger.mjs sync ;;
+  shipped-landed) exec node framework/cli/shipped.mjs landed ;;
+  hub-sync) export HOME=/root; CS="$(command -v claude-sync || echo /root/.local/bin/claude-sync)"; exec "$CS" sync ;;
+  hub-status) export HOME=/root; CS="$(command -v claude-sync || echo /root/.local/bin/claude-sync)"; exec "$CS" status ;;
+  persist-push) exec node framework/cli/persist.mjs push ;;
+  persist-pull) exec node framework/cli/persist.mjs pull ;;
+  jobs-due) exec node "$JOBS" due --run --json ;;
+  jobs-sweep) exec node "$JOBS" sweep --json ;;
+  jobs-list) exec node "$JOBS" list --json ;;
+  jobs-drain) exec node deploy/host-services/workers/agent-swarm.mjs --drain "$DATA/host-services/agent-swarm/requests" ;;
+  doctor-report) export DIR NAME=axf-console; exec bash deploy/console-doctor.sh --report ;;
+  console-install) exec bash deploy/install-console.sh ;;
+  claude-pick-install) export HOME=/root; exec bash deploy/claude-pick.sh --install ;;
+  keyfile-perms) [ -f /root/.anthropic-key ] && exec chmod 600 /root/.anthropic-key; exit 0 ;;
+  git-status) exec git -C "$DIR" status --porcelain=v1 --branch ;;
+  # Maintenance: Docker clean-up and restart live once, in tasks/maint-docker.mjs; maint.py (the plugin's engine) measures.
+  maint-docker-cache) exec node deploy/host-services/tasks/maint-docker.mjs cache ;;
+  maint-docker-cache-norestart) exec node deploy/host-services/tasks/maint-docker.mjs cache --no-restart ;;
+  maint-docker-restart) exec node deploy/host-services/tasks/maint-docker.mjs restart ;;
+  maint-status) exec node deploy/host-services/tasks/maint-docker.mjs status ;;
+  maint-snapshot) exec nice -n 19 python3 apps/console-web/plugins/maintenance/engine/maint.py snapshot ;;
+  git-fetch) exec git -C "$DIR" fetch -q origin ;;
+  git-worktree-prune) exec git -C "$DIR" worktree prune ;;
+  *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;
+esac

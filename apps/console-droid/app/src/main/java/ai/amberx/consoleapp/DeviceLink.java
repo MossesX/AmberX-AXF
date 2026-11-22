@@ -126,30 +126,33 @@ final class DeviceLink {
         JSONObject reply;
         try {
             if (!"call".equals(call.optString("kind")) || !DeviceRules.known(tool)) throw new IllegalArgumentException("The console app doesn't know \"" + tool + "\".");
-            reply = envelope("result", callId, new JSONObject().put("data", open(args == null ? new JSONObject() : args)).put("state", new JSONObject()));
+            reply = envelope("result", callId, new JSONObject().put("data", open(app, args == null ? new JSONObject() : args)).put("state", new JSONObject()));
         } catch (Exception e) {
             reply = envelope("error", callId, new JSONObject().put("code", "unavailable").put("message", String.valueOf(e.getMessage())));
         }
         post("answer", new JSONObject().put("deviceId", deviceId).put("envelope", reply).toString(), cookie, 15_000);
     }
 
-    /** {@code browser.open}: an overlay verb, a page in the app (its overlay when up), or the phone's browser. */
-    static JSONObject open(JSONObject args) throws Exception {
+    /**
+     * {@code browser.open}: an overlay verb, a page in the app (its overlay when up), or the phone's browser. axHub's
+     * {@code amberx.open_url} and Phone Connect's hand-off ({@link PhoneConnectProvider}) both land here.
+     */
+    static JSONObject open(Context c, JSONObject args) throws Exception {
         String url = ShellRules.allowed(args.optString("url", ""));
         String verb = DeviceRules.verb(url);
         JSONObject out = new JSONObject().put("url", url).put("verb", verb).put("notified", false);
         if (DeviceRules.COLLAPSE.equals(verb)) {
-            boolean up = onUi(() -> { boolean r = OverlayService.running != null; OverlayService.verb(app, "collapse"); return r; });
+            boolean up = onUi(() -> { boolean r = OverlayService.running != null; OverlayService.verb(c, "collapse"); return r; });
             return out.put("opened", false).put("collapsed", up).put("overlay", up).put("where", "overlay");
         }
         if ("browser".equals(DeviceRules.where(args.optString("where", "")))) {
-            onUi(() -> { WebHost.openOutside(app, Uri.parse(url)); return true; });
+            onUi(() -> { WebHost.openOutside(c, Uri.parse(url)); return true; });
             return out.put("opened", true).put("browser", "default").put("where", "browser");
         }
         // expand, or a page: the page loads in the one console WebView and the toolbar expands over whatever is on screen
         boolean overlay = onUi(() -> {
-            if (DeviceRules.PAGE.equals(verb)) WebHost.open(app, url);
-            OverlayService.verb(app, "expand"); // no overlay: this brings the app itself to the front
+            if (DeviceRules.PAGE.equals(verb)) WebHost.open(c, url);
+            OverlayService.verb(c, "expand"); // no overlay: this brings the app itself to the front
             return OverlayService.running != null;
         });
         return out.put("opened", true).put("browser", overlay ? "overlay" : "app").put("overlay", overlay).put("where", overlay ? "overlay" : "app");
