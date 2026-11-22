@@ -1030,13 +1030,16 @@ export class AxfRuntime {
      that and be able to see what's hidden"): one chrome piece at a time, kept in this app's look document on axHub ---- */
 
   /** What is hidden in this app, oldest first (empty while the look document can't be read). */
-  hidden(): HiddenAsset[] { return listHidden(this.appLook()); }
+  hidden(): HiddenAsset[] { return listHidden(this.readLook()); }
+
+  /** The saved look document, read only (never snapshots or saves one: render paths read it on every pass). */
+  private readLook(): AppLookDocument | null { return this.lookLayerOn() ? this.lookStore().get() : null; }
 
   /** How many pieces are hidden in this app. */
-  hiddenCount(): number { return hiddenCount(this.appLook()); }
+  hiddenCount(): number { return hiddenCount(this.readLook()); }
 
   /** Is this piece (`{ kind, id }` or `<kind>:<id>`) hidden in this app? A kind that can't be hidden is never hidden. */
-  isHidden(ref: HiddenAssetRef): boolean { return isAssetHidden(this.appLook(), ref); }
+  isHidden(ref: HiddenAssetRef): boolean { return isAssetHidden(this.readLook(), ref); }
 
   /** The kinds a piece can be hidden as (the chrome-settings kinds with a region on the page, plus widget). */
   hideableKinds(): string[] { return hiddenAssetKinds(); }
@@ -1050,7 +1053,7 @@ export class AxfRuntime {
     const err = hiddenAssetTargetError(ref);
     if (err) { this.toast(err, 'warning', 'Hide'); return false; }
     const t = hiddenAssetTarget(ref)!;
-    if (isAssetHidden(this.appLook(), t)) return true;
+    if (isAssetHidden(this.readLook(), t)) return true;
     const assetRef = opts.assetRef ?? this.chromeAssetOf(t.kind, t.id);
     if (!this.changeLook((cur) => hideAsset(cur, t, { by: opts.by ?? this.manifest.app.id, ...(assetRef ? { assetRef } : {}) }), false)) return false;
     this.terminal.ok('appearance', `${t.kind} ${t.id} hidden (${this.hiddenCount()} hidden in this app)`);
@@ -1062,7 +1065,7 @@ export class AxfRuntime {
     const err = hiddenAssetTargetError(ref);
     if (err) { this.toast(err, 'warning', 'Show'); return false; }
     const t = hiddenAssetTarget(ref)!;
-    if (!isAssetHidden(this.appLook(), t)) return true;
+    if (!isAssetHidden(this.readLook(), t)) return true;
     if (!this.changeLook((cur) => unhideAsset(cur, t), false)) return false;
     this.terminal.ok('appearance', `${t.kind} ${t.id} shown again (${this.hiddenCount()} hidden in this app)`);
     return true;

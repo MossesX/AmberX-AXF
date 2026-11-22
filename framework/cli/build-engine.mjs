@@ -974,7 +974,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
   const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
   // app-look@1: one app's look document on axHub, with the hidden-assets@1 list on every look part (core/engines/skin-rules.mjs)
-  const alf = join(outDir, 'app-look.schema.json'); writeFileSync(alf, JSON.stringify(appLookSchema(), null, 2) + '\n'); written.push(alf);
+  const alf = join(outDir, 'app-look.schema.json'); writeFileSync(alf, JSON.stringify(appLookSchema(), null, 2) + '\n'); written.push(alf);  // axf-data: not data (build-time schema generator)
   return written;
 }
 

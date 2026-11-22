@@ -67,12 +67,14 @@ export function installHiddenChrome(rt: AxfRuntime, root: Document = document): 
       else if (!hide && el.hasAttribute(HIDDEN_PIECE_ATTR)) el.removeAttribute(HIDDEN_PIECE_ATTR);
     }
   };
-  const soon = () => { if (!frame) frame = requestAnimationFrame(pass); };
+  // a DOM without MutationObserver / requestAnimationFrame (SSR shims, test renderers): run the pass on runtime changes only
+  const raf = typeof requestAnimationFrame === 'function';
+  const soon = () => { if (!raf) { pass(); return; } if (!frame) frame = requestAnimationFrame(pass); };
   const off = rt.subscribe(soon);
-  const obs = new MutationObserver(soon);
-  obs.observe(root.body, { childList: true, subtree: true });
+  const obs = typeof MutationObserver === 'function' && root.body ? new MutationObserver(soon) : null;
+  obs?.observe(root.body, { childList: true, subtree: true });
   soon();
-  return () => { off(); obs.disconnect(); if (frame) cancelAnimationFrame(frame); };
+  return () => { off(); obs?.disconnect(); if (frame && raf) cancelAnimationFrame(frame); };
 }
 
 const never = () => () => {};
