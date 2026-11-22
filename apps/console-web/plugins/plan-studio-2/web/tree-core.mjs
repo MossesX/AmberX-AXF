@@ -384,7 +384,11 @@ export function importItems(state, data, { parent = null, by = '' } = {}) {
 
 /* ------------------------------------------------------------------ the build orchestrator (explicit: "send to build") */
 
-/** A build (orchestrator `add` change) from an item: its steps (any depth) become the build's steps. */
+/**
+ * The plan an item sends to the orchestrator: its title, its body (with the notes under it) and its open steps (any
+ * depth) as planning steps. The orchestrator's splitting stage designs the build steps; a step's model and minutes go
+ * along only as hints, when they were set.
+ */
 export function toBuild(s, ref, { said = '' } = {}) {
   const it = need(s, ref);
   const under = descendants(s, it.id);
@@ -395,7 +399,7 @@ export function toBuild(s, ref, { said = '' } = {}) {
   return {
     action: 'add', title: it.title, detail: detail.slice(0, 8000), source: 'plan-studio-2',
     ...(said ? { said } : {}),
-    steps: steps.map((x) => ({ text: x.title, model: (x.model || 'opus').toLowerCase(), estimate: x.minutes ? `${x.minutes} min` : '' })),
+    steps: steps.map((x) => ({ text: x.title, model: x.model ? x.model.toLowerCase() : '', estimate: x.minutes ? `${x.minutes} min` : '' })),
   };
 }
 

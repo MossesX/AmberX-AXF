@@ -475,7 +475,8 @@
       },
       "hideable": true,
       "optional_fields": {
-        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true",
+        "search": "boolean | string \u2014 a Search anywhere box pinned at the bottom of every menu of this asset (a string is its placeholder); typing replaces the list with search results"
       }
     },
     "tab-group": {
@@ -2053,7 +2054,8 @@
       "order": "number \u2014 placement among siblings (default 100)",
       "before": "string \u2014 sibling id to go before",
       "after": "string \u2014 sibling id to go after",
-      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule"
+      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule",
+      "place": "string \u2014 context menus only: toolbar puts a top-level item in the icon strip above the list (cut / copy / paste and similar), not in the list"
     },
     "checkedKinds": [
       "setting",

@@ -1,0 +1,398 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-rip-out-plan-studio-1-keep-only-plan",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-21T21:20:47Z",
+ "build": {
+  "id": "rip-out-plan-studio-1-keep-only-plan",
+  "title": "Rip out Plan Studio 1, keep only Plan Studio 2.0",
+  "profile": "all",
+  "category": "Cleanup",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Plan: rip-out-plan-studio-1-keep-only-plan-studio-2-0-lbrj. Archive before removal.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: rip-out-plan-studio-1-keep-only-plan\n\n## Brett said (verbatim)\n> \n\n## What to build\nBuild \"Rip out Plan Studio 1, keep only Plan Studio 2.0\" (rip-out-plan-studio-1-keep-only-plan) is complete.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step rip-out-plan-studio-1-keep-only-plan <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note rip-out-plan-studio-1-keep-only-plan \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n\n## Retry: attempt 1 (done-means-merged@1)\nThe last run failed: the push or the PR failed (every step is done but no PR reached GitHub after 15 min).\nThis attempt: retry. Run the same approach again: the failure looked transient. Pick up at the first open step.\nNever stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.\n",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-rip-out-plan-studio-1-keep-only-plan--joey",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-21T19:32:48.571Z",
+   "endedAt": "2026-11-21T21:00:30.438Z",
+   "exit": 0,
+   "costUsd": 33.6343
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Archive the old Plan Studio (1.0) plugin, then remove it. Repoint every nav entry, deep link and console_show / console_open name ('plan studio') to Plan Studio 2.0.",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-21T19:32:48.571Z",
+   "doneAt": "2026-11-21T19:43:48.750Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Move any data that only lives in 1.0 into 2.0, delete dead routes and code, update help.",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-21T19:43:48.750Z",
+   "doneAt": "2026-11-21T19:51:59.694Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, checks, report _claude/builds/reports/, PR through CI and merge.",
+   "model": "Fable",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-21T19:51:59.694Z",
+   "doneAt": "2026-11-21T20:29:16.920Z",
+   "actualMin": 37,
+   "done": true
+  }
+ ],
+ "branch": "claude/rip-out-plan-studio-1-keep-only-plan",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 882,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/882"
+ },
+ "landedCommit": "614242f8ba10449b1be39c70be2b7dac5330babf",
+ "commits": [
+  "268bb56719e8e17587e983d235a99794019b4a4c",
+  "060fa89a8e26ba8e2de1d5714de43aac10d06025",
+  "6ae23e1ab4923a87bac4156c43e4d9b07777626e",
+  "644dfa4d79341eb433df17b3c495d4ebc9c94019"
+ ],
+ "mergedAt": "2026-11-21T20:28:57Z",
+ "landedAt": "2026-11-21T20:28:56Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md",
+  "_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan/migrate-plans.mjs",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/docs/plan-studio/README.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/axhub-web/src/axf/core/build-priority.mjs",
+  "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/ai-assistant/server/tools.py",
+  "apps/console-web/plugins/build-orchestrator/server/test_emergency.py",
+  "apps/console-web/plugins/md-studio/help.json",
+  "apps/console-web/plugins/plan-studio-2/help.json",
+  "apps/console-web/plugins/plan-studio-2/plans.mjs",
+  "apps/console-web/plugins/plan-studio-2/plugin.json",
+  "apps/console-web/plugins/plan-studio-2/server/__init__.py",
+  "apps/console-web/plugins/plan-studio-2/test.mjs",
+  "apps/console-web/plugins/plan-studio-2/tree.mjs",
+  "apps/console-web/plugins/plan-studio-2/web/index.tsx",
+  "apps/console-web/plugins/plan-studio-2/web/layout-core.mjs",
+  "apps/console-web/plugins/plan-studio/assets/settings/default-plan-studio.json",
+  "apps/console-web/plugins/plan-studio/assets/toolbar/plan-studio-plans.json",
+  "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-dense.json",
+  "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-grouped.json",
+  "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-labels.json",
+  "apps/console-web/plugins/plan-studio/catalog.mjs",
+  "apps/console-web/plugins/plan-studio/data/plans/amberx-selling-it.json",
+  "apps/console-web/plugins/plan-studio/data/plans/clipx.json",
+  "apps/console-web/plugins/plan-studio/data/plans/docs-studio.json",
+  "apps/console-web/plugins/plan-studio/fixtures/cases.json",
+  "apps/console-web/plugins/plan-studio/fixtures/plan.json",
+  "apps/console-web/plugins/plan-studio/help.json",
+  "apps/console-web/plugins/plan-studio/hooks.mjs",
+  "apps/console-web/plugins/plan-studio/install.mjs",
+  "apps/console-web/plugins/plan-studio/plans.mjs",
+  "apps/console-web/plugins/plan-studio/plugin.json",
+  "apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+  "apps/console-web/plugins/plan-studio/server/__init__.py",
+  "apps/console-web/plugins/plan-studio/test.mjs",
+  "apps/console-web/plugins/plan-studio/test.py",
+  "apps/console-web/plugins/plan-studio/toolbar.test.mjs",
+  "apps/console-web/plugins/plan-studio/uninstall.mjs",
+  "apps/console-web/plugins/plan-studio/web/ai.tsx",
+  "apps/console-web/plugins/plan-studio/web/api.ts",
+  "apps/console-web/plugins/plan-studio/web/capture.tsx",
+  "apps/console-web/plugins/plan-studio/web/catalog.tsx",
+  "apps/console-web/plugins/plan-studio/web/editor.tsx",
+  "apps/console-web/plugins/plan-studio/web/index.tsx",
+  "apps/console-web/plugins/plan-studio/web/menu.ts",
+  "apps/console-web/plugins/plan-studio/web/plan-ai.d.mts",
+  "apps/console-web/plugins/plan-studio/web/plan-ai.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+  "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-studio.css",
+  "apps/console-web/plugins/plan-studio/web/ui.tsx",
+  "apps/console-web/plugins/plan-studio/web/voice.ts",
+  "apps/console-web/plugins/project-switcher/help.json",
+  "apps/console-web/plugins/skin-editor/README.md",
+  "apps/console-web/plugins/systems-check/help.json",
+  "apps/console-web/plugins/token-control/lib/planner.mjs",
+  "apps/console-web/plugins/token-control/test.mjs",
+  "apps/console-web/plugins/token-control/web/docs.ts",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/assets/help/console.json",
+  "apps/console-web/src/axf/core/build-priority.mjs",
+  "apps/console-web/src/axf/core/engines/console-commands.mjs",
+  "apps/console-web/src/lazyEngine.ts",
+  "apps/molly/src/axf/core/build-priority.mjs",
+  "apps/molly/src/axf/core/engines/console-commands.mjs",
+  "framework/cli/project-seed.mjs",
+  "framework/core/build-priority.mjs",
+  "framework/core/engines/console-commands.mjs",
+  "framework/core/engines/control-rules.mjs",
+  "framework/schemas/control.json",
+  "framework/spec/CONSOLE-CONTROL.md",
+  "framework/spec/CONTROL.md",
+  "framework/spec/DATA-INVENTORY.md",
+  "framework/spec/DATA-STORE.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-console-commands.mts",
+  "framework/spec/check-data-migrate.mjs",
+  "framework/spec/check-help.mts",
+  "framework/spec/chrome-baseline.json",
+  "framework/spec/fixtures/page-toolbar-voice.json",
+  "framework/spec/json-data-writes.baseline.json",
+  "framework/spec/token-manifest-baseline.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/assets/settings/default-plan-studio.json",
+    "apps/console-web/plugins/plan-studio/assets/toolbar/plan-studio-plans.json",
+    "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-dense.json",
+    "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-grouped.json",
+    "apps/console-web/plugins/plan-studio/assets/toolbar/toolbar-plan-studio-plans-labels.json",
+    "apps/console-web/plugins/plan-studio/catalog.mjs",
+    "apps/console-web/plugins/plan-studio/data/plans/amberx-selling-it.json",
+    "apps/console-web/plugins/plan-studio/data/plans/clipx.json",
+    "apps/console-web/plugins/plan-studio/data/plans/docs-studio.json",
+    "apps/console-web/plugins/plan-studio/fixtures/cases.json",
+    "apps/console-web/plugins/plan-studio/fixtures/plan.json",
+    "apps/console-web/plugins/plan-studio/help.json",
+    "apps/console-web/plugins/plan-studio/hooks.mjs",
+    "apps/console-web/plugins/plan-studio/install.mjs",
+    "apps/console-web/plugins/plan-studio/plans.mjs",
+    "apps/console-web/plugins/plan-studio/plugin.json",
+    "apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+    "apps/console-web/plugins/plan-studio/server/__init__.py",
+    "apps/console-web/plugins/plan-studio/test.mjs",
+    "apps/console-web/plugins/plan-studio/test.py",
+    "apps/console-web/plugins/plan-studio/toolbar.test.mjs",
+    "apps/console-web/plugins/plan-studio/uninstall.mjs",
+    "apps/console-web/plugins/plan-studio/web/ai.tsx",
+    "apps/console-web/plugins/plan-studio/web/api.ts",
+    "apps/console-web/plugins/plan-studio/web/capture.tsx",
+    "apps/console-web/plugins/plan-studio/web/catalog.tsx",
+    "apps/console-web/plugins/plan-studio/web/editor.tsx",
+    "apps/console-web/plugins/plan-studio/web/index.tsx",
+    "apps/console-web/plugins/plan-studio/web/menu.ts",
+    "apps/console-web/plugins/plan-studio/web/plan-ai.d.mts",
+    "apps/console-web/plugins/plan-studio/web/plan-ai.mjs",
+    "apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+    "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+    "apps/console-web/plugins/plan-studio/web/plan-studio.css",
+    "apps/console-web/plugins/plan-studio/web/ui.tsx",
+    "apps/console-web/plugins/plan-studio/web/voice.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/CONSOLE-CONTROL.md",
+    "framework/spec/CONTROL.md",
+    "framework/spec/DATA-INVENTORY.md",
+    "framework/spec/DATA-STORE.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-console-commands.mts",
+    "framework/spec/check-data-migrate.mjs",
+    "framework/spec/check-help.mts",
+    "framework/spec/chrome-baseline.json",
+    "framework/spec/fixtures/page-toolbar-voice.json",
+    "framework/spec/json-data-writes.baseline.json",
+    "framework/spec/token-manifest-baseline.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio-2",
+   "files": [
+    "apps/console-web/plugins/plan-studio-2/help.json",
+    "apps/console-web/plugins/plan-studio-2/plans.mjs",
+    "apps/console-web/plugins/plan-studio-2/plugin.json",
+    "apps/console-web/plugins/plan-studio-2/server/__init__.py",
+    "apps/console-web/plugins/plan-studio-2/test.mjs",
+    "apps/console-web/plugins/plan-studio-2/tree.mjs",
+    "apps/console-web/plugins/plan-studio-2/web/index.tsx",
+    "apps/console-web/plugins/plan-studio-2/web/layout-core.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/assets/help/console.json",
+    "apps/console-web/src/axf/core/build-priority.mjs",
+    "apps/console-web/src/axf/core/engines/console-commands.mjs",
+    "apps/console-web/src/lazyEngine.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/docs/plan-studio/README.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/lib/planner.mjs",
+    "apps/console-web/plugins/token-control/test.mjs",
+    "apps/console-web/plugins/token-control/web/docs.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-priority.mjs",
+    "framework/core/engines/console-commands.mjs",
+    "framework/core/engines/control-rules.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/core/build-priority.mjs",
+    "apps/axhub-web/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/core/build-priority.mjs",
+    "apps/molly/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md",
+    "_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan/migrate-plans.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/server/tools.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/server/test_emergency.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "md-studio",
+   "files": [
+    "apps/console-web/plugins/md-studio/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "project-switcher",
+   "files": [
+    "apps/console-web/plugins/project-switcher/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "skin-editor",
+   "files": [
+    "apps/console-web/plugins/skin-editor/README.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/help.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/project-seed.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/control.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 33.6343,
+  "estimated": false,
+  "tokens": {
+   "input": 232,
+   "output": 1915,
+   "cacheRead": 20551344,
+   "cacheWrite": 249495
+  }
+ },
+ "report": "_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md",
+ "open": [
+  "Test files that build their own made-up catalog with a screen called `plan-studio` / \"Plan Studio\" (console-commands, follow-amber, ref-links, wake-listener tests, `check-console-commands.mts`, `check-help.mts`, `gen-fixtures.mts` and their fixtures). They test name resolution with a sample name, not the removed plugin.",
+  "Data-store maps, table definitions and their checks for `_data/plan-studio/`: the archive is still there.",
+  "History: `changes/`, `sessions/`, shipped build records, older reports.",
+  "Baked `src/axf` copies of `control-rules.mjs` and `schemas/control.json` were already behind the framework before this build (CI re-bakes them); the ones that were in step (`build-priority.mjs`, `console-commands.mjs`) are synced.",
+  "`framework/catalog/status.json`: no catalog feature covers this cleanup, so nothing to set.",
+  "AmberX app: the removed plugin also listed `amberx-droid` as a target. That repo was not touched here."
+ ]
+}

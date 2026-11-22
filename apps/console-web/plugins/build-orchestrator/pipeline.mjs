@@ -58,6 +58,10 @@
  *                                  claude/<alias> at its branch, so vps.build_land takes the alias. Branch and PR stay as they are.
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
  *
+ * Pipeline 2.0 (pipeline-2@1, Nov 19 2026, framework/spec/PIPELINE-2.md): builds with `flow: pipeline-2` (sent from Plan
+ * Studio) never take this path: every tick runs pipeline2.mjs advance() (split, one active build, main into each step's
+ * worktree, models, steps to free slots, retries as attempt N + 1), and `exit … --step s` ends one step. While a Pipeline 2.0
+ * build is active, nothing here launches. Launch failures are never benched (the old 3-per-hour wait is gone).
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
@@ -83,6 +87,8 @@ import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as P2F from './pipeline2.mjs';
+import * as P2 from '../../../../framework/core/pipeline-status.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
@@ -112,7 +118,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
 export const SCHEMA_STATE = 'pipeline-state@1';
 const MAX_SPLITS_PER_TICK = 3;
-const LAUNCH_FAILS_PER_HOUR = 3;
+/** Launch failures are counted for the alert only: there is no bench (pipeline-2@1, Nov 19 2026: a build benched after 3 failed launches in an hour sat there silently). */
+const LAUNCH_FAILS_SHOWN = 3;
 const GONE_GRACE_MS = 10 * 60e3;
 const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
 const nowIso = () => new Date().toISOString();
@@ -159,6 +166,10 @@ const logLine = (o) => { try { mkdirSync(files().dir, { recursive: true }); appe
 
 const profile = () => activeProfile().id;
 const live = (store) => store.builds.filter((b) => !b.deleted);
+/** The builds@1 dispatcher's builds: Pipeline 2.0 builds (flow pipeline-2) run on pipeline2.mjs, never on this path. */
+const legacyLive = (store) => live(store).filter((b) => b.flow !== P2.FLOW);
+/** Is the builds@1 dispatcher at work: a builds@1 build queued, building or being fixed? Pending ones alone are nobody's work yet. */
+export const legacyActive = (store) => legacyLive(store).some((b) => !b.hidden && ['queued', 'running', 'waiting', 'fixing'].includes(b.status));
 /**
  * Projects (projects@1): the tables and tabs show the active project's builds; the dispatcher runs the Queue of every
  * project that is not archived (switching projects never stops a build that is running or queued elsewhere).
@@ -171,7 +182,7 @@ export function projectScope() {
   return { active: activeProject(reg), profile: profile(), archived, known, projects: reg.projects };
 }
 /** Builds the dispatcher may run: not deleted, and in at least one project that is listed and not archived. */
-export const runnable = (store, scope = projectScope()) => live(store).filter((b) => !(b.profiles ?? []).length || (b.profiles ?? []).some((p) => !scope.archived.has(p) && (scope.known.has(p) || p === scope.profile)));
+export const runnable = (store, scope = projectScope()) => legacyLive(store).filter((b) => !(b.profiles ?? []).length || (b.profiles ?? []).some((p) => !scope.archived.has(p) && (scope.known.has(p) || p === scope.profile)));
 const rulesOf = (store) => storeCore.projectOrchestrator(store, profile()).rules;
 
 /** Agent slots as agent-slots.mjs status shows them (finished sessions pruned), or a quiet default without a store. */
@@ -394,14 +405,22 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
 
 // ------------------------------------------------------------------ the split
 
-/** Run the configured splitter on a prompt: { text, provider, error }. */
-export function askSplitter(prompt, settings, env = process.env) {
+/**
+ * The one-shot split call. No tools at all: no built-in ones (--tools '') and no MCP servers from the repo or the login
+ * (--strict-mcp-config): a tool call ends the one turn without an answer (stop_reason tool_use, claude exit 1). No hooks
+ * (disableAllHooks): the repo's SessionEnd hook held the process past the answer until the timeout killed it (Nov 20 2026).
+ */
+export const SPLIT_ARGS = (modelId) => ['-p', '--model', modelId, '--output-format', 'json', '--max-turns', '1', '--tools', '', '--strict-mcp-config', '--settings', JSON.stringify({ disableAllHooks: true })];
+/** Fable thinking through a big plan took 172 s (Nov 20 2026); the tick itself is allowed 600 s. */
+export const SPLIT_TIMEOUT_MS = 420e3;
+/** Run the configured splitter on a prompt: { text, provider, error }. `model` = the policy key it runs on (opus | fable). */
+export function askSplitter(prompt, settings, env = process.env, { model = 'opus' } = {}) {
   if (env.AXF_PIPELINE_SPLITTER) {
     const r = spawnSync('bash', ['-c', env.AXF_PIPELINE_SPLITTER], { input: prompt, encoding: 'utf8', timeout: 180e3, env });
     return r.status === 0 ? { text: r.stdout, provider: 'claude', error: '' } : { text: '', provider: 'claude', error: `splitter exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
   }
   if (settings.splitProvider !== 'claude') return { text: '', provider: settings.splitProvider, error: `split provider is ${settings.splitProvider}` };
-  // a one-shot Claude call on a login copy: a worker account when one is free, else the active one
+  // a one-shot Claude call on a login copy (SPLIT_ARGS): a worker account when one is free, else the active one
   const dir = join(tmpdir(), `axf-split-${process.pid}`); mkdirSync(dir, { recursive: true, mode: 0o700 });
   let snap = null;
   try {
@@ -409,7 +428,10 @@ export function askSplitter(prompt, settings, env = process.env) {
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: prompt, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    const r = spawnSync('claude', SPLIT_ARGS(MODEL_IDS[modelKey(model)] || MODEL_IDS.opus), { input: prompt, encoding: 'utf8', timeout: SPLIT_TIMEOUT_MS, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    // the answer is the one JSON result line; a late exit after it (killed at the timeout) does not lose it
+    const done = (() => { try { const j = JSON.parse(String(r.stdout || '').trim()); return j?.subtype === 'success' && !j.is_error && typeof j.result === 'string' ? j.result : null; } catch { return null; } })();
+    if (done !== null) return { text: done, provider: 'claude', error: '' };
     if (r.error) return { text: '', provider: 'claude', error: `claude not available: ${r.error.message}` };
     if (r.status !== 0) return { text: '', provider: 'claude', error: `claude exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }
@@ -457,7 +479,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   if (settings.splitProvider !== 'off' || process.env.AXF_PIPELINE_SPLITTER) {
     // only a build with no steps at all is split by itself: steps someone wrote by hand (even with a missing estimate) are
     // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
-    const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
+    const want = legacyLive(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
     for (const b of want.slice(0, max)) {
       try {
         const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
@@ -470,7 +492,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   }
   if (settings.autoQueue) {
     const fresh = loadStore();
-    for (const b of live(fresh)) {
+    for (const b of legacyLive(fresh)) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
       if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
@@ -1082,6 +1104,8 @@ export function escalated(store = loadStore()) {
  * A build with no open failure is queued again instead. → { id, status, strategy }
  */
 export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'console', why = '', noLaunch = false } = {}) {
+  // pipeline-2@1: a Pipeline 2.0 build has no ladder: its retry is the contract's reset (pipeline2.mjs retryBuild)
+  { const p2 = storeCore.findBuild(loadStore(), id); if (p2?.flow === P2.FLOW) return P2F.retryBuild(p2.id, { by, why }); }
   if (strategy && !(RL.isRung(strategy) && strategy !== 'escalate')) throw Object.assign(new Error(`strategy is one of ${[...BP.STRATEGIES.filter((x) => x !== 'escalate' && x !== 'fix'), ...BP.FIX_STRATEGIES.map((x) => `fix:${x}`)].join(', ')}`), { code: 2 });
   let out = null;
   withStore((s) => {
@@ -1119,10 +1143,17 @@ export const pipelineLock = (env = process.env) => env.AXF_PIPELINE_LOCK || '/ru
  * never launches twice next to the cron tick; a run already ended (session cleared, another session) is left alone and
  * no tick runs for it. Returns { ok, id, ended, tick }.
  */
-export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env = process.env, runTick = true } = {}) {
+export function onExit(id, { session = '', exit = 0, kind = '', phase = '', step = '', hit = '', account = '', env = process.env, runTick = true } = {}) {
   if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
   const b = storeCore.findBuild(loadStore(), id);
   if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  // pipeline-2@1: a step's session ended: written to the store now, then one pass (the retry or the next step goes out at once)
+  if (b.flow === P2.FLOW) {
+    const ended = step ? P2F.stepExit(id, step, { exit, hit, account, session, env }) : { ok: false, why: 'no --step: a Pipeline 2.0 build runs by step' };
+    let t = null;
+    if (runTick) { try { const r = P2F.advance({ env }); t = { launched: r.launched, waits: r.waits.filter((w) => w.id === id) }; } catch (e) { t = { error: str(e.message, 300) }; } }
+    return { ok: true, id, ended: null, step: ended, tick: null, p2: t, why: ended.why || `${id}/${step}: ${ended.status}` };
+  }
   const p = b.pipeline ?? {};
   const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || SETTLED.includes(b.status));
   if (!open || (session && p.session !== session)) return { ok: true, id, ended: null, tick: null, why: 'this run was already ended (or another session holds the build)' };
@@ -1303,13 +1334,21 @@ export function tick({ env = process.env } = {}) {
   // done-means-merged@1: every fixing build gets the ladder's next strategy (a relaunch, a wait, or escalation)
   let retries = [];
   try { retries = retryFixing({ env, accounts, settings, rules, alert }); } catch (e) { logLine({ event: 'retry-failed', error: str(e.message, 300) }); }
+  // pipeline-2@1: the Pipeline 2.0 flow (split, one active build, main into each step, models, steps to free slots)
+  let p2 = null;
+  try { p2 = P2F.advance({ env }); } catch (e) { logLine({ event: 'p2-advance-failed', error: str(e.message, 300) }); p2 = { error: str(e.message, 300) }; }
   const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
-  planAhead(store, accounts, settings);
+  // one active build at a time (Brett, Nov 19 2026): while a Pipeline 2.0 build is active nothing else starts (a start
+  // pulls main into its worktree); builds@1 builds already running carry on
+  { const act = P2.activeBuild(live(loadStore())).active;
+    if (act && plan.launches.length) { for (const l of plan.launches) plan.waits.push({ id: l.id, why: `one active build at a time: ${act.id} is ${P2.labelOf(act.status, act.attempt)}` }); plan.launches = []; } }
+  // the builds@1 planner runs only while a builds@1 build is in the Queue or being built (with none it planned, and
+  // logged, builds this dispatcher will never start)
+  if (legacyActive(store)) planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
   for (const first of plan.launches) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
-    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === first.id);
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
@@ -1352,7 +1391,7 @@ export function tick({ env = process.env } = {}) {
       crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
       // the phone hears every failed start at once, with the exact reason per account tried
       alert('launch-failed', { id: l.id, title: b.title, account: l.account, error: e.message, reasons: reasons.length ? reasons : [{ account: l.account, error: str(e.message, 300) }],
-        tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_PER_HOUR });
+        tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_SHOWN });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
@@ -1391,7 +1430,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify, p2 };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -1402,7 +1441,7 @@ const MAX_PICK_TRIES = 4;
  */
 export function planAhead(store, accounts, settings = loadSettings()) {
   const want = new Map();
-  for (const b of live(store)) {
+  for (const b of legacyLive(store)) {
     if ((b.status !== 'pending' && b.status !== 'queued') || b.hidden || !BP.openSteps(b).length) continue;
     const p = P.planFor(b, accounts, settings);
     const cur = b.pipeline?.planned;
@@ -1488,7 +1527,7 @@ export function callAccount(name, env = process.env, { session = 'probe' } = {})
       if (exp && exp - Date.now() < RENEW_GUARD_MS) return { skipped: true, status: null, out: '', error: 'its login renews soon: not called, so no running build is left on a spent token' };
     }
     const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: 'Reply with the single word ok.', encoding: 'utf8', timeout: 120e3, env: e, cwd: tmpdir() });
+    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', '', '--strict-mcp-config'], { input: 'Reply with the single word ok.', encoding: 'utf8', timeout: 120e3, env: e, cwd: tmpdir() });
     return { skipped: false, status: r.status, out: `${r.stdout || ''}${r.stderr || ''}`, error: r.error?.message || '' };
   } catch (e) { return { skipped: false, status: null, out: '', error: str(e.message, 200) }; }
   finally { if (snap) { try { releaseLogin({ dir, session }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
@@ -1578,6 +1617,9 @@ export function health({ env = process.env, by = 'dispatcher' } = {}) {
 }
 
 // ------------------------------------------------------------------ CLI
+
+// pipeline2.mjs uses these (bound here: it is imported by this file, so it can't import them at load time)
+P2F.bindPipeline({ pipeDir, slotsNow, accountsRead, loadSettings, ensureWorktree, pipelineLock, seesAccounts, askSplitter });
 
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json' && a !== '--expect-fail');
@@ -1687,7 +1729,7 @@ async function main(argv) {
       const r = spawnSync('flock', ['-w', flag('wait', '120'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
       process.exitCode = r.status ?? 1; return undefined;
     }
-    const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase') });
+    const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase'), step: flag('step'), hit: flag('hit'), account: flag('account') });
     const e = r.ended;
     return out(r, !e ? `${r.id}: ${r.why}` : [`${r.id}: ${e.outcome} → ${e.status}${e.reason ? ` (${e.reason})` : ''}${e.phase ? `, phase ${e.phase}` : ''}${e.next ? `, next ${e.next}` : ''}`,
       r.tick ? (r.tick.error ? `tick failed: ${r.tick.error}` : `tick: launched ${r.tick.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'nothing'}${r.tick.waits.map((w) => ` · ${w.id} waits: ${w.why}`).join('')}`) : ''].filter(Boolean).join('\n'));

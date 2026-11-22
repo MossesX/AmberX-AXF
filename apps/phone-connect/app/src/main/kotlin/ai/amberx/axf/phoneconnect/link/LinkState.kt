@@ -8,4 +8,7 @@ object LinkState {
     private val mutable = MutableStateFlow("Not paired")
     val status: StateFlow<String> = mutable
     fun set(text: String) { mutable.value = text }
+
+    /** What every surface says once the console refused this phone's key. */
+    const val DISCONNECTED = "Disconnected: tap to re-pair"
 }

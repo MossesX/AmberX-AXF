@@ -50,7 +50,7 @@
     "widgets": [
       {
         "type": "theme-switch",
-        "id": "day-night",
+        "id": "amberx-day-night",
         "at": "end",
         "order": 10
       },

@@ -22,8 +22,9 @@ CLI = Path(__file__).resolve().parent.parent / "builds.mjs"
 ROOT = CLI.parents[3]
 MAX_BODY = 256 * 1024
 PROFILE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
-# a builds store write (any writer: this page, the CLI, other sessions) shows up at once; otherwise reads are shared for 5 s
-WATCH = (ROOT / "_claude" / "builds" / "store.json", ROOT / "_claude" / "builds", ROOT / "framework" / "plan" / "profiles.json")
+# reads are shared for 5 s; this page's own writes drop the cache at once. The builds store is the axf-data tables
+# (Pipeline 2.0): there is no store.json to watch, only the profile registry
+WATCH = (ROOT / "framework" / "plan" / "profiles.json",)
 
 
 def _read(*args: str) -> dict[str, Any]:

@@ -237,6 +237,12 @@
         "title": "MD Studio",
         "text": "A Markdown browser and editor for every .md file: project docs, Claude files, repo docs and notes.",
         "kind": "tab"
+      },
+      {
+        "target": "write",
+        "title": "Write",
+        "text": "The editor: type or change the document here. Preview shows how it reads.",
+        "kind": "tab"
       }
     ],
     "intros": [

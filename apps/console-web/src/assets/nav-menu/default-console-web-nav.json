@@ -3,8 +3,8 @@
   "type": "nav-menu",
   "id": "default-console-web-nav",
   "name": "GizmoX AI Studio navigation menu (default)",
-  "version": "1.0.0",
-  "description": "GizmoX AI Studio's own default navigation menu, locked until another one built for console-web is picked (app-menus@1). Started from \"console-nav\".",
+  "version": "2.0.0",
+  "description": "GizmoX AI Studio's own default navigation menu, locked until another one built for console-web is picked (app-menus@1). Started from \"console-nav\". Sections come in a fixed order and each one is an anchor: a plugin's nav entry joins the section whose label it names (Plan, Builds, AI & agents, Framework, Standards, Design, Docs & media, System), so the menu keeps the same shape whichever plugins are on. A section with nothing in it is not drawn.",
   "author": "AmberX AXF",
   "tags": [
     "default",
@@ -17,14 +17,18 @@
     "header": "Dev Console",
     "sections": [
       {
-        "label": "Build",
         "items": [
           {
             "id": "home",
             "label": "Home",
             "icon": "home",
             "view": "home"
-          },
+          }
+        ]
+      },
+      {
+        "label": "Plan",
+        "items": [
           {
             "id": "plan",
             "label": "Plan",
@@ -32,11 +36,16 @@
             "view": "plan"
           },
           {
-            "id": "build",
-            "label": "Build queue",
-            "icon": "play",
-            "view": "build"
-          },
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "chart",
+            "view": "tracker"
+          }
+        ]
+      },
+      {
+        "label": "Builds",
+        "items": [
           {
             "id": "pending",
             "label": "Pending builds",
@@ -44,11 +53,20 @@
             "view": "pending"
           },
           {
-            "id": "tracker",
-            "label": "Tracker",
-            "icon": "check-circle",
-            "view": "tracker"
-          },
+            "id": "build",
+            "label": "Build queue",
+            "icon": "play",
+            "view": "build"
+          }
+        ]
+      },
+      {
+        "label": "AI & agents",
+        "items": []
+      },
+      {
+        "label": "Framework",
+        "items": [
           {
             "id": "catalog",
             "label": "Catalog",
@@ -62,10 +80,28 @@
             "view": "libraries"
           },
           {
+            "id": "modules",
+            "label": "Modules & packages",
+            "icon": "package",
+            "view": "modules"
+          },
+          {
             "id": "boilerplates",
             "label": "Boilerplates",
-            "icon": "layout",
+            "icon": "copy",
             "view": "boilerplates"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "palette",
+            "view": "assets"
           }
         ]
       },
@@ -87,37 +123,29 @@
         ]
       },
       {
-        "label": "Framework",
+        "label": "Design",
+        "items": []
+      },
+      {
+        "label": "Docs & media",
         "items": [
-          {
-            "id": "modules",
-            "label": "Modules & packages",
-            "icon": "package",
-            "view": "modules"
-          },
           {
             "id": "demos",
             "label": "Demos",
             "icon": "smartphone",
             "view": "demos"
-          },
-          {
-            "id": "components",
-            "label": "Components",
-            "icon": "grid",
-            "view": "components"
-          },
-          {
-            "id": "assets",
-            "label": "Assets",
-            "icon": "palette",
-            "view": "assets"
           }
         ]
       },
       {
-        "label": "Account",
+        "label": "System",
         "items": [
+          {
+            "id": "alerts",
+            "label": "Alerts",
+            "icon": "alert",
+            "view": "alerts"
+          },
           {
             "id": "settings",
             "label": "Settings",
@@ -127,7 +155,7 @@
           {
             "id": "account",
             "label": "Account",
-            "icon": "shield",
+            "icon": "user",
             "view": "account"
           }
         ]

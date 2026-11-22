@@ -71,6 +71,10 @@ for n, c in FX["presence"].items():
     check(f"presence {n}", (E.is_online(c["device"], c["at"]), E.presence(c["device"], c["at"])), (c["online"], c["presence"]))
 for n, c in FX["urls"].items():
     check(f"url {n}", E.url_errors(c["url"], c["device"], ORIGIN), c["error"])
+for n, c in FX["link"].items():
+    check(f"link {n}", E.link_verdict(c["reply"], c["uncoded"]), c["verdict"])
+for h, site in FX["ownSites"].items():
+    check(f"own site {h!r}", E.own_site(h), site)
 for n, c in FX["migration"].items():
     d = E.migrate_device(c["old"], AT)
     check(f"migration {n}", d, c["device"])
@@ -115,6 +119,7 @@ TMP = tempfile.mkdtemp(prefix="phone-connect-test-")
 os.environ["AXF_STATE"] = str(Path(TMP) / "state.json")
 os.environ["AXF_PLUGINS_DATA_DIR"] = str(Path(TMP) / "plugins")
 os.environ.setdefault("AXF_PHONE_CONNECT_ORIGIN", ORIGIN)
+os.environ["AXF_PHONE_CONNECT_APPROVALS"] = "off"  # the watcher thread stays off: test_server.py drives its tick
 
 server_tests = HERE / "test_server.py"
 if server_tests.exists():

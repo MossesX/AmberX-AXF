@@ -1,0 +1,347 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-guided-live-demo-test-watch-orchestrator",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-20T00:11:41Z",
+ "build": {
+  "id": "guided-live-demo-test-watch-orchestrator",
+  "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.",
+  "verbatim": true,
+  "at": "2026-11-17T19:31:58.777Z",
+  "source": "",
+  "by": "guided-live-demo-test-watch-orchestrator",
+  "addenda": []
+ },
+ "brief": "# Build: guided-live-demo-test-watch-orchestrator\n\n## Brett said (verbatim)\nAt: 2026-11-17T19:31:58.777Z\n> I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.\n\n## What to build\nContinue build \"Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause\" (guided-live-demo-test-watch-orchestrator) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 19:31):\n\"I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/guided-live-demo-test-watch-orchestrator · PR #816\nSteps in this phase (13 left, ~2 h):\n[x] s4 (~8 min) Scaffold the plugin `orchestrator-demo`: plugin.json (builtWith, description, settingsTab parent=plugins, lifecycle dataDir plugins/orchestrator-demo), install.mjs, uninstall.mjs, README with lifecycle markers.\n[x] s5 (~8 min) Add the demo-build fixtures: create and remove throwaway `demo-*` builds with 3–4 tiny steps each, stored through data-store@1 under plugins/orchestrator-demo, so cleanup never touches real builds.\n[x] s6 (~10 min) Write the act catalog part 1 as demo-act@1 entries: queue a demo build, launch it, tick steps one at a time (crossed out in the grid), and the running animation. Each entry has a caption, a focus target (row:<build>/step:sN, view:builds/tab:pipeline) and an expect check.\n[x] s7 (~10 min) Write the act catalog part 2: a deliberate crash (kill the fake session), the watchdog catching it, and a retry back to the Queue. Use a fake headless runner so no Claude account is spent.\n[x] s8 (~10 min) Write the act catalog part 3: simulated red CI on a demo branch, auto-fix filed, merge-main, and landing through a dry-run landing line (never the real merge queue).\n[x] s9 (~10 min) Write the act catalog part 4: a build dies for good and shows what failed (red row plus the break alert dialog), stale-row cleanup, and a phone notification through axf.notify@1 tagged as demo. Declare it in notify.json.\n[x] s10 (~10 min) Build the runner on the core: drives acts in order, focuses the console before each act (console_open / focus with highlight), shows the caption, runs the act, records the result, and keeps the waits. Persists demo-run@1 so a console restart picks the run back up.\n[x] s11 (~8 min) Add the runner's stop and cleanup path: Stop stops the run at once, removes every demo-* build, branch and alert, and the summary (passed/failed/skipped per act) is written to the run record.\n[ ] s12 (~10 min) Add the server routes: GET state, POST start {pause}, pause, resume, next, stop, set pause-between-steps, GET summary. Register them with plugin-commands so the MCP tools come from them.\n[ ] s13 (~10 min) Build the start overlay UI: a framework Dialog with what the demo will do, Continue and Pause buttons, a 'Pause between steps' Switch, and a toolbar (role=toolbar, aria-label). Tokens only.\n[ ] s14 (~10 min) Build the live caption bar UI: a floating caption above the focused target showing what is about to happen, the act number (n/N), a countdown to the next act, and Next / Pause / Stop on a toolbar.\n[ ] s15 (~8 min) Build the summary dialog at the end: a DataGrid of acts with pass/fail, evidence links (row, alert, PR) and a Run again button.\n[ ] s16 (~10 min) Wire the web library: register the overlay, caption bar and summary; console-control targets (view:orchestrator-demo, dialog ids, buttons via data-axf-target); a deep link `?axf-open=orchestrator-demo` and console_show target; and a settings sub-tab under Plugins (min gap shown, can't go below 30 s, default pause).\n[ ] s17 (~8 min) Add console actions + voice: demo.start, demo.pause, demo.resume, demo.next, demo.stop, demo.state, with AmberX voice phrases ('start the orchestrator demo', 'next', 'pause the demo', 'stop the demo').\n[ ] s18 (~8 min) Add the CLI: `axf demo orchestrator start [--pause] | pause | resume | next | stop | state | summary`, calling the same REST routes.\n[ ] s19 (~6 min) Add the dependency check: refuse to start (with a plain reason) when the live build status build's real-time grids and break alerts aren't there; list what's missing in the overlay.\n[ ] s20 (~10 min) Write unit tests: core vs fixture, ≥30 s gap in both modes, Next then 30 s, the sandbox guard refuses real builds, and stop cleans up everything. Write a Python route test.\n[ ] s21 (~10 min) Run a dry run end to end with a shortened gap override (test-only env), the fake runner and the dry-run lander; check every act passes and no non-demo build changed (builds-store verify).\n[ ] s22 (~10 min) Run the CI checks: check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, plugin-lifecycle check --after-uninstall, the help ratchet and the glossary catalog --check; fix any findings.\n[ ] s23 (~10 min) Take desktop and phone shots of the overlay, caption bar and summary, with 3 option assets for the overlay (ui-choices@1), and submit to UI Review with --choices.\n[ ] s24 (~10 min) Finish: run all tests, write the report _claude/builds/reports/guided-live-demo-test-watch-orchestrator.md (acts, how each is reached by deep link / REST / MCP / CLI / voice, results), add the THREADS row, push the branch, open the PR stating the UI Review hold and the API paths, and link it with builds-live.\nRead first: apps/console-web/plugins/orchestrator-demo/server/routes.py, apps/console-web/plugins/orchestrator-demo/server/__init__.py, apps/console-web/plugins/orchestrator-demo/web/StartOverlay.tsx, apps/console-web/plugins/orchestrator-demo/web/CaptionBar.tsx, apps/console-web/plugins/orchestrator-demo/web/SummaryDialog.tsx, apps/console-web/plugins/orchestrator-demo/web/index.ts, apps/console-web/plugins/orchestrator-demo/web/Settings.tsx, apps/console-web/plugins/orchestrator-demo/actions.json, apps/console-web/plugins/orchestrator-demo/voice.json, apps/console-web/plugins/orchestrator-demo/demo.mjs, framework/cli/axf.mjs, apps/console-web/plugins/orchestrator-demo/runner.mjs, apps/console-web/plugins/orchestrator-demo/test.mjs, apps/console-web/plugins/orchestrator-demo/server/test.py, apps/console-web/plugins/orchestrator-demo/test-e2e.mjs, apps/console-web/plugins/orchestrator-demo/, apps/console-web/plugins/orchestrator-demo/assets/dialog/, _claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/, _claude/builds/reports/guided-live-demo-test-watch-orchestrator.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step guided-live-demo-test-watch-orchestrator <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step guided-live-demo-test-watch-orchestrator <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note guided-live-demo-test-watch-orchestrator \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-17T19:41:34.505Z",
+   "endedAt": "2026-11-17T20:13:03.625Z",
+   "exit": 0,
+   "costUsd": 14.9824
+  },
+  {
+   "session": "axf-guided-live-demo-test-watch-orchestrator--earl",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T20:17:24.583Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 2.1243
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Design the demo-run@1 record and its state machine (idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped), pause flag, min-gap (≥30 s, never lower), per-act result (pass/fail/skipped + evidence), and the demo-act@1 entry shape (id, title, caption, focus target, run, expect, cleanup). Write the spec and the JSON schema.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T19:41:34.505Z",
+   "doneAt": "2026-11-17T19:47:20.409Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Write the pure reference core for demo-run@1: transitions, timing rules (pause on = wait for Next, then ≥30 s; pause off = ≥30 s), invalid-transition errors, and the summary fold. No I/O. Add a fixture with golden transitions.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T19:47:20.409Z",
+   "doneAt": "2026-11-17T19:55:57.449Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add the test-build sandbox rule to the builds store: a `demo: true` tag on throwaway builds (id prefix `demo-`). Projections, dispatcher, lander, alerts and builds-live mark them as demo-only, and a guard refuses any demo action on a build without the tag. Add a migration note.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T19:55:57.449Z",
+   "doneAt": "2026-11-17T20:12:21.819Z",
+   "actualMin": 16,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Scaffold the plugin `orchestrator-demo`: plugin.json (builtWith, description, settingsTab parent=plugins, lifecycle dataDir plugins/orchestrator-demo), install.mjs, uninstall.mjs, README with lifecycle markers.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:12:21.819Z",
+   "doneAt": "2026-11-17T20:18:57.093Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Add the demo-build fixtures: create and remove throwaway `demo-*` builds with 3–4 tiny steps each, stored through data-store@1 under plugins/orchestrator-demo, so cleanup never touches real builds.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:18:57.093Z",
+   "doneAt": "2026-11-17T20:20:11.667Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Write the act catalog part 1 as demo-act@1 entries: queue a demo build, launch it, tick steps one at a time (crossed out in the grid), and the running animation. Each entry has a caption, a focus target (row:<build>/step:sN, view:builds/tab:pipeline) and an expect check.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:20:11.667Z",
+   "doneAt": "2026-11-17T20:21:25.381Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Write the act catalog part 2: a deliberate crash (kill the fake session), the watchdog catching it, and a retry back to the Queue. Use a fake headless runner so no Claude account is spent.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:21:25.381Z",
+   "doneAt": "2026-11-17T20:22:44.106Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Write the act catalog part 3: simulated red CI on a demo branch, auto-fix filed, merge-main, and landing through a dry-run landing line (never the real merge queue).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:22:44.106Z",
+   "doneAt": "2026-11-17T20:23:42.329Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Write the act catalog part 4: a build dies for good and shows what failed (red row plus the break alert dialog), stale-row cleanup, and a phone notification through axf.notify@1 tagged as demo. Declare it in notify.json.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:23:42.329Z",
+   "doneAt": "2026-11-17T20:25:56.545Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Build the runner on the core: drives acts in order, focuses the console before each act (console_open / focus with highlight), shows the caption, runs the act, records the result, and keeps the waits. Persists demo-run@1 so a console restart picks the run back up.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:25:56.545Z",
+   "doneAt": "2026-11-17T20:28:16.566Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Add the runner's stop and cleanup path: Stop stops the run at once, removes every demo-* build, branch and alert, and the summary (passed/failed/skipped per act) is written to the run record.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:28:16.566Z",
+   "doneAt": "2026-11-17T20:28:58.495Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Add the server routes: GET state, POST start {pause}, pause, resume, next, stop, set pause-between-steps, GET summary. Register them with plugin-commands so the MCP tools come from them.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:28:58.495Z",
+   "doneAt": "2026-11-17T20:35:23.065Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Build the start overlay UI: a framework Dialog with what the demo will do, Continue and Pause buttons, a 'Pause between steps' Switch, and a toolbar (role=toolbar, aria-label). Tokens only.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:35:23.065Z",
+   "doneAt": "2026-11-17T20:37:13.486Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Build the live caption bar UI: a floating caption above the focused target showing what is about to happen, the act number (n/N), a countdown to the next act, and Next / Pause / Stop on a toolbar.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:37:13.486Z",
+   "doneAt": "2026-11-17T20:38:22.739Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Build the summary dialog at the end: a DataGrid of acts with pass/fail, evidence links (row, alert, PR) and a Run again button.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:38:22.739Z",
+   "doneAt": "2026-11-17T20:39:17.468Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Wire the web library: register the overlay, caption bar and summary; console-control targets (view:orchestrator-demo, dialog ids, buttons via data-axf-target); a deep link `?axf-open=orchestrator-demo` and console_show target; and a settings sub-tab under Plugins (min gap shown, can't go below 30 s, default pause).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:39:17.468Z",
+   "doneAt": "2026-11-17T20:48:42.863Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Add console actions + voice: demo.start, demo.pause, demo.resume, demo.next, demo.stop, demo.state, with AmberX voice phrases ('start the orchestrator demo', 'next', 'pause the demo', 'stop the demo').",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:48:42.863Z",
+   "doneAt": "2026-11-17T20:50:33.967Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Add the CLI: `axf demo orchestrator start [--pause] | pause | resume | next | stop | state | summary`, calling the same REST routes.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T20:50:33.967Z",
+   "doneAt": "2026-11-17T20:51:29.649Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Add the dependency check: refuse to start (with a plain reason) when the live build status build's real-time grids and break alerts aren't there; list what's missing in the overlay.",
+   "model": "Opus",
+   "estimate": "6 min",
+   "estimateMin": 6,
+   "startedAt": "2026-11-17T20:51:29.649Z",
+   "doneAt": "2026-11-17T20:54:31.456Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Write unit tests: core vs fixture, ≥30 s gap in both modes, Next then 30 s, the sandbox guard refuses real builds, and stop cleans up everything. Write a Python route test.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:54:31.456Z",
+   "doneAt": "2026-11-17T20:56:09.370Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Run a dry run end to end with a shortened gap override (test-only env), the fake runner and the dry-run lander; check every act passes and no non-demo build changed (builds-store verify).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T20:56:09.370Z",
+   "doneAt": "2026-11-17T21:13:34.389Z",
+   "actualMin": 17,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Run the CI checks: check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, plugin-lifecycle check --after-uninstall, the help ratchet and the glossary catalog --check; fix any findings.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T21:13:34.389Z",
+   "doneAt": "2026-11-17T21:18:08.483Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Take desktop and phone shots of the overlay, caption bar and summary, with 3 option assets for the overlay (ui-choices@1), and submit to UI Review with --choices.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s24",
+   "text": "Finish: run all tests, write the report _claude/builds/reports/guided-live-demo-test-watch-orchestrator.md (acts, how each is reached by deep link / REST / MCP / CLI / voice, results), add the THREADS row, push the branch, open the PR stating the UI Review hold and the API paths, and link it with builds-live.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T21:18:08.483Z",
+   "doneAt": "2026-11-17T22:04:46.630Z",
+   "actualMin": 47,
+   "done": true
+  }
+ ],
+ "branch": "claude/guided-live-demo-test-watch-orchestrator",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 816,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/816"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-17T22:34:43Z",
+ "landedAt": "2026-11-17T22:34:43Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 17.1067,
+  "estimated": true,
+  "tokens": {
+   "input": 4728,
+   "output": 6832,
+   "cacheRead": 70178092,
+   "cacheWrite": 709129
+  }
+ },
+ "report": "_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md",
+ "open": [
+  "s23: Take desktop and phone shots of the overlay, caption bar and summary, with 3 option assets for the overlay (ui-choices@1), and submit to UI Review with --choices."
+ ]
+}

@@ -3617,8 +3617,102 @@
       },
       "error": null
     },
-    "own origin, other host": {
+    "own site, other host (the hub)": {
       "url": "https://axhub.amberxai.com/approvals/1",
+      "device": {
+        "$axf": "phone-device@1",
+        "deviceId": "phone-0123456789abcdef",
+        "name": "samsung SM-S938B",
+        "app": "phone-connect-droid",
+        "appVersion": "1.0.0",
+        "platform": "android",
+        "capabilities": [
+          "open-url@1",
+          "notify@1",
+          "approvals@1",
+          "recorder@1",
+          "voice@1"
+        ],
+        "state": "paired",
+        "owner": {
+          "kind": "person",
+          "who": "brett"
+        },
+        "token": {
+          "prefix": "tok_AbCd",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "issuedAt": "2026-11-17T16:00:00.000Z",
+          "rotatedAt": ""
+        },
+        "watch": {
+          "on": true,
+          "ring": true
+        },
+        "urlPolicy": {
+          "mode": "own",
+          "allowlist": []
+        },
+        "pairedAt": "2026-11-17T16:00:00.000Z",
+        "lastSeenAt": "2026-11-17T16:59:50.000Z",
+        "revokedAt": "",
+        "updatedAt": "2026-11-17T16:59:50.000Z",
+        "capabilityState": {
+          "recorder@1": {
+            "running": false
+          }
+        }
+      },
+      "error": null
+    },
+    "own site, the bare domain": {
+      "url": "https://amberxai.com/",
+      "device": {
+        "$axf": "phone-device@1",
+        "deviceId": "phone-0123456789abcdef",
+        "name": "samsung SM-S938B",
+        "app": "phone-connect-droid",
+        "appVersion": "1.0.0",
+        "platform": "android",
+        "capabilities": [
+          "open-url@1",
+          "notify@1",
+          "approvals@1",
+          "recorder@1",
+          "voice@1"
+        ],
+        "state": "paired",
+        "owner": {
+          "kind": "person",
+          "who": "brett"
+        },
+        "token": {
+          "prefix": "tok_AbCd",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "issuedAt": "2026-11-17T16:00:00.000Z",
+          "rotatedAt": ""
+        },
+        "watch": {
+          "on": true,
+          "ring": true
+        },
+        "urlPolicy": {
+          "mode": "own",
+          "allowlist": []
+        },
+        "pairedAt": "2026-11-17T16:00:00.000Z",
+        "lastSeenAt": "2026-11-17T16:59:50.000Z",
+        "revokedAt": "",
+        "updatedAt": "2026-11-17T16:59:50.000Z",
+        "capabilityState": {
+          "recorder@1": {
+            "running": false
+          }
+        }
+      },
+      "error": null
+    },
+    "own site look-alike": {
+      "url": "https://evilamberxai.com/",
       "device": {
         "$axf": "phone-device@1",
         "deviceId": "phone-0123456789abcdef",
@@ -3664,10 +3758,120 @@
       },
       "error": {
         "code": "denied",
-        "message": "axhub.amberxai.com is outside this phone's url policy (own)",
+        "message": "evilamberxai.com is outside this phone's url policy (own)",
         "retryable": false,
         "detail": {
-          "host": "axhub.amberxai.com",
+          "host": "evilamberxai.com",
+          "mode": "own"
+        }
+      }
+    },
+    "own site as a prefix of another domain": {
+      "url": "https://amberxai.com.evil.example/",
+      "device": {
+        "$axf": "phone-device@1",
+        "deviceId": "phone-0123456789abcdef",
+        "name": "samsung SM-S938B",
+        "app": "phone-connect-droid",
+        "appVersion": "1.0.0",
+        "platform": "android",
+        "capabilities": [
+          "open-url@1",
+          "notify@1",
+          "approvals@1",
+          "recorder@1",
+          "voice@1"
+        ],
+        "state": "paired",
+        "owner": {
+          "kind": "person",
+          "who": "brett"
+        },
+        "token": {
+          "prefix": "tok_AbCd",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "issuedAt": "2026-11-17T16:00:00.000Z",
+          "rotatedAt": ""
+        },
+        "watch": {
+          "on": true,
+          "ring": true
+        },
+        "urlPolicy": {
+          "mode": "own",
+          "allowlist": []
+        },
+        "pairedAt": "2026-11-17T16:00:00.000Z",
+        "lastSeenAt": "2026-11-17T16:59:50.000Z",
+        "revokedAt": "",
+        "updatedAt": "2026-11-17T16:59:50.000Z",
+        "capabilityState": {
+          "recorder@1": {
+            "running": false
+          }
+        }
+      },
+      "error": {
+        "code": "denied",
+        "message": "amberxai.com.evil.example is outside this phone's url policy (own)",
+        "retryable": false,
+        "detail": {
+          "host": "amberxai.com.evil.example",
+          "mode": "own"
+        }
+      }
+    },
+    "outside the own site": {
+      "url": "https://github.com/MossesX",
+      "device": {
+        "$axf": "phone-device@1",
+        "deviceId": "phone-0123456789abcdef",
+        "name": "samsung SM-S938B",
+        "app": "phone-connect-droid",
+        "appVersion": "1.0.0",
+        "platform": "android",
+        "capabilities": [
+          "open-url@1",
+          "notify@1",
+          "approvals@1",
+          "recorder@1",
+          "voice@1"
+        ],
+        "state": "paired",
+        "owner": {
+          "kind": "person",
+          "who": "brett"
+        },
+        "token": {
+          "prefix": "tok_AbCd",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "issuedAt": "2026-11-17T16:00:00.000Z",
+          "rotatedAt": ""
+        },
+        "watch": {
+          "on": true,
+          "ring": true
+        },
+        "urlPolicy": {
+          "mode": "own",
+          "allowlist": []
+        },
+        "pairedAt": "2026-11-17T16:00:00.000Z",
+        "lastSeenAt": "2026-11-17T16:59:50.000Z",
+        "revokedAt": "",
+        "updatedAt": "2026-11-17T16:59:50.000Z",
+        "capabilityState": {
+          "recorder@1": {
+            "running": false
+          }
+        }
+      },
+      "error": {
+        "code": "denied",
+        "message": "github.com is outside this phone's url policy (own)",
+        "retryable": false,
+        "detail": {
+          "host": "github.com",
           "mode": "own"
         }
       }
@@ -4382,6 +4586,120 @@
       "alone": true,
       "inAll": true
     }
+  },
+  "link": {
+    "command waiting": {
+      "reply": {
+        "status": 200,
+        "code": ""
+      },
+      "uncoded": 0,
+      "verdict": "ok"
+    },
+    "nothing waiting (204)": {
+      "reply": {
+        "status": 204,
+        "code": ""
+      },
+      "uncoded": 0,
+      "verdict": "ok"
+    },
+    "bad device token (denied)": {
+      "reply": {
+        "status": 403,
+        "code": "denied"
+      },
+      "uncoded": 0,
+      "verdict": "rejected"
+    },
+    "revoked in the console": {
+      "reply": {
+        "status": 410,
+        "code": "revoked"
+      },
+      "uncoded": 0,
+      "verdict": "rejected"
+    },
+    "record gone or migrated (unpaired)": {
+      "reply": {
+        "status": 409,
+        "code": "unpaired"
+      },
+      "uncoded": 0,
+      "verdict": "rejected"
+    },
+    "bare 401, first": {
+      "reply": {
+        "status": 401,
+        "code": ""
+      },
+      "uncoded": 0,
+      "verdict": "retry"
+    },
+    "bare 401, second": {
+      "reply": {
+        "status": 401,
+        "code": ""
+      },
+      "uncoded": 1,
+      "verdict": "retry"
+    },
+    "bare 401, third in a row ends it": {
+      "reply": {
+        "status": 401,
+        "code": ""
+      },
+      "uncoded": 2,
+      "verdict": "rejected"
+    },
+    "bare 403, third in a row ends it": {
+      "reply": {
+        "status": 403,
+        "code": ""
+      },
+      "uncoded": 2,
+      "verdict": "rejected"
+    },
+    "console restarted (404)": {
+      "reply": {
+        "status": 404,
+        "code": ""
+      },
+      "uncoded": 0,
+      "verdict": "hello"
+    },
+    "console down (503)": {
+      "reply": {
+        "status": 503,
+        "code": "unavailable"
+      },
+      "uncoded": 0,
+      "verdict": "retry"
+    },
+    "no network": {
+      "reply": {
+        "status": 0,
+        "code": "unavailable"
+      },
+      "uncoded": 0,
+      "verdict": "retry"
+    },
+    "wrong protocol header (invalid)": {
+      "reply": {
+        "status": 400,
+        "code": "invalid"
+      },
+      "uncoded": 0,
+      "verdict": "retry"
+    }
+  },
+  "ownSites": {
+    "console.amberxai.com": "amberxai.com",
+    "AXHUB.amberxai.com:8443": "amberxai.com",
+    "amberxai.com": "amberxai.com",
+    "evilamberxai.com": "",
+    "amberxai.com.evil.example": "",
+    "": ""
   },
   "pairingFlow": {
     "issued": {

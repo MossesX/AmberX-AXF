@@ -58,6 +58,10 @@ const OPEN: Record<string, () => string> = {
   'plugin-guide': () => `${REPO}/blob/main/apps/console-web/plugins/README.md`,
   docs: () => `${REPO}/tree/main/framework/spec`,
 };
+/** console.open keys whose page an axHub plugin has in the console (its `<view>.open` action, found by action id). */
+const IN_CONSOLE: Record<string, string> = {
+  axhub: 'axhub-hub.open', 'axhub-approvals': 'axhub-approvals.open', 'axhub-apps': 'axhub-apps.open', 'axhub-users': 'axhub-users.open', 'axhub-account': 'axhub-account.open',
+};
 const openTab = (url: string) => { globalThis.open?.(url, '_blank', 'noopener,noreferrer'); };
 
 /* ---------------- revealing a row in a view ---------------- */
@@ -284,7 +288,12 @@ export const menuLibrary: AxfWebLibrary = {
     start(rt);
     rt.actions.register('console.search', () => search(rt), { label: 'Search everything' });
     rt.actions.register('amber.plugin', ([folder]) => { if (folder) openPlugin(rt, folder); }, { label: 'Open a plugin where it opens', params: true, searchable: false });
-    rt.actions.register('console.open', ([key]) => { const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning'); }, { label: 'Open an app or page in a new tab', params: true, searchable: false });
+    rt.actions.register('console.open', ([key]) => {
+      // The hub's pages are console plugins (module axHub, Nov 20 2026): one that is installed opens here, not in a tab.
+      const here = key ? IN_CONSOLE[key] : undefined;
+      if (here && rt.actions.get(here)) { rt.dispatch(here); return; }
+      const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning');
+    }, { label: 'Open an app or page (the hub\'s pages in the console when their plugin is installed, else a new tab)', params: true, searchable: false });
     rt.actions.register('console.reveal', ([view, text, how]) => { if (view) reveal(rt, view, decodeURIComponent(text ?? ''), how === 'pick'); }, { label: 'Show a row in a view', params: true, searchable: false });
     rt.actions.register('console.pending.open', ([id]) => {
       rt.navigate('pending');

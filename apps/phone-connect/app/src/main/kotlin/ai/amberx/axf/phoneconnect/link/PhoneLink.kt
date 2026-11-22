@@ -19,7 +19,12 @@ class PhoneLink(private val store: PhoneStore, private val http: OkHttpClient = 
     sealed class Reply {
         data class Ok(val json: JSONObject) : Reply()
         object NoContent : Reply()
-        data class Fail(val code: String, val message: String, val retryable: Boolean, val status: Int = 0) : Reply()
+        /** [coded] = the answer carried a wire error code; false when a proxy or the sign-in wall answered instead of the plugin. */
+        data class Fail(val code: String, val message: String, val retryable: Boolean, val status: Int = 0, val coded: Boolean = true) : Reply() {
+            /** What the watch does about it (LinkRules.verdict); [uncoded] = bare 401 / 403 answers in a row before this one. */
+            fun verdict(uncoded: Int = 0): LinkRules.Verdict = LinkRules.verdict(status, if (coded) code else "", uncoded)
+            val bareRefusal: Boolean get() = !coded && status in LinkRules.REJECTED_STATUSES
+        }
     }
 
     /** The device as the console sees it (name, app, capabilities, last known capability state). */
@@ -74,11 +79,12 @@ class PhoneLink(private val store: PhoneStore, private val http: OkHttpClient = 
             val text = res.body?.let { readCapped(it.byteStream()) } ?: ""
             val json = runCatching { JSONObject(text) }.getOrNull() ?: JSONObject()
             if (res.isSuccessful) return Reply.Ok(json)
-            if (res.isRedirect) return Reply.Fail("denied", "The console tried to redirect; redirects are never followed.", false, res.code)
+            if (res.isRedirect) return Reply.Fail("denied", "The console tried to redirect; redirects are never followed.", false, res.code, coded = false)
             val e = json.optJSONObject("error")
-            Reply.Fail(e?.optString("code").orEmpty().ifEmpty { if (res.code >= 500) "unavailable" else "unexpected" },
+            val code = e?.optString("code").orEmpty()
+            Reply.Fail(code.ifEmpty { if (res.code >= 500) "unavailable" else "unexpected" },
                 e?.optString("message").orEmpty().ifEmpty { "The console answered ${res.code}." },
-                e?.optBoolean("retryable", res.code >= 500) ?: (res.code >= 500), res.code)
+                e?.optBoolean("retryable", res.code >= 500) ?: (res.code >= 500), res.code, coded = code.isNotEmpty())
         }
     } catch (e: IOException) {
         Reply.Fail("unavailable", "Can't reach the console (${e.javaClass.simpleName}).", true)
@@ -97,7 +103,7 @@ class PhoneLink(private val store: PhoneStore, private val http: OkHttpClient = 
     }
 
     companion object {
-        const val APP_VERSION = "0.1.0"
+        const val APP_VERSION = "0.3.0"
         private val JSON = "application/json".toMediaType()
         fun client(): OkHttpClient = OkHttpClient.Builder()
             .followRedirects(false).followSslRedirects(false)

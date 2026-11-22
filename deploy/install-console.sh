@@ -112,10 +112,12 @@ if [ -n "$VOL" ]; then
         { cp -a --update=none /old/. /projects/amberx-axf/_data/ 2>/dev/null || cp -a -n /old/. /projects/amberx-axf/_data/; } && touch /projects/amberx-axf/_data/.legacy-copied && echo "copied the legacy data folder in"
       fi
       node /axf/framework/cli/persist.mjs push | sed "s/^/  /"
-      chown -R "$HUB_UID:$HUB_UID" /projects/amberx-axf /projects/_shared
+      # files come and go while this runs (lock files, *.tmp of live writers): one that vanishes between the scan and
+      # the chmod must not fail the update (Nov 19 2026: a removed agent-slots/state.lock stopped the console)
+      chown -R "$HUB_UID:$HUB_UID" /projects/amberx-axf /projects/_shared 2>/dev/null || echo "some files changed while setting owners (skipped)"
       chown "$HUB_UID:$HUB_UID" /projects
-      find /projects/amberx-axf /projects/_shared -type d -exec chmod 2775 {} +
-      find /projects/amberx-axf /projects/_shared -type f -exec chmod ug+rw {} +
+      find /projects/amberx-axf /projects/_shared -type d -exec chmod 2775 {} + 2>/dev/null || echo "some folders changed while setting modes (skipped)"
+      find /projects/amberx-axf /projects/_shared -type f -exec chmod ug+rw {} + 2>/dev/null || echo "some files changed while setting modes (skipped)"
     ' | sed 's/^/[axf] /'
   # Once copied, the legacy folder is renamed so nothing keeps writing a second, diverging copy (kept, not deleted).
   if [ -d "$LEGACY" ] && "${HELPER[@]}" --entrypoint sh "$NAME:latest" -c 'test -e /projects/amberx-axf/_data/.legacy-copied'; then
@@ -164,6 +166,25 @@ COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$HL_DIR":/
 # axf-data (deploy/install-data.sh): its URL + the console's service token, and the internal network after the start
 AXF_DATA_ENV="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}/env/console.env"
 [ -s "$AXF_DATA_ENV" ] && COMMON+=(--env-file "$AXF_DATA_ENV")
+# The host services install with the console, and again whenever their files change (the stamp is the last commit that
+# touched them), so a merge is all it takes. Every service starts in container mode: installed and idle until the
+# migration moves it (deploy/host-services/migrate.mjs). AXF_HOST_SERVICES_INSTALL=off skips it.
+HS_INSTALL="$DIR/deploy/install-host-services.sh"
+if [ -f "$HS_INSTALL" ] && [ "${AXF_HOST_SERVICES_INSTALL:-on}" != off ] && command -v systemctl >/dev/null 2>&1 && [ "$(id -u)" = 0 ]; then
+  HS_NOW="$(git -C "$DIR" log -1 --format=%H -- deploy/host-services deploy/install-host-services.sh framework/core/host-services.mjs 2>/dev/null || true)"
+  if [ -n "$HS_NOW" ] && [ "$(cat /etc/axf-host/installed.rev 2>/dev/null || true)" != "$HS_NOW" ]; then
+    if bash "$HS_INSTALL" >> /var/log/axf-host-install.log 2>&1; then echo "$HS_NOW" > /etc/axf-host/installed.rev; echo "host services: installed at ${HS_NOW:0:12}"
+    else echo "host services: install failed (see /var/log/axf-host-install.log); the console keeps running every part itself"; fi
+  fi
+fi
+# host services (deploy/install-host-services.sh, HOST-SERVICES.md): the socket folder, the axf-host group (the socket's
+# file mode is the auth) and AXF_HOST_API / the loopback fallback + token; nothing changes until that installer ran.
+AXF_HOST_ENV="${AXF_HOST_CONSOLE_ENV:-/etc/axf-host/console.env}"
+if [ -s "$AXF_HOST_ENV" ]; then
+  HOST_GID="$(sed -n 's/^AXF_HOST_GID=//p' "$AXF_HOST_ENV" | head -1)"
+  COMMON+=(-v /run/axf-host:/run/axf-host --env-file "$AXF_HOST_ENV" --add-host host.docker.internal:host-gateway)
+  [ -n "$HOST_GID" ] && COMMON+=(--group-add "$HOST_GID")
+fi
 if axf_coolify_proxy_running; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(axf_coolify_network)"
@@ -230,11 +251,7 @@ docker network inspect axf-data >/dev/null 2>&1 && { docker network connect axf-
 # Pull main every 5 minutes; re-run this installer when it changed, and also while the sign-in wall waits for the hub.
 # Progress goes to update-status.json for the console's Activity banner. The script is root-only (0700): it carries
 # GITHUB_TOKEN for the re-run.
-# One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
-# keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
-QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
 AXF_UPDATE_DEPLOY="${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl} console" \
-AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
@@ -244,28 +261,36 @@ axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.loc
 # Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
 # lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
 axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
-# Stale-row watchdog (Brett, Nov 16 2026: "I want a server fucking watchdog on the VPS to do that."): every 5 minutes,
-# rows left on the builds lists after their PR merged or closed are completed or removed (template deploy/cron/axf-stale-watchdog).
-axf_cron_file axf-stale-watchdog "*/5 * * * * root cd $DIR && flock -n /tmp/axf-stale-watchdog.lock node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --cron --by watchdog >> /var/log/axf-stale-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
+# Build watchdog (build-watchdogs@1): ONE cron for every watch of the Build orchestrator's watchdog.mjs, every minute:
+# build sessions that are stuck or were killed (recovered or requeued), builds standing in landing / fixing / merging too
+# long (pushed to the next action on their ladder), rows left on a list after their PR merged or closed (completed or
+# removed). Each watch runs only when it is on and due. Template deploy/cron/axf-build-watchdog. The older
+# axf-stale-watchdog cron (the row cleaner on its own) is retired: its work is the `rows` watch.
+rm -f /etc/cron.d/axf-stale-watchdog
+axf_cron_file axf-build-watchdog "* * * * * root W=$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs; [ -f \$W ] && cd $DIR && flock -n /run/axf-build-watchdog.lock timeout 600 node \$W cron >> /var/log/axf-build-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
 # VPS reaper (vps-reaper@1, Nov 18 2026: the VPS cleans up its own ghosts): every 2 minutes finished claude -p processes,
 # dead tmux axf-* sessions, ghost agent slots, ownerless heavy locks, leftover test servers and stale temp folders go.
 # One source for the line: the template deploy/cron/axf-reaper.
 axf_cron_file axf-reaper "$(grep -v '^#' "$DIR/deploy/cron/axf-reaper" | sed "s#__DIR__#$DIR#g")"
-# The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
-# and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
-axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
-# Build watchdog (Brett, Nov 13 2026: "Never wait for Brett to notice"): every minute, builds marked running with no live
-# session are reset, requeued or retried, idle slots are filled and the phone gets an FYI per fix. One source for the
-# cron line: watchdog.mjs install-cron (/etc/cron.d/axf-watchdog, flock /run/axf-watchdog.lock, removes itself with the plugin).
-WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs"  # axf-plugin:build-orchestrator
-[ -f "$WD_JS" ] && { (cd "$DIR" && node "$WD_JS" install-cron --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog cron not installed"; }  # axf-plugin:build-orchestrator
-# Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
-# builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
-axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
-# The server auto-lander (auto-lander@1, Brett Nov 16 2026: "Make the server do it automatically without the console"):
-# a systemd service + timer, every minute: merges main into clashing builds, starts fix sessions for red CI, hands green
-# PRs to the merge queue, escalates to the systems check after maxAttempts. Status: node deploy/auto-lander/auto-lander.mjs status
-axf_auto_lander_install "$DIR" || echo "auto-lander: not installed (see above)"  # axf-plugin:gate
+# Pipeline 2.0 (Brett, Nov 19 2026: fully autonomous, zero human intervention). One source for every line:
+# deploy/watchdog/cron.mjs install. It writes the orchestrator tick (layer 1, every minute; replaces the old axf-pipeline
+# dispatcher tick), the layer-2 watchdog (every minute: stuck statuses, dead sessions, usage limits, retried forward),
+# the store audits (:17 and :47, one at a time, nice 19, main checkout only) and layer 3 (systemd timer, every 2 minutes:
+# keeps the tick and layer 2 alive, alerts only when it cannot heal). It also removes the retired crons on every deploy
+# so none comes back: axf-pipeline (old dispatcher), axf-auto-land (old push-banner lander) and axf-watchdog (old
+# recovery watchdog, whose slot filling ran the old pipeline tick).
+WD2_JS="$DIR/deploy/watchdog/cron.mjs"
+rm -f /etc/cron.d/axf-pipeline /etc/cron.d/axf-auto-land /etc/cron.d/axf-watchdog
+if [ -f "$WD2_JS" ]; then
+  (cd "$DIR" && node "$WD2_JS" install --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog schedules not installed: node $WD2_JS install --dir $DIR"
+  # the store audits run in the watchdog, not before every dispatch: point their build rules there (idempotent)
+  (cd "$DIR" && node deploy/watchdog/audits.mjs handoff) >/dev/null 2>&1 || say "build rules not handed to the watchdog yet: node $DIR/deploy/watchdog/audits.mjs handoff"
+fi
+# The lander (lander@1, Pipeline 2.0, Brett Nov 18 2026: "absolutely no human intervention, ever"): a systemd service +
+# timer, every minute: the one build at build-complete lands as one PR (or 2, 3+ over the size cap), main pulled in, CI
+# once with the gate's build rules, merged; failures retry forward by themselves. It replaces the auto-lander@1 timer.
+# Status: node deploy/lander/run.mjs status
+axf_lander_install "$DIR" || echo "lander: not installed (see above)"  # axf-plugin:gate
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"

@@ -2,7 +2,8 @@ package ai.amberx.axf.phoneconnect.link
 
 /**
  * phone-connect@1 rules the app keeps (pure Kotlin, no Android imports; mirrors framework/core/phone-connect.mjs HUB,
- * PATTERNS and the url rule). The full Kotlin twin of the engine is a deferred gap (framework/spec/PORTING.md).
+ * PATTERNS, LINK, the url rule and `linkVerdict`). The full Kotlin twin of the engine is a deferred gap
+ * (framework/spec/PORTING.md); LinkRulesTest holds these to the same cases as the engine's fixture.
  */
 object LinkRules {
     const val PROTOCOL = "axpp@1"
@@ -13,6 +14,13 @@ object LinkRules {
     const val POLL_WAIT_S = 25
     const val REPLY_MAX_BYTES = 262_144
     val BACKOFF_S = listOf(5, 15, 30, 60)
+    const val CHROME = "com.android.chrome"
+    /** LINK.rejectedCodes / rejectedStatuses / rejectLimit: what ends the retry loop (a rejected token is never retried). */
+    val REJECTED_CODES = setOf("denied", "revoked", "unpaired")
+    val REJECTED_STATUSES = setOf(401, 403)
+    const val REJECT_LIMIT = 3
+    const val RESTARTED = 404
+    val DECISIONS = listOf("approve", "deny", "shelve")
     val CAPABILITIES = listOf("open-url@1", "notify@1", "approvals@1", "recorder@1", "voice@1")
     private val CODE = Regex("^[A-HJ-NP-Z2-9]{8}$")
     private val TOKEN = Regex("^tok_[A-Za-z0-9_-]{32}$")
@@ -42,15 +50,83 @@ object LinkRules {
         return authority.isNotEmpty() && !authority.contains('@')
     }
 
-    /** The next wait after [failures] failed calls in a row. */
     /**
      * browser.open's `where`: anything but "browser" asks for the overlay, so the console app (ConsoleOverlay) gets the
      * page first; "browser" always opens in the phone's browser.
      */
     fun wantsOverlay(where: String?): Boolean = where != "browser"
 
+    /** How long the floating approval card keeps showing the outcome ("Approved.") before it leaves. */
+    const val OUTCOME_SHOWN_MS = 4_000L
+
+    /** The words on an approval's buttons, on the notification and on the floating card alike. */
+    fun decisionLabel(decision: String): String = when (decision) { "approve" -> "Approve"; "deny" -> "Deny"; "shelve" -> "Shelve"; else -> decision }
+
+    /**
+     * Where an approval prompt shows (approval.show's ack detail): `overlay` = the floating card with Approve / Deny
+     * on top of whatever is on screen, plus the notification; `notification` = the notification alone (no "display
+     * over other apps"); null = nowhere (notifications off as well), which is a failure.
+     */
+    fun approvalShown(card: Boolean, notification: Boolean): String? = if (card) "overlay" else if (notification) "notification" else null
+
+    /** How long a start of the console app may take to show before it counts as held back by Android. */
+    const val FRONT_WAIT_MS = 2_000L
+
+    /** browser.open's `how` when the console app took the page: in its expanded overlay, or the app itself in front. */
+    fun consoleHow(inOverlay: Boolean): String = if (inOverlay) "console-overlay" else "console-app"
+
+    /**
+     * Why browser.open ended as a tap-to-open notification (the result's `why`): this app was in the background
+     * without "display over other apps" (`no-permission`), or it was allowed to start the page and nothing came up
+     * (`launch-failed`).
+     */
+    fun notifiedWhy(mayStart: Boolean): String = if (mayStart) "launch-failed" else "no-permission"
+
+    /** browser.open's `browser`: "chrome" asks for Chrome (the default browser when Chrome is not installed). */
+    fun wantsChrome(browser: String?): Boolean = browser == "chrome"
+
+    /** What the watch does after one `hello` / `next` reply (engine `linkVerdict`). */
+    enum class Verdict { OK, HELLO, RETRY, REJECTED }
+
+    /**
+     * [status] is the HTTP status (0 = no answer), [code] the wire error code ("" when the answer carried none: a proxy
+     * or the sign-in wall answered, not the plugin), [uncoded] the bare 401 / 403 answers in a row before this one.
+     * REJECTED = this token is dead: stop the loop, drop it, show "Disconnected: tap to re-pair". Never retried.
+     */
+    fun verdict(status: Int, code: String, uncoded: Int = 0): Verdict = when {
+        status in 200..299 -> Verdict.OK
+        code in REJECTED_CODES -> Verdict.REJECTED
+        code.isEmpty() && status in REJECTED_STATUSES -> if (uncoded + 1 >= REJECT_LIMIT) Verdict.REJECTED else Verdict.RETRY
+        status == RESTARTED -> Verdict.HELLO
+        else -> Verdict.RETRY
+    }
+
+    /** Why the link ended, in words for the pairing screen and the notification. */
+    fun rejectedWhy(code: String): String = when (code) {
+        "revoked" -> "This phone was revoked in the console."
+        "unpaired" -> "The console no longer has this phone paired."
+        else -> "The console no longer accepts this phone's key."
+    }
+
+    /** The next wait after [failures] failed calls in a row. */
     fun backoffSeconds(failures: Int): Int = BACKOFF_S[(failures - 1).coerceIn(0, BACKOFF_S.size - 1)]
 
     /** The approval page on the hub, rebuilt from the id (a link in a reply is never followed as given). */
+    /** The approval in the console (its `hub.review` deep link), rebuilt from the id: what a tap on the prompt opens. */
+    fun consoleApproval(origin: String, approvalId: String): String? = if (isUuid(approvalId)) "${origin.trimEnd('/')}/?axf-open=hub.review:$approvalId" else null
+
+    /** The console's own pairing page, where the code is shown. */
+    fun pairPage(origin: String): String = "${origin.trimEnd('/')}/?axf-open=view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect"
+
+    /**
+     * What the prompt says after a tap. [relayed] is the console's answer to the tap: true = the hub took the decision,
+     * false = it did not ([message] says why), null = the console never answered or the prompt had already ended.
+     */
+    fun decisionOutcome(decision: String, relayed: Boolean?, message: String = ""): String = when (relayed) {
+        true -> when (decision) { "approve" -> "Approved."; "deny" -> "Denied."; "shelve" -> "Shelved: the countdown is paused."; else -> "Done." }
+        false -> message.ifBlank { "Nothing was decided." } + " Tap to open it in the console."
+        null -> message.ifBlank { "This prompt is no longer open." } + " Nothing was decided. Tap to open it in the console."
+    }
+
     fun approvalPage(hub: String, approvalId: String): String? = if (isUuid(approvalId)) "${hub.trimEnd('/')}/auth/admin/approvals/$approvalId" else null
 }

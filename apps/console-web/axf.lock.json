@@ -891,7 +891,7 @@
     "src/axf/react/components/Swatches.tsx": "635736dafdae26de",
     "src/axf/react/components/TabGroup.tsx": "ff6fb425b8a58e49",
     "src/axf/react/components/TapConfirmChoice.tsx": "d39f33acf5af5dfa",
-    "src/axf/react/components/Toolbar.tsx": "b9e808bc65497d6d",
+    "src/axf/react/components/Toolbar.tsx": "a886ad3775367f7e",
     "src/axf/react/components/Waiting.tsx": "ca0d5d0572d7b5b0",
     "src/axf/react/components/WatchLive.tsx": "6c447433cdcc43d4",
     "src/axf/react/components/Widgets.tsx": "67a3554da3084a61",

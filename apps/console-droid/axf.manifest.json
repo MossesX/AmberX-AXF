@@ -3,7 +3,7 @@
   "app": {
     "id": "console-droid",
     "name": "AXF Console",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "about": "The AXF console on your phone, with a floating toolbar over every app."
   },
   "framework": {

@@ -24,7 +24,7 @@ const BR = await import('../../../../../framework/core/build-rules.mjs');
 const { createGate, parseCli } = await import('../gate.mjs');
 const runner = await import('../build-rules-runner.mjs');
 const homeCard = await import('../fixers/home-card.mjs');
-const landCore = await import('../../push-banner/land/land-core.mjs'); // axf-not-plugin:push-banner (test data only)
+const lander = await import('../../../../../deploy/lander/lander-core.mjs');
 
 let n = 0;
 const tests = [];
@@ -120,11 +120,11 @@ t('the gate runs the home-card rule, fixes it, re-checks it and logs it; an unfi
   assert.deepEqual(runs.map((r) => r.id).sort(), ['always-red', 'home-card']);
   const gateHist = readFileSync(join(GATE, 'history.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
   assert.ok(gateHist.some((h) => h.kind === 'build-rule' && h.id === 'home-card' && h.action === 'fixed'), 'gate History has the fix');
-  // the gate verdict for that build is blocked by the build rules, and the lander gets a blocking reason
+  // the gate verdict for that build is blocked by the build rules, and the lander answers it with a fix
   const g = createGate();
   const v = g.run('check_pr', { snapshot: { number: 9, head: 'h', ci: 'success' }, build: 'b1', rulesDir: STORE });
   assert.equal(v.pass, false); assert.deepEqual(v.buildRules.failing, ['always-red']);
-  assert.equal(landCore.blockReason('b1', { ci: 'success', rules: { failing: v.buildRules.failing } }).kind, 'rules');
+  assert.equal(lander.failure({ id: 'b1' }, 'rules', { failing: v.buildRules.failing }).failure.retry, 'fix', 'the lander answers failing rules with a fix session');
   // the second run: the card is there, so home-card passes without a fix
   const again = await runner.runPhase('b1', 'gate', { store, dir: STORE, rules: ['home-card'], ctx: { root, cwd: root, build: { id: 'b1', plugins: ['demo-plugin'] } } });
   assert.equal(again.runs[0].result, 'pass');
@@ -139,6 +139,19 @@ t('before / after take only VPS rules; a dry run fixes nothing and writes no his
   assert.deepEqual(out.runs[0].fix.planned, ['apps/console-web/plugins/demo-plugin/assets/card/home.json']);
   assert.equal(existsSync(join(dir, 'assets/card/home.json')), false);
   assert.deepEqual(runner.readRuns({ dir: STORE }), []);
+});
+
+t('command checks never run at launch: a before / after command rule runs at the gate (the lander\'s CI step)', async () => {
+  const store = { rules: [
+    rule('one-builds-store', { phase: 'before', check: 'node framework/cli/builds-store.mjs verify' }),
+    rule('home-card', { phase: 'before', check: 'store:home-card', autofix: 'home-card' }),
+    rule('end-check', { phase: 'after', check: 'node -e 0' }),
+    rule('gate-own', { check: 'node -e 0' }),
+  ] };
+  assert.deepEqual(runner.rulesFor(store, 'before').map((r) => r.id), ['home-card'], 'launch keeps its fixers only');
+  assert.deepEqual(runner.rulesFor(store, 'after').map((r) => r.id), []);
+  assert.deepEqual(runner.rulesFor(store, 'gate').map((r) => r.id).sort(), ['end-check', 'gate-own', 'one-builds-store']);
+  assert.ok(runner.deferredToGate(store.rules[0]) && !runner.deferredToGate(store.rules[1]));
 });
 
 // ------------------------------------------------------------------ the dispatcher's brief

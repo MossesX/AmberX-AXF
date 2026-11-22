@@ -45,7 +45,7 @@ export function HandoffView() {
   useEffect(() => { void refresh(); }, []);
   const st = s.status;
   return (
-    <div className="fx-stack axp-claude-handoff">
+    <div className="fx-stack fx-stack--lg axp-claude-handoff">
       <header className="fx-pagehead axp-claude-handoff__head">
         <div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted axp-claude-handoff__lede" title="Everything a new Claude account needs to carry this project on, kept current.">What a new Claude account needs to carry on, kept current.</p></div>
         <div className="axp-claude-handoff__row axp-claude-handoff__acts">
@@ -266,7 +266,7 @@ function Preview() {
 export function PreviewView() {
   const rt = useRuntime();
   return (
-    <div className="fx-stack axp-claude-handoff">
+    <div className="fx-stack fx-stack--lg axp-claude-handoff">
       <header className="fx-pagehead axp-claude-handoff__head">
         <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1><p className="fx-muted axp-claude-handoff__lede" title="The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with Look (also Tools → Installer look).">The installer on real files with example data; nothing is published.</p></div>
         <Button icon="palette" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>

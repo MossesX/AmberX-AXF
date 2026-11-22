@@ -146,6 +146,12 @@ eq(phone_got[-1]["$axf"], "console-command@1", "message frame")
 # ---- whole command, settings sub-tab with anchor, back
 j = client.post("/api/console", json={"op": "act", "target": "console.settings", "path": "plugins/sample-tools", "action": "open", "input": {"anchor": "settings-group:x"}}).json()
 ok(j["ok"] and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", "settings sub-tab through the whole-command route")
+# POST /api/console/settings with a tab opens it (it shares the path with the wake-settings save, which once shadowed it)
+n_before = len(phone_got)
+j = client.post("/api/console/settings", json={"tab": "plugins/sample-tools", "anchor": "settings-group:x", "by": "claude"}).json()
+ok(j["ok"] and len(phone_got) == n_before + 1 and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", f"POST /settings with a tab opens it ({j})")
+j = client.post("/api/console/settings", json={"ttlS": 120}).json()
+ok(j["ok"] and j["settings"]["ttlS"] == 120 and len(phone_got) == n_before + 1, "POST /settings without a tab still saves the wake settings (nothing sent)")
 ok(client.post("/api/console/back", json={}).json()["ok"] and phone_got[-1]["op"] == "back", "back")
 ok(client.post("/api/console/home", json={}).json()["ok"] and phone_got[-1]["op"] == "home", "home")
 
@@ -337,6 +343,17 @@ o = said({"data": {"opened": True, "notified": True}})
 ok(o["opened"] and "started" in o["message"], f"a nested answer is read; it says started, never opened on screen ({o})")
 o = said({"opened": False, "notified": False})
 ok(not o["opened"] and not o["notified"] and "off" in o["message"], f"no notification either ({o})")
+# Phone Connect's answer (axf.phone@1 hub_tool): opened only when the phone says the page is on screen
+o = wk.phone_outcome({"ok": True, "output": "x", "opened": {"answered": True, "opened": True, "notified": False, "how": "console-app", "message": "The console app is open on it, in front."}})
+ok(o["ok"] and o["opened"] and not o["notified"] and o["how"] == "console-app" and o["via"] == "phone", f"the phone opened it straight, no tap ({o})")
+o = wk.phone_outcome({"ok": True, "output": "x", "opened": {"answered": True, "opened": False, "notified": True, "how": "notification", "message": "Not opened: …"}})
+ok(o["ok"] and not o["opened"] and o["notified"] and o["message"].startswith("Not opened"), f"only notified is never called opened ({o})")
+o = wk.phone_outcome({"ok": True, "output": "sent", "opened": {"answered": False, "opened": False, "notified": False, "how": "", "message": "Sent to the phone; it has not answered yet"}})
+ok(o["ok"] and not o["opened"] and not o["notified"], f"no answer yet is neither ({o})")
+o = wk.phone_outcome({"ok": True, "output": "Phone Connect opened it on the phone", "command": {"status": "done"}})
+ok(not o["opened"] and not o["notified"], f"an answer without the phone's own account proves nothing ({o})")
+o = wk.phone_outcome({"ok": False, "output": "the phone failed"})
+ok(not o["ok"] and not o["opened"] and "failed" in o["message"], f"a failure is passed on ({o})")
 o = said({"held": True, "job_id": "j"})
 ok(not o["ok"], "a held call is not a wake")
 o = said({"error": {"message": "device offline"}}, isError=True)
@@ -499,6 +516,100 @@ j = client.post("/api/console/open", json={"screen": "build-orchestrator pending
 eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("build-orchestrator", "pending", "pending"), "screen + tab")
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
+
+# ---- screenshots (console.nav act screenshot): the console uploads a PNG, the answer carries it once with the screen state
+cc.SHOT_DIR = Path(tempfile.mkdtemp()) / "shots"
+PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 32
+STATE = {"screen": "settings", "screenLabel": "Settings", "tabs": {"view:settings/tab:settings.tabs": "appearance"}, "dialog": "asset-json", "selection": "grid:queue/row:b1", "scroll": {"top": 120, "fraction": 0.25}}
+shot_got: list[dict] = []
+shot_mode = {"upload": True}
+
+
+def shot_console(cid: str) -> None:
+    """A console tab that answers screenshot commands: upload the PNG first, then ack with the screen state."""
+    def loop() -> None:
+        with client.stream("GET", f"/api/console/stream?client={cid}") as st:
+            for line in st.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                m = json.loads(line[6:])
+                if m.get("$axf") == "console-hello@1":
+                    client.post("/api/console/hello", json={"client": cid, "catalog": CATALOG})
+                    continue
+                shot_got.append(m)
+                if m["op"] == "screenshot" and shot_mode.get("working"):
+                    client.post("/api/console/seen", json={"client": cid, "working": m["id"]})
+                if m["op"] == "screenshot" and shot_mode.get("delay"):
+                    time.sleep(shot_mode["delay"])
+                if m["op"] == "screenshot" and shot_mode["upload"]:
+                    up = client.post(f"/api/console/shot?client={cid}&id={m['id']}", content=PNG, headers={"content-type": "image/png"})
+                    shot_mode["upload_status"] = up.status_code
+                client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": True, "message": "captured the screen (800×600)",
+                                                      "result": {"shot": True, "width": 800, "height": 600, "scale": 1, "capture": m.get("address") or m.get("selector") or "page", "state": STATE}})
+    threading.Thread(target=loop, daemon=True).start()
+
+
+client.post("/api/console/hello", json={"client": "shot-0001", "catalog": CATALOG, "used": True})
+shot_console("shot-0001")
+wait_for(lambda: stream_open("shot-0001"))
+j = client.post("/api/console/screenshot", json={"address": "view:settings"}).json()
+eq(shot_got[-1]["op"], "screenshot", "the console gets a screenshot command")
+eq(shot_got[-1].get("address"), "view:settings", "with the address to capture")
+eq(shot_mode.get("upload_status"), 200, "the console's upload is taken while the command is waited for")
+eq(j.get("status"), "delivered", f"a screenshot that came back is delivered ({j.get('message')})")
+import base64  # noqa: E402
+eq(base64.b64decode(j["images"][0]["data"]), PNG, "the answer carries the PNG")
+eq((j["images"][0]["client"], j["images"][0]["width"], j["images"][0]["mime"]), ("shot-0001", 800, "image/png"), "with its console, size and type")
+eq(j["state"], STATE, "and the screen state: screen, tabs, dialog, selection, scroll")
+eq(list(cc.SHOT_DIR.glob("*")), [], "the upload is deleted once the answer has read it")
+r = client.post("/api/console/screenshot", json={"address": "view:settings", "selector": "#main"})
+eq(r.status_code, 422, "a selector and an address together are refused")
+j = svc.run({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": {"selector": ".fx-dialog"}}, ["control.console.read"], "mcp")
+ok(j["ok"] and shot_got[-1].get("selector") == ".fx-dialog" and j["images"], "a screenshot needs only control.console.read (read-only)")
+j = svc.run({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot"}, ["control.console.navigate"], "mcp")
+eq(j.get("code"), "denied", "but it does need read: it shows what is on screen")
+shot_mode["upload"] = False
+j = client.post("/api/console/screenshot", json={}).json()
+eq((j.get("status"), j.get("images")), ("failed", []), "an ack without an uploaded image is failed, not delivered")
+shot_mode["upload"] = True
+# a capture slower than one live try (LIVE_TRY_S): the console says it is working, the server waits for it
+cc.SHOT_WORK_S = 4.0
+shot_mode.update(working=True, delay=cc.LIVE_TRY_S * 2.5)
+j = client.post("/api/console/screenshot", json={}).json()
+eq((j.get("status"), (j.get("delivery") or {}).get("how")), ("delivered", "live"), f"a slow capture that said it is working is waited for ({j.get('message')})")
+eq(base64.b64decode(j["images"][0]["data"]) if j.get("images") else b"", PNG, "and its image comes back")
+ok(cc._live(cc._clients["shot-0001"]), "the working console is not marked asleep")
+# the same slow capture without the working signal: the call moves on, the late ack still brings the image back
+shot_mode.update(working=False)
+with cc._lock:  # only this console is open (the earlier tests' fake consoles would take the queued copy)
+    for c in cc._clients.values():
+        if c["id"] != "shot-0001":
+            c["lastSeen"] = 0.0
+j = client.post("/api/console/screenshot", json={}).json()
+eq(j.get("status"), "delivered", f"a late screenshot ack is delivered ({j.get('message')})")
+eq(base64.b64decode(j["images"][0]["data"]) if j.get("images") else b"", PNG, "with its image (it used to come back without one)")
+eq(list(cc.SHOT_DIR.glob("*.png")), [], "and the upload is read and deleted")
+shot_mode.update(delay=0)
+client.post("/api/console/seen", json={"client": "shot-0001", "used": True})
+eq(client.post("/api/console/shot?client=shot-0001&id=cc-nobody", content=PNG).status_code, 409, "an upload nobody waits for is refused")
+eq(client.post("/api/console/shot?client=nobody-001&id=cc-1", content=PNG).status_code, 404, "an upload from an unknown console is refused")
+eq(client.post("/api/console/shot?client=shot-0001&id=cc-1", content=PNG, headers={"x-user": "sam"}).status_code, 404, "someone else can't upload for Brett's console")
+try:
+    cc.save_shot("cc-x", "shot-0001", b"GIF89a")
+    ok(False, "a non-PNG upload raises")
+except cc.HTTPException as e:
+    eq(e.status_code, 415, "a screenshot must be a PNG")
+try:
+    cc.save_shot("cc-x", "shot-0001", PNG + b"\0" * cc.SHOT_MAX_BYTES)
+    ok(False, "an oversized upload raises")
+except cc.HTTPException as e:
+    eq(e.status_code, 413, "a screenshot over the byte limit is refused")
+eq(cc.save_shot("cc-old", "shot-0001", PNG), len(PNG), "an upload is kept until read")
+old_f = cc._shot_file("cc-old", "shot-0001")
+os.utime(old_f, (time.time() - cc.SHOT_TTL_S - 5,) * 2)
+eq(cc.sweep_shots(), 1, "an upload nobody read is swept after the TTL")
+ok(not old_f.exists(), "and is gone")
+ok(oct(cc.SHOT_DIR.stat().st_mode & 0o777) == "0o700", "the temp folder is private to the server")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

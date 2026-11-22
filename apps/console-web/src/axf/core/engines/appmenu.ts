@@ -468,6 +468,7 @@ export function validateMenuItems(items: unknown, path: string, depth = 0): stri
     for (const k of ['provider', 'badge', 'before', 'after']) if (k in o && (typeof o[k] !== 'string' || !(o[k] as string))) errors.push(`${p}.${k} must be a non-empty string`);
     if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${CHECKED_KINDS.map((k) => `${k}:<ref>`).join(', ')}`);
     if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
+    if ('place' in o && o.place !== 'toolbar') errors.push(`${p}.place must be "toolbar"`);
     if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
     if ('items' in o) {
       if (depth + 1 >= MENU_MAX_DEPTH) errors.push(`${p}.items is deeper than ${MENU_MAX_DEPTH} levels`);

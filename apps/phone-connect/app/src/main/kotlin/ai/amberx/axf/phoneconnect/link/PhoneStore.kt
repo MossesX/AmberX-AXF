@@ -23,9 +23,19 @@ class PhoneStore(context: Context) {
     val deviceId: String
         get() = prefs.getString(K_DEVICE, null)?.takeIf { LinkRules.isDeviceId(it) } ?: newDeviceId().also { prefs.edit().putString(K_DEVICE, it).apply() }
 
+    /** A new token (a fresh pairing) also clears [rejected]. */
     var token: String?
         get() = prefs.getString(K_TOKEN, null)?.takeIf { LinkRules.isToken(it) }
-        set(v) { prefs.edit().apply { if (v == null) remove(K_TOKEN) else putString(K_TOKEN, v) }.apply() }
+        set(v) { prefs.edit().apply { if (v == null) remove(K_TOKEN) else { putString(K_TOKEN, v); remove(K_REJECTED) } }.apply() }
+
+    /**
+     * Why the console refused this phone's key, until it pairs again; null while the link is fine or was never made.
+     * The pairing screen shows "Disconnected: tap to re-pair" from it, also after the app was closed.
+     */
+    val rejected: String? get() = prefs.getString(K_REJECTED, null)
+
+    /** The console refused the token: drop it (it is never tried again) and remember why. */
+    fun reject(why: String) { prefs.edit().remove(K_TOKEN).putString(K_REJECTED, why).apply() }
 
     var origin: String
         get() = prefs.getString(K_ORIGIN, null) ?: LinkRules.DEFAULT_ORIGIN
@@ -46,7 +56,8 @@ class PhoneStore(context: Context) {
 
     val paired: Boolean get() = token != null
 
-    fun unpair() { token = null }
+    /** Brett's own unpair: nothing is left to re-pair. */
+    fun unpair() { prefs.edit().remove(K_TOKEN).remove(K_REJECTED).apply() }
 
     companion object {
         private const val FILE = "phone-connect.secure"
@@ -56,6 +67,7 @@ class PhoneStore(context: Context) {
         private const val K_HUB = "hub"
         private const val K_WATCH = "watch"
         private const val K_LISTEN = "listen"
+        private const val K_REJECTED = "rejected"
 
         fun newDeviceId(): String {
             val b = ByteArray(8)

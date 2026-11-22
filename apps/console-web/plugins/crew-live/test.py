@@ -179,6 +179,7 @@ except ImportError:
     print("  - server checks skipped (no fastapi)")
 else:
     sys.path.insert(0, str(HERE))
+    sys.path.insert(0, str(HERE.parents[1] / "server"))  # the console server's modules (builds_store, data_store)
     os.environ["AXF_BUILDS_ROOT"] = str(tmp / "builds")
     os.utime(wt / "demo-build.jsonl", None)
     import importlib

@@ -1029,7 +1029,7 @@
    {
     "field": "agent.models[0]",
     "code": "invalid",
-    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
    }
   ],
   "agent-bad": [
@@ -1046,7 +1046,7 @@
    {
     "field": "agent.models[0]",
     "code": "invalid",
-    "message": "agent Rio R: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "agent Rio R: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
    },
    {
     "field": "agent.models[1]",
@@ -1114,12 +1114,12 @@
    {
     "field": "agents[0].models[0]",
     "code": "invalid",
-    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
    },
    {
     "field": "agents[1].models[0]",
     "code": "invalid",
-    "message": "agent doc: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.1 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "agent doc: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.2 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
    }
   ],
   "roster-bad": [
@@ -1282,7 +1282,7 @@
    {
     "field": "job.model",
     "code": "invalid",
-    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
    }
   ],
   "job-bad": [
@@ -1319,7 +1319,7 @@
    {
     "field": "job.model",
     "code": "invalid",
-    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
    },
    {
     "field": "job.leases",
@@ -1357,7 +1357,7 @@
    {
     "field": "run.model",
     "code": "invalid",
-    "message": "run.model: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.1 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
+    "message": "run.model: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.2 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
    },
    {
     "field": "run.report.checks[1]",

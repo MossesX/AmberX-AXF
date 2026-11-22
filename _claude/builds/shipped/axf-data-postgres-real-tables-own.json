@@ -1,0 +1,272 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axf-data-postgres-real-tables-own",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-20T00:08:28Z",
+ "build": {
+  "id": "axf-data-postgres-real-tables-own",
+  "title": "axf-data on Postgres: real tables in its own container",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+  "verbatim": true,
+  "at": "2026-11-15T15:12:29.907Z",
+  "source": "",
+  "by": "axf-data-postgres-real-tables-own",
+  "addenda": []
+ },
+ "brief": "# Build: axf-data-postgres-real-tables-own\n\n## Brett said (verbatim)\nAt: 2026-11-15T15:12:29.907Z\n> Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\n\n## What to build\nContinue build \"axf-data on Postgres: real tables in its own container\" (axf-data-postgres-real-tables-own) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 15:12):\n\"Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link axf-data-postgres-real-tables-own --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note axf-data-postgres-real-tables-own \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-",
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-axf-data-postgres-real-tables-own--gina",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-15T15:14:02.480Z",
+   "endedAt": "2026-11-15T16:12:29.439Z",
+   "exit": 0,
+   "costUsd": 25.808
+  },
+  {
+   "session": "axf-axf-data-postgres-real-tables-own--sully",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T00:14:34.481Z",
+   "endedAt": "2026-11-17T00:20:48.054Z",
+   "exit": 0,
+   "costUsd": 0.535
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:14:02.480Z",
+   "doneAt": "2026-11-15T16:11:46.742Z",
+   "actualMin": 58,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T16:11:46.742Z",
+   "doneAt": "2026-11-17T00:19:56.628Z",
+   "actualMin": 1928,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/axf-data-postgres-real-tables-own",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 713,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/713"
+ },
+ "landedCommit": "765ca6b513fb527d478d2faff1f2f1210e8ffd0e",
+ "commits": [
+  "6e79a2469435bdf829078a15faf1fc1c63f76e87",
+  "8ae73280eea7f4082c39dc7b9c3d28be8d3670c8",
+  "e1b6fc5be910a2535bf6cf14ba60c128707739d6",
+  "afd586fc70db4a1b319c033946c1db8b5fb9fb1d",
+  "d45662177fa0f915a765220230d967ca9aad22a8",
+  "99f2c013242e72a033562e4b884d5a6dd0ae2e06",
+  "1a7ff8e84110bca8a13e8afbf584ca79606541cc",
+  "d48cfe7268662e8d471a4dcfbe1793004d6b19bd"
+ ],
+ "mergedAt": "2026-11-17T02:53:56Z",
+ "landedAt": "2026-11-17T02:53:55Z",
+ "files": [
+  ".github/workflows/android.yml",
+  ".gitignore",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
+  "apps/console-web/plugins/data-store/help.json",
+  "apps/console-web/plugins/data-store/plugin.json",
+  "apps/console-web/plugins/data-store/server/routes.py",
+  "apps/console-web/plugins/data-store/test.py",
+  "apps/console-web/scripts/control-inventory.mjs",
+  "apps/console-web/server/console_control.py",
+  "apps/console-web/src/control/inventory.json",
+  "deploy/axf-data-backup.cron",
+  "deploy/install-data.sh",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/cli/data-migrate.mjs",
+  "framework/cli/data.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/schemas/data-store-paths.json",
+  "framework/spec/DATA-STORE.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-data-migrate.mjs",
+  "services/axf-data/Dockerfile",
+  "services/axf-data/README.md",
+  "services/axf-data/backup.py",
+  "services/axf-data/compose.yaml",
+  "services/axf-data/engine.py",
+  "services/axf-data/main.py",
+  "services/axf-data/migrate_pg.py",
+  "services/axf-data/mirror_sync.py",
+  "services/axf-data/pg.py",
+  "services/axf-data/requirements.txt",
+  "services/axf-data/tables.py",
+  "services/axf-data/test_pg.py"
+ ],
+ "areas": [
+  {
+   "kind": "other",
+   "id": "services",
+   "files": [
+    "services/axf-data/Dockerfile",
+    "services/axf-data/backup.py",
+    "services/axf-data/compose.yaml",
+    "services/axf-data/engine.py",
+    "services/axf-data/main.py",
+    "services/axf-data/migrate_pg.py",
+    "services/axf-data/mirror_sync.py",
+    "services/axf-data/pg.py",
+    "services/axf-data/requirements.txt",
+    "services/axf-data/tables.py",
+    "services/axf-data/test_pg.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "data-store",
+   "files": [
+    "apps/console-web/plugins/data-store/help.json",
+    "apps/console-web/plugins/data-store/plugin.json",
+    "apps/console-web/plugins/data-store/server/routes.py",
+    "apps/console-web/plugins/data-store/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/scripts/control-inventory.mjs",
+    "apps/console-web/server/console_control.py",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/data-migrate.mjs",
+    "framework/cli/data.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/DATA-STORE.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-data-migrate.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/axf-data-backup.cron",
+    "deploy/install-data.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "services/axf-data/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/data-store-paths.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/axf-data-postgres-real-tables-own.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 26.343,
+  "estimated": false,
+  "tokens": {
+   "input": 4040,
+   "output": 2137,
+   "cacheRead": 32032875,
+   "cacheWrite": 401665
+  }
+ },
+ "report": "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
+ "open": [
+  "s3: Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
+  "Running `test_pg.py` by hand with `AXF_DATA_PG_TOOLS=\"docker exec -i <c>\"`: `AXF_DATA_PG_TOOLS_DSN` is the container's own port (127.0.0.1:5432), not the mapped host port (noted in the test header).",
+  "VPS install after the merge: `sudo bash deploy/install-data.sh` (fresh: Postgres from the start), re-run the console installer, then migrate and shadow one namespace at a time (settings first, builds last) with `axf data mode`.",
+  "Shipped features ledger and Chat viewer still write SQLite locally; Postgres holds their rows as a mirror. Moving those plugins onto rows through data-store@1 (or a row API) is a follow-up.",
+  "UI Review: nothing new; #704's Data store tab layouts still wait for Brett."
+ ]
+}

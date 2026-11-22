@@ -4,7 +4,7 @@
   "id": "listener-qa",
   "name": "Voice listener QA",
   "version": "1.0.0",
-  "description": "Find and fix voice and listener regressions in AmberX (apps/amberx-droid): wake word, push-to-talk, command routing, Molly hand-off.",
+  "description": "Find and fix voice and listener regressions in the console: wake word, push-to-talk, command routing, the shared listener rules.",
   "author": "AmberX AXF",
   "tags": [
     "agent-job",
@@ -35,7 +35,7 @@
         "default": ""
       }
     ],
-    "brief": "AmberX voice regression: {{symptom}} (since {{since}}).\nReproduce it from the tests first (apps/amberx-droid voice + commands tests); find the commit that broke it (git log on apps/amberx-droid/src/plugins/voice and commands). Fix it on a branch named agent-jobs/listener-qa-{{stamp}} with a test that would have caught it. Web/TS code only (framework Android code is on hold).\nReport cause, fix, the new test, and anything you could not reproduce.",
+    "brief": "Voice regression: {{symptom}} (since {{since}}).\nReproduce it from the tests first (framework/spec/check-listeners.mts and the wake-listener, agent-voice and amberx-listeners plugin tests); find the commit that broke it (git log on framework/libs/listeners and those plugins). Fix it on a branch named agent-jobs/listener-qa-{{stamp}} with a test that would have caught it. Web/TS code only (framework Android code is on hold).\nReport cause, fix, the new test, and anything you could not reproduce.",
     "outputs": {
       "report": "_claude/builds/reports/jobs/listener-qa/{{stamp}}.md"
     }

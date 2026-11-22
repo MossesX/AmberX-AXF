@@ -19,3 +19,11 @@ export declare function pageHandlesInsets(read: (token: string) => string): bool
 export declare function parseAnswer(s: unknown): { ok: boolean; error?: string; [k: string]: unknown };
 export declare function nativeCall(id: string, args: readonly string[] | undefined): { call: string; args: unknown[] } | { error: string };
 export declare const NATIVE_ACTIONS: ReadonlyArray<{ id: string; label: string; params: boolean }>;
+export declare const DIALOG_FEATURE: string;
+export declare const UNSEEN_MS: number;
+export declare const DIALOG_UNSEEN: string;
+export declare function dialogUnseen(answer: unknown, ms: number): boolean;
+export declare function hasDialogs(info: unknown): boolean;
+export declare const DIALOG_ALERT_KEY: string;
+export declare const DIALOG_MIN_APP: string;
+export declare function dialogAlert(version: unknown): { source: string; severity: 'warning'; key: string; title: string; body: string; link: string };

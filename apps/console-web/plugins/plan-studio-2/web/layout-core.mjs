@@ -6,7 +6,7 @@
  *   dock  – IDE style: dockable panes, each with its own tab group; drag tabs between panes, drop into another tab
  *           group, split a pane on its edges, resize, close and reopen
  *
- * Same layout assets as the original Plan Studio's layouts build: IDE arrangements start from a dock-layout@1 asset (the
+ * IDE arrangements start from a dock-layout@1 asset (the
  * framework's ten starters in framework/assets/dock-layout and any an app registers later), so new pane arrangements
  * are assets, not code. The registry is open (registerLayout). The dock state is plain JSON saved per user in the
  * console settings (plan-studio-2.dock), the layout pick in plan-studio-2.pageLayout; the plan-studio-2.layout /

@@ -17,7 +17,7 @@
  *      commits it and pushes it to every home.
  * claude.ai has no API for creating Projects, so the kit is pasted/uploaded by Brett (the UI opens the page).
  *
- * Kept in .axf-console/project-wizard.json (0600): the non-secret facts of each project made here.
+ * Kept in .axf-console/plugins/project-wizard/projects.json (0600): the non-secret facts of each project made here.
  * Tokens: GITHUB_TOKEN / GH_TOKEN (or `gh auth token`). GitHub calls and git auth go through the framework's lib-github
  * (framework/cli/github.mjs): API origin only, no redirects, git gets the token through GIT_CONFIG_* environment only.
  * Env: AXF_WIZARD_WORKSPACE (where clones and new apps go, default ~/projects), AXF_WIZARD_ROOTS (colon list of
@@ -25,7 +25,7 @@
  * over SSH; without them /srv/git on this machine is used when it exists), AXF_VPS_GIT_DIR (default /srv/git).
  */
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -82,14 +82,18 @@ export function safeFolder(p, { mustExist = true } = {}) {
   return target;
 }
 
-const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-console', 'project-wizard.json');
-export function loadStore() { return readJson(STORE()) ?? { $axf: 'project-wizard@1', projects: {} }; }
+// The plugin's data folder (plugin.json lifecycle.dataDir), so uninstall removes it. Before plugin-lifecycle@1 the list
+// lived at .axf-console/project-wizard.json: it is still read when the new file is missing, and moved on the next save.
+const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-console', 'plugins', 'project-wizard', 'projects.json');
+const LEGACY_STORE = () => (process.env.AXF_WIZARD_STORE ? '' : join(REPO_ROOT, '.axf-console', 'project-wizard.json'));
+export function loadStore() { return readJson(STORE()) ?? (LEGACY_STORE() ? readJson(LEGACY_STORE()) : null) ?? { $axf: 'project-wizard@1', projects: {} }; }
 function saveStore(s) {
   mkdirSync(dirname(STORE()), { recursive: true });
   const tmp = `${STORE()}.${process.pid}.${Date.now()}.tmp`;
   writeFileSync(tmp, JSON.stringify(s, null, 2) + '\n', { mode: 0o600 });
   renameSync(tmp, STORE());
   try { chmodSync(STORE(), 0o600); } catch { /* best effort */ }
+  if (LEGACY_STORE()) rmSync(LEGACY_STORE(), { force: true });
 }
 function putProject(rec) { const s = loadStore(); s.projects[rec.name] = { ...(s.projects[rec.name] ?? {}), ...rec, updatedAt: new Date().toISOString() }; saveStore(s); return s.projects[rec.name]; }
 

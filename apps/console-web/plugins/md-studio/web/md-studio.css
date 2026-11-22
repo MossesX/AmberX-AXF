@@ -70,3 +70,5 @@
 .axp-md-studio__outline [data-level="2"] { padding-inline-start: var(--fx-dens-gap-lg) }
 .axp-md-studio__outline [data-level="3"] { padding-inline-start: calc(var(--fx-dens-gap-lg) * 2) }
 .axp-md-studio__outline [data-level="4"], .axp-md-studio__outline [data-level="5"], .axp-md-studio__outline [data-level="6"] { padding-inline-start: calc(var(--fx-dens-gap-lg) * 3) }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-md-studio > .fx-pagehead { margin-bottom: var(--fx-dens-gap-2xl) }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { HostServiceGate } from '@console/hostServices';
 import { PageToolbar, Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -237,14 +238,16 @@ export function ShippedFeaturesPage() {
   const exportAs = (kind: 'csv' | 'md') => { void api.download(`export?kind=${kind}&view=${encodeURIComponent(JSON.stringify(view))}`, `shipped-features.${kind}`).catch((e: Error) => rt.toast(e.message, 'danger')); };
 
   if (!ledger && !error) return <LoadingSkeleton rows={6} label="Loading shipped features" />;
-  if (!ledger) return <EmptyState icon="alert">{error}</EmptyState>;
+  // the host-down note shows even when the ledger cannot load, so the reason is on screen either way
+  if (!ledger) return <div className="fx-stack"><HostServiceGate service="shipped-features" what="The ledger stops taking in new builds, PRs and deploys until the host watcher is back; what is here can still be read." /><EmptyState icon="alert">{error}</EmptyState></div>;
 
   const sortCol = ({ name: 'name', status: 'status', app: 'app', type: 'type', planned: 'plannedAt', merged: 'mergedAt', live: 'liveAt', edited: 'lastEditAt', edits: 'editCount' } as Record<string, L.SortKey>);
   const colOf: Record<string, string> = Object.fromEntries(Object.entries(sortCol).map(([k, v]) => [v, k]));
   const sortedCol = colOf[view.sort.by];
   const sort: GridSort = sortedCol ? { col: sortedCol, dir: view.sort.dir === 'asc' ? 1 : -1 } : null;
   const onSort = (col: string | null) => { const by = col ? sortCol[col] : undefined; if (!by) return set({ sort: L.DEFAULT_VIEW.sort }); set({ sort: { by, dir: view.sort.by === by && view.sort.dir === 'desc' ? 'asc' : 'desc' } }); };
-  const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+  // text units: the columns hold text, and a compact spacing preset shrinks space-based tracks (n = the old space count)
+  const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
   const columns: GridColumn<L.Feature>[] = [
     { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__name">{f.name}</span> },
     { id: 'status', label: 'Status', width: W(14), sortable: true, render: (f) => <StatusChip rec={f} /> },
@@ -263,7 +266,8 @@ export function ShippedFeaturesPage() {
   const toggle = (id: string) => set({ expanded: view.expanded.includes(id) ? view.expanded.filter((x) => x !== id) : [...view.expanded, id] });
   const m = ledger.meta ?? {};
   return (
-    <div className="fx-stack axp-shipped">
+    <div className="fx-stack fx-stack--lg axp-shipped">
+      <HostServiceGate service="shipped-features" what="The ledger stops taking in new builds, PRs and deploys until the host watcher is back; what is here can still be read." />
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {total.all} features · {total.pending} pending · {total.live} live{total.editing ? ` · ${total.editing} being edited` : ''}{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>

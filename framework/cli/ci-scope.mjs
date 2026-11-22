@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 
 export const SCOPE_FRAME = 'ci-scope@1';
 /** The jobs (and app builds inside the console job) a change can need. */
-export const KEYS = Object.freeze(['engine', 'console', 'axhubweb', 'amberxweb', 'molly', 'walkthrough', 'amberx', 'android']);
+export const KEYS = Object.freeze(['engine', 'console', 'molly', 'walkthrough', 'android']);
 const ALL = Object.freeze(Object.fromEntries(KEYS.map((k) => [k, true])));
 
 /** Paths → what they need, first match wins. Anything not listed runs everything (an unknown path is never skipped). */
@@ -37,8 +37,6 @@ export const RULES = Object.freeze([
   { re: /^framework\/android\//, needs: ['engine', 'android'] },
   { re: /^framework\//, needs: ['engine', 'console'] },
   { re: /^apps\/console-web\//, needs: ['engine', 'console'] },
-  { re: /^apps\/axhub-web\//, needs: ['engine', 'console', 'axhubweb'] },
-  { re: /^apps\/amberx-droid\//, needs: ['engine', 'console', 'amberxweb', 'amberx'] },
   { re: /^apps\/molly\//, needs: ['engine', 'console', 'molly'] },
   { re: /^apps\/walkthrough-studio\//, needs: ['engine', 'console', 'walkthrough'] },
   { re: /^apps\/(console|console-droid|voicevault|axhub-android|phone-connect)\//, needs: ['engine', 'android'] },

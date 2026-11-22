@@ -7,6 +7,7 @@ import ai.amberx.axf.phoneconnect.link.LinkRules
 import ai.amberx.axf.phoneconnect.link.LinkState
 import ai.amberx.axf.phoneconnect.link.PhoneLink
 import ai.amberx.axf.phoneconnect.link.PhoneStore
+import ai.amberx.axf.phoneconnect.watch.Pages
 import ai.amberx.axf.phoneconnect.watch.WatchService
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
@@ -41,6 +42,9 @@ import kotlinx.coroutines.withContext
 /**
  * Pairing (phone-connect@1 claim, personOnly): sign in to axHub here once, type the code from Settings → Plugins →
  * Phone Connect, Pair. The device token goes into the encrypted store and is never shown. Axf.* tokens only.
+ *
+ * When the console refused this phone's key the screen says "Disconnected: tap to re-pair" (PhoneStore.rejected, set by
+ * the watch) with a button that opens the console's pairing page for a new code.
  */
 @Composable
 fun PairView() {
@@ -56,6 +60,10 @@ fun PairView() {
     var msg by remember { mutableStateOf("") }
     var watch by remember { mutableStateOf(store.watch) }
     var listen by remember { mutableStateOf(store.listen) }
+    var rejected by remember { mutableStateOf(store.rejected) }
+    var overFront by remember { mutableStateOf(Pages.mayStartFromBackground(ctx)) }
+    // the watch may end the link while this screen is open (a refused key): follow what the store says now
+    LaunchedEffect(status) { paired = store.paired; rejected = store.rejected; overFront = Pages.mayStartFromBackground(ctx) }
     // notifications (Android 13+) and RECORD_AUDIO (Android files playback capture under it): asked once paired
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
     val wanted = remember { listOfNotNull(Manifest.permission.RECORD_AUDIO, if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null).toTypedArray() }
@@ -76,8 +84,17 @@ fun PairView() {
 
     Column(Modifier.padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
         AxfCard(title = "Phone Connect", icon = "smartphone") {
-            AxfText(if (paired) "Paired as ${store.deviceId}" else "Not paired", style = Axf.type.titleMedium)
-            AxfText(status, muted = true)
+            AxfText(if (paired) "Paired as ${store.deviceId}" else if (rejected != null) LinkState.DISCONNECTED else "Not paired", style = Axf.type.titleMedium)
+            AxfText(if (!paired && rejected != null) rejected.orEmpty() else status, muted = true)
+        }
+        if (!paired && rejected != null) {
+            AxfCard(title = "Disconnected", icon = "link") {
+                AxfText("${rejected.orEmpty()} Approvals, pages and notifications don't arrive until this phone is paired again.", color = Axf.colors.warning)
+                AxfText("Get a new code in the console, then type it below.", muted = true)
+                AxfButton("Re-pair: open the console for a code", {
+                    Pages.open(ctx, LinkRules.pairPage(LinkRules.normalizeOrigin(origin) ?: store.origin), chrome = true)
+                }, icon = "link", tone = ButtonTone.PRIMARY)
+            }
         }
         if (!paired) {
             AxfCard(title = "Pair this phone", icon = "link") {
@@ -102,7 +119,7 @@ fun PairView() {
                             val r = withContext(Dispatchers.IO) { PhoneLink(store).claim(c, cookie) }
                             busy = false
                             when (r) {
-                                is PhoneLink.Reply.Ok -> { paired = true; code = ""; LinkState.set("Paired"); if (store.watch) WatchService.start(ctx) }
+                                is PhoneLink.Reply.Ok -> { paired = true; rejected = null; code = ""; LinkState.set("Paired"); if (store.watch) WatchService.start(ctx) }
                                 is PhoneLink.Reply.Fail -> msg = r.message
                                 PhoneLink.Reply.NoContent -> msg = "The console gave no answer."
                             }
@@ -117,8 +134,11 @@ fun PairView() {
                     label = "Watch", description = "Keep the link to the console open so pages, notifications and approvals arrive at once.")
                 AxfSwitch(listen, { on -> listen = on; store.listen = on },
                     label = "Let the console listen once", description = "The console assistant may ask the phone to hear one phrase. Off: the mic is never opened for it.")
+                AxfText(if (overFront) "Pages the console opens come to the front at once."
+                    else "Pages the console opens arrive as a notification you tap. Allow Phone Connect to display over other apps and they come to the front by themselves.", muted = true)
+                if (!overFront) AxfButton("Allow opening pages in front", { ctx.startActivity(Pages.overlaySettings(ctx)) }, icon = "check", tone = ButtonTone.NEUTRAL)
                 AxfButton("Unpair this phone", {
-                    WatchService.stop(ctx); store.unpair(); paired = false; LinkState.set("Not paired")
+                    WatchService.stop(ctx); store.unpair(); paired = false; rejected = null; LinkState.set("Not paired")
                 }, icon = "x", tone = ButtonTone.DANGER)
                 AxfText("Revoking from the console also ends the link: Settings → Plugins → Phone Connect.", muted = true)
             }

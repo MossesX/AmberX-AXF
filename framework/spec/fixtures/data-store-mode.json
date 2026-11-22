@@ -918,6 +918,337 @@
     "console: local (store default)",
     "phone: local (store default)"
    ]
+  },
+  {
+   "name": "keyCutoverUnverified",
+   "v": {
+    "error": "invalid_body",
+    "message": "builds/store.json → cutover: the copy must be verified first (pass verified: { at, how, counts })"
+   }
+  },
+  {
+   "name": "keyCutover",
+   "v": {
+    "state": {
+     "$axf": "data-store-mode@1",
+     "mode": "local",
+     "since": "2026-11-15T06:00:00.000Z",
+     "by": "svc:cli",
+     "cursor": 0,
+     "manifest": "",
+     "namespaces": {
+      "builds": {
+       "mode": "local",
+       "since": "2026-11-15T06:05:00.000Z",
+       "cursor": 0,
+       "manifest": "",
+       "drift": 0,
+       "lastDriftAt": "",
+       "keys": {
+        "store.json": {
+         "mode": "cutover",
+         "since": "2026-11-15T06:05:00.000Z",
+         "by": "svc:cli",
+         "verified": {
+          "at": "2026-11-15T06:05:00.000Z",
+          "how": "builds-data cutover: record equal, journal compared line by line",
+          "counts": {
+           "builds": 3,
+           "steps": 9,
+           "notes": 2
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "changes": [
+     {
+      "ns": "builds",
+      "key": "store.json",
+      "from": "local",
+      "to": "cutover",
+      "event": "cut-over",
+      "at": "2026-11-15T06:05:00.000Z",
+      "by": "svc:cli"
+     }
+    ]
+   }
+  },
+  {
+   "name": "keyPrefixCutover",
+   "v": {
+    "state": {
+     "$axf": "data-store-mode@1",
+     "mode": "local",
+     "since": "2026-11-15T06:00:00.000Z",
+     "by": "svc:cli",
+     "cursor": 0,
+     "manifest": "",
+     "namespaces": {
+      "builds": {
+       "mode": "local",
+       "since": "2026-11-15T06:05:00.000Z",
+       "cursor": 0,
+       "manifest": "",
+       "drift": 0,
+       "lastDriftAt": "",
+       "keys": {
+        "store.json": {
+         "mode": "cutover",
+         "since": "2026-11-15T06:05:00.000Z",
+         "by": "svc:cli",
+         "verified": {
+          "at": "2026-11-15T06:05:00.000Z",
+          "how": "builds-data cutover: record equal, journal compared line by line",
+          "counts": {
+           "builds": 3,
+           "steps": 9,
+           "notes": 2
+          }
+         }
+        },
+        "journal/": {
+         "mode": "cutover",
+         "since": "2026-11-15T06:06:00.000Z",
+         "by": "svc:cli",
+         "verified": {
+          "at": "2026-11-15T06:05:00.000Z",
+          "how": "builds-data cutover: record equal, journal compared line by line",
+          "counts": {
+           "builds": 3,
+           "steps": 9,
+           "notes": 2
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "changes": [
+     {
+      "ns": "builds",
+      "key": "journal/",
+      "from": "local",
+      "to": "cutover",
+      "event": "cut-over",
+      "at": "2026-11-15T06:06:00.000Z",
+      "by": "svc:cli"
+     }
+    ]
+   }
+  },
+  {
+   "name": "keyModes",
+   "v": {
+    "store": "cutover",
+    "journal": "cutover",
+    "journalLarge": "local",
+    "pipeline": "local",
+    "namespace": "local",
+    "override": {
+     "path": "journal/",
+     "mode": "cutover",
+     "since": "2026-11-15T06:06:00.000Z",
+     "by": "svc:cli",
+     "verified": {
+      "at": "2026-11-15T06:05:00.000Z",
+      "how": "builds-data cutover: record equal, journal compared line by line",
+      "counts": {
+       "builds": 3,
+       "steps": 9,
+       "notes": 2
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "keyBackToLocal",
+   "v": {
+    "state": {
+     "$axf": "data-store-mode@1",
+     "mode": "local",
+     "since": "2026-11-15T06:00:00.000Z",
+     "by": "svc:cli",
+     "cursor": 0,
+     "manifest": "",
+     "namespaces": {
+      "builds": {
+       "mode": "local",
+       "since": "2026-11-15T06:05:00.000Z",
+       "cursor": 0,
+       "manifest": "",
+       "drift": 0,
+       "lastDriftAt": "",
+       "keys": {
+        "journal/": {
+         "mode": "cutover",
+         "since": "2026-11-15T06:06:00.000Z",
+         "by": "svc:cli",
+         "verified": {
+          "at": "2026-11-15T06:05:00.000Z",
+          "how": "builds-data cutover: record equal, journal compared line by line",
+          "counts": {
+           "builds": 3,
+           "steps": 9,
+           "notes": 2
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "changes": [
+     {
+      "ns": "builds",
+      "key": "store.json",
+      "from": "cutover",
+      "to": "local",
+      "event": "back-to-local",
+      "at": "2026-11-15T06:07:00.000Z",
+      "by": "svc:cli"
+     }
+    ]
+   }
+  },
+  {
+   "name": "keyNoWay",
+   "v": {
+    "error": "invalid_body",
+    "message": "a key moves to local, shadow or cutover, not \"rollback\""
+   }
+  },
+  {
+   "name": "keyBadPath",
+   "v": {
+    "state": {
+     "$axf": "data-store-mode@1",
+     "mode": "local",
+     "since": "2026-11-15T06:00:00.000Z",
+     "by": "svc:cli",
+     "cursor": 0,
+     "manifest": "",
+     "namespaces": {
+      "builds": {
+       "mode": "local",
+       "since": "2026-11-15T06:07:00.000Z",
+       "cursor": 0,
+       "manifest": "",
+       "drift": 0,
+       "lastDriftAt": "",
+       "keys": {
+        "../x": {
+         "mode": "shadow",
+         "since": "2026-11-15T06:07:00.000Z",
+         "by": "svc:cli",
+         "verified": {
+          "at": "2026-11-15T06:05:00.000Z",
+          "how": "builds-data cutover: record equal, journal compared line by line",
+          "counts": {
+           "builds": 3,
+           "steps": 9,
+           "notes": 2
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "changes": [
+     {
+      "ns": "builds",
+      "key": "../x",
+      "from": "local",
+      "to": "shadow",
+      "event": "start-shadow",
+      "at": "2026-11-15T06:07:00.000Z",
+      "by": "svc:cli"
+     }
+    ]
+   }
+  },
+  {
+   "name": "keyNormRoundTrip",
+   "v": {
+    "$axf": "data-store-mode@1",
+    "mode": "local",
+    "since": "2026-11-15T06:00:00.000Z",
+    "by": "svc:cli",
+    "cursor": 0,
+    "manifest": "",
+    "namespaces": {
+     "builds": {
+      "mode": "local",
+      "since": "2026-11-15T06:05:00.000Z",
+      "cursor": 0,
+      "manifest": "",
+      "drift": 0,
+      "lastDriftAt": "",
+      "keys": {
+       "store.json": {
+        "mode": "cutover",
+        "since": "2026-11-15T06:05:00.000Z",
+        "by": "svc:cli",
+        "verified": {
+         "at": "2026-11-15T06:05:00.000Z",
+         "how": "builds-data cutover: record equal, journal compared line by line",
+         "counts": {
+          "builds": 3,
+          "steps": 9,
+          "notes": 2
+         }
+        }
+       },
+       "journal/": {
+        "mode": "cutover",
+        "since": "2026-11-15T06:06:00.000Z",
+        "by": "svc:cli",
+        "verified": {
+         "at": "2026-11-15T06:05:00.000Z",
+         "how": "builds-data cutover: record equal, journal compared line by line",
+         "counts": {
+          "builds": 3,
+          "steps": 9,
+          "notes": 2
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "keyOpenNs",
+   "v": {
+    "mode": "local",
+    "since": "2026-11-15T06:08:00.000Z",
+    "cursor": 0,
+    "manifest": "",
+    "drift": 0,
+    "lastDriftAt": "",
+    "keys": {
+     "items.json": {
+      "mode": "shadow",
+      "since": "2026-11-15T06:08:00.000Z",
+      "by": "svc:cli",
+      "verified": {
+       "at": "2026-11-15T06:05:00.000Z",
+       "how": "builds-data cutover: record equal, journal compared line by line",
+       "counts": {
+        "builds": 3,
+        "steps": 9,
+        "notes": 2
+       }
+      }
+     }
+    }
+   }
   }
  ]
 }

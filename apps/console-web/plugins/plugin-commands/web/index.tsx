@@ -5,7 +5,7 @@
  * the two MCP switches and the last commands run.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Note, Segmented, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Chip, Container, Note, PageToolbar, Segmented, Switch, TextField, useRuntime, useToolbarHandlers, type AxfWebLibrary } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { commandToolName, pluginCommandCli, type PluginCommandEntry, type PluginCommand } from '@console/axf/core/engines/plugin-commands.mjs';
@@ -79,6 +79,8 @@ function PluginCommandsView() {
   const [kind, setKind] = useState<Kind>('all');
   const [err, setErr] = useState('');
   const load = () => getJson<{ plugins: PluginCommandEntry[] }>('registry').then((r) => { setPlugins(r.plugins ?? []); setErr(''); }, () => setErr('The Plugin commands server part is not answering.'));
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/plugin-commands.json)
+  useToolbarHandlers(FOLDER, { 'plugin-commands.refresh': async () => { await load(); return { refreshed: true }; } });
   useEffect(() => { void load(); }, []);
   const shown = useMemo(() => {
     const words = q.toLowerCase().trim();
@@ -86,17 +88,16 @@ function PluginCommandsView() {
   }, [plugins, q, kind]);
   const total = (plugins ?? []).reduce((n, p) => n + p.commands.length, 0);
   return (
-    <div className="fx-stack axf-pc">
+    <div className="fx-stack fx-stack--lg axf-pc">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Plugin commands</h1><p className="fx-muted">Everything every plugin can do, as an API call, an MCP tool and a CLI line.</p></div></header>
       <Note tone="info">
         Made from what each plugin already has (its routes, its actions, its data folder and plugin.json). Claude reaches them through axHub as MCP tools named <code>&lt;plugin&gt;_&lt;command&gt;</code> (or <code>plugin_commands</code>, <code>plugin_read</code>, <code>plugin_run</code>), the REST API at <code>/api/control/&lt;plugin&gt;/&lt;command&gt;</code>, and the CLI <code>axf &lt;plugin&gt; &lt;command&gt;</code>. A new plugin shows up here by itself.
       </Note>
       {err && <Note tone="warning">{err}</Note>}
-      <div className="axf-pc__bar" role="toolbar" aria-label="Plugin commands">
+      <PageToolbar view="plugin-commands" className="axf-pc__bar">
         <TextField label="Find" value={q} onChange={setQ} placeholder="plugin, command or words" />
         <Segmented label="Show" value={kind} onChange={(v) => setKind(v as Kind)} options={[{ value: 'all', label: 'All' }, { value: 'read', label: 'Reads' }, { value: 'command', label: 'Commands' }]} />
-        <Button icon="refresh" onClick={() => void load()} data-help="pc-refresh">Refresh</Button>
-      </div>
+      </PageToolbar>
       <p className="axf-pc__muted">{plugins === null ? 'Loading…' : `${(plugins ?? []).length} plugins · ${total} commands and reads`}</p>
       {shown.map((p) => (
         <Container key={`${p.app}:${p.folder}`} title={`${p.name}${p.app === 'console-web' ? '' : ` (${p.app})`}`} icon="package">
@@ -155,7 +156,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plugin-commands.open', () => rt.navigate(FOLDER), { label: 'Open Plugin commands' });
   },
   views: { [FOLDER]: { title: 'Plugin commands', icon: 'terminal', keywords: ['commands', 'mcp', 'api', 'cli', 'plugins', 'tools', 'claude'], render: () => <PluginCommandsView /> } },
-  nav: { label: 'Plugins', items: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', view: FOLDER }] },
+  nav: { label: 'System', items: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', view: FOLDER }] },
   settingsTabs: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', order: 93, parent: 'plugins', description: 'Every plugin\'s commands on the REST API, MCP and the CLI' }],
   settingsPanels: [
     { id: 'plugin-commands.settings', tab: FOLDER, title: 'MCP tools and last commands', icon: 'terminal', order: 10, render: () => <SettingsPanel /> },
