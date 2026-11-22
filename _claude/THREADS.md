@@ -842,9 +842,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 03:48 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
-- 2026-11-22 03:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · foreign-write
-- 2026-11-22 03:48 UTC · `nov-20-fix-list-voice-console-cont` note (all) · foreign-write
 - 2026-11-22 03:48 UTC · `one-true-source-get-redundant-settings` → complete, note (all) · foreign-write
 - 2026-11-22 03:48 UTC · `approval-rules-save-apply-default-don-t` → complete, note (all) · foreign-write
 - 2026-11-22 03:48 UTC · `one-build-time-always-split-split-id` note (all) · foreign-write
@@ -1242,6 +1239,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 06:00 UTC · `every-app-gets-own-locked-default` note (all) · builds-live
 - 2026-11-22 06:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 - 2026-11-22 06:00 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · pipeline
+- 2026-11-22 06:00 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · pipeline
+- 2026-11-22 06:00 UTC · `fix-refreshing-console-jumps-back` → queued, note (all) · pipeline
+- 2026-11-22 06:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 
 ## Token passes (log)
 

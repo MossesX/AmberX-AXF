@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10339,
- "updatedAt": "2026-11-22T06:00:49.675Z",
+ "rev": 10340,
+ "updatedAt": "2026-11-22T06:01:06.597Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -293239,7 +293239,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -293247,7 +293247,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-22T05:58:30.916Z",
+   "updatedAt": "2026-11-22T06:00:48.674Z",
    "builtAt": "",
    "notes": [
     {
@@ -293385,6 +293385,10 @@
     {
      "text": "Self-check: icon-picker-every-banner-settings-widget was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T04:37:42.790Z"
+    },
+    {
+     "text": "Self-check: icon-picker-every-banner-settings-widget was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T06:00:48.674Z"
     }
    ],
    "approvals": [
@@ -293413,7 +293417,7 @@
    "pipeline": {
     "queuedAt": "2026-11-22T01:55:28.766Z",
     "queuedBy": "watchdog",
-    "account": "hulu0241",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -293439,7 +293443,7 @@
      "note": "Split by Claude into 12 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-17T22:09:20.596Z",
     "planned": {
@@ -293796,7 +293800,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296990,7 +296994,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -296998,7 +297002,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T05:58:30.916Z",
+   "updatedAt": "2026-11-22T06:00:53.122Z",
    "builtAt": "",
    "notes": [
     {
@@ -297092,6 +297096,10 @@
     {
      "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T04:37:46.736Z"
+    },
+    {
+     "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T06:00:53.122Z"
     }
    ],
    "approvals": [],
@@ -297111,7 +297119,7 @@
    "pipeline": {
     "queuedAt": "2026-11-22T01:35:33.432Z",
     "queuedBy": "watchdog",
-    "account": "hulu0241",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -297137,7 +297145,7 @@
      "note": "Split by Claude into 11 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-17T21:43:26.212Z",
     "planned": {
@@ -297472,7 +297480,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332497,7 +332505,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T06:00:13.212Z",
+   "updatedAt": "2026-11-22T06:01:04.786Z",
    "builtAt": "",
    "notes": [
     {
@@ -332983,6 +332991,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T06:00:13.212Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:01:04.786Z"
     },
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
