@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T21:06:33.934Z",
+ "updatedAt": "2026-11-22T23:25:20.724Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135889,7 +135889,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
@@ -135898,7 +135898,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T16:58:01.516Z",
+   "updatedAt": "2026-11-22T22:04:01.458Z",
    "builtAt": "",
    "notes": [
     {
@@ -136401,6 +136401,26 @@
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
      "at": "2026-11-22T16:58:01.516Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T21:58:02.019Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T22:02:01.575Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at building, attempt 5: building did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-22T22:03:02.165Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-22T22:04:01.458Z",
      "by": "watchdog"
     }
    ],
@@ -200052,7 +200072,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T20:58:31.484Z",
+   "updatedAt": "2026-11-22T23:18:31.891Z",
    "builtAt": "",
    "notes": [
     {
@@ -200194,6 +200214,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T20:58:31.484Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T23:18:31.891Z"
     }
    ],
    "approvals": [],
@@ -212040,7 +212064,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T21:06:11.783Z",
+   "updatedAt": "2026-11-22T23:25:15.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -212634,6 +212658,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T19:36:10.642Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T23:25:15.640Z"
     }
    ],
    "approvals": [
