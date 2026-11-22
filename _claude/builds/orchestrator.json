@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T06:45:31.929Z",
+ "updatedAt": "2026-11-22T06:45:45.127Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -209621,7 +209621,7 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -209629,7 +209629,7 @@
    "pr": "#845",
    "mergedAt": "2026-11-22T04:31:16Z",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-22T06:45:12.847Z",
+   "updatedAt": "2026-11-22T06:45:32.767Z",
    "builtAt": "2026-11-22T04:31:04.596Z",
    "notes": [
     {
@@ -209759,6 +209759,10 @@
     {
      "text": "Watchdog: merged and CI is green on 9604283922: landed.",
      "at": "2026-11-22T06:45:12.847Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T06:45:32.767Z"
     }
    ],
    "approvals": [],
