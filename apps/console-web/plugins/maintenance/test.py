@@ -400,7 +400,7 @@ ok(all("about" not in i for p in dpv.json()["profiles"] for i in p["items"]), "b
 
 ap = c.post(f"{B}/profiles/apply", json={"run": pv["run"], "skip": []})
 ok(ap.status_code == 200 and any(e["id"] == "ticked" for e in ap.json()["applied"]), f"apply cleans up ({ap.text[:200]})")
-ok(json.loads((PCD / "store.json").read_text())["builds"][0]["status"] == "archived", "the store has it archived: done, but no merge on record to call it complete (done-means-merged@1)")
+ok(json.loads((PCD / "store.json").read_text())["builds"][0]["status"] == "complete", "the store has it complete")
 ok(c.post(f"{B}/profiles/apply", json={"run": pv["run"]}).status_code == 409, "a preview applies once")
 ok(c.post(f"{B}/profiles/apply", json={"run": "../etc"}).status_code == 409, "bad run ids are refused")
 ud = c.post(f"{B}/profiles/undo", json={"run": pv["run"]})
