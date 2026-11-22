@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10337,
- "updatedAt": "2026-11-22T06:00:16.144Z",
+ "rev": 10338,
+ "updatedAt": "2026-11-22T06:00:35.012Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -255393,7 +255393,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "split",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -255591,6 +255591,31 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-22T05:06:25.451Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T05:17:01.319Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T05:20:01.389Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-22T05:21:01.657Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s7 step s7 was replaced ",
+     "at": "2026-11-22T05:45:57.769Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced ",
+     "at": "2026-11-22T06:00:31.122Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -255709,7 +255734,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:04:20.780Z"
+     "updatedAt": "2026-11-16T23:04:20.780Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
@@ -255734,7 +255772,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:10:40.813Z"
+     "updatedAt": "2026-11-16T23:10:40.813Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
@@ -255759,7 +255810,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T23:14:59.851Z"
+     "updatedAt": "2026-11-16T23:14:59.851Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s5",
@@ -255809,7 +255873,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s7",
@@ -255834,7 +255911,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s8",
@@ -255884,7 +255974,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s10",
@@ -255909,7 +256012,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s11",
@@ -255934,7 +256050,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s12",
@@ -255959,7 +256088,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s13",
@@ -255983,7 +256125,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s14",
@@ -256008,7 +256163,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T16:09:03.741Z"
+     "updatedAt": "2026-11-18T16:09:03.741Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s15",
@@ -256034,7 +256202,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-19T02:23:41.261Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s16",
@@ -256059,7 +256240,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-19T02:23:41.261Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s17",
@@ -256110,7 +256304,20 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T22:49:23.111Z"
+     "updatedAt": "2026-11-16T22:49:23.111Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s19",
@@ -256135,7 +256342,20 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T22:49:23.111Z"
+     "updatedAt": "2026-11-16T22:49:23.111Z",
+     "statusAt": "2026-11-22T05:21:20.957Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-22T05:21:20.957Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -256146,7 +256366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 140,
+   "rev": 148,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256185,7 +256405,27 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-22T05:21:22.628Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-22T05:21:01.657Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (5 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-22T05:21:22.628Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "17 steps for 6 slots"
+    }
+   ]
   },
   {
    "id": "fable-icon-map-icon-packs-icon-pack",
@@ -260603,6 +260843,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:38.818Z"
     }
    ],
    "approvals": [
@@ -261192,7 +261436,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293133,6 +293377,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: icon-picker-every-banner-settings-widget was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:42.790Z"
     }
    ],
    "approvals": [
@@ -293544,7 +293792,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296836,6 +297084,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:46.736Z"
     }
    ],
    "approvals": [],
@@ -297216,7 +297468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328721,12 +328973,13 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "complete",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "#845",
+   "mergedAt": "2026-11-22T04:31:16Z",
    "createdAt": "2026-11-18T12:27:40.646Z",
    "updatedAt": "2026-11-22T05:46:10.765Z",
    "builtAt": "2026-11-22T04:31:04.596Z",
@@ -328846,6 +329099,10 @@
     {
      "text": "Session axf-every-app-gets-own-locked-default--rhonda on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-22T05:46:10.765Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T06:00:31.120Z"
     }
    ],
    "approvals": [],
@@ -329079,7 +329336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332722,6 +332979,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T06:00:13.212Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:20:10.255Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:21:04.435Z"
     }
    ],
    "approvals": [
@@ -332917,7 +333182,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 145,
+   "rev": 146,
    "deleted": false,
    "deletedAt": "",
    "pending": {

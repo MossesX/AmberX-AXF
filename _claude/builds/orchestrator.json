@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T06:00:16.144Z",
+ "updatedAt": "2026-11-22T06:00:35.012Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172968,8 +172968,9 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "split",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/attach-widgets-to-any-toolbar-banner",
@@ -173166,6 +173167,31 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-22T05:06:25.451Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T05:17:01.319Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T05:20:01.389Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-22T05:21:01.657Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s7 step s7 was replaced ",
+     "at": "2026-11-22T05:45:57.769Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced ",
+     "at": "2026-11-22T06:00:31.122Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -174623,6 +174649,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:38.818Z"
     }
    ],
    "approvals": [
@@ -197000,6 +197030,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: icon-picker-every-banner-settings-widget was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:42.790Z"
     }
    ],
    "approvals": [
@@ -199900,6 +199934,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T05:58:30.916Z"
+    },
+    {
+     "text": "Self-check: fix-refreshing-console-jumps-back was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T04:37:46.736Z"
     }
    ],
    "approvals": [],
@@ -209451,12 +209489,13 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "complete",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "#845",
+   "mergedAt": "2026-11-22T04:31:16Z",
    "createdAt": "2026-11-18T12:27:40.646Z",
    "updatedAt": "2026-11-22T05:46:10.765Z",
    "builtAt": "2026-11-22T04:31:04.596Z",
@@ -209576,6 +209615,10 @@
     {
      "text": "Session axf-every-app-gets-own-locked-default--rhonda on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-22T05:46:10.765Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T06:00:31.120Z"
     }
    ],
    "approvals": [],
@@ -212191,6 +212234,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T06:00:13.212Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:20:10.255Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:21:04.435Z"
     }
    ],
    "approvals": [
