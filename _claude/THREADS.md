@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 19:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` added (0 steps) (all) · plan-studio-2
-- 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` → splitting (all) · orchestrator
-- 2026-11-20 19:54 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` → split, note (all) · orchestrator
 - 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
 - 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
 - 2026-11-20 19:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-22 00:35 UTC · `plan-studio-2-open-button-working-deep` → fixing, note (all) · watchdog
 - 2026-11-22 00:35 UTC · `fable-rebuild-2-2-both-watchdogs-one` → landed, note (all) · watchdog
+- 2026-11-22 00:35 UTC · `phone-connect-open-straight-phone-no-tap` → landed, note (all) · watchdog
+- 2026-11-22 00:35 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · builds-live
+- 2026-11-22 00:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · builds-live
+- 2026-11-22 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
+- 2026-11-22 00:35 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · builds-live
 
 ## Token passes (log)
 

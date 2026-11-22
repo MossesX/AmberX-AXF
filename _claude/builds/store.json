@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10316,
- "updatedAt": "2026-11-22T00:35:40.674Z",
+ "rev": 10317,
+ "updatedAt": "2026-11-22T00:35:59.456Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -329240,7 +329240,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "complete",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -329682,6 +329682,18 @@
     {
      "text": "Reconciler: PR #848 merged: complete",
      "at": "2026-11-22T00:28:30.658Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T00:20:35.682Z"
+    },
+    {
+     "text": "Watchdog: Queued build urgent-all-data-to-postgres-builds-store → Complete: Its PR merged on main (PR #848 merged 2026-11-19T00:25:51Z (9c20047d4c75); not on main; build urgent-all-data-to-postgres-builds-store: queued) (queued → landing)",
+     "at": "2026-11-22T00:25:39.659Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T00:35:55.808Z"
     }
    ],
    "approvals": [
@@ -329940,7 +329952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 137,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343324,7 +343336,7 @@
    "title": "Phone Connect: open straight on the phone, no tap-to-open notification",
    "category": "Phone Connect",
    "detail": "Brett, Nov 21: \"I get the notification, it says tap to open on your phone. Why can't it just open? That's what the overlay is for.\" He has the overlay (draw over other apps) permission granted. When Amber sends a screen or an approval (console_show / console_open wake), the Phone Connect app must come to the front by itself at that screen. Today it posts a 'Tap Open on your phone' notification instead.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -343332,7 +343344,7 @@
    "pr": "#886",
    "mergedAt": "2026-11-21T22:18:48Z",
    "createdAt": "2026-11-21T19:47:33.297Z",
-   "updatedAt": "2026-11-21T23:55:36.083Z",
+   "updatedAt": "2026-11-22T00:35:41.048Z",
    "builtAt": "2026-11-21T22:58:30.392Z",
    "notes": [
     {
@@ -343398,6 +343410,10 @@
     {
      "text": "Watchdog: PR #886 merged 2026-11-21 22:18 and the build never heard: the merge is recorded, CI on d4306f70d2 is next.",
      "at": "2026-11-21T23:55:36.083Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on d4306f70d2: landed.",
+     "at": "2026-11-22T00:35:41.048Z"
     }
    ],
    "approvals": [],
@@ -343457,9 +343473,9 @@
     "pr": 886,
     "sha": "d4306f70d265410611a44bc026b83f6ebe3cce16",
     "mergedAt": "2026-11-21T22:18:48Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-22T00:35:41.048Z",
+    "ciRun": "commit@d4306f70d265410611a44bc026b83f6ebe3cce16",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -343540,7 +343556,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343774,7 +343790,7 @@
    "title": "Approval rules: Save and Apply the default don't work from the Phone Connect app",
    "category": "Console UI",
    "detail": "Found live with Brett, Nov 21, in the Phone Connect app on his phone (Builds → VPS Configuration → Approval rules, shipped by PR #885). (1) Tapping 'Apply the default' staged nothing: the tab still showed zero rules and Save stayed disabled. Staging the same default through gate/approval-rules-stage {op: default} worked and lit Save. (2) Tapping Save with that draft does nothing visible: the draft stays ('Unsaved changes, last staged by console token'), default.applied stays false, live rules stay empty on axHub, canSave is true. Suspect: the save is sent from the browser on Brett's own axHub session and the app's WebView has no hub session (or the cross-origin request is blocked), and the failure is swallowed with no message. Brett's rule stands: only his own click applies the policy.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -343783,7 +343799,7 @@
    "mergedAt": "2026-11-21T23:38:01Z",
    "createdAt": "2026-11-21T22:28:34.554Z",
    "updatedAt": "2026-11-22T00:19:00Z",
-   "builtAt": "",
+   "builtAt": "2026-11-22T00:19:00Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-approval-rules-save-apply-default-don-t--lenny.",
@@ -343820,6 +343836,18 @@
     {
      "text": "Shipped manifest sm-approval-rules-save-apply-default-don-t rev 1 sent to Shipped features (orchestrator): PR #890, 0 file(s), 12 test line(s), 5 open.",
      "at": "2026-11-22T00:19:00Z"
+    },
+    {
+     "text": "Headless run axf-approval-rules-save-apply-default-don-t--lenny: brief only · start 17.2K tokens ($0.12) · cost $9.21 · 100 turns · 6 tools, MCP none",
+     "at": "2026-11-22T00:18:37.385Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $9.21",
+     "at": "2026-11-22T00:18:46.959Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T00:35:55.808Z"
     }
    ],
    "approvals": [],
@@ -343957,7 +343985,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
