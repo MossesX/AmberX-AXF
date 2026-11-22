@@ -53,6 +53,7 @@
       ".github/workflows/android.yml",
       "_claude/memory/decisions.md",
       "_claude/memory/docs/auto-lander.md",
+      "apps/console-web/scripts/approval-rules-webview.mjs",
       "apps/console-web/scripts/auto-lander-shots.mjs",
       "apps/console-web/scripts/vps-config-shots.mjs",
       "deploy/install-console.sh",

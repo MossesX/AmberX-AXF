@@ -138,3 +138,27 @@ export const NATIVE_ACTIONS = [
   { id: 'native.update', label: 'Phone app web content: check for a new console, reload into it, or state (native.update:<verb>)', params: true },
   { id: 'native.state', label: 'Phone app state: shell version, permissions, overlay, insets', params: false },
 ];
+
+/**
+ * The page's own questions (confirm, prompt). A console app before 0.2.0 has no `dialogs` feature: in the expanded
+ * overlay its WebView cancels the dialog without drawing it, so confirm() answers false in the same tick and the
+ * press ends in silence. No person answers that fast: a "no" inside UNSEEN_MS was never seen, and the console says so.
+ */
+export const DIALOG_FEATURE = 'dialogs';
+export const UNSEEN_MS = 40;
+export const DIALOG_UNSEEN = "The question for that press couldn't be shown in the floating console, so nothing was done. Open the console app itself and press again, or update the console app.";
+export const dialogUnseen = (answer, ms) => (answer === false || answer === null) && ms < UNSEEN_MS;
+export const hasDialogs = (info) => Array.isArray(info?.features) && info.features.includes(DIALOG_FEATURE);
+
+/**
+ * The alert the console raises from inside a shell without `dialogs` (one per key, so it is pushed once), and resolves
+ * from a shell that has it. `version` is the shell's own.
+ */
+export const DIALOG_ALERT_KEY = 'console-app.dialogs';
+export const DIALOG_MIN_APP = '0.2.0';
+export const dialogAlert = (version) => ({
+  source: 'console-app', severity: 'warning', key: DIALOG_ALERT_KEY,
+  title: `Update the AXF Console app to ${DIALOG_MIN_APP}`,
+  body: `This phone runs AXF Console ${version || '?'}. In the floating console it cannot show a "Sure?" question, so buttons that ask one (delete, remove, uninstall) do nothing there. Approval rules is not affected. Install the new app over the old one: axHub → Apps → AXF Console → Download.`,
+  link: 'https://axhub.amberxai.com/apps',
+});

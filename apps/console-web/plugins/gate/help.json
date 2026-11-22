@@ -297,7 +297,22 @@
       {
         "target": "apply-the-default",
         "title": "Apply the default",
-        "text": "Sets Brett's rule in one go: only shell commands on the VPS hold on the veto countdown (vps run and launch, the console terminal run, Vinny command run). Everything else in the console and the orchestrator runs at once, model upgrades keep their confirm and deletes keep their approval. It takes Brett's own click: a session, MCP, the CLI and voice cannot press it."
+        "text": "Sets Brett's rule in one go: only shell commands on the VPS hold on the veto countdown (vps run and launch, the console terminal run, Vinny command run). Everything else in the console and the orchestrator runs at once, model upgrades keep their confirm and deletes keep their approval. It takes Brett's own click: a session, MCP, the CLI and voice cannot press it. The tab asks first; Yes, apply the default is the press that does it."
+      },
+      {
+        "target": "yes-apply-the-default",
+        "title": "Yes, apply the default",
+        "text": "The answer to the question Apply the default asked. This press sets the default on axHub. It works from the phone app too: the question is on the page, not a pop-up."
+      },
+      {
+        "target": "yes-save",
+        "title": "Yes, save",
+        "text": "The answer to the question Save asked. This press sends the draft to axHub. If it can't be saved, the reason shows on the tab and the draft is kept."
+      },
+      {
+        "target": "sign-in-to-axhub",
+        "title": "Sign in to axHub",
+        "text": "Shows when this page is not on Brett's axHub sign-in, or when the sign-in ran out during a save. It opens axHub's sign-in and comes back to this tab; the draft waits. Then press Save or Apply the default again."
       },
       {
         "target": "discard-draft",

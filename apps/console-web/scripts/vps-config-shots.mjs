@@ -114,6 +114,9 @@ try {
         const token = pressed?.confirm ?? pressed?.details?.confirm ?? pressed?.error?.confirm;
         say(`${tab} ${device}: first press → ${JSON.stringify(pressed).slice(0, 260)}`);
         if (typeof token === 'string') pressed = await run({ verb: 'press', address: 'button:vps-approvals-save', confirm: token });
+        await sleep(600);
+        // Save only opens the tab's own question; the answer is the click that saves, and a remote one is refused
+        pressed = await run({ verb: 'press', address: 'button:vps-approvals-confirm' });
         await sleep(1200);
         const alert = await page.locator('.axp-gate__err').first().textContent().catch(() => '');
         say(`${tab} ${device}: remote Save press → ${JSON.stringify(pressed).slice(0, 160)} · the tab says: ${alert || '(nothing)'} · requests to the hub: ${hubWrites}`);

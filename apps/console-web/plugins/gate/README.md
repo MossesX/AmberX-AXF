@@ -78,6 +78,14 @@ axHub. **Save** and **Apply the default** take Brett's own click and are sent fr
 (`web/approvalRulesState.ts` → `saveApprovals`: a console-control press, an action or a script is refused before any
 request is made; axHub refuses a bearer token anyway). The console server has no route that writes the policy.
 
+The question before a save is asked on the tab (`button:vps-approvals-confirm`, `vps-approvals-cancel`), never with the
+browser's `confirm()`: the console app's overlay WebView cannot draw that dialog and answers "no" without showing it,
+which is why both buttons did nothing from Phone Connect (Nov 21 2026). The answer is the click that saves, so it must
+be Brett's own. Without his axHub session the tab says Save is off here and offers **Sign in to axHub**
+(`button:vps-approvals-signin`, back to this page after the sign-in); a save that fails (session ran out, hub
+unreachable, hub refused) shows its reason on the tab and as a toast, and the draft is kept. Browser run:
+`node apps/console-web/scripts/approval-rules-webview.mjs` (a dead `confirm()`, no session, a 401, hub down, a remote press).
+
 **Apply the default** is Brett's rule (Nov 12 2026, again Nov 21 2026): a veto countdown only on shell commands on the
 VPS (`vps.run`, `vps.launch`, `console_terminal_sessions_run`, `agent_manager_vinny_commands_by_cid_run`); every other
 `axf-console` tool runs at once (`*` = allow, so screen opens, overlays and navigation are never held, new tools
