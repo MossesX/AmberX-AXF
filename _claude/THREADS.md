@@ -841,131 +841,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 21:27 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:31 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 21:53 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 21:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:19 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:22 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 22:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:44 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → assigning-models (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → ready (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → sending (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · builds-live
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` s2 done (all) · orchestrator
-- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s2 (all) · builds-live
-- 2026-11-20 23:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s1 (all) · builds-live
-- 2026-11-20 23:36 UTC · `fix-main-ci-red-after-s16-s7-hand-` s1 done (all) · orchestrator
-- 2026-11-20 23:36 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:37 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:41 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:41 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 23:43 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s4 (all) · builds-live
-- 2026-11-20 23:43 UTC · `fix-main-ci-red-after-s16-s7-hand-` s4 done (all) · orchestrator
-- 2026-11-20 23:44 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:51 UTC · `fix-main-ci-red-after-s16-s7-hand-` s5 done (all) · orchestrator
-- 2026-11-20 23:52 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:52 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:08 UTC · `fix-main-ci-red-after-s16-s7-hand-` s3 done (all) · orchestrator
-- 2026-11-21 00:08 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:10 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → build-complete (all) · headless
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → merging-pr, note (all) · lander
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` PR 867 (all) · lander
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pr-pulling-main (all) · lander
-- 2026-11-21 00:12 UTC · `fix-main-ci-red-after-s16-s7-hand-` → running-ci (all) · lander
-- 2026-11-21 00:38 UTC · `plan-studio-live-progress-one-stor` added (0 steps) (all) · plan-studio-2
-- 2026-11-21 00:38 UTC · `plan-studio-live-progress-one-stor` → splitting (all) · orchestrator
-- 2026-11-21 00:39 UTC · `console-tabs-plugins-open-in-tabs-` added (0 steps) (all) · plan-studio-2
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `console-tabs-plugins-open-in-tabs-` → splitting (all) · orchestrator
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` note (all) · orchestrator
-- 2026-11-21 00:41 UTC · `plan-studio-live-progress-one-stor` note (all) · builds-live
-- 2026-11-21 00:41 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · builds-live
-- 2026-11-21 00:41 UTC · `console-tabs-plugins-open-in-tabs-` → split (all) · orchestrator
-- 2026-11-21 00:42 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:42 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · lander
-- 2026-11-21 00:43 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:43 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 00:46 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · foreign-write
-- 2026-11-21 00:46 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · foreign-write
-- 2026-11-21 00:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 00:48 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 00:49 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 00:51 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 00:52 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 00:54 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 00:55 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 00:55 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 00:56 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 00:56 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 00:57 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 00:59 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:02 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:03 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:04 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:06 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:08 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:09 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:10 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:11 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:11 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:12 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:13 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:18 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:19 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:20 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:21 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:23 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:24 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:25 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:26 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:27 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:28 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:29 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:30 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:34 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:35 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:36 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:36 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:39 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:40 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:41 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:42 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:43 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:44 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:45 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:51 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:52 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:53 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:53 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:56 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:57 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:58 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:59 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 02:00 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 02:01 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 02:02 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
 - 2026-11-21 02:13 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
 - 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand-` merged, note (all) · reconciler
 - 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand` added (5 steps) (all) · orchestrator
@@ -1241,6 +1116,131 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 00:45 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
 - 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → complete, note (all) · verify
 - 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · pipeline
+- 2026-11-22 01:17 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
+- 2026-11-22 01:17 UTC · `group-chat-audio-hear-agents-talk-while` → pending, note (all) · reconciler
+- 2026-11-22 01:48 UTC · `stop-push-storm-builds-live-pushes-build` s3 done, → landing (all) · orchestrator
+- 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · builds-live
+- 2026-11-22 00:47 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
+- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:51 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:51 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:51 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:51 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 00:52 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:52 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 00:53 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:54 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:55 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:55 UTC · `every-app-gets-own-locked-default` → fixing, note (all) · watchdog
+- 2026-11-22 00:56 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:57 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:58 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:59 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 01:00 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 01:01 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:01 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:01 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 01:01 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:02 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-22 01:03 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 01:03 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:04 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:05 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:05 UTC · `one-build-time-always-split-to-fill` → fixing, note (all) · watchdog
+- 2026-11-22 01:07 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:08 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:09 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:10 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:11 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:13 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 01:15 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · watchdog
+- 2026-11-22 01:15 UTC · `approval-rules-save-apply-default-don-t` note (all) · watchdog
+- 2026-11-22 01:16 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:16 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:17 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · pipeline
+- 2026-11-22 01:17 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
+- 2026-11-22 01:18 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · foreign-write
+- 2026-11-22 01:18 UTC · `group-chat-audio-hear-agents-talk-while` → pending, note (all) · foreign-write
+- 2026-11-22 01:18 UTC · `orchestrator-settings-collapsible-split` s10 undone, → pending (all) · foreign-write
+- 2026-11-22 01:18 UTC · `group-chat-audio-hear-agents-talk-while` s6 undone, → pending (all) · foreign-write
+- 2026-11-22 01:21 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:25 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · watchdog
+- 2026-11-22 01:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:26 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` → running, note (all) · pipeline
+- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-22 01:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-22 01:28 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
+- 2026-11-22 01:29 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 01:29 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · watchdog
+- 2026-11-22 01:31 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:31 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:31 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 01:31 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · watchdog
+- 2026-11-22 01:32 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · watchdog
+- 2026-11-22 01:32 UTC · `group-chat-audio-hear-agents-talk-while` → failed, note (all) · watchdog
+- 2026-11-22 01:32 UTC · `orchestrator-settings-collapsible-split` → split (all) · orchestrator
+- 2026-11-22 01:33 UTC · `group-chat-audio-hear-agents-talk-while` → split (all) · orchestrator
+- 2026-11-22 01:33 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-22 01:33 UTC · `orchestrator-settings-collapsible-split` → pulling-main (all) · orchestrator
+- 2026-11-22 01:35 UTC · `fix-refreshing-console-jumps-back` → queued, note (all) · watchdog
+- 2026-11-22 01:36 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:36 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:36 UTC · `orchestrator-settings-collapsible-split` → assigning-models (all) · orchestrator
+- 2026-11-22 01:37 UTC · `orchestrator-settings-collapsible-split` → ready, note (all) · orchestrator
+- 2026-11-22 01:37 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-22 01:37 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:37 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-22 01:37 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:37 UTC · `orchestrator-settings-collapsible-split` → sending (all) · orchestrator
+- 2026-11-22 01:38 UTC · `orchestrator-settings-collapsible-split` → building (all) · orchestrator
+- 2026-11-22 01:38 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:39 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:39 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 01:39 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:40 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
+- 2026-11-22 01:41 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 01:41 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 01:42 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:42 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:43 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:44 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-22 01:44 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:44 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:45 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:45 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
+- 2026-11-22 01:45 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:45 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:46 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:47 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:47 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:48 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
+- 2026-11-22 01:48 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
+- 2026-11-22 01:49 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-22 01:49 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:49 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
+- 2026-11-22 01:49 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
+- 2026-11-22 01:52 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:52 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:53 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:55 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · watchdog
+- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:55 UTC · `approval-rules-save-apply-default-don-t` → landed, note (all) · watchdog
+- 2026-11-22 01:56 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
+- 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · builds-live
+- 2026-11-22 01:56 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · builds-live
+- 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-22 01:56 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 
 ## Token passes (log)
 
