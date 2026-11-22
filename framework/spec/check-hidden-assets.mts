@@ -319,13 +319,12 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   const exe = readFileSync(join(repo, 'apps/console-web/src/control/executor.ts'), 'utf8');
   ok(/export function splitAnchor/.test(exe) && /SETTINGS_TAB_LINK/.test(exe) && /getElementById\(`axf-\$\{anchor\}`\)/.test(exe) && /id=\{`axf-\$\{HIDDEN_ASSETS_ANCHOR\}`\}/.test(panel), 'deep link view:settings/tab:appearance#hidden lands on the panel');
 
-  // s12 CLI + voice: axf hidden …, and the spoken phrases press the same console actions (console + AmberX)
+  // s12 CLI + voice: axf hidden …, and the spoken phrases press the same console actions (console-control voice engine; the AmberX Android app was retired on main)
   ok(/case 'hidden': \{/.test(readFileSync(join(root, 'cli/axf.mjs'), 'utf8')), 'axf hidden is wired into axf.mjs');
   const { voiceIntent } = await import('../core/engines/console-control-voice.mjs');
   eq(voiceIntent('hide the toolbar'), { verb: 'press', address: 'function:chrome.hide', value: 'toolbar:app' }, 'voice: hide the toolbar');
   eq(voiceIntent("show what's hidden"), { verb: 'press', address: 'function:chrome.hidden' }, "voice: show what's hidden");
   eq(voiceIntent('unhide everything'), { verb: 'press', address: 'function:chrome.unhideAll' }, 'voice: unhide everything');
   eq(voiceIntent('unhide the menu bar'), { verb: 'press', address: 'function:chrome.unhide', value: 'app-menu:app' }, 'voice: unhide the menu bar');
-  ok(/registerVoiceRouter\('axf\.hidden-assets'/.test(readFileSync(join(repo, 'apps/amberx-droid/src/plugins/voice/web/index.tsx'), 'utf8')), 'AmberX routes the phrases to the same actions');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }
