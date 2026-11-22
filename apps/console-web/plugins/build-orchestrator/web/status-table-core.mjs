@@ -127,6 +127,8 @@ export function buildRow(b) {
     slot: common(steps.map((s) => s.slot)) || str(pipe.slot),
     prNumber: prNumber(b), pr: /^https?:\/\//.test(str(b.pr)) ? str(b.pr) : '', branch: str(b.branch),
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
+    // a parallel split family (lead / part): the table groups the family and shows its combined progress
+    ...(pipe.parallel && typeof pipe.parallel === 'object' ? { parallel: pipe.parallel } : {}),
   };
 }
 

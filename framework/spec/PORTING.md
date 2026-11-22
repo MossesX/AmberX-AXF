@@ -239,6 +239,12 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 13 2026 (build `orchestrator-settings-collapsible-split`): `pipeline.parallel` (`normParallel`, `PARALLEL_ROLES`): the
+parallel split record ({ role lead | part, lead, parts, part, of, contractStep, integrationStep, landing together | own }) and `pipeline.parallelParts` (`normParallelParts`: a build's own ask, 0 = settings, 1 = one build, 2-12 parts) that lets the
+orchestrator cut one request into sub-builds that run at the same time; the dispatcher's wait rules (`parallelWait`) and
+the `parallelSplit / parallelMax / parallelContract / parallelIntegrate` settings live in the orchestrator plugin's
+pipeline-core. Same deferral: no Kotlin twin while Android is on hold.
+
 Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transition `nextStatusOnExit()` with
 `EXIT_REASONS` (all-done, phase-done, crash, crash-limit, upgrade-blocked, needs-brett, stopped), `pipeline.phase`,
 `pipeline.crashes`, `lastRun.reason` / `lastRun.phase`, `STATUS_AFTER.failed = pending`, the Errors tab for a

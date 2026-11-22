@@ -1,13 +1,14 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
+import { SPLIT_SECTION_ID, SplitSettings } from './split-settings';
 import { focusBuild } from './focus';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
@@ -98,6 +99,19 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: show builds in a status (old tab names map onto status filters)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.merge-queue', () => rt.navigate('merge-queue'), { label: 'Open the merge queue (read-only)', effect: 'navigate' });
+    // the Split section (Nov 13 2026): Rules tab, the collapsible opened and flashed
+    rt.actions.register('build-orchestrator.split-settings', () => {
+      rt.dispatch('settings.open:build-orchestrator');
+      flashWhenReady(() => { const el = document.getElementById(SPLIT_SECTION_ID) as HTMLDetailsElement | null; if (el) el.open = true; return el; }, 5000);
+    }, { label: 'Build orchestrator: open the Split settings (split provider, parallel split)', effect: 'navigate' });
+    // a build's own parallel split ask (Nov 13 2026: "split into N parallel"): build-orchestrator.parallel <id> <2-12|off|default>
+    rt.actions.register('build-orchestrator.parallel', ([id, parts]) => {
+      const b = decodeURIComponent(id ?? ''); const n = decodeURIComponent(parts ?? '');
+      if (!b || !n) { void open('pending'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id: b, parts: n })
+        .then((r) => rt.toast(r.ok ? `${b}: ${r.note}${r.resplit ? ' (split again on the next tick)' : ''}` : r.error ?? 'failed', r.ok ? 'success' : 'danger'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: split a build into N parallel builds (id, 2-12 | off | default)', params: true, effect: 'write' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
     // group-action runs queue | land | archive | priority:<P> on every build of a group (the same POST groups calls)
     const groupCall = (path: string, body: Record<string, unknown>, done: string) => void pipeApi.post<{ ok: boolean; error?: string }>(path, body)
@@ -183,7 +197,7 @@ export const plugin: AxfWebLibrary = {
     });
   },
   views: {
-    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'status', 'pending', 'splitting', 'pulling main', 'assigning models', 'ready', 'sending', 'building', 'build complete', 'merging', 'running ci', 'landed', 'failed', 'attempt', 'timer', 'account', 'slot', 'fable', 'opus', 'steps'], render: () => <OrchestratorPage /> },
+    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'status', 'pending', 'splitting', 'pulling main', 'assigning models', 'ready', 'sending', 'building', 'build complete', 'merging', 'running ci', 'landed', 'failed', 'attempt', 'timer', 'account', 'slot', 'fable', 'opus', 'steps', 'split', 'parallel split', 'parallel builds'], render: () => <OrchestratorPage /> },
   },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   // the read-only merge queue: the same table, filtered. The Merge queue view itself (view:merge-queue) belongs to the
@@ -193,6 +207,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
   settingsPanels: [
+    { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 5, render: () => <SplitSettings api={pipeApi} open /> },
     { id: 'build-orchestrator.accounts', tab: 'build-orchestrator', title: 'Accounts', icon: 'user', order: 10, render: () => <AccountsPanel /> },
     { id: 'build-orchestrator.watchdogs', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 19, render: () => <WatchdogsPanel /> },
     { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog: build sessions live', icon: 'shield', order: 20, render: () => <WatchdogStatusPanel /> },

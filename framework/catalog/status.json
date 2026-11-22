@@ -2271,6 +2271,12 @@
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
   },
+  "cx.buildengine.parallelsplit": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Orchestrator Split section (Rules tab + Settings → Plugins → Build orchestrator): split provider, largest step, model per step, phases, step format, parallel split auto|ask|off, max slots, contract first, integration last. Parts linked to the lead (family, combined progress, landing together|own); per-build parallelParts when filing. REST/MCP pipeline-settings(-set), pipeline-parallel, pipeline-request parallel; CLI pipeline.mjs set|parallel|request --parallel; voice; deep link build-orchestrator.split-settings, action build-orchestrator.parallel. Kotlin twin deferred."
+  },
   "cx.buildengine.hardlimit": {
     "status": "built",
     "wave": 1,

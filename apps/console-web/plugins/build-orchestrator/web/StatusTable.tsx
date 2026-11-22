@@ -15,6 +15,7 @@ import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@conso
 import type { pluginApi } from '@console/plugins';
 import * as T from './status-table-core.mjs';
 import type { StepRow, TableRow } from './status-table-core.mjs';
+import { splitFamilies } from './family';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
 import './status-table.css';
 
@@ -217,7 +218,10 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     { id: 'timer', label: 'Timer', width: 'calc(var(--fx-font-size) * 8)', align: 'end', sortable: true, sortValue: (r) => -(Date.parse(r.at) || 0), render: (r) => <Timer row={r} /> },
     { id: 'pr', label: 'PR', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (r) => r.prNumber, render: (r) => <PrLink n={r.prNumber} href={r.pr} /> },
   ];
-  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : 'layers', rows: shown, groups: [], fixed: true }];
+  // parallel split families (Nov 13 2026): the lead and its parts as one sub-group with the family's combined progress
+  const members = all.map((r) => ({ ...r, steps: { total: r.total, done: r.done }, status: r.status === 'landed' ? 'complete' : r.status, pipeline: r.parallel ? { parallel: r.parallel } : null }));
+  const fam = splitFamilies(shown.map((r) => ({ ...r, pipeline: r.parallel ? { parallel: r.parallel } : null })), members, 'st:', []);
+  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : 'layers', rows: fam.singles, groups: fam.groups, fixed: true }];
   const gridHidden = phone ? [...new Set([...hidden, ...PHONE_HIDDEN])] : hidden;
 
   return (

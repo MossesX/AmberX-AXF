@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PageToolbar, PriorityTag, Switch, flashWhenReady, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PageToolbar, PriorityTag, SelectField, Switch, flashWhenReady, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { PRIORITIES, effectivePriority } from '@console/axf/core/build-priority.mjs';
 import { focusBuild } from './focus';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
@@ -7,6 +7,8 @@ import { BuildDetail, StatusChip, type AttemptsData } from './attempts';
 import { WatchLiveFor } from '@console/watchLive';
 import { RecoveriesList } from './watchdog';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
+import { splitFamilies } from './family';
+import { familyLine, type ParallelFamily } from './orchestrator-core.mjs';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
 /*
@@ -31,15 +33,15 @@ import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@cons
 
 type Planned = { model: string; account: string; kind: string; at: string; why: string } | null;
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
-type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; reason?: string; phase?: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { parallel?: { role?: string; lead?: string; part?: number } | null; parallelParts?: number; route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; reason?: string; phase?: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null };
+type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null; family?: ParallelFamily | null };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number; parallelSplit?: string; parallelMax?: number; parallelContract?: boolean; parallelIntegrate?: boolean };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
@@ -252,7 +254,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               </div>
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
-              : <PipelineTable view={view} rows={rows} sel={sel} toggle={toggle} focusId={focusId}
+              : <PipelineTable view={view} rows={rows} all={Object.values(s.tabs ?? {}).flat()} sel={sel} toggle={toggle} focusId={focusId}
                   detail={(r) => <><PipelineCard embedded r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} /><RecoveriesList id={r.id} /></>} />}
           </section>
         );
@@ -282,8 +284,9 @@ function rowWhen(r: Row): string { const p = r.pipeline; return p?.launchedAt ? 
  * full build detail with its steps as a sub-grid. Expanded rows are kept per tab for the session.
  */
 const OPEN: Partial<Record<BuildTab, string[]>> = {};
-function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: BuildTab; rows: Row[]; sel: Set<string>; toggle: (id: string, on: boolean) => void; focusId: string; detail: (r: Row) => ReactNode }) {
+function PipelineTable({ view, rows, all, sel, toggle, focusId, detail }: { view: BuildTab; rows: Row[]; all: Row[]; sel: Set<string>; toggle: (id: string, on: boolean) => void; focusId: string; detail: (r: Row) => ReactNode }) {
   const [open, setOpen] = useState<string[]>(() => OPEN[view] ?? []);
+  const [folded, setFolded] = useState<string[]>([]);
   useEffect(() => { setOpen(OPEN[view] ?? []); }, [view]);
   // a build asked for (console_show, search, context menu) opens on the tab that lists it, so its detail can be flashed
   useEffect(() => { if (focusId && rows.some((r) => r.id === focusId)) setOpen((x) => { if (x.includes(focusId)) return x; const next = [...x, focusId]; OPEN[view] = next; return next; }); }, [focusId, view, rows]);
@@ -293,7 +296,7 @@ function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: Bui
     ...(selectable ? [{ id: 'sel', label: '', width: 'calc(var(--fx-font-size) * 2.5)', fixed: true,
       render: (r: Row) => (r.actions?.length ?? 0) > 0 ? <span onClick={(e) => e.stopPropagation()}><Checkbox label="" title={`Select ${r.title}`} checked={sel.has(r.id)} onChange={(on) => toggle(r.id, on)} /></span> : null } as GridColumn<Row>] : []),
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 14), 4fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="pl-row-title" title={r.said ? `“${r.said}”` : r.id}><strong>{r.title}</strong> <span className="fx-small fx-muted fx-mono">{r.id}</span></span> },
+      render: (r) => <span className="pl-row-title" title={r.said ? `“${r.said}”` : r.id}><strong>{r.title}</strong> <span className="fx-small fx-muted fx-mono">{r.id}</span>{r.family && <span className="fx-small fx-muted"> · {r.family.role === 'lead' ? `lead of ${r.family.of} parallel parts` : `part ${r.family.part} of ${r.family.of}`}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', render: (r) => (r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.status,
       render: (r) => <StatusChip status={r.status} data={r} held={!!r.held} /> },
@@ -306,13 +309,31 @@ function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: Bui
     ...(view === 'complete' || view === 'archive' ? [{ id: 'pr', label: 'PR', width: 'calc(var(--fx-font-size) * 4)', render: (r: Row) => <span className="fx-small fx-mono">{r.pr || '—'}</span> } as GridColumn<Row>] : []),
     { id: 'when', label: 'When', width: 'calc(var(--fx-font-size) * 6)', align: 'end', render: (r) => <span className="fx-small fx-muted">{rowWhen(r)}</span> },
   ];
-  const groups: GridGroup<Row>[] = [{ id: view, title: `${rows.length} build(s)`, rows, groups: [], fixed: true }];
+  // parallel split families (Nov 13 2026): the lead and its parts as one sub-group with the family's combined progress
+  const fam = splitFamilies(rows, all, `${view}:`, folded);
+  const groups: GridGroup<Row>[] = [{ id: view, title: `${rows.length} build(s)`, rows: fam.singles, groups: fam.groups, fixed: true }];
   return (
-    <DataGrid<Row> id={`build-orchestrator.${view}`} label={TAB_LABEL[view]} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} hidden={[]}
+    <DataGrid<Row> id={`build-orchestrator.${view}`} onToggleGroup={(id) => setFolded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]))} label={TAB_LABEL[view]} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} hidden={[]}
       expanded={open} onToggleExpand={flip} selected={focusId || null} onRowClick={(r, e) => { if (e.detail <= 1) flip(r.id); }}
       rowTone={(r) => (r.deleted ? 'danger' : r.held ? 'warning' : r.status === 'running' || r.status === 'landing' ? 'accent' : r.status === 'fixing' ? 'warning' : r.status === 'failed' || r.status === 'escalated' ? 'danger' : 'muted')}
       rowRef={(r) => ({ kind: 'build', id: r.id })}
       renderDetail={detail} empty={<p className="fx-muted">{EMPTY[view]}</p>} />
+  );
+}
+
+/** A build's own parallel split ask (pipeline.parallelParts): 0 = the Split settings, 1 = one build, 2-12 parts. */
+const PARALLEL_PICK = [{ value: '0', label: 'As the Split settings say' }, { value: '1', label: 'One build (no parallel split)' },
+  ...Array.from({ length: 11 }, (_, i) => ({ value: String(i + 2), label: `Split into ${i + 2} parallel builds` }))];
+
+/** A parallel split build's link to its family: the lead, every part with its progress, how the family lands. */
+export function FamilyNote({ f, self }: { f: ParallelFamily; self: string }) {
+  return (
+    <div className="fx-stack oc-family" data-help="parallel-family">
+      <p className="fx-small"><Icon name="layers" size={13} /> {f.role === 'lead' ? <>Lead of a parallel split</> : <>Part {f.part} of {f.of} of <span className="fx-mono">{f.lead}</span>{f.leadTitle ? ` (${f.leadTitle})` : ''}</>} · {familyLine(f)}</p>
+      <div className="fx-row fx-row--wrap">
+        {f.parts.map((x) => <span key={x.id} title={x.title}><Chip tone={x.finished ? 'success' : x.id === self ? 'accent' : undefined}>part {x.part}: {x.done}/{x.total}{x.finished ? ' ✓' : ''}</Chip></span>)}
+      </div>
+    </div>
   );
 }
 
@@ -352,6 +373,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {p?.lastRun && table !== 'building' && <span className="fx-muted" title={`Last run ended ${fmtTime(p.lastRun.at)}`}><Icon name="clock" size={13} />last run: {p.lastRun.outcome}{p.lastRun.reason ? ` (${p.lastRun.reason}${p.lastRun.exit != null ? `, exit ${p.lastRun.exit}` : ''})` : p.lastRun.exit != null ? ` (exit ${p.lastRun.exit})` : ''}</span>}
         {table === 'building' && <WatchLiveFor branch={r.branch} text={r.id} />}
       </div>
+      {r.family && <FamilyNote f={r.family} self={r.id} />}
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
@@ -375,6 +397,13 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 10 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
         {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
       </div>
+      {(table === 'pending' || table === 'queued') && !p?.parallel && (
+        <div className="oc-split__row" data-help="parallel-builds">
+          <SelectField label="Parallel builds" value={String(p?.parallelParts ?? 0)} options={PARALLEL_PICK} disabled={busy}
+            hint="This build's own parallel split (beats Rules → Split); a build not started yet is split again"
+            onChange={(v) => act('pipeline/parallel', { id: r.id, parts: v === '0' ? 'default' : v === '1' ? 'off' : v }, `${r.id}: ${PARALLEL_PICK.find((o) => o.value === v)?.label ?? v}`)} />
+        </div>
+      )}
     </article>
   );
 }

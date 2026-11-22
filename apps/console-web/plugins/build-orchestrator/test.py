@@ -259,6 +259,15 @@ check(fx.resolve("console-commands-reliable") == {"screen": "build-orchestrator"
 check(fx.resolve("plan studio") is None and fx.resolve("no-such-build") is None and fx.resolve("build:") is None, "anything else is not a build")
 check(srv.plugin_services.get("console-focus@1") is not None, "provided as console-focus@1")
 
+# parallel split per build (orchestrator-settings-collapsible-split s6): the REST value as the CLI takes it
+check(srv._parallel_arg(None) == "" and srv._parallel_arg("") == "", "no parallel given: nothing passed")
+check(srv._parallel_arg(3) == "3" and srv._parallel_arg("12") == "12" and srv._parallel_arg("off") == "off" and srv._parallel_arg(1) == "off" and srv._parallel_arg("default") == "default" and srv._parallel_arg(0) == "default", "parallel: 2-12, off, default")
+for bad in ("13", "x", "-2"):
+    try:
+        srv._parallel_arg(bad)
+        check(False, f"parallel {bad} refused")
+    except srv.HTTPException:
+        check(True, f"parallel {bad} refused")
 # custom groups and custom tabs (Nov 13 2026): the routes run groups.mjs on a scratch store and pipeline dir
 import asyncio  # noqa: E402
 import os  # noqa: E402
