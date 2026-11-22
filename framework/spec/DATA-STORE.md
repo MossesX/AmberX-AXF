@@ -7,6 +7,22 @@ Status: contract, Phase 1 of build `data-container-axf-data-holds-all` (Fable, N
 `data-store-migration.json`, `data-store-mode.json`). No Kotlin twin: this is console infrastructure, nothing an Android
 app renders (deferred gap in `PORTING.md`).
 
+Inventory of every JSON/JSONL data file and its target Postgres table: `framework/spec/DATA-INVENTORY.md` (Nov 18 2026).
+
+## Rule: no runtime data in JSON files (no-json-data@1, Nov 18 2026)
+
+Brett: "I don't want any data stored in JSON period. Everything needs to be a Postgres table." Runtime data (state,
+queues, logs, journals, settings, records of any kind) lives in axf-data's Postgres tables and is read and written only
+through data-store@1 (`data-files.mjs`, `persist.mjs` readData/writeData, `builds-store.mjs`, `data_store.py`). A document
+gets a table (`services/axf-data/tables.py`: DocTable for a document with lists, one row per item; RecordTable for one row
+per document) and moves local → shadow → cutover per key or namespace (DATA-INVENTORY.md lists every file and its table).
+
+Enforced by `framework/spec/check-json-data-writes.mjs` (CI): a new direct JSON/JSONL write in runtime code fails the
+build. The writes that existed when the rule began are a per-file baseline (`json-data-writes.baseline.json`) that may
+only go down. Not data, and so not counted when marked `// axf-data: not data (<reason>)`: build-time generators,
+read-only exports generated from the tables (the builds projection, orchestrator exports), fixtures, the check's own
+baseline. Secrets never go in the data DB.
+
 ## Why
 
 Brett, Nov 15 2026: "the console goes down, all the data is still available, all the notes are available, and the
@@ -46,12 +62,13 @@ plugin namespaces are open under one prefix so a new plugin needs no registry ch
 | `notes` | Brett's notes, `/projects/_shared/_claude/notes/<folder>/<name>.md` → `notes/<folder>/<name>.md`; note history → `notes/_history/<folder>/<name>.jsonl` | blob (Markdown), journal |
 | `builds` | builds@1 `_claude/builds/store.json` → `builds/store.json`; journal `_claude/builds/journal/<month>.jsonl` → `builds/journal/<month>`; `store.json.exports.json`, `origins.json`, `orchestrator.json`, `shipped/*.json`, `reports/*`, `progress/*`, `profiles/*` keep their relative paths; `/projects/amberx-axf/_data/pipeline` and `_data/builds` → `builds/pipeline/…`, `builds/reconcile/…` | record, journal, blob |
 | `settings` | hub-settings@1 documents `/projects/_shared/_data/settings/**` → `settings/<same path>`; `_shared/_data/claude/settings.json` → `settings/claude/settings.json` | record |
-| `planner` | plan@1 store `/projects/amberx-axf/_data/plan-studio/**` → `planner/<same path>`; `shipped-log.jsonl` is a journal | record, journal |
+| `planner` | Plan Studio 2.0 tree `/projects/amberx-axf/_data/plan-studio-2/**` → `planner/v2/<same path>`; the removed Plan Studio's plan@1 store `/projects/amberx-axf/_data/plan-studio/**` → `planner/<same path>` (`shipped-log.jsonl` a journal) is a read-only archive since Nov 21 2026: nothing writes it | record, journal |
 | `ui-review` | ui-review-item@1 `items.json`, `kinds.json`, screenshots → `ui-review/items.json`, `ui-review/kinds.json`, `ui-review/shots/<file>` | record, blob |
 | `plugins/<folder>` | plugin-lifecycle@1 `lifecycle.dataDir` (`.axf-console/plugins/<folder>/**`) → `plugins/<folder>/<same path>`; a SQLite file is one blob | record, blob, journal |
 | `changes` | the codebase changes log `/projects/amberx-axf/_data/changes/<yyyy>/<mm>/<id>.json` → `changes/<yyyy>/<mm>/<id>.json` | record |
 | `sessions` | session@1 archives `/projects/amberx-axf/_data/sessions/**` and the claude.ai drop folder → `sessions/<same path>` | record, blob, journal |
 | `console` | the rest of the console's own hub data: `home-cards`, `agents`, `agent-slots`, `agent-swarm`, `listeners`, `token-log`, `tracker.json`, `companion`, `walkthrough`, `amberx-notes` tables → `console/<folder>/<same path>`; `_shared/_data/{handoff,notifications,dns}` → `console/shared/…`; `state.json` and the deploy log from the console's own volume | record, journal, blob |
+| `phone` | phone-connect@1 (PHONE-CONNECT.md): the plugin folder `phone-connect` is this namespace, like `ui-review`: `devices/<deviceId>.json` (phone-device@1), `pairings/<code>.json` (phone-pairing@1), `commands/<id>.json` (phone-command@1 + its results) → `phone/<same path>`; `log.jsonl` → journal `phone/log`. Nothing to migrate: the namespace is new with the plugin. | record, journal |
 | `_meta` | the store's own state: `_meta/mode` (data-store-mode@1 per namespace), `_meta/manifests/<id>`, `_meta/tokens` (issued token ids, never the tokens) | record |
 
 A namespace's `kinds` says which kinds a key may be; a journal key cannot later become a record. `plugins/<folder>`
@@ -95,6 +112,7 @@ Base path `/v1`. Namespaces and paths are URL segments as written above (`/v1/pl
 | delete | `DELETE /v1/<key>` | `data-record@1` with `deleted: true` | same preconditions; the tombstone keeps `rev`, `at`, `by`; 30 days later it is purged |
 | list | `GET /v1/<ns>?prefix=&after=&limit=` | `data-list@1` | metadata only, path order, `limit` ≤ 1000, `after` is the last path seen; `?deleted=1` includes tombstones |
 | append | `POST /v1/<key>:append` | `{ $axf: 'data-append@1', ns, path, first, last, count }` | body `{ entries: [ … ] }` ≤ 4 MiB, each entry ≤ 256 KiB; the key becomes a journal on first append; `Idempotency-Key` header makes a retry safe (same key → same `first`) |
+| patch | `POST /v1/<key>:patch` | `data-patch@1` = `{ $axf, record: data-record@1, applied, added, journal: data-append@1 \| null }` | body `{ head?: { … }, lists: { <list>: [{ key, ifRev?, item }] }, journal?: { path, entry, idem? } }` on a table-backed record whose list has a key (the builds store: `builds` keyed by `id`). Only the named items are written and, on Postgres, only their rows are locked (`SELECT … FOR UPDATE`); `head` sets the record's other fields (rev, updatedAt, meta…); the journal line lands in the same transaction. `ifRev: n` = the item must still be at rev n (an item without a whole-number rev counts as 1), `null` = must not exist, absent = no check. A failed check is `409 conflict` naming the items and nothing is written. Needs `write` on the key and `append` on the journal path. The record's rev and etag move as on a put (the etag is of the assembled record), so readers using `If-Match` are unaffected |
 | read journal | `GET /v1/<key>?since=<seq>&limit=` | `{ $axf: 'data-entries@1', entries: [data-entry@1…], next }` | `since` exclusive, `limit` ≤ 5000; `?tail=n` for the last n |
 | watch | `GET /v1/watch?ns=a,b&prefix=&since=<cursor>` | SSE of `data-change@1`, event `change`, `id` = cursor | a reconnect sends `Last-Event-ID`; a `cursor` older than the retained feed (30 days) answers `cursor_expired` so the client lists instead |
 | snapshot | `POST /v1/snapshot` `{ namespaces?: [ns…] }` | `data-manifest@1` | writes `_meta/manifests/<id>` and `/v1/snapshot/<id>.tar` (every live body, one file per key, `manifest.json` inside); `GET /v1/snapshot/<id>` reads the manifest |
@@ -115,6 +133,18 @@ serialise.
 
 A record's `rev` is per key; there is no store-wide transaction. Data that must move together is one record (the
 builds store already is) or a journal entry.
+
+### Row-level writes (data-patch@1, Nov 18 2026)
+
+The builds store is one record read by everyone and written by every session, so a whole-record `put` with `If-Match`
+made every tick wait on every other tick and ship 14 MB. `patch` is the row-level write for such a record: the writer
+sends only the items it changed, each with the rev it read them at, plus the head fields that changed and the journal line.
+On Postgres (`services/axf-data/pg.py` `PgStore.patch`) that is one transaction that locks the named `builds` rows and no
+others, so two sessions changing two builds never wait on each other, and a session that read a build before someone else
+changed it gets `conflict` for that build only (re-read, re-apply, retry: `framework/cli/builds-store.mjs` does this up to
+5 times). The SQLite engine answers the same patch on the document (`store.py` `Store.patch`): read, check each item's rev,
+replace, write with the etag read, append the line; same answers, no row locks. `services/axf-data/tables.py`
+(`check_patch`, `rev_conflicts`, `apply_patch_doc`) is the one definition both engines use.
 
 ## Errors
 
@@ -267,8 +297,20 @@ local ──start-shadow──▶ shadow ──cut-over──▶ cutover ──r
 
 One mode per namespace (`plugins/<folder>` is one namespace here) over a store-wide default. The document is
 `data-store-mode@1` (`{ mode, since, by, cursor, manifest, namespaces: { <ns>: { mode, since, cursor, manifest, drift,
-lastDriftAt } } }`), kept at `_meta/mode` on axf-data and as `<data>/data-store/mode.json` locally; a client reads it
+lastDriftAt, keys? } } }`), kept at `_meta/mode` on axf-data and as `<data>/data-store/mode.json` locally; a client reads it
 before every write (`readPlan`, `writePlan`).
+
+**Key-level modes** (Nov 18 2026, Brett: "builds store first, then every JSON data file"). A namespace entry may carry
+`keys: { '<path>' | '<prefix>/': { mode: local | shadow | cutover, since, by, verified } }`: one record (`store.json`) or
+one prefix (`journal/`) of a namespace moves ahead of the rest of it. Paths are relative to the namespace id (for
+`plugins/<folder>`, after the folder); the longest match wins; without a match the namespace mode applies, then the store
+default (`modeOf(state, ns, path)`, `keyOverride`). A key has no 30-minute shadow guard: the tool that moves it holds the
+writer's lock while it copies and verifies (a record: the same canonical body on both sides; a journal: every entry equal,
+line by line) and must pass `verified: { at, how, counts }`, which is kept on the entry (`transitionKey`). Back to local is
+always allowed; rollback is a namespace move. The first keys moved: `builds/store.json` and `builds/journal/`
+(`node framework/cli/builds-data.mjs cutover --apply`), while `builds/pipeline/*`, `reconcile/*`, `shipped/*`, reports and
+progress stay local until their own steps. Every client honours key modes: `framework/core/data-files.mjs` (Node, sync and
+async), `apps/console-web/server/data_store.py` (console), `framework/cli/builds-store.mjs` (its own store and journal keys).
 
 | Mode | Reads | Writes | Local copy |
 |---|---|---|---|
@@ -315,7 +357,7 @@ storage (`services/axf-data/pg.py`, `tables.py`):
 | Table | Holds |
 |---|---|
 | `keys` | one row per key: kind, rev, etag, at, actor, size, content type, tombstone, which table holds the body |
-| `builds`, `build_steps` | the builds store (`builds/store.json`): one row per build (id, title, status, pr, branch, dates…), one per step; the rest of the document (rules, meta, drafts, rev) in `store_heads` |
+| `builds`, `build_steps`, `build_notes` | the builds store (`builds/store.json`): one row per build **keyed by its id** (`rid`; `pos` keeps the array order; id, title, status, pr, branch, dates… lifted), its steps and notes as child rows under the id; the rest of the document (rules, meta, drafts, rev) in `store_heads`. The row is the unit of `patch` and of the `FOR UPDATE` lock (tables version 2, Nov 18 2026; a version-1 database is re-keyed on the first connect, `tables.migrate_v2`) |
 | `journal` (+ view `build_journal`) | every journal line: `entry JSONB` plus the stored line; a trigger refuses UPDATE / DELETE |
 | `history` | earlier revs of records and blobs (restore) |
 | `ui_review_items` | `ui-review/items.json`: one row per item (kind, name, app, screen, group, status, build, branch…) |
@@ -355,6 +397,61 @@ restores with `pg_restore --clean`. Daily at 03:17 UTC; the SQLite mirrors run a
 Checks: `python3 services/axf-data/test_pg.py` (the whole `test_store.py` suite replayed on Postgres, plus tables,
 mirrors, migration, engine moves, backups, and `check-data-store.mjs --http` against a Postgres-backed server; CI starts
 a postgres container). The Node client and fixtures are unchanged: an engine is invisible on the wire.
+
+## The builds store on the tables (build urgent-all-data-to-postgres-builds-store, s2, Nov 18 2026)
+
+Brett, Nov 18 2026: "I don't want any data stored in JSON period. Everything needs to be a Postgres table."
+
+The first data that is a table and nothing else: `builds/store.json` (rows `builds`, `build_steps`, `build_notes`,
+head in `store_heads`) and `builds/journal/*` (rows in `journal`, view `build_journal`). The cut
+(`node framework/cli/builds-data.mjs cutover --apply`) runs under the store's writer lock: the live file is put once, every
+hub journal part is compared with axf-data line by line and only the lines it lacks are appended (oversized entries as
+`builds/journal-large/*` records with a pointer line), the counts (builds, steps, notes; rows per table when the token may
+read `_meta/tables`; entries per journal part) must agree, then the two keys flip to `cutover` (`verified` on the entry).
+`builds-data.mjs status` shows both sides; `builds-data.mjs local --apply` brings everything back to the files.
+
+After the cut `builds-store.mjs` reads the record (assembled from the rows, cached by etag on the server) and writes a
+`patch` of the builds it changed (row-level, see above); the console server reaches the store through the same CLI
+(`orchestrator.mjs`), so console, CLI, MCP and headless sessions share the one set of rows. Processes on the VPS host itself
+(sessions in worktrees, the gate runner, cron) find axf-data through `conf/env/host.env` (fixed address on the internal
+network, the orchestrator's token; `deploy/install-data.sh`, `data-files.mjs remoteConfig`) and read the console's mode
+document from the main checkout's `.axf-console` (`data-files.mjs roots`), so a worktree never runs on a mode of its own.
+
+Known cost: a patch still assembles the whole record once to compute its etag (about 3–4 s for 1 000 builds); an incremental
+etag is a later step. The namespace's other keys (pipeline, reconcile, shipped, reports, progress, origins, exports) are
+still files and move in their own steps (DATA-INVENTORY.md).
+
+### After the flip (s3, Nov 19 2026)
+
+- **No file lock, no file write.** In cutover `withStore` takes no `store.json.lock` (the rev check on each row is the lock),
+  `exportNow` reads the record without it, and `mergeRetiredNow` (a one-off on the raw file) stands down.
+  `builds-data.mjs clean [--apply]` removes `store.json.tmp-*` files of dead writers and an unheld lock; a successful
+  flip runs it.
+- **The file is a read-only projection.** After every write that changed a build, the console checkout's `store.json`
+  (the main checkout's, wherever the writer runs; `AXF_CONSOLE_ROOT` overrides) and its orchestrator exports are
+  rewritten from the record (`projectConsole`), never to an older rev than the file holds. Console screens that still
+  read the file (activity, crew-live, the Builds page's change watch, ref-links, projects) keep showing the live store
+  until each reads the store itself; nothing reads the file as the store, and an edit to it is overwritten.
+- **Writers from before the cut.** A session still on code from before key-level modes keeps writing its own copy and
+  publishes it to main through builds-live. Every new-code write flushes to main and pulls main back; in cutover that
+  pull (`adoptStore` → `adoptRemote`) takes only the builds main holds newer (per build and per step, builds-merge-core)
+  into the tables as one row-level patch (`by: builds-live`, `action: adopt`). Nothing older than the tables is taken, so
+  the changeover loses no tick. builds-live leaves the console checkout to the projection in cutover.
+- **The exports stay, generated from the tables.** `orchestrator.json`, `pending.json` and `build-queue.json` still have
+  readers (console views, pending.mjs, build-queue.mjs, handoff, feature matrix, …), so every write regenerates them from
+  the record the rows assemble, as before. They are read-only projections; a direct edit is absorbed into the tables.
+  They are dropped once their readers ask the store (s4/s5).
+- **Console focus** (`console-focus@1`) reads build ids through `data_store` (the tables in cutover, cached 30 s).
+
+## Agent slots on the tables (s4.1, Nov 19 2026)
+
+`console/agent-slots/state.json` is the DocTable `agent_slots` (services/axf-data/tables.py): one row per entry, its
+list (`running`, `queue`, `heavy`, `done`) as the section, the rest in `store_heads`. `agent-slots.mjs` reads and writes
+the state by the key's mode: local = the file under the mkdir lock; shadow = the file, then the same document on
+axf-data; cutover = axf-data only, the lock replaced by a rev check (get with etag, apply, put if-match, re-read on a
+conflict, 8 tries); rollback = writes refused. `agent-slots.mjs data cutover --apply` copies, reads back, compares and
+flips the key under the mkdir lock; `data local --apply` goes back. The flip waits until every checkout that runs
+`agent-slots.mjs` (each worktree runs its own copy) has this code.
 
 ## What the first phase did not do
 

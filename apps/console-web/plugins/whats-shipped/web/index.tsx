@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { AgentAvatar, Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Icon, PageToolbar, Segmented, SelectField, Switch, TextField, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -172,18 +172,20 @@ function Panel() {
   const groups = useMemo(() => groupItems(list, by), [list, by]);
   const left = unread(s.feed?.items ?? [], read).length;
   const pick = (g: GroupBy) => { setBy(g); rt?.settings.set(KEYS.group, g); };
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/whats-shipped.json)
+  usePublishPageState('whats-shipped', { unread: left, loading: s.loading });
+  useToolbarHandlers('whats-shipped', {
+    'whats-shipped.mark-read': () => { if (rt) setRead(rt, (s.feed?.items ?? []).map((i) => i.id)); return { read: s.feed?.items.length ?? 0 }; },
+    'whats-shipped.check': async () => { await refresh(true); return { items: s.feed?.items.length ?? 0 }; },
+    'whats-shipped.settings': () => { rt?.closeDialog(); rt?.dispatch('settings.open:whats-shipped'); return { opened: 'settings' }; },
+  });
   return (
     <div className="fx-stack axp-whats-shipped">
-      <div className="fx-row fx-row--wrap axp-whats-shipped__bar" role="toolbar" aria-label="What's shipped">
+      <PageToolbar view="whats-shipped" className="axp-whats-shipped__bar">
         <Segmented label="Group" value={by} onChange={pick} options={GROUPS.map((g) => ({ value: g, label: GROUP_LABEL[g], icon: GROUP_ICON[g] }))} />
         <TextField label="Search" value={q} onChange={setQ} placeholder="Search features, builds, apps" className="axp-whats-shipped__search" />
-      </div>
-      <div className="fx-row fx-row--wrap">
-        <span className="fx-small fx-muted">{left ? `${left} unread` : 'All read'} · {s.feed?.items.length ?? 0} shipped</span>
-        <Button icon="check" disabled={!left} onClick={() => rt && setRead(rt, (s.feed?.items ?? []).map((i) => i.id))}>Mark all read</Button>
-        <Button icon="refresh" disabled={s.loading} onClick={() => void refresh(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
-        <Button icon="settings" onClick={() => { rt?.closeDialog(); rt?.dispatch('settings.open:whats-shipped'); }}>Settings</Button>
-      </div>
+      </PageToolbar>
+      <p className="fx-small fx-muted">{left ? `${left} unread` : 'All read'} · {s.feed?.items.length ?? 0} shipped{s.loading ? ' · checking…' : ''}</p>
       {s.error && <p className="fx-small fx-muted axp-whats-shipped__text" role="status"><Icon name="info" size={12} /> {s.error}</p>}
       {!groups.length && <p className="fx-muted">{s.loading ? 'Reading what shipped…' : q ? 'Nothing matches.' : 'Nothing shipped in this window.'}</p>}
       {groups.map((g) => (

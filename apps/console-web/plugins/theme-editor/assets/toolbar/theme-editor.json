@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "theme-editor",
+  "name": "Theme editor",
+  "version": "1.0.0",
+  "description": "The Theme editor toolbar: start a new theme from the one being edited, copy both themes as asset@1 JSON, load themes from JSON on the clipboard or from a file, and go back to the active themes. The view switch, the token search and the unsaved note ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "theme-editor", "themes"],
+  "data": {
+    "scope": "view:theme-editor",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "theme",
+        "label": "Theme",
+        "items": [
+          { "id": "copy", "icon": "copy", "label": "Copy as new", "action": "handler:theme-editor.copy", "priority": 300, "overflow": "never" },
+          { "id": "revert", "icon": "undo", "label": "Back to active", "action": "handler:theme-editor.revert", "badge": "state:unsaved", "enabledWhen": "unsaved", "priority": 280 }
+        ]
+      },
+      {
+        "id": "transfer",
+        "label": "Import and export",
+        "items": [
+          { "id": "copy-json", "icon": "code", "label": "Copy JSON", "action": "handler:theme-editor.copy-json", "priority": 220 },
+          { "id": "paste", "icon": "paste", "label": "Paste JSON", "action": "handler:theme-editor.paste", "priority": 210 },
+          { "id": "load-file", "icon": "upload", "label": "Load file", "action": "handler:theme-editor.load-file", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

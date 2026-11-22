@@ -59,7 +59,7 @@ const host: McpHost = {
 
 // In the console, MCP use is a developer tool: `dev.tools` is held by the standard user role and by hub admins (`*`),
 // and by neither the wall's `user` nor `themes` roles. The server routes still need the console token on every call.
-const lib = createMcpLibrary({ host, envAuth: true, navLabel: 'Plugins', permissions: { MANAGE: 'dev.tools', CALL: 'dev.tools', WRITE: 'dev.tools', DESTRUCTIVE: 'dev.tools' } });
+const lib = createMcpLibrary({ host, envAuth: true, navLabel: 'AI & agents', permissions: { MANAGE: 'dev.tools', CALL: 'dev.tools', WRITE: 'dev.tools', DESTRUCTIVE: 'dev.tools' } });
 
 export const plugin: AxfWebLibrary = {
   ...lib,

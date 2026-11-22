@@ -55,6 +55,27 @@ def code(r) -> str:
     return r.json().get('code', 'ok') if r.status_code >= 400 else 'ok'
 
 
+def test_patch_document():
+    """data-patch@1 on the document engine (SQLite): the same answers as the row engine, item by item."""
+    with Env() as c:
+        doc = {'rev': 1, 'builds': [{'id': 'a', 'rev': 1, 'status': 'pending', 'steps': [], 'notes': []}, {'id': 'b', 'rev': 1, 'status': 'pending'}]}
+        c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        body = {'head': {'rev': 2}, 'lists': {'builds': [{'key': 'a', 'ifRev': 1, 'item': {'id': 'a', 'rev': 2, 'status': 'running', 'steps': [{'id': 's1'}], 'notes': [{'text': 'go'}]}},
+                                              {'key': 'c', 'ifRev': None, 'item': {'id': 'c', 'rev': 1}}]},
+                'journal': {'path': 'journal/2026-11', 'entry': {'rev': 2, 'action': 'tick'}, 'idem': 'rev-2'}}
+        p = c.post('/v1/builds/store.json:patch', json=body, headers=H()).json()
+        assert (p['$axf'], p['applied'], p['added'], p['record']['rev'], p['journal']['first']) == ('data-patch@1', 2, 1, 2, 1)
+        got = c.get('/v1/builds/store.json', headers=H()).json()
+        assert got['rev'] == 2 and [b['id'] for b in got['builds']] == ['a', 'b', 'c'] and got['builds'][0]['status'] == 'running'
+        assert c.get('/v1/builds/store.json?meta=1', headers=H()).json()['etag'] == etag_of(2, canonical(got).encode())
+        stale = c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'a', 'ifRev': 1, 'item': {'id': 'a', 'rev': 3}}]}}, headers=H())
+        assert stale.status_code == 409 and stale.json()['code'] == 'conflict'
+        assert code(c.post('/v1/builds/store.json:patch', json={'lists': {'nope': []}}, headers=H())) == 'invalid_body'
+        assert code(c.post('/v1/builds/missing.json:patch', json={'lists': {'builds': []}}, headers=H())) == 'not_found'
+        assert code(c.post('/v1/builds/store.json:patch', json={'head': {'rev': 3}}, headers=H('reader'))) == 'forbidden'
+        assert len(c.get('/v1/builds/journal/2026-11?since=0', headers=H()).json()['entries']) == 1
+
+
 class Env:
     def __enter__(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -332,6 +353,24 @@ def test_backup_verify_restore_prune():
         assert len([k for k in kept if k >= 'axf-data-20261101']) == 15  # Nov 1 … Nov 15
         older = [k for k in kept if k < 'axf-data-20261101']
         assert 8 <= len(older) <= 11 and all(k >= 'axf-data-20260816' for k in older)
+
+
+def test_backup_run_one_at_a_time():
+    """`backup.py run` while another run holds the lock stops at once (exit 0, nothing written) instead of a second dump."""
+    import fcntl
+    import io
+    from contextlib import redirect_stdout
+    import backup
+    with tempfile.TemporaryDirectory() as d:
+        out = Path(d) / 'backups'
+        out.mkdir()
+        with open(out / '.backup.lock', 'w') as held:
+            fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                rc = backup.main(['run', '--data', str(Path(d) / 'data'), '--out', str(out), '--dsn', ''])
+        assert rc == 0 and json.loads(buf.getvalue())['skipped'], buf.getvalue()
+        assert not backup.backups(out) and not (out / 'last.json').exists(), 'the second run wrote nothing'
 
 
 def test_backup_routes():

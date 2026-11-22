@@ -133,6 +133,13 @@ class EngineStore:
             self._mirror('append', f'{ns}/{path}', out, lambda: m.append(ns, path, entries, caller, idempotency_key=idempotency_key))
         return out
 
+    def patch(self, ns, path, body, caller):
+        out = self.primary.patch(ns, path, body, caller)
+        m = self.mirror
+        if m:
+            self._mirror('write', f'{ns}/{path}', out, lambda: m.patch(ns, path, body, caller))
+        return out
+
     def snapshot(self, namespaces, caller, mode=''):
         out = self.primary.snapshot(namespaces, caller, mode=mode)
         m = self.mirror
@@ -259,4 +266,6 @@ class _JournalFacade:
 def _compare_fields(d: Any) -> Any:
     if not isinstance(d, dict):
         return d
+    if isinstance(d.get('record'), dict):  # data-patch@1: the record frame carries the rev / etag
+        d = d['record']
     return {k: d[k] for k in ('rev', 'etag', 'deleted', 'first', 'last', 'count', 'id') if k in d}

@@ -278,12 +278,15 @@ class Completer:
                 self._save(s)
 
 
-def start_watcher(c: Completer, every_s: float = 15.0) -> threading.Thread:
-    """Looks for finished items every 15 s, so pushes go out with no console page open."""
+def start_watcher(c: Completer, every_s: float = 15.0, enabled: Callable[[], bool] | None = None) -> threading.Thread:
+    """Looks for finished items every 15 s, so pushes go out with no console page open. Skips the pass (a full feed
+    rebuild) while `enabled()` says the plugin is off."""
     def loop() -> None:
         while True:
             time.sleep(every_s)
             try:
+                if enabled is not None and not enabled():
+                    continue
                 c.scan()
             except Exception:  # noqa: BLE001 — never stops
                 pass

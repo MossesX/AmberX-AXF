@@ -26,7 +26,7 @@
         "id": "app",
         "label": "App",
         "required": true,
-        "default": "amberx-droid",
+        "default": "console",
         "about": "the app to walk through"
       },
       {

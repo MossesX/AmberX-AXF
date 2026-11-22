@@ -14,9 +14,8 @@
  * This file is Basic mode: exact matches only, no AI. Deep mode (the console server, with an AI model) starts from
  * this audit and only re-judges the `keep` items it is allowed to (see server/profiles.py).
  *
- * Apply writes ONE builds store write (journalled, live to main like every store write): done → the furthest status
- * done-means-merged@1 allows (complete with a proven merge, CI and verify; landing when every step is ticked on a
- * branch with a PR, for the auto-lander to confirm; else archived), with the date + proof in a note, not-needed / duplicate → archived (never deleted), merge → open steps folded into the target, then
+ * Apply writes ONE builds store write (journalled, live to main like every store write): done → complete (date +
+ * proof in a note; only with the done-means-merged@1 proof, else skipped and reported), not-needed / duplicate → archived (never deleted), merge → open steps folded into the target, then
  * archived. Copied trackers and plans are moved into the run's archive folder. Every run keeps an undo record with the
  * builds as they were; one undo per run puts them back (a build changed since is left alone and reported). Afterwards
  * the orchestrator is re-planned (framework/cli/builds-reconcile.mjs --apply), best effort.
@@ -267,11 +266,12 @@ export function apply(run, { skip = [], by = 'console', at = now() } = {}) {
         const before = snap(b);
         const entry = { key: it.key, id: b.id, verdict: it.verdict, before };
         if (it.verdict === 'done') {
-          // done-means-merged@1: never complete without the merge, CI and verify on record
-          const to = ['complete', 'landing'].find((x) => guardStatus(b, x).ok) ?? 'archived';
-          b.status = to; if (to !== 'archived') b.builtAt = b.builtAt || at;
-          const how = to === 'complete' ? '' : to === 'landing' ? ' Every step is ticked: it goes to landing for the auto-lander to confirm the merge.' : ' No merge on record to prove it (done-means-merged), so it is archived, not complete.';
-          b.notes.push(note(`Maintenance clean-up ${date}: done already. ${it.reason}${proofText(it.proof)}.${how} Run ${run}.`, at));
+          // done-means-merged@1: complete needs the merged PR, green CI on the merge commit and a passed verify; the
+          // store would refuse anything less, so a build without that proof is left as it is and reported
+          const g = guardStatus(b, 'complete');
+          if (!g.ok) { record.skipped.push({ key: it.key, why: `not completed: ${g.why}` }); continue; }
+          b.status = 'complete'; b.builtAt = b.builtAt || at;
+          b.notes.push(note(`Maintenance clean-up ${date}: done already. ${it.reason}${proofText(it.proof)}. Run ${run}.`, at));
         } else if (it.verdict === 'merge') {
           const t = byId.get(it.into);
           if (!t || t.deleted || LOCKED.includes(t.status) || ['complete', 'archived'].includes(t.status)) { record.skipped.push({ key: it.key, why: `merge target ${it.into} not open` }); continue; }

@@ -9,7 +9,8 @@ import type { AudioExport, Hit, Job, Message, Row, SyncReport, Version } from '.
 export const FOLDER = 'chat-viewer';
 const api = pluginApi(FOLDER, 'The Chat viewer');
 const enc = encodeURIComponent;
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** Grid column widths in text units (the columns hold text; a compact spacing preset shrinks space-based tracks). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 
 /** A phone-width screen: fewer columns by default (the title shows the source icon anyway). */
 const narrow = () => typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches;
@@ -90,7 +91,7 @@ export function ChatViewer() {
     ...core.SOURCES.filter((s) => by[s.id]).map((s) => ({ value: s.id, label: `${s.short} ${by[s.id]}` }))];
 
   return (
-    <div className="fx-stack axp-chat-viewer">
+    <div className="fx-stack fx-stack--lg axp-chat-viewer">
       <header className="fx-pagehead">
         <div><p className="fx-eyebrow">Every session</p><h1>Chats</h1><p className="fx-muted axp-chat-viewer-lede">claude.ai, Claude Code and build sessions in one place: search them, read them, listen to them.</p></div>
         <div className="fx-row axp-chat-viewer-acts">
@@ -227,7 +228,7 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
   const src = core.sourceOf(s.source);
 
   return (
-    <div className="fx-stack axp-chat-viewer axp-chat-viewer-session">
+    <div className="fx-stack fx-stack--lg axp-chat-viewer axp-chat-viewer-session">
       <header className="fx-pagehead">
         <div className="axp-chat-viewer-head">
           <p className="fx-eyebrow"><IconButton icon="arrow-left" label="Back to every session" onClick={onBack} /> <SourceChip s={s.source} /> {src.label}</p>

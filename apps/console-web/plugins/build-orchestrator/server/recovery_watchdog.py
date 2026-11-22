@@ -24,9 +24,9 @@ from typing import Any
 import plugin_services
 
 HERE = Path(__file__).resolve().parent
-WATCHDOG = HERE.parent / "recovery-watchdog.mjs"
-ROOT = WATCHDOG.parents[3]
-FOLDER = WATCHDOG.parent.name
+WATCHDOG = HERE.parent / "watchdog" / "sessions.mjs"
+ROOT = WATCHDOG.parents[4]
+FOLDER = WATCHDOG.parents[1].name
 HEALTH_CAP = "axf.health@1"
 CHECK_ID = "build-watchdog"
 GAVE_UP_ID = "build-watchdog-gave-up"
@@ -68,7 +68,7 @@ def health_probe(st: dict[str, Any] | None = None) -> dict[str, Any]:
     details = [f"Last pass {s.get('lastPass') or 'never'}{age}, {s.get('passes', 0)} passes; cron {'installed' if (s.get('cron') or {}).get('installed') else 'not seen from here'}."]
     if s.get("stale"):
         return {"status": "error", "summary": f"The build watchdog hasn't run {'for ' + str(s.get('ageMin')) + ' min' if s.get('ageMin') is not None else 'yet'}: killed or failed builds stay marked running and nobody requeues them.",
-                "details": details + ["On the VPS: `node /opt/axf/apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs install-cron --dir /opt/axf`, then `… watchdog.mjs run`."]}
+                "details": details + ["On the VPS: `node /opt/axf/apps/console-web/plugins/build-orchestrator/watchdog/sessions.mjs install-cron --dir /opt/axf`, then `… watchdog.mjs run`."]}
     scan = s.get("lastScan") or {}
     stuck = [b for b in scan.get("builds", []) if b.get("stuck")]
     return {"status": "ok", "summary": f"Watchdog ran {s.get('ageMin')} min ago: {len(scan.get('builds', []))} running, {len(stuck)} stuck, {len(s.get('recent') or [])} recent fixes.", "details": details}
@@ -91,16 +91,16 @@ def _reinstall(reg: Any) -> dict[str, Any]:
         b = run_cli("run", timeout=300)
         ok = a.get("ok") and b.get("ok", True) is not False
         return {"state": "done" if ok else "failed", "message": "Cron reinstalled and one pass run." if ok else f"Failed: {a.get('error') or b.get('error') or '?'}"}
-    w = f"{HOST_DIR}/apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs"
+    w = f"{HOST_DIR}/apps/console-web/plugins/build-orchestrator/watchdog/sessions.mjs"
     cmd = f"cd {HOST_DIR} && node {w} install-cron --dir {HOST_DIR} && node {w} run"
     if getattr(reg, "vps_run", None):
         return reg.vps_run(cmd)
-    run_cli("request", actor="systems-check")  # axf-not-plugin:systems-check
+    run_cli("request", actor="systems-check")  # axf-not-plugin:systems-check (actor name)
     return {"state": "failed", "message": f"Can't reach the VPS from here (no axHub vps.run). Run on the VPS: {cmd}"}
 
 
 def _requeue() -> dict[str, Any]:
-    r = run_cli("requeue", actor="systems-check")  # axf-not-plugin:systems-check
+    r = run_cli("requeue", actor="systems-check")  # axf-not-plugin:systems-check (actor name)
     if not r.get("ok"):
         return {"state": "failed", "message": str(r.get("error") or r.get("failed") or "requeue failed")[:300]}
     return {"state": "done", "message": f"Back in the Queue: {', '.join(r.get('requeued') or []) or 'nothing to requeue'}."}
@@ -124,7 +124,7 @@ def ensure_health() -> bool:
                       "fix": {"type": "action", "label": "Reinstall the cron and run a pass"},
                       "autoFix": {"label": "Reinstall the watchdog cron and run one pass", "run": lambda: _reinstall(reg)},
                       "links": [{"label": "Watchdog", "url": "build-orchestrator.focus:watchdog"}],
-                      "instructions": ["On the VPS: `node /opt/axf/apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs status`.",
+                      "instructions": ["On the VPS: `node /opt/axf/apps/console-web/plugins/build-orchestrator/watchdog/sessions.mjs status`.",
                                        "Settings → Plugins → Build orchestrator → Watchdog: on/off, interval, retries."]}, FOLDER)
         reg.register({"id": GAVE_UP_ID, "label": "Builds the watchdog gave up on", "service": "console", "order": 58, "severity": "error", "interval": 120,
                       "run": lambda: gave_up_probe(),

@@ -75,7 +75,7 @@ const HELP_SCOPES = [
   { scope: 'axhub-web', app: 'axHub web', dirs: ['apps/axhub-web/src/assets/help'], plugins: 'apps/axhub-web/src/plugins' },
 ];
 const HELP_KIND_TO_KIND = { screen: 'screen', toggle: 'setting', slider: 'setting', field: 'setting' };
-const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio', 'molly', 'demo'];
+const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'walkthrough-studio', 'molly', 'demo'];
 
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/');

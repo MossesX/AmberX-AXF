@@ -33,7 +33,7 @@ export const LANDER: ToolbarAssetLike = {
 };
 
 /** A plugin-scoped toolbar for its main slot. */
-export const PLUGIN_MAIN: ToolbarAssetLike = { id: 'builds-main', name: 'Builds', data: data({ scope: 'plugin:ai.amberx.axf.console.builds-page', groups: [{ id: 'g', items: [{ id: 'refresh', icon: 'refresh', label: 'Refresh', action: 'builds.refresh' }] }] }) };  // axf-not-plugin:builds-page
+export const PLUGIN_MAIN: ToolbarAssetLike = { id: 'builds-main', name: 'Builds', data: data({ scope: 'plugin:ai.amberx.axf.console.builds-page', groups: [{ id: 'g', items: [{ id: 'refresh', icon: 'refresh', label: 'Refresh', action: 'builds.refresh' }] }] }) }; // axf-not-plugin:builds-page (test data)
 /** An old-shape (frame) toolbar. */
 export const FRAME: ToolbarAssetLike = { id: 'editor-classic-copy', name: 'Editor', data: data({ groups: [{ id: 'file', items: [{ id: 'new', icon: 'plus', label: 'New', action: 'file.new' }, { id: 'save', icon: 'save', label: 'Save', action: 'file.save', badge: 'drafts' }] }] }) };
 
@@ -65,7 +65,7 @@ export const TOOLBAR_FIXTURE_CASES: ToolbarResolveCase[] = [
   { name: 'lander, pause handler not wired, host takes home', asset: LANDER, page: { view: 'gate', slot: 'auto-lander' }, state: RUNNING, env: env({ handlers: [], takenByHost: (a) => a === 'nav:home' }) },
   { name: 'lander, host locks reset', asset: LANDER, page: { view: 'gate', slot: 'auto-lander' }, state: RUNNING, env: env({ lockedByHost: (a) => (a.endsWith('rules-reset') ? 'the host owns the rules' : null) }) },
   { name: 'lander, no registries: everything assumed wired', asset: LANDER, page: { view: 'gate', slot: 'auto-lander' }, state: RUNNING, env: { get: () => undefined } },
-  { name: 'plugin main toolbar', asset: PLUGIN_MAIN, page: { plugin: 'ai.amberx.axf.console.builds-page', view: 'builds' }, state: {}, env: env() },  // axf-not-plugin:builds-page
+  { name: 'plugin main toolbar', asset: PLUGIN_MAIN, page: { plugin: 'ai.amberx.axf.console.builds-page', view: 'builds' }, state: {}, env: env() }, // axf-not-plugin:builds-page (test data)
   { name: 'frame toolbar (old shape) as the app toolbar', asset: FRAME, page: {}, state: {}, env: env() },
   { name: 'frame toolbar lent to a page', asset: FRAME, page: { view: 'plan' }, state: {}, env: env() },
 ];
@@ -73,8 +73,8 @@ export const TOOLBAR_FIXTURE_CASES: ToolbarResolveCase[] = [
 const PICKS: { name: string; page: ToolbarPage; settings?: Record<string, unknown> }[] = [
   { name: 'view + slot', page: { view: 'gate', slot: 'auto-lander' } },
   { name: 'view main slot: none', page: { view: 'gate' } },
-  { name: 'plugin main', page: { plugin: 'ai.amberx.axf.console.builds-page' } },  // axf-not-plugin:builds-page
-  { name: 'plugin with its view too', page: { view: 'builds', plugin: 'ai.amberx.axf.console.builds-page' } },  // axf-not-plugin:builds-page
+  { name: 'plugin main', page: { plugin: 'ai.amberx.axf.console.builds-page' } }, // axf-not-plugin:builds-page (test data)
+  { name: 'plugin with its view too', page: { view: 'builds', plugin: 'ai.amberx.axf.console.builds-page' } }, // axf-not-plugin:builds-page (test data)
   { name: 'user pick wins', page: { view: 'gate', slot: 'auto-lander' }, settings: { 'axf.chrome.toolbar.gate.auto-lander.asset': 'editor-classic-copy' } },
   { name: 'user pick of an unknown asset falls back', page: { view: 'gate', slot: 'auto-lander' }, settings: { 'axf.chrome.toolbar.gate.auto-lander.asset': 'nope' } },
   { name: 'case-insensitive view', page: { view: 'GATE', slot: 'auto-lander' } },
@@ -108,7 +108,7 @@ export function toolbarFixtureOutputs(cases: ToolbarResolveCase[], starters: { i
     resolve: Object.fromEntries(cases.map((c) => [c.name, strip(resolvePageToolbar(c.asset, c.page, c.state, c.env))])),
     match: Object.fromEntries(ASSETS.flatMap((a) => PICKS.map((p) => [`${a.id} ← ${p.name}`, toolbarMatchesPage(a.data, p.page)]))),
     pick: Object.fromEntries(PICKS.map((p) => [p.name, { id: pageToolbarId(p.page), asset: pickPageToolbar(ASSETS, p.page, (k) => p.settings?.[k])?.id ?? null }])),
-    settingsIds: Object.fromEntries([['view:gate', undefined], ['view:gate', 'auto-lander'], ['view:gate', 'main'], ['plugin:ai.amberx.axf.console.builds-page', 'queue'], ['app', 'x'], ['view:PlanStudio2', 'tree']].map(([s, slot]) => [`${s} / ${slot ?? '-'}`, pageToolbarSettingsId(s, slot)])),  // axf-not-plugin:builds-page
+    settingsIds: Object.fromEntries([['view:gate', undefined], ['view:gate', 'auto-lander'], ['view:gate', 'main'], ['plugin:ai.amberx.axf.console.builds-page', 'queue'], ['app', 'x'], ['view:PlanStudio2', 'tree']].map(([s, slot]) => [`${s} / ${slot ?? '-'}`, pageToolbarSettingsId(s, slot)])), // axf-not-plugin:builds-page (test data)
     overflow: Object.fromEntries(OVERFLOW_RULES.map((r) => { const p = planToolbarOverflow(first.buttons, r.rule, r.fit); return [r.name, { bar: p.bar.map((b) => b.id), more: p.more.map((b) => b.id), label: p.label }]; })),
     invocations: Object.fromEntries(['file.save', 'nav:home', 'swap:layout:next', 'action:plan.focus', 'command:gate/lander-run', 'control:view:builds', 'control:view:builds/button:refresh', 'control:setting:axf.display.fontScale', 'control:button:save', 'control:view:settings/tab:settings.tabs=plugins', 'handler:gate.pause'].map((a) => [a, toolbarInvocation(parseActionRef(a), { build: 'b1' })])),
     find: { byId: findToolbarButton(first, 'retry')?.key ?? null, byKey: findToolbarButton(first, 'rules/reset')?.key ?? null, caseInsensitive: findToolbarButton(first, 'RETRY')?.key ?? null, missing: findToolbarButton(first, 'nope') },

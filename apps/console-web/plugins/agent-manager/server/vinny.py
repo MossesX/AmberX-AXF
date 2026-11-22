@@ -364,6 +364,13 @@ def ready() -> tuple[bool, str]:
 
 def hub_call(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600, reason: str = "Vinny command") -> dict[str, Any]:
     """One axHub call through Vinny's axhub_call: {"ok": text} | {"confirm": id}; hubtools.HubError otherwise."""
+    # Phone Connect (axf.phone@1): the AmberX phone tools a paired, online phone answers itself; same names, same answer shape
+    phone = plugin_services.get("axf.phone@1")
+    local = phone.hub_tool(tool, arguments) if phone is not None and hasattr(phone, "hub_tool") else None
+    if local is not None:
+        if local.get("ok"):
+            return {"ok": str(local.get("output", ""))}
+        raise hubtools.HubError(str(local.get("output") or "the phone refused it")[:400])
     ok, why = ready()
     if not ok:
         raise hubtools.HubError(why)

@@ -73,7 +73,6 @@ eq(plan({ op: 'set', target: 'plugins.commands', path: 'x/y', value: 1 }).code, 
 /* ---- off, other apps */
 const enabled = { 'fixture-plans': false };
 eq(plan(act('fixture-plans/state'), { enabled, reg: registry({ enabled }) }).code, 'not_implemented', 'a turned-off plugin\'s commands answer that it is off');
-eq(plan(act('amberx-droid:fixture-notes/action-notes-new')).code, 'not_implemented', 'another app\'s command is listed, run there');
 
 /* ---- finish */
 r = finish(act('fixture-todos/entries-run', {}, { by: 'claude' }), { status: 201, result: { entry: { id: 1 } } });
@@ -86,7 +85,7 @@ eq(finish(act('fixture-todos/entries-run'), { ok: false, code: 'not_implemented'
 /* ---- CLI */
 const cli = (...args) => spawnSync(process.execPath, [join(HERE, 'commands.mjs'), ...args], { encoding: 'utf8', env: { ...process.env, AXF_CONSOLE_URL: 'http://127.0.0.1:9' } });
 let c = cli('plugins');
-ok(c.status === 0 && c.stdout.includes('fixture-plans') && c.stdout.includes('amberx-droid:fixture-notes'), 'axf plugins');
+ok(c.status === 0 && c.stdout.includes('fixture-plans'), 'axf plugins');
 c = cli('fixture-plans');
 ok(c.stdout.includes('Reads:') && c.stdout.includes('Not commands:') && c.stdout.includes('server-sent events'), 'axf <plugin> = its help');
 c = cli('fixture-plans', 'info', '--json');

@@ -36,6 +36,7 @@
 import { CLAIM_TTL_MS, claimLive, DEFAULT_MAX_RUNS, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, outcomeOf, queueOrder, readySteps, releaseStep, STATUS_AFTER, stepFiles } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
+import { stepKey } from '../../../../framework/plan/builds-store-core.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -43,6 +44,8 @@ export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
   /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
   parallelPerAccount: 1,
+  /** Pipeline 2.0: steps of one build that run at once (each in its own worktree), under the VPS-wide slot cap. */
+  stepsInParallel: 4,
   /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). An account's override or probe beats the plan. */
   fablePlans: ['max'],
   /** Use the console's own (interactive) account when no account is marked as a worker. */
@@ -63,8 +66,10 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
+  briefMaxBytes: 120 * 1024,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+const LIMITS = { parallelPerAccount: [1, 12], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -77,6 +82,7 @@ export function normSettings(raw = {}) {
   return {
     $axf: SCHEMA,
     parallelPerAccount: o.parallelPerAccount === undefined ? DEFAULTS.parallelPerAccount : clamp('parallelPerAccount', o.parallelPerAccount),
+    stepsInParallel: o.stepsInParallel === undefined ? DEFAULTS.stepsInParallel : clamp('stepsInParallel', o.stepsInParallel),
     fablePlans: list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean).length ? list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean) : [...DEFAULTS.fablePlans],
     useConsoleAccount: o.useConsoleAccount !== false,
     maxRuns: o.maxRuns === undefined ? DEFAULTS.maxRuns : clamp('maxRuns', o.maxRuns),
@@ -86,6 +92,7 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    briefMaxBytes: o.briefMaxBytes === undefined ? DEFAULTS.briefMaxBytes : clamp('briefMaxBytes', o.briefMaxBytes),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -268,6 +275,23 @@ export function authFailureOf(text, { lines = 25 } = {}) {
  * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
  * when there is no log.
  */
+/**
+ * launch-retry: did this run die at launch? A non-zero end whose log shows E2BIG / "Argument list too long" / a launcher
+ * error, or a run that never wrote any stream output (it died before its first heartbeat). `tail` = the run log's end,
+ * `streamBytes` = the size of its stream file (-1 = unknown). Returns { why } or null. A clean end is never a launch crash.
+ */
+const LAUNCH_ERR = /argument list too long|\bE2BIG\b|claude-headless: .*(?:error|failed|missing|not found)|claude: (?:command )?not found|exec format error|cannot execute|no such file or directory.*claude/i;
+export function launchCrashOf({ exit = null, kind = '', tail = '', streamBytes = -1 } = {}) {
+  if (kind === 'phase-done' || kind === 'stopped' || exit === 0) return null;
+  const lines = str(tail, 400000).split('\n').map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean);
+  const hit = [...lines].reverse().find((l) => LAUNCH_ERR.test(l));
+  if (hit) return { why: str(hit, 300) };
+  if (streamBytes === 0) return { why: 'the session exited before its first output' };
+  return null;
+}
+/** Minutes to wait before launch retry n (1-based): 1, 4, 16 … capped at an hour. */
+export const launchBackoffMin = (n) => Math.min(60, 4 ** Math.max(0, n - 1));
+
 export function lastReasonOf(text, { lines = 40 } = {}) {
   const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
     .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
@@ -358,6 +382,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
+    { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
@@ -654,6 +679,36 @@ export function rulesSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   return steps;
 }
 
+/**
+ * Pipeline 2.0 (pipeline-2@1): the one-shot prompt for Fable to design the build steps of a build Plan Studio sent as one
+ * plan (title, body, planning steps; no build steps). Steps run at the same time, each in its own worktree cut from
+ * main, so they never share files. The answer is JSON only and must pass pipeline-status normDesign.
+ */
+export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = STEP_MINUTES } = {}) {
+  const planning = list(b.planning);
+  const said = str(b.origin?.said, 6000).trim();
+  return [
+    'You are the AmberX AXF build orchestrator\'s splitting stage. Design the build steps for the plan below.',
+    `The plan's steps are planning notes from Plan Studio, not build steps: use them as context, merge, cut or reorder them as the work needs.`,
+    `Each build step is a separate headless Claude Code session in its own git worktree cut from main; up to ${Math.max(1, Number(slots) || 1)} run at the same time and their branches land as one PR. So steps must not depend on each other's unmerged work and must not touch the same files.`,
+    `Rules: every step ${maxStepMinutes} minutes or less, estimated in whole minutes; 1 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; the last step covers tests and the report (_claude/builds/reports/<build id>.md).`,
+    `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
+    // a split asked to "name the files" reached for tools to look at the repo and never answered (Nov 20 2026)
+    'You have no tools and cannot read the repository: design from the plan below alone, in this one reply. Name files or folders from the plan and the AXF layout (apps/console-web/plugins/<plugin>/, apps/console-web/server/, framework/…) as best you can; each step\'s session explores the code itself.',
+    'Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","minutes":<n>,"files":["…"]}]}',
+    '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.detail ? `Body:\n${str(b.detail, 8000)}` : '',
+    planning.length ? `Planning steps:\n${planning.map((s, i) => `${i + 1}. ${str(s.text, 2000)}${s.model || s.minutes ? ` (noted: ${[s.model, s.minutes ? `${s.minutes} min` : ''].filter(Boolean).join(', ')})` : ''}${list(s.files).length ? ` [files: ${list(s.files).join(', ')}]` : ''}`).join('\n')}` : '',
+    said ? `Brett said (verbatim):\n${said}` : '',
+  ].filter(Boolean).join('\n');
+}
+
+/** The JSON object in a splitter's answer (alone or inside other text), or null. */
+export function answerJson(text) {
+  const s = str(text, 200000); const start = s.indexOf('{'); const end = s.lastIndexOf('}');
+  if (start < 0 || end <= start) return null;
+  try { return JSON.parse(s.slice(start, end + 1)); } catch { return null; }
+}
+
 /** Does this build still need the orchestrator's split? (no steps, or steps over the limit / without estimates) */
 export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   if (!b || ['built', 'complete', 'archived', 'failed'].includes(b.status) || b.deleted) return false;
@@ -744,6 +799,28 @@ const STRATEGY_TEXT = Object.freeze({
   'switch-account': 'The earlier attempts ran on another account and failed; the account may have been the problem, the code may not. Check the branch state first, then continue.',
 });
 const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
+
+/**
+ * land-clash bounce (Nov 17 2026, Brett: "Nothing should be sitting there."): a build with every step done whose branch
+ * clashes with main gets one step to merge main in and resolve the conflicts, and goes back to the Queue so the
+ * dispatcher runs it. `clash` = { files, head } from either lander (land.json reason.files, landing-line fixRequest).
+ * The head is in the text, so a second report on the same head is the same step (never added twice) and a clash on a
+ * new head is a new step. Returns the step to append, or null (not all done, or this clash already has its step).
+ */
+export function clashBounceStep(b, { files = [], head = '' } = {}) {
+  if (!b || !allDone(b)) return null;
+  const fs = list(files).map((f) => str(f, 200).trim()).filter(Boolean).slice(0, 8);
+  const h = str(head, 64).slice(0, 7);
+  const branch = str(b.branch, 200) || `claude/${b.id}`;
+  const text = `Merge main into ${branch} and resolve conflicts in ${fs.length ? fs.join(', ') : 'the conflicting files'}${h ? ` (clash at ${h})` : ''}; keep both sides' intent, run the checks, push.`;
+  if (list(b.steps).some((x) => stepKey(x?.text) === stepKey(text))) return null;
+  return { text, model: 'Opus', estimate: '10 min', why: 'land-clash bounce', files: fs };
+}
+/** Is the auto-lander's fix agent live on this exact head (handed within attemptTimeoutMin)? Then the bounce waits for it. */
+export function landerAgentLive(land, { now = Date.now(), attemptTimeoutMin = 45 } = {}) {
+  const a = land?.agent;
+  return !!(a && a.exit === 0 && a.head && a.head === land.head && a.kind === land.reason?.kind && minsSince(a.at, now) < attemptTimeoutMin);
+}
 
 /**
  * Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the
@@ -853,8 +930,12 @@ function alertBody(kind, d, base) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     // done-means-merged@1: the ladder ran out. One push per escalation (key per build + escalation time), with every try
-    case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build stuck, needs you: ${str(d.title, 120)}`,
+    case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build failed, every option used up: ${str(d.title, 120)}`,
       body: str([d.why, list(d.tried).length ? `Tried: ${list(d.tried).join(', ')}.` : '', d.since ? `Failing since ${d.since}.` : '', 'Retry from the systems check banner or the build\'s Attempts tab.'].filter(Boolean).join('\n'), 1500) };
+    // vps-never-gives-up: an FYI on every attempt the ladder starts (what broke, what is tried now, what is left)
+    case 'attempt': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:attempt:${d.id}:${d.n ?? ''}`, severity: 'info',
+      title: `FYI attempt ${d.n ?? '?'}: ${str(d.title, 120)}`,
+      body: str([`${d.kindWord || d.kind || 'A failure'}${d.step ? ` on ${d.step}` : ''}${d.why ? `: ${d.why}` : ''}.`, `Now trying: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''} on ${d.account || '?'} (${d.model || '?'}).`, list(d.left).length ? `Left after this: ${list(d.left).join(', ')}.` : 'This is the last option before it is marked Failed.', 'Nothing to do: it keeps going by itself.'].join('\n'), 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
@@ -862,6 +943,8 @@ function alertBody(kind, d, base) {
     case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
       body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
         d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-crash': return { ...base, key: `pipeline:launch-crash:${d.id}`, severity: 'error', title: `Keeps crashing at launch: ${str(d.title || d.id, 120)}`,
+      body: str(`${d.id} died at launch ${d.count} times in a row and stopped retrying by itself. Last error: ${d.why || 'none printed'}. Fix the launcher error, then Retry (Build orchestrator → the build → Attempts, \`orchestrator.mjs retry ${d.id}\`, or pipeline.mjs requeue-launch ${d.id}).`, 1500) };
     case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
@@ -870,4 +953,18 @@ function alertBody(kind, d, base) {
     case 'step-conflict': return { ...base, key: `pipeline:step-conflict:${d.id}:${d.step}`, severity: 'warning', title: `Step ${str(d.step, 40)} of ${str(d.id, 120)} could not merge back`, body: str(d.note, 1500), meta: { ...base.meta, step: str(d.step, 40) } };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
+}
+
+// ------------------------------------------------------------------ never gives up (vps-never-gives-up-fix-land-every-build)
+
+/**
+ * The policy the VPS walks the ladder with. With `untilExhausted` on (the default; the done-means-merged rule's setting
+ * turns it off) the per-kind and per-build attempt caps are lifted to the contract's ceilings (retry-ladder@1
+ * MAX_ATTEMPTS_RANGE / MAX_TOTAL_RANGE), so a build is only given up on once every rung of its ladder was tried (merge
+ * main, fix the clash, fix red CI, regenerate, redo the step, a fresh session, another model, every other account). The
+ * ceilings stay as the one safety stop. Pure: (policy from normPolicy, raw rule settings) → policy.
+ */
+export function exhaustPolicy(policy, settings = {}, { maxAttempts = 10, maxTotal = 30 } = {}) {
+  if (settings && settings.untilExhausted === false) return policy;
+  return { ...policy, maxAttempts: Math.max(policy.maxAttempts, maxAttempts), maxTotal: Math.max(policy.maxTotal, maxTotal), untilExhausted: true };
 }

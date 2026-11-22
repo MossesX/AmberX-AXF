@@ -1,6 +1,6 @@
 /**
- * Plan Studio 2.0 console plugin (ai.amberx.axf.console.plan-studio-2): a brand-new planning tree beside the original
- * Plan Studio, which is left as it is. Starts empty, nothing synced in. Every row has the full context menu (target
+ * Plan Studio 2.0 console plugin (ai.amberx.axf.console.plan-studio-2): the planning tree, the console's one Plan
+ * Studio. Starts empty, nothing synced in. Every row has the full context menu (target
  * `axp-plan-studio-2-item`); every menu item is an action, so it also runs from REST, MCP, the CLI and voice. Deep link:
  * `plan-studio-2.focus:<id or words>` (console_show / console_open plan-studio-2 with input.focus).
  */
@@ -110,8 +110,8 @@ export const plugin: AxfWebLibrary = {
     [DIALOGS.link]: { title: 'Link to', icon: 'external', searchable: false, render: (props, close) => <LinkDialog props={props} close={close} /> },
     [DIALOGS.build]: { title: 'Send to the build orchestrator', icon: 'rocket', searchable: false, render: (props, close) => <BuildDialog props={props} close={close} /> },
   },
-  views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline', 'roadmap', 'plan studio 2'], render: () => <PlanStudio2Page /> } },
-  nav: { label: 'Builds', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
+  views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan studio', 'plan studio 2', 'plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline'], render: () => <PlanStudio2Page /> } },
+  nav: { label: 'Plan', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
   settingsTabs: [{ id: FOLDER, label: 'Plan Studio 2.0', icon: 'branch', parent: 'plugins', order: 43, description: 'The planning tree, its voice and defaults.' }],
   settings: [{
     id: 'plan-studio-2.prefs', label: 'Plan Studio 2.0', icon: 'branch', tab: FOLDER, order: 10,

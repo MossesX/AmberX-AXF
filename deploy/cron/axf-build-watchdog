@@ -1,0 +1,6 @@
+# Build watchdog (build-watchdogs@1): one cron for every watch of the Build orchestrator's watchdog.mjs: build sessions
+# that are stuck or were killed, builds standing in one status too long, rows left on a list after their PR merged.
+# Installed to /etc/cron.d/axf-build-watchdog by the Build orchestrator's install.mjs (watchdog/cron.mjs install) and by
+# deploy/install-console.sh; removed by its uninstall.mjs. Every minute; each watch runs only when it is on and due
+# (its own interval). flock -n: a pass still going makes the next one skip. __DIR__ is the console checkout (/opt/axf).
+* * * * * root W=__DIR__/apps/console-web/plugins/build-orchestrator/watchdog.mjs; [ -f $W ] && cd __DIR__ && flock -n /run/axf-build-watchdog.lock timeout 600 node $W cron >> /var/log/axf-build-watchdog.log 2>&1

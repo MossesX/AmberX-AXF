@@ -8,9 +8,8 @@
       sessions/<id>.json   live-session@1 event logs (sessions.py)
       providers.json       optional: extra provider kinds (ai-providers@1 shape) merged over the framework registry
 
-Formats are unchanged from the Opus build (ai-assistant-config@1, ai-conversation@1), so nothing migrates today; the
-`migrate()` runner below is where a later format change goes (it stamps `schema` in config.json and runs the steps
-once, in order).
+Formats are those of the Opus build (ai-assistant-config@1, ai-conversation@1). `migrate()` below stamps `schema` in
+config.json and runs each step once, in order: 1 → 2 adds the console-navigation words to a saved chat-mode list.
 """
 from __future__ import annotations
 
@@ -37,7 +36,7 @@ _lock = threading.RLock()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,47}$")
 CONV_ID_RE = re.compile(r"^[a-z0-9-]{4,64}$")
 MASK = "••••••••"
-SCHEMA = 1  # data-folder schema version; bump with a migration step
+SCHEMA = 2  # data-folder schema version; bump with a migration step
 
 PERSONAS: dict[str, str] = {
     "professional": "Be precise, well structured and professional. Prefer short paragraphs and lists; use code blocks for code, commands and paths.",
@@ -59,7 +58,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "fallback": [],
     "params": {"temperature": 0.7, "max_tokens": 4096, "top_p": None, "thinking": False, "thinking_budget": 4096, "reasoning_effort": ""},
     "contextMessages": 40,
-    "tools": {"repo": True, "utility": True, "web": False},
+    "tools": {"repo": True, "utility": True, "web": False, "console": True},
     "maxToolRounds": 12,
     "autoTitle": True,
     "showUsage": True,
@@ -109,7 +108,18 @@ def new_id(prefix: str = "") -> str:
 # ---------------------------------------------------------------- migrations (format changes land here)
 
 # (from_schema, step): each step takes the raw config dict and the data folder and returns the new config dict.
-MIGRATIONS: list[tuple[int, Callable[[dict[str, Any], Path], dict[str, Any]]]] = []
+def _console_words(raw: dict[str, Any], _data: Path) -> dict[str, Any]:
+    """1 → 2 (Nov 20 2026, the console tools): a saved chat-mode word list gains the words that ask to move the console
+    ("go to", "go back", …), once; a word removed afterwards stays removed."""
+    cm = raw.get("chatMode")
+    if isinstance(cm, dict) and isinstance(cm.get("actionWords"), list):
+        have = {str(w).strip().lower() for w in cm["actionWords"]}
+        cm["actionWords"] = [*cm["actionWords"], *(w for w in CONSOLE_ACTION_WORDS if w not in have)]
+    return raw
+
+
+CONSOLE_ACTION_WORDS = ("take me", "go to", "go back", "go home", "navigate", "where am i")
+MIGRATIONS: list[tuple[int, Callable[[dict[str, Any], Path], dict[str, Any]]]] = [(1, _console_words)]
 _migrated = False
 
 

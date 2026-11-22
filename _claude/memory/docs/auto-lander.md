@@ -54,6 +54,6 @@ sudo bash /opt/axf/deploy/install-console.sh          # installs the timer (axf_
 systemctl status axf-auto-lander.timer; journalctl -u axf-auto-lander -n 50
 node deploy/auto-lander/auto-lander.mjs status        # or tick --dry-run
 node --test deploy/auto-lander/test/                  # unit + the whole loop with fakes
-python3 apps/console-web/plugins/gate/test_auto_lander.py <!-- axf-plugin:gate -->
+python3 apps/console-web/plugins/gate/test_auto_lander.py  # axf-plugin:gate
 ```
 Spec: `framework/spec/AUTO-LANDER.md`. Report: `_claude/builds/reports/server-auto-lander-fixes-lands.md`.

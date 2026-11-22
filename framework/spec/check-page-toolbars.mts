@@ -139,7 +139,7 @@ export async function checkToolbarAsset(file: string): Promise<ToolbarCheck> {
 
 export function pluginToolbarAssets(): string[] {
   const out: string[] = [];
-  for (const app of ['apps/console-web/plugins', 'apps/molly/plugins', 'apps/amberx-droid/src/plugins', 'apps/axhub-web/src/plugins']) {
+  for (const app of ['apps/console-web/plugins', 'apps/molly/plugins', 'apps/axhub-web/src/plugins']) {
     const base = join(ROOT, app);
     if (!existsSync(base)) continue;
     for (const p of readdirSync(base)) {

@@ -14,7 +14,7 @@
  *  - the hub list is read with the page's own hub session (`GET /data/<project>` lists the files).
  */
 
-/** The hub every AmberX build talks to (lib-hubstore's default; the native side's HubRules.HUB). */
+/** The hub every AXF app talks to (lib-hubstore's default). */
 export const DEFAULT_HUB = 'https://axhub.amberxai.com';
 /** A hub project / path segment name (lib-hubstore's rule; no imports here so test.mts runs under plain Node). */
 const SEGMENT = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
@@ -550,7 +550,7 @@ export function formatTime(ms: number): string {
   return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
 }
 
-/** Voice phrases for AmberX's voice plugin (same seam as Audio Extract). */
+/** Voice phrases for a host voice registry (`amberxVoice` global), when one is there. */
 export const VOICE = {
   start: ['record audio out', 'start recording phone audio', 'record what the phone plays'],
   stop: ['stop recording audio out', 'stop recording phone audio'],

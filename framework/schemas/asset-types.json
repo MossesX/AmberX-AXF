@@ -475,7 +475,8 @@
       },
       "hideable": true,
       "optional_fields": {
-        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true",
+        "search": "boolean | string \u2014 a Search anywhere box pinned at the bottom of every menu of this asset (a string is its placeholder); typing replaces the list with search results"
       }
     },
     "tab-group": {
@@ -1254,7 +1255,7 @@
       "label": "Settings interface",
       "group": "System",
       "icon": "settings",
-      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts. builtFor (required, settings-iface@1, core/engines/settings-iface-rules.mjs): who the interface is built for: app (the Settings page), asset:<type>, plugin:<name> or chrome:<type>; every asset type and plugin has a locked default-<name> and its picker lists only interfaces built for it.",
       "optional_fields": {
         "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
         "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
@@ -1268,7 +1269,8 @@
         "layout",
         "header",
         "search",
-        "descriptions"
+        "descriptions",
+        "builtFor"
       ],
       "enums": {
         "layout": [
@@ -1871,7 +1873,7 @@
       "optional_fields": {
         "about": "the glossary entry id it demonstrates (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)",
         "entries": "glossary entry ids it covers (the about entry is always one)",
-        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "app": "the app it runs in (console, axhub-web); default console",
         "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5\u20132 }",
         "chain": "demonstration ids played after this one (a tour)",
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
@@ -2052,7 +2054,8 @@
       "order": "number \u2014 placement among siblings (default 100)",
       "before": "string \u2014 sibling id to go before",
       "after": "string \u2014 sibling id to go after",
-      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule"
+      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule",
+      "place": "string \u2014 context menus only: toolbar puts a top-level item in the icon strip above the list (cut / copy / paste and similar), not in the list"
     },
     "checkedKinds": [
       "setting",

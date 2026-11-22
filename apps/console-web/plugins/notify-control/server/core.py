@@ -18,7 +18,7 @@ PRIORITIES = ["low", "normal", "high", "urgent"]
 ENFORCED = {
     "gate": "Checked by the console's alert hub",  # notify@1 enforcement value, axf-not-plugin:gate
     "browser": "Checked in the open console",
-    "device": "Checked by the AmberX app",
+    "device": "Checked on the phone",
     "required": "Android needs it, it can't be switched off",
     "feed": "Nothing to switch here",
     "elsewhere": "Switched where it lives",

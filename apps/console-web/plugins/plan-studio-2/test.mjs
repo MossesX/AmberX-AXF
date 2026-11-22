@@ -1,7 +1,7 @@
 // Self-test: node apps/console-web/plugins/plan-studio-2/test.mjs
 // plan-tree@1 core (nesting to any depth, moves at any level, cycles refused, duplicate, delete + undo in place, links,
 // collapse, Markdown / JSON export + import, build hand-off, the voice parser), the CLI + store on a scratch folder
-// (the repo, the hub and the original Plan Studio are never read or written), the manifest and the plugin's web part.
+// (the repo and the hub are never read or written), plans@1 over the tree (plans.mjs), the manifest and the plugin's web part.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
@@ -15,25 +15,35 @@ const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.
 const here = new URL('.', import.meta.url).pathname;
 
 // ---------------------------------------------------------------- manifest + files
-await t('plugin@1 manifest, lifecycle, commands, web part, never the old Plan Studio', () => {
+await t('plugin@1 manifest, lifecycle, commands, web part, plans@1', () => {
   const m = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
   assert.equal(m.id, 'ai.amberx.axf.console.plan-studio-2');
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/plan-studio-2');
-  assert.deepEqual(m.targets, ['axf-console', 'amberx-droid']);
+  assert.deepEqual(m.targets, ['axf-console']);
   assert.equal(m.builtWith.model, 'fable');
-  assert.ok(m.provides.includes('service:plan-tree@1') && m.provides.includes('view:plan-studio-2'));
+  assert.ok(m.provides.includes('service:plan-tree@1') && m.provides.includes('service:plans@1') && m.provides.includes('view:plan-studio-2'));
   assert.equal(m.commands.$axf, 'plugin-commands@1');
-  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'tree.mjs', 'help.json', 'server/__init__.py', 'web/index.tsx', 'web/ui.tsx', 'web/api.ts', 'web/menu.ts', 'web/voice.ts', 'web/tree-core.mjs', 'web/tree-core.d.mts', 'web/plan-studio-2.css']) assert.ok(existsSync(join(here, f)), f);
+  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'tree.mjs', 'plans.mjs', 'help.json', 'server/__init__.py', 'web/index.tsx', 'web/ui.tsx', 'web/api.ts', 'web/menu.ts', 'web/voice.ts', 'web/tree-core.mjs', 'web/tree-core.d.mts', 'web/plan-studio-2.css']) assert.ok(existsSync(join(here, f)), f);
   const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
   assert.match(web, /parent: 'plugins'/); assert.match(web, /PluginLifecyclePanel/); assert.match(web, /plan-studio-2\.focus/);
   for (const a of ['new-inside', 'rename', 'duplicate', 'move', 'link', 'export', 'build', 'delete', 'undo']) assert.match(web, new RegExp(`plan-studio-2\\.${a}`), `context menu action ${a}`);
   assert.match(readFileSync(join(here, 'web/menu.ts'), 'utf8'), /nav:plan-studio-2/);
-  // separate from the original Plan Studio: no file here reads its folder, its store or its plan@1 files
-  for (const f of ['tree.mjs', 'hooks.mjs', ...readdirSync(join(here, 'web')).map((x) => `web/${x}`), 'server/__init__.py']) {
+  // the original Plan Studio is gone: no file here reads its folder, its store or its plan@1 files
+  for (const f of ['tree.mjs', 'plans.mjs', 'hooks.mjs', ...readdirSync(join(here, 'web')).map((x) => `web/${x}`), 'server/__init__.py']) {
     const src = readFileSync(join(here, f), 'utf8');
-    assert.doesNotMatch(src, /plugins\/plan-studio\//, `${f} names the old Plan Studio folder`);
-    assert.doesNotMatch(src, /plan-core\.mjs|plans\.mjs|plan@1/, `${f} reads the old plan files`);
+    assert.doesNotMatch(src, /plugins\/plan-studio\//, `${f} names the removed Plan Studio folder`);
+    assert.doesNotMatch(src, /plan-core\.mjs|plan@1/, `${f} reads the removed plan files`);
   }
+});
+
+await t('Send to emergency: a Brett-only route, never a registered action or a console-control target', () => {
+  const srv = readFileSync(join(here, 'server/__init__.py'), 'utf8');
+  assert.match(srv, /@router\.post\("\/emergency"\)[\s\S]{0,700}who = brett_click\(request\)\s+if not who:\s+raise HTTPException\(403/, 'POST /emergency refuses everyone but Brett\'s signed-in click');
+  assert.match(srv, /body\.pop\("emergency", None\)/, 'POST /build drops an emergency flag from the body');
+  // the button's words sit in a <span>: only buttons with plain-text words become console-control targets (remote presses)
+  assert.match(readFileSync(join(here, 'web/ui.tsx'), 'utf8'), /onClick=\{sendEmergency\}><span>\{armed \? 'Confirm: send to emergency' : 'Send to emergency'\}<\/span><\/Button>/);
+  assert.doesNotMatch(readFileSync(join(here, 'web/index.tsx'), 'utf8'), /emergency/i, 'no action, menu entry or deep link sends to emergency');
+  assert.match(readFileSync(join(here, 'tree.mjs'), 'utf8'), /if \(emergency && !preview\) \{ const o = ownerFrom\(env\); if \(!o\.ok\) throw new tc\.TreeError\('forbidden'/, 'the CLI checks who asks before it writes anything');
 });
 
 // ---------------------------------------------------------------- core
@@ -166,7 +176,7 @@ await t('normalize: unknown parents become roots, cycles are broken, orders cont
   assert.deepEqual(tc.roots(nz).map((i) => i.order), tc.roots(nz).map((_, k) => k));
 });
 
-await t('toBuild: open steps at any depth become the build steps; notes under it become the detail', () => {
+await t('toBuild: open steps at any depth become the planning steps; notes under it become the detail', () => {
   const b = tc.toBuild(s, 'Launch', { said: 'ship it' });
   assert.equal(b.action, 'add'); assert.equal(b.title, 'Launch'); assert.equal(b.source, 'plan-studio-2');
   assert.ok(b.steps.every((x) => x.text !== 'Write the copy'), 'done steps are left out');
@@ -200,7 +210,7 @@ await t('voice: every spoken form parses to one command', () => {
 
 // ---------------------------------------------------------------- CLI + store on a scratch folder
 const dir = mkdtempSync(join(tmpdir(), 'ps2-'));
-const env = { ...process.env, AXF_PLAN_TREE_DIR: dir, AXF_ORCH_FILE: join(dir, 'orch.json') };
+const env = { ...process.env, AXF_PLAN_TREE_DIR: dir, AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0' };
 const cli = (...a) => execFileSync('node', [join(here, 'tree.mjs'), ...a], { env, encoding: 'utf8' }).trim();
 const cliJson = (...a) => JSON.parse(cli(...a, '--json'));
 const cliFails = (...a) => { try { cli(...a); throw new Error('expected a refusal'); } catch (e) { if (!e.stdout) throw e; return JSON.parse(String(e.stdout).trim().split('\n').pop()); } };
@@ -208,18 +218,31 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.equal(cli('where'), dir);
   assert.match(cli('tree'), /empty/);
   cli('add', 'plan', 'Launch', '--priority', 'P1');
+  cli('add', 'plan', 'Empty');
+  const bad = cliFails('validate', 'Empty', '--json'); assert.equal(bad.ok, false); assert.ok(bad.errors.some((e) => /nothing to build/.test(e.why)), 'plan-build@1: a plan with no steps and no body is refused');
+  assert.throws(() => cli('build', 'Empty'), /does not pass plan-build@1/);
+  cli('delete', 'Empty');
   cli('add', 'step', 'Deploy', '--in', 'Launch', '--model', 'Opus', '--minutes', '30');
+  cli('add', 'step', 'Long and unestimated', '--in', 'Launch');
+  const good = cliJson('validate', 'Launch'); assert.equal(good.ok, true, `planning steps need no minutes or model: ${JSON.stringify(good.errors)}`);
+  assert.deepEqual(good.plan.steps.map((x) => [x.model ?? '', x.minutes ?? 0]), [['Opus', 30], ['', 0]], 'hints go along only when set');
+  cli('delete', 'Long and unestimated');
   assert.equal(cliJson('say', 'add a step Test it to Launch').understood, true);
   assert.equal(cliJson('say', 'mark Test it done').item.done, true);
   assert.match(cli('find', 'deploy'), /plan-studio-2\.focus:/);
   const st = JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8'));
   assert.equal(st.$axf, 'plan-tree@1'); assert.equal(st.items.length, 3);
-  const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1);
-  const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.steps, 1);
-  const orch = JSON.parse(readFileSync(join(dir, 'orch.json'), 'utf8'));
-  assert.equal(orch.builds[0].source, 'plan-studio-2'); assert.equal(orch.builds[0].steps[0].model, 'opus'); assert.equal(orch.builds[0].origin.said[0].text, 'ship it');
+  const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1); assert.equal(pv.planning, 1);
+  const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.planning, 1);
+  const orch = JSON.parse(readFileSync(join(dir, 'store.json'), 'utf8'));
+  const sent = orch.builds.find((x) => x.id === 'launch');
+  assert.equal(sent.source, 'plan-studio-2'); assert.equal(sent.origin.said, 'ship it');
+  assert.equal(sent.flow, 'pipeline-2'); assert.equal(sent.status, 'pending'); assert.ok(sent.statusAt && sent.statusBy, 'pipeline-2@1: at / by recorded');
+  assert.equal(sent.steps.length, 0, 'one build, no build steps: the splitting stage designs them');
+  assert.deepEqual(sent.planning, [{ text: 'Deploy', model: 'Opus', minutes: 30 }], 'the plan steps are kept as planning context');
   assert.ok(cliJson('show', 'Launch').item.links.some((l) => l.type === 'build' && l.ref.endsWith(':launch')));
-  assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already in/);
+  assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already a build/);
+  assert.throws(() => cli('build', 'Launch', '--id', 'launch-again'), /already sent as launch/, 'no second build while the first is pending or active');
   const del = cliJson('delete', 'Deploy'); assert.equal(del.removed, 1);
   assert.match(cli('trash'), /Deploy/);
   assert.equal(cliJson('undo').item.title, 'Deploy');
@@ -232,6 +255,30 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   cli('clear', '--yes');
   assert.match(cli('tree'), /empty/);
   assert.deepEqual(JSON.parse(cli('api', JSON.stringify({ op: 'say', text: 'what is the weather' }))).understood, false);
+  assert.ok(!existsSync(join(dir, 'plans')), 'no plan@1 files are ever made');
+});
+
+// ---------------------------------------------------------------- plans@1 over the tree (control@1 planner.plans, the orchestrator, the seed CLI)
+await t('plans@1: add parked, list, get, set, steps, comment, build hand-off, export, delete + undo', async () => {
+  Object.assign(process.env, env);
+  const ps = await import('./plans.mjs');
+  assert.deepEqual(ps.loadPlans(), []);
+  assert.throws(() => ps.savePlan({ summary: 'no title' }), /needs a title/);
+  const a = ps.savePlan({ title: 'Later idea', summary: 'Do it later', status: 'parked', tags: ['x'], steps: [{ text: 'First' }, { text: 'Second', model: 'Opus' }] }, { by: 'test' });
+  assert.ok(a.ok && a.created && a.plan.status === 'parked' && a.plan.summary === 'Do it later' && a.plan.steps.length === 2 && a.plan.focus === `plan-studio-2.focus:${a.plan.id}`);
+  assert.equal(ps.getPlan(a.plan.id).title, 'Later idea'); assert.equal(ps.getPlan('nope'), null); assert.equal(ps.getPlan(a.plan.steps[0].id), null, 'a step is not a plan');
+  assert.equal(ps.savePlan({ ...a.plan }, {}).unchanged, true, 'saving it as read changes nothing');
+  const b = ps.savePlan({ ...a.plan, status: 'building', steps: a.plan.steps.map((x, i) => ({ ...x, done: i === 0 })) });
+  assert.ok(!b.created && b.plan.status === 'building' && b.plan.steps[0].done && !b.plan.steps[1].done && b.plan.steps.length === 2, 'building is kept as active; steps are updated by id, never doubled');
+  assert.equal(tc.byId(JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8')), a.plan.id).status, 'active');
+  const c = ps.savePlan({ ...b.plan, comments: [{ text: 'Looks right', by: 'Brett' }] });
+  assert.equal(cliJson('show', a.plan.id).children.length, 3, 'a comment is a note inside the plan'); assert.equal(c.plan.steps.length, 2);
+  assert.match(ps.exportPlans([a.plan.id], 'md'), /^# Later idea/); assert.equal(JSON.parse(ps.exportPlans([], 'json')).length, 1);
+  const sent = ps.turnIntoBuild(a.plan.id, { buildId: 'later-idea', by: 'test' });
+  assert.ok(sent.build.id === 'later-idea' && sent.plan.build.id === 'later-idea', 'the plan carries its build');
+  assert.throws(() => ps.restore(a.plan.id, 1), /no versions/); assert.deepEqual(ps.history(a.plan.id).versions, []);
+  assert.equal(ps.deletePlan(a.plan.id).removed, 4); assert.equal(ps.loadPlans().length, 0); assert.throws(() => ps.deletePlan(a.plan.id), /no plan/);
+  assert.equal(ps.restoreDeleted().plan.id, a.plan.id); assert.equal(ps.loadPlans().length, 1);
   assert.ok(!existsSync(join(dir, 'plans')), 'no plan@1 files are ever made');
 });
 rmSync(dir, { recursive: true, force: true });

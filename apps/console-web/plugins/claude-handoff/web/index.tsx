@@ -45,7 +45,7 @@ export const plugin: AxfWebLibrary = {
   views: {
     'claude-handoff-preview': { title: 'Installer preview', icon: 'play', keywords: ['installer', 'preview', 'demo', 'handoff', 'gauges', 'progress'], render: () => <PreviewView /> },
     [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
-  nav: { label: 'Tools', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }, { id: 'claude-handoff-preview', label: 'Installer preview', icon: 'play', view: 'claude-handoff-preview' }] },
+  nav: { label: 'AI & agents', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }, { id: 'claude-handoff-preview', label: 'Installer preview', icon: 'play', view: 'claude-handoff-preview' }] },
   // the installer window Assemble prompt opens (searchable: false, it starts the real work)
   dialogs: {
     [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> },

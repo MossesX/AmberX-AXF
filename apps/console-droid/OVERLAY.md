@@ -110,6 +110,32 @@ bar and cutout, navigation bar, keyboard, on whichever side Android puts them.
   (status bar + toolbar) and the page gets the other three sides as `--fx-safe-*` (`rootPadding` / `pageInsets`), so no
   side is padded twice or not at all. Before the page pads itself, the shell pads all four sides.
 
+## With Phone Connect (`console-overlay@1`)
+
+Phone Connect (`apps/phone-connect`, phone-connect@1) runs the console's `open_url` command (`browser.open`). When the
+command asks for the overlay (`where: overlay`, the default) and this app is installed, Phone Connect hands the page to
+this app first: one synchronous `ContentResolver.call` on `content://ai.amberx.consoleapp.overlay`, method `open`, the
+url as the argument, `where` in the extras. The page loads in the one console WebView and the toolbar expands over
+whatever is on screen: the same path as axHub's `amberx.open_url` (`DeviceLink.open`), so `?axf-overlay=expand|collapse`
+urls run the verb. The answer is `{ok: true, json}` (`json` = the open answer: `url`, `verb`, `where`, `overlay`), and
+Phone Connect reports `how: "console-overlay"` in its phone-result@1.
+
+With the toolbar switched off but "Display over other apps" granted, the app itself comes to the front on the page
+(`how: "console-app"`): the permission is Android's exemption from the background-start block, so there is no
+tap-to-open notification. Android drops a blocked start without raising anything, so the provider answers `ok` only
+once the page is on screen (the overlay took it, or the activity resumed within 2 s); otherwise `unavailable`.
+
+This app declines, and Phone Connect opens the page itself, when: `where` is `browser` (code `browser`), "Display
+over other apps" isn't granted (`no_overlay`; Phone Connect then starts this app's activity itself when it holds the
+permission), the url isn't on Brett's sites (`validation`), or the page did not come up (`unavailable`).
+Only Phone Connect's package (`ai.amberx.axf.phoneconnect`) and this app may call (`denied` otherwise); Android vouches
+for the calling package. `call("state")` answers `{overlay, canDraw, on, visible}` (`visible`: the app is on screen).
+
+Code: `PhoneConnectRules.java` (pure, JUnit `PhoneConnectRulesTest`, which also checks the Kotlin twin
+`apps/phone-connect/.../watch/ConsoleOverlay.kt`, Phone Connect's `<queries>` entry and its application id),
+`PhoneConnectProvider.java` (the Android side). Phone Connect side: `ConsoleOverlay.kt`, `LinkRules.wantsOverlay`,
+the `browser.open` handler in `Commands.kt`.
+
 ## What part 1 built and what part 2 adds
 
 Part 1 (build `console-android-app-thin-webview-wrapper`, PR #637) ported a slimmed `ApprovalOverlay` from AmberX:

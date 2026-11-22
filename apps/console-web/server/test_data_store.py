@@ -154,7 +154,11 @@ check(pd.read_json("items.json", None) == {"items": [1]} and pd.key("items.json"
 import time as _t
 _mir = None
 for _ in range(50):  # the shadow mirror is written in the background; wait for it (flaky on slow CI runners)
-    _mir = client.get("/v1/ui-review/items.json", headers={"authorization": "Bearer t"}).json()
+    _res = client.get("/v1/ui-review/items.json", headers={"authorization": "Bearer t"})
+    try:
+        _mir = _res.json()
+    except ValueError:  # the row is there but its body is not written yet
+        _mir = None
     if _mir == {"items": [1]}:
         break
     _t.sleep(0.1)
