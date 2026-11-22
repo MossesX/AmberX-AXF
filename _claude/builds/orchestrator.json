@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T18:41:30.900Z",
+ "updatedAt": "2026-11-22T21:06:16.754Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -200052,7 +200052,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T18:38:31.287Z",
+   "updatedAt": "2026-11-22T20:58:31.484Z",
    "builtAt": "",
    "notes": [
     {
@@ -200190,6 +200190,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T18:38:31.287Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T20:58:31.484Z"
     }
    ],
    "approvals": [],
@@ -212036,7 +212040,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T18:41:09.989Z",
+   "updatedAt": "2026-11-22T21:06:11.783Z",
    "builtAt": "",
    "notes": [
     {
@@ -212614,6 +212618,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T17:46:09.232Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:05:14.198Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:06:11.783Z"
     }
    ],
    "approvals": [
