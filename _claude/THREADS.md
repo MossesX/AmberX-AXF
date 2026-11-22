@@ -840,18 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 20:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` → archived, note (all) · console
-- 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` → archived, note (all) · foreign-write
-- 2026-11-20 20:15 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 20:16 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-20 20:16 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 20:36 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 20:39 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 20:40 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 20:40 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 21:01 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
 - 2026-11-20 21:05 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
 - 2026-11-20 21:06 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
 - 2026-11-20 21:06 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
@@ -1240,6 +1228,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · builds-live
 - 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
 - 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · builds-live
+- 2026-11-22 00:37 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:37 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
+- 2026-11-22 00:37 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-22 00:38 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:38 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
+- 2026-11-22 00:39 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:40 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:41 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:42 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:45 UTC · `every-plugin-gets-own-default-toolbar` → fixing, note (all) · watchdog
+- 2026-11-22 00:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
+- 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
