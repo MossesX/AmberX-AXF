@@ -41,6 +41,13 @@
  *              the account stopped it. Evidence for the watchdog (build-watchdog@1); absent until a run ends.
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *   parallel   Parallel split (Brett, Nov 13 2026: "one option splits it so it runs multiple parallel builds
+ *              simultaneously to speed it up"): null, or { role, lead, parts, part, of, contractStep, integrationStep }.
+ *              role 'lead' = the build Brett filed; it keeps the shared contract step (runs first, so the parts don't
+ *              clash) and the integration step (last: merges and tests the parts together); `parts` are the sub-build
+ *              ids. role 'part' = one sub-build: `lead` is its lead, `part` its number out of `of`. The dispatcher holds
+ *              a part until the lead's contract step is done and holds the lead's integration step until every part is
+ *              finished (pipeline-core parallelWait()).
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  *
@@ -70,6 +77,10 @@ export const EXIT_REASONS = ['all-done', 'phase-done', 'crash', 'crash-limit', '
 /** Where a build may run: auto, only API-key accounts, only subscriptions. */
 export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
+/** Parallel split roles: the lead (contract first, integration last) and its parts (independent sub-builds). */
+export const PARALLEL_ROLES = ['lead', 'part'];
+/** How a parallel split lands: together = the lead's integration step merges every part into its one PR; own = each part lands on its own PR, in part order. */
+export const PARALLEL_LANDINGS = ['together', 'own'];
 export const DEFAULT_MAX_RUNS = 3;
 /** runEnd.kind / runEnd.limit values (the headless wrapper's exit kind; the account stop it detected). */
 export const RUN_END_KINDS = ['', 'phase-done', 'crash', 'stopped'];
@@ -253,7 +264,26 @@ export function migrateDoneStore(store, { at = new Date().toISOString() } = {}) 
 }
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', phase: '', launchedAt: '', runs: 0, crashes: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', phase: '', launchedAt: '', runs: 0, crashes: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', parallel: null, parallelParts: 0 };
+}
+
+/**
+ * A build's own parallel split ask, set when it is filed (Nov 13 2026: "split into N parallel"): 0 = the Split
+ * settings decide, 1 = one build (never split in parallel), 2-12 = split into that many parallel builds.
+ */
+export const PARALLEL_PARTS_MAX = 12;
+export function normParallelParts(v) {
+  const n = typeof v === 'string' && v.trim() !== '' ? Number(v) : v;
+  return Number.isInteger(n) && n >= 1 ? Math.min(n, PARALLEL_PARTS_MAX) : 0;
+}
+
+const buildRef = (v) => str(v, 80).trim();
+const count = (v) => (Number.isInteger(v) && v > 0 ? Math.min(v, 99) : 0);
+/** The parallel-split record in shape, or null when it names no role. */
+export function normParallel(p) {
+  if (!p || typeof p !== 'object' || !PARALLEL_ROLES.includes(p.role)) return null;
+  const parts = (Array.isArray(p.parts) ? p.parts : []).map(buildRef).filter(Boolean).slice(0, 12);
+  return { role: p.role, lead: p.role === 'part' ? buildRef(p.lead) : '', parts: p.role === 'lead' ? parts : [], part: p.role === 'part' ? count(p.part) : 0, of: count(p.of), contractStep: p.role === 'lead' ? str(p.contractStep, 40) : '', integrationStep: p.role === 'lead' ? str(p.integrationStep, 40) : '', landing: PARALLEL_LANDINGS.includes(p.landing) ? p.landing : 'together' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -273,6 +303,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    parallel: normParallel(p.parallel), parallelParts: normParallelParts(p.parallelParts),
     ...(normRunEnd(p.runEnd) ? { runEnd: normRunEnd(p.runEnd) } : {}), // optional: absent until a run ends (old records unchanged)
     ...(normLaunchRetry(p.launchRetry) ? { launchRetry: normLaunchRetry(p.launchRetry) } : {}), // optional: only after a launch crash
     ...(normBounce(p.bounce) ? { bounce: normBounce(p.bounce) } : {}), // optional: only after a land-clash bounce

@@ -40,3 +40,6 @@ export interface UpgradePolicy { approvalRequired: boolean; source: string }
 export function setUpgradePolicy(p: Partial<UpgradePolicy> | null | undefined): UpgradePolicy;
 export function upgradePolicy(): UpgradePolicy;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };
+export type ParallelFamily = { lead: string; leadTitle: string; role: 'lead' | 'part'; part: number; of: number; landing: 'together' | 'own'; parts: { id: string; part: number; title: string; status: string; done: number; total: number; finished: boolean }[]; done: number; total: number; partsFinished: number; percent: number };
+export function parallelFamily(build: any, builds: any[]): ParallelFamily | null;
+export function familyLine(f: ParallelFamily | null): string;
