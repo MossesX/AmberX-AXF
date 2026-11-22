@@ -16,6 +16,10 @@
  *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
  *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
+ *   … fill status [build] | fill run | fill deps <build> <step> <s1,s2|none|sequential> | fill set k=v…
+ *                                  fill every slot: slots, ready steps, the next round (dry run); one round now; a step's
+ *                                  dependsOn; the fill settings (fillSlots, maxParallelPerBuild, autoQueuePending: owner)
+ *   … step-brief <build> <step>    the brief of a step-scoped launch (claude-headless.sh --step)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
@@ -78,7 +82,7 @@
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
  * Environment for tests: AXF_PIPELINE_LAUNCHER (instead of deploy/claude-headless.sh), AXF_PIPELINE_SPLITTER (a command that
  * reads the prompt on stdin and prints Claude's answer), AXF_PIPELINE_WORKTREES (root of build worktrees, default
- * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
+ * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_REPO (the repo step worktrees hang off), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
  * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
  */
 import { spawn, spawnSync } from 'node:child_process';
@@ -99,7 +103,7 @@ import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../fram
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
-import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { loadStore, migrateStepDepsNow, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
@@ -134,7 +138,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), authWaits: join(d, 'auth-waits.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), authWaits: join(d, 'auth-waits.json'), fillRequest: join(d, 'fill-request.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -453,7 +457,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     if (!a.error) { const p = P.parseSplit(a.text, rules); if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else error = p.error || 'empty answer'; } else error = a.error;
   }
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
-  else note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable).`;
+  else { const par = steps.filter((s, i) => i > 0 && Array.isArray(s.dependsOn) && !(s.dependsOn.length === 1 && s.dependsOn[0] === `s${i}`)).length; note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable${par ? `, ${par} can run beside earlier steps` : ''}).`; }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
   withStore((s) => {
@@ -461,6 +465,9 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     const next = steps.map((st, i) => { const old = done.get(st.text.trim().toLowerCase()); return storeCore.normStep({ ...st, id: `s${i + 1}`, done: !!old, doneAt: old?.doneAt ?? '', uid: old?.uid }, i, { now }); });
     // a done step the new split dropped is kept at the top so nothing done is lost
     const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}` }));
+    // renumber s1… with the kept done steps first; the split's dependency ids move with their steps
+    const ren = new Map(next.map((x, i) => [x.id, `s${kept.length + i + 1}`]));
+    for (const x of next) if (Array.isArray(x.after)) x.after = x.after.map((d) => ren.get(d)).filter(Boolean);
     rec.steps = [...kept, ...next]; rec.steps.forEach((x, i) => { x.id = `s${i + 1}`; });
     if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now; }
     rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '' });
@@ -515,17 +522,111 @@ export function ensureWorktree(id, env = process.env) {
   if (existsSync(dir)) return { dir, made: false };
   if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return { dir, made: true }; }
   mkdirSync(worktreesRoot(env), { recursive: true });
-  git(REPO_ROOT, 'fetch', '-q', 'origin', 'main');
-  const base = git(REPO_ROOT, 'rev-parse', '--verify', '-q', 'origin/main').status === 0 ? 'origin/main' : 'HEAD';
-  let r = git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
-  if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(REPO_ROOT, 'worktree', 'add', '--detach', dir, base);
+  // the repo the worktrees hang off: AXF_PIPELINE_REPO (a test's scratch repo) or this checkout, the same as step worktrees
+  const repo = repoRoot(env);
+  git(repo, 'fetch', '-q', 'origin', 'main');
+  const base = git(repo, 'rev-parse', '--verify', '-q', 'origin/main').status === 0 ? 'origin/main' : 'HEAD';
+  let r = git(repo, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
+  if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(repo, 'worktree', 'add', '--detach', dir, base);
   if (r.status !== 0) throw new Error(`worktree for ${id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
-  // installed packages come from the main checkout: no install per build
+  linkModules(dir);
+  return { dir, made: true };
+}
+
+/** Installed packages come from the main checkout: no install per build or step worktree. */
+function linkModules(dir) {
   for (const rel of ['node_modules', 'apps/console-web/node_modules', 'apps/demo/node_modules', 'apps/expenses/node_modules', 'apps/axhub-web/node_modules', 'apps/molly/node_modules']) {
     const src = join(REPO_ROOT, rel); const dst = join(dir, rel);
     if (existsSync(src) && !existsSync(dst)) { try { mkdirSync(dirname(dst), { recursive: true }); symlinkSync(src, dst); } catch { /* optional */ } }
   }
-  return { dir, made: true };
+}
+
+// ------------------------------------------------------------------ parallel step worktrees (BUILD-PARALLEL §4)
+
+/** The repo the worktrees hang off (AXF_PIPELINE_REPO for tests: a scratch git repo with an origin). */
+const repoRoot = (env = process.env) => env.AXF_PIPELINE_REPO || REPO_ROOT;
+const gitMode = (env = process.env) => (env.AXF_PIPELINE_WORKTREE_MODE || 'git') !== 'mkdir';
+/** Where a parallel step works: /root/axf-builds/<build>--<stepId>. */
+export const stepWorktreeDir = (b, stepId, env = process.env) => join(worktreesRoot(env), `${b.id}--${stepId}`);
+
+/**
+ * A parallel step's worktree and branch `<build-branch>--<stepId>`, made from the build branch (origin's copy when it
+ * is there, so the step starts from everything already pushed). An existing step worktree is kept (a retry reads it).
+ * → { dir, branch, base, made }
+ */
+export function ensureStepWorktree(b, stepId, env = process.env) {
+  const step = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!step) throw new Error(`${b.id} has no step ${stepId}`);
+  const dir = stepWorktreeDir(b, stepId, env);
+  const branch = BP.stepBranch(b, step, { parallel: true }); const buildBranch = BP.stepBranch(b, step);
+  if (existsSync(dir)) return { dir, branch, base: buildBranch, made: false };
+  if (!gitMode(env)) { mkdirSync(dir, { recursive: true }); return { dir, branch, base: buildBranch, made: true }; }
+  const root = repoRoot(env);
+  mkdirSync(worktreesRoot(env), { recursive: true });
+  git(root, 'fetch', '-q', 'origin', buildBranch);
+  const base = git(root, 'rev-parse', '--verify', '-q', `origin/${buildBranch}`).status === 0 ? `origin/${buildBranch}`
+    : git(root, 'rev-parse', '--verify', '-q', buildBranch).status === 0 ? buildBranch : '';
+  if (!base) throw new Error(`step worktree for ${b.id}/${stepId}: the build branch ${buildBranch} does not exist yet`);
+  // a kept branch (a retry after a conflict) is reused; otherwise a new one from the build branch
+  const keep = git(root, 'rev-parse', '--verify', '-q', branch).status === 0;
+  const r = keep ? git(root, 'worktree', 'add', dir, branch) : git(root, 'worktree', 'add', '-b', branch, dir, base);
+  if (r.status !== 0) throw new Error(`step worktree for ${b.id}/${stepId}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
+  if (root === REPO_ROOT) linkModules(dir);
+  return { dir, branch, base, made: true };
+}
+
+/** Remove a merged step's worktree and branch (local and on origin). Best effort. */
+export function dropStepWorktree(b, stepId, env = process.env) {
+  const dir = stepWorktreeDir(b, stepId, env); const step = (b.steps ?? []).find((x) => x.id === stepId) ?? { id: stepId };
+  const branch = BP.stepBranch(b, step, { parallel: true });
+  if (!gitMode(env)) { rmSync(dir, { recursive: true, force: true }); return { dir, branch }; }
+  const root = repoRoot(env);
+  git(root, 'worktree', 'remove', '--force', dir);
+  git(root, 'branch', '-D', branch);
+  git(root, 'push', '-q', 'origin', '--delete', branch);
+  return { dir, branch };
+}
+
+/**
+ * Merge a finished parallel step back into the build branch, under the store lock (one merge at a time, and the store
+ * change lands with it). The merge runs in the build's own worktree (`git merge --no-ff`, then push; never main), and
+ * only when that worktree has no uncommitted tracked changes (else `deferred`: the next tick tries again).
+ * Merged: the step branch and worktree go. Conflict: the merge is aborted, the step goes back open as `blocked` with a
+ * note (conflictBack) and re-runs after the steps it clashed with; the branch is kept, never force-pushed or deleted.
+ * → { ok, merged, deferred, conflict, files, why }
+ */
+export function mergeStepBack(id, stepId, { env = process.env, by = 'dispatcher' } = {}) {
+  let out = { ok: false, merged: false, deferred: false, conflict: false, files: [], why: '' };
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, id); const step = rec?.steps.find((x) => x.id === stepId);
+    if (!rec || !step) { out.why = `no step ${id}/${stepId}`; return s; }
+    const branch = BP.stepBranch(rec, step, { parallel: true }); const buildBranch = BP.stepBranch(rec, step);
+    if (gitMode(env)) {
+      const wt = join(worktreesRoot(env), rec.id);
+      if (!existsSync(wt)) { out.why = `no build worktree ${wt}`; out.deferred = true; return s; }
+      if (git(wt, 'status', '--porcelain', '-uno').stdout.trim()) { out = { ...out, deferred: true, why: 'the build worktree has uncommitted changes: merge on a later tick' }; return s; }
+      git(wt, 'fetch', '-q', 'origin', branch);
+      const src = git(wt, 'rev-parse', '--verify', '-q', `origin/${branch}`).status === 0 ? `origin/${branch}` : branch;
+      const m = git(wt, 'merge', '--no-ff', '--no-edit', '-m', `Merge ${branch} (${rec.id} ${stepId}) into ${buildBranch}`, src);
+      if (m.status !== 0) {
+        const files = git(wt, 'diff', '--name-only', '--diff-filter=U').stdout.split('\n').map((x) => x.trim()).filter(Boolean);
+        git(wt, 'merge', '--abort');
+        const c = P.conflictBack(rec, stepId, { files, branch });
+        if (c.ok) { Object.assign(rec, c.build); rec.notes.push({ text: `${stepId}: ${c.note}`, at: nowIso() }); }
+        out = { ...out, ok: true, conflict: true, files, why: c.ok ? c.note : c.why };
+        return s;
+      }
+      git(wt, 'push', '-q', 'origin', `HEAD:${buildBranch}`);
+    }
+    // merged: the claim goes and the step's merge is recorded on the build
+    const now = nowIso(); delete step.claim; step.updatedAt = now;
+    rec.notes.push({ text: `${stepId}: ${branch} merged into ${buildBranch}`, at: now }); rec.updatedAt = now;
+    out = { ...out, ok: true, merged: true };
+    return s;
+  }, { by, action: 'pipeline:step-merge', note: `${id}/${stepId}` });
+  if (out.merged) { try { dropStepWorktree(storeCore.findBuild(loadStore(), id), stepId, env); } catch { /* best effort */ } }
+  logLine({ event: 'step-merge', build: id, step: stepId, merged: out.merged, conflict: out.conflict, deferred: out.deferred, files: out.files, why: out.why });
+  return out;
 }
 
 // ------------------------------------------------------------------ build names (build-id@1)
@@ -631,6 +732,7 @@ export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', m
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   const head = [`# Build: ${b.id}`, '', saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '', '## What to build'].join('\n');
   const pipeline = ['', '## Pipeline',
+    `Parallel steps: steps with a dependsOn list may run in step sessions beside you (Fill every slot). Before you start a step, run \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs fill status ${b.id}\`: skip any step it shows running elsewhere and every step waiting on one, and leave their files alone; their branches merge into yours by themselves.`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`].join('\n');
   // the session's rules from the Build rules tab; with this block the launcher appends no second one
   let rulesText = blocks?.blocks?.rules ? `\n\n${blocks.blocks.rules}` : '';
@@ -656,6 +758,38 @@ export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', m
     body = `${cutBytes(body, Math.max(0, room))}${note}`; text = compose(body); trimmed.push('phase brief');
   }
   return { text, bytes: bytes(text), maxBytes: cap, trimmed };
+}
+
+/**
+ * The brief of a step-scoped launch (a parallel step, `claude-headless.sh --step`): only that step, what each of its
+ * dependsOn steps produced (text, files, note, done) and the files it touches, plus the standing rules. The session works
+ * in its step worktree on `<build-branch>--<step>`, ticks that one step and stops; the dispatcher merges it back.
+ */
+export function stepBriefFor(b, stepId, rules, { account = '', model = '' } = {}) {
+  const st = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!st) throw Object.assign(new Error(`${b.id} has no step ${stepId}`), { code: 2 });
+  const deps = BP.dependsOn(b, st).map((id) => b.steps.find((x) => x.id === id)).filter(Boolean);
+  const branch = BP.stepBranch(b, st, { parallel: true }); const buildBranch = BP.stepBranch(b, st);
+  const o = b.origin ?? {};
+  const files = BP.stepFiles(st);
+  return [
+    `# Build: ${b.id} · step ${st.id} only`, '',
+    saidBlock(o), '',
+    '## What to build',
+    `Continue build "${b.title}" (${b.id}) — one step only: ${st.id}, model ${st.model}. Other steps of this build run in other sessions at the same time; do only this one.`,
+    `Rules: stay in this one session; no sub-agents; ≤ ${Math.min(10, Number(rules?.maxStepMinutes) || 10)} min; read only the files listed; stop when this step is done.`,
+    `Look: ${orch.ASSET_RULE}`,
+    `API: ${orch.API_RULE}`,
+    '', `## Your step`,
+    `[ ] ${st.id}${st.estimate ? ` (~${st.estimate})` : ''} ${st.text}`,
+    files.length ? `Files it touches: ${files.join(', ')}. Change nothing else unless the step cannot be done without it; then say which file in a step note.` : 'Files it touches: not listed. Keep the change small and say which files you changed in a step note.',
+    st.checks?.length ? `Checks: ${st.checks.join(' · ')}` : '',
+    '', `## What it builds on (dependsOn)`,
+    ...(deps.length ? deps.map((d) => `- ${d.id} ${d.done ? 'done' : d.skip ? 'skipped' : 'OPEN'}: ${d.text}${BP.stepFiles(d).length ? ` · files: ${BP.stepFiles(d).join(', ')}` : ''}${d.note ? ` · note: ${str(d.note, 400).replace(/\n/g, ' / ')}` : ''}`) : ['- nothing: this step starts from the build branch as it is']),
+    `Their work is merged into ${buildBranch}, which this branch was made from.`,
+    '', `## Pipeline`,
+    `This step session was started by the orchestrator's dispatcher${account ? ` on Claude account ${account}` : ''}${model ? ` (${model})` : ''} in its own worktree on branch ${branch}. Commit on that branch and push it; never merge it into ${buildBranch} or main yourself: the dispatcher merges it back. When the step is done, tick it (node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${b.id} ${st.id} done) and stop. If you cannot finish, say why in a step note (orchestrator.mjs act note ${b.id} "${st.id}: …") and stop: the step goes back to ready.`,
+  ].filter((l) => l !== '').join('\n').replace(/\n(## )/g, '\n\n$1');
 }
 
 /** Start one headless session for a queued build on an account. */
@@ -841,7 +975,215 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (l.live) { logLine({ event: 'still-alive', build: b.id, session: b.pipeline.session, sessions: l.sessions, pids: l.pids }); continue; }
       exit = 1;
     }
+    // its own session ended while parallel step sessions still work: the build stays in Building until they are done
+    const stepLive = b.steps.filter((x) => !x.done && !x.skip && BP.claimLive(x.claim) && !str(x.claim.runId).startsWith('main:'));
+    if (!settled && exit === 0 && stepLive.length) {
+      const note = `Session ${b.pipeline.session} ended; ${stepLive.length} step${stepLive.length === 1 ? '' : 's'} still run${stepLive.length === 1 ? 's' : ''} in parallel (${stepLive.map((x) => x.id).join(', ')}): the build stays in Building and goes back to the Queue if steps are left when they finish.`;
+      setPipeline(b.id, { session: '', slot: '', note: 'waiting on parallel steps' }, { status: b.status, note, action: 'pipeline:end' });
+      logLine({ event: 'ended', build: b.id, outcome: 'parallel', exit, session: b.pipeline.session });
+      out.push({ id: b.id, outcome: 'parallel', status: b.status, exit });
+      continue;
+    }
     out.push(endRun(b, { exit, kind: end?.kind || '', phase: end?.phase || '', log: end?.log || '', vanished: !end, alert, settings, env }));
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ fill every slot: parallel step sessions (BUILD-PARALLEL)
+
+/**
+ * The Claude settings the fill round follows (claude-settings registry, owner flags there): fillSlots (default on),
+ * autoQueuePending (default off, Brett's click only), maxParallelPerBuild (default 3). Missing keys = defaults.
+ */
+export function fillSettings(env = process.env) {
+  const v = claudeSettings(env);
+  const n = Number(v['builds.maxParallelPerBuild']);
+  return { fillSlots: v['builds.fillSlots'] !== false, autoQueuePending: v['builds.autoQueuePending'] === true, maxParallelPerBuild: Number.isInteger(n) && n >= 1 ? Math.min(12, n) : BP.FILL_DEFAULTS.maxParallelPerBuild };
+}
+
+/**
+ * Fill every slot, read-only (the one handler behind REST GET /pipeline/fill, the plugin command pipeline-fill-status,
+ * `pipeline.mjs fill status`, the voice action and agent-slots' `fill` view): the slots (one row per slot: which build
+ * and step runs there, or free), the ready steps, what planFill would launch next (dry run), the settings and, with
+ * `build`, that build's steps with their dependency state.
+ */
+export function fillStatus({ env = process.env, build = '', now = Date.now() } = {}) {
+  const store = loadStore(); const state = loadState(); const fill = fillSettings(env); const sl = slotsNow();
+  const inputs = fillInputs({ store, state, env, fill, sl, now });
+  const plan = BP.planFill(inputs);
+  plan.waits.push(...P.clashWaits(inputs.running, now));
+  const sessions = stepRecs(state);
+  const rows = (sl.running ?? []).map((r, i) => {
+    const rec = Object.values(sessions).find((x) => (r.session && x.session === r.session) || (r.build && x.id === r.build && r.step && x.step === r.step));
+    return { n: i + 1, id: r.id, name: r.name, build: r.build || rec?.id || '', step: r.step || rec?.step || '', state: r.state, session: r.session || '', since: r.startedAt || '', main: !(r.step || rec) };
+  });
+  const cap = Number(sl.cap) || rows.length;
+  for (let i = rows.length; i < cap; i++) rows.push({ n: i + 1, id: '', name: '', build: '', step: '', state: 'free', session: '', since: '', main: false });
+  const slotOf = (ri) => rows.find((r) => (ri.slot && r.id === ri.slot) || (ri.session && r.session === ri.session))?.n ?? 0;
+  const ready = inputs.running.flatMap((b) => BP.readySteps(b, { now }).map((st) => ({ id: b.id, step: st.id, text: str(st.text, 200), model: st.model, parallel: BP.isParallelStep(st), files: BP.stepFiles(st) })));
+  const parallelOf = (b) => b.steps.filter((x) => !x.done && !x.skip && BP.claimLive(x.claim, now) && !str(x.claim.runId).startsWith('main:')).length;
+  const builds = inputs.running.map((b) => ({ id: b.id, title: str(b.title, 160), parallel: parallelOf(b), cap: b.pipeline?.maxParallel > 0 ? b.pipeline.maxParallel : fill.maxParallelPerBuild }));
+  const one = build ? storeCore.findBuild(store, build) : null;
+  if (build && !one) throw Object.assign(new Error(`no build "${build}"`), { code: 2 });
+  return {
+    ok: true, at: new Date(now).toISOString(), settings: fill,
+    slots: { cap, used: Number(sl.used) || 0, free: Number(sl.free) || 0, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}), rows },
+    ready, builds, plan: { launches: plan.launches, waits: plan.waits, free: plan.free, blocked: plan.blocked }, sessions: Object.entries(sessions).map(([runId, r]) => ({ runId, ...r })),
+    ...(one ? { build: { id: one.id, title: one.title, status: one.status, branch: BP.stepBranch(one, null), steps: P.stepStates(P.withMainClaim(one, now), { now, root: worktreesRoot(env), sessions, slotOf }) } } : {}),
+  };
+}
+
+/**
+ * One dispatcher round now (REST POST /pipeline/fill/run, pipeline-fill-run, `pipeline.mjs fill run`, voice). On the VPS
+ * host (it sees the Claude logins) the tick runs at once and its fill part is returned; elsewhere (the console's
+ * container) the request is filed and the host's dispatcher runs it on its next minute. → { ok, ran, requested, fill }
+ */
+export function fillRun({ env = process.env, by = process.env.AXF_ACTOR || 'console' } = {}) {
+  if (!seesAccounts(env) && !env.AXF_PIPELINE_FILL_RUN_HERE) {
+    const r = { at: nowIso(), by: str(by, 80) }; writeJson(files().fillRequest, r);
+    return { ok: true, ran: false, requested: r.at, note: "filed: the dispatcher on the VPS runs a round within a minute" };
+  }
+  const t = tick({ env });
+  try { rmSync(files().fillRequest, { force: true }); } catch { /* none */ }
+  return { ok: true, ran: true, at: t.at, launched: t.launched.map((l) => ({ id: l.id, account: l.account, model: l.model })), fill: { launched: t.fill.launched.map((l) => ({ id: l.id, step: l.step, account: l.account, session: l.session })), ended: t.fill.ended, autoQueued: t.fill.autoQueued ?? [], plan: t.fill.plan ? { launches: t.fill.plan.launches, waits: t.fill.plan.waits, free: t.fill.plan.free, blocked: t.fill.plan.blocked } : null } };
+}
+
+/**
+ * Set one step's dependsOn (REST POST /builds/:id/steps/:step/deps, pipeline-step-deps, `pipeline.mjs fill deps`,
+ * voice). `deps` = step ids of the same build ([] = independent), or null / 'sequential' = no list (it waits for the
+ * step before it, as before). Refused: an unknown id, the step itself, a settled step's list, or a cycle.
+ */
+export function setStepDeps(id, stepId, deps, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  let out = null;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, id); if (!rec) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    const st = rec.steps.find((x) => x.id === stepId); if (!st) throw Object.assign(new Error(`${id} has no step ${stepId}`), { code: 2 });
+    if (st.done || st.skip) throw Object.assign(new Error(`${id} ${stepId} is ${st.done ? 'done' : 'skipped'}: its dependencies no longer matter`), { code: 2 });
+    const seq = deps == null || deps === 'sequential';
+    const list = seq ? null : (Array.isArray(deps) ? deps : String(deps).split(/[\s,]+/)).map((x) => str(x, 40).trim()).filter(Boolean);
+    if (list) {
+      if (list.includes(stepId)) throw Object.assign(new Error(`${stepId} cannot wait on itself`), { code: 2 });
+      const bad = list.filter((x) => !rec.steps.some((y) => y.id === x)); if (bad.length) throw Object.assign(new Error(`${bad.join(', ')} ${bad.length === 1 ? 'is' : 'are'} not a step of ${id}`), { code: 2 });
+    }
+    const before = BP.dependsOn(rec, st);
+    if (seq) delete st.after; else st.after = [...new Set(list)].slice(0, 20);
+    const cyc = storeCore.dependencyCycles(rec);
+    if (cyc.length) throw Object.assign(new Error(`that makes a dependency cycle: ${cyc[0].join(' → ')}`), { code: 2 });
+    const now = nowIso(); st.updatedAt = now; rec.updatedAt = now;
+    const after = BP.dependsOn(rec, st);
+    rec.notes.push({ text: `${stepId} dependencies set by ${str(by, 80)}: ${seq ? `sequential (after ${after.join(', ') || 'nothing'})` : after.length ? `after ${after.join(', ')}` : 'independent'} (was ${before.join(', ') || 'none'})`, at: now });
+    out = { ok: true, id: rec.id, step: stepId, dependsOn: after, explicit: seq ? null : st.after, parallel: BP.isParallelStep(st) };
+    return s;
+  }, { by, action: 'pipeline:step-deps', note: `${id}/${stepId}` });
+  return out;
+}
+
+/** One line per slot and per planned launch, for the CLI and agent-slots' `fill` view. */
+export function fillLines(f) {
+  const L = [`slots ${f.slots.used}/${f.slots.cap} · ${f.slots.free} free · fill every slot ${f.settings.fillSlots ? 'on' : 'off'} · max ${f.settings.maxParallelPerBuild} parallel steps per build · auto-queue pending ${f.settings.autoQueuePending ? 'on' : 'off'}`];
+  for (const r of f.slots.rows) L.push(`  slot ${r.n}: ${r.state === 'free' ? 'free' : `${r.build || r.name}${r.step ? ` ${r.step}` : ''} (${r.state})`}`);
+  L.push(f.plan.launches.length ? 'next (dry run):' : `next (dry run): nothing${f.plan.blocked ? ` (${f.plan.blocked})` : ''}`);
+  for (const l of f.plan.launches) L.push(`  ${l.kind} ${l.id}${l.step ? ` ${l.step}` : ''} on ${l.account} (${l.model}): ${l.why}`);
+  for (const w of f.plan.waits.slice(0, 12)) L.push(`  waits ${w.id}${w.step ? ` ${w.step}` : ''}: ${w.why}`);
+  if (f.build) for (const st of f.build.steps) L.push(`  ${f.build.id} ${st.id} ${st.state}${st.why ? ` (${st.why})` : ''}${st.dependsOn.length ? ` after ${st.dependsOn.join(', ')}` : ''}`);
+  return L.join('\n');
+}
+
+/** The step sessions the dispatcher started and still watches: state.steps = { <runId>: { id, step, session, slot, account, model, dir, branch, launchedAt, merging } }. */
+const stepRecs = (state) => (state.steps && typeof state.steps === 'object' ? state.steps : (state.steps = {}));
+const runKey = (id, step) => `${id}/${step}`;
+
+/** The planner's inputs from the store, the slots, the accounts and the step sessions running now. */
+export function fillInputs({ store, state, env = process.env, settings = loadSettings(env), fill = fillSettings(env), sl = slotsNow(), launchedNow = 0, now = Date.now() } = {}) {
+  const builds = runnable(store);
+  const running = builds.filter((b) => b.status === 'running' || b.status === 'waiting').map((b) => P.withMainClaim(b, now));
+  const accounts = accountsRead(store, settings, env).accounts.map((a) => ({ ...a }));
+  // step sessions are not in pipeline.account: count them on their accounts
+  for (const r of Object.values(stepRecs(state))) { const a = accounts.find((x) => x.name === r.account); if (a && !r.merging) { a.running += 1; a.free = Math.max(0, a.free - 1); } }
+  const slotsView = { ...sl, free: Math.max(0, (Number(sl.free) || 0) - launchedNow) };
+  return { slots: slotsView, accounts, running, queue: [], pending: [], settings: { maxParallelPerBuild: fill.maxParallelPerBuild, autoQueue: false, apiOverflow: settings.apiOverflow !== false }, now };
+}
+
+/**
+ * Start one parallel step session (a planFill `step` launch): claim the step on the build (builds-live carries it to
+ * main at once), make its step worktree off the build branch, write the step-scoped brief and start
+ * `claude-headless.sh --step` there, which books its own agent slot and passes the per-step model gate. A launch that
+ * fails gives the claim back. → { runId, session, slot, dir, branch }
+ */
+export function launchStep(b, item, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  const runId = `step-${str(b.id, 40)}-${item.step}-${Date.now().toString(36)}`;
+  let claimed = null;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, b.id); if (!rec) { claimed = { ok: false, why: `no build ${b.id}` }; return s; }
+    claimed = BP.claimStep(rec, item.step, { runId, account: item.account, branch: item.branch, model: item.model });
+    if (claimed.ok) Object.assign(rec, claimed.build);
+    return s;
+  }, { by: 'dispatcher', action: 'pipeline:step-claim', note: `${b.id}/${item.step}` });
+  if (!claimed?.ok) throw new Error(`claim refused: ${claimed?.why ?? 'unknown'}`);
+  const release = (why) => withStore((s) => { const rec = storeCore.findBuild(s, b.id); const r = rec && BP.releaseStep(rec, item.step, { runId, note: why }); if (r?.ok) Object.assign(rec, r.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-release', note: `${b.id}/${item.step}` });
+  try {
+    const fresh = storeCore.findBuild(loadStore(), b.id);
+    const w = ensureStepWorktree(fresh, item.step, env);
+    writeFileSync(join(w.dir, '.axf-brief.md'), `${stepBriefFor(fresh, item.step, rules, { account: item.account, model: item.model })}\n`);
+    const token = issueDispatch(b.id, { account: item.account, model: item.model, env });
+    const key = modelKey(item.model) || 'opus';
+    const args = ['--name', b.id, '--step', item.step, '--account', item.account, '--brief', '.axf-brief.md', '--log', `${b.id}--${item.step}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
+    const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_STEP_ID: item.step, AXF_STEP_BRIEF: 'off', AXF_CLAUDE_ACCOUNT: item.account };
+    const r = spawnSync('bash', [launcher, ...args], { cwd: w.dir, encoding: 'utf8', timeout: 180e3, env: e });
+    const text = `${r.stdout || ''}\n${r.stderr || ''}`;
+    const session = /started (axf-\S+) in/.exec(text)?.[1] ?? '';
+    const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+    if (r.status !== 0 || (!session && !/queued at position/.test(text))) throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+    if (slot) withStore((s) => { const st = storeCore.findBuild(s, b.id)?.steps.find((x) => x.id === item.step); if (st?.claim?.runId === runId) st.claim.slot = slot; return s; }, { by: 'dispatcher', action: 'pipeline:step-slot', note: `${b.id}/${item.step}` });
+    return { runId, session, slot, dir: w.dir, branch: w.branch, queuedInSlots: /queued at position/.test(text) };
+  } catch (err) { release(`launch failed: ${str(err.message, 200)}`); throw err; }
+}
+
+/**
+ * Step sessions that ended (an end event, or tmux gone past the grace period): a ticked step is merged back
+ * (mergeStepBack; deferred = tried again next tick); an unticked one is a crash: its claim goes, the step is ready again,
+ * and after STEP_MAX_RUNS runs it is left to the build's own session (parallel: never) with a note. Live sessions get
+ * their claim renewed (a step may outlive the 45-minute TTL). → [{ id, step, outcome }]
+ */
+export function checkStepEnds({ state, env = process.env, alert = () => {}, now = Date.now() } = {}) {
+  const recs = stepRecs(state); const events = readEvents(env); const out = [];
+  state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
+  for (const [runId, r] of Object.entries(recs)) {
+    const b = storeCore.findBuild(loadStore(), r.id); const st = b?.steps.find((x) => x.id === r.step);
+    if (!b || !st || b.deleted) { delete recs[runId]; continue; }
+    if (r.merging || (st.done && !r.session)) {
+      const m = mergeStepBack(r.id, r.step, { env });
+      if (!m.deferred) { delete recs[runId]; out.push({ id: r.id, step: r.step, outcome: m.merged ? 'merged' : 'conflict', why: m.why }); if (m.conflict) alert('step-conflict', { id: r.id, step: r.step, note: m.why }); }
+      continue;
+    }
+    const since = Date.parse(r.launchedAt || 0) - 5000;
+    const end = events.filter((e) => e.event === 'session-end' && Date.parse(e.at || 0) >= since && (e.session === r.session || (e.step === r.step && str(e.name).startsWith(r.id)))).pop();
+    let exit = null;
+    if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
+    else {
+      const alive = r.session ? tmuxHas(r.session) : null;
+      if (alive !== false || now - Date.parse(r.launchedAt || 0) < GONE_GRACE_MS) {
+        // still working: keep its claim alive past the TTL
+        if (!st.done) withStore((s) => { const rec = storeCore.findBuild(s, r.id); const c = rec && BP.claimStep(rec, r.step, { runId, slot: r.slot, account: r.account, branch: r.branch, model: r.model, now }); if (c?.ok) Object.assign(rec, c.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-renew', note: `${r.id}/${r.step}` });
+        continue;
+      }
+      exit = 1;
+    }
+    if (st.done) { r.merging = true; r.session = ''; const m = mergeStepBack(r.id, r.step, { env }); if (!m.deferred) delete recs[runId]; out.push({ id: r.id, step: r.step, outcome: m.deferred ? 'merge-deferred' : m.merged ? 'merged' : 'conflict', why: m.why }); if (m.conflict) alert('step-conflict', { id: r.id, step: r.step, note: m.why }); continue; }
+    const k = runKey(r.id, r.step); const runs = (state.stepRuns[k] ?? 0);
+    const last = runs >= P.STEP_MAX_RUNS;
+    const note = last ? `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ${runs} runs, left to the build's own session` : `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ready again (run ${runs} of ${P.STEP_MAX_RUNS})`;
+    withStore((s) => {
+      const rec = storeCore.findBuild(s, r.id); if (!rec) return s;
+      const rel = BP.releaseStep(rec, r.step, { runId, note }); if (rel.ok) Object.assign(rec, rel.build);
+      if (last) { const x = rec.steps.find((y) => y.id === r.step); if (x) x.parallel = 'never'; }
+      rec.notes.push({ text: `${r.step}: ${note}`, at: nowIso() }); rec.updatedAt = nowIso();
+      return s;
+    }, { by: 'dispatcher', action: 'pipeline:step-end', note: `${r.id}/${r.step}` });
+    delete recs[runId];
+    if (last) delete state.stepRuns[k];
+    out.push({ id: r.id, step: r.step, outcome: last ? 'gave-up' : 'requeued', exit });
+    logLine({ event: 'step-ended', build: r.id, step: r.step, exit, runs, last });
   }
   return out;
 }
@@ -1131,6 +1473,93 @@ export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'c
   return out;
 }
 
+/**
+ * One fill round (every tick, after the build launches): planFill over the running builds, then every `step` launch it
+ * returns is started until the slots or accounts run out. Off (builds.fillSlots false) = only ends are watched.
+ * → { launched, failed, plan, ended, settings }
+ */
+export function fillRound({ state, env = process.env, alert = () => {}, rules, launchedNow = 0, now = Date.now() } = {}) {
+  const fill = fillSettings(env);
+  const ended = checkStepEnds({ state, env, alert, now });
+  if (!fill.fillSlots) return { launched: [], failed: [], plan: null, ended, settings: fill };
+  const store = loadStore();
+  const inputs = fillInputs({ store, state, env, fill, launchedNow, now });
+  const plan = BP.planFill(inputs);
+  plan.waits.push(...P.clashWaits(inputs.running, now));
+  const launched = []; const failed = [];
+  state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
+  for (const item of plan.launches.filter((l) => l.kind === 'step')) {
+    const b = storeCore.findBuild(loadStore(), item.id);
+    try {
+      const r = launchStep(b, item, { rules, env });
+      const k = runKey(item.id, item.step); state.stepRuns[k] = (state.stepRuns[k] ?? 0) + 1;
+      stepRecs(state)[r.runId] = { id: item.id, step: item.step, session: r.session, slot: r.slot, account: item.account, model: item.model, dir: r.dir, branch: r.branch, launchedAt: nowIso(), runs: state.stepRuns[k] };
+      withStore((s) => { const rec = storeCore.findBuild(s, item.id); if (rec) { rec.notes.push({ text: `${item.step}: started in parallel on ${item.account} (${item.model}), ${r.session || 'queued in agent slots'}, worktree ${r.dir}, branch ${r.branch} (run ${state.stepRuns[k]} of ${P.STEP_MAX_RUNS})`, at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:step-launch', note: `${item.id}/${item.step}` });
+      launched.push({ ...item, session: r.session, slot: r.slot, dir: r.dir, runId: r.runId });
+      logLine({ event: 'step-launched', build: item.id, step: item.step, account: item.account, model: item.model, session: r.session, dir: r.dir });
+      crewSay('dispatcher', 'start', `Started ${item.id} ${item.step} in parallel on ${item.account}, ${item.model}.`, { ref: item.id });
+    } catch (e) {
+      failed.push({ id: item.id, step: item.step, error: e.message });
+      logLine({ event: 'step-launch-failed', build: item.id, step: item.step, account: item.account, error: str(e.message, 300) });
+    }
+  }
+  requeueAfterParallel({ now });
+  const autoQueued = fill.autoQueuePending ? autoQueuePending({ state, env, alert, fill, launchedNow: launchedNow + launched.length, now }) : [];
+  return { launched, failed, plan, ended, settings: fill, autoQueued };
+}
+
+/**
+ * Auto-queue pending builds (Claude setting builds.autoQueuePending, owner-only, off by default): when agent slots are
+ * still free after every ready step started and no Queue build waits for one, split Pending builds that clash with
+ * nothing running move to the Queue in priority order (planFill's Pending rule: split, no file clash, accounts free),
+ * each with the build note `auto-queued: slots free`, and one alert lists them. A build a session handed back to
+ * Pending, or one whose steps still need a split, keeps waiting for Brett. The next tick launches them.
+ */
+export function autoQueuePending({ state, env = process.env, alert = () => {}, fill = fillSettings(env), launchedNow = 0, now = Date.now() } = {}) {
+  if (!fill.autoQueuePending) return [];
+  const store = loadStore(); const rules = rulesOf(store);
+  const builds = runnable(store);
+  const queueWaits = builds.filter((b) => b.status === 'queued' && !BP.isHeld(b) && BP.openSteps(b).length);
+  if (queueWaits.length) return [];
+  const pending = builds.filter((b) => b.status === 'pending' && !b.hidden && b.steps.length && !P.needsSplit(b, rules) && b.pipeline?.lastRun?.outcome !== 'returned');
+  if (!pending.length) return [];
+  const inputs = fillInputs({ store, state, env, fill, launchedNow, now });
+  // ready steps first: what they would take is not left for Pending builds
+  const plan = BP.planFill({ ...inputs, pending, settings: { ...inputs.settings, autoQueue: true }, priorityOf: (b) => effectivePriority(b) });
+  const take = plan.launches.filter((l) => l.kind === 'pending');
+  const moved = [];
+  for (const l of take) {
+    try {
+      queue(l.id, { by: 'auto-queue (slots free)' });
+      withStore((s) => { const rec = storeCore.findBuild(s, l.id); if (rec) { rec.notes.push({ text: 'auto-queued: slots free', at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:auto-queue', note: l.id });
+      moved.push(l.id);
+    } catch (e) { logLine({ event: 'auto-queue-failed', build: l.id, error: str(e.message, 300) }); }
+  }
+  if (moved.length) {
+    const byId = new Map(builds.map((b) => [b.id, b]));
+    alert('autoqueue', { ids: moved, builds: moved.map((id) => ({ id, title: str(byId.get(id)?.title, 120), priority: priorityLabel(effectivePriority(byId.get(id))) })) });
+    logLine({ event: 'auto-queued', builds: moved });
+    crewSay('orchestrator', 'start', `Slots were free: auto-queued ${moved.join(', ')}.`, { ref: moved[0] });
+  }
+  return moved;
+}
+
+/**
+ * A running build whose own session ended while step sessions worked (`waiting on parallel steps`): once no step
+ * session is left, it goes back to the Queue when steps are left (its own session picks them up), else it is built.
+ */
+export function requeueAfterParallel({ now = Date.now() } = {}) {
+  const out = [];
+  for (const b of live(loadStore())) {
+    if (b.status !== 'running' || b.pipeline?.session || b.pipeline?.note !== 'waiting on parallel steps') continue;
+    if (b.steps.some((x) => !x.done && !x.skip && BP.claimLive(x.claim, now))) continue;
+    const left = BP.openSteps(b).length;
+    if (left) { setPipeline(b.id, { note: '', queuedAt: nowIso(), queuedBy: 'dispatcher' }, { status: 'queued', note: `Parallel steps finished; ${left} step${left === 1 ? '' : 's'} left: back in the Queue for its own session.`, action: 'pipeline:requeue' }); out.push({ id: b.id, status: 'queued' }); }
+    else { setPipeline(b.id, { note: '' }, { status: 'landing', note: 'Parallel steps finished: every step is done; the auto-lander lands it (done-means-merged@1).', action: 'pipeline:end' }); out.push({ id: b.id, status: 'landing' }); }
+  }
+  return out;
+}
+
 /** The kinds of session end the headless wrapper reports (claude-headless.sh → pipeline.mjs exit --kind). */
 export const EXIT_KINDS = ['phase-done', 'crash', 'stopped'];
 /** The dispatcher's lock: the cron tick holds it (deploy/install-console.sh: flock -n /run/axf-pipeline.lock). */
@@ -1327,7 +1756,9 @@ export function tick({ env = process.env } = {}) {
   try { failures = detectFailures({ ended, env }); } catch (e) { logLine({ event: 'detect-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
-  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  let store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  // the step-dependency migration (BUILD-PARALLEL §1): once, journalled; older builds keep no dependsOn
+  if (!store.meta?.versions?.stepDeps) { try { migrateStepDepsNow('dispatcher'); store = loadStore(); } catch (e) { logLine({ event: 'migrate-step-deps-failed', error: str(e.message, 300) }); } }
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
@@ -1394,27 +1825,32 @@ export function tick({ env = process.env } = {}) {
         tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_SHOWN });
     }
   }
+  // fill every slot: parallel steps of running builds into the slots still free (BUILD-PARALLEL)
+  let fill = { launched: [], failed: [], plan: null, ended: [], settings: null };
+  try { fill = fillRound({ state, env, alert, rules, launchedNow: launched.length }); } catch (e) { logLine({ event: 'fill-failed', error: str(e.message, 300) }); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length) {
-    const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
-    idle = { ...plan.idle, since };
+  const idleNow = (plan.idle && !launched.length && !fill.launched.length) ? plan.idle : P.fillIdle(fill.plan, launched.length + fill.launched.length);
+  if (idleNow) {
+    const since = state.idle?.kind === idleNow.kind ? state.idle.since : started;
+    idle = { ...idleNow, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
     const already = state.alerts.find((a) => a.key === 'pipeline:idle');
     if (!already && Date.now() >= dueAt) {
-      alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
-      if (plan.idle.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${plan.idle.reason}.`, { dedupeMin: 360 });
-      else crewSay('dispatcher', 'blocked', `Stuck: ${plan.idle.reason}.`, { dedupeMin: 360 });
+      alert('idle', { kind: idleNow.kind, reason: idleNow.reason });
+      if (idleNow.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${idleNow.reason}.`, { dedupeMin: 360 });
+      else crewSay('dispatcher', 'blocked', `Stuck: ${idleNow.reason}.`, { dedupeMin: 360 });
     }
   } else if (state.alerts.some((a) => a.key === 'pipeline:idle')) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, fill: fill.plan ? { at: nowIso(), launches: fill.plan.launches, waits: fill.plan.waits, free: fill.plan.free, blocked: fill.plan.blocked, launched: fill.launched.map((l) => ({ id: l.id, step: l.step, account: l.account, session: l.session })), ended: fill.ended } : { at: nowIso(), off: !fill.settings?.fillSlots, ended: fill.ended }, slots: { used: sl.used, cap: sl.cap, free: sl.free, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
+  try { if (existsSync(files().fillRequest)) { logLine({ event: 'fill-run', request: readJson(files().fillRequest) }); rmSync(files().fillRequest, { force: true }); } } catch { /* a courtesy */ }
   const asked = readJson(files().checkRequest);
   let check = null;
   if (asked || (plan.queue.length && !launched.length && plan.waits.length)) {
@@ -1430,7 +1866,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify, p2 };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, fill, idle, alertsSent: sent, selfCheck: check, health, verify, p2 };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -1655,6 +2091,29 @@ async function main(argv) {
     if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+  }
+  if (cmd === 'fill' && (rest[0] ?? 'status') === 'status') { const f = fillStatus({ build: rest[1] ?? '' }); return out(f, fillLines(f)); }
+  if (cmd === 'fill' && rest[0] === 'run') { const r = fillRun({ by }); return out(r, r.ran ? `ran a round: ${r.launched.length} build(s), ${r.fill.launched.length} parallel step(s) started${r.fill.autoQueued.length ? `, auto-queued ${r.fill.autoQueued.join(', ')}` : ''}` : r.note); }
+  if (cmd === 'fill' && rest[0] === 'set') {
+    // fill set fillSlots=false maxParallelPerBuild=2: through the console's route, which owns the owner rules
+    const body = Object.fromEntries(rest.slice(1).filter((a) => a.includes('=')).map((a) => { const [k, v] = a.split('='); return [k, v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v]; }));
+    if (!Object.keys(body).length) throw Object.assign(new Error('usage: fill set fillSlots=true|false maxParallelPerBuild=<1-12> autoQueuePending=true|false'), { code: 2 });
+    const r = makeConsole()('POST', '/api/plugins/build-orchestrator/pipeline/fill/settings', body); // axf-plugin:build-orchestrator
+    if (!r) throw new Error('the console did not answer (the fill settings change through its API: Settings → Plugins → Build orchestrator)');
+    if (r.ok === false || r.detail) throw Object.assign(new Error(str(r.detail || r.error || 'refused', 300)), { code: 2 });
+    return out({ ok: true, ...r }, (r.changed ?? []).map((c) => `${c.key}: ${c.from} → ${c.to}`).join('\n') || 'nothing changed');
+  }
+  if (cmd === 'fill' && rest[0] === 'deps') {
+    // fill deps <build> <step> <s1,s2 | none | sequential>   (none = independent: [])
+    const raw = rest[3] ?? ''; const deps = raw === 'sequential' ? null : raw === 'none' || raw === '[]' ? [] : raw.startsWith('[') ? JSON.parse(raw) : raw;
+    const r = setStepDeps(rest[1], rest[2], deps, { by });
+    return out(r, `${r.id} ${r.step}: ${r.explicit === null ? 'sequential' : r.dependsOn.length ? `after ${r.dependsOn.join(', ')}` : 'independent'}${r.parallel ? ' (may run in parallel)' : ''}`);
+  }
+  if (cmd === 'step-brief') { // step-brief <build> <step>: the brief of a step-scoped launch (claude-headless.sh --step)
+    const store = loadStore(); const b = storeCore.findBuild(store, rest[0]);
+    if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const text = stepBriefFor(b, rest[1], rulesOf(store), { account: flag('account'), model: flag('model') });
+    return out({ ok: true, id: b.id, step: rest[1], brief: text }, text);
   }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }

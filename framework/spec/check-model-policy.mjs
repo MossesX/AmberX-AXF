@@ -11,7 +11,7 @@ import { JOB_DEFAULTS, JOB_ENUMS, jobTypeErrors, normalizeJobType } from '../cor
 import { MODELS as STORE_MODELS } from '../plan/builds-store-core.mjs';
 import { suggestModel } from '../cli/plan.mjs';
 import * as SW from '../core/model-switch.mjs';
-import { audit, findBuild, launchCheck, stepOf } from '../cli/model-gate.mjs';
+import { audit, findBuild, launchCheck, stepLaunchCheck, stepOf } from '../cli/model-gate.mjs';
 import { readUpgradePolicy } from '../cli/upgrade-policy.mjs';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -184,6 +184,17 @@ t('launch gate: an unapproved upgrade phase or a model above the step is refused
   const store = { builds: [LB()] };
   assert.equal(findBuild(store, { name: 'axf-lb' })?.id, 'lb'); assert.equal(findBuild(store, { brief: 'Continue build "L" (lb) — Phase 2' })?.id, 'lb'); assert.equal(findBuild(store, { name: 'other' }), null);
 });
+t('step launch gate (fill every slot): checked per step; never above the step pin; a settled or missing step is refused', () => {
+  const ok = [{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }];
+  assert.equal(stepLaunchCheck(LB(ok), 's3', 'opus').ok, true, 'an Opus step on Opus');
+  assert.equal(stepLaunchCheck(LB(ok), 's3', 'fable').ok, false, 'an Opus step never on Fable, even beside an approved Fable phase');
+  assert.match(stepLaunchCheck(LB(ok), 's3', 'fable').why, /raise the step first/);
+  assert.equal(stepLaunchCheck(LB(ok), 's2', 'opus').ok, true, 'a Fable step on Opus is a downgrade');
+  assert.equal(stepLaunchCheck(LB(), 's2', 'fable').ok, false, 'its phase upgrade not approved');
+  assert.equal(stepLaunchCheck(LB(), 's1', 'opus').ok, false, 'done'); assert.equal(stepLaunchCheck(LB(), 's9', 'opus').ok, false, 'missing');
+  assert.equal(stepLaunchCheck(null, 's1', 'opus').ok, false, 'a step launch needs its build');
+  assert.equal(stepLaunchCheck(LB(ok), 's3', 'gpt-5').ok, false, 'an unknown model is refused for a step launch too');
+});
 t('launch gate: an unknown model is refused for every launch, build or not; no model is nothing to compare', () => {
   for (const s of UNKNOWN_MODELS) for (const b of [null, LB([], 0)]) {
     const r = launchCheck(b, s); assert.equal(r.ok, false, `${s} ${b ? 'build' : 'no build'}`); assert.equal(r.unknown, true); assert.match(r.why, /not a Claude model.*never a silent Opus/);
@@ -191,7 +202,7 @@ t('launch gate: an unknown model is refused for every launch, build or not; no m
   assert.equal(launchCheck(null, '').ok, true); assert.equal(launchCheck(LB([], 0), '').ok, true); assert.equal(launchCheck(LB([], 0), undefined).ok, true);
 });
 t('model-gate CLI: resolve prints the current id for any spelling and fails on an unknown model; launch refuses it with exit 3', () => {
-  const gate = (...a) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/model-gate.mjs'), ...a], { encoding: 'utf8', env: { ...process.env, AXF_MODEL: '', AXF_BUILD_ID: '', AXF_BUILD_STEP: '' } });
+  const gate = (...a) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/model-gate.mjs'), ...a], { encoding: 'utf8', env: { ...process.env, AXF_MODEL: '', AXF_BUILD_ID: '', AXF_BUILD_STEP: '', AXF_STEP_ID: '' } });
   for (const s of ['fable', 'Fable', 'FABLE', 'claude-fable-5-1', 'claude-fable-5-2']) { const r = gate('resolve', s); assert.equal(r.status, 0, r.stderr); assert.equal(r.stdout.trim(), 'claude-fable-5-2', s); }
   assert.deepEqual(JSON.parse(gate('resolve', 'Opus', '--json').stdout), { ok: true, key: 'opus', label: 'Opus 5.5', id: 'claude-opus-5-5' });
   for (const s of ['gpt', '']) { const r = gate('resolve', s); assert.equal(r.status, 2, `${s}: ${r.stdout}`); assert.equal(r.stdout.trim(), '', 'no id printed'); assert.match(r.stderr, /model-gate: /); }

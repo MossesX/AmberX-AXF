@@ -27,6 +27,10 @@ const reg = loadRegistry();
 ok(reg.settings.length >= 25 && reg.groups.length >= 7, 'registry has the groups and settings');
 for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.uiReviewGate', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
 ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === true, 'named agent is locked on');
+{ const g = (k) => reg.settings.find((s) => s.key === k);
+  ok(g('builds.fillSlots')?.default === true && g('builds.fillSlots').owner === 'raise' && g('builds.fillSlots').kind === 'toggle', 'Fill every slot: default on; anyone switches it off, only Brett on');
+  ok(g('builds.autoQueuePending')?.default === false && g('builds.autoQueuePending').owner === true, 'Auto-queue pending builds: owner-only, off by default');
+  ok(g('builds.maxParallelPerBuild')?.default === 3 && g('builds.maxParallelPerBuild').owner === 'raise' && g('builds.maxParallelPerBuild').max === 12, 'Max parallel steps per build: 3, only Brett raises'); }
 { const f = reg.settings.find((s) => s.key === 'builds.fableUpgradeApproval'); ok(f?.owner === true && f.default === false && f.kind === 'toggle', 'Fable upgrades need my approval: owner-only toggle, off by default (Brett, Nov 4 2026)'); }
 ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'Follow Amber', 'Follow Amber is the shared switch');
 const more = loadRegistry({ extra: [{ groups: [{ id: 'x', label: 'Extra' }], settings: [{ key: 'x.flag', group: 'x', label: 'Flag', kind: 'toggle', default: false }, { key: 'bad', kind: 'toggle', default: 'no' }] }] });
@@ -46,6 +50,13 @@ ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'ses
 ok(view().values['noWait.enabled'] === false, 'still off after every refusal');
 ok(throwsCode(() => setSettings({ 'builds.alwaysNamedAgent': false }, { owner: BRETT, env: CLEAN }), 'denied'), 'locked: not even the owner');
 ok(throwsCode(() => setSettings({ 'builds.budgetDailyUsd': 500 }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot raise a budget cap');
+ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot switch on auto-queue');
+ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: BRETT, env: SESSION }), 'denied'), 'nor with an owner handed over inside a session');
+ok(setSettings({ 'builds.fillSlots': false, 'builds.maxParallelPerBuild': 2 }, { owner: null, env: CLEAN }).changed.length === 2, 'a session may switch Fill every slot off and lower the per-build cap');
+ok(throwsCode(() => setSettings({ 'builds.fillSlots': true }, { owner: null, env: CLEAN }), 'denied'), 'only Brett switches Fill every slot back on');
+ok(throwsCode(() => setSettings({ 'builds.maxParallelPerBuild': 5 }, { owner: null, env: CLEAN }), 'denied'), 'only Brett raises the per-build cap');
+ok(setSettings({ 'builds.fillSlots': true, 'builds.maxParallelPerBuild': 3, 'builds.autoQueuePending': true }, { owner: BRETT, env: CLEAN }).changed.length === 3, "Brett's console click changes all three");
+setSettings({ 'builds.autoQueuePending': false }, { owner: BRETT, env: CLEAN });
 ok(setSettings({ 'builds.budgetDailyUsd': 20 }, { owner: null, env: CLEAN }).changed.length === 1, 'a session may lower a budget cap');
 ok(setSettings({ 'builds.budgetDailyUsd': 80 }, { owner: BRETT, env: CLEAN }).changed[0].to === 80, 'Brett raises it');
 ok(throwsCode(() => setSettings({ 'talking.length': 'huge' }, { env: CLEAN }), 'invalid'), 'a bad choice is refused');

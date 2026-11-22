@@ -14,6 +14,7 @@ import * as consoleApi from '@console/api';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import type { pluginApi } from '@console/plugins';
 import * as T from './status-table-core.mjs';
+import { StepDeps } from './StepDeps';
 import type { StepRow, TableRow } from './status-table-core.mjs';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
 import './status-table.css';
@@ -285,6 +286,7 @@ function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone
             groups={[{ id: 'steps', title: `Steps ${r.done}/${r.total}`, icon: 'list', rows, groups: [], fixed: true }]} columns={cols}
             rowId={(s) => s.id} rowLabel={(s) => s.title} rowTone={(s) => tone(s.status === 'completed' || s.status === 'in-pr' ? 'landed' : s.status)}
             hidden={phone ? PHONE_STEP_HIDDEN : []} />
+          {rows.length > 1 && <StepDeps api={api} build={r.id} />}
         </div>
       ) : <p className="fx-small fx-muted">No steps yet: the build is split into steps in its splitting status.</p>}
     </div>

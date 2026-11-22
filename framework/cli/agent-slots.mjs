@@ -16,7 +16,7 @@
  * only judged on the host that started an entry, so the console never drops the VPS's sessions.
  *
  *   node framework/cli/agent-slots.mjs status [--json]           slots used / cap, the queue, heavy lock, memory
- *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--pid N] [--cwd d] [--agent id] [--json|--sh]
+ *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--step sN] [--pid N] [--cwd d] [--agent id] [--json|--sh]
  *   … wait <id> [--pid N]          block until the entry starts (exit 0) or is cancelled (exit 4)
  *   … claim <id>                   one try: exit 0 started, 3 still waiting, 4 gone
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
@@ -32,6 +32,8 @@
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *   … fill [--json]                free slots and what the dispatcher's fill round would launch next (dry run): the
+ *                                  build pipeline's fill status when its plugin is installed, else free slots only
  *
  * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
  * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
@@ -49,7 +51,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { emergencyIds, loadLimit, poolOf, scopePrefix, usage as hardUsage } from './build-limit.mjs';
@@ -437,7 +439,7 @@ export function enqueue(opts = {}, facts = {}) {
     const mem = prune(st, settings, facts);
     const id = newId(st, opts.kind);
     const nowIso = new Date(facts.now ?? Date.now()).toISOString();
-    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}),
+    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}), ...(opts.build && /^[a-z0-9][a-z0-9-]{0,39}$/.test(String(opts.step ?? '')) ? { step: String(opts.step) } : {}),
       seq: st.seq, state: 'waiting', enqueuedAt: nowIso, pid: Number(opts.pid) || process.ppid, host: HOST(), cwd: clip(opts.cwd ?? process.cwd(), 300), agent: clip(opts.agent, 60), by: clip(opts.by || process.env.AXF_SURFACE || '', 40) });
     return { id, ...tryStart(st, settings, id, mem.avail, facts) };
   });
@@ -459,7 +461,7 @@ function tryStart(st, settings, id, avail, facts = {}) {
   if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st, settings, pool).length, cap };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(pool === 'emergency' ? { pool } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(q.step ? { step: q.step } : {}), ...(pool === 'emergency' ? { pool } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
   return { started: true, position: 0, reason: '', used: holding(st, settings, pool).length, cap };
 }
@@ -692,6 +694,17 @@ async function cli(argv) {
   const f = flags(rest);
   const json = (v) => console.log(JSON.stringify(v, null, f.json ? 2 : 0));
   switch (cmd) {
+    case 'fill': {
+      // the build pipeline answers (planFill dry run) when it is installed; without it, the slots alone
+      const pipe = resolve(dirname(fileURLToPath(import.meta.url)), '../../apps/console-web/plugins/build-orchestrator/pipeline.mjs'); // axf-plugin:build-orchestrator
+      if (existsSync(pipe)) {
+        const r = spawnSync(process.execPath, [pipe, 'fill', 'status', ...(f.json ? ['--json'] : [])], { encoding: 'utf8', timeout: 60000 });
+        if (r.status === 0) return process.stdout.write(r.stdout);
+      }
+      const s = status();
+      if (f.json) return json({ ok: true, slots: { cap: s.cap, used: s.used, free: Math.max(0, s.cap - s.used) }, plan: null });
+      return console.log(`slots ${s.used}/${s.cap} · ${Math.max(0, s.cap - s.used)} free · no build pipeline installed: no fill plan`);
+    }
     case 'data': {
       const sub = ['status', 'cutover', 'local'].includes(rest[0]) ? rest[0] : 'status';
       const r = await dataCut(sub, { apply: !!f.apply, by: typeof f.by === 'string' ? f.by : 'svc:cli' });
@@ -716,7 +729,7 @@ async function cli(argv) {
       return;
     }
     case 'enqueue': {
-      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, step: f.step, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }

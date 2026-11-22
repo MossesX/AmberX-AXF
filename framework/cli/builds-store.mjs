@@ -18,6 +18,9 @@
  *   … migrate --dry [--report <file>]                      what the migration would do (report, nothing written)
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
+ *                                                           (plus step dependencies: missing ids and cycles)
+ *   … migrate-deps [--dry]                                  step-dependency migration (build-pipeline@1): older builds get
+ *                                                           no dependsOn; stamps meta.versions.stepDeps in one journal line
  *   … export                                                regenerate the old files (read-only exports of the store)
  *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
  *                                                            back to landing / fixing, once (dry run without --apply)
@@ -50,6 +53,11 @@
  * orchestrator.json is not written at all (it only dirtied the live checkout).
  * Old writers (S5-01): a field this checkout's code does not know is kept on every read and write (keepStore), and a
  * checkout whose STORE_VERSION is older than the store's is refused (StoreTooNew) instead of writing it back poorer.
+ * Step dependencies (Nov 13 2026, build-pipeline@1): a step's optional `after` list (`dependsOn` on input), `parallel`
+ * mode and `claim` record go through normBuild, the orchestrator export / absorb and the newer-wins merge unchanged; a
+ * step without `after` stays implicitly sequential (that is the whole migration: nothing is added to older steps).
+ * `verify` reports an `after` id that names no step of the build, a stored `dependsOn`, a bad `parallel` value and any
+ * dependency cycle (core.validateStore / dependencyCycles).
  *
  * data-store@1 (axf-data, Nov 15 2026: "the builds keep running" with the console down): the store and its journal
  * follow the mode of their keys (`builds/store.json`, `builds/journal/`; framework/core/data-store-mode.mjs, key-level
@@ -1037,6 +1045,13 @@ export function repairMojibakeNow({ apply = false, by = 'repair-mojibake', ids =
   return { apply, builds: report.map((r) => ({ id: r.id, revisions: r.revisions, fields: r.fields.map(({ path, value, orig, ...f }) => f) })), fixed: sum('fixed'), left: sum('left') };
 }
 
+/** Run the step-dependency migration under the store lock (journalled once as `migrate-step-deps`). */
+export function migrateStepDepsNow(by = 'migration') {
+  let report;
+  const r = withStore((s) => { const m = core.migrateStepDeps(s, { by }); report = m.report; return m.store; }, { by, action: 'migrate-step-deps', note: `step dependencies v${core.STEP_DEPS_VERSION} (build-pipeline@1): older builds keep no dependsOn and run one step at a time` });
+  return { report, rev: r.rev };
+}
+
 export const currentProfile = () => activeProfile().id;
 
 async function main(argv) {
@@ -1145,6 +1160,12 @@ async function main(argv) {
     return out({ ok: !r.left, ...r }, `${r.apply ? 'repaired' : 'dry run (--apply writes)'}: ${r.builds.length} build(s) with damaged text, ${r.fixed} character(s) put back, ${r.left} left\n${rows.join('\n')}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'migrate-deps') {
+    const dry = rest.includes('--dry');
+    const r = dry ? core.migrateStepDeps(loadStore()) : migrateStepDepsNow();
+    const what = `${r.report.builds} builds, ${r.report.steps} steps; ${r.report.withDeps} with a dependency list (older builds keep none and run in order); ${r.report.aliasMoved} stored dependsOn moved to after`;
+    return out({ ok: true, dry, report: r.report, rev: r.rev }, `${dry ? 'dry run' : r.report.stamped ? `step deps v${r.report.version} stamped (rev ${r.rev})` : `step deps already at v${r.report.version}`}: ${what}`);
+  }
   if (cmd === 'done-means-merged') {
     // done-means-merged@1 (framework/spec/DONE-MEANS-MERGED.md): built / complete records that cannot prove a merge go back
     // to landing / fixing, once. --dry reports, --apply writes (journalled, live to main like every write); --report <file> writes the list.
@@ -1175,14 +1196,21 @@ async function main(argv) {
     const pointer = readJson(join(REPO_ROOT, JOURNAL_POINTER_REL));
     const jv = process.env.AXF_BUILDS_STORE ? { ok: true, checked: 0, failed: [], warning: '' } : verifyJournal(pointer);
     if (!jv.ok) process.exitCode = 1;
-    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`)];
+    // 4. step dependencies: an `after` / `dependsOn` id naming no step of its build, and dependency cycles
+    const deps = core.stepDepsReport(store);
+    if (deps.missing.length || deps.cycles.length) process.exitCode = 1;
+    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`),
+      ...deps.missing.map((m) => `✗ deps ${m.build}/${m.step} depends on "${m.missing}", which is not a step of the build`),
+      ...deps.cycles.map((c) => `✗ deps ${c.build} dependency cycle: ${c.cycle.join(' → ')}`)];
     const jtext = jv.warning ? `; ${jv.warning}` : jv.checked ? `; journal: ${jv.checked} part(s) on the hub match the pointer` : '';
     // build-watchdog@1: recoveries[] is optional on a build
     const recovered = store.builds.filter((b) => Array.isArray(b.recoveries) && b.recoveries.length);
     const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
     // demo-build@1: demo builds (tag + demo- id) are counted, never mixed with the rest
     const demo = { builds: store.builds.filter((b) => core.isDemo(b)).map((b) => b.id) };
-    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without`);
+    const ok = !bad.length && v.ok && jv.ok && !deps.missing.length && !deps.cycles.length;
+    const depsLine = `step deps v${store.meta?.versions?.stepDeps?.version ?? 0}: ${deps.withDeps} build(s) with a dependency list, no missing ids, no cycles`;
+    return out({ ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo, deps }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without\n${depsLine}`);
   }
   const s = loadStore();
   if (cmd === 'status') {

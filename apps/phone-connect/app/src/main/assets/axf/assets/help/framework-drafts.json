@@ -398,6 +398,20 @@
         "title": "Open Skins gallery",
         "text": "Opens the Skins gallery, where you preview skins and switch the one in force for the hub, this app, a screen or a plugin.",
         "kind": "button"
+      },
+      {
+        "target": "reset-this",
+        "title": "Reset this",
+        "text": "Takes this piece of chrome (a toolbar, tab row, panel…) back to the app's settings for its kind: every change made only here goes. The number is how many there are.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "this-settings-window-every",
+        "title": "This settings window",
+        "text": "Opens the picker for the settings window itself: which settings interface every dialog of this kind uses and its layout. It styles the settings window, never the chrome being edited.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

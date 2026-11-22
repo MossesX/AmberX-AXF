@@ -38,6 +38,8 @@ const a = S.enqueue({ name: 'a' }, alive); const b = S.enqueue({ name: 'b' }, al
 eq([a.started, b.started, c.started, d.started], [true, true, false, false], 'cap 2: two start, two queue');
 eq([c.position, d.position], [1, 2], 'FIFO positions');
 eq(S.status(alive).used, 2, 'used = 2');
+{ const st = S.enqueue({ name: 'dag--s3', build: 'dag', step: 's3' }, { ...alive, mayTake: () => true }); const row = [...S.status(alive).running, ...S.status(alive).queue].find((r) => r.id === st.id);
+  eq([row?.build, row?.step], ['dag', 's3'], 'a step launch books its own slot, named with its step'); S.cancel?.(st.id); }
 
 // priority: urgent jumps the normal line, boss jumps urgent; FIFO within a level
 const u = S.enqueue({ name: 'urgent-x' }, alive); const bs = S.enqueue({ name: 'y', priority: 'boss' }, alive);
