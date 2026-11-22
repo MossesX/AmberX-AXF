@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T03:48:55.612Z",
+ "updatedAt": "2026-11-22T03:49:12.364Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -210282,7 +210282,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -210290,7 +210290,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-22T03:48:30.339Z",
+   "updatedAt": "2026-11-22T03:49:06.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -210448,6 +210448,10 @@
     {
      "text": "Headless run axf-one-build-time-always-split-to-fill--lenny: brief only · start 15.1K tokens ($0.05) · cost $0.54 · 17 turns · 6 tools, MCP none",
      "at": "2026-11-22T03:48:30.339Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-22T03:49:06.905Z"
     }
    ],
    "approvals": [
@@ -215105,7 +215109,7 @@
    "branch": "claude/one-true-source-get-redundant-settings",
    "pr": "#888",
    "createdAt": "2026-11-21T20:04:08.140Z",
-   "updatedAt": "2026-11-22T02:05:21.471Z",
+   "updatedAt": "2026-11-22T03:49:03Z",
    "builtAt": "2026-11-22T03:47:50.674Z",
    "notes": [
     {
@@ -215155,6 +215159,10 @@
     {
      "text": "Watchdog: landing for 3 h: PR #888 is still open and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-22T02:05:21.471Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-true-source-get-redundant-settings rev 1 sent to Shipped features (orchestrator): PR #888, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-22T03:49:03Z"
     }
    ],
    "approvals": [],

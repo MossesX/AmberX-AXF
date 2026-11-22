@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
-- 2026-11-21 22:47 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
 - 2026-11-21 22:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
 - 2026-11-21 22:48 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
 - 2026-11-21 22:58 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 03:48 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · builds-live
 - 2026-11-22 03:48 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
 - 2026-11-22 03:48 UTC · `move-server-side-console-parts-onto-vps` note (all) · builds-live
+- 2026-11-22 03:49 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-22 03:49 UTC · `one-build-time-always-split-to-fill` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
