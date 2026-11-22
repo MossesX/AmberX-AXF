@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T23:46:16.121Z",
+ "updatedAt": "2026-11-22T00:18:30.183Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -214,7 +214,6 @@
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
    "status": "failed",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -241,123 +240,99 @@
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T00:52:01.672Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:52:01.672Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T00:55:02.396Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:55:02.396Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-21T00:56:01.224Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:56:01.224Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 2.",
-     "at": "2026-11-21T00:57:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:57:02.199Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:08:01.205Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:08:01.205Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:11:01.292Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:11:01.292Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:12:01.737Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:12:01.737Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 3.",
-     "at": "2026-11-21T01:13:01.864Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:13:01.864Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:23:02.170Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:23:02.170Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:27:02.143Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:27:02.143Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:28:01.966Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:28:01.966Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 4.",
-     "at": "2026-11-21T01:29:01.173Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:29:01.173Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:39:01.532Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:39:01.532Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:43:02.002Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:43:02.002Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:44:01.972Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:44:01.972Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 5.",
-     "at": "2026-11-21T01:45:02.382Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:45:02.382Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:56:02.160Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:56:02.160Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T02:00:02.504Z",
-     "by": "watchdog"
+     "at": "2026-11-21T02:00:02.504Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-21T02:01:02.038Z",
-     "by": "watchdog"
+     "at": "2026-11-21T02:01:02.038Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T02:02:01.702Z",
-     "by": "watchdog"
+     "at": "2026-11-21T02:02:01.702Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T05:16:01.451Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:16:01.451Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T05:20:03.140Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:20:03.140Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-21T05:21:01.688Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:21:01.688Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T05:22:01.800Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:22:01.800Z"
     }
    ],
    "approvals": [],
@@ -705,7 +680,6 @@
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
    "status": "failed",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -732,123 +706,99 @@
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T00:51:01.497Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:51:01.497Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T00:54:01.950Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:54:01.950Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-21T00:55:02.396Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:55:02.396Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 2.",
-     "at": "2026-11-21T00:56:01.224Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:56:01.224Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:06:01.987Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:06:01.987Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:09:02.213Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:09:02.213Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-21T01:10:02.346Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:10:02.346Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 3.",
-     "at": "2026-11-21T01:11:01.292Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:11:01.292Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:21:01.782Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:21:01.782Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:24:02.257Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:24:02.257Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-21T01:25:01.608Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:25:01.608Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 4.",
-     "at": "2026-11-21T01:26:01.732Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:26:01.732Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:36:02.116Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:36:02.116Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:40:01.852Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:40:01.852Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:41:01.737Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:41:01.737Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 5.",
-     "at": "2026-11-21T01:42:01.466Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:42:01.466Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:53:02.223Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:53:02.223Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:57:01.557Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:57:01.557Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-21T01:58:01.819Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:58:01.819Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T01:59:01.652Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:59:01.652Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T05:16:01.451Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:16:01.451Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T05:20:03.140Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:20:03.140Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-21T05:21:01.688Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:21:01.688Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T05:22:01.800Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:22:01.800Z"
     }
    ],
    "approvals": [],
@@ -1144,7 +1094,6 @@
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
    "status": "archived",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
@@ -1321,18 +1270,15 @@
     },
     {
      "text": "Lander: PR 1 of 1 (s1, s2, s3, s4, s5)",
-     "at": "2026-11-21T00:11:38.596Z",
-     "by": "lander"
+     "at": "2026-11-21T00:11:38.596Z"
     },
     {
      "text": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)",
-     "at": "2026-11-21T00:42:49.539Z",
-     "by": "lander"
+     "at": "2026-11-21T00:42:49.539Z"
     },
     {
      "text": "Lander: failed in running-ci, attempt 9: the fix session (agent) pushed nothing in 60 min",
-     "at": "2026-11-21T02:13:43.553Z",
-     "by": "lander"
+     "at": "2026-11-21T02:13:43.553Z"
     },
     {
      "text": "Reconciler: PR #867 merged",
@@ -1340,8 +1286,7 @@
     },
     {
      "text": "Lander: failed in running-ci, attempt 10: the fix session (agent) pushed nothing in 60 min",
-     "at": "2026-11-21T03:45:10.075Z",
-     "by": "lander"
+     "at": "2026-11-21T03:45:10.075Z"
     },
     {
      "text": "Refused failed → landed (asked by amber): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
@@ -1353,13 +1298,11 @@
     },
     {
      "text": "Lander: failed in running-ci, attempt 13: the fix session (agent) pushed nothing in 60 min",
-     "at": "2026-11-21T05:16:28.766Z",
-     "by": "lander"
+     "at": "2026-11-21T05:16:28.766Z"
     },
     {
      "text": "Lander: failed in running-ci, attempt 15: the fix session (agent) pushed nothing in 60 min",
-     "at": "2026-11-21T06:47:44.372Z",
-     "by": "lander"
+     "at": "2026-11-21T06:47:44.372Z"
     },
     {
      "text": "Moved to the Archive from failed (console): Brett Nov 21: PR #867 merged and main CI green on the merge commit (runs 44855694846, 44855694897); the store refuses 'landed' because landed.ci keeps resetting to none. Archiving frees the one active slot so the queued builds start..",
@@ -1488,7 +1431,6 @@
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
    "status": "failed",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -1519,123 +1461,99 @@
     },
     {
      "text": "Watchdog: build stuck at split (295 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T00:43:01.989Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:43:01.989Z"
     },
     {
      "text": "Watchdog: build stuck at split (299 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T00:47:01.956Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:47:01.956Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (300 min past its budget).",
-     "at": "2026-11-21T00:48:01.068Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:48:01.068Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 2.",
-     "at": "2026-11-21T00:49:01.769Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:49:01.769Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T00:59:01.792Z",
-     "by": "watchdog"
+     "at": "2026-11-21T00:59:01.792Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:02:01.988Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:02:01.988Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-21T01:03:01.741Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:03:01.741Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 3.",
-     "at": "2026-11-21T01:04:01.798Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:04:01.798Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:15:01.432Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:15:01.432Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:18:01.792Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:18:01.792Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:19:01.722Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:19:01.722Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 4.",
-     "at": "2026-11-21T01:20:01.918Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:20:01.918Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:30:02.237Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:30:02.237Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:34:02.242Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:34:02.242Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T01:35:02.326Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:35:02.326Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 5.",
-     "at": "2026-11-21T01:36:02.116Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:36:02.116Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T01:47:01.278Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:47:01.278Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T01:51:02.044Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:51:02.044Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-21T01:52:01.292Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:52:01.292Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T01:53:02.223Z",
-     "by": "watchdog"
+     "at": "2026-11-21T01:53:02.223Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T05:15:02.508Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:15:02.508Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T05:19:01.189Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:19:01.189Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T05:20:03.140Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:20:03.140Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T05:21:01.688Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:21:01.688Z"
     }
    ],
    "approvals": [],
@@ -1887,7 +1805,6 @@
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
    "status": "failed",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -1990,23 +1907,19 @@
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-21T05:15:02.508Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:15:02.508Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-21T05:19:01.189Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:19:01.189Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 6: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-21T05:20:03.140Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:20:03.140Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 6 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-21T05:21:01.688Z",
-     "by": "watchdog"
+     "at": "2026-11-21T05:21:01.688Z"
     }
    ],
    "approvals": [],
@@ -2169,7 +2082,6 @@
    "detail": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).\n\nThe flow itself is in the section \"Brett's flow\" below; it wins over anything here.\n\n## Status lifecycle (forward-only)\n- Everything is status; nothing goes back.\n- All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).\n- Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.\n\n## Builds table\n- One table, driven by each build's status, not its location. No tabs at all.\n- Purely filters, carried on the toolbar.\n- Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.\n\n## Fail-safes / redundancy (self-healing, not paging Brett)\n- Multiple independent ways to catch stalls and trigger fixes.\n- Layer 1: the pipeline tick does the normal work.\n- Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).\n- Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.\n- Never fail silently.\n\n## Landing\n- Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.\n\n## Related\n- Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).\n- Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.\n- Visual flow diagrams in Plan Studio 2.0.\n\nOne-PR size cap: Brett, Nov 18 2026 (voice): bundling every step into one PR is better (one CI run instead of each PR waiting, re-pulling main and rerunning CI after the last one lands), as long as it isn't huge.\n\nSize cap: over a certain size, the pieces are combined into two PRs, or three, or however many the size calls for (not one PR per step). Those PRs then land one at a time: each pulls in main, runs CI and merges in turn, etc. Threshold not set yet.\n\nWorktrees cut before launch: Brett, Nov 19 2026 (voice): worktrees are cut BEFORE launch, never at launch. Each step's worktree is created and pulls main during the pending / pulling-main stage, so when a slot frees up, launch only starts the session. Launch must never time out on cutting a worktree under load.",
    "status": "archived",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -3854,7 +3766,6 @@
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
    "status": "archived",
    "hidden": false,
-   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
@@ -210531,7 +210442,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210539,8 +210450,8 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T12:18:28.671Z",
-   "builtAt": "2026-11-19T12:18:28.671Z",
+   "updatedAt": "2026-11-22T00:18:27.594Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
@@ -210965,6 +210876,10 @@
     {
      "text": "Reconciler: PR #848 merged: complete",
      "at": "2026-11-19T12:18:28.671Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-22T00:18:27.594Z"
     }
    ],
    "approvals": [
@@ -214346,8 +214261,9 @@
    "pendingId": "",
    "branch": "claude/approval-rules-save-apply-default-don-t",
    "pr": "#890",
+   "mergedAt": "2026-11-21T23:38:01Z",
    "createdAt": "2026-11-21T22:28:34.554Z",
-   "updatedAt": "2026-11-21T23:41:01.326Z",
+   "updatedAt": "2026-11-22T00:18:27.594Z",
    "builtAt": "2026-11-21T23:41:01.326Z",
    "notes": [
     {
@@ -214373,6 +214289,14 @@
     {
      "text": "PR #890, CI green. Cause: confirm() cannot be drawn in the console app's overlay WebView, so both buttons ended silently. Fix: on-tab question + Sign in prompt + clear errors (console deploy), console app 0.2.0 draws dialogs in the overlay. Not run on a phone. CI: one Gradle failure was a timing flake in lib-hub HubAppearanceSourceTest (unrelated), green on re-run.",
      "at": "2026-11-21T23:28:53.989Z"
+    },
+    {
+     "text": "Reconciler: PR #890 merged",
+     "at": "2026-11-22T00:18:27.594Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T00:18:27.595Z"
     }
    ],
    "approvals": [],
