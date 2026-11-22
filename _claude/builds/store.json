@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10352,
- "updatedAt": "2026-11-22T11:40:28.921Z",
+ "rev": 10353,
+ "updatedAt": "2026-11-22T14:10:13.445Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204080,7 +204080,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T06:45:01.249Z",
+   "updatedAt": "2026-11-22T11:51:01.655Z",
    "builtAt": "",
    "notes": [
     {
@@ -204530,6 +204530,36 @@
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
      "at": "2026-11-22T06:45:01.249Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T11:44:01.873Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T11:48:01.156Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at building, attempt 3: building did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-22T11:49:02.006Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at building, attempt 4.",
+     "at": "2026-11-22T11:50:02.294Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T11:51:01.655Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T11:51:01.655Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -204588,11 +204618,11 @@
      "at": "2026-11-22T00:49:56.836Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "",
+     "reason": "all-done",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-orchestrator-settings-collapsible-split--paulie",
-     "phase": ""
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -204606,10 +204636,10 @@
     "route": "",
     "dispatchedAt": "2026-11-21T23:26:54.170Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-22T08:05:07.888Z",
+     "at": "2026-11-17T19:06:06.682Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -204619,7 +204649,17 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-22T02:16:26.311Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-orchestrator-settings-collapsible-split--s8--earl",
+     "phase": ""
+    }
    },
    "steps": [
     {
@@ -205689,7 +205729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 267,
+   "rev": 272,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205720,9 +205760,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-22T06:44:01.802Z",
+   "statusAt": "2026-11-22T11:50:02.294Z",
    "statusBy": "watchdog",
-   "attempt": 3,
+   "attempt": 4,
    "statusLog": [
     {
      "status": "failed",
@@ -205786,6 +205826,20 @@
      "by": "watchdog",
      "attempt": 3,
      "why": "retry forward at building, attempt 3"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-22T11:49:02.006Z",
+     "by": "watchdog",
+     "attempt": 3,
+     "why": "building did not move after 2 re-run(s) of the transition (5 min past its budget)"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-22T11:50:02.294Z",
+     "by": "watchdog",
+     "attempt": 4,
+     "why": "retry forward at building, attempt 4"
     }
    ]
   },
@@ -298093,7 +298147,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T11:38:31.043Z",
+   "updatedAt": "2026-11-22T14:08:31.584Z",
    "builtAt": "",
    "notes": [
     {
@@ -298219,6 +298273,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T11:38:31.043Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T14:08:31.584Z"
     }
    ],
    "approvals": [],
@@ -298599,7 +298657,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333671,7 +333729,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T11:40:10.093Z",
+   "updatedAt": "2026-11-22T14:10:11.529Z",
    "builtAt": "",
    "notes": [
     {
@@ -334213,6 +334271,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T10:44:05.920Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T14:10:11.529Z"
     }
    ],
    "approvals": [
@@ -334408,7 +334470,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 153,
+   "rev": 154,
    "deleted": false,
    "deletedAt": "",
    "pending": {
