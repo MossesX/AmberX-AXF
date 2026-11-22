@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 19:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
 - 2026-11-20 19:57 UTC · `nov-20-fix-list-voice-console-cont` note (all) · orchestrator
 - 2026-11-20 19:58 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 20:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 00:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · builds-live
 - 2026-11-22 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 - 2026-11-22 00:35 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · builds-live
+- 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
 
 ## Token passes (log)
 
