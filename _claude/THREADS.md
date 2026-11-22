@@ -843,10 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:14 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:14 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:14 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
 - 2026-11-22 04:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 04:15 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 - 2026-11-22 04:15 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
@@ -1243,6 +1239,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 06:44 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · watchdog
 - 2026-11-22 06:45 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-22 06:45 UTC · `every-app-gets-own-locked-default` → landed, note (all) · watchdog
+- 2026-11-22 06:45 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · builds-live
+- 2026-11-22 06:45 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · builds-live
+- 2026-11-22 06:45 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · builds-live
+- 2026-11-22 06:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
