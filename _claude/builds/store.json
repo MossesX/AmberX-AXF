@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10355,
- "updatedAt": "2026-11-22T16:21:29.869Z",
+ "rev": 10356,
+ "updatedAt": "2026-11-22T18:41:14.600Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204028,7 +204028,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T11:51:01.655Z",
+   "updatedAt": "2026-11-22T16:58:01.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -204502,6 +204502,36 @@
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
      "at": "2026-11-22T11:51:01.655Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-22T16:51:01.749Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at building (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-22T16:55:01.946Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at building, attempt 4: building did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-22T16:56:01.645Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at building, attempt 5.",
+     "at": "2026-11-22T16:57:01.540Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T16:58:01.516Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-22T16:58:01.516Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -205661,7 +205691,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 273,
+   "rev": 278,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205692,9 +205722,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-22T11:50:02.294Z",
+   "statusAt": "2026-11-22T16:57:01.540Z",
    "statusBy": "watchdog",
-   "attempt": 4,
+   "attempt": 5,
    "statusLog": [
     {
      "status": "failed",
@@ -205772,6 +205802,20 @@
      "by": "watchdog",
      "attempt": 4,
      "why": "retry forward at building, attempt 4"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-22T16:56:01.645Z",
+     "by": "watchdog",
+     "attempt": 4,
+     "why": "building did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-22T16:57:01.540Z",
+     "by": "watchdog",
+     "attempt": 5,
+     "why": "retry forward at building, attempt 5"
     }
    ]
   },
@@ -298079,7 +298123,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T16:18:31.395Z",
+   "updatedAt": "2026-11-22T18:38:31.287Z",
    "builtAt": "",
    "notes": [
     {
@@ -298213,6 +298257,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T16:18:31.395Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T18:38:31.287Z"
     }
    ],
    "approvals": [],
@@ -298593,7 +298641,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333665,7 +333713,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T16:21:09.121Z",
+   "updatedAt": "2026-11-22T18:41:09.989Z",
    "builtAt": "",
    "notes": [
     {
@@ -334227,6 +334275,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T16:01:09.118Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T18:40:12.838Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T18:41:09.989Z"
     }
    ],
    "approvals": [
@@ -334422,7 +334478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 158,
+   "rev": 160,
    "deleted": false,
    "deletedAt": "",
    "pending": {
