@@ -227,7 +227,8 @@ export function parallelFamily(build, builds) {
     if (Array.isArray(b.steps)) return { done: b.steps.filter((s) => s.done || s.skip).length, total: b.steps.length };
     const s = b.steps ?? {}; return { done: Math.max(0, (s.total || 0) - (s.left ?? (s.total || 0) - (s.done || 0))), total: s.total || 0 };
   };
-  const ended = (b) => !!b && (b.deleted || ['built', 'complete', 'archived'].includes(b.status));
+  // done building: the legacy words and every Pipeline 2.0 status from build-complete on (landed included)
+  const ended = (b) => !!b && (b.deleted || ['built', 'complete', 'archived', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed'].includes(b.status));
   const parts = ids.map((id, i) => { const x = all.find((y) => y.id === id) ?? null; const c = count(x); return { id, part: i + 1, title: x?.title ?? '', status: x?.status ?? 'missing', done: c.done, total: c.total, finished: ended(x) }; });
   const lc = count(lead);
   const done = lc.done + parts.reduce((t, x) => t + x.done, 0); const total = lc.total + parts.reduce((t, x) => t + x.total, 0);

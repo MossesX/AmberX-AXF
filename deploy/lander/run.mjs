@@ -193,11 +193,19 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
   if (ctl.runRequested && !dry && !syncOnly) G.writeJson(files(s).control, { ...ctl, runRequested: '' });
   store ??= dry ? memoryStore((await makeStore()).read()) : await makeStore({ by: 'lander', repo: s.repo });
   const all = store.read();
+  // a parent that landed together with its parallel parts carries them to main: each part records the parent's merge
+  for (const f of L.familyFollow(all, at)) {
+    if (only && f.id !== only) continue;
+    const r = store.write(f.id, f.change);
+    if (r.ok) { out.actions.push(`${f.id}: landed with its parent (parallel split)`); log(L.say({ id: f.id }, 'landed with its parent (parallel split, lands together)')); }
+    else log(L.say({ id: f.id }, `store: ${r.why || 'write refused'}`));
+  }
   const scope = only ? all.filter((b) => b.id === only) : all;
-  const pick = L.pickBuild(scope);
+  const pick = L.pickBuild(scope, all);
   out.others = pick.others;
+  // only parallel sub-builds waiting for their family: say why the first one waits
+  if (!pick.build) { const w = all.find((b) => b.id === pick.others[0]); out.waiting = w ? `${w.id}: ${L.familyHold(w, all) || 'waits'}` : 'nothing to land'; return out; }
   if (pick.others.length) log(`more than one build waits to land (${pick.others.join(', ')}): one at a time, ${pick.build.id} first${L.isEmergency(pick.build) ? ' (emergency build: front of the line)' : ''}`);
-  if (!pick.build) { out.waiting = 'nothing to land'; return out; }
   out.build = pick.build.id;
   const f = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
   if (f.code) log(`fetch: ${f.err.slice(-200)}`);

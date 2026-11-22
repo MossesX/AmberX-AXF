@@ -14,7 +14,7 @@ import * as consoleApi from '@console/api';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import type { pluginApi } from '@console/plugins';
 import * as T from './status-table-core.mjs';
-import type { StepRow, TableRow } from './status-table-core.mjs';
+import type { Family, StepRow, TableRow } from './status-table-core.mjs';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
 import './status-table.css';
 
@@ -106,6 +106,17 @@ const PrLink = ({ n, href }: { n: number; href?: string }) => (!n ? <span classN
   : href ? <a className="fx-mono fx-small" href={href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>#{n}</a>
   : <span className="fx-mono fx-small">#{n}</span>);
 const dash = (v: string) => v || '—';
+/** A parallel split's tag on a row: "Parent · 3 parts" or "Part 2/3". */
+function FamilyTag({ r }: { r: TableRow }) {
+  const p = r.parallel; if (!p) return null;
+  const of = r.family?.of || p.of;
+  return p.role === 'lead'
+    ? <span className="pd-badge st-family is-lead" data-family={p.lead} title={r.family?.line || 'Parent of a parallel split'}>Parent · {of} part{of === 1 ? '' : 's'}</span>
+    : <span className="pd-badge st-family is-part" data-family={p.lead} title={`Part ${p.part} of ${p.lead}${r.family ? `: ${r.family.line}` : ''}`}>Part {p.part}/{of}</span>;
+}
+/** A parallel family as a nested group of the table: the parent first, then its parts, with the combined progress. */
+const familyGroup = (f: Family) => ({ id: `family:${f.id}`, title: `Parallel: ${f.title}`, icon: 'git-branch', rows: f.rows, groups: [], progress: f.percent, summary: f.line,
+  ctx: { target: 'axf-orchestrator-build', payload: f.id } });
 const toggleIn = (list: readonly string[], v: string, on?: boolean) => { const has = list.includes(v); const want = on ?? !has; return want ? (has ? [...list] : [...list, v]) : list.filter((x) => x !== v); };
 const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 });
 const TONE: Record<string, string> = { failed: 'danger', landed: 'success', building: 'accent', 'build-complete': 'success', pending: 'muted', split: 'muted' };
@@ -205,7 +216,8 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
         <span className="oc-cell-title" title={r.title}>
           <strong>{r.title}</strong>
           {r.emergency && !phone && <EmergencyBadge by={r.emergencyBy} />}
-          {phone ? <span className="st-rowmeta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
+          {!phone && <FamilyTag r={r} />}
+          {phone ? <span className="st-rowmeta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<FamilyTag r={r} /><StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
             : <span className="fx-small fx-muted fx-mono">{r.id}</span>}
         </span>
       ) },
@@ -217,7 +229,9 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     { id: 'timer', label: 'Timer', width: 'calc(var(--fx-font-size) * 8)', align: 'end', sortable: true, sortValue: (r) => -(Date.parse(r.at) || 0), render: (r) => <Timer row={r} /> },
     { id: 'pr', label: 'PR', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (r) => r.prNumber, render: (r) => <PrLink n={r.prNumber} href={r.pr} /> },
   ];
-  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : 'layers', rows: shown, groups: [], fixed: true }];
+  // sub-builds of a parallel split are grouped under their parent build (nested group, combined progress)
+  const fam = useMemo(() => T.familyGroups(shown, all), [shown, rows]);
+  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : 'layers', rows: fam.loose, groups: fam.families.map(familyGroup), fixed: true }];
   const gridHidden = phone ? [...new Set([...hidden, ...PHONE_HIDDEN])] : hidden;
 
   return (
@@ -277,6 +291,7 @@ function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone
         <dt>Status by</dt><dd>{dash(r.by)}</dd>
         {r.emergency && <><dt>Emergency</dt><dd>sent by {dash(r.emergencyBy)}</dd></>}
         {r.branch && <><dt>Branch</dt><dd className="fx-mono">{r.branch}</dd></>}
+        {r.parallel && <><dt>Parallel split</dt><dd data-family={r.parallel.lead}>{r.parallel.role === 'part' ? <>Part {r.parallel.part} of <a href="#" onClick={(e) => { e.preventDefault(); e.stopPropagation(); focusBuild(r.parallel!.lead); }}>{r.parallel.lead}</a> · </> : 'Parent · '}{r.family?.line ?? ''}</dd></>}
       </dl>
       {canSend && T.canSendEmergency(r) && <SendToEmergency api={api} id={r.id} onSent={onChanged} />}
       {rows.length ? (

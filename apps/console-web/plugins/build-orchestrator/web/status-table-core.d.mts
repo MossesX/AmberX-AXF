@@ -2,7 +2,10 @@
 export type BuildStatus = 'pending' | 'splitting' | 'split' | 'pulling-main' | 'assigning-models' | 'ready' | 'sending' | 'building' | 'build-complete' | 'merging-pr' | 'pr-pulling-main' | 'running-ci' | 'merging-main' | 'landed' | 'failed';
 export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'building' | 'completed' | 'in-pr' | 'failed';
 export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string };
-export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string };
+export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; parallel: ParallelRef | null; family?: FamilyStats };
+export type ParallelRef = { role: 'lead' | 'part'; lead: string; part: number; of: number; parts: string[]; landing: 'together' | 'own' };
+export type FamilyStats = { id: string; title: string; parts: string[]; done: number; total: number; percent: number; partsFinished: number; of: number; landing: 'together' | 'own'; updatedAt: string; line: string };
+export type Family = FamilyStats & { lead: TableRow | null; rows: TableRow[] };
 export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];
@@ -26,3 +29,8 @@ export function filterOptions(rows: TableRow[]): { counts: Record<BuildStatus, n
 export function filterRows(rows: TableRow[], f?: TableFilter, now?: number): TableRow[];
 export function formatElapsed(ms: number | null): string;
 export function timers(r: { status: string; at: string; createdAt: string }, now?: number): { inStatus: number | null; total: number | null };
+export const FAMILY_FINISHED: readonly BuildStatus[];
+export function parallelOf(b: unknown): ParallelRef | null;
+export function familyGroups(rows: TableRow[], all?: TableRow[]): { loose: TableRow[]; families: Family[] };
+export function familyStats(id: string, all: TableRow[]): FamilyStats;
+export function familySummary(f: Omit<FamilyStats, 'line'> | null | undefined): string;

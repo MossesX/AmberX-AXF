@@ -101,3 +101,52 @@ test('timers: time in status and total, frozen once landed', () => {
   assert.equal(T.formatElapsed(2 * 86_400_000 + 4 * 3_600_000), '2d 4h');
   assert.equal(T.formatElapsed(null), '—');
 });
+
+test('parallel split: sub-builds grouped under their parent, combined progress over the whole family (landed parts too)', () => {
+  const st = (id, status) => ({ id, status });
+  const store = { builds: [
+    { id: 'app', title: 'Console app', status: 'building', statusAt: at(5), updatedAt: at(5), steps: [st('s1', 'completed'), st('s2', 'pending')], pipeline: { parallel: { role: 'lead', parts: ['app-p1', 'app-p2'], contractStep: 's1', integrationStep: 's2', landing: 'together' } } },
+    { id: 'app-p1', title: 'Console app · part 1', status: 'landed', statusAt: at(3), updatedAt: at(3), steps: [st('s1', 'in-pr'), st('s2', 'in-pr')], pipeline: { parallel: { role: 'part', lead: 'app', part: 1, of: 2 } } },
+    { id: 'app-p2', title: 'Console app · part 2', status: 'building', statusAt: at(1), updatedAt: at(1), steps: [st('s1', 'completed'), st('s2', 'building'), st('s3', 'pending')], pipeline: { parallel: { role: 'part', lead: 'app', part: 2, of: 2 } } },
+    { id: 'solo', title: 'Solo', status: 'ready', statusAt: at(2), updatedAt: at(2), steps: [st('s1', 'pending')] },
+  ] };
+  const rows = T.tableRows(store);
+  const lead = rows.find((r) => r.id === 'app');
+  assert.deepEqual(lead.parallel, { role: 'lead', lead: 'app', part: 0, of: 2, parts: ['app-p1', 'app-p2'], landing: 'together' });
+  assert.equal(rows.find((r) => r.id === 'app-p2').parallel.part, 2);
+  assert.equal(rows.find((r) => r.id === 'solo').parallel, null);
+  assert.equal(rows.find((r) => r.id === 'solo').family, undefined);
+  // 1/2 + 2/2 + 1/3 = 4/7, counted before the landed part is filtered out
+  assert.equal(lead.family.done, 4); assert.equal(lead.family.total, 7); assert.equal(lead.family.percent, 57); assert.equal(lead.family.partsFinished, 1);
+  assert.match(lead.family.line, /2 parts · 1\/2 built · 4\/7 steps \(57%\) · lands together/);
+  const shown = T.filterRows(rows, {});
+  assert.ok(!shown.some((r) => r.id === 'app-p1'), 'the landed part is filtered out by default');
+  const g = T.familyGroups(shown, shown);
+  assert.deepEqual(g.loose.map((r) => r.id), ['solo']);
+  assert.equal(g.families.length, 1);
+  const f = g.families[0];
+  assert.equal(f.id, 'app'); assert.equal(f.title, 'Console app');
+  assert.deepEqual(f.rows.map((r) => r.id), ['app', 'app-p2'], 'the parent first, then its parts in order');
+  assert.equal(f.done, 4, 'the server numbers win over what the filter left');
+  // a part whose parent is filtered out still groups under the parent's id
+  const only = T.familyGroups(shown.filter((r) => r.id === 'app-p2'));
+  assert.equal(only.families[0].id, 'app'); assert.equal(only.families[0].lead, null);
+  // rows from an older server (no family numbers): counted from the rows given
+  const bare = rows.map(({ family, ...r }) => r);
+  const own = T.familyGroups(bare, bare).families[0];
+  assert.equal(own.total, 7); assert.equal(own.landing, 'together');
+  const inOrder = T.familyStats('app', bare.map((r) => (r.id === 'app' ? { ...r, parallel: { ...r.parallel, landing: 'own' } } : r)));
+  assert.match(inOrder.line, /lands in order/);
+});
+
+test('parallel split on Pipeline 2.0 statuses: build-complete and later count as built for the family and the barrier', async () => {
+  const P = await import('./pipeline-core.mjs');
+  const OC = await import('./web/orchestrator-core.mjs');
+  const lead = { id: 'app', status: 'building', steps: [{ id: 's1', status: 'completed', done: true }, { id: 's2', status: 'pending' }], pipeline: { parallel: { role: 'lead', parts: ['app-p1', 'app-p2'], contractStep: 's1', integrationStep: 's2', landing: 'together' } } };
+  const part = (n, status) => ({ id: `app-p${n}`, status, steps: [{ id: 's1', status: 'completed', done: true }], pipeline: { parallel: { role: 'part', lead: 'app', part: n, of: 2 } } });
+  assert.equal(P.parallelWait(part(1, 'ready'), [lead, part(1, 'ready')]), '', 'the contract step is completed: the parts start');
+  assert.match(P.parallelWait(lead, [lead, part(1, 'build-complete'), part(2, 'building')]), /integration waits for part app-p2/);
+  assert.equal(P.parallelWait(lead, [lead, part(1, 'build-complete'), part(2, 'running-ci')]), '', 'every part at build-complete or later: the integration step may run');
+  const f = OC.parallelFamily(lead, [lead, part(1, 'landed'), part(2, 'build-complete')]);
+  assert.equal(f.partsFinished, 2);
+});

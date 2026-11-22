@@ -127,12 +127,89 @@ export function buildRow(b) {
     slot: common(steps.map((s) => s.slot)) || str(pipe.slot),
     prNumber: prNumber(b), pr: /^https?:\/\//.test(str(b.pr)) ? str(b.pr) : '', branch: str(b.branch),
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
+    parallel: parallelOf(b),
   };
 }
 
-/** Every table row of a store (builds@1 or orchestrator@1 state): emergency builds still in flight first, then newest change first. */
+/**
+ * The build's place in a parallel split (build-pipeline@1 pipeline.parallel, Nov 13 2026): { role: lead | part, lead,
+ * part, of, parts, landing } or null. A lead names itself as `lead`.
+ */
+export function parallelOf(b) {
+  const p = b?.pipeline?.parallel;
+  if (!p || typeof p !== 'object' || (p.role !== 'lead' && p.role !== 'part')) return null;
+  const parts = Array.isArray(p.parts) ? p.parts.map((x) => str(x)).filter(Boolean) : [];
+  return { role: p.role, lead: p.role === 'lead' ? str(b.id) : str(p.lead), part: p.role === 'part' ? Math.max(0, Number(p.part) || 0) : 0,
+    of: Math.max(0, Number(p.of) || parts.length), parts: p.role === 'lead' ? parts : [], landing: p.landing === 'own' ? 'own' : 'together' };
+}
+
+/** A build of a parallel family that is done building (build-complete onwards, landed included). */
+export const FAMILY_FINISHED = Object.freeze(BUILD_STATUSES.slice(BUILD_STATUSES.indexOf('build-complete'), BUILD_STATUSES.indexOf('landed') + 1));
+
+/**
+ * Parallel families of the table (sub-builds grouped under their parent build): every lead with its parts, in part
+ * order, out of `rows` (what the filters keep); the combined progress counts the whole family from `all` (every row,
+ * filtered or not), so a filter never changes a parent's numbers. A part whose lead is not in `all` still groups under
+ * the lead's id. → { loose: rows in no family, families: [{ id, title, lead (row | null), rows, parts, done, total,
+ * percent, partsFinished, of, landing, line }] } (families newest change first, like the rows).
+ */
+export function familyGroups(rows, all = rows) {
+  const every = Array.isArray(all) ? all : [];
+  const byLead = new Map();
+  const loose = [];
+  for (const r of Array.isArray(rows) ? rows : []) {
+    const p = r.parallel;
+    if (!p || !p.lead) { loose.push(r); continue; }
+    if (!byLead.has(p.lead)) byLead.set(p.lead, []);
+    byLead.get(p.lead).push(r);
+  }
+  const families = [...byLead.entries()].map(([id, shown]) => {
+    // the server counted the family over every row, landed ones too (tableRows): those numbers win
+    const stats = shown.find((x) => x.family)?.family ?? familyStats(id, every.length ? every : shown);
+    const order = (x) => (x.id === id ? -1 : x.parallel?.part || 0);
+    const lead = shown.find((x) => x.id === id) ?? null;
+    return { ...stats, title: lead?.title || stats.title || id, lead, rows: [...shown].sort((a, c) => order(a) - order(c)) };
+  });
+  families.sort((a, c) => c.updatedAt.localeCompare(a.updatedAt));
+  return { loose, families };
+}
+
+/**
+ * One family's numbers over `all` rows: { id, title, parts, done, total, percent, partsFinished, of, landing,
+ * updatedAt, line }. Combined progress = every step of the parent and of every part.
+ */
+export function familyStats(id, all) {
+  const every = Array.isArray(all) ? all : [];
+  const lead = every.find((x) => x.id === id) ?? null;
+  const named = lead?.parallel?.parts ?? [];
+  const kin = every.filter((x) => x.parallel?.role === 'part' && x.parallel.lead === id);
+  const parts = [...named.map((pid) => every.find((x) => x.id === pid)).filter(Boolean), ...kin.filter((x) => !named.includes(x.id))]
+    .sort((a, c) => (a.parallel?.part || 0) - (c.parallel?.part || 0));
+  const members = [...(lead ? [lead] : []), ...parts];
+  const done = members.reduce((t, x) => t + (x.done || 0), 0);
+  const total = members.reduce((t, x) => t + (x.total || 0), 0);
+  const of = Math.max(parts.length, named.length, lead?.parallel?.of || 0, ...kin.map((x) => x.parallel?.of || 0));
+  const f = { id, title: lead?.title || id, parts: parts.map((x) => x.id), done, total, percent: total ? Math.round((done / total) * 100) : 0,
+    partsFinished: parts.filter((x) => FAMILY_FINISHED.includes(x.status)).length, of,
+    landing: lead?.parallel?.landing ?? kin[0]?.parallel?.landing ?? 'together', updatedAt: members.map((x) => x.updatedAt || x.at || '').sort().pop() || '' };
+  return { ...f, line: familySummary(f) };
+}
+
+/** "3 parts · 2/3 built · 14/30 steps (47%) · lands together". */
+export function familySummary(f) {
+  if (!f) return '';
+  return `${f.of} part${f.of === 1 ? '' : 's'} · ${f.partsFinished}/${f.of} built · ${f.done}/${f.total} steps (${f.percent}%) · ${f.landing === 'own' ? 'lands in order, part by part, then the parent' : 'lands together in one PR'}`;
+}
+
+/**
+ * Every table row of a store (builds@1 or orchestrator@1 state): emergency builds still in flight first, then newest
+ * change first. A row of a parallel family carries `family` (familyStats over every row).
+ */
 export function tableRows(store) {
   const rows = (store?.builds ?? []).map(buildRow).filter(Boolean);
+  // a parallel family's combined progress, counted here over every row (landed parts too) before any filter drops some
+  const fams = new Map();
+  for (const r of rows) if (r.parallel?.lead) { if (!fams.has(r.parallel.lead)) fams.set(r.parallel.lead, familyStats(r.parallel.lead, rows)); r.family = fams.get(r.parallel.lead); }
   const urgent = (r) => (r.emergency && r.status !== 'landed' ? 1 : 0);
   return rows.sort((a, c) => urgent(c) - urgent(a) || (c.updatedAt || c.at).localeCompare(a.updatedAt || a.at));
 }

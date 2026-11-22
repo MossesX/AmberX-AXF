@@ -587,8 +587,10 @@ function parseSteps(raw, max, problems, where = '') {
 
 // ------------------------------------------------------------------ parallel split
 
-const isOpenBuild = (b) => b && !b.deleted && !['built', 'complete', 'archived', 'failed'].includes(b.status);
-const stepOpen = (b, id) => { const s = list(b?.steps).find((x) => x.id === id); return !!s && !s.done && !s.skip; };
+// still building: not the legacy finished words, and not a Pipeline 2.0 status from build-complete on (the lander has it)
+const FAMILY_DONE = ['built', 'complete', 'archived', 'failed', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed'];
+const isOpenBuild = (b) => b && !b.deleted && !FAMILY_DONE.includes(b.status);
+const stepOpen = (b, id) => { const s = list(b?.steps).find((x) => x.id === id); return !!s && !s.done && !s.skip && s.status !== 'completed' && s.status !== 'in-pr'; };
 
 /**
  * The lead's steps and the parts' builds for a parallel split (pure). `parsed` = parseSplit().parallel. The lead keeps

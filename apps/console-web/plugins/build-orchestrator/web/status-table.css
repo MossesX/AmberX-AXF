@@ -19,6 +19,9 @@
 .st-badge.is-failed { --st-c: var(--fx-danger) }
 /* an emergency build (Brett sent it to the emergency slots): filled, so it stands out from the status badges */
 .st-badge.is-emergency { --st-c: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+/* a parallel split (sub-builds grouped under their parent): the parent and each part carry a quiet family tag */
+.st-family { --st-c: var(--fx-info); white-space: nowrap }
+.st-family.is-lead { --st-c: var(--fx-brand-2) }
 .st-emergency { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); margin: 0 }
 
 /* phone first: the filters wrap two to a row, the find field takes a whole row; wider screens put them on one line */

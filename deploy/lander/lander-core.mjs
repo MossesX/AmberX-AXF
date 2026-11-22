@@ -164,9 +164,11 @@ export const isHeld = (b) => b?.status === 'failed' && b.failure?.retry === 'hol
  * goes to the back: it never holds the line. Returns { build, others } (others = the rest of the line, in order: the
  * runner reports them and never works on two at once).
  */
-export function pickBuild(builds) {
+export function pickBuild(builds, family = builds) {
   const landing = (Array.isArray(builds) ? builds : []).filter(isLanding);
-  const list = landing.filter((b) => !isHeld(b));
+  // a sub-build of a parallel split that must wait for its family (familyHold) is never picked: it stays at the back
+  const waits = landing.filter((b) => !!familyHold(b, family));
+  const list = landing.filter((b) => !isHeld(b) && !waits.includes(b));
   const held = landing.filter(isHeld);
   const age = (b) => str(b.completedAt || b.builtAt || b.updatedAt || b.createdAt) || '9';
   const line = (xs) => [
@@ -174,8 +176,90 @@ export function pickBuild(builds) {
     ...xs.filter((b) => failedIn(b) === 'build-complete').sort((x, y) => age(x).localeCompare(age(y))),
   ];
   const urgent = list.filter(isEmergency).sort((x, y) => str(x.emergency.at).localeCompare(str(y.emergency.at)) || age(x).localeCompare(age(y)));
-  const all = [...urgent, ...line(list.filter((b) => !isEmergency(b))), ...held.sort((x, y) => age(x).localeCompare(age(y)))];
-  return { build: all[0] || null, others: all.slice(1).map((b) => b.id) };
+  const all = [...urgent, ...line(list.filter((b) => !isEmergency(b))), ...held.filter((b) => !waits.includes(b)).sort((x, y) => age(x).localeCompare(age(y)))];
+  return { build: all[0] || null, others: [...all.slice(1), ...waits.sort((x, y) => age(x).localeCompare(age(y)))].map((b) => b.id) };
+}
+
+// ------------------------------------------------------------------ parallel split families
+
+/*
+ * A parallel split (build-pipeline@1 pipeline.parallel, Nov 13 2026) is one parent build (role lead: the shared contract
+ * step first, the integration step last) and its sub-builds (role part, linked by `lead`). The parent's `landing` says
+ * how the family reaches main:
+ *   together  the parent's integration step merges every part's branch into the parent, so the parent's one PR lands
+ *             them all. A part never lands on its own: it waits at build-complete and is recorded landed with the
+ *             parent's merge (familyFollow).
+ *   own       lands in order: part 1, part 2 … each on its own PR, then the parent (contract + integration) last.
+ */
+const parOf = (b) => { const p = obj(obj(b?.pipeline).parallel); return p.role === 'lead' || p.role === 'part' ? p : null; };
+const landedB = (b) => !!b && ['landed', 'built', 'complete'].includes(b.status);
+const gone = (b) => !b || b.deleted;
+
+/** How a family lands: the parent's `landing` (together | own), else the part's own record, else together. */
+export function familyLanding(b, builds) {
+  const p = parOf(b); if (!p) return '';
+  const lead = p.role === 'lead' ? b : (Array.isArray(builds) ? builds : []).find((x) => x?.id === p.lead);
+  const l = parOf(lead)?.landing || p.landing;
+  return l === 'own' ? 'own' : 'together';
+}
+
+/** The parts of a family in part order (the parent's list first, then any part that names the parent). */
+export function familyParts(leadId, builds) {
+  const all = (Array.isArray(builds) ? builds : []).filter((x) => x && !x.deleted);
+  const lead = all.find((x) => x.id === leadId);
+  const named = Array.isArray(parOf(lead)?.parts) ? parOf(lead).parts : [];
+  const kin = all.filter((x) => parOf(x)?.role === 'part' && parOf(x).lead === leadId);
+  return [...named.map((id) => all.find((x) => x.id === id)).filter(Boolean), ...kin.filter((x) => !named.includes(x.id))]
+    .sort((a, c) => num(parOf(a)?.part) - num(parOf(c)?.part));
+}
+
+/**
+ * Why the lander leaves a build of a parallel family alone for now, or '' (it may land). `builds` = the whole store.
+ *   part, together   always: it lands with the parent
+ *   part, own        while an earlier part has not landed
+ *   parent, together while a part is still building (the integration needs every part)
+ *   parent, own      while a part has not landed (the parent lands last)
+ */
+export function familyHold(b, builds) {
+  const p = parOf(b); if (!p) return '';
+  const landing = familyLanding(b, builds);
+  if (p.role === 'part') {
+    if (landing === 'together') return `lands together with its parent ${str(p.lead, 80)}: the integration step merges every part into the parent's PR`;
+    const before = familyParts(p.lead, builds).filter((x) => num(parOf(x)?.part) < num(p.part) && !landedB(x));
+    return before.length ? `lands in order: ${before.map((x) => x.id).join(', ')} first` : '';
+  }
+  const parts = familyParts(b.id, builds).filter((x) => !gone(x));
+  if (landing === 'own') {
+    const open = parts.filter((x) => !landedB(x));
+    return open.length ? `lands after its parts: ${open.map((x) => x.id).join(', ')} first` : '';
+  }
+  const building = parts.filter((x) => buildIndex(failedIn(x)) < buildIndex('build-complete'));
+  return building.length ? `lands together: waits for ${building.map((x) => x.id).join(', ')} to finish building` : '';
+}
+
+/**
+ * The parts a landed parent carries to main (landing together): each part at build-complete or later, not landed yet,
+ * gets the parent's merge as its own evidence. → [{ id, change }] for the store (lander store.write). A part still
+ * building when its parent landed is left alone (said in the parent's notes by the runner).
+ */
+export function familyFollow(builds, at = new Date().toISOString()) {
+  const out = [];
+  for (const lead of Array.isArray(builds) ? builds : []) {
+    if (parOf(lead)?.role !== 'lead' || !landedB(lead) || familyLanding(lead, builds) !== 'together') continue;
+    const ev = obj(lead.landed); const pr = num(ev.pr);
+    if (!pr || !str(ev.sha)) continue;
+    for (const part of familyParts(lead.id, builds)) {
+      if (landedB(part) || !isLanding(part) || failedIn(part) !== part.status) continue;
+      const when = str(lead.mergedAt, 40) || str(ev.mergedAt, 40) || at;
+      out.push({ id: part.id, change: {
+        status: 'landed', failure: null, pr: str(lead.pr, 200) || `#${pr}`, mergedAt: when,
+        landed: { pr, sha: str(ev.sha, 64), mergedAt: when, ci: str(ev.ci, 20) || 'success', ciAt: str(ev.ciAt, 40) || when },
+        steps: landSteps(part).filter((s) => s.status !== 'in-pr').map((s) => ({ id: s.id, status: 'in-pr', prNumber: pr })),
+        note: `Lander: landed with its parent ${lead.id} (parallel split, lands together: PR #${pr}).`,
+      } });
+    }
+  }
+  return out;
 }
 
 // ------------------------------------------------------------------ steps, branches, groups
@@ -487,7 +571,8 @@ export function queueRows(builds) {
       if (!prs.has(n)) prs.set(n, { pr: n, steps: [], state: l.merged.includes(n) ? 'merged' : l.closed.includes(n) ? 'closed' : 'open' });
       prs.get(n).steps.push(st.id);
     }
-    rows.push({ build: b.id, title: str(b.title || b.id, 200), ...(isEmergency(b) ? { emergency: true } : {}), status: b.status, attempt: rowAttempt(b), ...(isHeld(b) ? { needsBrett: true } : {}), failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
+    const fw = familyHold(b, builds);
+    rows.push({ build: b.id, title: str(b.title || b.id, 200), ...(isEmergency(b) ? { emergency: true } : {}), ...(fw ? { familyWait: fw } : {}), status: b.status, attempt: rowAttempt(b), ...(isHeld(b) ? { needsBrett: true } : {}), failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
   }
   const order = (r) => (r.status === 'failed' ? buildIndex(r.failure?.status || 'build-complete') : buildIndex(r.status));
   return rows.sort((a, b) => Number(!!b.emergency) - Number(!!a.emergency) || order(b) - order(a) || a.build.localeCompare(b.build));

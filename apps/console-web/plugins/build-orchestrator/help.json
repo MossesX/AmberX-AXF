@@ -437,7 +437,12 @@
         "target": "how-a-build-is-split",
         "title": "How a build is split",
         "text": "Claude cuts a request into short steps with one quick call; Rules makes one step per line of the request, no model; Off leaves the steps for you to write. Saves as soon as you pick.",
-        "kind": "field"
+        "kind": "field"      },
+      {
+        "target": "parallel-family",
+        "title": "Parallel split: parent and parts",
+        "text": "A build split into parallel sub-builds shows as one group in the builds table: the parent first (tag Parent · N parts), then each part (tag Part 2/3). The group bar shows the combined progress over every step of the parent and its parts. Lands together: the parent's integration step merges every part, its one PR lands them all and each part is marked landed with it. Lands in order: part 1, part 2 … each on its own PR, then the parent last. pipeline.mjs show <id> prints the same family line.",
+        "kind": "card"
       }
     ],
     "intros": []
