@@ -843,70 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:23 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:23 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:23 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `one-build-time-always-split-to-fill` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, s21 undone, s22 undone, s23 undone, s24 undone, s25 undone, s26 undone, s27 undone, note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `stop-push-storm-builds-live-pushes-build` → complete, note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `one-true-source-get-redundant-settings` note (all) · foreign-write
-- 2026-11-22 04:23 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:24 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:24 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:24 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:25 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:25 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:25 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:26 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:26 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:26 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:27 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:27 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:27 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:28 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:28 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:28 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:28 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
-- 2026-11-22 04:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:29 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:29 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:29 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:30 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:30 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:30 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:31 UTC · `every-app-gets-own-locked-default` s7 done, → landing (all) · orchestrator
-- 2026-11-22 04:31 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:31 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:31 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:32 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
-- 2026-11-22 04:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
-- 2026-11-22 04:32 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
-- 2026-11-22 04:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-22 04:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:33 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:33 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:33 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:34 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:34 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:34 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:35 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:35 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:35 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:35 UTC · `one-true-source-get-redundant-settings` → fixing, note (all) · watchdog
 - 2026-11-22 04:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 04:36 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 - 2026-11-22 04:36 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
@@ -1243,6 +1179,70 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 08:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · pipeline
 - 2026-11-22 08:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · pipeline
 - 2026-11-22 08:05 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · pipeline
+- 2026-11-22 08:06 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · verify
+- 2026-11-22 08:08 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 08:08 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 08:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 08:08 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 08:10 UTC · `always-fill-every-slot-when-slots-are` → landed, note (all) · foreign-write
+- 2026-11-22 08:10 UTC · `one-true-source-get-redundant-settings` s5 done, → landing, note (all) · foreign-write
+- 2026-11-22 08:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:25 UTC · `one-true-source-get-redundant-settings` merged, note (all) · watchdog
+- 2026-11-22 08:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 08:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 08:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 08:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 08:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 08:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 09:05 UTC · `one-true-source-get-redundant-settings` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
