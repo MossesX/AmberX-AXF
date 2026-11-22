@@ -430,7 +430,7 @@
       {
         "target": "split-section",
         "title": "Split",
-        "text": "Every option for how a request is split into steps and builds, in one collapsible section: how a build is split (Claude, rules: one step per line, or off). Changes save at once. Same settings by REST / MCP pipeline-settings-set or pipeline.mjs set.",
+        "text": "Every option for how a request is split into steps and builds, in one collapsible section: how a build is split (Claude, rules: one step per line, or off) and when a request is cut into parallel builds that run at the same time (mode, max slots, contract step first, integration step last). Tap the heading to open or close it. Changes save at once. Same settings by REST / MCP pipeline-settings-set, pipeline.mjs set or voice.",
         "kind": "card"
       },
       {
@@ -438,6 +438,54 @@
         "title": "How a build is split",
         "text": "Claude cuts a request into short steps with one quick call; Rules makes one step per line of the request, no model; Off leaves the steps for you to write. Saves as soon as you pick.",
         "kind": "field"
+      },
+      {
+        "target": "parallel-split",
+        "title": "Parallel split",
+        "text": "When a request falls into independent parts that touch different files, the splitter cuts it into sub-builds that run at the same time in separate slots. Auto: the parts are filed and queued by themselves. Ask: they wait in Pending until you queue them. Off: one build, one session. Same: pipeline.mjs set parallelSplit=auto|ask|off, REST / MCP pipeline-settings-set, voice \"set parallel split to auto\".",
+        "kind": "field"
+      },
+      {
+        "target": "max-parallel-slots",
+        "title": "Max parallel slots",
+        "text": "The most parts one request is split into (2 to 12, default 4). Each part takes one agent slot while it runs. Same: pipeline.mjs set parallelMax=6, voice \"max parallel slots 6\".",
+        "kind": "field"
+      },
+      {
+        "target": "shared-contract-step-first",
+        "title": "Shared contract step first",
+        "text": "The lead build's first step writes and pushes the names, schemas, routes and interfaces every part builds against, so the parts don't clash. The dispatcher starts the parts only once that step is done. Same: pipeline.mjs set parallelContract=true|false.",
+        "kind": "toggle"
+      },
+      {
+        "target": "integration-step-last",
+        "title": "Integration step last",
+        "text": "The lead build's last step merges every part's branch, runs the tests together and fixes what clashes. The dispatcher holds it until every part is finished. Off: each part lands on its own PR, in order. Same: pipeline.mjs set parallelIntegrate=true|false.",
+        "kind": "toggle"
+      },
+      {
+        "target": "parallel-family",
+        "title": "Parallel split family",
+        "text": "This build is the lead or a part of a parallel split. Shows every part's progress, the combined progress over the lead and all parts, and how they land (together through the lead's integration step, or one PR per part in order). Same: GET /pipeline (family on every row), pipeline.mjs show <id>.",
+        "kind": "card"
+      },
+      {
+        "target": "parallel-builds",
+        "title": "Parallel builds",
+        "text": "This build's own parallel split: 2 to 12 parallel builds, one build, or as the Split settings say. It beats the Split settings; a build not started yet is split again on the next tick. Same: pipeline.mjs parallel <id> <N|off|default>, REST / MCP pipeline-parallel, voice \"split skins into 3 parallel builds\", or \"split into 3 parallel\" in the request.",
+        "kind": "field"
+      },
+      {
+        "target": "action:build-orchestrator.split-settings",
+        "title": "Split settings",
+        "text": "Opens Settings → Plugins → Build orchestrator with the Split section open and flashed.",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.parallel",
+        "title": "Split into N parallel builds",
+        "text": "build-orchestrator.parallel <id> <2-12|off|default>: sets a build's own parallel split, the same as POST pipeline/parallel.",
+        "kind": "menu"
       }
     ],
     "intros": []

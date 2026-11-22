@@ -100,6 +100,14 @@ export const plugin: AxfWebLibrary = {
       try { const build = decodeURIComponent(arg ?? '').trim(); rt.toast(passLine(await runWatchdogs(build ? { build } : {})), 'success'); } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
     rt.actions.register('build-orchestrator.split-settings', () => void open('split'), { label: 'Build orchestrator: open the Split settings (how a request is split into steps and builds)', effect: 'navigate' });
+    // a build's own parallel split ask ("split into N parallel"): build-orchestrator.parallel <id> <2-12|off|default>, the same as POST pipeline/parallel
+    rt.actions.register('build-orchestrator.parallel', ([id, parts]) => {
+      const b = decodeURIComponent(id ?? '').trim(); const n = decodeURIComponent(parts ?? '').trim();
+      if (!b || !n) { void open('split'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id: b, parts: n })
+        .then((r) => rt.toast(r.ok ? `${b}: ${r.note ?? 'saved'}${r.resplit ? ' (split again on the next tick)' : ''}` : r.error ?? 'failed', r.ok ? 'success' : 'danger'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: split a build into N parallel builds (id, 2-12 | off | default)', params: true, effect: 'write' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: show builds in a status (old tab names map onto status filters)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.merge-queue', () => rt.navigate('merge-queue'), { label: 'Open the merge queue (read-only)', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
