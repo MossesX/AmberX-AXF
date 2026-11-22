@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10338,
- "updatedAt": "2026-11-22T06:00:35.012Z",
+ "rev": 10339,
+ "updatedAt": "2026-11-22T06:00:49.675Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260693,7 +260693,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -260701,7 +260701,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-22T05:58:30.916Z",
+   "updatedAt": "2026-11-22T06:00:44.296Z",
    "builtAt": "",
    "notes": [
     {
@@ -260847,6 +260847,10 @@
     {
      "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T04:37:38.818Z"
+    },
+    {
+     "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T06:00:44.296Z"
     }
    ],
    "approvals": [
@@ -260875,7 +260879,7 @@
    "pipeline": {
     "queuedAt": "2026-11-22T01:45:32.586Z",
     "queuedBy": "watchdog",
-    "account": "hulu0241",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -260901,7 +260905,7 @@
      "note": "Split by Claude into 19 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-17T22:10:38.850Z",
     "planned": {
@@ -261436,7 +261440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {

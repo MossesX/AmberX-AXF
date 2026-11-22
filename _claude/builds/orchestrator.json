@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T06:00:35.012Z",
+ "updatedAt": "2026-11-22T06:00:49.675Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174499,7 +174499,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174507,7 +174507,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-22T05:58:30.916Z",
+   "updatedAt": "2026-11-22T06:00:44.296Z",
    "builtAt": "",
    "notes": [
     {
@@ -174653,6 +174653,10 @@
     {
      "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T04:37:38.818Z"
+    },
+    {
+     "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T06:00:44.296Z"
     }
    ],
    "approvals": [
