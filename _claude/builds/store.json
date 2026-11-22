@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10353,
- "updatedAt": "2026-11-22T14:10:13.445Z",
+ "rev": 10354,
+ "updatedAt": "2026-11-22T16:21:13.249Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184710,7 +184710,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184719,7 +184719,7 @@
    "mergedAt": "2026-11-22T05:07:49Z",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-22T08:05:13.933Z",
+   "updatedAt": "2026-11-22T08:06:08.857Z",
    "builtAt": "2026-11-22T05:14:10.615Z",
    "notes": [
     {
@@ -185033,6 +185033,10 @@
     {
      "text": "Watchdog: merged and CI is green on fc521eb0a1: landed.",
      "at": "2026-11-22T08:05:13.933Z"
+    },
+    {
+     "text": "Verified on main (check): 1 check passed on fc521eb0a1: node apps/console-web/plugins/build-orchestrator/test/fill-slots.test.mjs. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T08:06:08.857Z"
     }
    ],
    "approvals": [
@@ -185073,7 +185077,7 @@
      "at": "2026-11-22T05:46:32.760Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "all-done",
+     "reason": "",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-always-fill-every-slot-when-slots-are--joey",
@@ -185106,66 +185110,7 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0,
-    "runEnd": {
-     "at": "2026-11-22T05:46:19.643Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-always-fill-every-slot-when-slots-are--joey",
-     "phase": ""
-    }
-   },
-   "attempts": [
-    {
-     "n": 1,
-     "kind": "stalled",
-     "strategy": "fresh-session",
-     "fixStrategy": "",
-     "model": "Opus",
-     "account": "",
-     "session": "",
-     "step": "s29",
-     "head": "",
-     "pr": 582,
-     "startedAt": "2026-11-22T05:05:15.537Z",
-     "endedAt": "2026-11-22T05:46:44.383Z",
-     "result": "ok",
-     "log": "",
-     "note": "Watchdog: fresh-session queued as s29 Ok: Session axf-always-fill-every-slot-when-slots-are--joey on hulu0241 ended (exit 0); the build was already landing.",
-     "source": "pipeline"
-    },
-    {
-     "n": 2,
-     "kind": "stalled",
-     "strategy": "fresh-session",
-     "fixStrategy": "",
-     "model": "Opus",
-     "account": "hulu0241",
-     "session": "axf-always-fill-every-slot-when-slots-are--joey",
-     "step": "",
-     "head": "",
-     "pr": 582,
-     "startedAt": "2026-11-22T05:05:15.144Z",
-     "endedAt": "",
-     "result": "started",
-     "log": "",
-     "note": "It stalled (landing for 2 h: PR #582 is still open and nothing moved it): a fresh session (attempt 1 of 10).",
-     "source": "pipeline"
-    }
-   ],
-   "landed": {
-    "pr": 582,
-    "sha": "fc521eb0a164467989cc1009e662bc8c9e6176ae",
-    "mergedAt": "2026-11-22T05:07:49Z",
-    "ci": "success",
-    "ciAt": "2026-11-22T08:05:13.933Z",
-    "ciRun": "commit@fc521eb0a164467989cc1009e662bc8c9e6176ae",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185891,18 +185836,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 136,
+   "rev": 137,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "",
+    "builtAt": "2026-11-22T05:14:10.615Z",
     "createdAt": "2026-11-13T06:57:42.497Z",
     "estimate": "",
     "model": "Opus",
     "planId": "",
     "prefixSteps": true,
     "source": "console",
-    "status": "pending",
+    "status": "complete",
     "stepAt": {
      "st-mwemm4yg01fic4": "2026-11-13T06:59:15.736Z",
      "st-mwemm4yg021510": "2026-11-13T06:59:15.736Z",
@@ -185929,7 +185874,10 @@
      "st-mweo56mm0i957g": "2026-11-13T07:42:03.981Z",
      "st-mweo56mm0jv6gq": "2026-11-13T07:42:03.981Z",
      "st-mweo56mm0k627k": "2026-11-13T07:42:03.981Z",
-     "st-mweo56mm0lxfph": "2026-11-13T07:42:03.981Z"
+     "st-mweo56mm0lxfph": "2026-11-13T07:42:03.981Z",
+     "st-mwlw36ej02yvnr": "2026-11-18T08:58:49.324Z",
+     "st-mwr35gdh1l5i2v": "2026-11-22T00:15:24.961Z",
+     "st-mwrdi70x1lh6ow": "2026-11-22T05:05:15.537Z"
     }
    },
    "queue": null,
@@ -204533,33 +204481,27 @@
     },
     {
      "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-22T11:44:01.873Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:44:01.873Z"
     },
     {
      "text": "Watchdog: build stuck at building (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-22T11:48:01.156Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:48:01.156Z"
     },
     {
      "text": "Watchdog: build failed at building, attempt 3: building did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-22T11:49:02.006Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:49:02.006Z"
     },
     {
      "text": "Watchdog: build retried at building, attempt 4.",
-     "at": "2026-11-22T11:50:02.294Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:50:02.294Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T11:51:01.655Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:51:01.655Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T11:51:01.655Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:51:01.655Z"
     }
    ],
    "approvals": [
@@ -204618,11 +204560,11 @@
      "at": "2026-11-22T00:49:56.836Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "all-done",
+     "reason": "",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-orchestrator-settings-collapsible-split--paulie",
-     "phase": "Phase 2"
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -204636,10 +204578,10 @@
     "route": "",
     "dispatchedAt": "2026-11-21T23:26:54.170Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T19:06:06.682Z",
+     "at": "2026-11-22T16:20:11.196Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -204649,17 +204591,7 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0,
-    "runEnd": {
-     "at": "2026-11-22T02:16:26.311Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-orchestrator-settings-collapsible-split--s8--earl",
-     "phase": ""
-    }
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -205729,7 +205661,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 272,
+   "rev": 273,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298147,7 +298079,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T14:08:31.584Z",
+   "updatedAt": "2026-11-22T16:18:31.395Z",
    "builtAt": "",
    "notes": [
     {
@@ -298277,6 +298209,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T14:08:31.584Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T16:18:31.395Z"
     }
    ],
    "approvals": [],
@@ -298657,7 +298593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333729,7 +333665,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T14:10:11.529Z",
+   "updatedAt": "2026-11-22T16:21:09.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -334275,6 +334211,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T14:10:11.529Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:20:14.672Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:21:09.121Z"
     }
    ],
    "approvals": [
@@ -334470,7 +334414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 154,
+   "rev": 156,
    "deleted": false,
    "deletedAt": "",
    "pending": {

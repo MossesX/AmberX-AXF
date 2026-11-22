@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T14:10:13.445Z",
+ "updatedAt": "2026-11-22T16:21:13.249Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124769,7 +124769,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -124778,7 +124778,7 @@
    "mergedAt": "2026-11-22T05:07:49Z",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-22T08:05:13.933Z",
+   "updatedAt": "2026-11-22T08:06:08.857Z",
    "builtAt": "2026-11-22T05:14:10.615Z",
    "notes": [
     {
@@ -125092,6 +125092,10 @@
     {
      "text": "Watchdog: merged and CI is green on fc521eb0a1: landed.",
      "at": "2026-11-22T08:05:13.933Z"
+    },
+    {
+     "text": "Verified on main (check): 1 check passed on fc521eb0a1: node apps/console-web/plugins/build-orchestrator/test/fill-slots.test.mjs. Complete: merged, CI green, verified.",
+     "at": "2026-11-22T08:06:08.857Z"
     }
    ],
    "approvals": [
@@ -136347,33 +136351,27 @@
     },
     {
      "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-22T11:44:01.873Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:44:01.873Z"
     },
     {
      "text": "Watchdog: build stuck at building (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-22T11:48:01.156Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:48:01.156Z"
     },
     {
      "text": "Watchdog: build failed at building, attempt 3: building did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-22T11:49:02.006Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:49:02.006Z"
     },
     {
      "text": "Watchdog: build retried at building, attempt 4.",
-     "at": "2026-11-22T11:50:02.294Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:50:02.294Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T11:51:01.655Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:51:01.655Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T11:51:01.655Z",
-     "by": "watchdog"
+     "at": "2026-11-22T11:51:01.655Z"
     }
    ],
    "approvals": [
@@ -200024,7 +200022,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T14:08:31.584Z",
+   "updatedAt": "2026-11-22T16:18:31.395Z",
    "builtAt": "",
    "notes": [
     {
@@ -200154,6 +200152,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T14:08:31.584Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T16:18:31.395Z"
     }
    ],
    "approvals": [],
@@ -212000,7 +212002,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T14:10:11.529Z",
+   "updatedAt": "2026-11-22T16:21:09.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -212546,6 +212548,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T14:10:11.529Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:20:14.672Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:21:09.121Z"
     }
    ],
    "approvals": [
