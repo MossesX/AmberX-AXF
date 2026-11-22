@@ -841,189 +841,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-21 22:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
-- 2026-11-21 22:48 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
-- 2026-11-21 22:58 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
-- 2026-11-21 22:58 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
-- 2026-11-21 23:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → landed, note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rename-gate-rules-to-vps-configuration` note (all) · watchdog
-- 2026-11-21 23:05 UTC · `approval-rules-vps-configuration-veto` note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → complete, note (all) · verify
-- 2026-11-21 23:05 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · builds-live
-- 2026-11-21 23:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
-- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:07 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:11 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 23:15 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · watchdog
-- 2026-11-21 23:16 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
-- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:21 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:25 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · watchdog
-- 2026-11-21 23:26 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:26 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
-- 2026-11-21 23:27 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-21 23:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:30 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:31 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:32 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:33 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:34 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` s10 undone, → queued (all) · foreign-write
-- 2026-11-21 23:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · watchdog
-- 2026-11-21 23:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-21 23:41 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:45 UTC · `terminal-main-tab-streaming-console-s` → fixing, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → landed, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `approval-rules-vps-configuration-veto` → landed, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `approval-rules-save-apply-default-don-t` note (all) · builds-live
-- 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → complete, note (all) · verify
-- 2026-11-21 23:46 UTC · `approval-rules-vps-configuration-veto` → complete, note (all) · verify
-- 2026-11-22 00:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · reconciler
-- 2026-11-21 23:51 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-21 23:51 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · pipeline
-- 2026-11-21 23:55 UTC · `flagship-professional-skin-covering-2` → fixing, note (all) · watchdog
-- 2026-11-21 23:55 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · watchdog
-- 2026-11-21 23:55 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · watchdog
-- 2026-11-21 23:56 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-21 23:56 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:01 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:01 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:05 UTC · `auto-lander-never-wait-missing-ui-review` → fixing, note (all) · watchdog
-- 2026-11-22 00:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · watchdog
-- 2026-11-22 00:06 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:11 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:11 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:15 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · watchdog
-- 2026-11-22 00:16 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:16 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
-- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:19 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · foreign-write
-- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
-- 2026-11-22 00:21 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:25 UTC · `approval-pass-covers-every-call` → fixing, note (all) · watchdog
-- 2026-11-22 00:25 UTC · `urgent-all-data-to-postgres-builds-store` → landing, note (all) · cron
-- 2026-11-22 00:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:26 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:28 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
-- 2026-11-22 00:31 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:31 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-22 00:35 UTC · `plan-studio-2-open-button-working-deep` → fixing, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `fable-rebuild-2-2-both-watchdogs-one` → landed, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `phone-connect-open-straight-phone-no-tap` → landed, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · builds-live
-- 2026-11-22 00:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · builds-live
-- 2026-11-22 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
-- 2026-11-22 00:35 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · builds-live
-- 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:36 UTC · `fable-rebuild-2-2-both-watchdogs-one` → complete, note (all) · verify
-- 2026-11-22 00:36 UTC · `phone-connect-open-straight-phone-no-tap` → complete, note (all) · verify
-- 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · builds-live
-- 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
-- 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · builds-live
-- 2026-11-22 00:37 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:37 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:37 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 00:38 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:38 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
-- 2026-11-22 00:39 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:40 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:41 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:42 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:45 UTC · `every-plugin-gets-own-default-toolbar` → fixing, note (all) · watchdog
-- 2026-11-22 00:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
-- 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → landed, note (all) · watchdog
-- 2026-11-22 00:45 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
-- 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → complete, note (all) · verify
-- 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · pipeline
-- 2026-11-22 01:17 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
-- 2026-11-22 01:17 UTC · `group-chat-audio-hear-agents-talk-while` → pending, note (all) · reconciler
-- 2026-11-22 01:48 UTC · `stop-push-storm-builds-live-pushes-build` s3 done, → landing (all) · orchestrator
-- 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · builds-live
-- 2026-11-22 00:47 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
-- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-22 00:49 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:51 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:51 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:51 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:51 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 00:52 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:52 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 00:53 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:54 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:55 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:55 UTC · `every-app-gets-own-locked-default` → fixing, note (all) · watchdog
-- 2026-11-22 00:56 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:57 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:58 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:59 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 01:00 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 01:01 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 01:01 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 01:01 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 01:01 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:02 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-22 01:02 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-22 01:03 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 01:03 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:04 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:05 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:05 UTC · `one-build-time-always-split-to-fill` → fixing, note (all) · watchdog
-- 2026-11-22 01:07 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:08 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:09 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:10 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:11 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:13 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 01:15 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · watchdog
-- 2026-11-22 01:15 UTC · `approval-rules-save-apply-default-don-t` note (all) · watchdog
-- 2026-11-22 01:16 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 01:16 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 01:17 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · pipeline
-- 2026-11-22 01:17 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
-- 2026-11-22 01:18 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · foreign-write
-- 2026-11-22 01:18 UTC · `group-chat-audio-hear-agents-talk-while` → pending, note (all) · foreign-write
-- 2026-11-22 01:18 UTC · `orchestrator-settings-collapsible-split` s10 undone, → pending (all) · foreign-write
-- 2026-11-22 01:18 UTC · `group-chat-audio-hear-agents-talk-while` s6 undone, → pending (all) · foreign-write
-- 2026-11-22 01:21 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
 - 2026-11-22 01:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
 - 2026-11-22 01:25 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · watchdog
 - 2026-11-22 01:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
@@ -1241,6 +1058,189 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 03:48 UTC · `move-server-side-console-parts-onto-vps` note (all) · builds-live
 - 2026-11-22 03:49 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
 - 2026-11-22 03:49 UTC · `one-build-time-always-split-to-fill` → pending, note (all) · pipeline
+- 2026-11-22 03:49 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
+- 2026-11-22 03:50 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · foreign-write
+- 2026-11-22 03:50 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
+- 2026-11-22 03:50 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-22 03:50 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
+- 2026-11-22 03:50 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-22 03:55 UTC · `one-true-source-get-redundant-settings` → landing, note (all) · watchdog
+- 2026-11-22 03:55 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing, note (all) · watchdog
+- 2026-11-22 03:55 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · watchdog
+- 2026-11-22 03:55 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · watchdog
+- 2026-11-22 03:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 03:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 03:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 03:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:00 UTC · `one-build-time-always-split-to-fill` note (all) · watchdog
+- 2026-11-22 04:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:04 UTC · `one-build-time-always-split-to-fill` note (all) · watchdog
+- 2026-11-22 04:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:05 UTC · `one-build-time-always-split-to-fill` → failed, note (all) · watchdog
+- 2026-11-22 04:05 UTC · `stop-push-storm-builds-live-pushes-build` → fixing, note (all) · watchdog
+- 2026-11-22 04:05 UTC · `one-build-time-always-split-to-fill` → split (all) · orchestrator
+- 2026-11-22 04:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:06 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:06 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:06 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:07 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:07 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:07 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:08 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:08 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:08 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:08 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
+- 2026-11-22 04:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:09 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:09 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:09 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:10 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:10 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:10 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:11 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:11 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:11 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:12 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:12 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:12 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:13 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:13 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `one-build-time-always-split-to-fill` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, s21 undone, s22 undone, s23 undone, s24 undone, s25 undone, s26 undone, s27 undone, note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `stop-push-storm-builds-live-pushes-build` → complete, note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `one-true-source-get-redundant-settings` note (all) · foreign-write
+- 2026-11-22 04:13 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:13 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:13 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-22 04:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:14 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:14 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:14 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:15 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:15 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:15 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:16 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:16 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:16 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:16 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
+- 2026-11-22 04:16 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-22 04:16 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
+- 2026-11-22 04:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:17 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:17 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:17 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `one-build-time-always-split-to-fill` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, s21 undone, s22 undone, s23 undone, s24 undone, s25 undone, s26 undone, s27 undone, note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `stop-push-storm-builds-live-pushes-build` → complete, note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `one-true-source-get-redundant-settings` note (all) · foreign-write
+- 2026-11-22 04:17 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:18 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:18 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:18 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:18 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
+- 2026-11-22 04:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:19 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:19 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:19 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:20 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:20 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:20 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:21 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:21 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:21 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:22 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:22 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:22 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:23 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:23 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:23 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `one-build-time-always-split-to-fill` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, s21 undone, s22 undone, s23 undone, s24 undone, s25 undone, s26 undone, s27 undone, note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `stop-push-storm-builds-live-pushes-build` → complete, note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `one-true-source-get-redundant-settings` note (all) · foreign-write
+- 2026-11-22 04:23 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:24 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:24 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:24 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:25 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:25 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:25 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:26 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:26 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:26 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:27 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:27 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:27 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:28 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:28 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:28 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:28 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
+- 2026-11-22 04:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:29 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:29 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:29 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:30 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:30 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:30 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:31 UTC · `every-app-gets-own-locked-default` s7 done, → landing (all) · orchestrator
+- 2026-11-22 04:31 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:31 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:31 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:32 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
+- 2026-11-22 04:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-22 04:32 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
+- 2026-11-22 04:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-22 04:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:33 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:33 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:33 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:34 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:34 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:34 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:35 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:35 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:35 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:35 UTC · `one-true-source-get-redundant-settings` → fixing, note (all) · watchdog
+- 2026-11-22 04:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:36 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-22 04:36 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
+- 2026-11-22 04:36 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-22 04:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 04:37 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 
 ## Token passes (log)
 
