@@ -85,7 +85,7 @@ function paint(rt: AxfRuntime): void {
   painted = key;
   rt.registry.register(asset, 'app', ID);
   rt.setBadge(COUNTER, st.status.live === 'live' ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at, order: 24, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at, order: 24, origin: ID, widget: { label: 'axHub status', size: 'compact', priority: 6, aliases: ['axhub', 'hub'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 

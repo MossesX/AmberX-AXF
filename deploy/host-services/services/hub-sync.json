@@ -1,0 +1,30 @@
+{
+  "$axf": "host-service@1",
+  "id": "hub-sync",
+  "title": "axHub sync",
+  "description": "claude-sync (rules, memory, instructions and shared data with the hub's /projects tree) and the persist push that seeds shared files the hub does not have yet, on a timer, so the checkout and the hub agree while the console is down.",
+  "kind": "daemon",
+  "unit": "axf-hub-sync.service",
+  "plugin": "hub-sync",
+  "runner": "deploy/host-services/workers/hub-sync.mjs",
+  "sudo": [
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task hub-sync", "why": "claude-sync sync in /opt/axf (root's claude-sync install, writes _claude/ and the data.shared snapshots)" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task hub-status", "why": "claude-sync status (what is held)" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task persist-push", "why": "seed shared files the hub does not have yet (never overwrites)" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task persist-pull", "why": "copy hub to repo for a snapshot commit (the Pull action)" }
+  ],
+  "health": { "intervalSec": 300, "timeoutMs": 5000, "staleSec": 3600 },
+  "actions": [
+    { "id": "sync", "title": "Sync now", "description": "claude-sync sync in the checkout.", "timeoutMs": 600000 },
+    { "id": "status", "title": "Status", "description": "claude-sync status: where things are, what is held.", "modes": ["container", "shadow", "host"], "timeoutMs": 60000 },
+    { "id": "persist-push", "title": "Seed the hub", "description": "Copy repo files the hub does not have yet (existing hub files kept).", "timeoutMs": 120000 },
+    { "id": "persist-pull", "title": "Snapshot from the hub", "description": "Copy hub to repo, to commit a snapshot.", "confirm": true, "timeoutMs": 120000 }
+  ],
+  "settings": {
+    "intervalSec": { "type": "integer", "default": 300, "min": 60, "max": 86400, "title": "Sync every (s)" },
+    "pushEachPass": { "type": "boolean", "default": true, "title": "Seed missing shared files on each pass" }
+  },
+  "replaces": [
+    { "kind": "loop", "name": "f_shared_data", "where": "the systems-check plugin: server/checks.py (the shared data Auto fix runs persist push)" }
+  ]
+}

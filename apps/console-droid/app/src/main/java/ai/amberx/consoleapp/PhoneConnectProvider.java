@@ -14,11 +14,13 @@ import org.json.JSONObject;
  *
  * - {@code call("open", url, {where})}: the page loads in the one console WebView and the toolbar expands over
  *   whatever is on screen ({@link DeviceLink#open}, the same path as axHub's {@code amberx.open_url}); a url with
- *   {@code ?axf-overlay=expand|collapse} runs that verb instead. Answers {@code {ok: true, json: <the open answer>}}.
- * - {@code call("state", null, null)}: {@code {ok: true, json: {overlay, canDraw, on}}}.
+ *   {@code ?axf-overlay=expand|collapse} runs that verb instead. With the toolbar off the app itself comes to the
+ *   front on the page, started from the background ("Display over other apps" is Android's exemption). Answers
+ *   {@code {ok: true, json: <the open answer> + how}} only once the page is really on screen.
+ * - {@code call("state", null, null)}: {@code {ok: true, json: {overlay, canDraw, on, visible}}}.
  * - Refusals: {@code {ok: false, code, message}} with {@code denied} (not Phone Connect), {@code validation} (no such
- *   method, a url outside Brett's sites), {@code no_overlay} (off or not allowed) or {@code browser} (asked for the
- *   browser).
+ *   method, a url outside Brett's sites), {@code no_overlay} (the permission isn't granted), {@code browser} (asked
+ *   for the browser) or {@code unavailable} (Android held the start back).
  *
  * Only Phone Connect's package and this app may call; Android vouches for the calling package.
  */
@@ -35,7 +37,8 @@ public class PhoneConnectProvider extends ContentProvider {
         try {
             if (PhoneConnectRules.STATE.equals(method)) {
                 return ok(new JSONObject().put("overlay", new JSONObject(OverlayService.stateJson()))
-                    .put("canDraw", canDraw).put("on", OverlayService.config.on).put("contract", PhoneConnectRules.VERSION));
+                    .put("canDraw", canDraw).put("on", OverlayService.config.on).put("visible", ContentUpdate.appVisible)
+                    .put("contract", PhoneConnectRules.VERSION));
             }
             String where = extras == null ? "" : extras.getString(PhoneConnectRules.EXTRA_WHERE, "");
             String handOff = PhoneConnectRules.handOff(where, OverlayService.config.on, canDraw);
@@ -44,10 +47,21 @@ public class PhoneConnectProvider extends ContentProvider {
             try { url = ShellRules.allowed(arg); }
             catch (IllegalArgumentException e) { return error(PhoneConnectRules.VALIDATION, e.getMessage()); }
             JSONObject out = DeviceLink.open(c, new JSONObject().put("url", url).put("where", "overlay"));
-            return ok(out.put("via", "phone-connect"));
+            boolean inOverlay = out.optBoolean("overlay", false);
+            // a collapse verb opens nothing; anything else must be on screen before this says it opened
+            if (out.optBoolean("opened", false) && !PhoneConnectRules.front(inOverlay, awaitVisible()))
+                return error(PhoneConnectRules.UNAVAILABLE, PhoneConnectRules.message(PhoneConnectRules.UNAVAILABLE));
+            return ok(out.put("via", "phone-connect").put("how", PhoneConnectRules.how(inOverlay)));
         } catch (Exception e) {
             return error(PhoneConnectRules.UNAVAILABLE, String.valueOf(e.getMessage()));
         }
+    }
+
+    /** The app on screen within {@link PhoneConnectRules#FRONT_WAIT_MS} (a binder thread: waiting here blocks no UI). */
+    private static boolean awaitVisible() throws InterruptedException {
+        long end = android.os.SystemClock.elapsedRealtime() + PhoneConnectRules.FRONT_WAIT_MS;
+        while (!ContentUpdate.appVisible && android.os.SystemClock.elapsedRealtime() < end) Thread.sleep(100);
+        return ContentUpdate.appVisible;
     }
 
     private static Bundle ok(JSONObject json) {

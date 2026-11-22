@@ -365,10 +365,18 @@ try {
     const state = web('approvalRulesState.ts');
     for (const a of ['open', 'status', 'add', 'edit', 'remove', 'move', 'clear-own', 'discard']) assert.ok(state.includes(`'vps.approvals.${a}'`), `action vps.approvals.${a}`);
     assert.ok(!/'vps\.approvals\.(save|apply|default)'/.test(state), 'saving and applying the default are not actions');
-    assert.match(state, /if \(!ownClick\(click\)\) throw new Error\(OWNER_ONLY\);\n  const cur = await loadApprovals\(\);/, 'the trusted click is checked before anything is read or sent');
+    assert.match(state, /if \(!ownClick\(click\)\) throw new SaveError\(OWNER_ONLY, 'owner'\);\n  const cur = await loadApprovals\(\);/, 'the trusted click is checked before anything is read or sent');
+    assert.match(state, /if \(!cur\.canSave\) throw new SaveError\(NOT_SIGNED_IN, 'signin'\);/, 'no hub session: the save says so and asks for a sign-in');
+    assert.match(state, /r\.code === 'unauthenticated' \? new SaveError\(/, "a session that ran out before the PUT asks for a sign-in too");
+    assert.match(state, /\/auth\/login\?rd=\$\{encodeURIComponent\(back\)\}/, 'the sign-in comes back to this page');
     assert.match(state, /e\.nativeEvent\.isTrusted === true/);
     const tab = web('ApprovalRulesTab.tsx');
-    for (const id of ['vps-approvals-refresh', 'vps-approvals-discard', 'vps-approvals-save', 'vps-approvals-default']) assert.ok(tab.includes(`id="${id}"`), `button ${id}`);
+    for (const id of ['vps-approvals-refresh', 'vps-approvals-discard', 'vps-approvals-save', 'vps-approvals-default', 'vps-approvals-confirm', 'vps-approvals-cancel', 'vps-approvals-signin']) assert.ok(tab.includes(`id="${id}"`), `button ${id}`);
+    // the overlay WebView of the console app cannot draw confirm(): the question is asked on the tab
+    assert.ok(!/\bconfirm=/.test(tab) && !/(window|globalThis)\.confirm/.test(tab), 'no browser confirm() on the Approval rules tab');
+    assert.match(tab, /id="vps-approvals-confirm"[^>]*onClick=\{answer\}/, "the answer's own click is the one that saves");
+    assert.match(tab, /e instanceof SaveError && e\.code === 'signin'/, 'a missing session shows Sign in');
+    assert.match(tab, /if \(what === 'save' \|\| what === 'default'\) rt\.toast\(message, 'danger', T\)/, 'a failed save is said twice: on the tab and as a toast');
     for (const f of ['match', 'policy', 'vetoSeconds']) assert.ok(tab.includes('data-axf-target={`${address}.' + f + '`}'), `target ${f}`);
     assert.match(tab, /saveApprovals\(e\)/); assert.match(tab, /await stageApproval\(\{ op: 'default' \}\); await saveApprovals\(e, DEFAULT\.reason\)/);
   });

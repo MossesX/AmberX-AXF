@@ -41,6 +41,7 @@ export const NAMESPACES = Object.freeze({
   changes: { label: 'Codebase changes log', kinds: ['record'], today: '/projects/amberx-axf/_data/changes' },
   sessions: { label: 'Session archives', kinds: ['record', 'blob', 'journal'], today: '/projects/amberx-axf/_data/sessions' },
   console: { label: 'Console hub data', kinds: ['record', 'journal', 'blob'], today: '/projects/amberx-axf/_data/<folder>' },
+  phone: { label: 'Phone Connect devices, pairings, commands', kinds: ['record', 'journal'], pluginFolder: 'phone-connect', today: '.axf-console/plugins/phone-connect' }, // phone-connect@1: a core namespace kept in the plugin's folder: axf-not-plugin:phone-connect
   _meta: { label: 'Store state', kinds: ['record', 'journal'], internal: true, today: '' },
 });
 export const LIMITS = Object.freeze({

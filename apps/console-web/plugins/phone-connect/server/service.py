@@ -251,7 +251,11 @@ def send(command: str, arguments: dict | None, by: dict, device_id: str = "", ap
 def command_view(c: dict) -> dict[str, Any]:
     results = c.get("results") or []
     last = results[-1] if results else None
-    return {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    v = {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    if c.get("command") == "open_url":
+        # what really happened, the same words on every surface (REST, MCP, `axf phone command`, voice)
+        v["opened"] = opened_how(v)
+    return v
 
 
 def sweep(at: str = "") -> int:
@@ -558,16 +562,44 @@ def presence(at: str = "") -> dict[str, Any]:
 # ---- open a page and bring it to the front (MCP `phone_open_url`)
 
 BROWSERS = E.COMMANDS["open_url"]["arguments"]["browser"]["enum"]
+WHERES = E.COMMANDS["open_url"]["arguments"]["where"]["enum"]
 OPEN_WAIT_S = 8.0
 HOW_WORDS = {"direct": "It is open and in front.", "console-overlay": "It is open in the console app's overlay.",
+             "console-app": "The console app is open on it, in front.",
              "notification": "Android would not let it open by itself, so a high-priority notification is on the phone: one tap opens it.",
              "full-screen-intent": "A high-priority notification is on the phone: one tap opens it."}
+NOTIFIED_HOWS = ("notification", "full-screen-intent")
+WHY_WORDS = {"no-permission": "Not opened: Phone Connect may not display over other apps, so a notification is on the phone and one tap opens it. Allow it on the app's screen and pages open by themselves.",
+             "launch-failed": "Not opened: the phone was allowed to open it but nothing came to the front, so a notification is on the phone and one tap opens it."}
+
+
+def opened_how(c: dict[str, Any]) -> dict[str, Any]:
+    """What the phone really did with one open_url command, never more than it said: {answered, opened, notified, how,
+    why, message}. `opened` is true only when the phone answered that the page is on screen; a tap-to-open
+    notification is `notified`, not opened (an app before 0.3.0 answered `opened: true` for both, so `how` decides);
+    no answer yet is neither."""
+    res = c.get("result") or {}
+    data = res.get("data") or {}
+    answered = c.get("status") == "done"
+    how = str(data.get("how") or "")
+    notified = answered and (how in NOTIFIED_HOWS or data.get("notified") is True)
+    opened = answered and not notified and data.get("opened") is not False
+    if not answered:
+        message = "Sent to the phone; it has not answered yet, so nothing says it opened (read the command for its result)."
+    elif notified:
+        message = WHY_WORDS.get(str(data.get("why") or ""), HOW_WORDS["notification"])
+    elif opened:
+        message = HOW_WORDS.get(how, "The phone opened it.")
+    else:
+        message = "The phone took it and opened nothing (an overlay verb, or nothing to open)."
+    return {"answered": answered, "opened": opened, "notified": notified, "how": how, "why": str(data.get("why") or ""), "message": message}
 
 
 def open_page(url: Any, browser: Any = "", by: dict | None = None, device_id: str = "", wait_s: float = OPEN_WAIT_S) -> dict[str, Any]:
     """Open an https page on one of Brett's own sites (amberxai.com) on the paired phone, in Chrome or the default
-    browser, in front. Waits a few seconds for the phone's answer, so the caller hears how it opened: `direct` (in
-    front), or `notification` (Android blocked a start from the background; one tap opens it)."""
+    browser, in front. Waits a few seconds for the phone's answer, so the caller hears what really happened:
+    `opened` with `how: direct` (in front), or `notified` with `how: notification` and `why` (it did not open; a
+    notification waits for one tap). No answer in time is neither."""
     browser = str(browser or "chrome")
     if browser not in BROWSERS:
         fail("validation", f"browser must be one of {', '.join(BROWSERS)}")
@@ -585,10 +617,9 @@ def open_page(url: Any, browser: Any = "", by: dict | None = None, device_id: st
     res = c.get("result") or {}
     if c["status"] == "failed":
         raise PhoneError((res.get("error") or E.wire_error("unexpected", "the phone failed to open it")))
-    how = str((res.get("data") or {}).get("how") or "")
-    opened = c["status"] == "done"
-    return {"ok": True, "id": r["id"], "status": c["status"], "opened": opened, "how": how, "browser": browser, "url": url,
-            "message": HOW_WORDS.get(how, "The phone opened it.") if opened else "Sent to the phone; it has not answered yet (read the command for its result)."}
+    o = opened_how(c)
+    return {"ok": True, "id": r["id"], "status": c["status"], "opened": o["opened"], "notified": o["notified"], "how": o["how"], "why": o["why"],
+            "browser": browser, "url": url, "message": o["message"]}
 
 
 def _wait(cid: str, wait_s: float) -> dict[str, Any]:
@@ -695,8 +726,10 @@ class PhoneCapability:
             return None
         args = dict(arguments or {})
         if cmd == "open_url":
-            # a caller that names a browser wants the page in that browser (chrome | default), in front; else the overlay first
-            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay",
+            # a caller that names only a browser wants the page in that browser (chrome | default), in front; one that
+            # says where: overlay gets the console app first (its overlay, or the app in front), the browser after it
+            where = args.get("where") if args.get("where") in WHERES else "browser" if args.get("browser") else "overlay"
+            args = {"url": str(args.get("url") or ""), "where": where,
                     **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
         else:
             args = {}
@@ -716,9 +749,10 @@ class PhoneCapability:
         data = res.get("data") or {}
         if cmd == "recorder.status":
             data = data or (status().get("recorder") or {})
-        text = {"open_url": "Phone Connect opened it on the phone" if c["status"] == "done" else "Phone Connect sent it to the phone",
+        opened = opened_how(c) if cmd == "open_url" else None
+        text = {"open_url": (opened or {}).get("message", ""),
                 "recorder.stop": "Phone Connect stopped the recorder", "recorder.status": json_text(data)}[cmd]
-        return {"ok": True, "output": text, "command": c, "data": data}
+        return {"ok": True, "output": text, "command": c, "data": data, **({"opened": opened} if opened else {})}
 
     def push_alert(self, alert: dict[str, Any], notify_id: str = "", url: str = "") -> dict[str, Any]:
         """The alert hub's phone channel: one console alert (it already passed axf.notify@1) as a phone notification."""
@@ -734,9 +768,10 @@ class PhoneCapability:
 
 HEALTH_ID = "phone-connect"
 OFFLINE_RED_S = 600  # paired and watched, but silent this long = red
-# The first app build that stops retrying a refused key, opens pages in Chrome in front and puts Approve / Deny on the
-# approval notification. An older app still works, but its approval prompt only opens axHub's page.
-MIN_APP = "0.2.0"
+# The first app build that opens the console straight on the phone (the tap-to-open notification only as the fallback,
+# and it says so) and floats a held approval over the screen with Approve / Deny on it. An older app still works, but
+# a console wake arrives as a notification to tap and approvals only as a notification.
+MIN_APP = "0.3.0"
 APP_WHERE = "axHub → Apps → Phone Connect → Download (https://axhub.amberxai.com/apps)"
 
 
@@ -768,7 +803,7 @@ def health_probe(at: str = "") -> dict[str, Any]:
     d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
     if E.is_online(d, at):
         if app_outdated(d):
-            return {"status": "warn", "summary": f"{d['name']} runs Phone Connect {d.get('appVersion') or '?'}: update it to {MIN_APP} or newer for Approve / Deny on the notification and pages in front.",
+            return {"status": "warn", "summary": f"{d['name']} runs Phone Connect {d.get('appVersion') or '?'}: update it to {MIN_APP} or newer so the console opens by itself (no notification to tap) and approvals float on screen with Approve / Deny.",
                     "details": [f"On the phone: {APP_WHERE}, install it over the old one.", "Open Phone Connect once afterwards; it keeps its pairing."],
                     "link": f"row:device/{d['deviceId']}"}
         return {"status": "ok", "summary": f"{d['name']} is online (Phone Connect).", "details": []}

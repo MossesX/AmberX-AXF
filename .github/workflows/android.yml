@@ -109,8 +109,10 @@ jobs:
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node deploy/branch-protection.test.mjs                 # L2-09: the main ruleset (required checks = this workflow's job names, deploy-key-only bypass); nothing is applied without --yes
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
+      - run: node framework/spec/check-build-pipeline-fill.mjs      # build-pipeline@1 fill: step dependencies (after), claims with TTL, readySteps, planFill replays fixtures/build-pipeline-fill.json
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/fill-slots.test.mjs   # fill every slot: step worktrees, merge back, conflict → blocked retry, dispatcher  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test-watchdog.mjs   # build watchdog: killed / failed / hung builds requeued and retried, cap, other account, idle slots, phone FYI  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-build-watchdog.mjs           # build-watchdog@1 decision table: killed 143 / exit 1 / OOM / stale heartbeat → reset + requeue (retry) until maxRetries → Pending + banner (give-up), usage limit / dead login → another account, live session left alone; recoveries[] on builds@1, schemas/build-watchdog.json current; fixtures/build-watchdog.json
       - run: node framework/spec/check-live-demo.mjs               # demo-run@1 (guided live demo): state machine idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped, pause on = wait for Next then ≥30 s, pause off = ≥30 s, the gap never below 30 s, refused transitions by code, per-act results + summary fold; acts touch demo- builds only; schemas/live-demo.json current; fixtures/live-demo.json
@@ -166,6 +168,12 @@ jobs:
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
+      - run: node framework/spec/check-host-services.mjs             # host-services@1: every deploy/host-services/services/*.json manifest, defaults and errors, sudoers lines, control targets, endpoints from env, up / degraded / down / unknown with since, call results → host_service_down, schema snapshots
+      - run: node deploy/host-services/test-hostd.mjs                # axf-hostd: worker loop under the mode file, socket API, heartbeat, journald lines, host API (list, actions, confirm, settings, mode, rollback, logs), loopback token, CLI, host_service_down
+      - run: node deploy/host-services/test-sudoers.mjs              # the sudo whitelist holds only what the manifests declare (axf-* expanded, no ALL / shell / free wildcard), the committed file is current
+      - run: node deploy/host-services/axf-hostd.mjs --check         # every manifest loads and every declared action has a worker function
+      - run: bash deploy/dryrun/host-services.sh                     # install-host-services.sh --dry-run / --only / --uninstall: rendered units, env files, sudoers, calls
+      - run: bash deploy/dryrun/host-services-rollback.sh            # migration drill: container → shadow (runs compared) → host (cron aside) → rollback (unit stopped, cron back), verified
       - run: node framework/spec/check-auto-lander.mjs               # auto-lander@1: decide (clash → merge main, red → fix session, running → wait, green → land, maxAttempts → escalate), backoff, mid-flight + stale attempts, reset by hand, policy from the auto-lander rule, lander-state@1 migration, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
       - run: node framework/cli/build-rules-migrate.mjs --check      # every inventoried builder rule is in the seed store
@@ -335,6 +343,7 @@ jobs:
             node framework/spec/check-theme-contrast.mjs                # every colour theme, light and dark: the full token set, and every text token at WCAG AA on bg and surface
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
+            node framework/spec/check-app-menus.mjs                     # app-menus@1: every app ships its locked default-<app>-nav / -appmenu, its manifest names them, no app points at a shared or another app's menu
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
@@ -399,6 +408,7 @@ jobs:
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
             npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-approvals.mts               # lib-approvals: approvals + held calls in one list, badge words, deciding rules, watcher
+            npx -y tsx framework/spec/check-app-menus-runtime.mts         # app-menus@1 in the runtime: own default menus, shared / other apps' menus refused, old picks migrate
             npx -y tsx framework/spec/check-approvals-menu.mts          # app menu Waiting for approval: Deny / Approve on every row, flips in place (jsdom)
             npx -y tsx framework/spec/check-approval-expand.mts         # expandable approval rows: details model, open in place, stays open on refresh, Deny / Approve inside (jsdom)
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
@@ -422,6 +432,8 @@ jobs:
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
+            python apps/console-web/plugins/host-services/test.py  # host-services plugin routes (MCP commands): down state, confirm on destructive presses  # axf-plugin:host-services
+            python apps/console-web/server/tests/test_host_services.py  # host services, console half: client down state + endpoint order, REST + plugin routes (confirm on destructive presses), live host API, health@1 items, capability
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands

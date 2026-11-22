@@ -10,8 +10,8 @@
  *     commit (and on main's newest commit when that does not prove it), live sessions, a lander fix agent in flight, and
  *     the retry ladder's answer for a fixing build (framework/core/retry-ladder.mjs)
  *   3 decide (stale-core decide), pick (the longest-standing first; maxPerPass, one launch at a time)
- *   4 apply: record the merge, set landed, record a failure, relaunch on the ladder's next rung (pipeline.mjs
- *     retryFixing), requeue, or escalate (pipeline.mjs escalateBuild: banner item + one push). Each write is one
+ *   4 apply: record the merge, set landed, record a failure, put the build back in the Queue with one step for the
+ *     ladder's next rung, requeue, or escalate (pipeline.mjs escalateBuild: banner item + one push). Each write is one
  *     journalled store write (action watchdog-stale) with a note on the build.
  *
  *   node apps/console-web/plugins/build-orchestrator/watchdog/stale.mjs scan [--json]       what it would do; nothing changes
@@ -20,7 +20,7 @@
  *                                          limit.landing, limit.fixing, limit.merging (minutes)
  *
  * Files (the watchdog's folder): watchdogs-stale-settings.json, watchdogs-stale.json (the last push per build: the
- * cooldown's memory, and the last scan). A launch only works on the VPS host (the Claude logins are there).
+ * cooldown's memory, and the last scan).
  */
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -205,14 +205,23 @@ export async function realApply(env = process.env) {
     fail: (d) => write(d, (b, at) => { PC.recordFailure(b, BP.normFailure(C.failureOf(d, at)), { at }); note(b, `${d.why}. The retry ladder answers it.`, at); return { ok: true, note: `${d.kind} failure recorded: fixing` }; }),
     'to-landing': (d) => write(d, (b, at) => { const g = BP.guardStatus(b, 'landing'); if (!g.ok) return { ok: false, note: g.why }; b.status = 'landing'; note(b, `${d.why}.`, at); return { ok: true, note: 'back to landing' }; }),
     requeue: (d) => { const r = p.retryBuild(d.id, { by: 'watchdog', why: d.why, noLaunch: true }); return { ok: true, note: `status ${r.status}` }; },
-    ladder: (d) => {
-      const settings = p.loadSettings();
-      const r = p.retryFixing({ only: d.id, force: d.rung, env, settings, accounts: p.accountsNow(loadStore(), settings), alert })[0] ?? null;
-      if (!r) return { ok: false, note: 'the retry runner had no answer (the build moved on)' };
-      if (r.action === 'launched') return { ok: true, note: `${r.strategy}${r.fixStrategy ? ` (${r.fixStrategy})` : ''} on ${r.account} (${r.model})${r.session ? `: ${r.session}` : ''}` };
-      if (r.action === 'escalated') return { ok: true, gaveUp: true, notified: true, note: `the ladder ran out: escalated (${str(r.why, 200)})` };
-      return { ok: false, note: `${r.action}: ${str(r.why, 300)}` };
-    },
+    // the launcher only starts Queued builds (a fixing build is refused a slot), so a rung runs through the Queue: one
+    // step for the rung, the attempt on the build's log, status queued. The dispatcher starts it like any Queue work.
+    ladder: (d) => write(d, (b, at) => {
+      const f = BP.normFailure(b.failure);
+      if (!f) return { ok: false, note: 'no failure on it any more' };
+      const n = BP.normAttempts(b.attempts).length + 1;
+      const st = C.rungStep(b, d, { n });
+      const taken = new Set((b.steps ?? []).map((x) => x.id)); let k = (b.steps ?? []).length + 1; while (taken.has(`s${k}`)) k += 1;
+      const step = core.normStep({ ...st, id: `s${k}`, createdAt: at }, (b.steps ?? []).length, { now: at });
+      b.steps = [...(b.steps ?? []), step];
+      const [strategy, fixStrategy = ''] = d.rung.split(':');
+      b.attempts = BP.normAttempts([...(b.attempts ?? []), { kind: f.kind, strategy, fixStrategy, model: st.model, step: step.id, head: f.head, pr: b.pr, startedAt: at, result: 'started', source: 'pipeline', note: `Watchdog: ${d.rung} queued as ${step.id}` }]);
+      b.failure = null; b.status = 'queued'; b.builtAt = '';
+      b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), queuedAt: at, queuedBy: 'watchdog', session: '', slot: '', runs: 0, crashes: 0, note: `watchdog: ${d.rung} for ${f.kind} as ${step.id}` }) ?? b.pipeline;
+      note(b, `${d.why}. Added ${step.id} (${st.model}) and moved it back to the Queue: attempt ${n}.`, at);
+      return { ok: true, note: `${step.id} added (${st.model}), back in the Queue as attempt ${n}` };
+    }),
     escalate: (d, b) => {
       const f = BP.normFailure(b.failure) ?? BP.normFailure(C.failureOf(d, new Date().toISOString()));
       p.escalateBuild(d.id, f, { by: 'watchdog', alert });
@@ -257,7 +266,7 @@ export const WATCH = Object.freeze({
   label: 'Stuck statuses',
   what: 'Builds standing in landing, fixing or merging too long: the merge recorded, landed once CI is green, or pushed to the next rung of their retry ladder.',
   schema: SETTINGS_SCHEMA,
-  hostOnly: true, // a relaunch needs the Claude logins on the VPS host
+  hostOnly: true, // the PR facts need the host's checkout and GitHub token; the cron runs it there
   settings: async (env = process.env) => flat(await loadSettings(env)),
   set: (patch, { by, env = process.env } = {}) => saveSettings(patch, { by, env }),
   async scan({ env = process.env, ...opts } = {}) {

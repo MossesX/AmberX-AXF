@@ -1,0 +1,33 @@
+{
+  "$axf": "host-service@1",
+  "id": "agent-swarm",
+  "title": "Agent job runner",
+  "description": "Launches agent jobs (CI-fix jobs, scheduled and event jobs, Breakroom Run) through deploy/claude-headless.sh and the agent-slots cap, and sweeps finished runs onto their agents, whether or not the console is up. The console keeps the Breakroom UI and sends jobs here over the socket.",
+  "kind": "daemon",
+  "unit": "axf-agent-swarm.service",
+  "plugin": "agent-swarm",
+  "runner": "deploy/host-services/workers/agent-swarm.mjs",
+  "sudo": [
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task jobs-due", "why": "launch scheduled job types that are due (headless sessions run as root, as today)" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task jobs-sweep", "why": "book finished runs onto their agents" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task jobs-list", "why": "job types, owners, last and next runs" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task jobs-drain", "why": "run the job requests the console sent (spooled in the service's data folder, re-checked by root)" }
+  ],
+  "health": { "intervalSec": 60, "timeoutMs": 5000, "staleSec": 900 },
+  "actions": [
+    { "id": "run-job", "title": "Run a job", "description": "Route one run to the owning agent and launch it.", "timeoutMs": 150000,
+      "args": { "jobType": { "type": "string", "required": true }, "inputs": { "type": "string", "description": "JSON object of string inputs" }, "agent": { "type": "string" }, "dry": { "type": "boolean" } } },
+    { "id": "hire", "title": "Hire for a job type", "timeoutMs": 150000, "args": { "jobType": { "type": "string", "required": true } } },
+    { "id": "event", "title": "Fire a job event", "description": "Launch the job types an event triggers (e.g. ci-red).", "timeoutMs": 150000,
+      "args": { "name": { "type": "string", "required": true }, "inputs": { "type": "string" } } },
+    { "id": "list", "title": "List job types", "modes": ["container", "shadow", "host"], "timeoutMs": 90000 },
+    { "id": "sweep", "title": "Sweep finished runs", "timeoutMs": 300000 }
+  ],
+  "settings": {
+    "intervalSec": { "type": "integer", "default": 60, "min": 30, "max": 3600, "title": "Check for due jobs every (s)" }
+  },
+  "replaces": [
+    { "kind": "loop", "name": "jobs_run", "where": "the agent-swarm plugin: server/__init__.py (/jobs/run, /jobs/hire launch from the container)" },
+    { "kind": "cron", "name": "axf-agent-jobs", "where": "scheduled job types (jobs.mjs due --run) when a cron line runs them" }
+  ]
+}

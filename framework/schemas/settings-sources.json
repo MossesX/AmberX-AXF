@@ -47,7 +47,14 @@
         "pipeline stepsInParallel"
       ],
       "label": "Steps in parallel",
-      "why": "Steps of one build that run at once, under Builds at once. Nothing else does this job."
+      "why": "Steps of the one active Pipeline 2.0 build sent out at once, under Builds at once. Builds on the builds@1 dispatcher never read it: their cap is the Claude setting builds.maxParallelPerBuild (below)."
+    },
+    {
+      "keys": [
+        "builds.maxParallelPerBuild"
+      ],
+      "label": "Max parallel steps per build",
+      "why": "Fill every slot (BUILD-PARALLEL): step sessions a builds@1 build may run beside its own session. Pipeline 2.0 builds never read it: their cap is pipeline stepsInParallel, which counts every step of the active build. A build is on one flow or the other, so the two never apply to the same build."
     },
     {
       "keys": [
@@ -111,7 +118,8 @@
       "intervalMin": "How often two unrelated jobs run (the recovery watchdog, the chat viewer's sync).",
       "project": "The recorder's target project and hub sync's project are separate picks.",
       "graceMin": "Three watchdogs, each with its own grace period: the recovery watchdog (build-watchdog@1), watchdog 2 and the reaper.",
-      "maxAttempts": "Attempts of different units: a Pipeline 2.0 step (watchdog 2), a landing run (lander, auto-lander policy), a retry ladder rung."
+      "maxAttempts": "Attempts of different units: a Pipeline 2.0 step (watchdog 2), a landing run (lander, auto-lander policy), a retry ladder rung.",
+      "user": "The host account a host service runs as (host-services@1 manifest default) and the terminal's SSH login name are separate things."
     }
   }
 }

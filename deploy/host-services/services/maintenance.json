@@ -1,0 +1,95 @@
+{
+  "$axf": "host-service@1",
+  "id": "maintenance",
+  "title": "Maintenance actions",
+  "description": "Clear Docker cache (build cache and dangling images, restarting Docker when the cache is stuck), Restart Docker and Measure now for the Maintenance plugin, on the host so they work while the console (or Docker) is down.",
+  "kind": "daemon",
+  "unit": "axf-maintenance-actions.service",
+  "plugin": "maintenance",
+  "runner": "deploy/host-services/workers/maintenance.mjs",
+  "sudo": [
+    {
+      "cmd": "/opt/axf/deploy/host-services/bin/axf-task maint-docker-cache",
+      "why": "Clear Docker cache (tasks/maint-docker.mjs cache; restarts Docker when the cache is stuck)"
+    },
+    {
+      "cmd": "/opt/axf/deploy/host-services/bin/axf-task maint-docker-cache-norestart",
+      "why": "Clear Docker cache without restarting Docker"
+    },
+    {
+      "cmd": "/opt/axf/deploy/host-services/bin/axf-task maint-docker-restart",
+      "why": "Restart Docker (tasks/maint-docker.mjs restart)"
+    },
+    {
+      "cmd": "/opt/axf/deploy/host-services/bin/axf-task maint-status",
+      "why": "disk and Docker space"
+    },
+    {
+      "cmd": "/opt/axf/deploy/host-services/bin/axf-task maint-snapshot",
+      "why": "measure now (maint.py snapshot, low priority)"
+    }
+  ],
+  "health": {
+    "intervalSec": 600,
+    "timeoutMs": 5000,
+    "staleSec": 3600
+  },
+  "actions": [
+    {
+      "id": "clear-docker-cache",
+      "title": "Clear Docker cache",
+      "description": "Build cache and dangling images; restarts Docker if it is stuck unless restartDocker is false.",
+      "confirm": true,
+      "modes": [
+        "host"
+      ],
+      "timeoutMs": 1500000,
+      "args": {
+        "restartDocker": {
+          "type": "boolean"
+        }
+      }
+    },
+    {
+      "id": "restart-docker",
+      "title": "Restart Docker",
+      "description": "Restarts the Docker daemon: every container restarts, the console too.",
+      "confirm": true,
+      "modes": [
+        "host"
+      ],
+      "timeoutMs": 600000
+    },
+    {
+      "id": "snapshot",
+      "title": "Measure now",
+      "timeoutMs": 600000
+    },
+    {
+      "id": "status",
+      "title": "Status",
+      "modes": [
+        "container",
+        "shadow",
+        "host"
+      ],
+      "timeoutMs": 60000
+    }
+  ],
+  "settings": {
+    "intervalSec": {
+      "type": "integer",
+      "default": 600,
+      "min": 120,
+      "max": 86400,
+      "title": "Measure every (s)"
+    }
+  },
+  "replaces": [
+    {
+      "kind": "cron",
+      "name": "axf-maintenance",
+      "where": "the maintenance plugin: deploy/host.sh (maint.py snapshot every 10 minutes)"
+    }
+  ]
+}

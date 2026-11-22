@@ -27,7 +27,9 @@ ok(ctxAsset, `the console's context-menu asset (${active}) is found`);
 // the baked shared assets, enough for every slot the runtime needs
 const baked = join(app, 'src/axf/assets');
 const assets = readdirSync(baked).flatMap((t) => readdirSync(join(baked, t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(baked, t, n), 'utf8'))));
-const rt = new AxfRuntime({ manifest: { app: { id: 'console-test', name: 'Console test' }, defaults: manifest.defaults, startView: 'home' } as never, assets, storageKey: 'test:console-settings-menu' });
+// app-menus@1: the runtime only draws the app's own nav + app menu, so run as the console with its own menus
+assets.push(...appAssetsOfType(app, 'nav-menu'), ...appAssetsOfType(app, 'app-menu'));
+const rt = new AxfRuntime({ manifest: { app: manifest.app, defaults: manifest.defaults, startView: 'home' } as never, assets, storageKey: 'test:console-settings-menu' });
 let settingsOpened = 0;
 rt.actions.register('app.settings', () => { settingsOpened++; }, { label: 'Settings' });
 const undo = installConsoleSettingsMenu(rt);

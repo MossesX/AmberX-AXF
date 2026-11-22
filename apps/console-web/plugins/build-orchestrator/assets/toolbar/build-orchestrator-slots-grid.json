@@ -1,0 +1,26 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "build-orchestrator-slots-grid",
+ "name": "build-orchestrator-slots: Grid of slots",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A grid of equal slot tiles (about 14 em wide each), so a full VPS (8-12 slots) lines up in rows; Fill now closes the grid.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-orchestrator-slots",
+  "choice-option:grid"
+ ],
+ "data": {
+  "toolbar": "build-orchestrator.slots",
+  "scope": "view:build-orchestrator",
+  "layout": "grid",
+  "role": "toolbar",
+  "ariaLabel": "Agent slots",
+  "items": [
+   "slot-chips",
+   "fill-now"
+  ],
+  "summary": true
+ }
+}

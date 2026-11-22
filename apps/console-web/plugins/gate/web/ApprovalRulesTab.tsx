@@ -7,8 +7,13 @@
  * Every edit is staged in a draft (the same draft REST, MCP, the CLI and voice stage into) and nothing changes on
  * axHub until Save. Save and Apply the default take Brett's own click: they are sent from this browser on his own hub
  * session, and a remote press of the button is refused (approvalRulesState.ts → saveApprovals).
+ *
+ * The question before a save is asked on the tab itself, never with the browser's confirm(): the console app's
+ * overlay WebView cannot draw that dialog and answers "no" without showing anything. The first press opens the
+ * question, and the answer (`vps-approvals-confirm`) is the click that saves. Without his axHub session the tab says so
+ * and offers Sign in; every failed save shows its reason on the tab.
  * console-control@1: `tab:gate.tabs=approvals`; `setting:vps.approvals.<service>.rules | clearOwn | <n>.match |
- * <n>.policy | <n>.vetoSeconds`; buttons `button:vps-approvals-refresh | discard | save | default` and, per service,
+ * <n>.policy | <n>.vetoSeconds`; buttons `button:vps-approvals-refresh | discard | save | default | confirm | cancel | signin` and, per service,
  * `vps-approvals-<service>-add | <n>-update | <n>-up | <n>-down | <n>-remove`; actions `vps.approvals.open | status |
  * add | edit | remove | move | clear-own | discard`.
  */
@@ -16,7 +21,7 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { Button, Chip, Container, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import type { ApprovalRuleView, ApprovalRules, ApprovalService, Decision, StageOp } from './approval-core.mjs';
 import { DEFAULT, ruleProblem } from './approval-core.mjs';
-import { OWNER_ONLY, cachedApprovals, loadApprovals, onApprovals, saveApprovals, stageApproval } from './approvalRulesState';
+import { OWNER_ONLY, SaveError, cachedApprovals, hubSignInUrl, loadApprovals, onApprovals, saveApprovals, stageApproval } from './approvalRulesState';
 
 const T = 'VPS Configuration';
 const DECISION_LABEL: Record<Decision, string> = { allow: 'Allow: runs at once', veto: 'Veto: runs after the hold unless denied', confirm: 'Confirm: waits for Brett', deny: 'Deny: never runs' };
@@ -105,11 +110,15 @@ function ServiceRules({ service, hold, busy, stage }: { service: ApprovalService
   );
 }
 
+type Ask = '' | 'save' | 'default';
+
 export function ApprovalRulesTab({ refreshSec }: { refreshSec: number }) {
   const rt = useRuntime();
   const [cur, setCur] = useState<ApprovalRules | null>(cachedApprovals);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [ask, setAsk] = useState<Ask>('');
+  const [needSignIn, setNeedSignIn] = useState(false);
   useEffect(() => onApprovals(setCur), []);
   const reload = async () => { try { await loadApprovals(); setError(''); } catch (e) { setError((e as Error).message); } };
   useEffect(() => {
@@ -118,16 +127,29 @@ export function ApprovalRulesTab({ refreshSec }: { refreshSec: number }) {
     return () => window.clearInterval(t);
   }, [refreshSec]);
   const run = async (what: string, work: () => Promise<unknown>, done?: string) => {
-    setBusy(what); setError('');
-    try { await work(); if (done) rt.toast(done, 'success', T); } catch (e) { setError((e as Error).message); } finally { setBusy(''); }
+    setBusy(what); setError(''); setNeedSignIn(false);
+    try { await work(); if (done) rt.toast(done, 'success', T); }
+    catch (e) {
+      const message = (e as Error).message || 'It failed, and the console gave no reason.';
+      setError(message); setNeedSignIn(e instanceof SaveError && e.code === 'signin');
+      if (what === 'save' || what === 'default') rt.toast(message, 'danger', T);
+    } finally { setBusy(''); }
   };
   const stage = (op: StageOp, done?: string) => void run('stage', () => stageApproval(op), done);
-  const save = (e: MouseEvent<HTMLButtonElement>) => void run('save', () => saveApprovals(e), 'Approval rules saved on axHub.');
-  const applyDefault = (e: MouseEvent<HTMLButtonElement>) => void run('default', async () => { await stageApproval({ op: 'default' }); await saveApprovals(e, DEFAULT.reason); }, 'The default is applied: only VPS shell commands hold.');
+  // the answer to the question is the click that saves: it must be Brett's own (saveApprovals refuses anything else)
+  const answer = (e: MouseEvent<HTMLButtonElement>) => {
+    const what = ask;
+    setAsk('');
+    if (what === 'save') void run('save', () => saveApprovals(e), 'Approval rules saved on axHub.');
+    if (what === 'default') void run('default', async () => { await stageApproval({ op: 'default' }); await saveApprovals(e, DEFAULT.reason); }, 'The default is applied: only VPS shell commands hold.');
+  };
 
   if (!cur) return error ? <p className="axp-gate__err" role="alert">{error}</p> : <p className="axp-gate__sub">Reading the approval rules from axHub…</p>;
   const locked = !cur.canSave;
   const b = !!busy;
+  const signIn = (
+    <Button id="vps-approvals-signin" tone="primary" icon="key" disabled={!cur.hub} onClick={() => { if (cur.hub) globalThis.location?.assign(hubSignInUrl(cur.hub)); }}>Sign in to axHub</Button>
+  );
   return (
     <>
       <div className="axp-gate__bar" role="toolbar" aria-label="Approval rules" data-axf-toolbar="gate.approvals">
@@ -137,17 +159,42 @@ export function ApprovalRulesTab({ refreshSec }: { refreshSec: number }) {
           <Button id="vps-approvals-refresh" icon="refresh" busy={busy === 'refresh'} onClick={() => void run('refresh', reload)}>Refresh</Button>
           <Button id="vps-approvals-discard" icon="undo" disabled={b || !cur.pending} onClick={() => stage({ op: 'discard' }, 'Draft dropped. axHub was never changed.')}>Discard draft</Button>
           <Button id="vps-approvals-default" icon="zap" busy={busy === 'default'} disabled={b || locked || !cur.available || (cur.default.applied && !cur.pending)} title={locked ? OWNER_ONLY : undefined}
-            confirm={`Apply the default on axHub now? ${DEFAULT.summary}`} onClick={applyDefault}>Apply the default</Button>
+            aria-expanded={ask === 'default'} onClick={() => { setError(''); setAsk('default'); }}>Apply the default</Button>
           <Button id="vps-approvals-save" tone="primary" icon="save" busy={busy === 'save'} disabled={b || locked || !cur.save} title={locked ? OWNER_ONLY : undefined}
-            confirm={`Save the approval rules on axHub? ${cur.pending} service${cur.pending === 1 ? '' : 's'} change${cur.pending === 1 ? 's' : ''}.`} onClick={save}>Save</Button>
+            aria-expanded={ask === 'save'} onClick={() => { setError(''); setAsk('save'); }}>Save</Button>
         </span>
       </div>
-      {error && <p className="axp-gate__err" role="alert">{error}</p>}
+      {ask && !locked && (
+        <Note tone="warning">
+          <div className="axp-gate__ask" data-ask={ask}>
+            <span>{ask === 'default' ? `Apply the default on axHub now? ${DEFAULT.summary}` : `Save the approval rules on axHub? ${cur.pending} service${cur.pending === 1 ? '' : 's'} change${cur.pending === 1 ? 's' : ''}.`}</span>
+            <span className="axp-gate__bar">
+              <Button id="vps-approvals-confirm" tone="primary" icon="check" disabled={b} onClick={answer}>{ask === 'default' ? 'Yes, apply the default' : 'Yes, save'}</Button>
+              <Button id="vps-approvals-cancel" icon="x" onClick={() => setAsk('')}>Cancel</Button>
+            </span>
+          </div>
+        </Note>
+      )}
+      {error && (
+        <Note tone="danger">
+          <div className="axp-gate__ask">
+            <span className="axp-gate__err">{error}</span>
+            {needSignIn && <span className="axp-gate__bar">{signIn}</span>}
+          </div>
+        </Note>
+      )}
+      {locked && !needSignIn && (
+        <Note tone="warning">
+          <div className="axp-gate__ask" data-locked="">
+            <span><strong>Save and Apply the default are off here.</strong> This page is not on your axHub sign-in, so it can only stage edits as a draft. {OWNER_ONLY}</span>
+            <span className="axp-gate__bar">{signIn}</span>
+          </div>
+        </Note>
+      )}
       {!cur.available ? <Note tone="warning">Approval rules can't be shown: {cur.message}</Note> : (
         <>
           <Note tone={cur.default.applied ? 'success' : 'info'}><strong>The default.</strong> {DEFAULT.summary}{cur.default.applied ? ' It is applied.' : ' Apply the default sets it in one go.'}</Note>
-          {cur.draft && <Note tone="warning">Unsaved changes{cur.draft.by ? `, last staged by ${cur.draft.by}` : ''}{cur.draft.at ? ` on ${new Date(cur.draft.at).toLocaleString()}` : ''}. Nothing changes on axHub until Save.{locked ? ` ${OWNER_ONLY}` : ''}</Note>}
-          {!cur.draft && locked && <p className="axp-gate__sub">{OWNER_ONLY} Anyone can stage edits; they wait here as a draft.</p>}
+          {cur.draft && <Note tone="warning">Unsaved changes{cur.draft.by ? `, last staged by ${cur.draft.by}` : ''}{cur.draft.at ? ` on ${new Date(cur.draft.at).toLocaleString()}` : ''}. Nothing changes on axHub until Save.</Note>}
           {cur.services.map((s) => <ServiceRules key={s.service} service={s} hold={cur.hold} busy={b} stage={stage} />)}
         </>
       )}

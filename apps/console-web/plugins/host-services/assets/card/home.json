@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "host-services-home",
+  "name": "Host services",
+  "version": "1.0.0",
+  "description": "Host services on Home: Host services: list.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Host services",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "host-services",
+      "command": "list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

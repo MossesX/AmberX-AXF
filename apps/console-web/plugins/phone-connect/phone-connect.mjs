@@ -12,7 +12,7 @@
  *   axf phone notify <title> [--body …] [--kind fyi|fix|alert] [--url …]
  *   axf phone recorder start <session> --approval <uuid> | stop | status [--ask]
  *   axf phone voice say <text> | listen [--timeout 10]
- *   axf phone command <id> [--wait 20]       one command with its ack and result
+ *   axf phone command <id> [--wait 20]       one command with its ack and result (an open says: opened, or only notified and why)
  *   axf phone settings [--on <feature>] [--off <feature>]
  * Add --json for the raw answer. Approve / deny is not here, and never will be: only Brett's tap on the phone decides.
  */
@@ -86,7 +86,7 @@ function say(r) {
   }
   if (r.pairing) return `Pairing code ${r.pairing.code}: enter it in the Phone Connect app within ${Math.round(r.pairing.secondsLeft / 60)} min (your hub sign-in claims it).`;
   if (r.devices) return r.devices.length ? r.devices.map((d) => `${d.deviceId}  ${d.name}  ${d.state}  ${d.presence}`).join('\n') : 'no phones';
-  if (r.command) return `${r.command.command} ${r.command.id}: ${r.command.status}${r.command.result?.error ? ` (${r.command.result.error.code}: ${r.command.result.error.message})` : ''}${r.deprecated ? `\n${r.deprecated}` : ''}`;
+  if (r.command) return `${r.command.command} ${r.command.id}: ${r.command.status}${r.command.opened?.answered ? ` (${r.command.opened.opened ? 'opened' : r.command.opened.notified ? 'only notified' : 'nothing opened'}: ${r.command.opened.message})` : ''}${r.command.result?.error ? ` (${r.command.result.error.code}: ${r.command.result.error.message})` : ''}${r.deprecated ? `\n${r.deprecated}` : ''}`;
   return JSON.stringify(r, null, 2);
 }
 

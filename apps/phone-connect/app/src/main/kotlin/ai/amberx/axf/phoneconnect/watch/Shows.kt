@@ -9,7 +9,8 @@ import org.json.JSONObject
 /**
  * notify.show and approval.show. Push without FCM: the watch service's link carries them.
  *
- * An approval is a high-priority notification with Approve and Deny (and Shelve on a countdown that offers it) on it.
+ * An approval is a floating card over whatever is on screen ([ApprovalOverlay], with "display over other apps") and a
+ * high-priority notification, both with Approve and Deny (and Shelve on a countdown that offers it) on them.
  * A tap on an action is Brett's decision: it goes to the console over the device token as `by.kind: person` with a
  * fresh tap id (personOnly; the engine drops anything else), and the console passes it to the hub. The actions need
  * the phone unlocked, and the lock screen says only "Approval waiting". A tap on the body opens that approval in the
@@ -38,8 +39,6 @@ object Shows {
         else Outcome.Failed("consent_required", "Notifications are off for Phone Connect on this phone.")
     }
 
-    private val ACTION_LABELS = mapOf("approve" to "Approve", "deny" to "Deny", "shelve" to "Shelve")
-
     private fun approval(ctx: Context, id: String, a: JSONObject): Outcome {
         val aid = a.optString("approvalId")
         val page = LinkRules.consoleApproval(PhoneStore(ctx).origin, aid) ?: return Outcome.Failed("validation", "An approval prompt needs its approval id.")
@@ -62,7 +61,7 @@ object Shows {
         val actions = a.optJSONArray("actions")?.let { arr -> (0 until arr.length()).map { arr.optString(it) } } ?: listOf("approve", "deny")
         for (decision in LinkRules.DECISIONS) {
             if (decision !in actions) continue
-            b.addAction(NotificationCompat.Action.Builder(0, ACTION_LABELS.getValue(decision), Notifier.decideIntent(ctx, id, aid, decision))
+            b.addAction(NotificationCompat.Action.Builder(0, LinkRules.decisionLabel(decision), Notifier.decideIntent(ctx, id, aid, decision))
                 .setAuthenticationRequired(true).build())
         }
         if (veto) {
@@ -70,8 +69,12 @@ object Shows {
             // once the countdown is over the hub has run it: the prompt goes by itself
             if (left > 0) b.setTimeoutAfter(left * 1000L)
         }
+        // the floating card with the same buttons, over whatever is on screen (needs "display over other apps");
+        // the notification is always posted too: it is the lock screen's "Approval waiting" and the fallback
+        val card = ApprovalOverlay.show(ctx, id, aid, title, text, actions, if (veto) left else 0)
+        val posted = Notifier.post(ctx, nid, b.build())
         // shown, not answered: the result is Brett's tap (WatchService.ACTION_DECIDE), or none at all
-        return if (Notifier.post(ctx, nid, b.build())) Outcome.Pending("shown")
-        else Outcome.Failed("consent_required", "Notifications are off for Phone Connect on this phone.")
+        return if (LinkRules.approvalShown(card, posted) != null) Outcome.Pending("shown")
+        else Outcome.Failed("consent_required", "Phone Connect may neither post notifications nor display over other apps on this phone, so the approval can't be shown.")
     }
 }

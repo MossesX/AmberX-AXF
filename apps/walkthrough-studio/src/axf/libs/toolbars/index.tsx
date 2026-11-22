@@ -20,8 +20,9 @@ import type { AxfWebLibrary } from '../../react/library';
 import { useAxfState, useRuntime } from '../../react/AxfProvider';
 import { SelectField, Note } from '../../react/components/Forms';
 import { Button } from '../../react/components/Controls';
-import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_OVERRIDES, tapConfig, type TapOverride } from '../../core/engines/tapconfirm';
+import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, TAP_KIND_LABELS, TAP_OVERRIDES, tapConfig, tapKindKey, type TapOverride } from '../../core/engines/tapconfirm';
 import { toolbarElementId } from '../../react/tapConfirm';
+import { CHROME_INSTANCE_INTERFACE_KEY, chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 import './toolbars.css';
 
 export const TOOLBARS_ID = 'ai.amberx.axf.toolbars';
@@ -31,7 +32,8 @@ export const ALL_TOOLBARS_PANEL = 'toolbars.all';
 /** The settings key of one toolbar's tap-to-confirm override. */
 export const tapOverrideKey = (toolbarId: string) => `${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`;
 
-export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number }
+/** `chrome` = the instance id its own chrome settings dialog uses (chrome-settings@1; the same one its context menu opens). */
+export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number; chrome: string }
 
 /** Every toolbar on the page now, one row per settings id (several bars may share one id, e.g. a list of cards). */
 export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
@@ -42,7 +44,9 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
     const hit = out.get(id);
     if (hit) { hit.count++; continue; }
     const off = el.dataset.axfTapConfirm === 'off' ? el.dataset.axfTapConfirmReason || 'switched off in code' : null;
-    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1 });
+    const named = el.getAttribute('data-fx-ctx-target')?.startsWith('axf-ws-toolbar:') ? el.getAttribute('data-fx-ctx-payload') : null;
+    const chrome = named || chromeInstanceSlug(el.dataset.axfToolbar ?? el.dataset.axfToolbarAsset ?? el.getAttribute('aria-label')) || id;
+    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1, chrome });
   }
   return [...out.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
@@ -67,8 +71,9 @@ function AllToolbarsPanel() {
         <div key={r.id} className="axf-toolbars__row">
           <div className="axf-toolbars__name">
             <strong>{r.label}</strong>
-            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : tapConfig(get, r.id).enabled ? 'on' : 'off'}</span>
+            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : tapConfig(get, r.id).enabled ? 'on' : 'off'} · settings interface {(get(CHROME_INSTANCE_INTERFACE_KEY('toolbar', r.chrome)) as string) || 'same as all'}</span>
           </div>
+          <Button size="sm" tone="neutral" icon="settings" onClick={() => rt.dispatch(`chrome.settings:toolbar:${r.chrome}`)}>Settings…</Button>
           {r.offInCode
             ? <span className="fx-small fx-muted">Off in code: {r.offInCode}</span>
             : <SelectField label="Tap-to-confirm" className="axf-toolbars__pick" value={(get(tapOverrideKey(r.id)) as string) || 'inherit'}
@@ -84,13 +89,13 @@ export const toolbarsLibrary: AxfWebLibrary = {
   id: TOOLBARS_ID,
   label: 'Toolbars',
   version: '0.1.0',
-  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Every toolbar in this app: tap-to-confirm on touch, and each toolbar’s own choice.' }],
+  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Tap to confirm on touch for every toolbar, tab group, navigation and menu in this app, and each toolbar’s own choice.' }],
   settings: [{
     id: 'toolbars.tap', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
-    description: 'On a phone or any touch screen, the first tap on a toolbar button shows what it does and lights it up; a second tap runs it. A mouse, trackpad or pen clicks once, as usual.',
+    description: 'On a phone or any touch screen, the first tap on a toolbar button, tab, navigation or menu item shows what it is and lights it up; a second tap confirms it. A mouse, trackpad or pen clicks once, as usual. Each one can choose for itself in its own settings (right-click or long-press it → Settings → Behaviour).',
     settings: [
-      { key: TAP_KEYS.enabled, label: 'Tap twice on touch', kind: 'toggle', default: true, scope: 'device' },
-      { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long a button stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
+      ...TAP_KINDS.map((kind) => ({ key: tapKindKey(kind), label: `Tap twice on touch: ${TAP_KIND_LABELS[kind].toLowerCase()}`, kind: 'toggle' as const, default: true, scope: 'device' as const })),
+      { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long an item stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
   }],
   settingsPanels: [{ id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],

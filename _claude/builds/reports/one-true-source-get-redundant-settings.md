@@ -43,7 +43,7 @@ What was actually wrong in each:
 
 | Keys | Why they stay separate |
 |---|---|
-| `pipeline stepsInParallel` (6) | Steps of one build at once: a per-build cap under group 1. Nothing else does this job. |
+| `pipeline stepsInParallel` (6) | Steps of the one active Pipeline 2.0 build at once: a per-build cap under group 1. The Fill every slot cap (`builds.maxParallelPerBuild`, added on main Nov 13) is the same idea for builds@1 builds; see "After merging main". |
 | `pipeline maxRuns` (5) · recovery watchdog `maxRetries` (3) · watchdog 2 `maxAttempts` · lander `maxAttempts` / `maxFixes` · auto-lander policy `maxAttempts` · retry ladder `maxAttempts` | Each counts something else (sessions per build in total; crashes since the last ticked step; attempts per Pipeline 2.0 step; landing attempts per PR). They are one family and their wording was close ("Max runs", "Max retries"); the wording is made distinct in s3, the counters are not merged because the contracts (build-watchdog@1, pipeline-2@1, lander) define them separately. |
 | `agent-slots maxHeavy` (2) | Heavy steps (vite, docker tests, Playwright) at once: a different resource. |
 | `build-limit emergencySlots` (2) | A second, separately counted pool. |
@@ -303,3 +303,12 @@ the work it repeats, and re-scope its steps 10, 11 and 18.
 
 | Same wording, different keys | Keys |
 |---|---|
+
+## After merging main (Nov 22)
+
+Main gained Fill every slot (BUILD-PARALLEL) while this PR was open. What it meant here:
+
+- `builds.maxParallel` was back in the Claude settings registry through the merge. Removed again: it stays a read alias of Sessions per account.
+- The planner's switch for queueing Pending builds was called `autoQueue` in `framework/core/build-pipeline.mjs` (`FILL_DEFAULTS`), the retired name of Launch builds without asking. It is driven by the Claude setting `builds.autoQueuePending`, so the engine key is now `autoQueuePending` (fixture `build-pipeline-fill.json` regenerated, `BUILD-PARALLEL.md` updated). No Kotlin twin exists (PORTING.md, deferred).
+- `user` is a key name in two stores (host-services@1 manifest default, the terminal's SSH login): recorded as different settings.
+- Two per-build step caps now exist: `pipeline stepsInParallel` (Pipeline 2.0 builds, counts every step) and `builds.maxParallelPerBuild` (builds@1 builds, step sessions beside the build's own). A build is on one flow or the other, so they never apply to the same build; both are recorded under `distinct`. Folding them into one key is a candidate for a later build once one flow is retired.

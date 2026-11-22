@@ -1,0 +1,919 @@
+{
+  "schema": "data-store@1",
+  "version": 1,
+  "frames": [
+    "data-record@1",
+    "data-entry@1",
+    "data-entries@1",
+    "data-append@1",
+    "data-list@1",
+    "data-change@1",
+    "data-manifest@1",
+    "data-error@1",
+    "data-health@1",
+    "data-token@1",
+    "data-store-mode@1",
+    "data-drift@1"
+  ],
+  "kinds": [
+    "record",
+    "blob",
+    "journal"
+  ],
+  "ops": [
+    "get",
+    "put",
+    "delete",
+    "list",
+    "append",
+    "read",
+    "watch",
+    "snapshot",
+    "manifest",
+    "health"
+  ],
+  "changeOps": [
+    "put",
+    "delete",
+    "append"
+  ],
+  "grants": [
+    "read",
+    "write",
+    "append",
+    "admin"
+  ],
+  "services": [
+    "console",
+    "orchestrator",
+    "axhub",
+    "cli",
+    "plugin"
+  ],
+  "namespaces": {
+    "notes": {
+      "label": "Notes",
+      "kinds": [
+        "blob",
+        "journal"
+      ],
+      "today": "/projects/_shared/_claude/notes"
+    },
+    "builds": {
+      "label": "Builds store, journal and history",
+      "kinds": [
+        "record",
+        "journal",
+        "blob"
+      ],
+      "today": "_claude/builds"
+    },
+    "settings": {
+      "label": "Settings documents",
+      "kinds": [
+        "record"
+      ],
+      "today": "/projects/_shared/_data/settings"
+    },
+    "planner": {
+      "label": "Planner items",
+      "kinds": [
+        "record",
+        "journal"
+      ],
+      "today": "/projects/amberx-axf/_data/plan-studio"
+    },
+    "ui-review": {
+      "label": "UI reviews",
+      "kinds": [
+        "record",
+        "blob"
+      ],
+      "pluginFolder": "ui-review",
+      "today": ".axf-console/plugins/ui-review"
+    },
+    "plugins": {
+      "label": "Plugin data folders",
+      "kinds": [
+        "record",
+        "blob",
+        "journal"
+      ],
+      "open": true,
+      "today": ".axf-console/plugins/<folder>"
+    },
+    "changes": {
+      "label": "Codebase changes log",
+      "kinds": [
+        "record"
+      ],
+      "today": "/projects/amberx-axf/_data/changes"
+    },
+    "sessions": {
+      "label": "Session archives",
+      "kinds": [
+        "record",
+        "blob",
+        "journal"
+      ],
+      "today": "/projects/amberx-axf/_data/sessions"
+    },
+    "console": {
+      "label": "Console hub data",
+      "kinds": [
+        "record",
+        "journal",
+        "blob"
+      ],
+      "today": "/projects/amberx-axf/_data/<folder>"
+    },
+    "phone": {
+      "label": "Phone Connect devices, pairings, commands",
+      "kinds": [
+        "record",
+        "journal"
+      ],
+      "pluginFolder": "phone-connect",
+      "today": ".axf-console/plugins/phone-connect"
+    },
+    "_meta": {
+      "label": "Store state",
+      "kinds": [
+        "record",
+        "journal"
+      ],
+      "internal": true,
+      "today": ""
+    }
+  },
+  "limits": {
+    "recordBytes": 33554432,
+    "blobBytes": 268435456,
+    "entryBytes": 262144,
+    "appendBytes": 4194304,
+    "keyChars": 512,
+    "segmentChars": 80,
+    "listPage": 1000,
+    "journalPage": 5000,
+    "feedDays": 30,
+    "tombstoneDays": 30,
+    "watchPerToken": 32,
+    "tokenTtlSeconds": 86400
+  },
+  "errors": {
+    "invalid_key": {
+      "status": 400,
+      "retry": "never"
+    },
+    "invalid_body": {
+      "status": 400,
+      "retry": "never"
+    },
+    "too_large": {
+      "status": 413,
+      "retry": "never"
+    },
+    "precondition_required": {
+      "status": 428,
+      "retry": "never"
+    },
+    "unauthorized": {
+      "status": 401,
+      "retry": "reissue"
+    },
+    "forbidden": {
+      "status": 403,
+      "retry": "never"
+    },
+    "not_found": {
+      "status": 404,
+      "retry": "never"
+    },
+    "conflict": {
+      "status": 409,
+      "retry": "reread"
+    },
+    "exists": {
+      "status": 409,
+      "retry": "never"
+    },
+    "read_only": {
+      "status": 423,
+      "retry": "mode"
+    },
+    "cursor_expired": {
+      "status": 410,
+      "retry": "list"
+    },
+    "rate_limited": {
+      "status": 429,
+      "retry": "backoff"
+    },
+    "unavailable": {
+      "status": 503,
+      "retry": "backoff"
+    },
+    "internal": {
+      "status": 500,
+      "retry": "once"
+    }
+  },
+  "retry": {
+    "baseMs": 250,
+    "factor": 2,
+    "tries": 5,
+    "maxMs": 8000,
+    "conflictTries": 5
+  },
+  "token": {
+    "alg": "EdDSA",
+    "typ": "axf-data+jwt",
+    "iss": "axhub",
+    "aud": "axf-data",
+    "keys": "/.well-known/axf-keys.json",
+    "subPrefix": "svc:"
+  },
+  "patterns": {
+    "segment": "^[A-Za-z0-9_][A-Za-z0-9._-]{0,79}$",
+    "pluginFolder": "^[a-z0-9][a-z0-9-]*$",
+    "etag": "^[0-9]+-[0-9a-f]{16}$",
+    "by": "^svc:(console|orchestrator|axhub|cli|plugin:[a-z0-9][a-z0-9-]*)(/.+)?$"
+  },
+  "modes": [
+    "local",
+    "shadow",
+    "cutover",
+    "rollback"
+  ],
+  "jsonSchemas": {
+    "data-record@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "path",
+        "kind",
+        "rev",
+        "etag",
+        "at",
+        "by",
+        "size",
+        "deleted"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-record@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "kind": {
+          "enum": [
+            "record",
+            "blob"
+          ]
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "etag": {
+          "type": "string",
+          "pattern": "^[0-9]+-[0-9a-f]{16}$"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "data": {}
+      },
+      "additionalProperties": false
+    },
+    "data-entry@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "path",
+        "seq",
+        "at",
+        "by",
+        "entry"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-entry@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        },
+        "entry": {}
+      },
+      "additionalProperties": false
+    },
+    "data-entries@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "path",
+        "entries",
+        "next"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-entries@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/jsonSchemas/data-entry@1"
+          }
+        },
+        "next": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-append@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "path",
+        "first",
+        "last",
+        "count"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-append@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "first": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "last": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-list@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "prefix",
+        "items",
+        "next"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-list@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/jsonSchemas/data-record@1"
+          }
+        },
+        "next": {
+          "type": "string"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-change@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "cursor",
+        "ns",
+        "path",
+        "kind",
+        "op",
+        "rev",
+        "at",
+        "by"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-change@1"
+        },
+        "cursor": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "record",
+            "blob",
+            "journal"
+          ]
+        },
+        "op": {
+          "enum": [
+            "put",
+            "delete",
+            "append"
+          ]
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "etag": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-manifest@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "id",
+        "at",
+        "by",
+        "mode",
+        "namespaces"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-manifest@1"
+        },
+        "id": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "local",
+            "shadow",
+            "cutover",
+            "rollback"
+          ]
+        },
+        "namespaces": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "count",
+              "bytes",
+              "hash"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "journals": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "entries",
+                    "hash"
+                  ],
+                  "properties": {
+                    "entries": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "hash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{16}$"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-error@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "code",
+        "message"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-error@1"
+        },
+        "code": {
+          "enum": [
+            "invalid_key",
+            "invalid_body",
+            "too_large",
+            "precondition_required",
+            "unauthorized",
+            "forbidden",
+            "not_found",
+            "conflict",
+            "exists",
+            "read_only",
+            "cursor_expired",
+            "rate_limited",
+            "unavailable",
+            "internal"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "etag": {
+          "type": "string"
+        },
+        "retryAfterMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-health@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ok",
+        "cursor",
+        "uptimeMs",
+        "volume",
+        "keys"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-health@1"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uptimeMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "volume": {
+          "type": "object",
+          "required": [
+            "freeBytes",
+            "totalBytes"
+          ],
+          "properties": {
+            "freeBytes": {
+              "type": "integer"
+            },
+            "totalBytes": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "keys": {
+          "type": "object",
+          "required": [
+            "verified",
+            "fetchedAt"
+          ],
+          "properties": {
+            "verified": {
+              "type": "boolean"
+            },
+            "fetchedAt": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-token@1": {
+      "type": "object",
+      "required": [
+        "iss",
+        "aud",
+        "sub",
+        "jti",
+        "iat",
+        "exp",
+        "grants"
+      ],
+      "properties": {
+        "iss": {
+          "const": "axhub"
+        },
+        "aud": {
+          "const": "axf-data"
+        },
+        "sub": {
+          "type": "string",
+          "pattern": "^svc:(console|orchestrator|axhub|cli|plugin:[a-z0-9][a-z0-9-]*)$"
+        },
+        "jti": {
+          "type": "string",
+          "minLength": 8
+        },
+        "iat": {
+          "type": "integer"
+        },
+        "exp": {
+          "type": "integer"
+        },
+        "grants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "read",
+                "write",
+                "append",
+                "admin"
+              ]
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-store-mode@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "mode",
+        "since",
+        "by",
+        "namespaces"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-store-mode@1"
+        },
+        "mode": {
+          "enum": [
+            "local",
+            "shadow",
+            "cutover",
+            "rollback"
+          ]
+        },
+        "since": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        },
+        "cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manifest": {
+          "type": "string"
+        },
+        "namespaces": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "mode",
+              "since"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "local",
+                  "shadow",
+                  "cutover",
+                  "rollback"
+                ]
+              },
+              "since": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "cursor": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "manifest": {
+                "type": "string"
+              },
+              "drift": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "lastDriftAt": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "data-drift@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "at",
+        "op",
+        "key",
+        "kind",
+        "local",
+        "remote"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-drift@1"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "op": {
+          "enum": [
+            "read",
+            "write",
+            "append"
+          ]
+        },
+        "key": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "missing-remote",
+            "missing-local",
+            "etag",
+            "entries",
+            "write-failed",
+            "append-failed"
+          ]
+        },
+        "local": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/jsonSchemas/data-drift@1/$defs/side"
+            }
+          ]
+        },
+        "remote": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/jsonSchemas/data-drift@1/$defs/side"
+            }
+          ]
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "$defs": {
+        "side": {
+          "type": "object",
+          "required": [
+            "rev",
+            "etag"
+          ],
+          "properties": {
+            "rev": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "etag": {
+              "type": "string"
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

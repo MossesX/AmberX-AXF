@@ -1,0 +1,92 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "default-molly-appmenu",
+  "name": "Molly application menu (default)",
+  "version": "1.0.0",
+  "description": "Molly's own default application menu, locked until another one built for molly is picked (app-menus@1). Started from \"molly\".",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "app-menus@1",
+    "app:molly",
+    "molly"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "molly",
+        "label": "Molly",
+        "items": [
+          {
+            "id": "go-home",
+            "label": "Start page",
+            "icon": "home",
+            "action": "nav:home"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "go-amberx",
+            "label": "AmberX",
+            "icon": "sparkles",
+            "action": "nav:amberx"
+          },
+          {
+            "id": "go-axhub",
+            "label": "axHub",
+            "icon": "shield",
+            "action": "nav:axhub"
+          },
+          {
+            "id": "go-console",
+            "label": "Console",
+            "icon": "terminal",
+            "action": "nav:console"
+          },
+          {
+            "id": "go-expenses",
+            "label": "Expenses",
+            "icon": "chart",
+            "action": "nav:expenses"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "reload",
+            "label": "Reload this app",
+            "icon": "refresh",
+            "action": "molly.reload"
+          },
+          {
+            "id": "own",
+            "label": "Open this app on its own",
+            "icon": "external",
+            "action": "molly.own-tab"
+          },
+          {
+            "id": "s3",
+            "separator": true
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "action": "nav:account"
+          }
+        ]
+      }
+    ],
+    "builtFor": "app:molly"
+  }
+}

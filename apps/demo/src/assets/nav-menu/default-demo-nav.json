@@ -1,0 +1,56 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "default-demo-nav",
+  "name": "AmberX AXF Demo navigation menu (default)",
+  "version": "1.0.0",
+  "description": "AmberX AXF Demo's own default navigation menu, locked until another one built for demo is picked (app-menus@1). Started from \"sidebar-list\".",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "app-menus@1",
+    "app:demo"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Workspace",
+    "sections": [
+      {
+        "label": "Build",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          }
+        ]
+      },
+      {
+        "label": "System",
+        "items": [
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets",
+            "badge": "39"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "shield",
+            "view": "account"
+          }
+        ]
+      }
+    ],
+    "builtFor": "app:demo"
+  }
+}

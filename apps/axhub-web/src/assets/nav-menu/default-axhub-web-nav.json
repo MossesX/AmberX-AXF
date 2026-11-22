@@ -1,0 +1,143 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "default-axhub-web-nav",
+  "name": "AXHub navigation menu (default)",
+  "version": "1.0.0",
+  "description": "AXHub's own default navigation menu, locked until another one built for axhub-web is picked (app-menus@1). Started from \"axhub-web\".",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "app-menus@1",
+    "app:axhub-web"
+  ],
+  "data": {
+    "style": "list",
+    "header": "AXHub",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Approvals",
+            "icon": "shield",
+            "view": "home"
+          },
+          {
+            "id": "go-pass",
+            "label": "Go pass",
+            "icon": "check",
+            "view": "go-pass"
+          },
+          {
+            "id": "passes",
+            "label": "Passes",
+            "icon": "clock",
+            "view": "passes"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals log",
+            "icon": "list",
+            "view": "approvals-log"
+          },
+          {
+            "id": "hub",
+            "label": "Hub",
+            "icon": "external",
+            "view": "hub"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      },
+      {
+        "label": "Hub",
+        "items": [
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "user",
+            "view": "users"
+          },
+          {
+            "id": "handoff",
+            "label": "Handoff",
+            "icon": "package",
+            "view": "handoff"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "key",
+            "view": "account"
+          }
+        ]
+      },
+      {
+        "label": "Coming",
+        "items": [
+          {
+            "id": "services",
+            "label": "Services",
+            "icon": "layers",
+            "view": "services"
+          },
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "icon": "clock",
+            "view": "jobs"
+          },
+          {
+            "id": "audit",
+            "label": "Audit log",
+            "icon": "list",
+            "view": "audit"
+          },
+          {
+            "id": "vault",
+            "label": "Vault",
+            "icon": "lock",
+            "view": "vault"
+          },
+          {
+            "id": "projects",
+            "label": "Projects",
+            "icon": "folder",
+            "view": "projects"
+          },
+          {
+            "id": "devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "view": "devices"
+          }
+        ]
+      },
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "builtFor": "app:axhub-web"
+  }
+}

@@ -10,6 +10,8 @@
  *   - safe area: once the framework CSS declares the --fx-safe-* tokens the page says it pads itself, and the shell
  *     sets the real status bar / cutout / navigation bar / keyboard sizes on <html>;
  *   - look: the native floating toolbar gets the live --fx-* tokens on load and on every skin change;
+ *   - questions: a shell without the `dialogs` feature can't draw confirm() in the overlay; the console says so
+ *     instead of doing nothing;
  *   - overlay: the console's `approvals-banner.overlay.*` settings and the `approvals.waiting` count go to the
  *     floating toolbar; dragging the toolbar saves its new edge / height back into those settings.
  * - `native.*` console actions (nativeRules.mjs NATIVE_ACTIONS) run every native feature, so REST
@@ -22,9 +24,10 @@ import type { AxfRuntime } from '../axf/core';
 import { executeControl, describeAnswer } from '../control/executor';
 import { controlRegistry } from '../axf/react';
 import { loader } from '../pluginLoader';
+import { consoleAlertsTransport } from '../alertsTransport';
 import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
-  PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  DIALOG_ALERT_KEY, DIALOG_UNSEEN, PHONE_APP_ADDRESS, dialogAlert, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -132,6 +135,25 @@ export function installNative(rt: AxfRuntime): () => void {
   };
   window.axfNative = { available: true, call: callNative, state: nativeState, on };
   offs.push(() => { delete window.axfNative; });
+
+  // a shell that can't draw the page's questions in the overlay: an unseen "no" is said out loud, never silent
+  const shell = callNative('info');
+  if (hasDialogs(shell)) void consoleAlertsTransport.resolve([DIALOG_ALERT_KEY]).catch(() => { /* offline: the next load resolves it */ });
+  else {
+    // said once where Brett sees it (the bell and a phone push; one alert per key), gone once the app is updated
+    void consoleAlertsTransport.raise(dialogAlert(shell.version)).catch(() => { /* offline: the next load raises it */ });
+    const guard = <A extends unknown[], R>(ask: ((...a: A) => R) | undefined) => (ask ? (...a: A): R => {
+      const t = performance.now();
+      const answer = ask.apply(window, a);
+      if (dialogUnseen(answer, performance.now() - t)) rt.toast(DIALOG_UNSEEN, 'danger', 'Phone');
+      return answer;
+    } : undefined);
+    const own = { confirm: window.confirm, prompt: window.prompt };
+    const c = guard(own.confirm), p = guard(own.prompt);
+    if (c) window.confirm = c;
+    if (p) window.prompt = p;
+    offs.push(() => { window.confirm = own.confirm; window.prompt = own.prompt; });
+  }
 
   const css = () => getComputedStyle(document.documentElement);
   // safe area: the page pads itself once its CSS has the tokens (an older console never claims it, the shell pads it)

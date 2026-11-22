@@ -8,6 +8,8 @@ import android.content.MutableContextWrapper;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -126,6 +128,22 @@ final class WebHost {
     }
 
     private static final class Chrome extends WebChromeClient {
+        // The page's own questions: the WebView draws them only in an activity; in the overlay the shell does (JsDialogs).
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            return JsDialogs.ask(view, JsDialogs.ALERT, url, message, null, result);
+        }
+
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            return JsDialogs.ask(view, JsDialogs.CONFIRM, url, message, null, result);
+        }
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            return JsDialogs.ask(view, JsDialogs.PROMPT, url, message, defaultValue, result);
+        }
+
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> cb, FileChooserParams params) {
             if (activity == null) return false;

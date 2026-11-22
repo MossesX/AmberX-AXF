@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "builds-reconcile",
+  "title": "Builds reconcile",
+  "description": "Ticks steps and builds a merged PR names (builds-reconcile.mjs --apply, every 10 minutes). Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-builds-reconcile",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "runner": "framework/cli/builds-reconcile.mjs",
+  "health": {
+    "intervalSec": 600,
+    "staleSec": 3600
+  },
+  "log": "/var/log/axf-builds-reconcile.log"
+}
