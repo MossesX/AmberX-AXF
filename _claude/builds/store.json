@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10343,
- "updatedAt": "2026-11-22T06:45:45.127Z",
+ "rev": 10344,
+ "updatedAt": "2026-11-22T08:05:17.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146975,7 +146975,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-22T06:26:10.893Z",
+   "updatedAt": "2026-11-22T07:58:30.615Z",
    "builtAt": "",
    "notes": [
     {
@@ -147185,6 +147185,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T06:20:13.777Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T07:58:30.615Z"
     }
    ],
    "approvals": [
@@ -147564,7 +147568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 159,
+   "rev": 160,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -184690,7 +184694,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184699,7 +184703,7 @@
    "mergedAt": "2026-11-22T05:07:49Z",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-22T05:46:58.344Z",
+   "updatedAt": "2026-11-22T08:05:13.933Z",
    "builtAt": "2026-11-22T05:14:10.615Z",
    "notes": [
     {
@@ -185005,6 +185009,14 @@
     {
      "text": "Refused landing → landed (asked by orchestrator): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-22T05:46:58.657Z"
+    },
+    {
+     "text": "Watchdog: PR #582 merged 2026-11-22 05:07 and the build never heard: the merge is recorded, CI on fc521eb0a1 is next.",
+     "at": "2026-11-22T07:25:15.296Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on fc521eb0a1: landed.",
+     "at": "2026-11-22T08:05:13.933Z"
     }
    ],
    "approvals": [
@@ -185128,6 +185140,17 @@
      "source": "pipeline"
     }
    ],
+   "landed": {
+    "pr": 582,
+    "sha": "fc521eb0a164467989cc1009e662bc8c9e6176ae",
+    "mergedAt": "2026-11-22T05:07:49Z",
+    "ci": "success",
+    "ciAt": "2026-11-22T08:05:13.933Z",
+    "ciRun": "commit@fc521eb0a164467989cc1009e662bc8c9e6176ae",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -185852,7 +185875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 134,
+   "rev": 136,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204470,33 +204493,27 @@
     },
     {
      "text": "Watchdog: build stuck at building (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-22T06:39:01.718Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:39:01.718Z"
     },
     {
      "text": "Watchdog: build stuck at building (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-22T06:42:01.998Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:42:01.998Z"
     },
     {
      "text": "Watchdog: build failed at building, attempt 2: building did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-22T06:43:01.595Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:43:01.595Z"
     },
     {
      "text": "Watchdog: build retried at building, attempt 3.",
-     "at": "2026-11-22T06:44:01.802Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:44:01.802Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T06:45:01.249Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:45:01.249Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T06:45:01.249Z",
-     "by": "watchdog"
+     "at": "2026-11-22T06:45:01.249Z"
     }
    ],
    "approvals": [
@@ -204555,11 +204572,11 @@
      "at": "2026-11-22T00:49:56.836Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "all-done",
+     "reason": "",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-orchestrator-settings-collapsible-split--paulie",
-     "phase": "Phase 2"
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -204573,10 +204590,10 @@
     "route": "",
     "dispatchedAt": "2026-11-21T23:26:54.170Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T19:06:06.682Z",
+     "at": "2026-11-22T08:05:07.888Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -204586,17 +204603,7 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0,
-    "runEnd": {
-     "at": "2026-11-22T02:16:26.311Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-orchestrator-settings-collapsible-split--s8--earl",
-     "phase": ""
-    }
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -205666,7 +205673,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 266,
+   "rev": 267,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214575,7 +214582,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-22T06:05:21.089Z",
+   "updatedAt": "2026-11-22T07:58:30.615Z",
    "builtAt": "",
    "notes": [
     {
@@ -214813,6 +214820,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 70 min: fresh-session now, through the Queue. Added s11 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T06:05:21.089Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T07:58:30.615Z"
     }
    ],
    "approvals": [
@@ -215149,7 +215160,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298054,7 +298065,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T06:26:08.030Z",
+   "updatedAt": "2026-11-22T07:58:30.615Z",
    "builtAt": "",
    "notes": [
     {
@@ -298168,6 +298179,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T06:21:06.573Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T07:58:30.615Z"
     }
    ],
    "approvals": [],
@@ -298548,7 +298563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333310,7 +333325,7 @@
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-22T06:38:30.802Z",
+   "updatedAt": "2026-11-22T07:58:30.615Z",
    "builtAt": "",
    "notes": [
     {
@@ -333400,6 +333415,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T06:38:30.802Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-22T07:58:30.615Z"
     }
    ],
    "approvals": [],
@@ -333534,7 +333553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -348183,15 +348202,15 @@
    "title": "One true source: get the redundant settings out",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I have so many redundant UIs. They can conflict with each other and we got problems.\" \"The settings can only exist in one place. They might be able to set them in multiple places, but they have to exist in one place, one true source.\" \"Unless they're worded a little bit differently and they just conflict with each other.\" \"Let's run Fable to fix all that. Get all the redundant settings out.\" Plan: one-home-per-setting-kill-the-redundant-settings-79kj. Example from today: the build cap is spread over Agent cap (VPS hard build limit, max running agents), the Build orchestrator settings (stepsInParallel, parallelPerAccount, maxRuns) and the VPS Configuration build cap section; Brett raised the hard limit to 6 and max running agents still said 4. Several screens may edit a setting, but each setting is stored once and every screen reads and writes that one value.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-true-source-get-redundant-settings",
    "pr": "#888",
    "createdAt": "2026-11-21T20:04:08.140Z",
-   "updatedAt": "2026-11-22T05:45:40.535Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-22T06:51:17.548Z",
+   "builtAt": "2026-11-22T06:23:34.310Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-one-true-source-get-redundant-settings--earl.",
@@ -348272,6 +348291,30 @@
     {
      "text": "Claude account: hulu0241 (axf-one-true-source-get-redundant-settings--paulie, shared account login)",
      "at": "2026-11-22T05:45:40.535Z"
+    },
+    {
+     "text": "PR #888: main merged in (c3be7ac52), 3 conflicts resolved, CI green on every job. The earlier red was settings-sources tripping on main's Fill every slot work (engine key autoQueue renamed to autoQueuePending, builds.maxParallel kept out of the registry) plus a console-commands test flake. Ready for the lander.",
+     "at": "2026-11-22T06:23:42.053Z"
+    },
+    {
+     "text": "PR #888 merged into main as 8ce46bff6 (Nov 22 06:24 UTC); CI on the merge commit is green on every job (run 44993587316). Merged by the build session: the axf-lander timer only picks Pipeline 2.0 statuses, so it never picked this builds@1 build in landing. Waiting for the server to record landed.",
+     "at": "2026-11-22T06:50:36.888Z"
+    },
+    {
+     "text": "Session axf-one-true-source-get-redundant-settings--paulie on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-22T06:51:02.008Z"
+    },
+    {
+     "text": "Attempt 1 (fresh-session) worked: Session axf-one-true-source-get-redundant-settings--paulie on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-22T06:51:04.605Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $7.19",
+     "at": "2026-11-22T06:51:11.507Z"
+    },
+    {
+     "text": "Headless run axf-one-true-source-get-redundant-settings--paulie: brief only · start 16.0K tokens ($0.14) · cost $7.19 · 49 turns · 6 tools, MCP none",
+     "at": "2026-11-22T06:51:17.548Z"
     }
    ],
    "approvals": [],
@@ -348289,31 +348332,31 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-22T05:45:15.777Z",
+    "queuedBy": "watchdog",
     "account": "hulu0241",
     "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "",
-    "launchedAt": "2026-11-21T21:08:43.109Z",
+    "launchedAt": "2026-11-22T05:45:14.104Z",
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-21T22:06:05.321Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 4,
+     "at": "2026-11-22T06:50:59.878Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
      "account": "hulu0241",
-     "session": "axf-one-true-source-get-redundant-settings--earl",
+     "session": "axf-one-true-source-get-redundant-settings--paulie",
      "phase": ""
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-21T21:08:43.109Z",
+    "dispatchedAt": "2026-11-22T05:45:14.104Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -348328,8 +348371,56 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-22T06:50:48.720Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-one-true-source-get-redundant-settings--paulie",
+     "phase": ""
+    }
    },
+   "attempts": [
+    {
+     "n": 1,
+     "kind": "stalled",
+     "strategy": "fresh-session",
+     "fixStrategy": "",
+     "model": "Fable",
+     "account": "",
+     "session": "",
+     "step": "s5",
+     "head": "",
+     "pr": 888,
+     "startedAt": "2026-11-22T05:45:15.777Z",
+     "endedAt": "2026-11-22T06:51:04.605Z",
+     "result": "ok",
+     "log": "",
+     "note": "Watchdog: fresh-session queued as s5 Ok: Session axf-one-true-source-get-redundant-settings--paulie on hulu0241 ended (exit 0); the build was already landing.",
+     "source": "pipeline"
+    },
+    {
+     "n": 2,
+     "kind": "stalled",
+     "strategy": "fresh-session",
+     "fixStrategy": "",
+     "model": "Fable",
+     "account": "hulu0241",
+     "session": "axf-one-true-source-get-redundant-settings--paulie",
+     "step": "",
+     "head": "",
+     "pr": 888,
+     "startedAt": "2026-11-22T05:45:14.104Z",
+     "endedAt": "",
+     "result": "started",
+     "log": "",
+     "note": "It stalled (landing for 6 h: PR #888 is still open and nothing moved it): a fresh session (attempt 1 of 10).",
+     "source": "pipeline"
+    }
+   ],
    "shipped": {
     "id": "sm-one-true-source-get-redundant-settings",
     "rev": 1,
@@ -348426,12 +348517,12 @@
      "updatedAt": "2026-11-21T22:46:22.604Z"
     },
     {
-     "id": "s9",
-     "uid": "st-mwreynim05h95b",
+     "id": "s5",
+     "uid": "st-mwrexn2a1l0daa",
      "title": "",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 6 h: PR #888 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/one-true-source-get-redundant-settings, get every check green and push; the PR is #888.",
      "model": "Fable",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -348440,12 +348531,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-22T06:23:34.310Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-22T05:46:02.707Z",
-     "updatedAt": "2026-11-22T05:46:03.022Z"
+     "rev": 2,
+     "createdAt": "2026-11-22T05:45:15.777Z",
+     "updatedAt": "2026-11-22T06:23:34.724Z"
     }
    ],
    "profiles": [
@@ -348456,11 +348547,11 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "",
+    "builtAt": "2026-11-22T03:47:50.674Z",
     "createdAt": "2026-11-21T20:04:08.140Z",
     "estimate": "",
     "model": "Fable",
@@ -348472,8 +348563,7 @@
      "st-mwqu6bgx1p4z5e": "2026-11-21T20:04:08.141Z",
      "st-mwqu6bgx1qjhfh": "2026-11-21T20:04:08.141Z",
      "st-mwqu6bgx1rfbxl": "2026-11-21T20:04:08.141Z",
-     "st-mwqu6bgx1sy0g5": "2026-11-21T20:04:08.141Z",
-     "st-mwreynim05h95b": "2026-11-22T05:45:15.777Z"
+     "st-mwqu6bgx1sy0g5": "2026-11-21T20:04:08.141Z"
     }
    },
    "queue": null,

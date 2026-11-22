@@ -843,42 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:15 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:15 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:15 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:16 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:16 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:16 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:16 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
-- 2026-11-22 04:16 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
-- 2026-11-22 04:16 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
-- 2026-11-22 04:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:17 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:17 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:17 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `one-build-time-always-split-to-fill` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, s21 undone, s22 undone, s23 undone, s24 undone, s25 undone, s26 undone, s27 undone, note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `stop-push-storm-builds-live-pushes-build` → complete, note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `one-true-source-get-redundant-settings` note (all) · foreign-write
-- 2026-11-22 04:17 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:18 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:18 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:18 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:18 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
-- 2026-11-22 04:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:19 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:19 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:19 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:20 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
-- 2026-11-22 04:20 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:20 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 04:21 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 - 2026-11-22 04:21 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
 - 2026-11-22 04:21 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
 - 2026-11-22 04:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1207,42 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 06:45 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · builds-live
 - 2026-11-22 06:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 - 2026-11-22 06:45 UTC · `every-app-gets-own-locked-default` → complete, note (all) · verify
+- 2026-11-22 06:46 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · pipeline
+- 2026-11-22 06:46 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · pipeline
+- 2026-11-22 06:48 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 06:51 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
+- 2026-11-22 06:51 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
+- 2026-11-22 06:51 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-22 06:51 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-22 06:58 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 06:58 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 06:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:08 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:08 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:08 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 07:18 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:18 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:18 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 07:25 UTC · `always-fill-every-slot-when-slots-are` note (all) · watchdog
+- 2026-11-22 07:28 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:28 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:28 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 07:38 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:38 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:38 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 07:48 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:48 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:48 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 07:58 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · reconciler
+- 2026-11-22 07:58 UTC · `context-menus-plugin-one-true-source` note (all) · reconciler
+- 2026-11-22 07:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 07:58 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · reconciler
+- 2026-11-22 08:05 UTC · `always-fill-every-slot-when-slots-are` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
