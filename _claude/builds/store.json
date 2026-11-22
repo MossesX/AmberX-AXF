@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10322,
- "updatedAt": "2026-11-22T00:46:00.808Z",
+ "rev": 10323,
+ "updatedAt": "2026-11-22T00:46:16.336Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184280,7 +184280,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184288,7 +184288,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-22T00:17:57.820Z",
+   "updatedAt": "2026-11-22T00:46:01.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -184498,6 +184498,10 @@
     {
      "text": "Claude account: hulu0241 (axf-always-fill-every-slot-when-slots-are--earl, shared account login)",
      "at": "2026-11-22T00:17:57.820Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-22T00:46:01.516Z"
     }
    ],
    "approvals": [
@@ -184527,22 +184531,22 @@
     "queuedAt": "2026-11-22T00:15:24.961Z",
     "queuedBy": "watchdog",
     "account": "hulu0241",
-    "session": "axf-always-fill-every-slot-when-slots-are--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 2",
+    "phase": "",
     "launchedAt": "2026-11-22T00:17:51.583Z",
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T01:48:08.090Z",
-     "exit": 0,
-     "outcome": "finished",
-     "reason": "all-done",
-     "stepsLeft": 0,
+     "at": "2026-11-22T00:46:00.241Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "reason": "",
+     "stepsLeft": 1,
      "account": "hulu0241",
-     "session": "axf-always-fill-every-slot-when-slots-are--paulie",
-     "phase": "Phase 2"
+     "session": "axf-always-fill-every-slot-when-slots-are--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -184552,7 +184556,7 @@
      "note": "Split by Claude into 21 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-22T00:17:51.583Z",
     "planned": {
@@ -184568,26 +184572,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "attempts": [
-    {
-     "n": 1,
-     "kind": "push-fail",
-     "strategy": "retry",
-     "fixStrategy": "",
-     "model": "Opus",
-     "account": "",
-     "session": "",
-     "step": "s28",
-     "head": "5f377a05e1302d85575413929954677cc26d36c3",
-     "pr": 582,
-     "startedAt": "2026-11-22T00:15:24.961Z",
-     "endedAt": "",
-     "result": "started",
-     "log": "",
-     "note": "Watchdog: retry queued as s28",
-     "source": "pipeline"
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -185290,7 +185274,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
