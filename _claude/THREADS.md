@@ -843,9 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 04:22 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
-- 2026-11-22 04:22 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
-- 2026-11-22 04:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 04:23 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 - 2026-11-22 04:23 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
 - 2026-11-22 04:23 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
@@ -1243,6 +1240,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 08:05 UTC · `context-menus-plugin-one-true-source` → running, note (all) · builds-live
 - 2026-11-22 08:05 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
 - 2026-11-22 08:05 UTC · `stop-push-storm-builds-live-pushes-build` → running, note (all) · builds-live
+- 2026-11-22 08:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · pipeline
+- 2026-11-22 08:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · pipeline
+- 2026-11-22 08:05 UTC · `stop-push-storm-builds-live-pushes-build` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
