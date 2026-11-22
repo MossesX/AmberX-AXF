@@ -26,7 +26,15 @@ node framework/cli/builds-store.mjs                     # rev, builds and % per 
 node framework/cli/builds-store.mjs verify              # every build, step, note and status of the old files is in the store
 node framework/cli/builds-store.mjs history <id>        # every journal revision of a build
 node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was (itself versioned)
+node framework/cli/builds-store.mjs demo <id>           # demo-build@1: is it a demo (throwaway) build? exit 1 if not
 ```
+
+**Demo builds (demo-build@1, since Nov 17 2026, build `guided-live-demo-test-watch-orchestrator`):** the guided live
+demo plays on throwaway builds whose id starts with `demo-`; the store tags them `demo: true` on read (no migration:
+older records load unchanged, a `demo-` id gets the tag, nothing else ever does). Every projection, the dispatcher, the
+auto-lander, alerts, builds-live commit lines and the console rows mark them demo-only, and a demo action (a write with
+`demo: true` in its meta, `set-status … --demo`) on any build without the tag is refused whole. Spec:
+`framework/spec/BUILDS.md` → Demo builds; core `framework/core/demo-build.mjs`.
 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
@@ -113,16 +121,26 @@ session on code from before build-origin@1 can't drop it: the next read heals th
 the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
 `axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
 
-## Live on main (since Nov 3 2026)
+## Live on main (since Nov 3 2026; one snapshot per landing since Nov 21 2026)
 
-Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".
-Every store write that changes a build (step ticked, status, note, branch, PR) is published to **main** at once as its
-own status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on (`framework/cli/builds-live.mjs`):
-fetched main + this checkout's changed builds, merged per build and per step **newer wins**
-(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
-log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
-come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
-through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
+The store is the live copy: the console, the banners and every session read it, and a write shows there at once. Main
+only holds a **projection** of it for history. Until Nov 21 2026 every store write was pushed to main as its own
+status-only commit; that put 896 `Builds live: … [skip ci]` commits on main in 24 hours (audit finding B4-06), so main
+moved about every 90 seconds and every PR was always behind it. Now (`framework/cli/builds-live.mjs`):
+
+- every store write that changes a build is **queued** in the outbox next to the store: no commit, no push. With a file
+  store the console's checkout (`/opt/axf`) takes the changed builds at once as a file copy; on the tables it has them;
+- the outbox goes to main as **one** status-only commit (`Builds live: … [skip ci]`) when a build in it reaches
+  `landed`, when it has held changes for a day (the daily snapshot, `AXF_BUILDS_LIVE_SNAPSHOT_HOURS`, default 24) or
+  when it has grown past `AXF_BUILDS_LIVE_OUTBOX_MAX_MB` (default 16); `builds-live.mjs flush` or `sync --now` publish
+  on demand. `sync` without `--now` (session start, the reconciler) only takes main's newer builds;
+- a publish is what it was: fetched main + this checkout's changed builds, merged per build and per step **newer wins**
+  (`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
+  log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+  come back into the checkout and into the console's checkout;
+- `AXF_BUILDS_LIVE_PUSH=every` restores a push per write (the checks use it; not for production).
+
+Code still goes through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
 
 - **Status:** `built` = every step done, the build's PR not merged yet ("Built · awaiting merge"); `complete` once the
   PR merged (`mergedAt`) or when the build has no PR.
@@ -132,11 +150,11 @@ through the branch and its PR. The console's auto-update skips the rebuild when 
   start (`.claude/settings.json` hook), every 10 min on the VPS (cron `axf-builds-reconcile`), and by hand.
 - **Merging a branch:** the builds files merge newer-wins through the `axf-builds` git driver (`.gitattributes`,
   registered per clone by `builds-live.mjs install`); a PR that conflicts only there: `builds-live.mjs heal <branch>`.
-- **Broken:** changes that can't reach main stay queued (`builds-live.mjs status`); the systems check item
-  **Builds reach main live** turns red after 15 min, amber for orphan PRs/branches or a reconciler that hasn't run.
+- **Broken:** a publish that can't reach main keeps the outbox and says why (`builds-live.mjs status`: `stuck`, last
+  error). Changes waiting for the next landing are normal (`queued`, `due` empty), not a fault.
 
 ```bash
-node framework/cli/builds-live.mjs sync                 # session start: send what is newer here, take main's newer builds
+node framework/cli/builds-live.mjs sync [--now]         # session start: take main's newer builds (--now: publish first)
 node framework/cli/builds-live.mjs status | flush       # outbox, last publish, last error / publish now
 node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report

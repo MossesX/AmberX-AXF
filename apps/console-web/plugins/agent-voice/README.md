@@ -10,15 +10,15 @@ device + cloud, with hooks to its settings in many places. Orchestrator build `a
 
 ## Where it lives
 
-`apps/console-web/plugins/agent-voice` — a console plugin targeting the console, web apps and **AmberX** (loaded
-unchanged there, server routes through AmberX's console forwarder). Data in `.axf-console/plugins/agent-voice/`
+`apps/console-web/plugins/agent-voice` — a console plugin targeting the console and web apps. (It also ran inside the
+AmberX Android app until that app was retired on Nov 19 2026; the native speech bridge went with it.) Data in `.axf-console/plugins/agent-voice/`
 (`store.json`, `keys.json`, `cache/`, all 0600 in a 0700 folder).
 
 | File | What |
 | --- | --- |
 | `web/core.ts` | the contract, pure: `VoiceProfile` per agent, `MicSettings`, presets, `narrate()` (markdown → spoken chunks: headings, lists, tables, code blocks, links, numbers, emoji, emphasis, pauses, read modes, max length, intro/outro, pronunciations agent > global > built-in), `micGate()` (the mic tooltip), `interpretHeard()` (send / cancel phrases, spoken punctuation), `lightState()` |
-| `web/lease.ts` | mic-lease@1: one microphone holder per page on `globalThis.__axfMicLease` (AmberX keeps an identical copy in `src/miclease.ts`) |
-| `web/engine.ts` | speech: AmberX native TTS (via `Capacitor.Plugins.AmberxNative`, never an import) or Web Speech; cloud audio from the server; one queue with pause / resume / skip / stop, barge-in / queue / replace, fallback to the device voice, chime |
+| `web/lease.ts` | mic-lease@1: one microphone holder per page on `globalThis.__axfMicLease` |
+| `web/engine.ts` | speech: Web Speech; cloud audio from the server; one queue with pause / resume / skip / stop, barge-in / queue / replace, fallback to the device voice, chime |
 | `web/mic.ts` | the Assistant mic: takes the lease (waits `waitMs` or says who's busy), tap / hold / toggle, live text, silence + max time, barge-in |
 | `web/console.tsx` | the per-agent console (Voice · Narrator · Permissions · Pronunciation · Try it) + settings panels (mic, cloud keys, global pronunciations, import/export) |
 | `web/assistant.tsx` | slot renderers: `assistant.mic` (mic + missing-permission popover with one-tap fixes), `assistant.head` (live light + pause/stop), `assistant.reply` (say this reply) |
@@ -35,20 +35,12 @@ assistant shows a stand-in mic (`ai-assistant/web/voicemic.tsx`): "Agent voice i
 (plugins-menu / plugin-manager installer when present), "installed but off? Switch it on" (plugin switches) and
 "Install it with <agent>" (a new chat with the selected agent).
 
-## Never fighting over the microphone (AmberX)
+## Never fighting over the microphone
 
-- Every listener in the page takes mic-lease@1 first: AmberX dictation (for the whole session), Speak a command,
-  recording a phrase, and the Assistant mic. A second one waits or says "<who> is using the microphone".
-- AmberX's native `listen()` already makes hands-free wake listening let go of the mic while it listens.
-- The agent's voice is spoken with `holdMic`, so the wake listener steps aside while the agent talks and never hears it
-  as a command (setting "Hands-free can't hear the agent's voice"). Classic hands-free mode (Google recognizer always
-  on) isn't held by this; the wake mode is the default.
-
-## AmberX native (needs a new APK)
-
-`AmberxNativePlugin.speak` takes voice, rate, pitch, volume, id, queue, holdMic and sends `spoken` {id, done, error}
-when an utterance ends; new `stopSpeaking`, `ttsVoices`, `micPermission`. Older APKs still speak (text + lang): the
-engine waits on an estimate instead of the `spoken` event, and the voice list is empty (default voice).
+- Every listener in the page takes mic-lease@1 first: dictation, Speak a command, recording a phrase, and the
+  Assistant mic. A second one waits or says "<who> is using the microphone".
+- The mic settings `pauseHandsFree` and `muteWakeWhileSpeaking` stay in the stored data but have no switch any more:
+  only the retired AmberX app's native recognizer and voice honoured them.
 
 ## Live light
 
@@ -67,5 +59,4 @@ actions (open the assistant on that agent and listen) for agents with Listen + t
 ## Checks
 
 `node --experimental-strip-types apps/console-web/plugins/agent-voice/test.mts` (22), `python3 …/agent-voice/test.py`
-(37), ai-assistant `test.py` (143), console `tsc`, AmberX `tsc` + `test.mjs` (1990), check-theme, check-controls,
-lifecycle checks, menu-reach. The Java side compiles in CI only (no Android SDK in claude.ai sessions).
+(37), ai-assistant `test.py` (143), console `tsc`, check-theme, check-controls, lifecycle checks, menu-reach.

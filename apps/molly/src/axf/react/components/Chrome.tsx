@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { useHidden } from '../hidden';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -228,7 +229,9 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
-  if (!tb) return null;
+  // hidden-assets@1: a page toolbar hidden as a piece (its asset id) draws nothing
+  const hidden = useHidden('toolbar', id);
+  if (!tb || hidden) return null;
   return <PageToolbar assetId={id} label={label}>{(tb.data as ToolbarData).showSearch ? search : null}</PageToolbar>;
 }
 
@@ -237,18 +240,26 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
 /**
  * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
  * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
- * first appearance wins; unlabelled sections stay separate.
+ * first appearance wins; unlabelled sections stay separate. The first section's own items keep their order; items that
+ * join it later (plugins, which install in whatever order their chunks arrive) follow them sorted by label, so the
+ * menu reads the same on every load.
  */
 export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
   const out: S[] = [];
   const byLabel = new Map<string, S>();
+  const own = new Map<S, number>();
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
     if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
+    own.set(copy, copy.items.length);
     if (key) byLabel.set(key, copy);
+  }
+  for (const s of out) {
+    const n = own.get(s) ?? s.items.length;
+    if (s.items.length - n > 1) s.items = [...s.items.slice(0, n), ...s.items.slice(n).sort((a, b) => a.label.localeCompare(b.label))];
   }
   return out;
 }

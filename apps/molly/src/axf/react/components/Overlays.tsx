@@ -1,14 +1,17 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { SEARCH_KIND_LABELS, filterMenu, resolveChecked, type AssetType, type MenuItem, type SearchHit } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
+import { scanPage } from './Search';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
 import { dialogSurface } from '../../core/engines/settingsopen';
-import { CONTEXT_LEAD_PREFIX, withContextLead, type MenuEntry } from '../../core/engines/windows';
-import { chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_PIECE_SELECTOR, chromeTargetOf } from '../hidden';
+import { CONTEXT_LEAD_PREFIX, splitContextBar, withContextLead, type MenuEntry } from '../../core/engines/windows';
 
 export interface DialogDef {
   title: string;
@@ -121,6 +124,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.act && <Button size="sm" tone="neutral" onClick={() => { rt.dismissToast(t.id); rt.dispatch(t.act!.action); }}>{t.act.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>
@@ -147,16 +151,16 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // any widget host (banner, toolbar): the widget under the pointer, for its Hide (hidden-assets@1)
+      const wEl = target?.closest('[data-axf-banner-item], [data-axf-toolbar-widget]');
+      rt.contextWidget = wEl ? { host: wEl.hasAttribute('data-axf-banner-item') ? 'banner' : 'toolbar', key: wEl.getAttribute('data-axf-banner-item') ?? wEl.getAttribute('data-axf-toolbar-widget') ?? '' } : null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
-      const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
-      const own = el?.getAttribute('data-fx-ctx-target');
-      const name = own ?? (el?.getAttribute('role') === 'toolbar' ? 'toolbar' : el?.getAttribute('role') === 'tablist' ? 'tab-group' : el?.tagName === 'NAV' && el.getAttribute('data-axf-not-nav') === null ? 'nav' : 'default');
-      if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
-      // an implicit target's instance id: its settings id, else its accessible name as a slug
-      const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
-      const slug = chromeInstanceSlug(label);
-      rt.openContext(x, y, name, slug || undefined);
+      // an implicit target's instance id: its settings id, else its accessible name as a slug (hidden.tsx, shared with
+      // the hidden-assets pass so right-click → Hide names the same piece)
+      const el = target?.closest(CHROME_PIECE_SELECTOR);
+      const { name, payload } = el ? chromeTargetOf(el) : { name: 'default', payload: undefined };
+      rt.openContext(x, y, name, payload);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
@@ -214,6 +218,11 @@ export function ContextMenuHost() {
   // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1)
   useMenuFit(ref, 'point', () => state.context && { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y }, {}, [state.context]);
 
+  // Search anywhere's words and pick: a fresh box every time the menu opens
+  const [query, setQuery] = useState('');
+  const [active, setActive] = useState(0);
+  useEffect(() => { setQuery(''); setActive(0); }, [state.context]);
+
   if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
   // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
@@ -235,7 +244,15 @@ export function ContextMenuHost() {
   // target, even one whose asset turns contributions off
   const lead = [...rt.contextExtras.entries()].filter(([k]) => k.startsWith(CONTEXT_LEAD_PREFIX)).flatMap(([, f]) => f(ctx.target, ctx.payload));
   const rest = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
-  const items = withContextLead(lead as unknown as MenuEntry[], rest as unknown as MenuEntry[]) as unknown as typeof base;
+  const all = withContextLead(lead as unknown as MenuEntry[], rest as unknown as MenuEntry[]) as unknown as typeof base;
+  // context-menu rebuild (Nov 20 2026): `place: "toolbar"` items (cut / copy / paste, theme steps…) sit in the icon
+  // strip on top, the list keeps the rest, and Search anywhere is pinned at the bottom
+  // the default target's strip items lead the strip of every menu of the asset (a plugin's or a toolbar's menu too)
+  const split = splitContextBar(all);
+  const list = split.list;
+  const bar = [...split.bar, ...splitContextBar(cm.targets.default ?? []).bar].filter((x, i, xs) => xs.findIndex((y) => y.id === x.id) === i);
+  const search = cm.search ? (typeof cm.search === 'string' ? cm.search : 'Search anywhere…') : null;
+  const done = () => rt.closeContext();
   return (
     <div
       ref={ref}
@@ -243,15 +260,136 @@ export function ContextMenuHost() {
       style={{ left: state.context.x, top: state.context.y }}
       onContextMenu={(e) => e.preventDefault()}
     >
+      {bar.length > 0 && <ContextBar items={bar} payload={ctx.payload} onDone={done} />}
       <MenuScroll box={ref}>
-        <MenuList
-          items={items}
-          payload={state.context.payload}
-          onDone={() => rt.closeContext()}
-          showIcons={cm.showIcons}
-          showShortcuts={cm.showShortcuts}
-        />
+        {query.trim()
+          ? <ContextHits query={query} active={active} setActive={setActive} onDone={done} />
+          : <MenuList items={list} payload={ctx.payload} onDone={done} showIcons={cm.showIcons} showShortcuts={cm.showShortcuts} />}
       </MenuScroll>
+      {search && <ContextSearch placeholder={search} query={query} setQuery={setQuery} active={active} setActive={setActive} onDone={done} />}
+    </div>
+  );
+}
+
+/** The icon strip on top of a context menu: each item an icon button (its label is the tooltip and accessible name). */
+function ContextBar({ items, payload, onDone }: { items: MenuItem[]; payload?: string; onDone: () => void }) {
+  const rt = useRuntime();
+  const visible = filterMenu(items, (r) => rt.gate(r)).filter((i) => !(i.action && rt.takenByHost({ action: i.action })));
+  if (!visible.length) return null;
+  return (
+    <div className="fx-ctx__bar" role="toolbar" aria-label="Quick actions" data-axf-toolbar="context-quick">
+      {visible.map((item) => {
+        const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
+        const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
+        const check = resolveChecked(item.checked, { counter: (n) => rt.badge(n), setting: (k) => rt.settings.get(k), hidden: (t) => rt.slotHidden(t as AssetType) });
+        const tip = hostLock ?? (locked ? `Requires ${item.requires}` : `${item.label ?? item.id}${item.shortcut ? ` (${item.shortcut})` : ''}`);
+        return (
+          <button
+            key={item.id}
+            type="button"
+            className={`fx-iconbtn fx-ctx__tool${check ? ' is-active' : ''}`}
+            data-axf-item={item.id}
+            data-axf-action={item.action}
+            aria-label={item.label ?? item.id}
+            aria-pressed={check === null ? undefined : check}
+            title={tip}
+            disabled={locked}
+            onClick={() => { onDone(); if (item.action) rt.dispatch(item.action, { payload }); }}
+          >
+            <Icon name={locked ? 'lock' : item.icon ?? 'check-circle'} size={16} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const CTX_HITS = 10;
+
+/** What Search anywhere finds for the words typed (the page on screen is scanned first, like the toolbar search). */
+function useContextHits(query: string): SearchHit[] {
+  const rt = useRuntime();
+  const state = useAxfState();
+  return useMemo(() => {
+    if (!query.trim()) return [];
+    scanPage(rt.getState().view);
+    return rt.search.query(query, { limit: CTX_HITS });
+  }, [rt, query, state.rev]);
+}
+
+function pickHit(rt: ReturnType<typeof useRuntime>, h: SearchHit | undefined, onDone: () => void): void {
+  if (!h) return;
+  if (h.locked) { rt.toast(`"${h.label}" needs ${h.requires}.`, 'warning', 'Locked'); return; }
+  onDone();
+  rt.search.focus(h);
+}
+
+/** Search anywhere's results, in place of the menu's list while there is a query. */
+function ContextHits({ query, active, setActive, onDone }: { query: string; active: number; setActive: (i: number) => void; onDone: () => void }) {
+  const rt = useRuntime();
+  const hits = useContextHits(query);
+  if (!hits.length) return <ul className="fx-menu" role="menu"><li className="fx-menu__li"><span className="fx-menu__row fx-muted">Nothing matches “{query.trim()}”.</span></li></ul>;
+  return (
+    <ul className="fx-menu" role="menu" aria-label="Search results" data-axf-search="off">
+      {hits.map((h, i) => (
+        <li key={h.id} className="fx-menu__li" data-axf-item={`search:${h.id}`}>
+          <button
+            type="button"
+            role="menuitem"
+            className={`fx-menu__item${i === active ? ' is-active' : ''}`}
+            aria-disabled={h.locked || undefined}
+            onPointerEnter={() => setActive(i)}
+            onClick={() => pickHit(rt, h, onDone)}
+          >
+            <span className="fx-menu__icon"><Icon name={h.locked ? 'lock' : h.icon ?? 'search'} size={15} /></span>
+            <span className="fx-search__text">
+              <span className="fx-search__label">{h.label}</span>
+              {h.detail && <span className="fx-search__detail">{h.detail}</span>}
+            </span>
+            <span className="fx-search__kind">{SEARCH_KIND_LABELS[h.kind] ?? h.kind}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Search anywhere: the box pinned at the bottom of the context menu. Typing anywhere while the menu is open lands
+ * here (focus is not taken on open, so Cut / Copy / Paste still act on what was selected); Enter opens the pick,
+ * arrows move it, Escape clears the box, then closes the menu. */
+function ContextSearch({ placeholder, query, setQuery, active, setActive, onDone }: {
+  placeholder: string; query: string; setQuery: (q: string) => void; active: number; setActive: (f: (i: number) => number) => void; onDone: () => void;
+}) {
+  const rt = useRuntime();
+  const input = useRef<HTMLInputElement>(null);
+  const hits = useContextHits(query);
+  useEffect(() => {
+    const key = (e: globalThis.KeyboardEvent) => {
+      if (document.activeElement === input.current || e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
+      if ((e.target as HTMLElement | null)?.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+      input.current?.focus(); // the key's character then goes into the box
+    };
+    document.addEventListener('keydown', key, true);
+    return () => document.removeEventListener('keydown', key, true);
+  }, []);
+  const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive((i) => Math.min(i + 1, Math.max(hits.length - 1, 0))); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); pickHit(rt, hits[active], onDone); }
+    else if (e.key === 'Escape') { e.preventDefault(); if (query) { e.stopPropagation(); setQuery(''); } else onDone(); }
+  };
+  return (
+    <div className="fx-search fx-ctx__search" role="search" data-axf-search="off">
+      <Icon name="search" size={14} />
+      <input
+        ref={input}
+        value={query}
+        onChange={(e) => { setQuery(e.target.value); setActive(() => 0); }}
+        onKeyDown={onKey}
+        placeholder={placeholder}
+        aria-label="Search anywhere"
+      />
+      {query && <button type="button" className="fx-search__clear" aria-label="Clear search" onClick={() => { setQuery(''); input.current?.focus(); }}><Icon name="x" size={12} /></button>}
     </div>
   );
 }

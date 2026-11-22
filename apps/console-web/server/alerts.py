@@ -379,6 +379,12 @@ class AlertHub:
             on = verdict["channels"]
             targets = [t for t in targets if on.get("banner" if t == "bell" else "webpush")]
         pushes = [t for t in targets if t != "bell"]
+        # Phone Connect (axf.phone@1): what may buzz the phone (the notify registry's phone push channel, warnings and
+        # worse unless the type is promoted) goes to the paired phone. With no phone paired, AmberX still reads it.
+        if verdict and verdict.get("allow") is not False and (verdict.get("channels") or {}).get("amberx") and event in ("new", "reopened", "escalated") \
+                and (rank(alert["severity"]) >= rank("warning") or verdict.get("promote")):
+            pushes.append("phone")
+            alert = {**alert, "notifyType": verdict.get("type", "")}
         if deliver and pushes:
             try:
                 self._outbox.put_nowait((alert, pushes))
@@ -412,12 +418,23 @@ class AlertHub:
     def _deliver(self, alert: dict[str, Any], channels: list[str]) -> None:
         for ch in channels:
             try:
-                ok, detail = (self.send_ntfy(alert) if ch == "ntfy" else self.send_webpush(alert) if ch == "webpush" else (False, "unknown channel"))
+                ok, detail = (self.send_ntfy(alert) if ch == "ntfy" else self.send_webpush(alert) if ch == "webpush" else self.send_phone(alert) if ch == "phone" else (False, "unknown channel"))
             except Exception as e:  # noqa: BLE001 — a dead channel must not stop the others
                 ok, detail = False, str(e)[:200]
             self.delivery_log = (self.delivery_log + [{"at": _now(), "channel": ch, "key": alert["key"], "ok": ok, "detail": detail}])[-50:]
             if not ok:
                 self.log("alerts", f"{ch}: {detail}", "warn")
+
+    def send_phone(self, alert: dict[str, Any]) -> tuple[bool, str]:
+        """One alert to the paired phone through axf.phone@1 (Phone Connect); AmberX reads it when no phone is paired."""
+        phone = plugin_services.get("axf.phone@1")
+        if phone is None or not phone.status().get("paired"):
+            return False, "no phone paired (AmberX reads it while it exists)"
+        try:
+            r = phone.push_alert(alert, str(alert.get("notifyType") or ""), self._click_url(alert))
+        except Exception as e:  # noqa: BLE001 — the phone's wire error (offline, unpaired …) or a bug: logged, never raised
+            return False, str(getattr(e, "err", {}).get("code") or e)[:200]
+        return bool(r.get("ok")), str(r.get("id", ""))
 
     def _click_url(self, alert: dict[str, Any]) -> str:
         if re.match(r"^https?://", alert.get("link") or ""):

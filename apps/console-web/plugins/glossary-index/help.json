@@ -25,6 +25,12 @@
         "kind": "tab"
       },
       {
+        "target": "format",
+        "title": "Format",
+        "text": "The file format the docs are generated in: HTML, interactive HTML + TypeScript, or Markdown. Markdown has no interactive parts.",
+        "kind": "field"
+      },
+      {
         "target": "drafts",
         "title": "Drafts",
         "text": "On: controls whose help text is still a draft (made from the code, not reviewed yet) are listed too. Off: only reviewed entries.",

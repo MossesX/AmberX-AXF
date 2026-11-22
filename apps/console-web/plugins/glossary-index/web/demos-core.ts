@@ -33,7 +33,7 @@ export const DEMO_KEYS = {
   designerTab: 'glossary.designer.tab', booksPicker: 'glossary.books.pickerKind',
 } as const;
 
-export const APPS = [{ value: 'console', label: 'Dev Console' }, { value: 'axhub-web', label: 'axHub web' }, { value: 'amberx-droid', label: 'AmberX' }];
+export const APPS = [{ value: 'console', label: 'Dev Console' }, { value: 'axhub-web', label: 'axHub web' }];
 export const SURFACES = [{ value: 'live', label: 'Live UI' }, { value: 'preview', label: 'Preview window' }, { value: 'recorder', label: 'Recorder' }];
 export const SPEEDS = [{ value: '0.75', label: 'Slow (0.75×)' }, { value: '1', label: 'Normal' }, { value: '1.25', label: 'Brisk (1.25×)' }, { value: '1.5', label: 'Fast (1.5×)' }];
 export const STYLES = [

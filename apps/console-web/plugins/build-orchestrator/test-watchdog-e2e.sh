@@ -43,7 +43,7 @@ export AXF_PIPELINE_LOCK="$T/pipeline.lock" AXF_PIPELINE_LOCKED=1 AXF_PIPELINE_E
 export AXF_ORIGIN=off AXF_LOOK_GATE=off AXF_AGENT_BOOK=off AXF_BUILD_LIMIT=off AXF_BUILD_SLICE=off AXF_OWN_LOGIN=off AXF_WORKERS=off AXF_WATCH_LIVE=off AXF_LOGIN_NOTE=off AXF_STILL_CHECK_OFF=1 AXF_ACCOUNT_SWITCHES=0
 export AXF_WATCHDOG_NOTIFY_LOG="$T/notify.jsonl" AXF_WATCHDOG_CRON="$T/cron.d/axf-watchdog"
 node "$ROOT/framework/cli/agent-slots.mjs" set closeFinishedAfterSec=600 >/dev/null   # the finished session waits to close: the watchdog closes it
-PIPE="node $HERE/pipeline.mjs"; WD="node $HERE/recovery-watchdog.mjs"; ORCH="node $HERE/orchestrator.mjs"
+PIPE="node $HERE/pipeline.mjs"; WD="node $HERE/watchdog/sessions.mjs"; ORCH="node $HERE/orchestrator.mjs"
 js() { node -e "const s=JSON.parse(require('fs').readFileSync('$T/store.json','utf8'));const b=s.builds.find(x=>x.id==='$ID');$1"; }
 wait_for() { local i; for i in $(seq 1 "${2:-100}"); do eval "$1" && return 0; sleep 0.2; done; return 1; }
 
@@ -98,5 +98,5 @@ node -e "const r=require('$T/run2.json');if(r.fixes.length)process.exit(1)" || f
 ok "a second pass does nothing"
 
 echo "  … notify-control registry test"
-HOME="$REAL_HOME" PATH="$REAL_PATH" python3 "$ROOT/apps/console-web/plugins/notify-control/test.py" | tail -1
+HOME="$REAL_HOME" PATH="$REAL_PATH" python3 "$ROOT/apps/console-web/plugins/notify-control/test.py" | tail -1  # axf-plugin:notify-control
 echo "watchdog e2e: passed"

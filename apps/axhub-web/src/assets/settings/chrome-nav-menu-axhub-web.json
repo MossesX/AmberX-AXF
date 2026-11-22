@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-nav-menu"
+    "extends": "chrome-nav-menu",
+    "builtFor": "chrome:nav-menu"
   }
 }

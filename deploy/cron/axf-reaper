@@ -1,0 +1,7 @@
+# VPS reaper (vps-reaper@1, Nov 18 2026): every 2 minutes the host kills its own ghosts: finished `claude -p` processes
+# still running (their run is closed and handed to the lander), dead tmux axf-* sessions, agent-slots entries nothing
+# holds, heavy-step locks with no owner, test servers left on ports, stale /tmp/axf-limit-* folders. A build that is
+# working (log or meter written within idleMin) is never touched. Every kill: <slots dir>/reaper.jsonl, a note on
+# AmberX's "Automatic fixes" list, a phone FYI. The dispatcher, auto-land, the auto-lander and the merge queue run the
+# same pass first (framework/cli/reaper.mjs reapFirst). Installed by deploy/install-console.sh; __DIR__ is /opt/axf.
+*/2 * * * * root R=__DIR__/framework/cli/reaper.mjs; [ -f $R ] && cd __DIR__ && flock -n /run/axf-reaper.lock timeout 300 node $R run --by cron >> /var/log/axf-reaper.log 2>&1

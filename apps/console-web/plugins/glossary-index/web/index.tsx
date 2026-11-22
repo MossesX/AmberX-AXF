@@ -320,9 +320,9 @@ export const plugin: AxfWebLibrary = {
     [ADD_TO_BOOK_DIALOG]: { title: 'Add to a book', icon: 'file', searchable: false, render: (props, close) => <AddToBook props={props} close={close} /> },
   },
   tabs: { [PLAYER_TAB]: () => <PlayerWindow /> },
-  nav: { label: 'Plugins', items: [
+  nav: { label: 'Docs & media', items: [
     { id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' },
-    { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', view: 'demo-designer' },
+    { id: 'demo-designer', label: 'Glossary demos', icon: 'play', view: 'demo-designer' },
     { id: 'book-builder', label: 'Book Builder', icon: 'file', view: 'book-builder' },
   ] },
   settingsTabs: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', order: 92, parent: 'plugins' }],

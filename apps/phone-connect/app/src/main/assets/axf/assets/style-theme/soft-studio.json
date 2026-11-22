@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "soft-studio",
+  "name": "Soft Studio",
+  "version": "1.0.0",
+  "description": "Friendly geometry: medium radii, airy spacing, gentle shadows.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "fontFamily": "'Inter', system-ui, sans-serif",
+    "fontDisplay": "'Space Grotesk', 'Inter', sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 6,
+      "md": 10,
+      "lg": 14
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 6px 18px var(--fx-shadow)",
+      "lg": "0 20px 50px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 180,
+    "blur": 14,
+    "headingWeight": 650,
+    "tracking": -0.02,
+    "opacityDisabled": 0.38,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.72,
+    "wrapGroups": false
+  }
+}

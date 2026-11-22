@@ -25,7 +25,7 @@ export const SCHEMA = 'data-store@1';
 export const VERSION = 1;
 export const FRAMES = ['data-record@1', 'data-entry@1', 'data-entries@1', 'data-append@1', 'data-list@1', 'data-change@1', 'data-manifest@1', 'data-error@1', 'data-health@1', 'data-token@1', 'data-store-mode@1', 'data-drift@1'];
 export const KINDS = ['record', 'blob', 'journal'];
-export const OPS = ['get', 'put', 'delete', 'list', 'append', 'read', 'watch', 'snapshot', 'manifest', 'health'];
+export const OPS = ['get', 'put', 'patch', 'delete', 'list', 'append', 'read', 'watch', 'snapshot', 'manifest', 'health'];
 export const CHANGE_OPS = ['put', 'delete', 'append'];
 export const GRANTS = ['read', 'write', 'append', 'admin'];
 export const SERVICES = ['console', 'orchestrator', 'axhub', 'cli', 'plugin'];
@@ -41,6 +41,7 @@ export const NAMESPACES = Object.freeze({
   changes: { label: 'Codebase changes log', kinds: ['record'], today: '/projects/amberx-axf/_data/changes' },
   sessions: { label: 'Session archives', kinds: ['record', 'blob', 'journal'], today: '/projects/amberx-axf/_data/sessions' },
   console: { label: 'Console hub data', kinds: ['record', 'journal', 'blob'], today: '/projects/amberx-axf/_data/<folder>' },
+  phone: { label: 'Phone Connect devices, pairings, commands', kinds: ['record', 'journal'], pluginFolder: 'phone-connect', today: '.axf-console/plugins/phone-connect' }, // phone-connect@1: a core namespace kept in the plugin's folder: axf-not-plugin:phone-connect
   _meta: { label: 'Store state', kinds: ['record', 'journal'], internal: true, today: '' },
 });
 export const LIMITS = Object.freeze({
@@ -427,6 +428,9 @@ export function httpBackend(opts = {}) {
       return (await send(url(ns, path, { force: kind === 'blob' && o.force ? 1 : '' }), { method: 'PUT', headers, body: bytes })).json();
     },
     async delete(ns, path, o = {}) { const ifMatch = normIfMatch(o.ifMatch); return (await send(url(ns, path, { force: o.force ? 1 : '' }), { method: 'DELETE', headers: ifMatch ? { 'if-match': ifMatch } : {} })).json(); },
+    // data-patch@1: some rows of a table-backed record (the builds store), its head fields and one journal line in one
+    // transaction on axf-data; only the named rows are locked. `conflict` names the items another writer changed.
+    async patch(ns, path, body) { return (await send(`${url(ns, path)}:patch`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json(); },
     async list(ns, o = {}) { return (await send(url(ns, '', { prefix: o.prefix, after: o.after, limit: o.limit, deleted: o.deleted ? 1 : '' }))).json(); },
     async append(ns, path, entries, o = {}) { return (await send(`${url(ns, path)}:append`, { method: 'POST', headers: { 'content-type': 'application/json', ...(o.idempotencyKey ? { 'idempotency-key': o.idempotencyKey } : {}) }, body: JSON.stringify({ entries }) })).json(); },
     async read(ns, path, o = {}) { return (await send(url(ns, path, { since: o.tail ? undefined : Math.max(0, Number(o.since) || 0), limit: o.limit, tail: o.tail }))).json(); }, // `since` always rides along: a GET without it is a get, refused on a journal
@@ -494,6 +498,8 @@ export function createDataStore(o = {}) {
       }
     },
     async delete(key, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.delete(ns, path, withBy(opts))); },
+    /** patch(key, { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? }) → data-patch@1 (http backend; others answer invalid_body). */
+    async patch(key, body) { const { ns, path } = parseKey(key); if (!backend.patch) throw new DataStoreError('invalid_body', `${backend.name} backend has no patch`, { ns, path }); return retrying(() => backend.patch(ns, path, body)); },
     async list(ns, opts = {}) { const { ns: head, prefix } = parseNamespace(ns); return retrying(() => backend.list(head, { ...opts, prefix: prefix + (opts.prefix || '') })); },
     async append(key, entries, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.append(ns, path, entries, withBy(opts))); },
     async read(key, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.read(ns, path, opts)); },

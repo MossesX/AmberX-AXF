@@ -391,8 +391,9 @@ def skin_config_make(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
         return _skins("config", "make", app, "--wish", wish, "--dry")
     _skins("config", "get", app)  # an unknown app fails here, not in the background
     try:
-        subprocess.Popen(["node", str(SKINS_CLI), "config", "make", app, "--wish", wish, "--json"], cwd=cx.ROOT,
-                         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        p = subprocess.Popen(["node", str(SKINS_CLI), "config", "make", app, "--wish", wish, "--json"], cwd=cx.ROOT,
+                             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        threading.Thread(target=p.wait, name="skin-make-reap", daemon=True).start()  # collect it when done: no zombie
     except OSError as e:
         raise HTTPException(502, f"skins: {e}") from e
     return {"started": True, "app": app, "wish": wish, "results": f"/api/plugins/theme-manager/skin-config/{app}/made"}

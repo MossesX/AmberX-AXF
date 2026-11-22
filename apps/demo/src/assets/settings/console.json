@@ -38,6 +38,7 @@
       "axf.roll": "developer",
       "axf.roll.assets": "administrator",
       "axf.account.profile": "administrator"
-    }
+    },
+    "builtFor": "app"
   }
 }

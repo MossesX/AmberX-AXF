@@ -1,7 +1,7 @@
 """Stale-row watchdog: REST routes and the systems check item (stale-row@1).
 
 Brett, Nov 16 2026: "I want a server fucking watchdog on the VPS to do that." The watchdog itself is watchdog.mjs
-(cron axf-stale-watchdog on the VPS host, every 5 minutes); this module is the console's side of it, and every route
+(cron axf-build-watchdog on the VPS host, every minute, each watch when due); this module is the console's side of it, and every route
 runs the same CLI the MCP tools (plugin-commands), `axf watchdog` and the voice actions run:
 
     GET  /api/plugins/build-orchestrator/watchdog            status: settings, last run, last runs, the cleanup log
@@ -27,14 +27,14 @@ from fastapi import APIRouter, HTTPException, Request
 import plugin_services
 
 HERE = Path(__file__).resolve().parent.parent
-CLI = HERE / "watchdog.mjs"
+CLI = HERE / "watchdog" / "rows.mjs"
 ROOT = HERE.parents[2]
 HEALTH_CAP = "axf.health@1"
 HEALTH_ID = "orchestrator-watchdog"
 SETTINGS_SCHEMA = json.loads((HERE / "watchdog" / "settings.json").read_text())["settings"]
 LOG_KINDS = {"pending", "queued", "building", "merge-queue", "ui-review"}  # axf-not-plugin:ui-review (the stale-row@1 row kind)
 LOG_ACTIONS = {"keep", "complete", "remove"}
-FIX_COMMAND = ("cd /opt/axf && node apps/console-web/plugins/build-orchestrator/watchdog.mjs cron install --force"
+FIX_COMMAND = ("cd /opt/axf && node apps/console-web/plugins/build-orchestrator/watchdog.mjs install-cron --force"
                " && node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --force --by autofix")
 
 
@@ -72,14 +72,14 @@ def health_probe(status: dict[str, Any] | None = None) -> dict[str, Any]:
         return {"status": "ok", "summary": "The stale-row watchdog is off (Settings → Plugins → Build orchestrator → Watchdog).", "details": []}
     if not last:
         return {"status": "error", "summary": "The stale-row watchdog has never run on the VPS: stale rows stay on the builds lists.",
-                "details": ["Cron axf-stale-watchdog runs it every 5 minutes; Auto fix installs it and runs it once."]}
+                "details": ["Cron axf-build-watchdog runs it every minute, each watch when due; Auto fix installs it and runs it once."]}
     age = _age_min(str(last.get("at") or ""))
     if not last.get("ok"):
         return {"status": "error", "summary": f"The stale-row watchdog's last run failed ({str(last.get('error') or '?')[:160]}).",
                 "details": [f"Last run {last.get('at')}", "Auto fix reruns it; `node apps/console-web/plugins/build-orchestrator/watchdog.mjs run` on the VPS shows the error."]}
     if age > 3 * every:
         return {"status": "error", "summary": f"The stale-row watchdog hasn't run for {int(age)} min (every {every} min): stale rows pile up again.",
-                "details": [f"Last run {last.get('at')}", "The cron axf-stale-watchdog is missing or failing on the VPS; Auto fix reinstalls it and runs it once."]}
+                "details": [f"Last run {last.get('at')}", "The cron axf-build-watchdog is missing or failing on the VPS; Auto fix reinstalls it and runs it once."]}
     return {"status": "ok", "summary": f"The stale-row watchdog ran {int(age)} min ago: {last.get('cleaned', 0)} cleaned, {last.get('planned', 0)} found.", "details": []}
 
 

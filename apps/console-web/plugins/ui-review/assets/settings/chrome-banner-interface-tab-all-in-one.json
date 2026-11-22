@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "chrome-banner-interface-tab-all-in-one",
+  "name": "chrome-banner-interface-tab: Interface = everything for this banner (built)",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The Interface tab holds this banner's asset and every look and behaviour field in one scroll; Look / Behaviour / Asset stay as quick tabs. The settings window's own layout is the fold above the tabs. This is what the PR ships.",
+  "tags": [
+    "ui-choice",
+    "choice-set:chrome-banner-interface-tab",
+    "choice-option:all-in-one"
+  ],
+  "data": {
+    "for": "banner",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "layout": "tabs-top",
+    "tabs": [
+      {
+        "id": "look",
+        "label": "Look",
+        "icon": "palette",
+        "order": 10
+      },
+      {
+        "id": "behaviour",
+        "label": "Behaviour",
+        "icon": "sliders",
+        "order": 20
+      },
+      {
+        "id": "asset",
+        "label": "Asset",
+        "icon": "layers",
+        "order": 30
+      },
+      {
+        "id": "interface",
+        "label": "Interface",
+        "icon": "settings",
+        "order": 40
+      }
+    ],
+    "hide": [],
+    "levelOf": {
+      "look": "simple",
+      "behaviour": "basic",
+      "asset": "basic",
+      "interface": "basic"
+    },
+    "builtFor": "chrome:banner"
+  }
+}

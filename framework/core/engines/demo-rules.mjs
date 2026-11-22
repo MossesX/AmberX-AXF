@@ -186,7 +186,7 @@ export function demonstrationErrors(raw) {
   const e = [];
   if (raw.about !== undefined && raw.about !== '' && !(typeof raw.about === 'string' && ENTRY_ID.test(raw.about))) e.push('data.about must be the glossary entry id this demonstrates (e.g. plugin:build-orchestrator)');
   if (raw.entries !== undefined && (!Array.isArray(raw.entries) || raw.entries.length > DEMO_LIMITS.entries || raw.entries.some((x) => typeof x !== 'string' || !ENTRY_ID.test(x)))) e.push(`data.entries must be up to ${DEMO_LIMITS.entries} glossary entry ids`);
-  if (raw.app !== undefined && !/^[a-z][a-z0-9-]{0,39}$/.test(raw.app ?? '')) e.push('data.app must be an app id (console, axhub-web, amberx-droid…)');
+  if (raw.app !== undefined && !/^[a-z][a-z0-9-]{0,39}$/.test(raw.app ?? '')) e.push('data.app must be an app id (console, axhub-web, walkthrough-studio…)');
   if (raw.surface !== undefined && !DEMO_ENUMS.surface.includes(raw.surface)) e.push(`data.surface must be one of ${DEMO_ENUMS.surface.join(', ')}`);
   e.push(...stepErrors(raw.steps, 'data.steps'));
   if (raw.voice !== undefined) {
@@ -300,7 +300,7 @@ export function demonstrationFromEntry(entry, { lookup, at = '', build = '', app
   // 6. see also
   const related = (Array.isArray(entry?.related) ? entry.related : []).map((id) => lookup?.(id)).filter(Boolean);
   if (related.length) steps.push({ say: `Related: ${joinWords(related.slice(0, 4).map((r) => r.term))}.`, do: '', target: '', title: 'See also' });
-  const appId = app || (entry?.app === 'axHub web' ? 'axhub-web' : entry?.app === 'AmberX' ? 'amberx-droid' : 'console');
+  const appId = app || (entry?.app === 'axHub web' ? 'axhub-web' : 'console');
   const data = normalizeDemonstration({
     about: entry?.id, entries: [entry?.id, ...(Array.isArray(entry?.related) ? entry.related : [])], app: appId, surface: 'live', steps,
     keywords: demonstrationKeywords(entry, steps), generated: { from: 'glossary', at, build },

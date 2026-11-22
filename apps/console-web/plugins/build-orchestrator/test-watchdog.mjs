@@ -24,7 +24,7 @@ Object.assign(process.env, {
   AXF_WATCHDOG_NOTIFY_LOG: notifyLog, AXF_WATCHDOG_ACCOUNTS: 'w-max,w-pro', AXF_WATCHDOG_CRON: join(tmp, 'cron.d', 'axf-watchdog'),
 });
 delete process.env.AXF_WATCHDOG_SETTINGS;
-const W = await import('./recovery-watchdog.mjs');
+const W = await import('./watchdog/sessions.mjs');
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); } catch (e) { console.error(`✗ ${name}`); throw e; } n += 1; console.log(`  ✓ ${name}`); };
@@ -177,11 +177,11 @@ try {
     seed([]); W.run({ fill: noFill }); assert.equal(W.status().stale, false); assert.ok(W.status().lastPass);
   });
 
-  await t('the cron file: install writes one flock line that removes itself with the plugin, remove deletes it', () => {
+  await t('the cron file: install writes the one build-watchdog flock line (skipped once the plugin is gone), remove deletes it', () => {
     mkdirSync(join(tmp, 'cron.d'), { recursive: true });
     const r = W.installCron({ dir: '/opt/axf' }); assert.ok(r.ok && !r.skipped);
     const text = readFileSync(process.env.AXF_WATCHDOG_CRON, 'utf8');
-    assert.match(text, /^\* \* \* \* \* root .*flock -n \/run\/axf-watchdog\.lock .*watchdog\.mjs" cron/m); assert.match(text, /else rm -f /);
+    assert.match(text, /^\* \* \* \* \* root W=\/opt\/axf\/.*build-orchestrator\/watchdog\.mjs; \[ -f \$W \] && .*flock -n \/run\/axf-build-watchdog\.lock .*node \$W cron/m);
     assert.equal(W.removeCron().removed, true); assert.equal(existsSync(process.env.AXF_WATCHDOG_CRON), false);
   });
 

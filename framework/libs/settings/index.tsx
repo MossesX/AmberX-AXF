@@ -25,6 +25,8 @@ import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWher
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
+import { ASSET_TYPES_TAB, AssetTypesIfacePanel, isAppIface, ownerSettingsUi, registerIfaceActions, SETTINGS_IFACE_CSS, SETTINGS_IFACE_DIALOG, SettingsIfaceDialog, SettingsIfaceRow, syncIfaceDefaults, tabIfaceOwner } from './iface';
+export { SETTINGS_IFACE_ACTIONS, SETTINGS_IFACE_DIALOG, SettingsIfaceRow, setOwnerIface, tabIfaceOwner } from './iface';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_TAB_DIALOG, settingsOpenRoute } from '../../core/engines/settingsopen';
@@ -235,7 +237,8 @@ const HIDDEN = '__axf-hidden';
 function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }) {
   const rt = useRuntime();
   const state = useAxfState();
-  const options = rt.registry.list(type);
+  // settings-iface@1: the page's own slot offers only interfaces built for the Settings page (never a plugin's or an asset type's)
+  const options = type === 'settings' ? rt.registry.list(type).filter((a) => isAppIface(a)) : rt.registry.list(type);
   const canHide = hideable(type);
   // The app's own choice (a host app's chrome never shows here: those rows are left out, see SettingRow).
   const hidden = rt.slotHiddenOwn(type);
@@ -266,6 +269,7 @@ function AssetSlotCard({ spec }: { spec: SettingSpec }) {
     <div data-axf-anchor={`settings-slot:${type}`}>
       <Container collapsible defaultOpen={false} title={assetTypeSpecs[type].label} icon={assetTypeSpecs[type].icon}>
         <div className="axf-settings__rows">
+          <SettingsIfaceRow owner={`asset:${type}`} label={assetTypeSpecs[type].label} />
           <SettingRow spec={spec} />
         </div>
       </Container>
@@ -838,7 +842,10 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const plugin = rt.settings.getTab(id)?.plugin;
-  return plugin ? <SkinScope kind="plugin" id={plugin} className="fx-plugin-scope"><TabBody id={id} all={all} /></SkinScope> : <TabBody id={id} all={all} />;
+  // settings-iface@1: every plugin's settings start with its settings interface (locked on default-<name> until ticked)
+  const owner = tabIfaceOwner(rt, id);
+  const body = owner ? <><SettingsIfaceRow owner={owner} label={rt.settings.getTab(id)?.label ?? id} /><TabBody id={id} all={all} /></> : <TabBody id={id} all={all} />;
+  return plugin ? <SkinScope kind="plugin" id={plugin} className="fx-plugin-scope">{body}</SkinScope> : body;
 }
 
 /** The whole settings interface in a floating dialog (`app.settings`, `settings.open` without a tab; always). */
@@ -869,7 +876,9 @@ function TabDialog({ id }: { id: string }) {
 function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  const ui = useSettingsUi();
+  const pageUi = useSettingsUi();
+  // a plugin's tab renders through its own settings interface layered over the page's (settings-iface@1)
+  const ui = ownerSettingsUi(rt, tabIfaceOwner(rt, id), pageUi);
   const level = useSettingsLevel(ui);
   // `all`: every level (a plugin's own settings inside Banner settings aren't cut by the page's level)
   const at = all || !ui.levels ? undefined : level;
@@ -1074,7 +1083,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS;
+  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS + SETTINGS_IFACE_CSS;
   doc.head.appendChild(el);
 }
 
@@ -1089,6 +1098,8 @@ export const library: AxfWebLibrary = {
     injectStyles();
     setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} all />);
     syncSettingsAsset(rt);
+    syncIfaceDefaults(rt);
+    registerIfaceActions(rt);
     applyDisplay(rt);
     applyAppLook(rt);
     rt.actions.register('skin.restore.ask', () => rt.openDialog(RESTORE_DIALOG, {}), { label: 'Restore to default…', requires: 'assets.swap' });
@@ -1152,11 +1163,12 @@ export const library: AxfWebLibrary = {
     [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
+    [SETTINGS_IFACE_DIALOG]: { title: 'Choose a settings interface', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <SettingsIfaceDialog owner={String(p.owner ?? '')} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
     // hidden-assets@1: what is hidden in this app, Unhide one or all (the Assets menu's Hidden items…)
     [HIDDEN_ASSETS_DIALOG]: { title: 'Hidden items', icon: 'eye', searchable: false, render: () => <HiddenAssetsPanel /> },
   },
-  settingsTabs: Object.values(SETTINGS_TABS),
+  settingsTabs: [...Object.values(SETTINGS_TABS), ASSET_TYPES_TAB],
   settings: [
     {
       id: 'axf.display',
@@ -1190,6 +1202,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
     { id: HIDDEN_ASSETS_PANEL_ID, tab: 'appearance', title: 'Hidden', icon: 'eye', order: 5, render: () => <HiddenAssetsPanel /> },
+    { id: 'axf.appearance.asset-types', tab: ASSET_TYPES_TAB.id, title: 'Asset types', icon: 'layers', order: 10, render: () => <AssetTypesIfacePanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },

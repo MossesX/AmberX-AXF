@@ -1641,6 +1641,35 @@
         "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
       },
       {
+        "target": "choose-another-settings-interface",
+        "title": "Choose another settings interface",
+        "text": "Opens the list of settings interfaces built for this plugin or asset type. Pick one and its settings use it straight away.",
+        "kind": "button"
+      },
+      {
+        "target": "reset-this",
+        "title": "Reset this",
+        "text": "Drops every change made to this one tab group, toolbar, banner or menu, so it follows its asset again.",
+        "kind": "button"
+      },
+      {
+        "target": "this-settings-window-every",
+        "title": "This settings window",
+        "text": "Shows which settings window every one of this kind opens in, and lets you pick another.",
+        "kind": "button"
+      },
+      {
+        "target": "use-another-settings-interface",
+        "title": "Use another settings interface",
+        "text": "Every plugin and asset type has its own settings interface, locked on its default (default-<name>) and shown greyed out. Tick to unlock it and pick another one built for this plugin or asset type; untick to go back to the default. Voice and API: settings.iface:<asset|plugin>:<name>:<id|default>, settings.iface.choose:<asset|plugin>:<name>.",
+        "kind": "toggle"
+      },
+      {
+        "target": "settings-interface",
+        "title": "Settings interface",
+        "text": "The settings interfaces built for this plugin or asset type only (their builtFor names it). Pick one and its settings use it; Default goes back to the locked default."
+      },
+      {
         "target": "this-app",
         "title": "This app",
         "text": "Sets what the AI may change when it makes a skin for this app only. Hub-wide is the other tab.",

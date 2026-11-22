@@ -100,6 +100,8 @@ export interface MenuItem {
   separator?: boolean;
   /** with `separator`: an empty gap instead of a rule */
   spacer?: boolean;
+  /** context menus: `toolbar` puts a top-level item in the icon strip above the list instead of the list itself */
+  place?: 'toolbar';
   /* ---- optional fields (asset-types.json → menuItems; engines/appmenu.ts) ---- */
   /** id of a live-list provider (`rt.registerAppMenuProvider`): the item becomes a submenu filled on open */
   provider?: string;
@@ -426,6 +428,8 @@ export interface ContextMenuData {
   showShortcuts: boolean;
   /** false = the asset's own targets show only its own items (no plugin contributions or everywhere items); default true */
   contributions?: boolean;
+  /** a search box pinned at the bottom of every menu (true or a placeholder); results replace the list as you type */
+  search?: boolean | string;
   /** target name -> items. "default" is required and used as fallback. */
   targets: Record<string, MenuItem[]>;
 }
@@ -731,6 +735,8 @@ export interface Toast {
   message: string;
   /** the interface scope it was raised in ('' / absent = the app itself; react/components/InterfaceScope.tsx) */
   scope?: string;
+  /** one button on the toast (Undo after a Hide): pressing it dispatches the action and closes the toast */
+  act?: { label: string; action: string };
 }
 
 export interface AxfState {

@@ -28,6 +28,12 @@ address resolves to the full one. Framework controls (TabGroup, DataGrid, Settin
 register themselves; a hand-drawn element carries `data-axf-target="<kind>:<id>"`. A new view, tab row, toolbar,
 setting, plugin or DataGrid without an address fails `check-console-control` in CI.
 
+Chrome instances (build fix-banner-settings-interface-tab): every tab group, toolbar, banner, nav, menu bar and context
+menu's own settings are `setting:chrome.<type>.<id>.<field>` (+ `.asset`), derived in `ChromeContext.tsx`
+(`chromeSettingTargets`, through `addDerivedTargets`): set writes `axf.chrome.<type>.<id>` exactly like its Settings →
+Interface tab (`reset` / '' drops a field), open = `chrome.settings:<type>:<id>:interface`. CLI
+`axf console chrome get|set|reset|open <type> <id> [key] [value]`.
+
 ## REST (`/api/console-control`)
 
 `GET /targets?under&kinds&source=auto|console|inventory` · `GET /state[?address]` · `POST /do {verb, address, value,

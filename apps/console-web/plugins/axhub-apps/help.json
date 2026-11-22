@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-apps-help",
+  "name": "axHub apps help",
+  "version": "0.1.0",
+  "description": "axHub apps's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-apps",
+    "entries": [
+      {
+        "target": "view:axhub-apps",
+        "title": "Apps",
+        "text": "Your apps on the hub, each with its page.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub-page",
+        "title": "Hub page",
+        "text": "Opens this app's page on the hub."
+      },
+      {
+        "target": "apps-page",
+        "title": "Apps page",
+        "text": "Opens the app's own page."
+      },
+      {
+        "target": "sign-in-to-axhub",
+        "title": "Sign in to axHub",
+        "text": "Signs you in, so approvals and your look show here."
+      }
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-"""Gate & rules on the systems check (axf.health@1, optional) and its alerts (notify.json types gate.*).
+"""VPS Configuration on the systems check (axf.health@1, optional) and its alerts (notify.json types gate.*).
 
   gate-lander   red when the lander is stuck: a PR has been landing for more than STUCK_MIN minutes, or the last run
                 ended in an error; amber while it is paused for more than PAUSED_H hours or switched off. The lander's
@@ -86,7 +86,7 @@ def ensure(services: Any, status: Callable[[], dict[str, Any]]) -> bool:
         reg.register({"id": CHECK_ID, "label": "The auto-lander is landing PRs", "service": "github", "order": 30,
                       "run": lambda: lander_check(status(), time.time() * 1000),
                       "breaks": "Finished builds stop landing on main: the line grows and nothing merges.",
-                      "instructions": ["Open Builds → Gate & rules → Auto-lander (or `axf gate lander status`) and read why.",
+                      "instructions": ["Open Builds → VPS Configuration → Auto-lander (or `axf gate lander status`) and read why.",
                                        "Paused: press Resume (`axf gate lander resume`). Stuck on one PR: Land now another, or hold the stuck one in the push banner's merge queue.",
                                        "A red last run: the reason is in the Last runs grid; the lander tries again next round."]}, OWNER)
     except Exception:  # noqa: BLE001 — the plugin works without its check

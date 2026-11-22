@@ -243,12 +243,12 @@ export interface MicSettings {
   maxSeconds: number;
   /** pressing the mic while the agent talks stops the talking first */
   bargeIn: boolean;
-  /** hands-free wake listening (AmberX) lets go of the mic while this listens, and comes back afterwards */
+  /** kept for stored settings; the native hands-free listener it paused was retired with the AmberX app (Nov 19 2026) */
   pauseHandsFree: boolean;
-  /** never start while AmberX dictation or Speak-a-command has the mic (waits instead, up to waitMs) */
+  /** never start while dictation or Speak-a-command has the mic (waits instead, up to waitMs) */
   respectOthers: boolean;
   waitMs: number;
-  /** hands-free can't hear the agent's own voice and run it as a command */
+  /** kept for stored settings; only the retired AmberX app's native voice honoured it */
   muteWakeWhileSpeaking: boolean;
   /** a small tone when the mic opens / closes */
   tones: boolean;

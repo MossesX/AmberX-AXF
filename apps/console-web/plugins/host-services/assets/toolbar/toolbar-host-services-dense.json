@@ -1,0 +1,65 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "toolbar-host-services-dense",
+ "name": "toolbar-host-services: Dense icons",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Icons only, labels in tooltips and the More menu: the most room for the grid on a phone. Same buttons and actions.",
+ "tags": [
+  "ui-choice",
+  "choice-set:toolbar-host-services",
+  "choice-option:dense"
+ ],
+ "data": {
+  "scope": "view:host-services",
+  "variant": "icons",
+  "align": "start",
+  "showSearch": false,
+  "overflow": {
+   "when": "auto",
+   "keep": 0,
+   "label": "More"
+  },
+  "groups": [
+   {
+    "id": "list",
+    "label": "List",
+    "items": [
+     {
+      "id": "refresh",
+      "icon": "refresh",
+      "label": "Refresh",
+      "action": "handler:host-services.refresh",
+      "badge": "state:services",
+      "priority": 300,
+      "overflow": "never"
+     },
+     {
+      "id": "expand",
+      "icon": "list",
+      "label": "Open all",
+      "action": "handler:host-services.expand-all",
+      "priority": 200
+     }
+    ]
+   },
+   {
+    "id": "fix",
+    "label": "Fix",
+    "items": [
+     {
+      "id": "restart-down",
+      "icon": "zap",
+      "label": "Restart down services",
+      "action": "handler:host-services.restart-down",
+      "badge": "state:down",
+      "enabledWhen": "down>0",
+      "confirm": "Restart every host service that is down or limping?",
+      "priority": 280
+     }
+    ]
+   }
+  ]
+ }
+}

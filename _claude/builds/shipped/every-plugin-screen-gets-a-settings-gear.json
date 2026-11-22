@@ -1,0 +1,330 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-every-plugin-screen-gets-a-settings-gear",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-20T00:08:39Z",
+ "build": {
+  "id": "every-plugin-screen-gets-a-settings-gear",
+  "title": "Every plugin screen gets a settings gear",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Every one has a gear icon to open its settings, right? Yeah, check and fix.",
+  "verbatim": true,
+  "at": "2026-11-16T18:27:11.774Z",
+  "source": "",
+  "by": "every-plugin-screen-gets-a-settings-gear",
+  "addenda": []
+ },
+ "brief": "# Build: every-plugin-screen-gets-a-settings-gear\n\n## Brett said (verbatim)\nAt: 2026-11-16T18:27:11.774Z\n> Every one has a gear icon to open its settings, right? Yeah, check and fix.\n\n## What to build\nContinue build \"Every plugin screen gets a settings gear\" (every-plugin-screen-gets-a-settings-gear) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 18:27):\n\"Every one has a gear icon to open its settings, right? Yeah, check and fix.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/every-plugin-screen-gets-a-settings-gear · PR #767\nSteps in this phase (1 left, ~10 min):\n[x] s1 (~8 min) Audit pass: write framework/cli/check-plugin-settings.mjs (report mode only). It reads every apps/console-web/plugins/*/plugin.json plus the web entry, then lists plugins that have a view, have a settingsTab and have a header gear. Confirm the 44/10/hub-sync numbers and commit the audit output into the build report draft.\n[x] s2 (~7 min) Find out how plugin screens are hosted: where the console mounts a plugin view and draws its header, and how the existing gears in the 33 compliant plugins open their tab (`view:settings/tab:settings.tabs=plugins` + sub-tab). Write the findings and the chosen approach (one shared gear in the host header, not 44 hand edits) into the report draft.\n[x] s3 (~9 min) Add a shared PluginSettingsGear component on framework controls (fx-iconbtn / Button, tokens only, aria-label, data-axf-target `plugin:<id>/settings-gear`) that opens Settings → Plugins → <plugin> sub-tab. Inside a role=toolbar header it follows tap-confirm.\n[x] s4 (~9 min) Mount the gear in the console's plugin view host header so every plugin screen gets it once. Add a per-plugin opt-out only through plugin.json `settingsGear: false` with a reason, and keep the existing header layout snapping without overlap.\n[x] s5 (~8 min) Remove the duplicate hand-made gears from plugin screens that already drew their own (batch 1 of 2, first half of the alphabet) so each screen shows exactly one gear.\n[x] s6 (~8 min) Remove the duplicate hand-made gears from the second half of the alphabet, then visually check that no screen has two gears or none.\n[x] s7 (~10 min) Add a generic default plugin settings sub-tab, PluginDefaultSettingsTab: enable/disable, logs, info (version, builtWith model badge, dependencies from plugin-inventory@1) and the shared Install & uninstall panel. A plugin gets it by declaring `settingsTab: { default: true }`, with parent 'plugins' enforced.\n[x] s8 (~9 min) API for the gear and the default tab: console action `plugin.settings.open {id}` and control targets (`view:settings/tab:settings.tabs=plugins/sub:<id>`, `plugin:<id>/settings-gear`), plus a state read `GET /api/console-control/plugins/<id>/settings` that returns the tab, its settings and enabled state, so console_show/console_open can deep-link them.\n[x] s9 (~9 min) Same API through MCP and CLI: console_control tool entries plus `axf console plugin-settings <id> [--get|--set k=v|--enable|--disable]` in the axf CLI. Add the AmberX voice phrase 'open <plugin> settings' through the console action registry. Add the new targets at the END of the control@1 registry (append-only).\n[x] s10 (~7 min) Add settingsTab (default tab plus any real settings they already keep) to brand-library and build-breaker, with lifecycle markers on any line outside their folders.\n[x] s11 (~7 min) Add settingsTab to builds-page and demonstration-designer.\n[x] s12 (~8 min) Add settingsTab to gate and mcp-client. Gate's existing Build rules / lander controls stay on its screen; the tab adds enable/logs/info plus links into them.\n[x] s13 (~7 min) Add settingsTab to md-studio and plan-studio.\n[x] s14 (~9 min) Add settingsTab to shipped-features and ui-review. ui-review moves its existing options (options every build ships, ask me how many options) into the tab, and their API keys stay the same.\n[x] s15 (~5 min) hub-sync: make sure its screen shows the host gear and that the gear opens its existing settings sub-tab. Fix the sub-tab id if it doesn't match.\n[x] s16 (~8 min) Turn check-plugin-settings.mjs into a failing CI check: a plugin with a view and no settingsTab, or a view not hosted with the gear (and no opt-out reason), fails with file:line. Add it to the CI workflow and the README of checks.\n[x] s17 (~10 min) Tests: unit test for the check (fixture plugins: no tab, no gear, opt-out), a server test for the REST state read and plugin.settings.open, and a run of check-console-control, check-toolbars, check-theme, check-controls and check-chrome-assets.\n[x] s18 (~7 min) Help and glossary: add descriptions for the gear, the default settings tab, the new console action, the CLI command and the CI check, so `glossary-index/catalog.mjs --check` passes. Update the plugins README (Settings → Plugins rule: every view has a tab and a gear).\n[x] s19 (~10 min) Take desktop and phone screenshots of 3 gear placement options (icon only at the right of the header, icon + 'Settings' label, inside the header overflow menu), each as an asset under plugins/plugin-manager/assets/. Submit to UI Review with --choices and the group named after the build.\n[x] s20 (~10 min) Wrap-up: run the full check sweep and the console build, write the report _claude/builds/reports/every-plugin-screen-gets-a-settings-gear.md (before/after audit counts, API reach per feature: deep link, state, actions, REST/MCP/CLI/voice), add the THREADS row, push the branch and open the PR, noting the UI Review hold.\n[ ] s21 (~10 min) Auto-lander fix, attempt 1: make CI green on claude/every-plugin-screen-gets-a-settings-gear so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):\n- Light PR checks (full run happens once, in the merge queue) › Run node framework/cli/ci-scope.mjs light --run\nBrett said (verbatim): \"Every one has a gear icon to open its settings, right? Yeah, check and fix.\"\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step every-plugin-screen-gets-a-settings-gear <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step every-plugin-screen-gets-a-settings-gear <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note every-plugin-screen-gets-a-settings-gear \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-every-plugin-screen-gets-a-settings-gear--rhonda",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-16T23:56:46.442Z",
+   "endedAt": "2026-11-17T00:57:44.845Z",
+   "exit": 0,
+   "costUsd": 14.4758
+  },
+  {
+   "session": "axf-every-plugin-screen-gets-a-settings-gear--gina",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T19:08:43.288Z",
+   "endedAt": "2026-11-17T19:17:28.541Z",
+   "exit": 0,
+   "costUsd": 1.0486
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Audit pass: write framework/cli/check-plugin-settings.mjs (report mode only). It reads every apps/console-web/plugins/*/plugin.json plus the web entry, then lists plugins that have a view, have a settingsTab and have a header gear. Confirm the 44/10/hub-sync numbers and commit the audit output into the build report draft.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-16T23:56:46.442Z",
+   "doneAt": "2026-11-17T00:00:30.542Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Find out how plugin screens are hosted: where the console mounts a plugin view and draws its header, and how the existing gears in the 33 compliant plugins open their tab (`view:settings/tab:settings.tabs=plugins` + sub-tab). Write the findings and the chosen approach (one shared gear in the host header, not 44 hand edits) into the report draft.",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T00:00:30.542Z",
+   "doneAt": "2026-11-17T00:01:18.626Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add a shared PluginSettingsGear component on framework controls (fx-iconbtn / Button, tokens only, aria-label, data-axf-target `plugin:<id>/settings-gear`) that opens Settings → Plugins → <plugin> sub-tab. Inside a role=toolbar header it follows tap-confirm.",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-17T00:01:18.626Z",
+   "doneAt": "2026-11-17T00:02:33.810Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Mount the gear in the console's plugin view host header so every plugin screen gets it once. Add a per-plugin opt-out only through plugin.json `settingsGear: false` with a reason, and keep the existing header layout snapping without overlap.",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-17T00:02:33.810Z",
+   "doneAt": "2026-11-17T00:05:11.011Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Remove the duplicate hand-made gears from plugin screens that already drew their own (batch 1 of 2, first half of the alphabet) so each screen shows exactly one gear.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:05:11.011Z",
+   "doneAt": "2026-11-17T00:06:20.518Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Remove the duplicate hand-made gears from the second half of the alphabet, then visually check that no screen has two gears or none.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:06:20.518Z",
+   "doneAt": "2026-11-17T00:20:48.765Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Add a generic default plugin settings sub-tab, PluginDefaultSettingsTab: enable/disable, logs, info (version, builtWith model badge, dependencies from plugin-inventory@1) and the shared Install & uninstall panel. A plugin gets it by declaring `settingsTab: { default: true }`, with parent 'plugins' enforced.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:20:48.765Z",
+   "doneAt": "2026-11-17T00:24:28.231Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "API for the gear and the default tab: console action `plugin.settings.open {id}` and control targets (`view:settings/tab:settings.tabs=plugins/sub:<id>`, `plugin:<id>/settings-gear`), plus a state read `GET /api/console-control/plugins/<id>/settings` that returns the tab, its settings and enabled state, so console_show/console_open can deep-link them.",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-17T00:24:28.231Z",
+   "doneAt": "2026-11-17T00:28:59.269Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Same API through MCP and CLI: console_control tool entries plus `axf console plugin-settings <id> [--get|--set k=v|--enable|--disable]` in the axf CLI. Add the AmberX voice phrase 'open <plugin> settings' through the console action registry. Add the new targets at the END of the control@1 registry (append-only).",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-17T00:28:59.269Z",
+   "doneAt": "2026-11-17T00:33:22.287Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Add settingsTab (default tab plus any real settings they already keep) to brand-library and build-breaker, with lifecycle markers on any line outside their folders.",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T00:33:22.287Z",
+   "doneAt": "2026-11-17T00:35:40.962Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Add settingsTab to builds-page and demonstration-designer.",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T00:35:40.962Z",
+   "doneAt": "2026-11-17T00:36:06.751Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Add settingsTab to gate and mcp-client. Gate's existing Build rules / lander controls stay on its screen; the tab adds enable/logs/info plus links into them.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:36:06.751Z",
+   "doneAt": "2026-11-17T00:37:33.408Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Add settingsTab to md-studio and plan-studio.",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T00:37:33.408Z",
+   "doneAt": "2026-11-17T00:37:43.178Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Add settingsTab to shipped-features and ui-review. ui-review moves its existing options (options every build ships, ask me how many options) into the tab, and their API keys stay the same.",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-17T00:37:43.178Z",
+   "doneAt": "2026-11-17T00:38:11.726Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "hub-sync: make sure its screen shows the host gear and that the gear opens its existing settings sub-tab. Fix the sub-tab id if it doesn't match.",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "2026-11-17T00:38:11.726Z",
+   "doneAt": "2026-11-17T00:38:25.138Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Turn check-plugin-settings.mjs into a failing CI check: a plugin with a view and no settingsTab, or a view not hosted with the gear (and no opt-out reason), fails with file:line. Add it to the CI workflow and the README of checks.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:38:25.138Z",
+   "doneAt": "2026-11-17T00:39:13.867Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Tests: unit test for the check (fixture plugins: no tab, no gear, opt-out), a server test for the REST state read and plugin.settings.open, and a run of check-console-control, check-toolbars, check-theme, check-controls and check-chrome-assets.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:39:13.867Z",
+   "doneAt": "2026-11-17T00:40:56.032Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Help and glossary: add descriptions for the gear, the default settings tab, the new console action, the CLI command and the CI check, so `glossary-index/catalog.mjs --check` passes. Update the plugins README (Settings → Plugins rule: every view has a tab and a gear).",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T00:40:56.032Z",
+   "doneAt": "2026-11-17T00:42:34.149Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Take desktop and phone screenshots of 3 gear placement options (icon only at the right of the header, icon + 'Settings' label, inside the header overflow menu), each as an asset under plugins/plugin-manager/assets/. Submit to UI Review with --choices and the group named after the build.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:42:34.149Z",
+   "doneAt": "2026-11-17T00:48:50.850Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Wrap-up: run the full check sweep and the console build, write the report _claude/builds/reports/every-plugin-screen-gets-a-settings-gear.md (before/after audit counts, API reach per feature: deep link, state, actions, REST/MCP/CLI/voice), add the THREADS row, push the branch and open the PR, noting the UI Review hold.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:48:50.850Z",
+   "doneAt": "2026-11-17T00:57:28.589Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s41",
+   "text": "Auto-lander fix, attempt 1: make CI green on claude/every-plugin-screen-gets-a-settings-gear so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):\n- Light PR checks (full run happens once, in the merge queue) › Run node framework/cli/ci-scope.mjs light --run\nBrett said (verbatim): \"Every one has a gear icon to open its settings, right? Yeah, check and fix.\"",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:57:28.589Z",
+   "doneAt": "2026-11-17T19:16:48.732Z",
+   "actualMin": 1099,
+   "done": true
+  }
+ ],
+ "branch": "claude/every-plugin-screen-gets-a-settings-gear",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 767,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/767"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-17T19:07:28Z",
+ "landedAt": "2026-11-17T19:07:28Z",
+ "files": [],
+ "areas": [],
+ "tests": [
+  {
+   "name": "framework/spec/check-plugin-settings.test.mjs (in CI next to the check): fixture trees for a good screen, no sub-tab (file:line), the default tab, no gear, a second hand-made gear, opt-out with and without a reason, a settings-only plugin and a type literal named views. 10 checks pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "apps/console-web/server/tests/test_console_control.py: test_plugin_settings_state_and_open (REST read by folder / name / id, library tabs, hub-sync without a gear, 404, open = console_open on the sub-tab with policy allow, set by key with nearest keys on a miss, static gear + sub-tab targets, voice ",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Checks: check-console-control, check-toolbars, check-theme, check-controls, check-chrome-assets, check-plugin-pages and check-plugin-settings all pass; check-control (control@1) 410 checks pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 15.5244,
+  "estimated": false,
+  "tokens": {
+   "input": 626,
+   "output": 3863,
+   "cacheRead": 47698463,
+   "cacheWrite": 351439
+  }
+ },
+ "report": "_claude/builds/reports/every-plugin-screen-gets-a-settings-gear.md",
+ "open": []
+}

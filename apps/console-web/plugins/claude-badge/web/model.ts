@@ -58,7 +58,7 @@ export const BADGES: Record<BadgeKind, BadgeDef> = {
   },
   amberx: {
     id: 'amberx-phone', label: 'AmberX', title: 'AmberX (phone app)', icon: 'smartphone', order: 7, side: 'left', aliases: ['amberx', 'phone'],
-    tap: 'dropdown', target: '', about: 'Whether the AmberX app on the phone is connected to axHub, and when it was last seen.',
+    tap: 'dropdown', target: '', about: 'Whether the paired phone (Phone Connect) is connected, and when it was last seen.',
     states: {
       ok: { label: 'connected', icon: 'smartphone', setting: 'Phone connected' },
       warn: { label: 'seen lately', icon: 'clock', setting: 'Offline, seen in the last hour' },

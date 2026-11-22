@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "phone-connect",
+  "displayName": "Phone Connect",
+  "description": "Phone Connect: the small Android companion of the Dev Console (phone-connect@1). Pairs with a one-time code, keeps a watch link, shows approvals (decided only by your tap), opens pages, shows notifications, records audio output, says a line or listens once. Replaces the AmberX app.",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "android-compose",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "phone-connect",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/phone-connect"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-11-17"
+}

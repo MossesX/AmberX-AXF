@@ -1,7 +1,8 @@
-/** Lifecycle hooks (plugin-lifecycle@1). The builds store (_claude/builds/store.json) is project data: uninstall never deletes it. */
+/** Lifecycle hooks (plugin-lifecycle@1). The builds store (the axf-data tables once cut over) is project data: uninstall never deletes it. */
 import { existsSync } from 'node:fs';
-import { storeFile } from '../../../../framework/cli/builds-store.mjs';
+import { storeFile, storeMode } from '../../../../framework/cli/builds-store.mjs';
 
-export async function onInstall(ctx) { ctx.log(`builds store: ${storeFile()}`); }
-export async function onUninstall(ctx) { ctx.log('Builds page removed; the builds store stays in _claude/builds/'); }
-export async function checks() { return [{ id: 'store', ok: existsSync(storeFile()), detail: storeFile() }]; }
+const where = () => (['cutover', 'rollback'].includes(storeMode()) ? 'the axf-data tables (builds/store.json)' : storeFile());
+export async function onInstall(ctx) { ctx.log(`builds store: ${where()}`); }
+export async function onUninstall(ctx) { ctx.log('Builds page removed; the builds store stays where it is'); }
+export async function checks() { return [{ id: 'store', ok: ['cutover', 'rollback'].includes(storeMode()) || existsSync(storeFile()), detail: where() }]; }

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "notes",
+  "name": "Notes",
+  "version": "1.0.0",
+  "description": "The Notes page toolbar: make a note (in the open note's folder), make a folder and reload the list from the hub's shared Claude files.",
+  "author": "AmberX AXF",
+  "tags": ["page", "notes-browser", "notes"],
+  "data": {
+    "scope": "view:notes",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "notes",
+        "label": "Notes",
+        "items": [
+          { "id": "new-note", "icon": "plus", "label": "New note", "action": "handler:notes.new-note", "enabledWhen": "available", "priority": 300, "overflow": "never" },
+          { "id": "new-folder", "icon": "folder", "label": "New folder", "action": "handler:notes.new-folder", "enabledWhen": "available", "priority": 250 },
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:notes.reload", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

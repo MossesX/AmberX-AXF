@@ -1,8 +1,7 @@
 /**
- * The native side of Audio Output Recorder: the `OutputRecorder` Capacitor plugin in the AmberX Android shell
- * (apps/amberx-droid/android/…/OutputRecorderPlugin.java, OutputRecordService.java, OutputRecordUploader.java,
- * OutputRecordTile.java). Every method here has its twin there. Looked up through AmberX's Capacitor global, like
- * Audio Extract; anywhere else (the Dev Console, a browser) `nativeBridge()` is null and the page shows the axHub list only.
+ * The native seam of Audio Output Recorder: an `OutputRecorder` Capacitor plugin, looked up through a phone shell's
+ * Capacitor global. No shipped app provides it today (the phone records through Phone Connect, phone-connect@1), so on
+ * the Dev Console and in a browser `nativeBridge()` is null and the page shows the axHub list only.
  */
 import type { NativeEvent, Settings, UploadState } from './core';
 
@@ -44,8 +43,6 @@ export interface OutputRecorderBridge {
   fetch(o: { id: string }): Promise<{ uri: string; name?: string }>;
   play(o: { uri: string }): Promise<void>;
   share(o: { uri: string }): Promise<void>;
-  /** Hands a fetched recording to Audio Extract (trim, WAV), the way Share → AmberX does. */
-  toExtract(o: { uri: string }): Promise<void>;
   addListener(event: 'recorder', fn: (e: NativeEvent) => void): Promise<Handle>;
 }
 

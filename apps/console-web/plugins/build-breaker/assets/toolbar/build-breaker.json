@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-breaker",
+  "name": "Build Breaker",
+  "version": "1.0.0",
+  "description": "The Build Breaker toolbar: reload every ask, open or close every grid and row, and clear the filters. The search, date range, model, sort and grouping picks ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "build-breaker", "builds"],
+  "data": {
+    "scope": "view:build-breaker",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "asks",
+        "label": "Asks",
+        "items": [
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:build-breaker.reload", "priority": 200 },
+          { "id": "expand", "icon": "chevron-down", "label": "Expand all", "action": "handler:build-breaker.expand", "enabledWhen": "asks", "priority": 260 },
+          { "id": "collapse", "icon": "chevron-up", "label": "Collapse all", "action": "handler:build-breaker.collapse", "enabledWhen": "asks", "priority": 250 },
+          { "id": "clear", "icon": "x", "label": "Clear filters", "action": "handler:build-breaker.clear", "enabledWhen": "filtering", "priority": 300, "overflow": "never" }
+        ]
+      }
+    ]
+  }
+}

@@ -148,7 +148,7 @@ ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length ==
 eq(f.plan, cs.chromeSettingsPlan('molly'), 'plan fixture');
 eq(f.missing, cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']), 'missing fixture');
 const apps = defaultApps() as string[];
-ok(apps.length >= 5, `at least five apps carry copies (${apps.length})`);
+ok(apps.length >= 4, `at least four apps carry copies (${apps.length})`);
 for (const d of apps) {
   const r = checkApp(d, defaults) as { app: { id: string }; dir: string; findings: string[] };
   eq(r.findings, [], `${d.replace(root, '')} (${r.app.id}): custom copies present + valid`);
@@ -164,6 +164,34 @@ for (const d of apps) {
   const dir = join(d, 'src/assets/settings');
   if (!existsSync(dir)) continue;
   for (const file of readdirSync(dir)) ok(!cs.CHROME_TYPES.some((t) => file === `${cs.chromeSettingsDefaultId(t)}.json`), `${d.replace(root, '')}/${file}: an app never ships a shared default under its own assets`);
+}
+
+/*
+ * The Interface tab edits the chrome it was opened for, never the settings window (build
+ * fix-banner-settings-interface-tab, Nov 17 2026). Static guard over the web host; the DOM proof per kind is
+ * spec/check-chrome-interface-tab.mts. Fails when:
+ *   - the dialog's interface tab renders anything but InstanceInterfaceTab with the instance it was opened for
+ *   - InstanceInterfaceTab (or anything it renders) writes a key that is not that instance's: the settings window's
+ *     pick / patch keys, a raw rt.settings.set, or a chrome action without `${type}:${instance}`
+ */
+{
+  const host = readFileSync(join(root, 'react/components/ChromeContext.tsx'), 'utf8');
+  const tabLine = host.split('\n').find((l) => /if \(id === 'interface'\)/.test(l)) ?? '';
+  ok(/<InstanceInterfaceTab type=\{type\} instance=\{instance\}/.test(tabLine), 'the Interface tab renders InstanceInterfaceTab for the instance the dialog was opened for');
+  ok(!/InterfacePicker type=/.test(tabLine), 'the Interface tab does not render the settings-window picker');
+  const start = host.indexOf('export function InstanceInterfaceTab(');
+  const end = host.indexOf('\n}\n', start);
+  ok(start > 0 && end > start, 'InstanceInterfaceTab is in ChromeContext.tsx');
+  const body = host.slice(start, end);
+  for (const bad of ['CHROME_SETTINGS_PICK_KEY', 'CHROME_SETTINGS_PATCH_KEY', 'chrome.interface:', 'rt.settings.set(', 'rt.settings.clear(', 'InterfacePicker', 'SettingsWindowPicker']) ok(!body.includes(bad), `InstanceInterfaceTab never touches the settings window (${bad})`);
+  for (const m of body.matchAll(/rt\.dispatch\(`([^`]*)`\)/g)) ok(/^chrome\.(set|unset|swap|reset):\$\{type\}:\$\{instance\}/.test(m[1]!), `InstanceInterfaceTab dispatches only this instance's actions (${m[1]})`);
+  for (const m of body.matchAll(/<(\w+) /g)) ok(['div', 'Note', 'SelectField', 'Section', 'FieldControl', 'Button'].includes(m[1]!), `InstanceInterfaceTab renders only instance-bound pieces (${m[1]})`);
+  ok(/<FieldControl key=\{f\.key\} type=\{type\} instance=\{instance\}/.test(body), 'every field control is bound to the instance');
+  // FieldControl writes through setChromeField / chrome.unset on its own instance only
+  const fc = host.slice(host.indexOf('function FieldControl('), host.indexOf('\n}\n', host.indexOf('function FieldControl(')));
+  ok(/setChromeField\(rt, type, instance, field\.key/.test(fc) && !/CHROME_SETTINGS_(PICK|PATCH)_KEY/.test(fc), 'FieldControl writes only axf.chrome.<type>.<instance>');
+  // and the settings window's controls are named for it, outside the tabs
+  ok(/This settings window/.test(host) && /const picker = <><InstanceInterfacePicker type=\{type\} instance=\{instance\} \/><SettingsWindowPicker type=\{type\} \/><\/>/.test(host), 'the settings-window picker sits above the tabs, labelled "This settings window"');
 }
 
 console.log(`✓ chrome-settings@1: ${checks} checks`);

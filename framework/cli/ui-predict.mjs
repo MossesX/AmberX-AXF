@@ -133,7 +133,7 @@ function capture(plan, repo) {
 const filesBody = (files) => files.map((f) => ({ name: basename(f), data: readFileSync(f).toString('base64') }));
 const cacheDir = () => process.env.AXF_UI_PREDICT_CACHE || join(process.env.AXF_UI_REVIEW_DIR || join(existsSync('/opt/axf/.axf-console') ? '/opt/axf' : REPO, '.axf-console/plugins', reviewFolder()), 'predictions');
 const day = () => new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
-const appName = (a) => ({ 'console-web': 'Console', 'axhub-web': 'axHub', 'amberx-droid': 'AmberX' }[a] ?? a);
+const appName = (a) => ({ 'console-web': 'Console', 'axhub-web': 'axHub' }[a] ?? a);
 
 /* ------------------------------------------------------------------ commands */
 
