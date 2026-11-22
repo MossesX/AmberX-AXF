@@ -840,48 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 15:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 15:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 15:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 15:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 15:15 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
-- 2026-11-20 15:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 15:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 16:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 18:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
-- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 19:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:25 UTC · `land-round-2` → archived, note (all) · console
-- 2026-11-20 19:25 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · console
-- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `land-round-2` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · foreign-write
-- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · foreign-write
-- 2026-11-20 19:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:35 UTC · `nov-20-fix-list-voice-console-cont` added (0 steps) (all) · plan-studio-2
-- 2026-11-20 19:36 UTC · `nov-20-fix-list-voice-console-cont` → splitting (all) · orchestrator
-- 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · orchestrator
-- 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` note (all) · orchestrator
-- 2026-11-20 19:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:44 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 19:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 19:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` added (0 steps) (all) · plan-studio-2
 - 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` → splitting (all) · orchestrator
@@ -1240,6 +1198,48 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 23:46 UTC · `approval-rules-vps-configuration-veto` → complete, note (all) · verify
 - 2026-11-22 00:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · reconciler
+- 2026-11-21 23:51 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-21 23:51 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
+- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
+- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · pipeline
+- 2026-11-21 23:55 UTC · `flagship-professional-skin-covering-2` → fixing, note (all) · watchdog
+- 2026-11-21 23:55 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · watchdog
+- 2026-11-21 23:55 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · watchdog
+- 2026-11-21 23:56 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-21 23:56 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:01 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:01 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:05 UTC · `auto-lander-never-wait-missing-ui-review` → fixing, note (all) · watchdog
+- 2026-11-22 00:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · watchdog
+- 2026-11-22 00:06 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:11 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:11 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:15 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · watchdog
+- 2026-11-22 00:16 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:16 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
+- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
+- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
+- 2026-11-22 00:19 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
+- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · foreign-write
+- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
+- 2026-11-22 00:21 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:25 UTC · `approval-pass-covers-every-call` → fixing, note (all) · watchdog
+- 2026-11-22 00:25 UTC · `urgent-all-data-to-postgres-builds-store` → landing, note (all) · cron
+- 2026-11-22 00:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:26 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:28 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
+- 2026-11-22 00:31 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
+- 2026-11-22 00:31 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
+- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-22 00:35 UTC · `plan-studio-2-open-button-working-deep` → fixing, note (all) · watchdog
+- 2026-11-22 00:35 UTC · `fable-rebuild-2-2-both-watchdogs-one` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
