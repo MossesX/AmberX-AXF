@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
@@ -9,6 +9,7 @@ import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, R
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
+import { SplitSettings, openSplitSection } from './split-settings';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
@@ -74,6 +75,8 @@ export const plugin: AxfWebLibrary = {
       // the Watchdog tab (deep link build-orchestrator/watchdog, optionally ?build=<id>: that build's row and its fixes)
       const wd = /^watchdog(?:(?:\?build=|\/|:)([a-z0-9][a-z0-9._-]{0,79}))?$/i.exec(id);
       if (wd) { consoleApi.writeLocal('orch-watchdog-build', wd[1] ?? ''); rt.dispatch('settings.open:build-orchestrator'); return; }
+      // the Split section (build-orchestrator/split): its settings panel, the collapsible opened and flashed
+      if (/^split(-settings)?$/i.test(id)) { rt.dispatch('settings.open:build-orchestrator'); flashWhenReady(openSplitSection, 5000); return; }
       if (settingsTab(id)) { rt.dispatch('settings.open:build-orchestrator'); return; }
       if (tabOf(id) === 'merge-queue') { rt.navigate('merge-queue'); return; }
       if (openTab(tabOf(id))) return;
@@ -96,6 +99,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('watchdog.run', async ([arg]) => {
       try { const build = decodeURIComponent(arg ?? '').trim(); rt.toast(passLine(await runWatchdogs(build ? { build } : {})), 'success'); } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
+    rt.actions.register('build-orchestrator.split-settings', () => void open('split'), { label: 'Build orchestrator: open the Split settings (how a request is split into steps and builds)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: show builds in a status (old tab names map onto status filters)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.merge-queue', () => rt.navigate('merge-queue'), { label: 'Open the merge queue (read-only)', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
@@ -183,7 +187,7 @@ export const plugin: AxfWebLibrary = {
     });
   },
   views: {
-    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'status', 'pending', 'splitting', 'pulling main', 'assigning models', 'ready', 'sending', 'building', 'build complete', 'merging', 'running ci', 'landed', 'failed', 'attempt', 'timer', 'account', 'slot', 'fable', 'opus', 'steps'], render: () => <OrchestratorPage /> },
+    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'status', 'pending', 'splitting', 'pulling main', 'assigning models', 'ready', 'sending', 'building', 'build complete', 'merging', 'running ci', 'landed', 'failed', 'attempt', 'timer', 'account', 'slot', 'fable', 'opus', 'steps', 'split', 'split settings', 'parallel split'], render: () => <OrchestratorPage /> },
   },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   // the read-only merge queue: the same table, filtered. The Merge queue view itself (view:merge-queue) belongs to the
@@ -198,6 +202,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog: build sessions live', icon: 'shield', order: 20, render: () => <WatchdogStatusPanel /> },
     { id: 'build-orchestrator.groups', tab: 'build-orchestrator', title: 'Groups', icon: 'folder', order: 30, render: () => <GroupsPanel /> },
     { id: 'build-orchestrator.approvals', tab: 'build-orchestrator', title: 'Approvals', icon: 'check', order: 40, render: () => <ApprovalsPanel /> },
+    { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 45, render: () => <SplitSettings api={pipeApi} open /> },
     { id: 'build-orchestrator.rules', tab: 'build-orchestrator', title: 'Rules', icon: 'settings', order: 50, render: () => <RulesPanel /> },
     { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog: left-over rows, runs and cleanups log', icon: 'shield', order: 21, render: () => <WatchdogPanel /> },
     { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
