@@ -34,7 +34,7 @@ No rule matched: Fable (your Nov 21 rule, "unsure = Fable").
 ## Calls I made (change any of them in the tab)
 
 - **Default is Fable.** That is your Nov 21 rule, but it costs more than before: Pipeline 2.0 used to default to Opus. One select on the tab flips it ("When no rule matches").
-- **A hand launch's model is a floor.** The gate can raise a hand build to Fable, never lower it. A brief that says "Model: Opus" still wins.
+- **A hand launch's model is a floor.** The gate can raise a hand build to Fable, never lower it. A brief that says "Model: Opus" still wins, and so does the build-wide model in Claude settings.
 - **The splitter's model is a suggestion, not a pin.** Rules 1 to 7 can still raise a step the splitter called Opus.
 - **Second try moves up after the first failed session.** Before, the watchdog only raised a step after every attempt was used.
 - **"Fable upgrades need my approval" is respected.** Off (now): upgrades run. On: the gate holds the step on the lower model and the decision says it wanted Fable.
@@ -52,7 +52,7 @@ No rule matched: Fable (your Nov 21 rule, "unsure = Fable").
 
 ## Tests
 
-- `p2-triage.test.mjs` (new, 38 checks): each lane gets its model from the gate, overrides win, decisions are on the step and in the log, second try, approval hold, rule edits.
+- `p2-triage.test.mjs` (new, 45 checks): each lane gets its model from the gate, overrides win, decisions are on the step and in the log, second try, approval hold, rule edits.
 - `check-model-triage.mjs` (new, 14 checks) with a fixture.
 - Launcher test: a real hand launch runs on the gate's model and is logged (17 pass).
 - Lander: 70 pass. Gate plugin: 26 + 66 routes pass. Pipeline 2.0 suites, watchdog, fill-slots, launch-retry, build rules, model policy: pass.
@@ -76,4 +76,11 @@ No rule matched: Fable (your Nov 21 rule, "unsure = Fable").
 
 ## UI Review
 
-Desktop and phone shots of the tab (rules and decisions) are waiting in UI Review.
+Desktop and phone shots of the tab (rules and decisions) are waiting in UI Review: item r-20261123-86fdd952, group "vps-model-triage-gate - Nov 23 5:25 PM".
+
+## Housekeeping
+
+- PR #893, branch `claude/vps-model-triage-gate`.
+- Recorded in Plan Studio 2.0 under the plan "VPS model triage gate" (a section with the steps ticked; "PR landed" is still open). A note on the "Fable profiling" plan says what shipped from it.
+- `builds-live.mjs link` had nothing to link: this hand build is not in the builds store.
+- The gate's store is made on first use at `/projects/amberx-axf/_data/model-triage`, group-writable so the host and the console both write it.

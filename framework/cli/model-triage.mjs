@@ -24,7 +24,7 @@
  * history.jsonl (rule changes), decisions.jsonl (one line per decision). Writes go through data-files (data-store@1).
  */
 import { spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, extname, basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -49,6 +49,16 @@ export function storeDir(env = process.env) {
 }
 export const storeFiles = (dir = storeDir()) => ({ dir, config: join(dir, 'config.json'), history: join(dir, 'history.jsonl'), decisions: join(dir, 'decisions.jsonl'), lock: join(dir, 'config.lock') });
 
+/**
+ * The store is shared: the dispatcher and the lander write it on the host (root), the console edits it from its
+ * container (another user, same group). So the folder and its files are group-writable, whoever makes them first and
+ * whatever umask the caller has. Best effort: a file somebody else owns keeps the mode its owner gave it.
+ */
+function share(dir, ...files) {
+  try { mkdirSync(dir, { recursive: true }); chmodSync(dir, 0o2775); } catch { /* not ours to change */ }
+  for (const f of files) { try { chmodSync(f, 0o664); } catch { /* not ours, or not there yet */ } }
+}
+
 /** The rules in force (the starting rules until the first edit). Never throws: a broken store reads as the defaults. */
 export function loadConfig({ dir = storeDir() } = {}) {
   let raw = null;
@@ -72,12 +82,14 @@ function lock(f, waitMs = 10000) {
 /** One edit, checked and written with its history line. Throws { code: 'invalid' } naming every error. */
 export function commitEdit(edit, { dir = storeDir(), by = 'session', at = nowIso() } = {}) {
   const f = storeFiles(dir);
+  share(dir);
   const unlock = lock(f.lock);
   try {
     const r = T.applyEdit(loadConfig({ dir }), edit, { at, by });
     if (r.errors.length) throw Object.assign(new Error(r.errors.join('; ')), { code: 'invalid' });
     writeJsonSync(f.config, r.config);
     appendJsonlSync(f.history, r.entry);
+    share(dir, f.config, f.history);
     return { config: r.config, entry: r.entry };
   } finally { unlock(); }
 }
@@ -99,7 +111,7 @@ export function decisions({ dir = storeDir(), build = '', lane = '', limit = 100
 /** Write a decision to the log (never throws: the log is the record of the decision, not a condition for it). */
 export function logDecision(d, { dir = storeDir(), build = '', step = '', name = '', title = '' } = {}) {
   const line = { ...T.normDecision(d), at: d.at || nowIso(), ...(build ? { build } : {}), ...(step ? { step } : {}), ...(name ? { name } : {}), ...(title ? { title: str(title, 200) } : {}) };
-  try { appendJsonlSync(storeFiles(dir).decisions, line); } catch (e) { process.stderr.write(`model-triage: decision not logged: ${str(e.message, 200)}\n`); }
+  try { const f = storeFiles(dir).decisions; const fresh = !existsSync(f); if (fresh) share(dir); appendJsonlSync(f, line); if (fresh) share(dir, f); } catch (e) { process.stderr.write(`model-triage: decision not logged: ${str(e.message, 200)}\n`); }
   return line;
 }
 
@@ -199,7 +211,7 @@ export function logSteps(build, decisions, { dir = storeDir() } = {}) { for (con
 export function triageLaunch({ name = '', text = '', title = '', requested = '', lane = 'hand', kind = '', files = [], lines = null, build = '' } = {}, { ctx = null, env = process.env, at = nowIso() } = {}) {
   const c = ctx ?? context(env);
   const first = str(text, 400).split('\n').find((l) => l.trim()) ?? '';
-  const work = { lane, kind, title: title || first.replace(/^#+\s*/, ''), text: str(text, 20000), files, lines, requested, current: '', buildPin: lane === 'hand' ? null : c.buildPin };
+  const work = { lane, kind, title: title || first.replace(/^#+\s*/, ''), text: str(text, 20000), files, lines, requested, current: '', buildPin: c.buildPin };
   const d = T.decide(work, c.config, { approvalRequired: c.approvalRequired, at });
   logDecision(d, { dir: c.dir, name, build, title: work.title });
   const key = modelKey(d.model);

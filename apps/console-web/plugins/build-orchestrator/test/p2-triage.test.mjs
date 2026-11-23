@@ -12,7 +12,7 @@
  *   - the hand lane (what deploy/claude-headless.sh asks): the brief's own model wins, the launch's model is a floor
  *   node apps/console-web/plugins/build-orchestrator/test/p2-triage.test.mjs
  */
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -99,16 +99,15 @@ eq(models('allopus'), [['Opus', 'override'], ['Fable', 'override']], 'Brett\'s b
 ok(/every build runs on Opus/.test(get('allopus').steps[0].triage.why), 'the decision names the setting');
 writeFileSync(settingsFile, JSON.stringify({ values: { 'builds.defaultModel': 'split' } }));
 land('allopus', 3);
-// the CLI's pin: an override put on a build that is already split
-send('latepin', [{ text: 'Rename the tab label', files: ['apps/ui/a.tsx'] }]);
-send('holder', [{ text: 'Rename a thing', files: ['h'] }]);
-F.advance({ build: 'latepin' });
-eq([get('latepin').steps[0].status, get('latepin').steps[0].model], ['building', 'Opus'], 'latepin is out on Opus');
-land('latepin', 4);
 
 console.log('a failed session asks the gate again: the second try goes up');
+send('holder', [{ text: 'Rename a thing', files: ['h'] }]);
 advance();
 eq([get('holder').steps[0].model, get('holder').steps[0].triage.rule], ['Opus', 'simple-work'], 'first try: clearly simple work, Opus');
+// a build that waits its turn already shows the gate's models (assigned at the split)
+send('latepin', [{ text: 'Rename the tab label', files: ['apps/ui/a.tsx'] }]);
+advance();
+eq([get('latepin').status, get('latepin').steps[0].model, get('latepin').steps[0].triage.rule], ['split', 'Opus', 'simple-work'], 'a waiting build has its models from the split on');
 F.stepExit('holder', 's1', { exit: 1 });
 advance();
 const H = get('holder').steps[0];
@@ -117,7 +116,16 @@ eq(launchedOn('holder--s1'), ['claude-opus-5-5', 'claude-fable-5-2'], 'launched 
 ok(logged({ build: 'holder' }).some((d) => d.rule === 'second-try' && d.model === 'Fable'), 'the retry\'s decision is logged');
 // a launch that never started is not a failed try of the model
 eq(MT.sessionFailures({ statusLog: [{ status: 'failed', why: 'launch on a: boom' }, { status: 'failed', why: 'a hit its usage limit' }, { status: 'failed', why: 'session exit 1' }] }), 1, 'only a session that ran and ended in an error counts as a failed try');
-land('holder', 5);
+
+console.log('a pin put on a split build (model-triage.mjs pin): the gate keeps it when the build starts');
+eq(await MT.main(['pin', 'latepin', 's1', 'fable', '--by', 'Brett', '--json']), 0, 'pin latepin s1 fable');
+eq([get('latepin').steps[0].pin, get('latepin').steps[0].pinBy], ['Fable', 'Brett'], 'the pin is on the step, with who set it');
+ok(get('latepin').notes.some((x) => /Model pinned to Fable on s1 by Brett/.test(x.text)), 'and in the build\'s notes');
+eq(await MT.main(['pin', 'latepin', 's9', 'fable', '--json']), 1, 'a step that does not exist is refused');
+land('holder', 4);
+advance();
+eq([get('latepin').steps[0].model, get('latepin').steps[0].triage.rule, launchedOn('latepin--s1').at(-1)], ['Fable', 'override', 'claude-fable-5-2'], 'its turn came: the pinned step runs on Fable although the work is clearly simple');
+land('latepin', 5);
 
 console.log('the emergency lane goes through the same gate');
 send('busy', [{ text: 'Rename one', files: ['a'] }]);
@@ -171,6 +179,10 @@ eq([h.key, h.decision.rule], ['fable', 'override'], 'a title that ends with the 
 h = hand({ name: 'hand-f', text: '# Model triage\n\nThe gate picks which model each step runs on (Opus, Fable, ...), a brief that says Fable wins.\nRename labels.', requested: 'opus' });
 eq([h.key, h.decision.rule], ['opus', 'simple-work'], 'talking about the models is not naming one');
 eq(logged({ lane: 'hand' }).map((d) => d.name).sort(), ['hand-a', 'hand-b', 'hand-c', 'hand-d', 'hand-e', 'hand-f'], 'every hand launch is in the log under its session name');
+writeFileSync(settingsFile, JSON.stringify({ values: { 'builds.defaultModel': 'opus' } }));
+eq(hand({ name: 'hand-h', text: '# Move the builds store to a new schema', requested: 'fable' }).decision, { ...hand({ name: 'hand-h', text: '# Move the builds store to a new schema', requested: 'fable' }).decision, model: 'Opus', rule: 'override' }, 'Brett\'s build-wide model covers hand launches too');
+writeFileSync(settingsFile, JSON.stringify({ values: {} }));
+if (process.getuid?.() === statSync(triageDir).uid) eq([(statSync(triageDir).mode & 0o2775).toString(8), (statSync(join(triageDir, 'decisions.jsonl')).mode & 0o664).toString(8), (statSync(join(triageDir, 'config.json')).mode & 0o664).toString(8)], ['2775', '664', '664'], 'the store is group-writable: the host writes it, the console edits it');
 MT.commitEdit({ op: 'defaults', handRequest: 'pin' }, { dir: triageDir, by: 'test' });
 eq(hand({ name: 'hand-g', text: '# Move the builds store to a new schema', requested: 'opus' }).decision.rule, 'override', 'handRequest = pin: the launch\'s own model is an override');
 MT.commitEdit({ op: 'reset' }, { dir: triageDir, by: 'test' });
