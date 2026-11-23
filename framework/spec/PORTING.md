@@ -454,6 +454,19 @@ merge-queue filter, client-side timers) and the console's reader of the builds s
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
 view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.
 
+## Deferred: build-budget@1 and hand builds in pipeline-2@1 (Nov 23 2026)
+
+Build pipeline-bring-up-from-main adds `framework/core/build-budget.mjs` (build-budget@1: the per-build and daily
+budget caps, spend from the headless meters, which builds to stop and release; `capsOf`, `buildOfSession`, `spendOf`,
+`decide`, `stopLine`, `alertOf`), its VPS side `framework/cli/build-budget.mjs`, and fixture
+`framework/spec/fixtures/build-budget.json` (checker `framework/spec/check-build-budget.mjs`). `core/pipeline-status.mjs`
+gains the hand-build tag (`isHand`, `normHand`, `besideLine`, `handBuilds`; `activeBuild` and the store guard leave hand
+builds out of the one active place) and the budget stop (`normBudgetStop`, `isBudgetStopped`); fixture cases `hand` and
+`budgetStops` in `framework/spec/fixtures/pipeline-2.json`. Builds-store records gain `hand` and `budgetStop`.
+**Kotlin twin deferred**: budgets and hand-build records are decided on the VPS only; nothing on Android launches or
+stops a build. A twin would be a pure `BuildBudget.kt` replaying the fixture (`caps`, `sessions`, `spend`, `decisions`,
+`releases`) and the two added cases of the pipeline-2 fixture.
+
 ## Deferred: model-triage@1, the VPS model triage gate (Nov 23 2026)
 
 Build vps-model-triage-gate adds `framework/core/model-triage.mjs` (model-triage@1: the ordered, editable rules that

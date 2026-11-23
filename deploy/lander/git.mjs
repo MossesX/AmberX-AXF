@@ -147,9 +147,25 @@ function mergeIn({ s, g, wt, dir, ref, message, mainSide, buildsSide, log }) {
  * → { ok, sha, branch } | { ok: false, conflicts, between } | { ok: false, error }
  */
 export function combineSteps({ s, git, branch, branches, dry = false, log = () => {} }) {
-  const list = [...new Set(branches.filter(Boolean))];
-  if (!list.length) return { ok: false, error: 'no step branches' };
-  for (const br of list) if (git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${br}`]).code) return { ok: false, error: `${br} is not on GitHub` };
+  const named = [...new Set(branches.filter(Boolean))];
+  if (!named.length) return { ok: false, error: 'no step branches' };
+  // a step branch that is not on GitHub: one whose session committed nothing has nothing to land and is left out; one
+  // that committed and never pushed is pushed from the host's own checkout (the step worktrees are its branches).
+  // Nov 23 2026: a ten-step build could not land because one step had found nothing to change.
+  const list = [];
+  for (const br of named) {
+    if (!git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${br}`]).code) { list.push(br); continue; }
+    if (git(['rev-parse', '-q', '--verify', `refs/heads/${br}`]).code) return { ok: false, error: `${br} is not on GitHub` };
+    const ahead = Number(git(['rev-list', '--count', `refs/remotes/${s.remote}/${s.base}..refs/heads/${br}`]).out) || 0;
+    if (!ahead) { log(`${br}: no commit that ${s.base} lacks, nothing of it to merge`); continue; }
+    if (dry) return { ok: false, error: `${br} is not on GitHub (it would be pushed first)` };
+    const up = git(['push', '-q', s.remote, `refs/heads/${br}:refs/heads/${br}`], { timeout: 90000 });
+    if (up.code) return { ok: false, error: `${br} is not on GitHub and could not be pushed: ${up.err.slice(-200) || 'failed'}` };
+    git(['fetch', '-q', s.remote, `+refs/heads/${br}:refs/remotes/${s.remote}/${br}`]);
+    log(`${br}: pushed (its session had not)`);
+    list.push(br);
+  }
+  if (!list.length) return { ok: false, error: `no step branch holds a commit that ${s.base} lacks: nothing to land` };
   return inWorktree({ git, ref: `${s.remote}/${list[0]}` }, (g, wt, dir) => {
     for (const br of list.slice(1)) {
       const r = mergeIn({ s, g, wt, dir, ref: `${s.remote}/${br}`, message: `Merge ${br} into ${branch} (lander: one PR for the build)`, mainSide: 'ours', buildsSide: 'theirs', log });

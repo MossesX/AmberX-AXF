@@ -106,6 +106,22 @@ const fixture = {
     const a = P.activeBuild(builds);
     return { builds, active: a.active?.id ?? null, others: a.others.map((b) => b.id), emergency: P.emergencyBuilds(builds).map((b) => b.id), tags: builds.map((b) => P.normEmergency(b.emergency)) };
   })(),
+  // hand builds: beside the one active build (never the active one, never a breach); watched only while their session is out
+  hand: (() => {
+    const tag = (at) => ({ at, by: 'Earl the Ear' });
+    const builds = [
+      { id: 'h-first', flow: 'pipeline-2', status: 'building', statusAt: '1', hand: tag('2026-11-23T10:00:00.000Z') },
+      { id: 'active', flow: 'pipeline-2', status: 'building', statusAt: '2' },
+      { id: 'h-landing', flow: 'pipeline-2', status: 'running-ci', statusAt: '3', hand: tag('2026-11-23T09:00:00.000Z') },
+      { id: 'h-failed', flow: 'pipeline-2', status: 'failed', failedFrom: 'building', statusAt: '4', hand: tag('2026-11-23T08:00:00.000Z') },
+      { id: 'h-archived', flow: 'pipeline-2', status: 'archived', archivedFrom: 'building', statusAt: '5', hand: tag('2026-11-23T07:00:00.000Z') },
+      { id: 'untagged', flow: 'pipeline-2', status: 'building', statusAt: '6', hand: { by: 'someone' } },
+    ];
+    const a = P.activeBuild(builds);
+    return { builds, active: a.active?.id ?? null, others: a.others.map((b) => b.id), hand: P.handBuilds(builds).map((b) => b.id), beside: builds.map((b) => P.besideLine(b)), tags: builds.map((b) => P.normHand(b.hand)) };
+  })(),
+  budgetStops: [{ at: '2026-11-23T10:00:00.000Z', kind: 'build', spentUsd: 55.5, capUsd: 50 }, { at: '2026-11-23T10:00:00.000Z', kind: 'daily', spentUsd: '65', capUsd: 60 }, { at: '2026-11-23T10:00:00.000Z', kind: 'weekly' }, { kind: 'build' }, null]
+    .map((stop) => ({ stop, norm: P.normBudgetStop(stop), stopped: P.isBudgetStopped({ budgetStop: stop }) })),
 };
 if (process.argv.includes('--write')) { writeFileSync(FIX, `${JSON.stringify(fixture, null, 1)}\n`); console.log(`wrote ${FIX}`); process.exit(0); }
 let fx = null; try { fx = JSON.parse(readFileSync(FIX, 'utf8')); } catch { ok(false, `fixture ${FIX} missing: run with --write`); }
@@ -115,6 +131,15 @@ if (fx) eq(fx, JSON.parse(JSON.stringify(fixture)), 'the engine answers as its f
 const t = (rec, to, kind = 'build') => P.transition(rec, to, { kind, at: 'T', by: 'x' });
 const core0 = (f) => [f.archivedFrom, P.normFields({ status: 'building', archivedFrom: 'building', flow: 'pipeline-2' }).archivedFrom];
 ok(!t({ status: 'building' }, 'ready').ok, 'backward refused');
+{ // hand builds (Nov 23 2026): beside the line
+  const hb = { id: 'h', flow: 'pipeline-2', status: 'building', statusAt: '1', hand: { at: '2026-11-23T10:00:00.000Z', by: 'x' } };
+  const ab = { id: 'a', flow: 'pipeline-2', status: 'building', statusAt: '2' };
+  eq([P.activeBuild([hb, ab]).active.id, P.activeBuild([hb, ab]).others.length], ['a', 0], 'a hand build is never the active build and never a breach');
+  eq(P.activeBuild([hb]).active, null, 'a hand build alone leaves the active place free');
+  const back = P.enforceFlow({ builds: [{ ...hb, status: 'archived', archivedFrom: 'building' }, ab] }, { builds: [{ ...hb, status: 'building' }, ab] }, { at: 'T', by: 'x' });
+  eq(back.refused, [], 'an archived hand build returns to building while another build is active');
+  ok(P.isHand(hb) && !P.isHand(ab) && !P.isHand({ hand: { by: 'x' } }) && P.besideLine(hb) && !P.besideLine(ab), 'the tag needs its time');
+}
 ok(t({ status: 'ready' }, 'building').ok, 'forward skip allowed');
 eq(t({ status: 'building', attempt: 1 }, 'failed').rec.failedFrom, 'building', 'failed records where it failed');
 eq(t({ status: 'failed', failedFrom: 'building', attempt: 1 }, 'building').rec.attempt, 2, 'a retry is attempt + 1');

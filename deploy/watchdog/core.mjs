@@ -123,6 +123,11 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
   const out = [];
   for (const b of builds) {
     if (BUILD_DONE.includes(b.status)) continue;
+    // a hand build's one session is started, and started again, by hand: nothing here relaunches or fails it. From
+    // build-complete on it is the lander's, watched like any other build
+    if (P2.isHand(b) && !landerOwned(b)) continue;
+    // stopped at a budget cap (build-budget@1): held on purpose until the cap allows it again
+    if (P2.isBudgetStopped(b)) continue;
     // the lander retries its own failures (its own backoff); once the attempts are used up the contract stops it too,
     // and that is a give-up like any other (one alert: only a reset moves the build on)
     if (b.status === FAILED && landerOwned(b) && !P2.gaveUp(b, S.maxAttempts)) continue;
@@ -136,6 +141,10 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
       if (s.status === 'building') {
         const age = (now - sinceOf(s)) / MIN;
         if (p.logTail && LIMIT_RE.test(p.logTail)) { out.push({ kind: 'step-limit', build: b.id, step: s.id, status: s.status, cause: 'usage-limit', account: s.account || '', attempt: attemptOf(s), evidence: str((p.logTail.match(LIMIT_RE) || [''])[0], 120) }); continue; }
+        // the session is gone but its own session-end event says exit 0: the step is done and only its exit call was
+        // lost (Nov 23 2026: the call timed out on the dispatcher's lock, the finished step was failed as "session gone"
+        // and used up its attempts against its own stale lock)
+        if (p.tmux === false && age >= S.graceMin && p.ended && Number(p.ended.exit) === 0) { out.push({ kind: 'step-ended', build: b.id, step: s.id, status: s.status, cause: 'clean-exit', attempt: attemptOf(s), session: p.session || '' }); continue; }
         if (p.tmux === false && age >= S.graceMin) { out.push({ kind: 'step-dead', build: b.id, step: s.id, status: s.status, cause: 'tmux-dead', account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
         const late = age - buildingBudget(s, S.budgets.step);
         if (late > 0 && (p.logAgeMin == null || p.logAgeMin >= S.logIdleMin)) { out.push({ kind: 'step-hung', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
@@ -182,6 +191,7 @@ const keyOf = (i) => `${i.build}${i.step ? `/${i.step}` : ''}:${i.status}${i.fai
  *   fail               mark the build or step failed (attempt N, failedFrom = its status), retried on a later pass
  *   fail-limit         a step hit a usage limit: account out, kill the session, fail; the retry picks another account
  *   fail-dead          a building step whose session is gone (or hung: the session is killed first)
+ *   complete           a building step whose session is gone after a clean exit (exit 0 in its session-end event)
  *   retry              a failed record goes back into failedFrom as attempt N+1 (a step gets `account` when it needs one)
  *   escalate           an Opus step that died in its slot used up its attempts: raised to Fable, relaunched once more
  *   give-up            attempts used up: stays failed, alert Brett once (the only time this layer pages)
@@ -207,6 +217,8 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
     }
     case 'step-limit':
       return { action: 'fail-limit', key: k, account: issue.account, why: `usage limit on ${issue.account || 'its account'}: "${issue.evidence}"` };
+    case 'step-ended':
+      return { action: 'complete', key: k, why: `its session ${issue.session || ''} ended cleanly (exit 0) and its exit was never recorded`.replace('  ', ' ') };
     case 'step-dead':
       return { action: 'fail-dead', key: k, kill: false, why: `tmux session ${issue.session || ''} is gone while the step was building`.replace('  ', ' ') };
     case 'step-hung':
@@ -271,6 +283,8 @@ export function applyDecision(store, issue, d, { now = Date.now() } = {}) {
   if (d.action === 'fail' || d.action === 'fail-limit' || d.action === 'fail-dead') {
     const extra = issue.step ? { tried: [...new Set([...(rec.tried ?? []), rec.account].filter(Boolean))].slice(-10) } : null;
     if (move(FAILED, { extra })) text = `Watchdog: ${what} failed at ${rec.failedFrom}, attempt ${attemptOf(rec)}: ${d.why}.`;
+  } else if (d.action === 'complete' && issue.step) {
+    if (move('completed')) text = `Watchdog: step ${issue.step} completed: ${d.why}.`;
   } else if (d.action === 'escalate' && issue.step) {
     const from = rec.model || 'Opus'; const tries = attemptOf(rec);
     if (move('ready', { reset: true, extra: { model: 'Fable', account: d.account, slot: undefined, tmux: undefined } })) text = `Watchdog: step ${issue.step} raised ${from} → Fable after ${tries} failed attempts; relaunched at ready, attempt ${attemptOf(rec)} on ${d.account}.`;

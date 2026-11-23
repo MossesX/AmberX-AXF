@@ -26,6 +26,9 @@
  * archived…) build is refused even with a valid token, and `still` (exit 3) stops a run that waited (agent-slots queue,
  * hard limit) after its build went back to Pending. agent-slots.mjs drops such a build's waiting slot entry the same way.
  *
+ * Hand builds (hand-build@1, Nov 23 2026): a session started by hand gets its own record (tag `hand`) once it runs.
+ * That record never makes its launch a dispatcher launch: `check` and `still` pass it, as they did before it existed.
+ *
  *   node framework/cli/dispatch-gate.mjs still [--build <id>] [--name <session>] [--brief <file>]   exit 0 may run · 3 not Queued any more
  */
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
@@ -35,6 +38,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findBuild } from './model-gate.mjs';
 import { loadStore } from './builds-store.mjs';
+import { isHand } from '../core/pipeline-status.mjs';
 
 export const SCHEMA = 'dispatch-tokens@1';
 export const DISPATCH_TTL_MS = 24 * 3600e3;
@@ -59,6 +63,7 @@ export function still({ build = '', name = '', brief = '', store = null } = {}) 
   let s = store; if (!s) { try { s = loadStore(); } catch { return { ok: true, build: '', why: 'builds store unreadable: not judged' }; } }
   const b = findBuild(s, { build, name, brief });
   if (!b) return { ok: true, build: '', why: 'not an orchestrator build' };
+  if (isHand(b)) return { ok: true, build: b.id, status: b.status, why: `${b.id} is a hand build: started by hand` };
   return mayHoldSlot(b) ? { ok: true, build: b.id, status: b.status, why: `${b.id} is ${b.status}` } : { ok: false, build: b.id, status: b.status, why: notQueued(b) };
 }
 
@@ -128,6 +133,9 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
 export function check({ build = '', name = '', brief = '', token = '', env = process.env, step = env.AXF_BUILD_STEP || '', store = null, now = Date.now() } = {}) {
   let s = store; if (!s) { try { s = loadStore(); } catch { s = { builds: [] }; } }
   const b = findBuild(s, { build, name, brief });
+  // a hand build (hand-build@1) is never dispatched: its record was filed by its own launch, and it is started again
+  // by hand after a stop or a crash, so there is no token to ask for
+  if (isHand(b)) return { ok: true, build: '', hand: b.id, why: `${b.id} is a hand build: started by hand, no dispatch needed` };
   const rec = b ? load(env).tokens[tokenKey(b, { name, step })] ?? null : null;
   return verdict({ b, name, rec, token, now });
 }

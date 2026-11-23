@@ -193,7 +193,43 @@ Two emergency slots beside the orchestrator's (Brett, Nov 20 2026), for work he 
 - `GET pipeline/emergency` lists them; `POST pipeline/emergency/clear {id}` makes one ordinary again.
   CLI: `node framework/cli/emergency-builds.mjs list | clear <build>` (`send` works only with Brett's console click).
 
+## Hand builds
+
+A session started outside the orchestrator (axHub `vps.build_start`, a console launch) is a build too (Brett,
+Nov 23 2026). Until then it had no record: nothing to tick, nothing to link, and the lander never saw its PR.
+
+- **Record.** `deploy/claude-headless.sh` calls `framework/cli/hand-build.mjs start` once the session runs, when it
+  sits in a worktree on the branch `claude/<its name>`. The record is a Pipeline 2.0 build tagged `hand: { at, by }`
+  with one step, `s1`, already `building`. It shows on the board like any build; `builds-live.mjs link` works on it.
+- **The line.** It runs beside the one active build: it never waits for the active place, never holds it, and the
+  dispatcher never launches it (`framework/spec/PIPELINE-2.md` rule 8).
+- **The end.** The launcher calls `hand-build.mjs exit`; a pass sweeps a session that vanished without it. Exit 0 with
+  commits on the branch: the branch is pushed, the build is `build-complete`, and the lander lands it (its own PR
+  `lander/<name>`, main pulled in, CI, the build rules, merged). Exit 0 with nothing to land, or stopped by hand:
+  archived. Anything else: `failed`. Nothing relaunches a hand build; started again under the same name it carries on.
+- CLI: `node framework/cli/hand-build.mjs list | start … | exit … | sweep`. `AXF_HAND_BUILDS=off` skips the record.
+
+## Budgets
+
+The two budget settings are enforced by the dispatcher's tick (build-budget@1, `framework/cli/build-budget.mjs`):
+**Budget per build (USD)** and **Daily budget (USD)** in Settings → Claude settings → Builds. 0 = no cap, which is the
+default until Brett saves a number; only he raises a cap or removes it.
+
+- **Spend** is read from the headless meters: a build's spend is every session of it over its whole life, the day's
+  spend every session that started today.
+- **At the per-build cap** the build is stopped: its sessions end (work stays in the worktrees), its steps in a slot
+  are `failed`, and its record carries `budgetStop`. **At the daily cap** every build with a session out is stopped
+  the same way and no build takes the active place.
+- **Brett is told once**: one alert per pass that stopped something, with the numbers and the setting to change, and
+  a note on each build. A stop is released by itself when the cap allows it again (raised, removed, a new day); a
+  pipeline build then goes on, a hand build is started again by hand.
+- CLI: `node framework/cli/build-budget.mjs status | check | enforce`.
+
 ## Tests
+
+`node apps/console-web/plugins/build-orchestrator/test/p2-hand-budget.test.mjs` (hand builds and budgets through the
+dispatcher), `node --test deploy/lander/test/hand.test.mjs` (the lander lands a hand build on green CI) and
+`node framework/spec/check-build-budget.mjs` (the budget engine against its fixture).
 
 `node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs` (emergency builds: the console-only start,
 the emergency lane beside the active build, the two pools) and `python3 …/server/test_emergency.py` (the routes: 403 for

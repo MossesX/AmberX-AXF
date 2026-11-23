@@ -1874,6 +1874,8 @@ export function tick({ env = process.env } = {}) {
   // pipeline-2@1: the Pipeline 2.0 flow (split, one active build, main into each step, models, steps to free slots)
   let p2 = null;
   try { p2 = P2F.advance({ env }); } catch (e) { logLine({ event: 'p2-advance-failed', error: str(e.message, 300) }); p2 = { error: str(e.message, 300) }; }
+  // build-budget@1: one alert per pass that stopped something (the stops themselves are on the builds' records)
+  if (p2?.budget?.alert) { const a = { ...P.alertFor('budget', { id: p2.budget.stopped.map((x) => x.id).join(',').slice(0, 200) }), ...p2.budget.alert }; consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind: 'budget', at: nowIso(), title: a.title }); }
   const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
   // one active build at a time (Brett, Nov 19 2026): while a Pipeline 2.0 build is active nothing else starts (a start
   // pulls main into its worktree); builds@1 builds already running carry on
@@ -2291,7 +2293,9 @@ async function main(argv) {
     const lock = pipelineLock();
     if (process.env.AXF_PIPELINE_LOCKED !== '1' && spawnSync('flock', ['-V'], { encoding: 'utf8' }).status === 0) {
       try { mkdirSync(dirname(lock), { recursive: true }); } catch { /* flock reports it */ }
-      const r = spawnSync('flock', ['-w', flag('wait', '120'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
+      // a step's exit must be recorded: the call is detached, so it waits out a long tick instead of giving up after two
+      // minutes (Nov 23 2026: a clean exit was lost that way and the finished step was failed as "session gone")
+      const r = spawnSync('flock', ['-w', flag('wait', '900'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
       process.exitCode = r.status ?? 1; return undefined;
     }
     const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase'), step: flag('step'), hit: flag('hit'), account: flag('account') });

@@ -180,7 +180,8 @@ h = hand({ name: 'hand-f', text: '# Model triage\n\nThe gate picks which model e
 eq([h.key, h.decision.rule], ['opus', 'simple-work'], 'talking about the models is not naming one');
 eq(logged({ lane: 'hand' }).map((d) => d.name).sort(), ['hand-a', 'hand-b', 'hand-c', 'hand-d', 'hand-e', 'hand-f'], 'every hand launch is in the log under its session name');
 writeFileSync(settingsFile, JSON.stringify({ values: { 'builds.defaultModel': 'opus' } }));
-eq(hand({ name: 'hand-h', text: '# Move the builds store to a new schema', requested: 'fable' }).decision, { ...hand({ name: 'hand-h', text: '# Move the builds store to a new schema', requested: 'fable' }).decision, model: 'Opus', rule: 'override' }, 'Brett\'s build-wide model covers hand launches too');
+h = hand({ name: 'hand-h', text: '# Move the builds store to a new schema', requested: 'fable' });
+eq([h.decision.model, h.decision.rule], ['Opus', 'override'], 'Brett\'s build-wide model covers hand launches too');
 writeFileSync(settingsFile, JSON.stringify({ values: {} }));
 if (process.getuid?.() === statSync(triageDir).uid) eq([(statSync(triageDir).mode & 0o2775).toString(8), (statSync(join(triageDir, 'decisions.jsonl')).mode & 0o664).toString(8), (statSync(join(triageDir, 'config.json')).mode & 0o664).toString(8)], ['2775', '664', '664'], 'the store is group-writable: the host writes it, the console edits it');
 MT.commitEdit({ op: 'defaults', handRequest: 'pin' }, { dir: triageDir, by: 'test' });

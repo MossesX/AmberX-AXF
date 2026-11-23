@@ -62,6 +62,9 @@ export function launchCheck(b, model, { step = null } = {}) {
   const want = modelKey(model);
   if (!want && String(model ?? '').trim()) return { ok: false, unknown: true, ...(b ? { build: b.id } : {}), why: `${modelProblem(model)}. An unknown model is an error, never a silent ${MODEL_LABELS.opus.split(' ')[0]}: launch it on ${MODEL_LABELS.opus} or ${MODEL_LABELS.fable}.` };
   if (!b) return { ok: true, why: 'not an orchestrator build: nothing to compare' };
+  // a hand build's one step carries the model its launch ran on (the triage gate's answer), not a pin: started again
+  // by hand, the new launch's model is the one the gate just gave it
+  if (b.hand?.at) return { ok: true, build: b.id, why: `${b.id} is a hand build: its launch model is the triage gate's` };
   if (!want) return { ok: true, why: 'no model given: nothing to compare' };
   if (step) {
     if (modelRank(want) > modelRank(step.model)) return { ok: false, build: b.id, step: step.id, why: `${b.id}/${step.id} is pinned to ${label(step.model)}; launching it on ${label(want)} is a model upgrade: raise the step first.` };
