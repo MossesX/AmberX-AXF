@@ -843,74 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 23:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:25 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-22 23:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
-- 2026-11-22 23:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-22 23:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-22 23:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-22 23:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1175,74 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
 - 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
 - 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
+- 2026-11-23 16:29 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · watchdog
+- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → split (all) · orchestrator
+- 2026-11-23 18:37 UTC · `fix-refreshing-console-jumps-back` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, note (all) · foreign-write
+- 2026-11-23 20:22 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · pipeline-bring-up
+- 2026-11-23 20:23 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:24 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:30 UTC · `orchestrator-settings-collapsible-split` s7 undone, note (all) · watchdog
+- 2026-11-23 20:31 UTC · `orchestrator-settings-collapsible-split` s1 done (all) · headless
+- 2026-11-23 20:34 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 20:38 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · pipeline-bring-up
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → build-complete (all) · orchestrator
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:44 UTC · `urgent-pipeline-proof-nov23` added (0 steps) (all) · plan-studio-2
+- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → splitting (all) · orchestrator
+- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → split, note (all) · orchestrator
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` PR 896 (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → pr-pulling-main (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:53 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-23 21:00 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
+- 2026-11-23 21:01 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:05 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:09 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:13 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:19 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:20 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:22 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:24 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:26 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:27 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:29 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 21:45 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-23 21:48 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
+- 2026-11-23 21:49 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:53 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:56 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:00 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:04 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
+- 2026-11-23 22:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 22:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:35 UTC · `pipeline-bring-up-from-main` PR #897 (all) · builds-live
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → merging-pr, note (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` PR 898 (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → pr-pulling-main (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → running-ci (all) · lander
 
 ## Token passes (log)
 
