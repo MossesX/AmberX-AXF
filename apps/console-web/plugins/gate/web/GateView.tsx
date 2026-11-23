@@ -2,7 +2,7 @@
  * Builds → VPS Configuration (`view:gate`): the gate a PR must pass before it lands, the build rules and the auto-lander, in four tabs
  * (framework TabGroup, settings id `gate.tabs`, so the row is the tab-group asset and remembers the last tab).
  * console-control@1: the view is `view:gate`, the row `tab:gate.tabs`, each tab `tab:gate.tabs=rules | build-rules |
- * auto-lander | build-cap | approvals | passes | history` (Auto-lander holds its own row `tab:gate.auto-lander.tabs=server | line`, AutoLanderTab); deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
+ * auto-lander | build-cap | model-triage | approvals | passes | history` (Auto-lander holds its own row `tab:gate.auto-lander.tabs=server | line`, AutoLanderTab); deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
  * Named Gate & rules until Nov 21 2026: `view:vps-configuration`, `console_open vps-configuration` and `vps.open:<tab>` reach the same screen.
  */
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { ApprovalRulesTab } from './ApprovalRulesTab';
 import { AutoLanderTab } from './AutoLanderTab';
 import { BuildCapTab } from './BuildCapTab';
 import { BuildRulesTab } from './BuildRulesTab';
+import { ModelTriageTab } from './ModelTriageTab';
 import { HistoryTab } from './HistoryTab';
 import { PassesTab } from './PassesTab';
 import { showPassTab, type PassTab } from './passesState';
@@ -52,15 +53,16 @@ export function GateView() {
   });
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>VPS Configuration</h1><p className="fx-muted">How the VPS runs builds: the checks a build must pass before it lands, the build rules, the auto-lander, the build cap, the approval rules and the veto passes.</p></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>VPS Configuration</h1><p className="fx-muted">How the VPS runs builds: the checks a build must pass before it lands, the build rules, the auto-lander, the build cap, the model each step runs on, the approval rules and the veto passes.</p></div></header>
       <PageToolbar view="gate" />
       <TabGroup<GateTab> id="gate.tabs" label="VPS Configuration" value={tab} onChange={setTab}
-        tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'build-cap', label: 'Build cap', icon: 'layers' }, { value: 'approvals', label: 'Approval rules', icon: 'check' }, { value: 'passes', label: 'Passes', icon: 'key' }, { value: 'history', label: 'History', icon: 'clock' }]}>
+        tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'build-cap', label: 'Build cap', icon: 'layers' }, { value: 'model-triage', label: 'Model triage', icon: 'sliders' }, { value: 'approvals', label: 'Approval rules', icon: 'check' }, { value: 'passes', label: 'Passes', icon: 'key' }, { value: 'history', label: 'History', icon: 'clock' }]}>
         <div className="axp-gate__panel">
           {tab === 'rules' && <RulesTab refreshSec={settings.refreshSec} />}
           {tab === 'build-rules' && <BuildRulesTab refreshSec={settings.refreshSec} />}
           {tab === 'auto-lander' && <AutoLanderTab refreshSec={settings.refreshSec} />}
           {tab === 'build-cap' && <BuildCapTab refreshSec={settings.refreshSec} />}
+          {tab === 'model-triage' && <ModelTriageTab refreshSec={settings.refreshSec} />}
           {tab === 'approvals' && <ApprovalRulesTab refreshSec={settings.refreshSec} />}
           {tab === 'passes' && <PassesTab />}
           {tab === 'history' && <HistoryTab refreshSec={settings.refreshSec} />}

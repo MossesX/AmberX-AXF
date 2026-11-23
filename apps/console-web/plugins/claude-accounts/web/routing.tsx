@@ -133,7 +133,7 @@ function WorkersLimits({ data }: { data: Routing }) {
       <Switch label="Console account takes headless jobs" hint="After the workers are busy. Off = the console's account only runs what you start in it." checked={c.interactiveTakesJobs} disabled={s.busy}
         onChange={(v) => void s.run(call('routing/settings', 'POST', { interactiveTakesJobs: v }))} />
       <div className="axp-ca-save">
-        <TextField label="Jobs building at once, per account" value={building} hint="Default 3." onChange={setBuilding} />
+        <TextField label="Sessions per account" value={building} hint="How many sessions one account runs at once (default 3). One setting: the build pipeline reads this same number; an account's own number is on its row in Builds → Pipeline → Accounts." onChange={setBuilding} />
         <TextField label="Jobs waiting, per account" value={queue} hint="Default 5." onChange={setQueue} />
         <Button tone="primary" icon="save" busy={s.busy} disabled={s.busy} onClick={() => void s.run(call('routing/settings', 'POST', { building: num(building), queue: num(queue) }))}>Save limits</Button>
       </div>

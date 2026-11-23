@@ -3,6 +3,10 @@
  * `axp-plan-studio-2-item`, payload = item id), an editor for the selected item, a Trash tab (undo), a command box and a
  * mic that both go through the server's `say`. Framework controls and tokens only; phone first (the editor drops under
  * the tree on a narrow screen).
+ *
+ * Sent plans (live.tsx): a plan sent to the orchestrator is locked (a lock where the grip sits, no edit or drag) and
+ * lists the steps the orchestrator filed, marked "From orchestrator", each with its state badge; they check off in
+ * place while the page keeps reading the state (useLiveProgress). All of it comes from the server.
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { Button, Checkbox, Chip, Icon, IconButton, Note, PageToolbar, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
@@ -10,7 +14,10 @@ import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/l
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, VIEW, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, VIEW, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useLiveProgress, useTree, POLL_SECONDS, type BuildPreview, type OpResult } from './api';
+import * as live from './live-core.mjs';
+import type { LiveState, Look } from './live-core.mjs';
+import { LiveBadge, LiveMark, LockMark, OrchBadge, SentEditor, readLooks, readOrchMark, type OrchMark } from './live';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -30,6 +37,9 @@ export function PlanStudio2Page() {
   const [q, setQ] = useState('');
   const showDone = flag(rt, KEYS.showDone, true);
   const listRef = useRef<HTMLUListElement>(null);
+  const looks = readLooks(rt);
+  const orchMark = readOrchMark(rt);
+  useLiveProgress(Number(setting(rt, KEYS.livePoll, String(POLL_SECONDS))) || 0);
 
   // a deep link (plan-studio-2.focus:<id or words>): select it, open its ancestors, scroll to it
   useEffect(() => {
@@ -45,7 +55,7 @@ export function PlanStudio2Page() {
 
   // drops: before / after a row (same parent as the row), inside a row (its last child), or onto the top-level strip
   useEffect(() => registerZone(DND_ZONE, {
-    accepts: (d, target) => { const s = state; if (!s || d.kind !== `${DND_ZONE}:item` || d.id === target) return false; return target === TOP || !tc.ancestors(s, target).some((a) => a.id === d.id); },
+    accepts: (d, target) => { const s = state; if (!s || d.kind !== `${DND_ZONE}:item` || d.id === target) return false; if (target !== TOP && tc.byId(s, target)?.locked) return false; return target === TOP || !tc.ancestors(s, target).some((a) => a.id === d.id); },
     positions: (_d, target) => (target === TOP ? ['inside'] : ['before', 'inside', 'after']),
     drop: (d, target, pos: DropPos) => {
       const s = state; if (!s) return;
@@ -87,7 +97,7 @@ export function PlanStudio2Page() {
         <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
       ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
         <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
-          {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} />)}
+          {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} looks={looks} orchMark={orchMark} />)}
         </ul>
       )}
       {state && state.items.length > 0 && !q && <div className={`${B}__topdrop`} data-axf-drop={DND_ZONE} data-axf-drop-id={TOP}><Icon name="move" size={14} /> Drop here for the top level</div>}
@@ -96,7 +106,7 @@ export function PlanStudio2Page() {
   );
   const node: Record<string, ReactNode> = {
     tree: treeNode,
-    editor: current && state ? <Editor item={current} state={state} /> : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>,
+    editor: current && state ? (current.locked ? <SentEditor item={current} state={state} /> : <Editor item={current} state={state} />) : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>,
     say: <CommandBox />,
     trash: <TrashTab state={state} />,
   };
@@ -124,22 +134,34 @@ export function PlanStudio2Page() {
 
 /* ---------------------------------------------------------------- rows */
 
-function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: number; kids: number; path: string; state: State; selected: boolean }) {
+function Row({ item, depth, kids, path, state, selected, looks, orchMark }: { item: Item; depth: number; kids: number; path: string; state: State; selected: boolean; looks: Record<LiveState, Look>; orchMark: OrchMark }) {
   const rt = useRuntime();
   const prog = kids ? tc.progress(state, item.id) : null;
   const open = () => select(item.id);
   const ctx = (e: { clientX: number; clientY: number; currentTarget: Element }) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(e.clientX || r.left, e.clientY || r.bottom, CTX_TARGET, item.id); };
   const done = tc.CHECKABLE.has(item.kind) && item.done;
+  // a sent row: its state and its look (the server's state, the look picked in settings); a locked row has no grip, no add and no edit
+  const lv = item.live ?? null;
+  const look = lv ? looks[lv.state as LiveState] : null;
+  const orch = item.origin === live.ORIGIN;
+  const locked = !!item.locked;
+  const cls = [`${B}__row`, selected && 'is-selected', done && !look && 'is-done', locked && 'is-locked', orch && 'is-orch', orch && orchMark !== 'badge' && 'is-orch-tint', look && `is-live ${live.lookClasses(look)}`].filter(Boolean).join(' ');
   return (
-    <li className={`${B}__row${selected ? ' is-selected' : ''}${done ? ' is-done' : ''}`} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
+    <li className={cls} data-ps2-state={lv?.state} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
       data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id} data-axf-drop={DND_ZONE} data-axf-drop-id={item.id}>
-      <span className={`${B}__grip axf-dnd-grip`} title="Drag to move" onPointerDown={(e: RPointerEvent) => startDrag(e, { kind: `${DND_ZONE}:item`, id: item.id, label: item.title, icon: tc.KIND_ICON[item.kind], trashable: true, onTrash: () => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0')) })}><Icon name="grip" size={14} /></span>
+      {locked ? <LockMark orch={orch} /> : <span className={`${B}__grip axf-dnd-grip`} title="Drag to move" onPointerDown={(e: RPointerEvent) => startDrag(e, { kind: `${DND_ZONE}:item`, id: item.id, label: item.title, icon: tc.KIND_ICON[item.kind], trashable: true, onTrash: () => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0')) })}><Icon name="grip" size={14} /></span>}
       {kids ? <IconButton icon={item.collapsed ? 'chevron-right' : 'chevron-down'} label={item.collapsed ? `Expand ${item.title}` : `Collapse ${item.title}`} className={`${B}__fold`} onClick={() => setCollapsed([item.id], !item.collapsed)} /> : <span className={`${B}__fold is-leaf`} />}
-      {tc.CHECKABLE.has(item.kind) ? <Checkbox label="" title={item.done ? 'Done' : 'Not done'} checked={item.done} onChange={(v) => void editItem(item.id, { done: v })} /> : <Icon name={tc.KIND_ICON[item.kind]} size={14} className={`${B}__kind`} />}
-      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`button:item.${item.id}`} onClick={open} onDoubleClick={() => rt.openDialog(DIALOGS.item, { id: item.id })} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
+      {tc.CHECKABLE.has(item.kind) ? (look ? <LiveMark item={item} look={look} /> : <Checkbox label="" title={locked ? 'Locked: sent to the orchestrator' : item.done ? 'Done' : 'Not done'} checked={item.done} disabled={locked} onChange={(v) => void editItem(item.id, { done: v })} />) : <Icon name={tc.KIND_ICON[item.kind]} size={14} className={`${B}__kind`} />}
+      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`button:item.${item.id}`} onClick={open} onDoubleClick={() => { if (!locked) rt.openDialog(DIALOGS.item, { id: item.id }); }} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
         <span className={`${B}__text`}>{item.title}</span>
         {path && <span className={`${B}__path fx-muted`}>{path}</span>}
       </button>
+      {(lv || orch) && (
+        <span className={`${B}__live`}>
+          {orch && orchMark !== 'tint' && <OrchBadge />}
+          {lv && look?.badge && <LiveBadge l={lv} look={look} />}
+        </span>
+      )}
       <span className={`${B}__meta`}>
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
         {item.status && item.status !== 'draft' && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
@@ -148,7 +170,7 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
         {item.links.length > 0 && <span className={`${B}__n`} title={item.links.map((l) => `${LINK_LABEL[l.type]}: ${l.label || l.ref}`).join('\n')}><Icon name="external" size={12} /> {item.links.length}</span>}
       </span>
-      <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />
+      {!locked && <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />}
       <IconButton icon="more" label={`More for ${item.title}`} className={`${B}__act`} onClick={ctx} />
     </li>
   );
@@ -159,7 +181,8 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
 function Editor({ item, state }: { item: Item; state: State }) {
   const rt = useRuntime();
   const [draft, setDraft] = useState(item);
-  useEffect(() => setDraft(item), [item]);
+  // the draft follows the item only when the item itself changed (a live reload of the tree hands over new objects)
+  useEffect(() => setDraft(item), [item.id, item.updatedAt]); // eslint-disable-line react-hooks/exhaustive-deps
   const dirty = JSON.stringify({ ...draft, updatedAt: '' }) !== JSON.stringify({ ...item, updatedAt: '' });
   const save = () => void editItem(item.id, { title: draft.title, body: draft.body, status: draft.status, priority: draft.priority, model: draft.model, minutes: draft.minutes, kind: draft.kind, tags: draft.tags }).then((r) => rt.toast(r.say ?? 'Saved.', 'success', 'Plan Studio 2.0'));
   const path = tc.ancestors(state, item.id);
@@ -402,7 +425,7 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
   };
   return (
     <div className={`${B}__dialog fx-stack`}>
-      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: Fable designs the real build steps, each with its minutes and model. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
+      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: the orchestrator decides the real build steps, each with its minutes and model. Once it has filed them, they replace these steps here (marked From orchestrator, yours are kept in the item's history) and check off as each one completes. The plan is locked until the build lands or is cancelled. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
       {err && <Note tone="danger">{err}</Note>}
       {preview && (
         <>

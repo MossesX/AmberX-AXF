@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
@@ -9,6 +9,10 @@ import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, R
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
+import { fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
+import { FILL_ANCHOR, FillSettingsPanel } from './Settings';
+import { SLOTS_ANCHOR } from './SlotsStrip';
+import { stepsAnchor } from './StepDeps';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
@@ -26,6 +30,10 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * Hold / Archive / Delete. Accounts, Watchdog, Groups, Approvals and Rules are Settings → Plugins → Build orchestrator.
  * Build watchdog (build-watchdogs@1, one panel for every watch: Watchdogs.tsx): watchdogs.status / watchdogs.run[:<watch>[:<build>]] /
  * watchdogs.scan / watchdogs.set:<key>:<value> / watchdogs.open[:caught|watches|settings]; the older watchdog.status and watchdog.run[:<build>] still work;
+ * Fill every slot (Nov 13 2026): build-orchestrator.pipeline-fill-status[:<build>] (opens the Slots strip and says what
+ * runs where), .pipeline-fill-run (one dispatcher round now), .pipeline-step-deps:<build>/<step>/<s1,s2|none|sequential>
+ * and .pipeline-fill-settings:<fillSlots=on|off,maxParallelPerBuild=N,autoQueuePending=on|off>: the same names and REST
+ * routes as the MCP plugin commands and `pipeline.mjs fill status|run|deps|set` (web/fill.ts).
  * deep link build-orchestrator.focus:watchdog (console_open "build-orchestrator" focus "watchdog", console_show
  * "build-orchestrator/watchdog"), with ?build=<id> for one build's row and fixes.
  * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
@@ -71,6 +79,10 @@ export const plugin: AxfWebLibrary = {
       try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); }
       id = id.replace(/^#?\/?build-orchestrator\/?/, '');
       if (!id) return;
+      // fill every slot deep links: build-orchestrator/pipeline/slots and build-orchestrator/<build>/steps
+      if (/^(pipeline\/)?slots$/i.test(id)) { openTab('active'); flashWhenReady(() => document.getElementById(SLOTS_ANCHOR), 5000); return; }
+      const steps = /^(.+?)\/steps$/i.exec(id);
+      if (steps?.[1]) { await open(encodeURIComponent(steps[1])); flashWhenReady(() => document.getElementById(stepsAnchor(steps[1] ?? '')), 8000); return; }
       // the Watchdog tab (deep link build-orchestrator/watchdog, optionally ?build=<id>: that build's row and its fixes)
       const wd = /^watchdog(?:(?:\?build=|\/|:)([a-z0-9][a-z0-9._-]{0,79}))?$/i.exec(id);
       if (wd) { consoleApi.writeLocal('orch-watchdog-build', wd[1] ?? ''); rt.dispatch('settings.open:build-orchestrator'); return; }
@@ -114,6 +126,30 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is ready: it starts by itself when nothing else is active.`, 'success'); void open(id); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    const fill = fillApi(pipeApi);
+    const fail = (e: unknown) => rt.toast((e as Error).message, 'danger');
+    rt.actions.register('build-orchestrator.pipeline-fill-status', ([arg]) => {
+      const build = decodeURIComponent(arg ?? '').trim();
+      void open(build || 'active');
+      void fill.status(build).then((f) => rt.toast(fillSummary(f), 'info')).catch(fail);
+    }, { label: 'Fill every slot: what runs in each agent slot and what starts next (a build adds its steps)', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.settings', ([arg]) => {
+      rt.dispatch('settings.open:build-orchestrator');
+      if (decodeURIComponent(arg ?? '').replace(/^#/, '') === 'fill') flashWhenReady(() => document.getElementById(FILL_ANCHOR), 5000);
+    }, { label: 'Build orchestrator settings (fill = Fill every slot)', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.pipeline-fill-run', () => {
+      void fill.run().then((r) => rt.toast(r.ran ? `Round run: ${r.fill?.launched.length ?? 0} parallel step(s) started` : r.note ?? 'Filed: the dispatcher runs a round within a minute', 'success')).catch(fail);
+    }, { label: 'Fill the slots now (one dispatcher round)' });
+    rt.actions.register('build-orchestrator.pipeline-step-deps', ([arg]) => {
+      const d = parseDepsArg(arg ?? '');
+      if (!d) { rt.toast('Say it as build-orchestrator.pipeline-step-deps:<build>/<step>/<s1,s2 | none | sequential>', 'warning'); return; }
+      void fill.deps(d.build, d.step, d.dependsOn).then((r) => rt.toast(`${r.id} ${r.step}: ${r.explicit === null ? 'sequential' : r.dependsOn.length ? `after ${r.dependsOn.join(', ')}` : 'independent'}`, 'success')).catch(fail);
+    }, { label: "Set a step's dependencies (<build>/<step>/<s1,s2 | none | sequential>)", params: true });
+    rt.actions.register('build-orchestrator.pipeline-fill-settings', ([arg]) => {
+      const patch = parseSettingsArg(arg ?? '');
+      if (!Object.keys(patch).length) { rt.toast('Say it as build-orchestrator.pipeline-fill-settings:fillSlots=on|off,maxParallelPerBuild=N,autoQueuePending=on|off', 'warning'); return; }
+      void fill.settings(patch).then((r) => rt.toast(r.changed.length ? r.changed.map((c) => `${c.key}: ${String(c.to)}`).join(', ') : 'Nothing changed', 'success')).catch(fail);
+    }, { label: 'Fill every slot settings (fill every slot, max parallel steps per build, auto-queue pending builds: Brett only)', params: true });
     rt.actions.register('build-orchestrator.requeue-stuck', ([arg]) => {
       const apply = decodeURIComponent(arg ?? '') === 'apply';
       void pipeApi.post<{ ok: boolean; error?: string; found?: { id: string }[]; moved?: string[] }>('pipeline/requeue-stuck', { apply })
@@ -193,6 +229,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
   settingsPanels: [
+    { id: 'build-orchestrator.fill', tab: 'build-orchestrator', title: 'Fill every slot', icon: 'layers', order: 5, render: () => <FillSettingsPanel api={pipeApi} /> },
     { id: 'build-orchestrator.accounts', tab: 'build-orchestrator', title: 'Accounts', icon: 'user', order: 10, render: () => <AccountsPanel /> },
     { id: 'build-orchestrator.watchdogs', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 19, render: () => <WatchdogsPanel /> },
     { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog: build sessions live', icon: 'shield', order: 20, render: () => <WatchdogStatusPanel /> },

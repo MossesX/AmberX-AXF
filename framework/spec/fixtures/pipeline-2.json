@@ -832,24 +832,6 @@
    ]
   }
  ],
- "models": [
-  {
-   "text": "Write the JSON schema",
-   "model": "Fable"
-  },
-  {
-   "text": "Fix the toolbar padding",
-   "model": "Opus"
-  },
-  {
-   "text": "Kernel scheduler",
-   "model": "Fable"
-  },
-  {
-   "text": "Add a button",
-   "model": "Opus"
-  }
- ],
  "plans": [
   {
    "plan": {
@@ -1053,7 +1035,7 @@
    "steps": [
     {
      "text": "Write the contract",
-     "model": "Fable",
+     "model": "Opus",
      "minutes": 15,
      "files": []
     },
@@ -1079,7 +1061,7 @@
    "steps": [
     {
      "text": "Engine work\n\nBody only.",
-     "model": "Fable",
+     "model": "Opus",
      "minutes": 15,
      "files": []
     }

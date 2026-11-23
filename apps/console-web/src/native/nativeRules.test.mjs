@@ -105,4 +105,14 @@ t('an unseen "no" from confirm() is told apart from a person\'s answer', () => {
   for (const m of ['onJsAlert', 'onJsConfirm', 'onJsPrompt']) assert.ok(java('WebHost.java').includes(`public boolean ${m}(`), `WebHost answers ${m}`);
 });
 
+t('a card the overlay popped opens that call; anything else the first one waiting', () => {
+  const id = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';
+  assert.equal(R.approvalsOpenSpec({ target: 'approvals.view', id }), `approvals.view:${id}`);
+  assert.equal(R.approvalsOpenSpec({ target: 'approvals.view' }), 'approvals.view');
+  assert.equal(R.approvalsOpenSpec(null), 'approvals.view');
+  assert.equal(R.approvalsOpenSpec({ id: 'x:settings.open' }), 'approvals.view', 'only an approval id rides along');
+  const java = (f) => readFileSync(join(ROOT, 'apps/console-droid/app/src/main/java/ai/amberx/consoleapp', f), 'utf8');
+  assert.ok(java('OverlayContract.java').includes('"{\\"target\\":" + quote(APPROVALS_TARGET)'), 'the shell sends {target, id}');
+});
+
 console.log(`native rules: ${n} checks passed`);

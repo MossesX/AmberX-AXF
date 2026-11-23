@@ -19,6 +19,11 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
   GET  build-cap                        build-cap@1: hard cap, emergency slots, stepsInParallel, what runs now, the note
   POST build-cap {stepsInParallel?, maxBuilds?, emergencySlots?}   maxBuilds / emergencySlots: Brett's signed-in console only
+  GET  model-triage                     model-triage@1: the VPS gate that assigns each step's model: rules, defaults, last decisions
+  POST model-triage {op: rule|move|defaults|enabled|reset, …}   one edit, checked on the VPS (framework/cli/model-triage.mjs)
+  GET  model-triage/decisions [?build&lane&limit]   the decision log, newest first (model, rule, why)
+  GET  model-triage/history [?limit]    every rule change
+  POST model-triage/decide {text, title?, files?, minutes?, lines?, lane?, kind?, requested?}   what the gate would answer (nothing is logged)
   GET  approval-rules                   approval-rules@1: axHub's match-pattern policy rules, live, with the draft over them
   POST approval-rules/draft {op, service?, index?, to?, rule?, rules?, clearOwn?, on?}   stage one edit (add, edit, remove,
                                         move, set, clear-own, default, discard). Never changes axHub: Brett saves from his console.
@@ -523,6 +528,71 @@ def _cap_answer(r: dict[str, Any], request: Request) -> JSONResponse:
     return JSONResponse(r, status_code=200 if r.get("ok") else CAP_STATUS.get(str(r.get("code")), 500))
 
 
+# ---------------------------------------------------------------------- model triage (model-triage@1)
+# The VPS gate that decides which model every step of every lane runs on. All of it (the rules, the checks on an edit,
+# the decisions) is framework/cli/model-triage.mjs; these routes pass the call through and add who asked.
+TRIAGE_CLI = ROOT / "framework" / "cli" / "model-triage.mjs"
+TRIAGE_OPS = ("rule", "move", "defaults", "enabled", "reset")
+
+
+def _triage(args: list[str]) -> JSONResponse:
+    r = _node(TRIAGE_CLI, args)
+    return JSONResponse(r, status_code=200 if r.get("ok") else STATUS.get(str(r.get("code")), 500))
+
+
+@router.get("/model-triage")
+async def model_triage_get() -> JSONResponse:
+    """The model triage gate: its rules in order, the defaults, Brett's approval and build-wide model settings, and the last decisions."""
+    return await run_in_threadpool(_triage, ["status"])
+
+
+@router.post("/model-triage")
+async def model_triage_edit(request: Request) -> JSONResponse:
+    """One edit to the gate's rules: {op: rule, id, enabled?, model?, lanes?, settings?} | {op: move, id, to} |
+    {op: defaults, model?, handRequest?, briefWords?} | {op: enabled, enabled} | {op: reset}. Checked on the VPS; a bad
+    value changes nothing. Every change is in the history with who and why."""
+    body = await _body(request)
+    if body.get("op") not in TRIAGE_OPS:
+        return JSONResponse({"ok": False, "code": "invalid", "message": f"op is one of {', '.join(TRIAGE_OPS)}"}, status_code=400)
+    by = str(body.pop("by", "") or _who(request))[:80]
+    body.pop("confirm", None)
+    return await run_in_threadpool(_triage, ["edit", json.dumps(body), "--by", by])
+
+
+@router.get("/model-triage/decisions")
+async def model_triage_decisions(build: str = "", lane: str = "", limit: int = 100) -> JSONResponse:
+    """The gate's decisions, newest first: the build and step (or the session), the lane, the model, the rule that fired and why."""
+    args = ["decisions", "--limit", str(max(1, min(2000, limit)))]
+    if build:
+        args += ["--build", build[:120]]
+    if lane:
+        args += ["--lane", lane[:40]]
+    return await run_in_threadpool(_triage, args)
+
+
+@router.get("/model-triage/history")
+async def model_triage_history(limit: int = 100) -> JSONResponse:
+    """Every change to the gate's rules, newest first: who, when, what, why."""
+    return await run_in_threadpool(_triage, ["history", "--limit", str(max(1, min(2000, limit)))])
+
+
+@router.post("/model-triage/decide")
+async def model_triage_decide(request: Request) -> JSONResponse:
+    """What the gate would answer for a piece of work: {text, title?, files?, minutes?, lines?, lane?, kind?, requested?}. Nothing is logged."""
+    body = await _body(request)
+    args = ["decide"]
+    for k in ("text", "title", "lane", "kind", "requested", "current", "suggested", "pin"):
+        if isinstance(body.get(k), str) and body[k]:
+            args += [f"--{k}", body[k][:20000]]
+    for k in ("minutes", "lines", "failures", "dependents"):
+        if isinstance(body.get(k), (int, float)) and not isinstance(body.get(k), bool):
+            args += [f"--{k}", str(int(body[k]))]
+    files = body.get("files")
+    if isinstance(files, list) and files:
+        args += ["--files", ",".join(str(f)[:300] for f in files[:60])]
+    return await run_in_threadpool(_triage, args)
+
+
 @router.get("/build-cap")
 async def build_cap_get(request: Request) -> JSONResponse:
     """The build cap: hard cap, emergency slots and stepsInParallel side by side, what runs now, and the note when they disagree."""
@@ -551,7 +621,7 @@ async def build_cap_set(request: Request) -> JSONResponse:
         clean[k] = n
     owner_patch = {k: v for k, v in clean.items() if k in CAP_OWNER_KEYS}
     if owner_patch and not _owner(request):
-        return _cap_answer({"ok": False, "code": "forbidden", "message": "Only Brett sets the hard cap and the emergency slots, from his own signed-in console (Builds → VPS Configuration → Build cap). Sessions, MCP and voice can read them and set stepsInParallel."}, request)
+        return _cap_answer({"ok": False, "code": "forbidden", "message": "Only Brett sets Builds at once and the emergency slots, from his own signed-in console (Builds → VPS Configuration → Build cap). Sessions, MCP and voice can read them and set stepsInParallel."}, request)
     if owner_patch:
         user = getattr(request.state, "axf_user", None)
         who = str(getattr(user, "name", "") or getattr(user, "email", "") or "brett")[:60]
@@ -607,7 +677,7 @@ async def settings_get() -> JSONResponse:
 
 @router.put("/settings")
 async def settings_set(request: Request) -> JSONResponse:
-    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|approvals|passes|history)."""
+    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|model-triage|approvals|passes|history)."""
     return await _write("settings_set", request)
 
 

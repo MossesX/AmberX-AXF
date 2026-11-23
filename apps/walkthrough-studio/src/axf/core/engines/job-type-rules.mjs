@@ -1,8 +1,10 @@
 /**
  * job-type rules — job-type@1 (Brett, Nov 1 2026: "hire agents to run that kind of stuff instead of spinning up
  * anonymous one-off builds"). A job type is a recurring kind of work (walkthrough videos, site checks, screenshots,
- * landing builds, banner cleanup, listener QA) kept as an asset in the asset@1 envelope. It names the specialty that
- * owns it (an agent's skill id in the swarm roster), the default model, the token budget per run, what triggers it
+ * landing builds, banner cleanup, listener QA, feature builds, ops fixes) kept as an asset in the asset@1 envelope. It
+ * names the skills a run needs (`skills`, agent skill ids in the swarm roster; any agent holding them all may take it,
+ * Brett, Nov 3 2026: every agent is an all-rounder) and its home specialty (`specialty`, the skill page the brief
+ * carries; older files name only this, and it then is the one required skill), the default model, the token budget per run, what triggers it
  * (on demand, a schedule, an event), the brief template the agent gets, and where its outputs go (report path, UI
  * Review group name).
  *
@@ -25,10 +27,11 @@ export const JOB_ENUMS = {
 /** Placeholders every brief and output template may use without declaring them as inputs. */
 export const JOB_BUILTINS = ['date', 'when', 'stamp', 'agent', 'agentName', 'jobType', 'jobName', 'runId', 'report', 'group'];
 
-export const JOB_LIMITS = { brief: 4000, inputs: 12, tools: 30, tokensMin: 1000, tokensMax: 10_000_000, turnsMax: 200, usdMax: 1000 };
+export const JOB_LIMITS = { brief: 4000, skills: 12, inputs: 12, tools: 30, tokensMin: 1000, tokensMax: 10_000_000, turnsMax: 200, usdMax: 1000 };
 
 export const JOB_DEFAULTS = {
   specialty: '',
+  skills: [],
   model: DEFAULT_MODEL,
   budget: { tokens: 200000, maxTurns: 30, usd: 0 },
   trigger: { kind: 'on-demand', every: '', at: '', event: '' },
@@ -58,7 +61,8 @@ export function jobTypeErrors(type, raw) {
   if (type !== JOB_TYPE) return [];
   const e = [];
   if (!isObj(raw)) return ['data must be an object'];
-  if (!SLUG.test(raw.specialty ?? '')) e.push('data.specialty is the owning agent skill id (lowercase letters, digits and dashes)');
+  if (raw.skills !== undefined && (!Array.isArray(raw.skills) || raw.skills.length > JOB_LIMITS.skills || raw.skills.some((x) => !SLUG.test(x ?? '')))) e.push(`data.skills must be a list of up to ${JOB_LIMITS.skills} agent skill ids (lowercase letters, digits and dashes)`);
+  else if (raw.specialty !== undefined ? !SLUG.test(raw.specialty ?? '') : !raw.skills?.length) e.push('data.specialty is the home agent skill id (lowercase letters, digits and dashes); a job type names it or data.skills');
   if (raw.model !== undefined && !modelAllowed(raw.model)) e.push(`data.${modelProblem(raw.model)}`);
   const b = raw.budget;
   if (!isObj(b)) e.push('data.budget must be { tokens, maxTurns, usd? }');
@@ -103,8 +107,12 @@ export function normalizeJobType(raw) {
   const o = isObj(raw) ? raw : {};
   const b = isObj(o.budget) ? o.budget : {}; const t = isObj(o.trigger) ? o.trigger : {}; const out = isObj(o.outputs) ? o.outputs : {};
   const D = JOB_DEFAULTS;
+  const skills = [...new Set((Array.isArray(o.skills) ? o.skills : []).filter((x) => SLUG.test(x ?? '')))].slice(0, JOB_LIMITS.skills);
+  const specialty = SLUG.test(o.specialty ?? '') ? o.specialty : skills[0] ?? D.specialty;
   return {
-    specialty: SLUG.test(o.specialty ?? '') ? o.specialty : D.specialty,
+    specialty,
+    // the skills a run needs; a file without the list needs its specialty only
+    skills: skills.length ? skills : specialty ? [specialty] : [],
     model: coerceModel(o.model, D.model), // a stored sonnet/haiku job runs as opus: the policy, not the file, decides
     budget: {
       tokens: Number.isInteger(b.tokens) ? Math.min(JOB_LIMITS.tokensMax, Math.max(JOB_LIMITS.tokensMin, b.tokens)) : D.budget.tokens,
@@ -191,7 +199,8 @@ export const isDue = (trigger, lastAt, now) => { const n = nextRun(trigger, last
 /** JSON Schema properties for editors (build engine → schemas/json/job-type.schema.json). */
 export function jobTypeSchemaProperties() {
   return {
-    specialty: { type: 'string', pattern: SLUG.source, description: 'the owning agent skill id (swarm roster)' },
+    specialty: { type: 'string', pattern: SLUG.source, description: 'the home agent skill id (swarm roster): its skill page goes in the brief' },
+    skills: { type: 'array', maxItems: JOB_LIMITS.skills, items: { type: 'string', pattern: SLUG.source }, description: 'the skills a run needs; any agent holding them all may take it (default: the specialty)' },
     model: { enum: JOB_ENUMS.model },
     budget: { type: 'object', required: ['tokens'], properties: { tokens: { type: 'integer', minimum: JOB_LIMITS.tokensMin, maximum: JOB_LIMITS.tokensMax }, maxTurns: { type: 'integer', minimum: 1, maximum: JOB_LIMITS.turnsMax }, usd: { type: 'number', minimum: 0 } } },
     trigger: { type: 'object', required: ['kind'], properties: { kind: { enum: JOB_ENUMS.trigger }, every: { type: 'string', pattern: EVERY.source }, at: { type: 'string', pattern: AT.source }, event: { type: 'string' } } },

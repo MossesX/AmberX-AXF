@@ -5,7 +5,7 @@
  * Arrow keys move the focused widget one place (across sides at the ends). The snap rule is the engine's (snapIndex).
  * Theme tokens only.
  */
-import { useCallback, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react';
 import { hostSpec, snapIndex, type PlacedAttachment } from '../../core/engines/widgets';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button } from './Controls';
@@ -21,7 +21,7 @@ export interface ArrangeApi {
   /** Props for one side's container (it holds that side's items). */
   sideProps: (side: string) => Record<string, string>;
   /** Wrap one placed item: drag handle + key moves while arranging, plain otherwise. */
-  item: (p: PlacedAttachment, index: number, className: string, extra: Record<string, string | undefined>, children: ReactNode) => ReactNode;
+  item: (p: PlacedAttachment, index: number, className: string, extra: Record<string, unknown>, children: ReactNode) => ReactNode;
   /** The drop marker for a side at an index (render it between items). */
   marker: (side: string, index: number) => ReactNode;
 }
@@ -121,7 +121,7 @@ export function useArrange(host: string, placed: Record<string, PlacedAttachment
             onPointerCancel: () => update(null),
             onKeyDown: onKey(p, side, index),
             onClickCapture: swallow,
-            style: dragging ? { transform: `translate(${drag!.dx}px, ${drag!.dy}px)` } : undefined,
+            style: dragging ? { ...(extra.style as CSSProperties | undefined), transform: `translate(${drag!.dx}px, ${drag!.dy}px)` } : (extra.style as CSSProperties | undefined),
           } : {})}
         >
           {children}

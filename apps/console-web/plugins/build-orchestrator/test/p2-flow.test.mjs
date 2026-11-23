@@ -60,7 +60,7 @@ eq(A.statusLog.map((l) => l.status), ['pending', 'splitting', 'split', 'pulling-
 ok(A.statusLog.every((l) => l.at && l.by), 'every change has at and by');
 eq(A.steps.map((s) => s.statusLog.map((l) => l.status).join('>')), ['pending>pulling-main>ready>sending>failed>sending>building', 'pending>pulling-main>ready>sending>building'], 'each step: main pulled, then sent and building (s1 retried forward after a refused launch)');
 ok(A.steps.every((s) => existsSync(s.worktree) && s.branch === `claude/alpha--${s.id}`), 'worktrees cut before launch at <build>--<step>');
-eq(A.steps.map((s) => s.model), ['Fable', 'Opus'], 'models: Fable for the schema step, Opus otherwise');
+eq(A.steps.map((s) => [s.model, s.triage?.rule]), [['Fable', 'contracts'], ['Fable', 'default']], 'models come from the triage gate: the schema step by its contracts rule, the other by the default (unsure = Fable)');
 eq(r.active, 'alpha', 'alpha is the one active build');
 eq(get('beta').status, 'split', 'beta is split and waits (shown Pending)');
 ok(r.waits.some((w) => w.id === 'beta' && /one active build/.test(w.why)), 'beta says what it waits for');
@@ -153,7 +153,8 @@ echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"
   F.advance({ build: 'plan-fable', env: { ...process.env, AXF_PIPELINE_SPLITTER: fable } });
   let P = get('plan-fable');
   eq(P.statusLog.map((l) => l.status), ['pending', 'splitting', 'split'], 'pending → splitting → split');
-  eq(P.steps.map((s) => [s.model, s.estimate]), [['Fable', '10 min'], ['Opus', '15 min']], 'Fable designed the steps with minutes and models (the two sharing files run as one, inside the 15 minute cap)');
+  eq(P.steps.map((s) => [s.model, s.estimate]), [['Fable', '10 min'], ['Opus', '15 min']], 'Fable designed the steps with minutes; its model per step is the suggestion the triage gate kept (the two sharing files run as one, inside the 15 minute cap)');
+  eq(P.steps.map((s) => [s.triage?.rule, s.triage?.suggested, s.triage?.suggestedBy]), [['contracts', 'Fable', 'splitter'], ['designer', 'Opus', 'splitter']], 'each step keeps the gate\'s decision: the rule that fired and what the splitter suggested');
   ok(P.steps.every((s) => s.status === 'pending'), 'every designed step row exists (pending)');
   ok(/Split by Fable into 3 steps/.test(P.notes.at(-1)?.text ?? ''), 'the build says Fable split it');
   const prompt = readFileSync(join(tmp, 'fable-prompt'), 'utf8');
@@ -181,7 +182,7 @@ echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"
   sendPlan('plan-nocredit', [{ text: 'Write the engine contract' }, { text: 'Toolbar button', minutes: 10 }]);
   F.advance({ build: 'plan-nocredit', env: { ...process.env, AXF_PIPELINE_SPLITTER: broke } });
   P = get('plan-nocredit');
-  eq([P.status, P.steps.map((s) => [s.text, s.model, s.estimate])], ['split', [['Write the engine contract', 'Fable', '15 min'], ['Toolbar button', 'Opus', '10 min']]], 'no Fable credits: one step per planning step, model by modelFor, minutes noted or the cap');
+  eq([P.status, P.steps.map((s) => [s.text, s.model, s.estimate])], ['split', [['Write the engine contract', 'Fable', '15 min'], ['Toolbar button', 'Fable', '10 min']]], 'no Fable credits: one step per planning step, minutes noted or the cap; the model is the triage gate\'s (nobody judged the button simple, so the default)');
   ok(/Fable could not split it \(splitter exit 1: Credit balance is too low\)/.test(P.notes.at(-1)?.text ?? ''), 'the build says why it fell back');
 
   const junk = join(tmp, 'junk.sh'); writeFileSync(junk, '#!/bin/bash\ncat >/dev/null; echo \'{"steps":[{"text":"x","model":"Sonnet","minutes":90}]}\'\n'); chmodSync(junk, 0o755);

@@ -9,8 +9,9 @@
  * - Builds page (slot `builds.top`) and Build queue screen (slot `build.queue.top`): running + waiting with priority tags, priority and waiting since, Move up and Cancel.
  * - Swarm cards (slot `swarm.agent.status`): on-duty agents past the free slots show "Waiting for a desk".
  *
- * - Hard build limit (build-limit@1, framework/cli/build-limit.mjs, Nov 12 2026): Settings → Plugins → Agent cap shows
- *   the VPS's hard limit with live usage (what really runs on the host), what counts and the axf-builds.slice CPU /
+ * - Builds at once (build-limit@1, framework/cli/build-limit.mjs; settings-sources@1 `builds.atOnce`): one setting, one
+ *   count, one wording on every screen (buildsNow). Settings → Plugins → Agent cap shows
+ *   the limit with live usage (what really runs on the host), what counts and the axf-builds.slice CPU /
  *   memory caps; only Brett's own signed-in console can change it (the server answers canEdit). The banner chip and the
  *   queue title show "builds 7/8" next to the slots.
  *
@@ -32,7 +33,7 @@ const LEVEL_LABEL: Record<Level, string> = { boss: 'Boss', urgent: 'Urgent', hig
 const LEVEL_TONE: Record<Level, 'danger' | 'warning' | undefined> = { boss: 'danger', urgent: 'danger', high: 'warning', normal: undefined, low: undefined };
 
 interface Rule { match: string; level: Level }
-interface Settings { hardMax?: number; maxAgentsSet?: number; maxAgents: number; maxHeavy: number; minFreeGb: number; closeFinishedAfterSec: number; pollSec: number; priorityRules: Rule[]; guardWarnTrips: number; swapWarnMb: number; swapWarnMin: number }
+interface Settings { hardMax?: number; /** read-only here: Builds at once (the one stored key is the VPS limit's maxBuilds) */ maxAgents: number; maxHeavy: number; minFreeGb: number; closeFinishedAfterSec: number; pollSec: number; priorityRules: Rule[]; guardWarnTrips: number; swapWarnMb: number; swapWarnMin: number }
 interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; build?: string; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number; /** 'emergency' = it waits for, or holds, an emergency slot (counted apart from the cap) */ pool?: 'emergency' }
 interface Hard { max: number; live: number | null; free: number | null; source?: string; at?: string | null; error?: string }
 interface HardItem { kind: 'session' | 'claude' | 'setup' | 'reserved'; pool?: 'builds' | 'emergency'; name: string; pid?: number; since?: string }
@@ -71,6 +72,16 @@ function useStatus() {
   return useSyncExternalStore(subscribe, snapshot);
 }
 
+/**
+ * The one count every screen shows for Builds at once: what really runs on the VPS when the host reports it, else what
+ * the queue has booked; over the one cap. `known` is false while the host's count is not available.
+ */
+export function buildsNow(status: Status): { running: number; cap: number; known: boolean } {
+  const live = status.hard?.max && status.hard.live != null ? status.hard.live : null;
+  return { running: live ?? status.used, cap: status.cap, known: live != null };
+}
+const WORDING = 'Builds at once';
+
 const ago = (iso?: string) => {
   if (!iso) return '';
   const s = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 1000));
@@ -82,11 +93,11 @@ const ago = (iso?: string) => {
 function SummaryChip() {
   const { status } = useStatus();
   if (!status) return null;
-  const hard = status.hard?.max && status.hard.live != null ? status.hard : null;
-  const full = status.used >= status.cap || (hard != null && (hard.live ?? 0) >= hard.max);
+  const b = buildsNow(status);
+  const full = status.used >= status.cap || b.running >= b.cap;
   return (
-    <span className={`axp-slots__summary${full ? ' is-full' : ''}`} title={`Headless agents: ${status.used} of ${status.cap} slots in use${status.queued ? `, ${status.queued} waiting` : ''}${hard ? `; VPS hard limit: ${hard.live} of ${hard.max} builds really running` : ''} (Settings → Plugins → Agent cap)`}>
-      · slots {status.used}/{status.cap}{hard ? ` · builds ${hard.live}/${hard.max}` : ''}{status.queued ? ` · ${status.queued} queued` : ''}
+    <span className={`axp-slots__summary${full ? ' is-full' : ''}`} title={`${WORDING}: ${b.running} of ${b.cap} running${b.known ? '' : ' (booked; the VPS is not reporting its live count)'}${status.queued ? `, ${status.queued} waiting` : ''} (Settings → Plugins → Agent cap)`}>
+      · builds {b.running}/{b.cap}{status.queued ? ` · ${status.queued} queued` : ''}
     </span>
   );
 }
@@ -105,8 +116,8 @@ function QueuePanel() {
     finally { setBusy(''); }
   };
   const running = status?.running.filter((r) => r.state !== 'finished') ?? [];
-  const hardLine = status?.hard?.max && status.hard.live != null ? ` · VPS limit ${status.hard.live}/${status.hard.max}` : '';
-  const title = status ? `Agent slots ${status.used}/${status.cap}${hardLine}${status.queued ? ` · ${status.queued} waiting` : ''}` : 'Agent slots';
+  const b = status ? buildsNow(status) : null;
+  const title = b ? `${WORDING} ${b.running}/${b.cap}${status?.queued ? ` · ${status.queued} waiting` : ''}` : WORDING;
   return (
     <Container title={title} icon="layers" className="axp-slots">
       {error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {error}</p>}
@@ -165,7 +176,7 @@ function DeskChip({ agentId, onDuty }: { agentId: string; onDuty: string[] }) {
   return <Chip tone="warning">{d === 'queued' && pos ? `Waiting for a desk · #${pos}` : 'Waiting for a desk'}</Chip>;
 }
 
-/* ---------------- the VPS's hard build limit ---------------- */
+/* ---------------- VPS build limits: Builds at once, emergency slots, the slice ---------------- */
 
 const KIND_LABEL: Record<HardItem['kind'], string> = { session: 'running', claude: 'claude -p (no tmux)', setup: 'starting up', reserved: 'just admitted' };
 
@@ -201,8 +212,8 @@ function HardLimitPanel() {
       )}
       {h.canEdit ? (
         <>
-          <NumberSetting label="Hard limit: builds at once" hint="The VPS refuses the next build past this (default 8)" value={l.maxBuilds} min={1} max={64} onSave={(v) => void save({ maxBuilds: v })} />
-          <NumberSetting label="Emergency slots" hint="Places beside the hard limit for builds you send to emergency; counted apart, never used by the orchestrator (default 2, 0 = off)" value={l.emergencySlots ?? 2} min={0} max={8} onSave={(v) => void save({ emergencySlots: v })} />
+          <NumberSetting label={WORDING} hint="Sessions and swarm jobs running at once. The VPS refuses the next one past this and the queue holds it until a place frees (default 8)" value={l.maxBuilds} min={1} max={64} onSave={(v) => void save({ maxBuilds: v })} />
+          <NumberSetting label="Emergency slots" hint="Places beside Builds at once for builds you send to emergency; counted apart, never used by the orchestrator (default 2, 0 = off)" value={l.emergencySlots ?? 2} min={0} max={8} onSave={(v) => void save({ emergencySlots: v })} />
           <NumberSetting label="CPU for all builds (%)" hint="100 = one core; the slice's CPUQuota" value={l.cpuQuotaPct} min={50} max={25600} onSave={(v) => void save({ cpuQuotaPct: v })} />
           <NumberSetting label="Memory for all builds (GB)" hint="The slice's MemoryMax; builds slow down near it and are stopped past it" value={l.memoryMaxGb} min={1} max={1024} onSave={(v) => void save({ memoryMaxGb: v })} />
           <NumberSetting label="Docker test run CPUs" hint="--cpus on node:* / Playwright containers" value={l.dockerCpus} min={0.25} max={64} step={0.25} onSave={(v) => void save({ dockerCpus: v })} />
@@ -247,8 +258,7 @@ function SettingsPanel() {
   };
   return (
     <div className="fx-stack">
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>One cap for every headless Claude session on the VPS: console launches, axHub build_start, orchestrator runs and swarm agents. Extras wait in line and start by themselves.</p>
-      <NumberSetting label="Max running agents" hint={`Sessions and swarm jobs at once (default 6; never above the VPS hard limit${s.hardMax ? ` of ${s.hardMax}` : ''})`} value={s.maxAgents} min={1} max={64} onSave={(v) => void save({ maxAgents: v })} />
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>{WORDING}: <b>{s.maxAgents}</b>. One cap for every headless Claude session on the VPS (console launches, axHub build_start, orchestrator runs, swarm agents); extras wait in line and start by themselves. It is one setting, changed in Settings → Plugins → Agent cap → {WORDING} (Brett only).</p>
       <NumberSetting label="Max heavy steps at once" hint="pnpm/vite builds, docker node:22 test runs, Playwright (default 3)" value={s.maxHeavy} min={1} max={32} onSave={(v) => void save({ maxHeavy: v })} />
       <NumberSetting label="Memory floor (GB)" hint="Don't start a new one while less memory than this is free (default 2; 0 = off)" value={s.minFreeGb} min={0} max={64} step={0.5} onSave={(v) => void save({ minFreeGb: v })} />
       <NumberSetting label="Close finished sessions after (s)" hint="The result stays on screen this long, then the window closes; the log stays (default 120)" value={s.closeFinishedAfterSec} min={0} max={86400} onSave={(v) => void save({ closeFinishedAfterSec: v })} />
@@ -282,7 +292,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   settingsTabs: [{ id: FOLDER, label: 'Agent cap', icon: 'layers', order: 46, parent: 'plugins' }],
   settingsPanels: [
-    { id: 'agent-slots.hard-limit', tab: FOLDER, title: 'VPS hard build limit', icon: 'lock', order: 5, render: () => <HardLimitPanel /> },
+    { id: 'agent-slots.hard-limit', tab: FOLDER, title: 'VPS build limits', icon: 'lock', order: 5, render: () => <HardLimitPanel /> },
     { id: 'agent-slots.settings', tab: FOLDER, title: 'Agent cap', icon: 'layers', order: 10, render: () => <SettingsPanel /> },
     { id: 'agent-slots.queue', tab: FOLDER, title: 'Queue', icon: 'list', order: 20, render: () => <QueuePanel /> },
     { id: 'agent-slots.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

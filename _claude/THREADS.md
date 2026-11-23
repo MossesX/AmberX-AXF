@@ -33,6 +33,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| One true source: get the redundant settings out (`one-true-source-get-redundant-settings`, Fable; Brett Nov 21): every console setting audited (`node framework/cli/settings-audit.mjs`); four duplicate groups merged to one stored key each with the old keys as read aliases and a logged migration: Builds at once (`build-limit.json maxBuilds` ⟵ agent-slots `maxAgents`), Sessions per account (claude-workers `limits.building` ⟵ pipeline `parallelPerAccount`, account `parallel`, Claude `builds.maxParallel`), Launch builds without asking and Max launch brief size (the Claude settings ⟵ the pipeline file's copies, which had shadowed them); one wording on Agent cap, VPS Configuration → Build cap, Job routing and Pipeline accounts; the "0 of 6" live count fixed (the console container counted its own processes); registry `framework/schemas/settings-sources.json` + plugin parts, CI check `framework/cli/check-settings-sources.mjs`, spec `framework/spec/SETTINGS-SOURCES.md`; report `_claude/builds/reports/one-true-source-get-redundant-settings.md` | in-pr | `claude/one-true-source-get-redundant-settings` | #888 | merged once CI is green | 2026-11-21 |
+| Fill every slot: parallel steps, merge back, auto-queue (`always-fill-every-slot-when-slots-are`, Fable → Opus; Brett Nov 13: "Always fill every slot…") <!-- axf-plugin:build-orchestrator -->: dispatcher fill round launches ready dependsOn steps in their own worktrees (`claude-headless.sh --step`), merges them back, conflict → blocked retry, auto-queue Pending (owner setting); REST / MCP / CLI / voice / deep links; Slots strip, step deps editor, settings panel | in-pr; main merged in (Pipeline 2.0 status table: Slots strip above it, step deps in each expanded build) | claude/always-fill-every-slot-when-slots-are | #582 | merged once CI is green | 2026-11-22 |
 | Rip out Plan Studio 1, keep only Plan Studio 2.0 (`rip-out-plan-studio-1-keep-only-plan`, Fable; plan Removals, Brett Nov 20): the original `plan-studio` plugin is archived (git tag `archive/plan-studio-1`, hub data left as a read-only archive) and uninstalled; its 8 remaining plans moved into the 2.0 tree under "From Plan Studio 1" (counts checked); Plan Studio 2.0 now provides plans@1 (`plans.mjs`), so control@1 `planner.plans`, MCP `plan_park`, the voice plan phrases, the orchestrator's priority rows and the project seed CLI work on the tree; "plan studio" opens the 2.0 screen (screen aliases in `consoleResolve`); report `_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md` | in-pr | `claude/rip-out-plan-studio-1-keep-only-plan` | #882 | merged once CI is green | 2026-11-21 |
 | Land audit steps s3 to s18 (`land-audit-s3-s18`, hand build, Fable; Brett Nov 21): the fourteen steps of `fable-full-audit-ui-overhaul-conso` that never reached main (s3, s4, s5, s6, s8 to s15, s17, s18) land as one PR in step order, from the tested integration branch merged onto main; nine clashes settled (main's pipeline repair work wins, s13's not-counted list re-applied on the emergency pools); two UI Review items waiting, s9, s11 and s17 still need shots; report `_claude/builds/reports/land-audit-s3-s18.md` | in-pr | `claude/land-audit-s3-s18` | #880 | merged by the hand build once CI is green; then #863 closed, audit steps marked in the store | 2026-11-21 |
 | Fix main CI, red after the s16 + s7 hand lands (`fix-main-ci-red-after-s16-s7-hand-`, Fable; Brett Nov 20, run 44801650701 on `7f12868`): the axhub-web fold left check-plugin-catalog crashing (axhub kind has no `into`) and axhub-approvals without a token-registry block; underneath, settings-iface defaults for the six axhub-* plugins, help for eight hub-page controls, hub-pages relay log through data_store, request page description, decision numbers in hubPages/test.mjs. s1–s4 fixed it in parallel, s5 merged them (three clashes, s4 side kept), every CI check that covers the changed files passes; report `_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md` | ready to land | `claude/fix-main-ci-red-after-s16-s7-hand---s5` |  | lander opens the one PR; its CI run is the green that counts | 2026-11-20 |
@@ -80,6 +82,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Skin from axHub: Override switch + greyed-out editors (`skin-axhub-override-switch-greyed-out`, Opus; Brett Nov 13: "an override switch … you only have one or the other; every screen where you'd change properties is greyed out with a note"): Override axHub (`axf.lock.hubskin.override`) under Get my skin only from axHub, mutually exclusive; skin/asset editors disabled under HubSkinLockNote with "Click here to override" (one confirm); edits marked Overridden; action `appearance.hubskin.override`, settings.set, voice | phase 1 done, PR open; builds on #618 | `claude/skin-axhub-override-switch-greyed-out` | #641 | land #618 first; UI Review item local only (no console token): re-send. Report `_claude/builds/reports/skin-axhub-override-switch-greyed-out.md` | 2026-11-13 |
 | Per-instance settings interface picker (`per-instance-settings-window-picker`, Opus, phase 1; Brett Nov 13: "every tab group and toolbar has its own settings interface, and within it you can select our settings interface"): every tab group / toolbar / banner / nav / menu bar picks its own settings interface inside its own dialog (`axf.chrome.<type>.<instance>.interface`, shared default preselected), action `chrome.instance-interface` (REST, MCP, CLI, voice); workspace toolbars + All toolbars list open each toolbar's own dialog | phase 1 done (s1–s3); PR draft until UI Review shots | `claude/per-instance-settings-window-picker` | [#622](https://github.com/MossesX/AmberX-AXF/pull/622) | Desktop + phone shots of a toolbar and a tab-group dialog to UI Review (Playwright not installed on the VPS). Report `_claude/builds/reports/per-instance-settings-window-picker.md` | 2026-11-13 |
 | Locked default settings interface for every asset and plugin (`settings-iface-default-all`, Opus; Brett Nov 18): settings-iface@1, required `builtFor` on every settings asset (backfilled), `default-<name>` per asset type (55) and console plugin (75), locked greyed row + checkbox + picker dialog filtered on builtFor on every plugin tab and Settings → Appearance → Asset types; actions `settings.iface` / `settings.iface.choose` | done; PR ready, waiting in UI Review (r-20261118-67d6cc51) | `claude/settings-iface-default-all-2` | [#834](https://github.com/MossesX/AmberX-AXF/pull/834) | Android twin deferred (PORTING.md). Report `_claude/builds/reports/settings-iface-default-all.md` | 2026-11-18 |
+| Every app gets its own locked default nav + app menu (`every-app-gets-own-locked-default`, Opus): app-menus@1, `default-<app>-nav` / `default-<app>-appmenu` per web app (`data.builtFor: app:<app>`, manifests point at them, old per-app menus folded in), runtime refuses shared / other apps' menus everywhere a slot is set, Settings → Appearance locked rows + checkbox + picker listing only the app's menus; actions `menus.pick` / `menus.choose` / `menus.state` | phase 1 done, PR opened by the VPS | `claude/every-app-gets-own-locked-default` | — | Android twin deferred (PORTING.md); demo needs a rebake to enforce. Report `_claude/builds/reports/every-app-gets-own-locked-default.md` | 2026-11-18 |
 | Per-instance settings picker: merge main and land (`per-instance-settings-picker-merge-main`, Opus, phase 1; Brett Nov 13: "every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency"): #622 merged onto main (Overlays imports from both sides, console copy re-baked, lock rehashed for the branch's files only); coverage check done | phase 1 done (s1–s3); PR open | `claude/per-instance-settings-picker-merge-main` | [#642](https://github.com/MossesX/AmberX-AXF/pull/642) | Follow-up (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind. Report `_claude/builds/reports/per-instance-settings-picker-merge-main.md` | 2026-11-13 |
 | Per-toolbar settings: fix failing chrome-settings check and land (`per-toolbar-settings-fix-failing-chrome`, Fable s1; Brett Nov 13: "land the per-toolbar, tab group and menu settings"): #642 plus latest main; `gen-fixtures.mts` now writes the per-instance fixture sections (`keys.instanceInterface`, `instancePicks`, `instanceInterfaces`, `prefixTargets`, `instanceSlugs`) that the hand-edited fixture lost on regeneration; `check-chrome-settings` green (304) next to main's tab rows | landed: #650 merged Nov 13 20:44 UTC (also lands #642); s2–s3 done (Opus) | `claude/per-toolbar-settings-fix-failing-chrome` | [#650](https://github.com/MossesX/AmberX-AXF/pull/650) | Report `_claude/builds/reports/per-toolbar-settings-fix-failing-chrome.md`. On main: `check-chrome-settings` 304 green, `check-toolbars`, `check-chrome-assets` green. Still open (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind | 2026-11-14 |
 | HOTFIX desktop console draws app menu, banners and nav twice (`hotfix-desktop-console-draws-app-menu`, Opus; Brett Nov 13: "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings"): not a code defect, a stale cached bundle (Brett: fine after hard refresh); per-toolbar settings kept, nothing reverted. Added `apps/console-web/scripts/chrome-once.e2e.mjs` (counts menubar / banner / app nav, desktop + phone, standalone + embedded): 29 checks pass on the console redeployed Nov 14 22:38, which carries the per-instance settings | s1-s3 done; PR open (test + report only) | `claude/hotfix-desktop-console-draws-app-menu` | [#658](https://github.com/MossesX/AmberX-AXF/pull/658) | Toolbar settings not applying: build `hotfix-toolbar-settings-still-change` | 2026-11-14 |
@@ -840,406 +843,406 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 21:27 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:31 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 21:32 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 21:53 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 21:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 21:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:19 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:22 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 22:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:44 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
-- 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → assigning-models (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → ready (all) · orchestrator
-- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → sending (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · builds-live
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
-- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` s2 done (all) · orchestrator
-- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s2 (all) · builds-live
-- 2026-11-20 23:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s1 (all) · builds-live
-- 2026-11-20 23:36 UTC · `fix-main-ci-red-after-s16-s7-hand-` s1 done (all) · orchestrator
-- 2026-11-20 23:36 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:37 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:41 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:41 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
-- 2026-11-20 23:43 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s4 (all) · builds-live
-- 2026-11-20 23:43 UTC · `fix-main-ci-red-after-s16-s7-hand-` s4 done (all) · orchestrator
-- 2026-11-20 23:44 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:51 UTC · `fix-main-ci-red-after-s16-s7-hand-` s5 done (all) · orchestrator
-- 2026-11-20 23:52 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-20 23:52 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:08 UTC · `fix-main-ci-red-after-s16-s7-hand-` s3 done (all) · orchestrator
-- 2026-11-21 00:08 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:10 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → build-complete (all) · headless
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → merging-pr, note (all) · lander
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` PR 867 (all) · lander
-- 2026-11-21 00:11 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pr-pulling-main (all) · lander
-- 2026-11-21 00:12 UTC · `fix-main-ci-red-after-s16-s7-hand-` → running-ci (all) · lander
-- 2026-11-21 00:38 UTC · `plan-studio-live-progress-one-stor` added (0 steps) (all) · plan-studio-2
-- 2026-11-21 00:38 UTC · `plan-studio-live-progress-one-stor` → splitting (all) · orchestrator
-- 2026-11-21 00:39 UTC · `console-tabs-plugins-open-in-tabs-` added (0 steps) (all) · plan-studio-2
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `console-tabs-plugins-open-in-tabs-` → splitting (all) · orchestrator
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:40 UTC · `plan-studio-live-progress-one-stor` note (all) · orchestrator
-- 2026-11-21 00:41 UTC · `plan-studio-live-progress-one-stor` note (all) · builds-live
-- 2026-11-21 00:41 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · builds-live
-- 2026-11-21 00:41 UTC · `console-tabs-plugins-open-in-tabs-` → split (all) · orchestrator
-- 2026-11-21 00:42 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:42 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · lander
-- 2026-11-21 00:43 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · orchestrator
-- 2026-11-21 00:43 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 00:46 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · foreign-write
-- 2026-11-21 00:46 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · foreign-write
-- 2026-11-21 00:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 00:48 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 00:49 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 00:51 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 00:52 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 00:54 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 00:55 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 00:55 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 00:56 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 00:56 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 00:57 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 00:59 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:02 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:03 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:04 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:06 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:08 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:09 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:10 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:11 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:11 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:12 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:13 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:18 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:19 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:20 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:21 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:23 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:24 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:25 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:26 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:27 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:28 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:29 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:30 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:34 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:35 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:36 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · watchdog
-- 2026-11-21 01:36 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:39 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:40 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:41 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:42 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
-- 2026-11-21 01:43 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:44 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 01:45 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
-- 2026-11-21 01:47 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:51 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:52 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 01:53 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 01:53 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:56 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 01:57 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 01:58 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 01:59 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 02:00 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 02:01 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 02:02 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 02:13 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand-` merged, note (all) · reconciler
-- 2026-11-21 02:25 UTC · `fix-main-ci-red-after-s16-s7-hand` added (5 steps) (all) · orchestrator
-- 2026-11-21 03:45 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 05:04 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
-- 2026-11-21 05:04 UTC · `ci-speed-ci-failure-reports-lean` → split (all) · amber
-- 2026-11-21 05:04 UTC · `nov-20-fix-list-voice-console-cont` → split (all) · amber
-- 2026-11-21 05:05 UTC · `plan-studio-live-progress-one-stor` → split (all) · amber
-- 2026-11-21 05:05 UTC · `console-tabs-plugins-open-in-tabs-` → split (all) · amber
-- 2026-11-21 05:09 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
-- 2026-11-21 05:15 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:16 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 05:16 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:16 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 05:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:19 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:20 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-21 05:20 UTC · `nov-20-fix-list-voice-console-cont` → failed, note (all) · watchdog
-- 2026-11-21 05:20 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:20 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
-- 2026-11-21 05:21 UTC · `plan-studio-live-progress-one-stor` → failed, note (all) · watchdog
-- 2026-11-21 05:21 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
-- 2026-11-21 05:22 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
-- 2026-11-21 05:22 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
-- 2026-11-21 06:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
-- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · console
-- 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · foreign-write
-- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` → queued (all) · amber-voice
-- 2026-11-21 19:16 UTC · `rename-gate-rules-to-vps-configuration` → running, note (all) · pipeline
-- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` branch claude/rename-gate-rules-to-vps-configuration (all) · pipeline
-- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 19:28 UTC · `fable-rebuild-1-2-vps-host-services-move` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:28 UTC · `fable-rebuild-2-2-both-watchdogs-one` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` added (3 steps) (all) · amber-voice
-- 2026-11-21 19:29 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued (all) · amber-voice
-- 2026-11-21 19:29 UTC · `fable-rebuild-2-2-both-watchdogs-one` → queued (all) · amber-voice
-- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` → queued (all) · amber-voice
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` → running, note (all) · pipeline
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` branch claude/fable-rebuild-1-2-vps-host-services-move (all) · pipeline
-- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` → running, note (all) · pipeline
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` branch claude/fable-rebuild-2-2-both-watchdogs-one (all) · pipeline
-- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` → running, note (all) · pipeline
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` branch claude/rip-out-plan-studio-1-keep-only-plan (all) · pipeline
-- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 19:40 UTC · `approval-rules-vps-configuration-veto` added (4 steps) (all) · amber-voice
-- 2026-11-21 19:41 UTC · `approval-rules-vps-configuration-veto` → queued (all) · amber-voice
-- 2026-11-21 19:47 UTC · `phone-connect-open-straight-phone-no-tap` added (3 steps) (all) · amber-voice
-- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · amber-voice
-- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` → queued (all) · amber-voice
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` → running, note (all) · pipeline
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` branch claude/approval-rules-vps-configuration-veto (all) · pipeline
-- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 20:02 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` added (4 steps) (all) · amber-voice
-- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` → queued (all) · amber-voice
-- 2026-11-21 20:26 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
-- 2026-11-21 20:29 UTC · `rename-gate-rules-to-vps-configuration` → fixing, note (all) · pipeline
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · pipeline
-- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · pipeline
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` branch claude/phone-connect-open-straight-phone-no-tap (all) · pipeline
-- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` → landing, note (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` → running, note (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` branch claude/one-true-source-get-redundant-settings (all) · pipeline
-- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
-- 2026-11-21 21:16 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
-- 2026-11-21 21:19 UTC · `approval-rules-vps-configuration-veto` → fixing, note (all) · pipeline
-- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` PR #883, merged, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` PR #882, merged, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `approval-rules-vps-configuration-veto` s4 done, PR #885, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `phone-connect-open-straight-phone-no-tap` PR #886, note (all) · reconciler
-- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
-- 2026-11-21 21:25 UTC · `rebuild-fresh-main-hide-any-asset` → fixing, note (all) · watchdog
-- 2026-11-21 21:25 UTC · `postgres-part-b-plan-plan-studio-catalog` → landing, note (all) · watchdog
-- 2026-11-21 21:25 UTC · `fix-main-ci-red-after-s16-s7-hand` note (all) · watchdog
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` → landing, note (all) · pipeline
-- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 21:35 UTC · `fix-refreshing-console-jumps-back` → fixing, note (all) · watchdog
-- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed, note (all) · watchdog
-- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → complete, note (all) · verify
-- 2026-11-21 21:40 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:41 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:41 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:45 UTC · `banner-widget-shapes-plus-change-icon` → fixing, note (all) · watchdog
-- 2026-11-21 21:46 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:46 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:46 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:50 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:51 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:51 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 21:55 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 21:56 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 21:56 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 22:01 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → landed, note (all) · watchdog
-- 2026-11-21 22:05 UTC · `fix-main-ci-red-after-s16-s7-hand` → landed, note (all) · watchdog
-- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → complete, note (all) · verify
-- 2026-11-21 22:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
-- 2026-11-21 22:05 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · builds-live
-- 2026-11-21 22:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 22:05 UTC · `fix-main-ci-red-after-s16-s7-hand` → complete, note (all) · verify
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
-- 2026-11-21 22:06 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · builds-live
-- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 22:07 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:07 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
-- 2026-11-21 22:08 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:09 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
-- 2026-11-21 22:25 UTC · `icon-picker-every-banner-settings-widget` → fixing, note (all) · watchdog
-- 2026-11-21 22:25 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · watchdog
-- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` added (3 steps) (all) · amber-voice
-- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` → queued (all) · amber-voice
-- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` → running, note (all) · pipeline
-- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` branch claude/approval-rules-save-apply-default-don-t (all) · pipeline
-- 2026-11-21 22:30 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `approval-rules-save-apply-default-don-t` note (all) · amber-voice
-- 2026-11-21 22:31 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 22:31 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
-- 2026-11-21 22:33 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
-- 2026-11-21 22:38 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
-- 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
-- 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
-- 2026-11-21 22:47 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
-- 2026-11-21 22:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
-- 2026-11-21 22:48 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
-- 2026-11-21 22:58 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
-- 2026-11-21 22:58 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
-- 2026-11-21 23:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → landed, note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rename-gate-rules-to-vps-configuration` note (all) · watchdog
-- 2026-11-21 23:05 UTC · `approval-rules-vps-configuration-veto` note (all) · watchdog
-- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → complete, note (all) · verify
-- 2026-11-21 23:05 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · builds-live
-- 2026-11-21 23:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
-- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
-- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:07 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:11 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
-- 2026-11-21 23:15 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · watchdog
-- 2026-11-21 23:16 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
-- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:21 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:25 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · watchdog
-- 2026-11-21 23:26 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:26 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
-- 2026-11-21 23:27 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-21 23:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
-- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-21 23:30 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:31 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:32 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:33 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:34 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` s10 undone, → queued (all) · foreign-write
-- 2026-11-21 23:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · watchdog
-- 2026-11-21 23:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-21 23:41 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
-- 2026-11-21 23:45 UTC · `terminal-main-tab-streaming-console-s` → fixing, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → landed, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `approval-rules-vps-configuration-veto` → landed, note (all) · watchdog
-- 2026-11-21 23:45 UTC · `approval-rules-save-apply-default-don-t` note (all) · builds-live
-- 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → complete, note (all) · verify
-- 2026-11-21 23:46 UTC · `approval-rules-vps-configuration-veto` → complete, note (all) · verify
-- 2026-11-22 00:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · reconciler
-- 2026-11-21 23:51 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-21 23:51 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
-- 2026-11-21 23:51 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · pipeline
-- 2026-11-21 23:55 UTC · `flagship-professional-skin-covering-2` → fixing, note (all) · watchdog
-- 2026-11-21 23:55 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · watchdog
-- 2026-11-21 23:55 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · watchdog
-- 2026-11-21 23:56 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-21 23:56 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:01 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:01 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:05 UTC · `auto-lander-never-wait-missing-ui-review` → fixing, note (all) · watchdog
-- 2026-11-22 00:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · watchdog
-- 2026-11-22 00:06 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:11 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:11 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:15 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · watchdog
-- 2026-11-22 00:16 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:16 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
-- 2026-11-22 00:17 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:18 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:19 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
-- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · foreign-write
-- 2026-11-22 00:20 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
-- 2026-11-22 00:21 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:25 UTC · `approval-pass-covers-every-call` → fixing, note (all) · watchdog
-- 2026-11-22 00:25 UTC · `urgent-all-data-to-postgres-builds-store` → landing, note (all) · cron
-- 2026-11-22 00:26 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:26 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:28 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
-- 2026-11-22 00:31 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:31 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:35 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-22 00:35 UTC · `plan-studio-2-open-button-working-deep` → fixing, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `fable-rebuild-2-2-both-watchdogs-one` → landed, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `phone-connect-open-straight-phone-no-tap` → landed, note (all) · watchdog
-- 2026-11-22 00:35 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · builds-live
-- 2026-11-22 00:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · builds-live
-- 2026-11-22 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
-- 2026-11-22 00:35 UTC · `approval-rules-save-apply-default-don-t` merged, note (all) · builds-live
-- 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · pipeline
-- 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · pipeline
-- 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:36 UTC · `fable-rebuild-2-2-both-watchdogs-one` → complete, note (all) · verify
-- 2026-11-22 00:36 UTC · `phone-connect-open-straight-phone-no-tap` → complete, note (all) · verify
-- 2026-11-22 00:36 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · builds-live
-- 2026-11-22 00:36 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
-- 2026-11-22 00:36 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · builds-live
-- 2026-11-22 00:37 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:37 UTC · `orchestrator-settings-collapsible-split` note (all) · pipeline
-- 2026-11-22 00:37 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
-- 2026-11-22 00:38 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:38 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
-- 2026-11-22 00:39 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:40 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:41 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:42 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-22 00:45 UTC · `every-plugin-gets-own-default-toolbar` → fixing, note (all) · watchdog
-- 2026-11-22 00:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
-- 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → landed, note (all) · watchdog
-- 2026-11-22 00:45 UTC · `context-menus-plugin-one-true-source` note (all) · builds-live
-- 2026-11-22 00:45 UTC · `fable-rebuild-1-2-vps-host-services-move` → complete, note (all) · verify
-- 2026-11-22 00:46 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · pipeline
+- 2026-11-22 23:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:25 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-22 23:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
+- 2026-11-22 23:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 23:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 23:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-22 23:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-22 23:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 00:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 00:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 01:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 01:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 01:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 01:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 01:48 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-23 01:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
+- 2026-11-23 01:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 01:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 02:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 02:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 02:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 02:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 02:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 02:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 03:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 03:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 04:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 04:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 04:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 04:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 04:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 04:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 05:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 05:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 05:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 05:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 05:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 05:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 06:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 06:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 06:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 06:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 07:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 07:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 07:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 07:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 09:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 09:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-23 09:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
+- 2026-11-23 09:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 16:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 16:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 16:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` added (0 steps) (all) · Amber (voice)
+- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` → archived (all) · Amber (voice)
+- 2026-11-23 16:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
+- 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
+- 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
 
 ## Token passes (log)
 

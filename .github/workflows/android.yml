@@ -97,6 +97,7 @@ jobs:
       - run: node framework/cli/crew-say.mjs check                 # crew-sections@1: every section that posts in the group chat has an owner on the crew (registry, events, literal ids)
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
+      - run: node framework/spec/check-settings-sources.mjs         # settings-sources@1: one stored key and one wording per setting; the CI check fails on an alias registered or stored again, a key name in two stores, a screen keeping its own copy
       - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
       - run: node framework/spec/check-reaper.mjs                   # vps-reaper@1: finished claude -p killed and handed to the lander, working builds never touched, dead tmux / ghost slots / ownerless heavy locks / leftover test servers / stale temp folders cleared, every kill logged + noted + one FYI
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
@@ -108,8 +109,10 @@ jobs:
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node deploy/branch-protection.test.mjs                 # L2-09: the main ruleset (required checks = this workflow's job names, deploy-key-only bypass); nothing is applied without --yes
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
+      - run: node framework/spec/check-build-pipeline-fill.mjs      # build-pipeline@1 fill: step dependencies (after), claims with TTL, readySteps, planFill replays fixtures/build-pipeline-fill.json
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/fill-slots.test.mjs   # fill every slot: step worktrees, merge back, conflict → blocked retry, dispatcher  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test-watchdog.mjs   # build watchdog: killed / failed / hung builds requeued and retried, cap, other account, idle slots, phone FYI  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-build-watchdog.mjs           # build-watchdog@1 decision table: killed 143 / exit 1 / OOM / stale heartbeat → reset + requeue (retry) until maxRetries → Pending + banner (give-up), usage limit / dead login → another account, live session left alone; recoveries[] on builds@1, schemas/build-watchdog.json current; fixtures/build-watchdog.json
       - run: node framework/spec/check-live-demo.mjs               # demo-run@1 (guided live demo): state machine idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped, pause on = wait for Next then ≥30 s, pause off = ≥30 s, the gap never below 30 s, refused transitions by code, per-act results + summary fold; acts touch demo- builds only; schemas/live-demo.json current; fixtures/live-demo.json
@@ -119,6 +122,7 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
+      - run: node framework/spec/check-model-triage.mjs             # model-triage@1: the VPS gate that assigns each step's model (every rule, lane, override, the approval hold, edits checked)
       - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
@@ -139,8 +143,11 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-flow.test.mjs          # pipeline-2@1 flow: split, one active build, worktrees before launch, accounts by usage left, retries forward  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-actions.test.mjs       # pipeline-2@1 taps: queue moves a waiting build on (never refused), hold / release, retry, rebuild, run-ci, land, cancel  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs       # emergency builds: started from Brett's signed-in console only, past the one-active-build line, the 2 emergency slots counted apart, grants taken back  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-parallel.test.mjs      # pipeline-2@1: up to stepsInParallel (4) steps at once, a give-up at maxAttempts is final, act step keeps the flow status  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-triage.test.mjs        # model-triage@1 in the dispatcher: every lane gets its model from the VPS gate, overrides win, decisions kept on the step and logged  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/settings-sources.test.mjs # settings-sources@1 in the pipeline: sessions per account, launch without asking and the brief size read from their one key, never stored again, migration keeps the one saved last  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-status-contract.test.mjs   # pipeline-2@1 status contract end to end (deep audit part A): a build that failed while waiting starts again, Brett's retry resets attempts, steps with no status never block, zero refusals from store ops, refused writes keep nothing, one dispatcher and one watchdog  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-pipeline-2.mjs               # pipeline-2@1: the engine against its fixture and schemas; the attempt ceiling, the archive rule, fixed steps, strict refusals, the 15 minute step cap
       - run: bash deploy/test/claude-headless-brief.test.sh                                  # the launch prompt goes on stdin (a 300 KB brief, no E2BIG; tmux part skipped without tmux), brief size cap keeps Brett's words
@@ -184,6 +191,8 @@ jobs:
         run: node framework/cli/check-toolbars.mjs
       - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
         run: node framework/cli/check-console-control.mjs
+      - name: One true source (no setting stored or registered twice, no screen keeps its own copy)
+        run: node framework/cli/check-settings-sources.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
@@ -196,6 +205,8 @@ jobs:
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
+      - name: Plan Studio 2.0 sent plans (steps read from the builds store, replace on split, live check-off, From orchestrator, the lock)  # axf-plugin:plan-studio-2
+        run: node apps/console-web/plugins/plan-studio-2/live.test.mjs  # axf-plugin:plan-studio-2
       - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
@@ -337,6 +348,7 @@ jobs:
             node framework/spec/check-theme-contrast.mjs                # every colour theme, light and dark: the full token set, and every text token at WCAG AA on bg and surface
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
+            node framework/spec/check-app-menus.mjs                     # app-menus@1: every app ships its locked default-<app>-nav / -appmenu, its manifest names them, no app points at a shared or another app's menu
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
@@ -401,6 +413,7 @@ jobs:
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
             npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-approvals.mts               # lib-approvals: approvals + held calls in one list, badge words, deciding rules, watcher
+            npx -y tsx framework/spec/check-app-menus-runtime.mts         # app-menus@1 in the runtime: own default menus, shared / other apps' menus refused, old picks migrate
             npx -y tsx framework/spec/check-approvals-menu.mts          # app menu Waiting for approval: Deny / Approve on every row, flips in place (jsdom)
             npx -y tsx framework/spec/check-approval-expand.mts         # expandable approval rows: details model, open in place, stays open on refresh, Deny / Approve inside (jsdom)
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
@@ -430,6 +443,7 @@ jobs:
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
+            python apps/console-web/plugins/plan-studio-2/server/test_orchestrate.py  # sent plans through the server: 409 while locked, the orchestrator's steps listed, its actions through axf.build-dispatch@1, cancel unlocks  # axf-plugin:plan-studio-2
             python apps/console-web/plugins/build-orchestrator/server/test_watchdogs.py  # build-watchdogs@1 routes: status, one flat settings map (bad keys and values 400), Run asks the host, the systems check item  # axf-plugin:build-orchestrator
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log

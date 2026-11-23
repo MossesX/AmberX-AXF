@@ -4,6 +4,7 @@
 #     128 KB MAX_ARG_STRLEN that made exec fail with E2BIG) launches, and the fake claude reads all of it from stdin.
 #  2. the temp prompt file is removed once the run ends.
 #     AXF_BUILD_STEP (a Pipeline 2.0 step) reaches the session: its exit call names the step.
+#     A launch outside the orchestrator gets its model from the VPS triage gate, and the decision is logged.
 #  3. the dispatcher's brief builder (pipeline.mjs fitBriefFor) trims a brief over builds.briefMaxBytes and keeps
 #     "## Brett said (verbatim)" and the pipeline paragraph.
 # Real tmux and a fake claude in HOME/.local/bin (the launcher puts ~/.local/bin first on PATH). Skips 1–2 without tmux.
@@ -27,6 +28,7 @@ got="$(cat | wc -c)"
 src="$(readlink "/proc/$$/fd/0" 2>/dev/null)"; printf '%s\n' "$src" > "$PWD/claude-prompt-path.txt"
 [[ "$(basename "$src")" == axf-brief.* && -f "$src" ]] && echo 1 > "$PWD/claude-tmpfiles.txt" || echo 0 > "$PWD/claude-tmpfiles.txt"
 printf '%s\n' "${AXF_BUILD_STEP:-}" > "$PWD/claude-step.txt"   # the Pipeline 2.0 step reaches the session inside tmux
+printf '%s\n' "$*" > "$PWD/claude-args.txt"   # the model the triage gate assigned reaches claude
 printf 'stdin=%s longest_arg=%s\n' "$got" "$longest" > "$PWD/claude-got.txt"
 echo '{"type":"result","subtype":"success","result":"done"}'
 EOF
@@ -36,6 +38,7 @@ EOF
   (cd "$tmp/run" && env HOME="$home" TMPDIR="$tmp/tmpdir" AXF_HEADLESS_DIR="$tmp/headless" AXF_SLOTS=off AXF_WATCH_LIVE=off AXF_AGENT_BOOK=off \
       AXF_OWN_LOGIN=off AXF_WORKERS=off AXF_LOOK_GATE=off AXF_ORIGIN=off AXF_BUILD_SLICE=off AXF_LOGIN_NOTE=off AXF_BUILD_LIMIT=off \
       AXF_BRIEF_ONLY=off AXF_CREW_SAY=off AXF_BUILD_ID= AXF_BUILD_STEP=s7 AXF_AGENT= AXF_AGENT_NAME= AXF_DISPATCH_TOKEN= \
+      AXF_MODEL= AXF_SURFACE= AXF_MODEL_TRIAGED= AXF_MODEL_TRIAGE_DIR="$tmp/triage" AXF_CLAUDE_SETTINGS_FILE="$tmp/no-settings.json" AXF_FABLE_UPGRADE_APPROVAL= \
       bash "$ROOT/deploy/claude-headless.sh" --name "$tag" --brief brief.md --log run.log -- --model opus > "$tmp/launch.out" 2>&1)
   st=$?
   ok '(( st == 0 ))' "the launch starts (exit $st): $(tail -3 "$tmp/launch.out")"
@@ -49,6 +52,11 @@ EOF
   ok '! grep -qi "argument list too long" "$tmp/run/run.log" "$tmp/launch.out" 2>/dev/null' 'no "Argument list too long" anywhere'
   ok '[[ "$(cat "$tmp/run/claude-tmpfiles.txt" 2>/dev/null)" == 1 ]]' 'the prompt file existed while claude ran'
   ok '[[ "$(cat "$tmp/run/claude-step.txt" 2>/dev/null)" == s7 ]]' "AXF_BUILD_STEP reaches the session (tmux starts it in the server's env; the exit call needs --step): '$(cat "$tmp/run/claude-step.txt" 2>/dev/null)'"
+  # the hand lane of the model triage gate (model-triage@1): the launch asked for Opus, nothing in the brief says the work
+  # is simple, so the gate's default (Fable) stands over the request (a floor); the decision is logged with its rule
+  ok 'grep -q -- "--model claude-fable-5-2" "$tmp/run/claude-args.txt" 2>/dev/null' "the hand launch runs on the model the triage gate assigned: $(cat "$tmp/run/claude-args.txt" 2>/dev/null | cut -c1-120)"
+  ok 'grep -q "model triage: Fable" "$tmp/launch.out"' "the launcher says what the gate decided: $(grep 'model triage' "$tmp/launch.out")"
+  ok 'grep -q "\"lane\":\"hand\"" "$tmp/triage/decisions.jsonl" 2>/dev/null && grep -q "\"rule\":\"default\"" "$tmp/triage/decisions.jsonl" && grep -q "\"name\":\"$tag\"" "$tmp/triage/decisions.jsonl"' "the decision is in the gate's log (lane, rule, session): $(cat "$tmp/triage/decisions.jsonl" 2>/dev/null)"
   for _ in $(seq 1 $(( ${AXF_BRIEF_TEST_WAIT:-180} * 5 ))); do tmux has-session -t "axf-$tag" 2>/dev/null || break; sleep 0.2; done
   prompt_path="$(cat "$tmp/run/claude-prompt-path.txt" 2>/dev/null)"
   ok '[[ -n "$prompt_path" && ! -e "$prompt_path" ]]' "the prompt file is removed after the run: ${prompt_path:-none}"

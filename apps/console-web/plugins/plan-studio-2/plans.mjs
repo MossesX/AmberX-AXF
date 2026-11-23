@@ -10,7 +10,7 @@
  * back as `building`. The tree keeps no versions: a deleted plan comes back with the tree's undo (`restoreDeleted`).
  */
 import * as tc from './web/tree-core.mjs';
-import { load, save, sendToBuild, storeDir, onHub } from './tree.mjs';
+import { assertUnlocked, load, save, sendToBuild, storeDir, onHub } from './tree.mjs';
 
 export { storeDir, onHub };
 export const FOLDER = 'plan-studio-2';
@@ -63,6 +63,9 @@ const patchOf = (raw, was) => {
 /** Where a new plan goes: inside the item `category` names (its last `A > B` part, by id or words), else the top level. */
 const parentFor = (s, category) => { const last = text(category).split('>').pop().trim(); return last ? tc.resolve(s, last)?.id ?? null : null; };
 
+/** Everything a plan holds except its own status and change stamp (what the lock on a sent plan protects). */
+const shape = (s, id) => JSON.stringify([tc.byId(s, id), ...tc.descendants(s, id)].map((i) => (i.id === id ? { ...i, status: '', updatedAt: '', by: '' } : i)));
+
 /**
  * Add a plan (no id, or an id the tree does not have) or change one. Steps: one with a known id is updated (text, done,
  * model), one without is added at the end of the plan; a step missing from `raw.steps` stays. Comments are the notes
@@ -73,6 +76,7 @@ export function savePlan(raw = {}, meta = {}) {
   let s = load();
   const was = planItem(s, raw.id);
   if (!was && !text(raw.title).trim()) throw new Error('a plan needs a title');
+  const before = s;
   let id = was?.id; let changed = !was;
   if (was) { const r = tc.edit(s, was.id, patchOf(raw, was), by); s = r.state; changed = r.changed; } else { const r = tc.add(s, { kind: 'plan', parent: parentFor(s, raw.category), by, ...patchOf(raw, null) }); s = r.state; id = r.item.id; }
   if (Array.isArray(raw.steps)) {
@@ -85,6 +89,8 @@ export function savePlan(raw = {}, meta = {}) {
   }
   const comments = Array.isArray(raw.comments) ? raw.comments.slice(was ? notesOf(s, id).length : 0) : []; // the notes it has are its comments so far
   for (const c of comments) if (text(c?.text).trim()) { s = tc.add(s, { kind: 'note', parent: id, title: c.text.trim().slice(0, 300), body: c.text, by: text(c.by) || by }).state; changed = true; }
+  // a sent plan is locked until its build lands or is cancelled: only its own status may still be set
+  if (was && changed && shape(before, was.id) !== shape(s, was.id)) assertUnlocked(before, was.id);
   if (changed) s = save(s);
   return { ok: true, plan: toPlan(s, tc.byId(s, id)), created: !was, unchanged: !changed };
 }
@@ -93,6 +99,7 @@ export function savePlan(raw = {}, meta = {}) {
 export function deletePlan(id) {
   const s = load();
   if (!planItem(s, id)) throw new Error(`no plan ${id}`);
+  assertUnlocked(s, id);
   const r = tc.remove(s, id);
   save(r.state);
   return { ok: true, removed: r.removed, trashId: r.trashId };

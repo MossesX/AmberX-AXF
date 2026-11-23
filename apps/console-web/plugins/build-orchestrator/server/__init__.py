@@ -862,7 +862,8 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
 
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
-    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
+    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential).
+    `parallel` is the account's Sessions per account: saved as its one key, claude-workers perAccount.<name>.building."""
     body = await _json_body(request)
     name = str(body.get("name") or "").strip()
     if not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", name):
@@ -870,7 +871,7 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     args = ["account", name]
     if body.get("fable") in ("on", "off", "auto"):
         args += ["--fable", str(body["fable"])]
-    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 12:
+    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 20:
         args += ["--parallel", str(body["parallel"])]
     if body.get("use") in ("on", "off"):
         args += ["--use", str(body["use"])]
@@ -884,17 +885,95 @@ def pipeline_settings() -> dict[str, Any]:
     return _pipeline("settings")
 
 
+# Fill every slot (BUILD-PARALLEL): the three Claude settings the fill round follows, by their pipeline names
+FILL_KEYS = {"fillSlots": "builds.fillSlots", "maxParallelPerBuild": "builds.maxParallelPerBuild", "autoQueuePending": "builds.autoQueuePending"}
+STEP_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+
+
+def fill_settings_set(request: Request, body: dict[str, Any]) -> dict[str, Any]:
+    """The fill settings part of POST /pipeline/settings: written as Claude settings through axf.claude-settings@1,
+    which derives the owner approval from the request itself. autoQueuePending is refused here unless the request is
+    Brett's own click (owner-only); fillSlots on and a higher maxParallelPerBuild need him too (claude-settings says so)."""
+    values = {FILL_KEYS[k]: v for k, v in body.items() if k in FILL_KEYS}
+    if not values:
+        return {}
+    if "autoQueuePending" in body and not brett_click(request):
+        raise HTTPException(403, "Auto-queue pending builds is owner-only: only Brett's own click in the console changes it")
+    if "maxParallelPerBuild" in body and not (isinstance(body["maxParallelPerBuild"], int) and 1 <= body["maxParallelPerBuild"] <= 12):
+        raise HTTPException(400, "maxParallelPerBuild is a whole number from 1 to 12")
+    if "fillSlots" in body and not isinstance(body["fillSlots"], bool):
+        raise HTTPException(400, "fillSlots is true or false")
+    svc = plugin_services.get("axf.claude-settings@1")
+    if svc is None:
+        raise HTTPException(503, "the Claude settings plugin is not installed: fill settings can't be changed")
+    r = svc.set_for(request, values) if hasattr(svc, "set_for") else svc.set(values, brett_click(request) or "console")
+    if not r.get("ok"):
+        raise HTTPException(403 if r.get("code") == "denied" else 400, str(r.get("message") or "refused")[:400])
+    return {"changed": r.get("changed", [])}
+
+
+@router.get("/pipeline/fill")
+def pipeline_fill(build: str = "") -> dict[str, Any]:
+    """Fill every slot, read-only: the slots (one row per slot: which build and step, or free), the ready steps, what the
+    next round would launch (planFill dry run, with why the rest waits), the settings; ?build=<id> adds that build's
+    steps with their dependency state (done / running in slot N / ready / waiting on …)."""
+    return _pipeline("fill", "status", *([_build_id(build)] if build else []))
+
+
+@router.post("/pipeline/fill/run")
+async def pipeline_fill_run(request: Request) -> dict[str, Any]:
+    """One dispatcher round now (on the VPS host it runs at once; from the console's container it is filed for the host's
+    next minute)."""
+    return _pipeline("fill", "run", "--by", (brett_click(request) or "console")[:80], who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/fill/settings")
+async def pipeline_fill_settings(request: Request) -> dict[str, Any]:
+    """{fillSlots?, maxParallelPerBuild?, autoQueuePending?}: the fill settings alone (the MCP command
+    pipeline-fill-settings, `pipeline.mjs fill set`, the voice action). Same rules as POST /pipeline/settings."""
+    body = await _json_body(request)
+    if not any(k in FILL_KEYS for k in body):
+        raise HTTPException(400, "send fillSlots, maxParallelPerBuild and/or autoQueuePending")
+    fill = fill_settings_set(request, body)
+    return {"ok": True, **fill, "settings": _pipeline("fill", "status").get("settings")}
+
+
+@router.post("/builds/{build_id}/steps/{step}/deps")
+async def step_deps(build_id: str, step: str, request: Request) -> dict[str, Any]:
+    """{dependsOn: [stepId…]} sets the step's dependencies ([] = independent: it may run in parallel as soon as the build
+    runs); {dependsOn: null} or {sequential: true} = no list (it waits for the step before it). Unknown ids, the step
+    itself and cycles are refused."""
+    body = await _json_body(request)
+    if not STEP_RE.match(step):
+        raise HTTPException(400, "bad step id")
+    deps = body.get("dependsOn", None)
+    if body.get("sequential") is True or deps is None:
+        arg = "sequential"
+    elif isinstance(deps, list) and all(isinstance(x, str) and STEP_RE.match(x) for x in deps):
+        arg = json.dumps(deps)
+    else:
+        raise HTTPException(400, "dependsOn is a list of step ids, or null")
+    who = (brett_click(request) or "console")[:80]
+    return _pipeline("fill", "deps", _build_id(build_id), step, arg, "--by", who, who=who)
+
+
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts, and the Split section: parallelSplit auto|ask|off, parallelMax 2..12,
-    parallelContract, parallelIntegrate). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    """{key: value…} for pipeline-settings@1 (parallelPerAccount, stepsInParallel, fablePlans, useConsoleAccount, maxRuns, idleAfterMin,
+    probeDays, splitProvider, apiOverflow, apiAccounts, and the Split section: parallelSplit auto|ask|off, parallelMax 2..12,
+    parallelContract, parallelIntegrate) and the fill settings (fillSlots, maxParallelPerBuild, autoQueuePending: Claude
+    settings, see fill_settings_set). parallelPerAccount is Sessions per account: saved as its one key, claude-workers
+    limits.building (settings-sources@1); autoQueue and briefMaxBytes are Claude settings and are refused here. Turning the
+    API overflow rule on spends money per token: only Brett's own click does that (a session, MCP or voice may turn it off);
+    so is Auto-queue pending builds, either way."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+    allowed = {"parallelPerAccount", "stepsInParallel", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
                "parallelSplit", "parallelMax", "parallelContract", "parallelIntegrate"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    fill = fill_settings_set(request, body)
+    if fill and not any(k in allowed for k in body):
+        return {"ok": True, **fill, "fill": _pipeline("fill", "status").get("settings")}
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -904,7 +983,8 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     pairs = [f"{k}={val(v)}" for k, v in body.items() if k in allowed]
     if not pairs:
         raise HTTPException(400, "nothing to change")
-    return _pipeline("set", *pairs)
+    res = _pipeline("set", *pairs)
+    return {**res, **fill} if fill else res
 
 
 @router.post("/pipeline/route")
@@ -1079,9 +1159,59 @@ async def pipeline_parallel(request: Request) -> dict[str, Any]:
     return _pipeline("parallel", _build_id(body.get("id")), par, "--by", (brett_click(request) or "console")[:80])
 
 
+P2_CLI = CLI.parent / "pipeline2.mjs"
+P2_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+
+
+def build_act(build_id: str, action: str, *, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+    """One tap on a Pipeline 2.0 build or one of its steps (pipeline2.mjs actBuild decides everything): queue, hold,
+    release, retry, rebuild, run-ci, land, cancel. A tap that does not fit where the build is → 400 with the reason."""
+    if action not in P2_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(P2_ACTIONS)}")
+    args = ["node", str(P2_CLI), "act", _build_id(build_id), action, "--by", (by or "console")[:80], "--json"]
+    if step:
+        if not ID_RE.match(step):
+            raise HTTPException(400, "bad step id")
+        args += ["--step", step]
+    if why.strip():
+        args += ["--why", why[:300]]
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    env["AXF_ACTOR"] = (by or "console")[:80]
+    try:
+        proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=660, env=env)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(500, f"the orchestrator could not run: {str(e)[:200]}") from None
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "the orchestrator refused")
+        raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err[:400])
+    return res
+
+
+@router.post("/pipeline/act")
+async def pipeline_act(request: Request) -> dict[str, Any]:
+    """{id, action, step?, why?}: one tap on a Pipeline 2.0 build or one of its steps. queue = move it on (split it, give
+    it the active place when it is next); hold / release = a waiting build keeps its place and is skipped; retry = failed
+    parts leave failed forward; rebuild = a failed step is built again, a build that failed while landing is recompiled;
+    run-ci = back to Running CI; land = the lander takes it now; cancel = archived. The VPS decides; a tap that does not
+    fit is refused with the reason."""
+    body = await _json_body(request)
+    return build_act(str(body.get("id") or ""), str(body.get("action") or ""), by=(brett_click(request) or "console"),
+                     why=str(body.get("why") or ""), step=str(body.get("step") or ""))
+
+
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one;
+    act(id, action, by=…, why=…, step=…) is one tap on a Pipeline 2.0 build or step (queue, hold, release, retry,
+    rebuild, run-ci, land, cancel)."""
+
+    def act(self, build_id: str, action: str, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+        return build_act(build_id, action, by=by, why=why, step=step)
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)

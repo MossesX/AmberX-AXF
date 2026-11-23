@@ -1,7 +1,7 @@
 /**
  * Console application menu (library `ai.amberx.axf.console.menu`, installed with the console's built-ins).
  *
- * The static menus are the app-menu asset `console` (src/assets/app-menu/console.json); this library adds what needs
+ * The static menus are the app-menu asset `default-console-web-appmenu` (src/assets/app-menu/default-console-web-appmenu.json, app-menus@1); this library adds what needs
  * code: the View menu's chrome toggles (src/menu.ts), the live lists (pending builds, queue steps left, unbuilt
  * features, libraries, modules, boilerplates, plugins), the "Pending builds" badge, and the actions the asset names:
  *   console.search                  focus the search bar, or open the search dialog when no search bar is shown
@@ -15,8 +15,8 @@
  * neither the banner nor the toolbar shows a search bar), and a note at the top of every view offers to bring the menu
  * bar back while the menu bar and the side navigation are both hidden.
  *
- * Once per browser the console moves to the `console` menu when an older saved look (the hub's appearance document)
- * still picks another app menu; picking another one afterwards sticks.
+ * The app menu is the console's own (app-menus@1): a saved look that picks a shared or another app's menu falls back
+ * to default-console-web-appmenu in the runtime. Once per browser the console moves to the `amber` context menu.
  */
 import { useEffect, useRef } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from './axf/core';
@@ -31,8 +31,9 @@ import { CONSOLE_MENU_ID, CONSOLE_PROVIDERS as P, PENDING_BADGE, consoleMenuCont
 
 const REFRESH_MS = 3 * 60_000;
 const SEARCH_DIALOG = 'console-search';
-const MIGRATED_KEY = 'axf-console:menu-console-v1';
-const MOVES: [AssetType, string, string][] = [['app-menu', 'console', MIGRATED_KEY], ['context-menu', 'amber', 'axf-console:context-amber-v1']];
+// app-menus@1: the app menu needs no move any more; the runtime refuses any app menu not built for the console and
+// falls back to default-console-web-appmenu, so an older saved pick lands on the console's own menu by itself.
+const MOVES: [AssetType, string, string][] = [['context-menu', 'amber', 'axf-console:context-amber-v1']];
 const store = () => (globalThis as unknown as { __axfConsole?: ConsoleStore }).__axfConsole;
 
 /* ---------------- where console.open goes (a fixed list: nothing else can be opened through it) ---------------- */

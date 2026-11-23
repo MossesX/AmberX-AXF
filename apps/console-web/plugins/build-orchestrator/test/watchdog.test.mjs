@@ -26,7 +26,7 @@ let n = 0; const t = async (name, fn) => { try { await fn(); n += 1; } catch (e)
 const step = (id, done) => ({ id, uid: `u-${id}`, text: id, model: 'Opus', done, doneAt: done ? '2026-11-16T00:00:00Z' : '' });
 const b = (id, status, pr, steps) => ({ id, title: id, status, pr, branch: `claude/${id}`, steps, notes: [] });
 const store = core.normalizeStore({ ...core.emptyStore(), builds: [
-  b('q-merged', 'queued', 'PR 101', [step('s1', true)]),           // queued, PR merged → complete
+  b('q-merged', 'queued', 'PR 101', [step('s1', true)]),           // queued, PR merged → landing (done-means-merged@1)
   b('q-open', 'queued', 'PR 102', [step('s1', false)]),            // PR still open → keeps
   b('r-merged', 'running', 'PR 103', [step('s1', true)]),          // running: never touched
   b('p-closed', 'pending', 'PR 104', [step('s1', false)]),         // PR closed → archived

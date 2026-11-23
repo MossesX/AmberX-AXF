@@ -89,6 +89,15 @@ async function main() {
   const bLocal = JSON.parse(readFileSync(join(B, STORE_REL), 'utf8'));
   check(stepsDone(bLocal, 'x').includes('s1'), 'B pulled main back: its stale copy now has s1');
 
+  // a lost race quotes commit ids: an id with 403 in it is still "main moved" (retried), a real refusal is not
+  const live0 = await import('../cli/builds-live.mjs');
+  const raced = "remote: error: cannot lock ref 'refs/heads/main': is at d71df58c7622532269e85806133e46908337c5fe but expected b9beaba02f48a3993a9132397e3286f7a0625536\n ! [remote rejected] 4dc9e1f8f88403802d918e54d7574c572235e763 -> main (failed to update ref)";
+  check(live0.pushRetryable(raced), 'a lost push race is retried even when a commit id in the message holds 403');
+  check(live0.pushRetryable(' ! [rejected] abc -> main (fetch first)'), 'main moved (fetch first) is retried');
+  check(!live0.pushRetryable('remote: GH006: Protected branch update failed for refs/heads/main.\n ! [remote rejected] abc -> main (protected branch hook declined)'), 'a protected branch is not retried');
+  check(!live0.pushRetryable('fatal: unable to access: The requested URL returned error: 403\n ! [rejected]'), 'an HTTP 403 is not retried');
+  check(!live0.pushRetryable('fatal: repository not found'), 'an unrelated failure is not retried');
+
   // 3. retry: the remote rejects the first push (main moved), the second goes through
   const hook = join(T, 'remote.git', 'hooks', 'pre-receive');
   writeFileSync(hook, `#!/bin/sh\nif [ ! -f "${T}/rejected-once" ]; then touch "${T}/rejected-once"; echo "rejected: fetch first" >&2; exit 1; fi\nexit 0\n`); chmodSync(hook, 0o755);
@@ -331,6 +340,77 @@ async function main() {
   const ent = (before, after) => ({ builds: [{ id: 'q', op: 'change', before: before && { status: before }, after: after && { status: after } }] });
   check(liveMod.landsBuild(ent('landing', 'landed')) && liveMod.landsBuild(ent('running', 'complete')) && liveMod.landsBuild(ent(null, 'landed')), 'landsBuild: a status that moves to landed (or straight to complete) lands the build');
   check(!liveMod.landsBuild(ent('landed', 'complete')) && !liveMod.landsBuild(ent('landed', 'landed')) && !liveMod.landsBuild(ent('running', 'landing')) && !liveMod.landsBuild(ent('running', 'failed')) && !liveMod.landsBuild(ent('running', 'archived')) && !liveMod.landsBuild(ent('running', null)) && !liveMod.landsBuild({}), 'landsBuild: landed → complete, landing, failed, archived and a delete are not landings');
+
+  // 15. only a real change is a commit (stop-ghost-builds-live-commits, Nov 23 2026): a shipped build and a no-op tick
+  // (stamps, run bookkeeping, a repeated note) queue nothing and publish nothing; a subject never ends in an empty list
+  {
+    const at = (n) => `2026-11-23T10:${String(n).padStart(2, '0')}:00.000Z`;
+    const rec = (o = {}) => ({ id: 'g', status: 'running', updatedAt: at(0), rev: 3, branch: 'claude/g', pr: '#9', notes: [{ text: 'Launch failed on a: exit 127', at: at(0) }],
+      pipeline: { account: 'a', session: 'axf-g', runs: 1, note: '', heldAt: '' }, steps: [{ uid: 'u1', id: 's1', text: 'one', done: false, updatedAt: at(0), rev: 1 }], ...o });
+    const base15 = rec();
+    const rc15 = (o) => merge.realChanges(base15, rec(o));
+    check(rc15({ updatedAt: at(5), rev: 9 }).length === 0, 'realChanges: a newer stamp and revision are not a change');
+    check(rc15({ updatedAt: at(5), pipeline: { ...base15.pipeline, session: 'axf-g--2', runs: 2, note: 'launch failed: exit 127', lastSeenAt: at(5) } }).length === 0, 'realChanges: the dispatcher\'s run bookkeeping (session, runs, heartbeat) is not a change');
+    check(rc15({ updatedAt: at(5), notes: [...base15.notes, { text: 'Launch failed on a: exit 127', at: at(5) }] }).length === 0, 'realChanges: a note the build already holds, written again, is not a change');
+    check(rc15({ steps: [{ ...base15.steps[0], updatedAt: at(5), rev: 2 }] }).length === 0, 'realChanges: a step whose stamp alone moved is not a change');
+    check(rc15({ notes: [...base15.notes, { text: 'a new finding', at: at(5) }] }).join() === 'note', 'realChanges: a new note is a change');
+    check(rc15({ status: 'queued' }).join() === 'status' && rc15({ steps: [{ ...base15.steps[0], done: true }] }).join() === 'steps' && rc15({ pipeline: { ...base15.pipeline, heldAt: at(5) } }).join() === 'pipeline', 'realChanges: a status move, a ticked step and a hold are changes');
+    check(merge.realChanges(null, base15).join() === 'added' && merge.realChanges(base15, null).join() === 'removed', 'realChanges: a new build and a removed one are changes');
+    const shipped = rec({ status: 'queued', shipped: { id: 'sm-g', rev: 1, at: at(1), landedCommit: 'abc' }, mergedAt: at(1) });
+    const sh = (o) => merge.realChanges(shipped, { ...shipped, ...o });
+    check(merge.isSettled(shipped) && merge.isSettled({ status: 'complete' }) && merge.isSettled({ status: 'archived' }) && !merge.isSettled(base15), 'isSettled: a shipped manifest, complete or archived');
+    check(sh({ status: 'running', updatedAt: at(6), notes: [...shipped.notes, { text: 'Started run 2', at: at(6) }] }).length === 0 && sh({ status: 'fixing' }).length === 0, 'realChanges: a shipped build flapping between queued, running and fixing, with new notes, is not a change');
+    check(sh({ status: 'landed' }).join() === 'status' && sh({ status: 'complete' }).join() === 'status' && sh({ deleted: true }).join() === 'deleted', 'realChanges: a shipped build moving to landed / complete, or removed, is a change');
+    const done = rec({ status: 'complete', mergedAt: at(1) });
+    check(merge.realChanges(done, { ...done, updatedAt: at(7), notes: [...done.notes, { text: 'Watchdog looked again', at: at(7) }] }).length === 0 && merge.realChanges(done, { ...done, status: 'archived' }).join() === 'status', 'realChanges: a complete build takes no notes as changes, only a status move');
+    const ent15 = (before, after) => ({ at: at(8), by: 'pipeline', builds: [{ id: 'g', op: 'change', before, after }] });
+    check(merge.realEntry(ent15(base15, rec({ updatedAt: at(8) }))) === null && merge.realEntry(ent15(base15, rec({ status: 'queued' })))?.builds.length === 1, 'realEntry: an entry with no real change is dropped, one with a change is kept');
+    const liveMod15 = await import('../cli/builds-live.mjs');
+    check(/^Builds live: 2 build change\(s\): g, h \[skip ci\]/.test(liveMod15.message([], ['g', 'h'], [])) && /^Builds live: 1 status file\(s\): shipped\/g\.json \[skip ci\]/.test(liveMod15.message([], [], ['_claude/builds/shipped/g.json'])), 'message: the subject names the builds, or the files when no build changed');
+    check(!/change\(s\):\s+\[skip ci\]/.test(liveMod15.message([ent15(base15, rec({ updatedAt: at(8) }))], [], [])), 'message: a subject never ends in an empty list');
+
+    // end to end on the throwaway remote, a push per write (the mode that used to commit every tick)
+    const G = join(T, 'g'); git(T, 'clone', '-q', join(T, 'remote.git'), 'g');
+    const STORE_MOD = join(ROOT, 'framework/cli/builds-store.mjs');
+    const write = (body, extra) => spawnSync(process.execPath, ['--input-type=module', '-e', `import { withStore } from ${JSON.stringify(STORE_MOD)}; withStore((s) => { const find = (id) => s.builds.find((b) => b.id === id); const now = new Date().toISOString(); ${body}; return s; }, { by: 'pipeline', action: 'pipeline:tick', note: 'check' });`], { cwd: ROOT, encoding: 'utf8', env: envFor(G, extra) });
+    const head = () => { fetchA(); return git(A, 'rev-parse', 'origin/main'); };
+    const queued = () => JSON.parse(run(G, LIVE, ['status', '--json']).stdout).queued;
+    r = run(G, LIVE, ['pull']); check(r.status === 0, `pull into g: ${r.stdout}${r.stderr}`);
+    r = run(G, ORCH, ['act', 'note', 'x', 'Launch failed on a: launcher exit 127']); check(r.status === 0, `first note on x: ${r.stderr}`);
+    const h0 = head();
+    check(mainStore().builds.find((b) => b.id === 'x').notes.some((n) => /exit 127/.test(n.text)), 'a first note is a real change and reaches main');
+    // a no-op tick: the dispatcher rewrites its bookkeeping and the same note, the build does not move
+    r = write(`const b = find('x'); b.pipeline = { ...(b.pipeline ?? {}), note: 'launch failed: exit 127', tried: ['a'] }; b.notes.push({ text: 'Launch failed on a: launcher exit 127', at: now }); b.updatedAt = now;`);
+    check(r.status === 0, `no-op tick wrote the store: ${r.stderr}`);
+    check(JSON.parse(readFileSync(join(G, STORE_REL), 'utf8')).builds.find((b) => b.id === 'x').notes.filter((n) => /exit 127/.test(n.text)).length === 2, 'the no-op tick is in the local store');
+    check(head() === h0 && queued() === 0, 'a no-op tick (stamp, run bookkeeping, a repeated note) makes no commit and queues nothing');
+    r = run(G, LIVE, ['flush']); check(r.status === 0 && head() === h0, `flush after a no-op tick publishes nothing (${r.stdout.trim()})`);
+    r = run(G, LIVE, ['sync', '--now']); check(r.status === 0 && head() === h0, `sync --now with only stamps newer here publishes nothing (${r.stdout.trim()})`);
+    // a shipped build: its manifest is on the record, its status was left at queued, a stale dispatcher keeps touching it
+    r = write(`const b = find('x'); b.status = 'queued'; b.shipped = { id: 'sm-x', rev: 1, at: now, landedCommit: 'abc1234' }; b.updatedAt = now;`);
+    check(r.status === 0, `ship x: ${r.stderr}`);
+    const h1 = head();
+    check(h1 !== h0 && mainStore().builds.find((b) => b.id === 'x').shipped?.id === 'sm-x', 'the shipped manifest reaching the record is a real change (one commit)');
+    for (const [st, note] of [['running', 'Started run 2 on a'], ['queued', 'Reconciler: no live session or process runs it'], ['running', 'Started run 3 on a']]) {
+      r = write(`const b = find('x'); b.status = ${JSON.stringify(st)}; b.notes.push({ text: ${JSON.stringify(note)}, at: now }); b.updatedAt = now;`);
+      check(r.status === 0, `touch shipped x (${st}): ${r.stderr}`);
+    }
+    check(head() === h1 && queued() === 0, 'a shipped build touched again (status flaps, new notes) makes no commit and queues nothing');
+    r = run(G, LIVE, ['sync', '--now']); check(r.status === 0 && head() === h1, `sync --now never republishes a shipped build (${r.stdout.trim()})`);
+    // lines an older version queued (every write, whole records) are dropped at publish, not committed
+    const stale = JSON.parse(readFileSync(join(G, STORE_REL), 'utf8')).builds.find((b) => b.id === 'x');
+    const later = new Date(Date.now() + 60000).toISOString();
+    writeFileSync(join(G, `${STORE_REL}.live-outbox.jsonl`), `${JSON.stringify({ rev: 901, at: later, by: 'pipeline', action: 'pipeline:launch-failed', note: 'x', builds: [{ id: 'x', op: 'change', rev: 99, before: stale, after: { ...stale, updatedAt: later, notes: [...stale.notes, { text: 'Started run 3 on a', at: later }] } }] })}\n`);
+    r = run(G, LIVE, ['flush']);
+    check(r.status === 0 && head() === h1 && queued() === 0, `an outbox line with no real change is dropped without a commit (${r.stdout.trim()})`);
+    // and a real change still goes out, with a subject that names it
+    r = run(G, ORCH, ['act', 'note', 'y', 'a real note after the ghosts']); check(r.status === 0, `real note on y: ${r.stderr}`);
+    const subj = (() => { fetchA(); return git(A, 'log', '-1', '--format=%s', 'origin/main'); })();
+    check(head() !== h1 && /Builds live: .*y.* note.*\[skip ci\]/.test(subj), `a real change still publishes, named in the subject (${subj})`);
+    fetchA();
+    const subjects = git(A, 'log', '--format=%s', 'origin/main').split('\n').filter((l) => l.startsWith('Builds live:'));
+    check(subjects.length > 0 && subjects.every((l) => !/change\(s\):\s*\[skip ci\]/.test(l)), 'no status commit on main has an empty change list');
+  }
 
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });

@@ -125,7 +125,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
       return;
     }
     for (const t of ASSET_TYPES) {
-      const hit = rt.registry.list(t).find((a) => a.name.toLowerCase().includes(needle) || a.id === needle);
+      const hit = rt.registry.list(t).find((a) => rt.slotOk(t, a.id) && (a.name.toLowerCase().includes(needle) || a.id === needle));
       if (hit) {
         if (rt.swap(t, hit.id)) rt.toast(`${assetTypeSpecs[t].label} → ${hit.name}`, 'success', 'Hot-swapped');
         setQ('');

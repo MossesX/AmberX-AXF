@@ -155,6 +155,8 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
     // waiting its turn is never stuck, however long: a build holds the active place (failed ones too), so this one
     // cannot move. Emergency builds never wait for the place.
     if (WAITING_BUILD.includes(b.status) && holder && holder.id !== b.id && !P2.isEmergency(b)) continue;
+    // on hold (Brett's Hold on a waiting build): it is skipped on purpose until released
+    if (WAITING_BUILD.includes(b.status) && b.pipeline?.heldAt) continue;
     const late = over(b, S.budgets.build, now);
     if (late > 0) out.push({ kind: 'build-stuck', build: b.id, status: b.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(b), ...(landerOwned(b) ? { lander: true } : {}) });
   }

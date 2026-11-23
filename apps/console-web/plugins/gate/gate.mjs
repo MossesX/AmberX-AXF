@@ -46,7 +46,7 @@ export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
-  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'build-cap', 'approvals', 'passes', 'history'], default: 'rules', title: 'Tab it opens on' },
+  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'passes', 'history'], default: 'rules', title: 'Tab it opens on' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
@@ -208,12 +208,13 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
   }
   if (argv[0] === 'auto-lander') return autoLanderCli(argv.slice(1));
   if (argv[0] === 'build-cap') return (await import('./build-cap.mjs')).main(argv.slice(1));
+  if (argv[0] === 'model-triage') return (await import('../../../../framework/cli/model-triage.mjs')).main(argv.slice(1)); // the VPS gate's own CLI: the tab only shows it
   if (argv[0] === 'approvals') return (await import('./approval-rules.mjs')).main(argv.slice(1));
   return cli(argv, g, { out, err });
 }
 
 /** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
-export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'build-cap', 'approvals', 'settings', 'help']);
+export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'settings', 'help']);
 
 /**
  * `axf gate auto-lander status|show <build>|run [--now]|retry <build>|fix <build>|pause|resume|settings|set <key> <value>`:
@@ -241,6 +242,7 @@ const USAGE = [
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
   'axf gate settings [get] | settings set <key> <value>',
   'axf gate build-cap [status] | build-cap set stepsInParallel <n>',
+  'axf gate model-triage [status] | rule <id> on|off|model <m>|set <key> <value> | defaults … | gate on|off | reset | decide --text "…" | decisions | history',
   'axf gate approvals [status] | approvals add <service> <match> <allow|veto|confirm|deny|hold> [seconds] | edit <service> <n> <field> <value> | remove <service> <n> | move <service> <n> <to> | clear-own <service> [on|off] | default | discard [service]',
   'axf gate auto-lander status | show <build> | run [--now] | retry <build> | fix <build> | pause | resume | settings | set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',

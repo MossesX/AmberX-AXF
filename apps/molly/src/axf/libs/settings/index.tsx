@@ -25,6 +25,8 @@ import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPane
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { ASSET_TYPES_TAB, AssetTypesIfacePanel, isAppIface, ownerSettingsUi, registerIfaceActions, SETTINGS_IFACE_CSS, SETTINGS_IFACE_DIALOG, SettingsIfaceDialog, SettingsIfaceRow, syncIfaceDefaults, tabIfaceOwner } from './iface';
+import { APP_MENUS_DIALOG, AppMenuDialog, AppMenuRow, menuAppOf, registerMenuActions } from './menus';
+export { APP_MENUS_ACTIONS, APP_MENUS_DIALOG, AppMenuRow, appMenusState, menuAppOf, setAppMenu } from './menus';
 export { SETTINGS_IFACE_ACTIONS, SETTINGS_IFACE_DIALOG, SettingsIfaceRow, setOwnerIface, tabIfaceOwner } from './iface';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
@@ -641,7 +643,7 @@ export function AppearancePanel() {
   const undo = () => (service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
   const useSkin = (on: boolean) => (service && on && skinId ? rt.dispatch(`skin.use:${skinId}:app`) : rt.useSkin(on, skinId || undefined));
   const row = (label: string, type: string) => {
-    const list = rt.registry.list(type as AssetType);
+    const list = rt.registry.list(type as AssetType).filter((a) => rt.slotOk(type as AssetType, a.id));
     const value = st.active[type as AssetType] ?? '';
     // the colour theme is switched inside the skin: same skin, no override, no dot (engines/skin.ts)
     const isColour = type === SKIN_COLOR_SLOT && inForce;
@@ -686,7 +688,7 @@ export function AppearancePanel() {
       {hideableTypes().map((t) => (
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
       ))}
-      {row('Navigation menu', 'nav-menu')}
+      {menuAppOf(rt) ? <><AppMenuRow kind="nav" locked={locked} /><AppMenuRow kind="appmenu" locked={locked} /></> : row('Navigation menu', 'nav-menu')}
       <SkinWhere locked={locked} />
       <AnimationsSection locked={locked} />
       <div className="axf-settings__row">
@@ -1096,6 +1098,7 @@ export const library: AxfWebLibrary = {
     syncSettingsAsset(rt);
     syncIfaceDefaults(rt);
     registerIfaceActions(rt);
+    registerMenuActions(rt);
     applyDisplay(rt);
     applyAppLook(rt);
     rt.actions.register('skin.restore.ask', () => rt.openDialog(RESTORE_DIALOG, {}), { label: 'Restore to default…', requires: 'assets.swap' });
@@ -1160,6 +1163,7 @@ export const library: AxfWebLibrary = {
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
     [SETTINGS_IFACE_DIALOG]: { title: 'Choose a settings interface', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <SettingsIfaceDialog owner={String(p.owner ?? '')} /> },
+    [APP_MENUS_DIALOG]: { title: 'Choose a menu', icon: 'menu', searchable: false, render: (p: Record<string, unknown>) => <AppMenuDialog kind={String(p.kind ?? '')} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
   settingsTabs: [...Object.values(SETTINGS_TABS), ASSET_TYPES_TAB],

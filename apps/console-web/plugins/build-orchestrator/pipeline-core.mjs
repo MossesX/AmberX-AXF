@@ -34,7 +34,7 @@
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
 import { normParallelParts as BP_normParallelParts } from '../../../../framework/core/build-pipeline.mjs';
-import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { CLAIM_TTL_MS, claimLive, DEFAULT_MAX_RUNS, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, outcomeOf, queueOrder, readySteps, releaseStep, STATUS_AFTER, stepFiles } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
 import { stepKey } from '../../../../framework/plan/builds-store-core.mjs';
@@ -43,7 +43,12 @@ import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orc
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
-  /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
+  /**
+   * Sessions per account. The one stored key is claude-workers@1 `limits.building` (per account: `perAccount.<name>.building`,
+   * Settings → Plugins → Claude accounts → Job routing); this field is how the pipeline reads it. A store that only has the
+   * old keys (pipeline settings `parallelPerAccount`, an account's own `parallel`, the Claude setting builds.maxParallel)
+   * is still read from them. Never stored here again (ALIAS_KEYS).
+   */
   parallelPerAccount: 1,
   /** Pipeline 2.0: steps of one build that run at once (each in its own worktree), under the VPS-wide slot cap. */
   stepsInParallel: 4,
@@ -59,7 +64,7 @@ export const DEFAULTS = Object.freeze({
   probeDays: 7,
   /** How the split is made: claude (a one-shot Claude call), rules (no model), off (steps by hand only). */
   splitProvider: 'claude',
-  /** New builds go straight to the Queue (the Claude setting builds.launchWithoutAsking, read on every tick). */
+  /** New builds go straight to the Queue: the Claude setting builds.launchWithoutAsking is the one stored key; read here, never stored here. */
   autoQueue: false,
   /** Subscriptions first, then any API account (Brett, Nov 10 2026): when no subscription account can take a build, an API-key account takes it (billed per token, under its caps). */
   apiOverflow: true,
@@ -67,7 +72,7 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
-  /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
+  /** A launch brief is trimmed to at most this many bytes: the Claude setting builds.briefMaxBytes is the one stored key; read here, never stored here. */
   briefMaxBytes: 120 * 1024,
   /**
    * Parallel split (Brett, Nov 13 2026: "one option splits it so it runs multiple parallel builds simultaneously to speed
@@ -84,7 +89,16 @@ export const DEFAULTS = Object.freeze({
   parallelIntegrate: true,
 });
 export const PARALLEL_MODES = ['auto', 'ask', 'off'];
-const LIMITS = { parallelPerAccount: [1, 12], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024], parallelMax: [2, 12] };
+/**
+ * Settings this document reads from their one source and never stores (settings-sources@1): key → where the value lives.
+ * pipeline.mjs resolves them on every load and strips them on every save.
+ */
+export const ALIAS_KEYS = Object.freeze({
+  parallelPerAccount: 'claude-workers limits.building (Sessions per account)',
+  autoQueue: 'Claude setting builds.launchWithoutAsking (Launch builds without asking)',
+  briefMaxBytes: 'Claude setting builds.briefMaxBytes (Max launch brief size)',
+});
+const LIMITS = { parallelPerAccount: [1, 20], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024], parallelMax: [2, 12] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -122,7 +136,7 @@ export function normSettings(raw = {}) {
  * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, role, email, plan, limited, running[] }),
  * `own` = the pipeline's own record for it (accounts.json: { fable?, parallel?, use?, probe?: { fable, at, error } }).
  *   fable      may this account run Fable? override (own.fable) > a fresh probe > the plan (fablePlans)
- *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
+ *   parallel   sessions at once: the row's saved cap (claude-workers building, buildingSet) > own.parallel (old key) > settings.parallelPerAccount
  *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
  *              workers always; the console's account only when no worker exists and useConsoleAccount is on
  */
@@ -137,7 +151,10 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const fableFrom = typeof o.fable === 'boolean' ? 'override' : hp ? 'health' : probe ? 'probe' : plan ? 'plan' : 'unknown';
   const role = str(row?.role, 20) || 'saved';
   const running = list(row?.running).length;
-  const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
+  // one stored key: the account's cap in claude-workers@1 when its config is saved; the pipeline's own numbers are read aliases
+  const rowParallel = row?.buildingSet === true && Number.isInteger(row?.building) && row.building > 0 ? Math.min(20, row.building) : null;
+  const ownParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : null;
+  const parallel = rowParallel ?? ownParallel ?? settings.parallelPerAccount;
   const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
   const off = o.use === false;
   const sick = health && (health.signedIn === false || health.credits === false)
@@ -157,7 +174,7 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
-  const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
+  const apiParallel = rowParallel ?? ownParallel ?? (Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount);
   const api = apiKey ? (pick ? { usable: false, why: `off for builds: ${pick} takes every build`, spend: row?.spend && typeof row.spend === 'object' ? row.spend : null } : apiState(row, o, settings, { limited, apiParallel, running })) : null;
   const rawOrder = o.order ?? row?.order;
   const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;
@@ -400,6 +417,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   for (const b of queue) {
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
+    // shipped-manifest@1: the gate already shipped it; a Queued status left on the record is stale, never a reason to run it again
+    if (b.shipped?.id) { waits.push({ id: b.id, why: `already shipped (${b.shipped.id}): not launched again` }); continue; }
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
@@ -408,7 +427,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
-    if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
+    if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `Builds at once reached (${slots.hard.live ?? '?'}/${slots.hard.max} running on the VPS)` : `Builds at once reached (${slots?.used ?? '?'}/${slots?.cap ?? '?'} booked)` }); continue; }
     const r = routeFor(b, acc, model, settings);
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
@@ -420,6 +439,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   for (const w of waits) if (isDemo(queue.find((b) => b.id === w.id))) w.demo = true;
   let idle = null;
   const nothingRunning = !running.length && !(Number(slots?.used) > 0);
+  // (fill every slot: the dispatcher adds kind 'slots' when slots are free while ready steps wait, see fillIdle)
   if (nothingRunning && !launches.length) {
     const active = queue.filter((b) => !isHeld(b)); const firstWait = waits.find((w) => !w.held);
     if (active.length) idle = { reason: `${active.length} build${active.length === 1 ? '' : 's'} in the Queue, nothing running: ${firstWait?.why ?? 'no launch this tick'}`, kind: 'stuck' };
@@ -536,7 +556,9 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }, setting
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; anything bigger than ${max} minutes is cut into several steps; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
-    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    `Dependencies: steps are numbered s1, s2, … in your order. Give every step "dependsOn", the ids of the steps it needs finished first; by default that is the step right before it (["s3"] for s4), and [] for the first step. Only when a step truly needs none of the steps before it (it touches other files and does not use their results), list just the ones it needs, so idle agent slots can run it beside them. Never name a later step or the step itself; no cycles.`,
+    `Files: give every step "files", the repo paths (files or folders) it changes. Two steps sharing a file never run at once.`,
+    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","dependsOn":["s1"],"files":["…"]}]}`,
     ...parallel,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
@@ -557,6 +579,7 @@ export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }, setti
   if (raw.length > 60) return { steps: [], parallel: null, error: `${raw.length} steps: too many (60 at most)` };
   const problems = [];
   const steps = parseSteps(raw, max, problems, '');
+  if (!problems.length) { const cyc = splitCycle(steps); if (cyc) problems.push(`dependency cycle: ${cyc.join(' → ')}`); }
   // the parallel block is optional and never fails the split: a bad one is dropped with its reason in `parallelError`
   let parallel = null; let parallelError = '';
   const pr = j?.parallel;
@@ -580,7 +603,8 @@ function parseSteps(raw, max, problems, where = '') {
     const m = EST_RE.exec(est); const minutes = m ? Math.round(Number(m[1]) * (/^h/i.test(m[2] || '') ? 60 : 1)) : null;
     if (minutes == null) problems.push(`${where}step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`${where}step ${i + 1} is ${minutes} min (limit ${max})`);
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
-    steps.push({ id: `s${steps.length + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
+    const depProblems = []; const deps = splitDeps(r?.dependsOn ?? r?.after, i, raw.length, depProblems); problems.push(...depProblems.map((x) => `${where}${x}`));
+    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), ...(deps ? { dependsOn: deps } : {}), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
   });
   return steps;
 }
@@ -637,6 +661,148 @@ export function parallelWait(b, builds) {
 }
 
 /**
+ * One step's `dependsOn` from the splitter's answer (build-pipeline@1): ids `s<n>` or step numbers, deduplicated, the
+ * step itself dropped. Absent = undefined (the step keeps the implicit "previous step" order). An id outside the split
+ * or a later step is a problem (the split is refused and falls back to rules).
+ */
+export function splitDeps(v, i, total, problems = []) {
+  if (v === undefined || v === null) return undefined;
+  if (!Array.isArray(v)) { problems.push(`step ${i + 1} dependsOn is not a list`); return undefined; }
+  const out = [];
+  for (const x of v) {
+    const n = typeof x === 'number' ? x : /^s?(\d+)$/i.test(str(x, 20).trim()) ? Number(/(\d+)/.exec(str(x, 20))[1]) : NaN;
+    if (!Number.isInteger(n) || n < 1 || n > total) { problems.push(`step ${i + 1} depends on "${str(x, 20)}", which is not a step of the split`); continue; }
+    if (n === i + 1) continue;
+    if (n > i + 1) { problems.push(`step ${i + 1} depends on a later step (s${n})`); continue; }
+    if (!out.includes(`s${n}`)) out.push(`s${n}`);
+  }
+  return out.slice(0, 20);
+}
+
+/** The first cycle in a split's resolved graph (explicit dependsOn plus the implicit previous step), or null. */
+export function splitCycle(steps) {
+  const b = { steps: steps.map((x) => (x.dependsOn ? { ...x, after: x.dependsOn } : x)) };
+  const deps = new Map(b.steps.map((x) => [x.id, resolvedDeps(b, x)]));
+  const state = new Map(); let found = null;
+  const walk = (id, path) => {
+    if (found || state.get(id) === 'done') return;
+    if (state.get(id) === 'open') { found = [...path.slice(path.indexOf(id)), id]; return; }
+    state.set(id, 'open'); for (const d of deps.get(id) ?? []) walk(d, [...path, id]); state.set(id, 'done');
+  };
+  for (const x of b.steps) walk(x.id, []);
+  return found;
+}
+
+// ------------------------------------------------------------------ parallel steps: merge back (Nov 13 2026)
+
+/** A step note line starting with this marks a step sent back by a merge conflict (the step itself stays open). */
+export const BLOCKED_PREFIX = 'blocked: ';
+
+/**
+ * A parallel step whose branch could not merge back into the build branch (BUILD-PARALLEL §4). Pure:
+ * the claim is released, the step stays open with a `blocked:` note naming the conflicting files, and it re-runs after
+ * the steps it clashed with (settled steps of the build sharing a conflicting file; the previous step when none is
+ * known) in the build's own session (`parallel: never`), so the retry starts from a build branch that holds their work.
+ * → { ok, build, after, note } or { ok: false, why }.
+ */
+export function conflictBack(b, stepId, { files = [], branch = '', now = Date.now() } = {}) {
+  const steps = list(b?.steps); const i = steps.findIndex((x) => x.id === stepId);
+  if (i < 0) return { ok: false, why: `no step ${stepId}` };
+  const conflict = list(files).map((f) => str(f, 300)).filter(Boolean);
+  const touches = (x, f) => stepFiles(x).some((g) => g === f || f.startsWith(`${g.replace(/\/$/, '')}/`) || g.startsWith(`${f.replace(/\/$/, '')}/`));
+  let after = steps.filter((x, j) => j !== i && (x.done || x.skip) && conflict.some((f) => touches(x, f))).map((x) => x.id);
+  if (!after.length && i > 0) after = [steps[i - 1].id];
+  const note = `${BLOCKED_PREFIX}merge conflict on ${branch || 'the step branch'}${conflict.length ? ` (${conflict.slice(0, 6).join(', ')}${conflict.length > 6 ? ', …' : ''})` : ''}: re-runs after ${after.join(', ') || 'the steps before it'} in the build's own session; the step branch is kept`;
+  const r = releaseStep(b, stepId, { now });
+  if (!r.ok) return r;
+  const at = new Date(typeof now === 'number' ? now : Date.parse(now) || Date.now()).toISOString();
+  const noted = (x) => `${x.note ? `${x.note}\n` : ''}${note}`.slice(-1000);
+  const build = { ...r.build, steps: r.build.steps.map((x) => (x.id === stepId ? { ...x, done: false, doneAt: '', after, parallel: 'never', note: noted(x), updatedAt: at } : x)) };
+  return { ok: true, build, after, note };
+}
+
+/** Runs a parallel step session gets before the step is left to the build's own session. */
+export const STEP_MAX_RUNS = 3;
+
+/**
+ * The planner's view of a running build whose own session is alive (pipeline.session): that session holds the first
+ * ready step nobody else claims (it works in list order), as an in-memory claim `main:<session>`. planFill then counts it
+ * as the build's own session and never launches its step beside it. Never stored. Pure.
+ */
+export function withMainClaim(b, now = Date.now()) {
+  if (!b?.pipeline?.session || !list(b.steps).length) return b;
+  if (list(b.steps).some((s) => claimLive(s.claim, now) && str(s.claim.runId, 80).startsWith('main:'))) return b;
+  const first = readySteps(b, { now, files: false })[0];
+  if (!first) return b;
+  const t = typeof now === 'number' ? now : Date.parse(now) || Date.now();
+  const claim = { runId: `main:${str(b.pipeline.session, 70)}`, slot: str(b.pipeline.slot, 60), account: str(b.pipeline.account, 40), branch: str(b.branch, 200), at: new Date(t).toISOString(), model: first.model, expiresAt: new Date(t + CLAIM_TTL_MS).toISOString() };
+  return { ...b, steps: b.steps.map((s) => (s === first ? { ...s, claim } : s)) };
+}
+
+/**
+ * Parallel candidates of running builds held back by a file clash with a running step (readySteps leaves them out, so
+ * the planner never names them): [{ id, step, why: 'files clash with s2 (a.txt)' }] for the plan's waits.
+ */
+export function clashWaits(running, now = Date.now()) {
+  const out = [];
+  for (const b of list(running)) {
+    const steps = list(b.steps);
+    const settledId = (id) => { const x = steps.find((y) => y.id === id); return !!x && (x.done || x.skip); };
+    for (const st of steps) {
+      if (st.done || st.skip || !isParallelStep(st) || claimLive(st.claim, now)) continue;
+      if (!resolvedDeps(b, st).every(settledId)) continue;
+      const c = fileClashes(b, st, { now });
+      if (c.length) out.push({ id: b.id, step: st.id, why: `files clash with ${c.map((x) => `${x.step} (${x.files.join(', ')})`).join('; ')}` });
+    }
+  }
+  return out;
+}
+
+/**
+ * Where a step runs now, for views and the API: { slot, session, account, branch, worktree, since, main } from its live
+ * claim (a parallel step session) or null. `worktree` follows BUILD-PARALLEL §4 (<root>/<build>--<step>).
+ */
+export function runningIn(b, step, { now = Date.now(), root = '/root/axf-builds', sessions = {} } = {}) {
+  const c = step?.claim;
+  if (!c || !claimLive(c, now)) return null;
+  const main = str(c.runId, 80).startsWith('main:');
+  const rec = sessions[c.runId] ?? null;
+  return { runId: c.runId, slot: str(c.slot, 60) || str(rec?.slot, 60), session: main ? str(c.runId, 80).slice(5) : str(rec?.session, 80), account: c.account, branch: c.branch, model: c.model,
+    worktree: main ? `${root}/${b.id}` : `${root}/${b.id}--${step.id}`, since: c.at, main };
+}
+
+/**
+ * Every step of a build with its dependency state, for the Steps view and the API (pure):
+ * { id, text, model, estimate, done, skip, dependsOn (resolved), explicit (the stored list or null), parallel, files,
+ *   state: done | skipped | running | ready | waiting | blocked, waitingOn: [ids], why, runningIn }.
+ * `slotOf(runningIn)` may number the slot (the Slots strip's chip number).
+ */
+export function stepStates(b, { now = Date.now(), root = '/root/axf-builds', sessions = {}, slotOf = () => 0 } = {}) {
+  const steps = list(b?.steps);
+  const settled = (id) => { const x = steps.find((y) => y.id === id); return !!x && (x.done || x.skip); };
+  const ready = new Set(readySteps(b, { now }).map((x) => x.id));
+  return steps.map((st) => {
+    const deps = resolvedDeps(b, st);
+    const waitingOn = deps.filter((id) => !settled(id));
+    const ri = runningIn(b, st, { now, root, sessions });
+    let state = 'waiting'; let why = '';
+    if (st.done) state = 'done';
+    else if (st.skip) state = 'skipped';
+    else if (ri) { state = 'running'; why = ri.main ? "in the build's own session" : `in slot ${slotOf(ri) || ri.slot || '?'}`; }
+    else if (isConflictBlocked(st)) { state = waitingOn.length ? 'blocked' : 'ready'; why = str(st.note, 1000).split('\n').filter(Boolean).pop(); }
+    else if (waitingOn.length) why = `waiting on ${waitingOn.join(', ')}`;
+    else if (ready.has(st.id)) state = 'ready';
+    else { const c = fileClashes(b, st, { now }); why = c.length ? `files clash with ${c.map((x) => x.step).join(', ')}` : ''; }
+    const explicit = explicitAfter(st);
+    return { id: st.id, text: str(st.text, 400), model: st.model, estimate: str(st.estimate, 20), done: !!st.done, skip: !!st.skip, dependsOn: deps, explicit: explicit ? [...explicit] : null,
+      parallel: isParallelStep(st), files: stepFiles(st), state, waitingOn, why, runningIn: ri ? { ...ri, n: slotOf(ri) || 0 } : null };
+  });
+}
+
+/** Is this step blocked by a merge conflict (its newest note line says so)? */
+export const isConflictBlocked = (step) => str(step?.note, 1000).split('\n').filter(Boolean).pop()?.startsWith(BLOCKED_PREFIX) === true && !step?.done;
+
+/**
  * Steps without a model: one per numbered line, bullet or sentence of the detail (and Brett's words when the detail
  * is bare), each ${max} min, Fable when its words name foundation work; a closing test + report + PR step. Marked for
  * review: it is the fallback when no model can be asked (`split.provider: rules`).
@@ -670,7 +836,7 @@ export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = STEP_MINUTES } = 
     `The plan's steps are planning notes from Plan Studio, not build steps: use them as context, merge, cut or reorder them as the work needs.`,
     `Each build step is a separate headless Claude Code session in its own git worktree cut from main; up to ${Math.max(1, Number(slots) || 1)} run at the same time and their branches land as one PR. So steps must not depend on each other's unmerged work and must not touch the same files.`,
     `Rules: every step ${maxStepMinutes} minutes or less, estimated in whole minutes; 1 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; the last step covers tests and the report (_claude/builds/reports/<build id>.md).`,
-    `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
+    `Suggest a model per step, Opus by default (the VPS model triage gate decides what each step runs on; your model is one of its inputs). Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
     // a split asked to "name the files" reached for tools to look at the repo and never answered (Nov 20 2026)
     'You have no tools and cannot read the repository: design from the plan below alone, in this one reply. Name files or folders from the plan and the AXF layout (apps/console-web/plugins/<plugin>/, apps/console-web/server/, framework/…) as best you can; each step\'s session explores the code itself.',
     'Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","minutes":<n>,"files":["…"]}]}',
@@ -884,6 +1050,17 @@ export function checkNotify(cur, prev) {
   return String(cur?.signature || '').split('|').filter(Boolean).some((s) => !was.has(s)) || (!list(cur?.findings).length && list(prev?.findings).length > 0);
 }
 
+/**
+ * The idle alert's other case (fill every slot): agent slots are free and ready steps of running builds wait, yet the
+ * fill round started nothing. → { kind: 'slots', reason } or null.
+ */
+export function fillIdle(fillPlan, launchedCount = 0) {
+  if (!fillPlan || launchedCount > 0 || !(Number(fillPlan.free) > 0)) return null;
+  const waiting = list(fillPlan.waits).filter((w) => w.step);
+  if (!waiting.length) return null;
+  return { kind: 'slots', reason: `${fillPlan.free} agent slot${fillPlan.free === 1 ? '' : 's'} free while ${waiting.length} ready step${waiting.length === 1 ? '' : 's'} wait: ${waiting[0].id} ${waiting[0].step}: ${waiting[0].why}` };
+}
+
 export function alertFor(kind, d = {}) {
   // demo-build@1: an alert about a demo build is marked demo-only (meta.demo, the mark first in the title) from its id alone
   const demo = d.demo === true || isDemo({ id: d.id });
@@ -893,7 +1070,7 @@ export function alertFor(kind, d = {}) {
 }
 function alertBody(kind, d, base) {
   switch (kind) {
-    case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
+    case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : d.kind === 'slots' ? 'Agent slots free while ready steps wait' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     // done-means-merged@1: the ladder ran out. One push per escalation (key per build + escalation time), with every try
@@ -916,6 +1093,8 @@ function alertBody(kind, d, base) {
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
+    case 'autoqueue': return { ...base, key: `pipeline:autoqueue:${str(list(d.ids).join(','), 200)}`, severity: 'info', title: `Auto-queued ${list(d.ids).length} Pending build${list(d.ids).length === 1 ? '' : 's'}: slots were free`, body: str(list(d.builds).map((b) => `${b.id}${b.priority ? ` (${b.priority})` : ''}${b.title ? `: ${b.title}` : ''}`).join('\n') || list(d.ids).join(', '), 1500), meta: { ...base.meta, build: str(list(d.ids)[0] ?? '', 120), builds: list(d.ids) } };
+    case 'step-conflict': return { ...base, key: `pipeline:step-conflict:${d.id}:${d.step}`, severity: 'warning', title: `Step ${str(d.step, 40)} of ${str(d.id, 120)} could not merge back`, body: str(d.note, 1500), meta: { ...base.meta, step: str(d.step, 40) } };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
 }

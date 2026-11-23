@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import * as c from '../plan/builds-store-core.mjs';
+import * as m from '../plan/builds-merge-core.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const at = '2026-10-31T10:00:00.000Z';
@@ -287,6 +288,95 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'all', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 1); io.applyDraftNow('all', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+
+// ------------------------------------------------------------------ step dependencies and claims (build-pipeline@1, Nov 13 2026)
+const CLAIM = { runId: 'run-1', slot: 'slot-7', account: 'mossesx-max-', branch: 'claude/dep--s2', at: '2026-11-13T10:00:00.000Z', model: 'Opus' };
+const depBuild = (extra = {}) => c.normBuild({ id: 'dep', title: 'Dep', profiles: ['all'], order: { all: 0 }, status: 'running', steps: [
+  step('s1', 'first'), step('s2', 'second', { after: [], claim: CLAIM }), step('s3', 'third', { after: ['s1', 's2', 's3', 's3'] }), step('s4', 'fourth', { done: true, doneAt: at, claim: CLAIM }),
+], ...extra }, { now: at });
+t('normStep keeps after and claim; absent after stays absent (old steps are implicitly sequential)', () => {
+  const b = depBuild();
+  assert.equal('after' in b.steps[0], false, 'no after added to an old step');
+  assert.deepEqual(b.steps[1].after, []); assert.deepEqual(b.steps[2].after, ['s1', 's2'], 'self and duplicates dropped');
+  assert.deepEqual(b.steps[1].claim, { ...CLAIM, expiresAt: '2026-11-13T10:45:00.000Z' });
+  assert.equal('claim' in b.steps[3], false, 'a done step carries no claim');
+});
+t('validateStore: a clean dependency set passes; unknown ids, self, a wrong claim model and cycles are named', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild()] };
+  assert.deepEqual(c.validateStore(s).errors, []);
+  const bad = JSON.parse(JSON.stringify(s));
+  bad.builds[0].steps[2].after = ['zz', 's3']; bad.builds[0].steps[1].claim.model = 'Fable';
+  const msgs = c.validateStore(bad).errors.map((e) => `${e.path} ${e.message}`).join('\n');
+  assert.match(msgs, /steps\[2\]\.after "zz" is not a step/); assert.match(msgs, /never waits on itself/); assert.match(msgs, /claim\.model "Fable" is not the step's pinned model Opus/);
+  const cyc = { ...c.emptyStore(at), builds: [c.normBuild({ id: 'cyc', title: 'C', steps: [step('s1', 'a', { after: ['s3'] }), step('s2', 'b'), step('s3', 'c', { after: ['s2'] })] })] };
+  assert.deepEqual(c.dependencyCycles(cyc.builds[0]), [['s1', 's3', 's2', 's1']], 'the implicit previous-step edge (s2 → s1) closes the cycle');
+  assert.match(c.validateStore(cyc).errors.map((e) => e.message).join('\n'), /dependency cycle: s1 → s3 → s2 → s1/);
+  assert.deepEqual(c.dependencyCycles(depBuild()), []);
+});
+t('the orchestrator export carries after and claim, and a write from older code (no after) keeps them', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild()] };
+  const doc = c.projectOrchestrator(s, 'all');
+  assert.deepEqual(doc.builds[0].steps[1].after, []); assert.equal(doc.builds[0].steps[1].claim.runId, 'run-1'); assert.equal('after' in doc.builds[0].steps[0], false);
+  const old = JSON.parse(JSON.stringify(doc)); for (const st of old.builds[0].steps) { delete st.after; delete st.claim; } old.builds[0].steps[2].note = 'edited by old code';
+  const back = c.absorbOrchestrator(s, 'all', old, { now: '2026-11-13T11:00:00.000Z', by: 'test' }).builds[0];
+  assert.deepEqual(back.steps[2].after, ['s1', 's2']); assert.equal(back.steps[2].note, 'edited by old code'); assert.equal(back.steps[1].claim.runId, 'run-1');
+});
+t('dependsOn is an input alias stored as after; parallel is kept only as never; the export and the merge carry it', () => {
+  const b = c.normBuild({ id: 'alias', title: 'A', profiles: ['all'], order: { all: 0 }, steps: [
+    step('s1', 'a', { parallel: 'auto' }), step('s2', 'b', { dependsOn: ['s1'], parallel: 'never' }), step('s3', 'c', { dependsOn: ['s1'], after: [], parallel: 'maybe' }),
+  ] }, { now: at });
+  assert.equal('parallel' in b.steps[0], false, 'auto is the default and is not stored');
+  assert.deepEqual(b.steps[1].after, ['s1']); assert.equal('dependsOn' in b.steps[1], false); assert.equal(b.steps[1].parallel, 'never');
+  assert.deepEqual(b.steps[2].after, [], 'after wins over dependsOn when both are given'); assert.equal('parallel' in b.steps[2], false, 'an unknown mode is dropped');
+  const s = { ...c.emptyStore(at), builds: [b] };
+  assert.deepEqual(c.validateStore(s).errors, []);
+  const bad = JSON.parse(JSON.stringify(s)); bad.builds[0].steps[0].dependsOn = ['s2']; bad.builds[0].steps[1].parallel = 'sometimes';
+  const msgs = c.validateStore(bad).errors.map((e) => `${e.path} ${e.message}`).join('\n');
+  assert.match(msgs, /steps\[0\]\.dependsOn is an input alias/); assert.match(msgs, /steps\[1\]\.parallel "sometimes" is not one of auto, never/);
+  const doc = c.projectOrchestrator(s, 'all');
+  assert.equal(doc.builds[0].steps[1].parallel, 'never'); assert.equal('parallel' in doc.builds[0].steps[0], false);
+  const older = JSON.parse(JSON.stringify(b)); delete older.steps[1].parallel; older.steps[1].updatedAt = '2026-10-30T09:00:00.000Z';
+  assert.equal(m.mergeBuild(older, b).steps[1].parallel, 'never');
+});
+t('newer-wins merge: a released claim on the newer copy wins; a claim on the newer copy survives an older copy without one', () => {
+  const a = depBuild(); const b = JSON.parse(JSON.stringify(a));
+  delete b.steps[1].claim; b.steps[1].updatedAt = '2026-11-13T12:00:00.000Z'; b.steps[1].rev = 2;
+  assert.equal('claim' in m.mergeBuild(a, b).steps[1], false);
+  const older = JSON.parse(JSON.stringify(a)); delete older.steps[1].claim; older.steps[1].updatedAt = '2026-10-30T09:00:00.000Z';
+  assert.equal(m.mergeBuild(older, a).steps[1].claim.runId, 'run-1'); assert.deepEqual(m.mergeBuild(older, a).steps[2].after, ['s1', 's2']);
+});
+
+t('migrateStepDeps: older builds get no dependency list, a stray dependsOn moves to after, meta.versions stamped once', () => {
+  const raw = { ...c.emptyStore(at), builds: [
+    { id: 'old', title: 'Old', steps: [step('s1', 'a'), step('s2', 'b')] },
+    { id: 'stray', title: 'Stray', steps: [step('s1', 'a'), step('s2', 'b', { dependsOn: ['s1'] })] },
+  ] };
+  const r = c.migrateStepDeps(raw, { now: at, by: 'test' });
+  assert.equal(r.store.builds[0].steps.some((x) => 'after' in x || 'dependsOn' in x), false, 'old steps stay sequential');
+  assert.deepEqual(r.store.builds[1].steps[1].after, ['s1']);
+  assert.deepEqual(r.report, { builds: 2, steps: 4, withDeps: 1, aliasMoved: 1, stamped: true, version: c.STEP_DEPS_VERSION });
+  assert.deepEqual(r.store.meta.versions.stepDeps, { version: 1, at, by: 'test' });
+  assert.deepEqual(c.normalizeStore(r.store).meta.versions, r.store.meta.versions, 'versions survive normalisation');
+  assert.equal(c.migrateStepDeps(r.store, { now: '2026-12-01T00:00:00.000Z' }).report.stamped, false, 'second run is a no-op');
+  assert.equal('versions' in c.normalizeStore(c.emptyStore(at)).meta, false, 'an unstamped store carries no versions');
+});
+t('stepDepsReport (verify): names a dependsOn on a missing step and every cycle', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild(),
+    c.normBuild({ id: 'miss', title: 'M', steps: [step('s1', 'a'), step('s2', 'b', { after: ['s9'] })] }),
+    c.normBuild({ id: 'cyc', title: 'C', steps: [step('s1', 'a', { after: ['s3'] }), step('s2', 'b'), step('s3', 'c', { after: ['s2'] })] })] };
+  const r = c.stepDepsReport(s);
+  assert.deepEqual(r.missing, [{ build: 'miss', step: 's2', missing: 's9' }]);
+  assert.deepEqual(r.cycles, [{ build: 'cyc', cycle: ['s1', 's3', 's2', 's1'] }]);
+  assert.equal(r.withDeps, 3);
+  assert.deepEqual(c.stepDepsReport({ builds: [depBuild()] }).missing, []);
+});
+t('builds-store migrateStepDepsNow writes one journalled stamp; a second run writes nothing', () => {
+  const r1 = io.migrateStepDepsNow('test'); assert.equal(r1.report.stamped, true);
+  assert.equal(io.loadStore().meta.versions.stepDeps.version, c.STEP_DEPS_VERSION);
+  const lines = readdirSync(io.journalDir()).flatMap((f) => readFileSync(join(io.journalDir(), f), 'utf8').trim().split('\n')).map((l) => JSON.parse(l));
+  assert.equal(lines.filter((l) => l.action === 'migrate-step-deps').length, 1);
+  const r2 = io.migrateStepDepsNow('test'); assert.equal(r2.report.stamped, false); assert.equal(r2.rev, r1.rev);
+});
 
 // builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
 // through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed

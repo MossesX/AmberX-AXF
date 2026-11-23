@@ -3,7 +3,9 @@
  * model-gate — no build starts on a higher model than Brett approved (Brett, Nov 3 2026: "You can downgrade, but you
  * can't upgrade."; framework/core/model-switch.mjs).
  *
- *   node framework/cli/model-gate.mjs launch --model <m> [--build <id>] [--name <session name>] [--brief <file>] [--json]
+ *   node framework/cli/model-gate.mjs launch --model <m> [--build <id>] [--name <session name>] [--brief <file>] [--step <id>] [--json]
+ *        --step (a parallel step launch, BUILD-PARALLEL; AXF_STEP_ID): the check is that step's own: open, its phase
+ *        approved, and never a model above the step's pin. AXF_BUILD_STEP (a Pipeline 2.0 step) compares with the step's pin
  *        exit 0 = may start; exit 3 = refused (one plain line says why and what to do). A model word the policy
  *        does not know is refused for every launch, build or not: it is an error, never a silent Opus.
  *   node framework/cli/model-gate.mjs resolve <model> [--json]
@@ -80,6 +82,21 @@ export function launchCheck(b, model, { step = null } = {}) {
   return { ok: true, build: b.id, phase: p.index, why: `${b.id} phase ${p.index + 1} runs on ${label(p.model)}${auto}; ${label(want)} is ${modelRank(want) < modelRank(p.model) ? 'a downgrade (fine)' : 'the same model'}` };
 }
 
+/** { ok, why, build?, step? }: may this one step (a parallel step session) start on `model` now? Checked per step. */
+export function stepLaunchCheck(b, stepId, model) {
+  if (!b) return { ok: false, why: `step launch ${stepId}: no orchestrator build found` };
+  const s = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!s) return { ok: false, build: b.id, why: `${b.id} has no step ${stepId}` };
+  if (!open(s)) return { ok: false, build: b.id, step: s.id, why: `${b.id} ${s.id} is ${s.done ? 'done' : 'skipped'}: nothing to launch` };
+  const want = modelKey(model);
+  if (!want && String(model ?? '').trim()) return { ok: false, unknown: true, build: b.id, step: s.id, why: `${modelProblem(model)}. An unknown model is an error, never a silent ${MODEL_LABELS.opus.split(' ')[0]}.` };
+  if (!want) return { ok: true, build: b.id, step: s.id, why: 'no model given: nothing to compare' };
+  const p = stepPhases(b.steps).find((x) => x.stepIds.includes(s.id));
+  if (p && !phaseApproved(b.approvals, p)) return { ok: false, build: b.id, step: s.id, phase: p.index, why: `${upgradeLine(b.id, p)} and Brett hasn't approved it: ${s.id} waits.` };
+  if (modelRank(want) > modelRank(s.model)) return { ok: false, build: b.id, step: s.id, why: `${b.id} ${s.id} is pinned to ${label(s.model)}: never launched on ${label(want)} (raise the step first)` };
+  return { ok: true, build: b.id, step: s.id, why: `${b.id} ${s.id} runs on ${label(s.model)}; ${label(want)} is ${modelRank(want) < modelRank(s.model) ? 'a downgrade (fine)' : 'the same model'}` };
+}
+
 /**
  * Every model switch approval in the store, with its kind (upgrade / downgrade, from the steps' phases), who gave it
  * (`by`/`via`; old records have neither: the journal revision that first holds it and git history say who wrote it)
@@ -117,7 +134,9 @@ async function main(argv) {
     loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
     const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
-    const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '', { step: stepOf(b, { step: opt('step') || process.env.AXF_BUILD_STEP || '', name: opt('name') }) });
+    const pstep = opt('step') || process.env.AXF_STEP_ID || '';
+    const r = pstep ? stepLaunchCheck(b, pstep, opt('model') || process.env.AXF_MODEL || '')
+      : launchCheck(b, opt('model') || process.env.AXF_MODEL || '', { step: stepOf(b, { step: process.env.AXF_BUILD_STEP || '', name: opt('name') }) });
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why}`);
     if (!r.ok) process.exitCode = 3;
     return;

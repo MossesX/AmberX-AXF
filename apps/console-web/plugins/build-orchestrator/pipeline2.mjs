@@ -6,13 +6,18 @@
  *
  *   pending → splitting → split          every Pipeline 2.0 build sent from Plan Studio arrives as one plan (title,
  *                                        body, planning steps; no build steps): Fable designs the build steps, each
- *                                        with minutes and a model (one per planning step when Fable cannot answer);
+ *                                        with minutes and a suggested model (one per planning step when Fable cannot
+ *                                        answer); the model each step runs on is the VPS triage gate's;
  *                                        a build that already has steps is cut into as many parts as there are slots,
  *                                        parts never sharing files
  *   split → pulling-main                 only when no other build is active (one active build at a time)
  *   pulling-main                         one step at a time: its worktree cut at <worktrees>/<build>--<step> on
  *                                        claude/<build>--<step> from fresh origin/main (cut BEFORE launch, never at launch)
- *   assigning-models → ready             Fable where needed, Opus otherwise
+ *   assigning-models → ready             the VPS model triage gate (model-triage@1, framework/cli/model-triage.mjs)
+ *                                        gives every step its model; the decision (model, rule, why) is kept on the
+ *                                        step and in the gate's log. The orchestrator never picks a model itself: the
+ *                                        splitter's model is a suggestion the gate reads, and a step that failed in its
+ *                                        session is asked about again before it is sent out (second try)
  *   ready → sending → building           steps go out one at a time to each free slot (never waiting for every slot), on
  *                                        the account with usage left that has the fewest of this build's steps; up to
  *                                        stepsInParallel (default 4) steps of the build run at once, each in its own
@@ -41,6 +46,8 @@
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
  *   … retry <build> [--why w] [--by who]   Brett's retry of a failed build: the attempt counts start again
+ *   … act <build> <queue|hold|release|retry|rebuild|run-ci|land|cancel> [--step s] [--why w] [--by who]
+ *                                          one tap on a build or a step (the console, Plan Studio 2.0, MCP): actBuild below
  *
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
@@ -62,12 +69,14 @@ import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { syncGrants } from '../../../../framework/cli/emergency-builds.mjs';
+import * as triage from '../../../../framework/cli/model-triage.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
 const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const nowIso = () => new Date().toISOString();
+const clip = (t, n) => (t.length > n ? `${t.slice(0, n - 1)}…` : t);
 const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
 export const stepName = (b, s) => `${b.id}--${s.id}`;
 const lockEnv = (env) => (env.AXF_SLOTS_TMUX === 'off' && env.AXF_BUILD_LOCK_TMUX == null ? { ...env, AXF_BUILD_LOCK_TMUX: 'off' } : env);
@@ -102,11 +111,13 @@ function slotCount(env) {
   try { const sl = PL.slotsNow(); return Math.max(1, Math.min(sl.cap || 1, sl.hard?.max || sl.cap || 1)); } catch { return 1; }
 }
 const minutesOf = (s) => parseInt(str(s.estimate), 10) || 0;
-/** One step row per part: one step as it is, several joined (their text as a list, files merged, Fable if any is). */
+/** One step row per part: one step as it is, several joined (their text as a list, files merged, Fable suggested or pinned if any is). */
 export function partStep(part, i, { at: when, by }) {
   const one = part.length === 1 ? part[0] : null;
   const base = one ? { ...one } : {
     text: part.map((x) => `- ${str(x.text, 600)}`).join('\n'), model: part.some((x) => x.model === 'Fable') ? 'Fable' : 'Opus',
+    ...(part.some((x) => x.suggestedBy) ? { suggestedBy: part.find((x) => x.suggestedBy).suggestedBy } : {}),
+    ...(part.some((x) => x.pin) ? { pin: part.some((x) => x.pin === 'Fable') ? 'Fable' : 'Opus', pinBy: part.find((x) => x.pin)?.pinBy || 'Plan Studio' } : {}),
     estimate: `${part.reduce((m, x) => m + minutesOf(x), 0)} min`, files: [...new Set(part.flatMap((x) => x.files ?? []))], phase: 1,
     note: `Part ${i + 1}: ${part.length} plan steps in one session (they touch the same files).`,
   };
@@ -139,6 +150,15 @@ export function designSteps(b, { env = process.env, slots = 1 } = {}) {
   return { steps: P2.fallbackDesign(b), by: 'fallback', why: str(why, 300) };
 }
 
+/**
+ * Ask the VPS model triage gate for the model of each step. The gate decides; a gate that cannot answer (a broken
+ * store, a bug) leaves the steps as they are and says so in the log, so a build is never stuck on it.
+ */
+function gate(b, steps, env, opts = {}) {
+  try { return triage.triageSteps(b, steps, { lane: poolOf(b) === 'emergency' ? 'emergency' : 'orchestrator', env, root: REPO_ROOT, ...opts }); }
+  catch (e) { logLine({ event: 'triage-failed', build: b.id, error: str(e.message) }); return { steps, decisions: [], changed: [], error: str(e.message) }; }
+}
+
 function splitAll(store, env, out, only = '') {
   for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting') && (!only || x.id === only))) {
     const planningOnly = !b.steps.length;
@@ -148,29 +168,35 @@ function splitAll(store, env, out, only = '') {
     let parts; let note = '';
     if (planningOnly) {
       const d = designSteps(b, { env, slots });
-      const steps = d.steps.map((x) => ({ text: x.text, model: x.model, estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
+      // a model Fable's design gave is the splitter's judgement (the gate's `designer` rule reads it); the fallback gives none
+      const steps = d.steps.map((x) => ({ text: x.text, model: x.model, ...(d.by === 'fable' ? { suggestedBy: 'splitter' } : {}), ...(x.pin ? { pin: x.pin, pinBy: 'Plan Studio' } : {}), estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
       parts = P2.splitParts(steps, steps.length); // one row per designed step; only steps sharing files go together
       const minutes = d.steps.reduce((m, x) => m + x.minutes, 0);
       note = d.by === 'fable'
-        ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min, ${d.steps.filter((x) => x.model === 'Fable').length} Fable).`
+        ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min). The triage gate assigns the models.`
         : `Fable could not split it (${d.why}): one step per planning step instead (${d.steps.length}, ${minutes} min). Review the steps.`;
       logLine({ event: 'design', build: b.id, by: d.by, steps: d.steps.length, why: d.why });
     } else parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
     const when = nowIso();
+    // the model of every step is the triage gate's: what the step came with (the splitter's model, an older record's) is a suggestion
+    const gated = gate(b, parts.map((p, i) => partStep(p, i, { at: when, by: 'orchestrator' })), env, { at: when });
     const r = move(b.id, 'split', { why: `${parts.length} step${parts.length === 1 ? '' : 's'} for ${slots} slot${slots === 1 ? '' : 's'}`,
-      mutate: (rec) => { rec.steps = parts.map((p, i) => storeCore.normStep(partStep(p, i, { at: when, by: 'orchestrator' }), i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+      mutate: (rec) => { rec.steps = gated.steps.map((st, i) => storeCore.normStep(st, i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+    if (r) triage.logSteps(b, gated.decisions);
     if (r) { out.split.push({ id: b.id, steps: parts.length, slots }); logLine({ event: 'split', build: b.id, steps: parts.length, slots }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
   }
 }
 
 /* ------------------------------------------------------------------ one active build, then main into each step */
 
+/** On hold (Brett's Hold on a build that waits its turn): it keeps its place and is not activated until released. */
+export const isHeld = (b) => !!str(b?.pipeline?.heldAt, 40);
 /** Waiting its turn: at `split`, or failed there with attempts left (a build that failed while it waited starts like any other). */
 export const waitsTurn = (b, max = P2.MAX_ATTEMPTS) => P2.WAITING.includes(b.status) || (b.status === P2.FAILED && P2.WAITING.includes(b.failedFrom) && !P2.gaveUp(b, max));
 /** The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their own lane. */
 export function nextToActivate(builds, max = P2.MAX_ATTEMPTS) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
 /** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
@@ -221,9 +247,16 @@ function prepare(b, env, out) {
   }
   const cur = loadStore().builds.find((x) => x.id === b.id);
   if (cur.status !== 'assigning-models') return;
-  const raised = [];
-  move(b.id, 'ready', { why: 'models assigned', mutate: (rec) => { for (const s of rec.steps) { const m = P2.modelFor(s); if (m !== s.model) raised.push(`${s.id} ${s.model} → ${m}`); s.model = m; } if (raised.length) rec.notes.push({ text: `Models assigned (Fable where needed): ${raised.join(', ')}.`, at: nowIso() }); } });
-  out.ready.push(b.id); logLine({ event: 'ready', build: b.id, raised });
+  // the worktrees exist now, so the gate measures what it could not at the split (the files that depend on the step's files)
+  const gated = gate(cur, cur.steps, env, { measure: true });
+  const byId = new Map(gated.steps.map((s) => [s.id, s]));
+  const summary = gated.decisions.map((d) => `${d.step} ${d.model} (${d.why})`).join('; ');
+  const r = move(b.id, 'ready', { why: 'models assigned by the triage gate', mutate: (rec) => {
+    for (const s of rec.steps) { const g = byId.get(s.id); if (g?.triage) { s.model = g.model; s.triage = g.triage; } }
+    if (summary) rec.notes.push({ text: clip(`Models assigned by the triage gate: ${summary}.`, 1500), at: nowIso(), by: 'triage-gate' });
+  } });
+  if (r) triage.logSteps(cur, gated.decisions);
+  out.ready.push(b.id); logLine({ event: 'ready', build: b.id, raised: gated.changed });
 }
 
 /* ------------------------------------------------------------------ accounts and launches */
@@ -304,6 +337,13 @@ export function launchStep(b, s, { account, model }, { env = process.env, launch
   return { session, slot };
 }
 
+/** The gate's new answer for a failed step, when it differs from the model the step has: { model, triage, decision } or null. */
+function retriage(b, s, env) {
+  const g = gate(b, [s], env);
+  const d = g.decisions[0];
+  return d && d.model !== s.model ? { model: d.model, triage: g.steps[0].triage, decision: d } : null;
+}
+
 /** Accounts a step failed on before (its log: launch refusals and limit exits), newest attempts only. */
 const failedOn = (s) => (s.statusLog ?? []).filter((l) => l.status === P2.FAILED).slice(-4).map((l) => /^launch on ([a-z0-9-]+):/.exec(l.why || '')?.[1] ?? /^([a-z0-9-]+) hit its/.exec(l.why || '')?.[1] ?? '').filter(Boolean);
 
@@ -334,6 +374,10 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
       const onBuild = {}; for (const x of loadStore().builds.find((y) => y.id === b.id).steps) if (['sending', 'building'].includes(x.status) && x.account) onBuild[x.account] = (onBuild[x.account] ?? 0) + 1;
       // a step at `ready` with an `account` is pinned (the watchdog's relaunch chose it): that account, unless it is
       // marked out, full, or refused this step in this pass; otherwise the normal pick (never an out account)
+      // a step that failed in its session asks the gate again before it goes back out (second try); the gate only
+      // changes its model through a rule, and the new model is what the account is picked for
+      const again = fresh.status === P2.FAILED ? retriage(b, fresh, env) : null;
+      if (again) fresh.model = again.model;
       let a = P2.pinnedAccount(accounts, fresh, { model: fresh.model, exclude: [...tried, ...refusedNow] });
       if (a) logLine({ event: 'pinned-account', build: b.id, step: s.id, account: a.name });
       else if (fresh.status === 'ready' && fresh.account && !tried.includes(fresh.account)) logLine({ event: 'pin-skipped', build: b.id, step: s.id, account: fresh.account, why: 'marked out, full or refused: the normal pick chooses' });
@@ -346,7 +390,8 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
         return;
       }
       const to = fresh.status === P2.FAILED ? retryTo(fresh, 'sending') : 'sending';
-      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name } })) break;
+      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name, ...(again ? { model: again.model, triage: again.triage } : {}) } })) break;
+      if (again) { triage.logSteps(b, [{ step: s.id, ...again.decision }]); logLine({ event: 'retriaged', build: b.id, step: s.id, model: again.model, rule: again.decision.rule }); }
       const bNow = loadStore().builds.find((x) => x.id === b.id);
       if (at(bNow, 'ready', 'sending') && bNow.status !== 'sending') move(b.id, bNow.status === P2.FAILED ? retryTo(bNow, 'sending', 'build') : 'sending', { why: `sending ${s.id}` });
       try {
@@ -446,7 +491,7 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
     const next = nextToActivate(p2Builds(store), attemptCap(env));
     if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
   }
-  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
+  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: isHeld(w) ? 'on hold: release it to give it its turn' : `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
   if (!active) return out;
   out.active = active.id;
   if (build && active.id !== build) return out;
@@ -501,6 +546,135 @@ export function retryBuild(id, { by = process.env.AXF_ACTOR || 'console', why = 
   return { id: b.id, status, steps, by };
 }
 
+/* ------------------------------------------------------------------ taps: one action on a build or a step */
+
+/** What a tap may ask for (the orchestrator's own menu, Plan Studio 2.0's, REST, MCP, the CLI). */
+export const BUILD_ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel']);
+/** Before the active place: not yet split, or split and waiting its turn. */
+const beforeTheLine = (b) => at(b, 'pending', 'splitting', 'split');
+const inLanding = (b) => at(b, ...P2.LANDING_GROUP);
+const SELF = fileURLToPath(import.meta.url);
+
+/** One pass for one build under the dispatcher's lock (a second process when this one does not hold it). */
+function passFor(id, env = process.env) {
+  if (env.AXF_PIPELINE_LOCKED === '1' || spawnSync('flock', ['-V'], { encoding: 'utf8' }).status !== 0) return advance({ env, build: id });
+  const lockFile = PL.pipelineLock();
+  try { mkdirSync(dirname(lockFile), { recursive: true }); } catch { /* flock reports it */ }
+  const r = spawnSync('flock', ['-w', '120', lockFile, process.execPath, SELF, 'advance', '--build', id, '--json'], { encoding: 'utf8', timeout: 600e3, env: { ...env, AXF_PIPELINE_LOCKED: '1' } });
+  try { return JSON.parse((r.stdout || '').trim().split('\n').pop() || '{}'); } catch { return { waits: [], error: str((r.stderr || r.stdout || '').trim(), 300) }; }
+}
+/** Ask the lander for a pass now (it runs within a minute). Best effort: the lander's own timer comes round anyway. */
+function requestLanderTick(by, env = process.env) {
+  if (env.AXF_P2_LANDER === 'off') return false;
+  const cli = join(REPO_ROOT, 'deploy', 'lander', 'run.mjs');
+  if (!existsSync(cli)) return false;
+  try { return spawnSync(process.execPath, [cli, 'run', '--request', '--by', str(by, 80) || 'console'], { encoding: 'utf8', timeout: 30e3, env }).status === 0; } catch { return false; }
+}
+
+/**
+ * One tap on a Pipeline 2.0 build, or on one of its steps (`step`): every decision is made here, on the VPS; the
+ * console only sends the tap and shows the answer. A tap that does not fit where the build is gets a refusal that says
+ * why (code 2) and changes nothing.
+ *   queue    move it on: split it if it is not split yet, and give it the active place when it is next in line.
+ *            Never refused for waiting: the answer says where it stands
+ *   hold     a build still waiting its turn keeps its place and is skipped until released
+ *   release  off hold; it takes its turn again
+ *   retry    a failed build and its failed steps leave `failed` forward where they failed; the attempt counts start again
+ *   rebuild  a failed step is built again (through `ready`); a build that failed while landing has main pulled into its
+ *            PR and is recompiled (`pr-pulling-main`); any other failed build is retried
+ *   run-ci   a build that failed at CI (or after it) goes back to `running-ci`; one already there is checked now
+ *   land     the lander takes a built build on its next pass; one that failed while landing is retried first
+ *   cancel   out of the flow (archived), from any status; a session still running ends on its own and is not landed
+ * → { id, action, step, status, label, held, say }
+ */
+export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', why = '', step = '', env = process.env, pass = passFor, landerTick = requestLanderTick } = {}) {
+  const refuse = (msg) => { throw Object.assign(new Error(msg), { code: 2 }); };
+  if (!BUILD_ACTIONS.includes(action)) refuse(`action is one of ${BUILD_ACTIONS.join(', ')}`);
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b || b.deleted) refuse(`no build "${id}"`);
+  if (b.flow !== P2.FLOW) refuse(`${b.id} is not a Pipeline 2.0 build`);
+  const label = P2.labelOf(b.status, b.attempt);
+  if (b.status === P2.EXIT) refuse(`${b.id} is archived: nothing to ${action}`);
+  if (b.status === 'landed') refuse(`${b.id} has landed: nothing to ${action}`);
+  const s = step ? stepOf(b, step) : null;
+  if (step && !s) refuse(`no step ${step} in ${b.id}`);
+  const reason = `${action} by ${by}${why ? `: ${str(why, 200)}` : ''}`;
+  const note = (text) => (rec) => { rec.notes.push({ text, at: nowIso(), by }); };
+  const done = (say, extra = {}) => {
+    const cur = storeCore.findBuild(loadStore(), b.id);
+    logLine({ event: 'act', build: b.id, action, step: s?.id ?? '', by });
+    return { id: b.id, action, step: s?.id ?? '', status: cur.status, label: P2.labelOf(cur.status, cur.attempt), held: isHeld(cur), say, ...extra };
+  };
+  const setHold = (on) => setFlowStatus(b.id, b.status, { by, action: `pipeline2:${on ? 'hold' : 'release'}`, mutate: (rec) => {
+    rec.pipeline = { ...(rec.pipeline ?? {}), heldAt: on ? nowIso() : '', heldBy: on ? str(by, 80) : '', heldWhy: on ? str(why, 300) : '' };
+    rec.notes.push({ text: on ? `On hold (${by})${why ? `: ${str(why, 200)}` : ''}. It keeps its place and is skipped until released.` : `Released from hold (${by}): it takes its turn again.`, at: nowIso(), by });
+  } });
+  const where = (r) => {
+    const cur = storeCore.findBuild(loadStore(), b.id);
+    const now = P2.labelOf(cur.status, cur.attempt);
+    const w = (r?.waits ?? []).find((x) => x.id === b.id && !x.step);
+    return P2.holdsActive(cur) ? `${b.id} has the active place: ${now}.` : w ? `${b.id} is in line (${now}): ${w.why}.` : `${b.id}: ${now}.`;
+  };
+  switch (action) {
+    case 'queue': {
+      if (isHeld(b)) refuse(`${b.id} is on hold: release it first`);
+      if (P2.gaveUp(b, attemptCap(env))) refuse(`${b.id} gave up (${label}): retry it first`);
+      if (!beforeTheLine(b)) return done(`${b.id} is already past the line: ${label}.`);
+      return done(where(pass(b.id, env)));
+    }
+    case 'hold': {
+      if (isHeld(b)) refuse(`${b.id} is on hold already`);
+      if (P2.isEmergency(b)) refuse(`${b.id} is an emergency build: it is never held`);
+      if (!beforeTheLine(b)) refuse(`${b.id} is ${label}: only a build still waiting its turn is put on hold (Cancel stops one that is being built)`);
+      setHold(true);
+      return done(`${b.id} is on hold: it keeps its place and is skipped until released.`);
+    }
+    case 'release': {
+      if (!isHeld(b)) refuse(`${b.id} is not on hold`);
+      setHold(false);
+      return done(`Released. ${where(pass(b.id, env))}`);
+    }
+    case 'retry': {
+      const r = retryBuild(b.id, { by, why });
+      return done(`${b.id}: retrying from ${P2.labelOf(r.status)}${r.steps.length ? ` (steps ${r.steps.map((x) => x.id).join(', ')})` : ''}; the attempt counts start again.`);
+    }
+    case 'rebuild': {
+      if (s) {
+        if (s.status !== P2.FAILED) refuse(`step ${s.id} is ${P2.labelOf(s.status, s.attempt, 'step')}: only a failed step is built again`);
+        setFlowStatus(b.id, P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending', { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
+        setFlowStatus(b.id, b.status, { by, mutate: note(`Rebuild of step ${s.id} (${by}): it starts again at attempt 1.`) });
+        return done(`${b.id}: step ${s.id} is built again.`);
+      }
+      if (b.status !== P2.FAILED) refuse(`${b.id} is ${label}: only a failed build is rebuilt`);
+      if (!P2.LANDING_GROUP.includes(b.failedFrom)) { const r = retryBuild(b.id, { by, why: why || 'rebuild' }); return done(`${b.id}: building again from ${P2.labelOf(r.status)}.`); }
+      setFlowStatus(b.id, 'pr-pulling-main', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Rebuild (${by}): main is pulled into its PR again and the build is recompiled.`)(rec); } });
+      landerTick(by, env);
+      return done(`${b.id}: main is pulled into its PR again and the build is recompiled.`);
+    }
+    case 'run-ci': {
+      if (!inLanding(b)) refuse(`${b.id} is ${label}: CI runs once its steps are merged into one PR`);
+      if (b.status === P2.FAILED) {
+        if (P2.rank(b.failedFrom) < P2.rank('running-ci')) refuse(`${b.id} failed before CI (at ${P2.labelOf(b.failedFrom)}): rebuild it instead`);
+        setFlowStatus(b.id, 'running-ci', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Run CI (${by}): back at Running CI.`)(rec); } });
+      } else if (b.status === 'merging-main') refuse(`${b.id} is past CI: ${label}`);
+      else if (b.status !== 'running-ci') refuse(`${b.id} is ${label}: CI starts by itself once main is in its PR`);
+      landerTick(by, env);
+      return done(`${b.id}: Running CI. The lander checks it on its next pass.`);
+    }
+    case 'land': {
+      if (b.status === P2.FAILED && P2.LANDING_GROUP.includes(b.failedFrom)) { retryBuild(b.id, { by, why: why || 'land' }); landerTick(by, env); return done(`${b.id}: landing again from ${P2.labelOf(b.failedFrom)}.`); }
+      if (b.status !== 'build-complete' && !(inLanding(b) && b.status !== P2.FAILED)) refuse(`${b.id} is ${label}: it lands once every step is built`);
+      landerTick(by, env);
+      return done(`${b.id}: the lander takes it on its next pass (${label}).`);
+    }
+    default: { // cancel
+      const running = b.steps.filter(inSlot).length;
+      setFlowStatus(b.id, P2.EXIT, { by, why: reason, mutate: note(`Cancelled from ${label} (${by})${why ? `: ${str(why, 200)}` : ''}.${running ? ` ${running} step session${running === 1 ? '' : 's'} still running end on their own; nothing of them is landed.` : ''}`) });
+      return done(`${b.id} is cancelled (archived from ${label}).`);
+    }
+  }
+}
+
 /**
  * The emergency lane: every emergency build that is split goes to pulling-main at once (no waiting for the active
  * place) and is worked on beside the active build, its steps in the emergency slot pool. Grants of builds that are no
@@ -526,7 +700,7 @@ function advanceEmergency(env, out, { launch, build = '' }) {
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
   return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
-    steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
+    steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
 }
 
 async function main(argv) {
@@ -546,7 +720,19 @@ async function main(argv) {
   if (cmd === 'advance') { const r = advance({ build: flag('build') }); return print(r, `active ${r.active || 'none'} · split ${r.split.length} · main pulled ${r.pulled.length} · ready ${r.ready.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`); }
   if (cmd === 'step-exit') { const r = stepExit(rest[0], rest[1], { exit: Number(flag('exit', '0')), hit: flag('hit'), account: flag('account'), session: flag('session'), by: flag('by', 'headless') }); return print(r, r.why || r.status); }
   if (cmd === 'retry') { if (!rest[0]) throw new Error('retry <build> [--why w] [--by who]'); const r = retryBuild(rest[0], { by: flag('by', process.env.AXF_ACTOR || 'cli'), why: flag('why') }); return print({ ok: true, ...r }, `${r.id}: ${P2.labelOf(r.status)}${r.steps.length ? ` · steps ${r.steps.map((x) => `${x.id} → ${x.status}`).join(', ')}` : ''} · the attempt counts start again`); }
-  if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
-  console.error('usage: pipeline2.mjs advance | status | retry <build> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
+  if (cmd === 'act') {
+    const [id, action] = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why', '--step'].includes(rest[i - 1])));
+    try {
+      if (!id || !action) throw Object.assign(new Error(`act <build> <${BUILD_ACTIONS.join('|')}> [--step s] [--why w] [--by who]`), { code: 2 });
+      const r = actBuild(id, action, { by: flag('by', process.env.AXF_ACTOR || 'cli'), why: flag('why'), step: flag('step') });
+      return print({ ok: true, ...r }, r.say);
+    } catch (e) {
+      if (!(e instanceof FlowRefused) && e.code !== 2) throw e;
+      process.exitCode = 2;
+      return json ? console.log(JSON.stringify({ ok: false, error: e.message })) : console.error(e.message);
+    }
+  }
+  if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.triage ? ` [${s.triage.rule}]` : ''}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
+  console.error('usage: pipeline2.mjs advance | status | retry <build> | act <build> <action> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).catch((e) => { console.error(`pipeline2: ${e.message}`); process.exitCode = 1; });

@@ -24,6 +24,15 @@ export const PHONE_APP_ADDRESS = 'panel:phone-app';
 /** What the approval bar's "Open approvals" link runs. */
 export const APPROVALS_TARGET = 'approvals.view';
 
+/**
+ * The action an `approvals.open` event runs. With the hub id of one call (a card the overlay popped for it) that
+ * call opens; without one, or with anything that isn't an approval id, the first one waiting.
+ */
+export function approvalsOpenSpec(data) {
+  const id = data && typeof data === 'object' ? data.id : undefined;
+  return typeof id === 'string' && /^[0-9a-f-]{36}$/.test(id) ? `${APPROVALS_TARGET}:${id}` : APPROVALS_TARGET;
+}
+
 /** The --fx-* tokens the native toolbar takes its look from (= Java ShellTheme.TOKENS). */
 export const THEME_TOKENS = ['--fx-surface', '--fx-text', '--fx-accent', '--fx-accent-text', '--fx-muted', '--fx-radius-md', '--fx-space', '--fx-font-size'];
 

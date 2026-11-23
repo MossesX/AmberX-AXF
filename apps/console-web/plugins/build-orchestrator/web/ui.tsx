@@ -7,6 +7,8 @@ import { PipelineTab } from './pipeline';
 import { GroupsBoard } from './groups';
 import { WatchdogTab } from './watchdog';
 import { StatusTable, setTableFilter, type Filters } from './StatusTable';
+import { SlotsStrip } from './SlotsStrip';
+import { readSlotsLayout } from './Settings';
 import * as consoleApi from '@console/api';
 import './orchestrator.css';
 
@@ -61,6 +63,7 @@ export function OrchestratorPage() {
         </div>
         <div className="fx-row fx-row--wrap"><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
+      <SlotsStrip api={api} layout={readSlotsLayout()} />
       <StatusTable api={api} />
     </div>
   );

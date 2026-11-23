@@ -50,14 +50,42 @@ def cli(*args: str) -> str:
     return subprocess.run(["node", str(CLI), *args], capture_output=True, text=True, cwd=REPO, env=os.environ).stdout.strip()
 
 
+owner_app = FastAPI()
+
+
+@owner_app.middleware("http")
+async def as_brett(request, call_next):  # what the console's auth does for Brett's own signed-in session
+    request.state.axf_user = types.SimpleNamespace(admin=True, name="Brett")
+    return await call_next(request)
+
+
+owner_app.include_router(mod.router, prefix="/api/plugins/agent-slots")
+bc = TestClient(owner_app)
+
 ok(mod.ROOT == REPO, f"repo root found ({mod.ROOT})")
 s = c.get("/api/plugins/agent-slots/status").json()
-ok(s.get("cap") == 6 and s.get("used") == 0, f"defaults: 0/6 ({s})")
+ok(s.get("cap") == 8 and s.get("used") == 0, f"defaults: 0/8, the one Builds at once value ({s})")
 
-r = c.put("/api/plugins/agent-slots/settings", json={"maxAgents": 1, "bogus": 3})
-ok(r.status_code == 200 and r.json()["maxAgents"] == 1 and "bogus" not in r.json(), "settings saved, unknown keys dropped")
+# Builds at once is one stored key (the VPS limit's maxBuilds): everyone reads it, only Brett's signed-in session sets it
+h = c.get("/api/plugins/agent-slots/hard-limit").json()
+ok(h.get("max") == 8 and h.get("canEdit") is False and "slice" in h and "limit" in h, f"limit read: 8 by default, not editable with the console token ({h})")
+r = c.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 12})
+ok(r.status_code == 403 and "Only Brett" in r.json().get("detail", ""), "console token (sessions, MCP, voice) cannot set it")
+ok(c.get("/api/plugins/agent-slots/hard-limit").json().get("max") == 8, "unchanged after the refused set")
+
+# the retired copy (maxAgents) is read-only: settings still carry it, a save never stores it
+r = c.put("/api/plugins/agent-slots/settings", json={"maxAgents": 1})
+ok(r.status_code == 400 and "Builds at once" in r.json().get("detail", ""), "saving only the retired maxAgents = 400 that says where the one setting is")
+r = c.put("/api/plugins/agent-slots/settings", json={"maxAgents": 1, "maxHeavy": 2, "bogus": 3})
+ok(r.status_code == 200 and r.json()["maxAgents"] == 8 and r.json()["maxHeavy"] == 2 and "bogus" not in r.json(), "settings saved, the retired and unknown keys dropped")
+ok("maxAgents" not in json.loads((STORE / "settings.json").read_text()), "maxAgents is not in the settings file")
 ok(c.put("/api/plugins/agent-slots/settings", json={"nope": 1}).status_code == 400, "nothing to save = 400")
-ok(json.loads(cli("settings", "--json"))["maxAgents"] == 1, "the CLI sees the console's save at once (hot reload)")
+
+r = bc.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 1, "dockerCpus": 1.5, "nope": 1})
+ok(r.status_code == 200 and r.json().get("max") == 1 and r.json().get("canEdit") is True and r.json()["limit"]["setBy"] == "Brett", f"Brett sets it ({r.status_code} {r.text[:200]})")
+ok(bc.put("/api/plugins/agent-slots/hard-limit", json={"nope": 1}).status_code == 400, "nothing to save = 400")
+st = c.get("/api/plugins/agent-slots/status").json()
+ok(json.loads(cli("settings", "--json"))["maxAgents"] == 1 and st["cap"] == 1 and st["settings"].get("hardMax") == 1, "the queue's cap is that one value at once (hot reload)")
 
 pid = str(os.getpid())
 a = json.loads(cli("enqueue", "--name", "a", "--pid", pid, "--json"))
@@ -73,28 +101,6 @@ ok(r.status_code == 200 and [q["name"] for q in r.json()["status"]["queue"]] == 
 ok(c.post(f"/api/plugins/agent-slots/queue/{b['id']}/cancel").status_code == 409, "cancel twice = 409")
 ok(c.post("/api/plugins/agent-slots/queue/bad$id/up").status_code in (400, 404), "bad id refused")
 ok(plugin_services.get("axf.agent-slots@1").status()["queued"] == 1, "capability axf.agent-slots@1")
-
-# the hard build limit: everyone reads it, only Brett's signed-in session sets it
-h = c.get("/api/plugins/agent-slots/hard-limit").json()
-ok(h.get("max") == 8 and h.get("canEdit") is False and "slice" in h and "limit" in h, f"hard limit read: 8 by default, not editable with the console token ({h})")
-r = c.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 12})
-ok(r.status_code == 403 and "Only Brett" in r.json().get("detail", ""), "console token (sessions, MCP, voice) cannot set it")
-ok(c.get("/api/plugins/agent-slots/hard-limit").json().get("max") == 8, "unchanged after the refused set")
-owner_app = FastAPI()
-
-
-@owner_app.middleware("http")
-async def as_brett(request, call_next):  # what the console's auth does for Brett's own signed-in session
-    request.state.axf_user = types.SimpleNamespace(admin=True, name="Brett")
-    return await call_next(request)
-
-
-owner_app.include_router(mod.router, prefix="/api/plugins/agent-slots")
-bc = TestClient(owner_app)
-r = bc.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 5, "dockerCpus": 1.5, "nope": 1})
-ok(r.status_code == 200 and r.json().get("max") == 5 and r.json().get("canEdit") is True and r.json()["limit"]["setBy"] == "Brett", f"Brett sets it ({r.status_code} {r.text[:200]})")
-ok(bc.put("/api/plugins/agent-slots/hard-limit", json={"nope": 1}).status_code == 400, "nothing to save = 400")
-ok(json.loads(cli("settings", "--json"))["maxAgents"] == 1 and c.get("/api/plugins/agent-slots/status").json()["settings"].get("hardMax") == 5, "the soft cap sees the hard limit")
 
 # systems-check probe
 base = {"used": 1, "cap": 6, "queued": 0, "memory": {"availGb": 6, "floorGb": 2}, "settings": {"guardWarnTrips": 5, "swapWarnMin": 30}, "guard": {"tripsLastHour": 0}, "swap": {"since": None, "mb": 0}}

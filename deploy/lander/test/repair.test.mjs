@@ -285,7 +285,8 @@ test('L2-03: the fix session starts through the headless launcher on Fable, in a
   const launcher = join(r.dir, 'launcher.sh'); const seen = join(r.dir, 'seen.txt'); const trees = join(r.dir, 'trees');
   writeFileSync(launcher, `#!/usr/bin/env bash\n{ echo "cwd=$(pwd)"; echo "args=$*"; echo "build=\${AXF_BUILD_ID:-none}"; echo "model=$AXF_MODEL"; echo "job=$AXF_AGENT_JOB"; echo "head=$(git rev-parse HEAD)"; } > "${seen}"\necho "started axf-lander-fix-pr5-1--gina in $(pwd)"\n`);
   chmodSync(launcher, 0o755); mkdirSync(trees);
-  const env = { ...process.env, AXF_PIPELINE_WORKTREES: trees, AXF_BUILD_ID: 'some-build', AXF_DISPATCH_TOKEN: 'x' };
+  const triageDir = join(r.dir, 'triage');
+  const env = { ...process.env, AXF_PIPELINE_WORKTREES: trees, AXF_BUILD_ID: 'some-build', AXF_DISPATCH_TOKEN: 'x', AXF_MODEL_TRIAGE_DIR: triageDir, AXF_CLAUDE_SETTINGS_FILE: join(r.dir, 'no-settings.json') };
   const start = F.defaultFixSession(r.s, { env, launcher });
   const git = G.makeGit(r.work);
   const job = start({ git, b: { id: 'b', title: 'Build B' }, f: { kind: 'ci-red', why: 'CI is red', failing: ['tests'] }, branch: 'lander/b', pr: 5, log: 'boom', n: 1, of: 2 });
@@ -296,6 +297,12 @@ test('L2-03: the fix session starts through the headless launcher on Fable, in a
   assert.match(out, new RegExp(`head=${sh(r.work, 'rev-parse', 'origin/lander/b')}`), 'the worktree is at the PR branch\'s head');
   const brief = readFileSync(join(r.s.dataDir, 'fix', 'lander-fix-pr5-1.md'), 'utf8');
   assert.match(brief, /Push to this branch only/); assert.match(brief, /boom/);
+  // the model is the VPS triage gate's (model-triage@1, lane lander-fix), and the decision is in its log
+  const logged = readFileSync(join(triageDir, 'decisions.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.equal(logged.length, 1); assert.equal(logged[0].lane, 'lander-fix'); assert.equal(logged[0].rule, 'ci-fix'); assert.equal(logged[0].model, 'Fable'); assert.equal(logged[0].name, 'lander-fix-pr5-1'); assert.equal(logged[0].build, 'b');
+  assert.equal(F.fixModel({ kind: 'clash-main', text: 'main conflicts with the PR' }, { env }).key, 'fable', 'a merge clash is Fable work by the gate\'s rule');
+  writeFileSync(join(triageDir, 'config.json'), JSON.stringify({ rules: [{ id: 'ci-fix', model: 'opus' }] }));
+  assert.equal(F.fixModel({ kind: 'ci-red', text: 'CI is red' }, { env }).key, 'opus', 'the rule is Brett\'s to change: the lander follows the gate');
   assert.ok(!readFileSync(new URL('../run.mjs', import.meta.url), 'utf8').includes('agent-job.mjs'), 'the lander no longer calls the agent roster');
   // a launcher that refuses: not started, with its last line as the reason
   writeFileSync(launcher, '#!/usr/bin/env bash\necho "claude-headless: every account is at its limit" >&2\nexit 3\n');

@@ -11,8 +11,15 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
   POST   add | rename | edit | move | nudge | indent | outdent | duplicate | undo | link | unlink | collapse | import | build | say
   POST   emergency        send an item as an EMERGENCY build: Brett's own signed-in console only (403 for the console
                           token, MCP, voice and sessions)
+  POST   orchestrate      one orchestrator action on a sent plan or one of its steps: {id, action}. The build is found
+                          here and the tap goes to the orchestrator (capability axf.build-dispatch@1), which decides
+  GET    history/{id}     the planning steps a send replaced (kept on the item)
+  POST   restore-steps | sync
   DELETE item/{id}        to the trash (undo brings it back)
   DELETE all              everything gone, the trash too (confirm)
+
+Sent plans: `state`, `tree`, `item` and `find` lay the builds store over the tree on every read (tree.mjs, web/live-core.mjs):
+a sent plan is locked (a change answers 409) and lists the steps the orchestrator filed, each with its live state.
 
 Capability plan-tree@1: other plugins' server parts read and add items through plugin_services.get("plan-tree@1").
 Capability plans@1 (list / get / park): the tree's `plan` items as plans, for plugins that only need "the plans"
@@ -90,7 +97,7 @@ def _answer(r: dict[str, Any]) -> dict[str, Any]:
     if r.get("ok") or r.get("understood") is False:
         return r
     code = str(r.get("code") or "")
-    raise HTTPException(404 if code == "not_found" else 409 if code == "confirm" else 403 if code == "forbidden" else 400, str(r.get("error") or "Plan Studio 2.0 refused"))
+    raise HTTPException(404 if code == "not_found" else 409 if code in ("confirm", "locked") else 403 if code == "forbidden" else 400, str(r.get("error") or "Plan Studio 2.0 refused"))
 
 
 def _write(op: str, request: Request, body: dict[str, Any]) -> dict[str, Any]:
@@ -230,6 +237,49 @@ async def emergency(request: Request) -> dict[str, Any]:
     body = await _body(request)
     body.pop("preview", None)
     return _answer(run({**body, "op": "build", "emergency": True, "by": who}, approver=who))
+
+
+ORCH_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+DISPATCH_CAP = "axf.build-dispatch@1"
+
+
+@router.post("/orchestrate")
+async def orchestrate(request: Request) -> dict[str, Any]:
+    """One orchestrator action on a sent plan or on one of its steps: {id, action, why}. `id` is a row of the tree (the
+    sent plan, anything inside it, or a step the orchestrator filed); action is queue, hold, release, retry, rebuild,
+    run-ci, land or cancel. The build is looked up here and the action is handed to the orchestrator, which decides
+    whether it fits where the build is; a refusal comes back with its reason. Nothing is decided in the console."""
+    body = await _body(request)
+    action = str(body.get("action") or "")
+    if action not in ORCH_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(ORCH_ACTIONS)}")
+    target = _answer(run({"op": "target", "id": str(body.get("id") or "")}))
+    svc = plugin_services.get(DISPATCH_CAP)
+    if svc is None or not hasattr(svc, "act"):
+        raise HTTPException(503, "The build orchestrator is switched off or not installed: its actions are not available.")
+    res = svc.act(str(target.get("build") or ""), action, by=_by(request), why=str(body.get("why") or "")[:300], step=str(target.get("step") or ""))
+    run({"op": "sync", "fresh": True, "by": _by(request)})  # read the build again: a cancel gives the planning steps back at once
+    return {"ok": True, "build": target.get("build"), "step": target.get("step"), "action": action, "status": res.get("status"),
+            "label": res.get("label"), "held": res.get("held"), "say": res.get("say") or "Done."}
+
+
+@router.get("/history/{id}")
+def history(id: str) -> dict[str, Any]:
+    """The planning steps a send replaced, kept on the item: one entry per build, with the steps as they were."""
+    return _answer(run({"op": "history", "id": id}))
+
+
+@router.post("/restore-steps")
+async def restore_steps(request: Request) -> dict[str, Any]:
+    """Bring replaced planning steps back into an item: {id, entry} (the newest entry when none is given). Refused
+    while the item is locked by a sent build."""
+    return _write("restore-steps", request, await _body(request))
+
+
+@router.post("/sync")
+async def sync(request: Request) -> dict[str, Any]:
+    """Bring the tree in line with the builds store now (every read does this by itself)."""
+    return _write("sync", request, await _body(request))
 
 
 @router.post("/say")

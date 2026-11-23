@@ -226,14 +226,16 @@ export function dockerArgs(image, l, { slice = true } = {}) {
 
 /* ---------------- store ---------------- */
 
-const files = () => { const d = slotsDir(); return { dir: d, config: join(d, 'build-limit.json'), res: join(d, 'build-limit-res.json'), emergency: join(d, 'build-limit-emergency.json'), live: join(d, 'build-limit-live.json'), journal: join(d, 'build-limit.log.jsonl'), lock: join(d, 'build-limit.lock') }; };
+const files = () => { const d = slotsDir(); return { dir: d, config: join(d, 'build-limit.json'), res: join(d, 'build-limit-res.json'), emergency: join(d, 'build-limit-emergency.json'), live: join(d, 'build-limit-live.json'), host: join(d, 'build-limit-host.json'), journal: join(d, 'build-limit.log.jsonl'), lock: join(d, 'build-limit.lock') }; };
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 /** One line in build-limit.log.jsonl (limit changes, emergency grants). Best effort: a failed write never blocks the change. */
-const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
+export const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
 
 /** Read fresh on every call (the console's change applies to the next launch). */
 export const loadLimit = () => normLimit(readJson(files().config, {}));
+/** The config file as it is on disk (null when there is none): tells a value Brett set from a default. */
+export const rawLimit = () => { const j = readJson(files().config, null); return j && typeof j === 'object' && !Array.isArray(j) ? j : null; };
 
 /**
  * Brett only: `owner` must be true (the console's owner check, or a person at a terminal). Returns the new config.
@@ -321,8 +323,24 @@ const tmuxFinished = (name) => /── finished \(exit/.test(spawnSync('tmux', [
 const pidAlive = (pid) => { if (!Number.isInteger(pid) || pid <= 0) return false; try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
 const onlyRe = () => (process.env.AXF_BUILD_LIMIT_ONLY && validRe(process.env.AXF_BUILD_LIMIT_ONLY) ? new RegExp(process.env.AXF_BUILD_LIMIT_ONLY) : null);
 
+/**
+ * Is this the machine the builds run on? The console container has `ps` too, but it lists the container's own
+ * processes: counting those as the host's read "0 builds running" while builds ran, and wrote that zero over the host's
+ * snapshot. The build host is the one the enforcer runs on (it writes build-limit-host.json on every pass); until that
+ * marker exists, a container on the shared store (no AXF_SLOTS_DIR of its own) is not the host. AXF_BUILD_LIMIT_HOST=
+ * on|off overrides.
+ */
+export function isBuildHost() {
+  if (process.env.AXF_BUILD_LIMIT_HOST === 'on') return true;
+  if (process.env.AXF_BUILD_LIMIT_HOST === 'off') return false;
+  const marker = readJson(files().host, null);
+  if (marker && typeof marker.host === 'string' && marker.host) return marker.host === hostname();
+  return !(existsSync('/.dockerenv') && !process.env.AXF_SLOTS_DIR);
+}
+
 /** Host facts, or null when this side can't see the host's processes (the console container): use the snapshot then. */
 export function hostFacts() {
+  if (!isBuildHost()) return null;
   const procs = procList();
   if (!procs) return null;
   const tm = tmuxSessions() ?? new Map();
@@ -501,6 +519,8 @@ export function enforce() {
   const out = { at: new Date().toISOString(), slice: 'skipped', adopted: [], docker: null, usage: null };
   const root = typeof process.getuid === 'function' && process.getuid() === 0;
   if (root && existsSync('/run/systemd/system')) out.slice = applySlice(limit);
+  // the enforcer only runs on the build host: say which machine that is, so no other side counts its own processes
+  if (root && existsSync('/run/systemd/system') && !existsSync('/.dockerenv')) { try { writeJson(files().host, { $axf: 'build-limit-host@1', host: hostname(), at: out.at }); } catch { /* read-only store */ } }
   const fx = hostFacts();
   if (fx && root && sliceReady()) {
     const roots = new Map(); const inPanes = new Set();

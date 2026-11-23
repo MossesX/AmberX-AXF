@@ -29,6 +29,47 @@ steps and need no minutes or model; a model or minutes noted on a step goes alon
 - Send writes one build: `flow: pipeline-2`, status `pending`, `steps: []`, `planning: [{ text, model?, minutes?,
   files? }]` (the store keeps `planning` on Pipeline 2.0 builds, `normPlanning`).
 
+## What Plan Studio reads back
+
+Brett, Nov 23 2026: the orchestrator decides the real steps and files them in the builds store, the one source of truth.
+Plan Studio copies nothing back: every read lays the store over its tree. The build's `planRef` names the plan item.
+
+- While the build is in the flow (not `landed`, not archived or deleted) the plan item and everything under it are
+  locked: no edit, reorder, add or delete.
+- Once the build has its steps (`split` or later) the planning steps that were sent leave the plan (kept on the item's
+  history, recoverable) and the build's steps are listed in their place, marked as the orchestrator's. Each shows its
+  status as one of eight states and is checked off when it is `completed`:
+
+  | State | Step | Build |
+  |---|---|---|
+  | Sent to orchestrator | `pending`, `pulling-main`, `ready` | `pending`, `splitting`, `split` |
+  | Building | `sending`, `building` | `pulling-main` … `building` |
+  | Waiting for merge | `completed` / `in-pr` while the build is not landing yet | `build-complete` |
+  | Merging | built, the build at `merging-pr` or `merging-main` | `merging-pr`, `merging-main` |
+  | Recompiling | built, the build at `pr-pulling-main` | `pr-pulling-main` |
+  | Running CI | built, the build at `running-ci` | `running-ci` |
+  | Landed | any step of a `landed` build | `landed` |
+  | Failed | `failed` | `failed` |
+
+- A build archived or deleted before it lands gives the planning steps back and unlocks the plan.
+
+## Taps on a build or a step
+
+One entry for every surface (the orchestrator's menu, Plan Studio's, REST `POST /pipeline/act`, MCP, the CLI
+`pipeline2.mjs act <build> <action> [--step s]`, the capability `axf.build-dispatch@1` `act()`): `actBuild`. The
+console sends the tap; every decision is made here, and a tap that does not fit where the build is gets a refusal with
+the reason and changes nothing.
+
+| Action | What it does |
+|---|---|
+| `queue` | Moves the build on now: splits it if it is not split, gives it the active place when it is next in line. A Pipeline 2.0 build has no Queue of its own, so a waiting build is never refused: the answer says where it stands. `pipeline.mjs queue` does this for a Pipeline 2.0 build. |
+| `hold` / `release` | A build still before the active place (`pending`, `splitting`, `split`) keeps its place and is skipped by the line and by the watchdog until released (`pipeline.heldAt`). An emergency build is never held. |
+| `retry` | `retryBuild`: the build and its failed steps leave `failed` forward where they failed; attempts reset. |
+| `rebuild` | A failed step is built again (through `ready`). A build that failed in a landing run re-enters at `pr-pulling-main` (main into its PR, recompiled). Any other failed build is retried. |
+| `run-ci` | A build that failed at `running-ci` or later re-enters at `running-ci`; one already there is checked on the lander's next pass. |
+| `land` | The lander is asked for a pass now; a build that failed in a landing run is retried first. Refused before `build-complete`. |
+| `cancel` | Archived, from any status. A session still running ends on its own and is not landed. |
+
 ## Build statuses (in order)
 
 | # | status | shown as | who moves it here |
@@ -172,11 +213,11 @@ marked reset with its reason, like every other way past the ceiling.
 
 - `pending` → `splitting`, a build with no build steps (every build Plan Studio sends): Fable designs the build steps
   from the title, body and `planning` (`p2SplitPrompt` in the orchestrator's pipeline-core, asked once on Fable through
-  the orchestrator's splitter). Each step has text, minutes (1 to 15, `STEP_MAX_MINUTES`) and a model (Fable or Opus); the answer must pass
+  the orchestrator's splitter). Each step has text, minutes (1 to 15, `STEP_MAX_MINUTES`) and a suggested model (Fable or Opus; the model triage gate decides, below); the answer must pass
   `normDesign` or none of it is used. Steps run at the same time in their own worktrees, so designed steps that share
   files are joined into one row (`splitParts`) while the row stays inside the cap. The build's note says how it was split.
 - Fallback, when Fable cannot answer (no credits, no login, the split provider off, an answer that does not pass):
-  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 15, else 15; model by `modelFor`), or
+  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 15, else 15; a model noted in Plan Studio is carried as the step's `pin`), or
   one step for the whole plan when it has no planning steps. The note says why. Away from the VPS host (no logins) a
   planning-only build waits at `pending` for the host's tick instead of falling back.
 - `pending` → `splitting`, a build that already has steps (sent before this change): the steps are cut into as many
@@ -186,8 +227,13 @@ marked reset with its reason, like every other way past the ceiling.
 - `pulling-main` (only when no other build is active): one step at a time, its worktree is cut at
   `<worktrees>/<build>--<step>` on branch `claude/<build>--<step>` from fresh `origin/main`. Step: `pulling-main` →
   `ready`. Worktrees are cut **before** launch, never at launch.
-- `assigning-models`: `modelFor` (Fable for schemas, asset types, contracts, engines / kernel, cross-app protocols, or a
-  step pinned to Fable; Opus otherwise). Never Sonnet or Haiku. A step is never launched above its pinned model.
+- `assigning-models`: the VPS model triage gate (model-triage@1, `framework/spec/MODEL-TRIAGE.md`) gives every step its
+  model. The orchestrator never picks one: a model a step came with is a suggestion the gate reads, a `pin` on the step
+  is an explicit override the gate keeps. The steps already carry the gate's first answer from the split; here it
+  answers again with what could only be measured on the host (the files that depend on the step's files). Each step
+  keeps the decision (`triage`: model, rule, why) and the build's note lists them. A step whose session failed asks the
+  gate again before it is sent back out (the second-try rule). Never Sonnet or Haiku. A step is never launched above
+  the model on its record.
 - `ready` → `sending`: started automatically by two triggers: the orchestrator tick (`orchestrator.mjs tick`, cron every
   minute; `tick --build <id>` is one build, the watchdog's nudge) and the store
   change event (build-hook@1 listener `pipeline2-hook.mjs`, which runs one advance as soon as a build reaches `ready`
