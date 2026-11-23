@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  NATIVE_ACTIONS, SAFE_TOKENS, UPDATE_VERBS, THEME_TOKENS, isAddress, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  NATIVE_ACTIONS, SAFE_TOKENS, UPDATE_VERBS, THEME_TOKENS, DEEP_LINK_EVENT, inPageLink, isAddress, startView, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -20,6 +20,27 @@ t('deep link: address, action, none, absent', () => {
   assert.equal(openTarget('https://console.amberxai.com/?axf-open=').kind, 'none');
   assert.equal(openTarget('https://console.amberxai.com/'), null);
   assert.equal(openTarget('not a url'), null);
+});
+
+// console-open-no-reload (Nov 23 2026): a link for a console that is already loaded opens in the page, no reload
+t('a console link opens in the running page; anything else is the shell\'s to load', () => {
+  const here = 'https://console.amberxai.com/?x=1#top';
+  assert.equal(inPageLink('https://console.amberxai.com/?axf-cmd=cq-1a2b-3c&axf-open=view:axhub-apps', here), 'https://console.amberxai.com/?axf-cmd=cq-1a2b-3c&axf-open=view:axhub-apps');
+  assert.equal(inPageLink('https://console.amberxai.com/', here), 'https://console.amberxai.com/');
+  assert.equal(inPageLink('https://axhub.amberxai.com/auth/admin/approvals', here), '', 'another site');
+  assert.equal(inPageLink('https://console.amberxai.com/docs/x', here), '', 'another path');
+  assert.equal(inPageLink('https://console.amberxai.com/?axf-cmd=search&q=plan', here), '', 'the search palette link is loaded');
+  assert.equal(inPageLink('https://console.amberxai.com/?axf-refresh=abc', here), '', 'a hard refresh is a load');
+  assert.equal(inPageLink('::', 'nope'), '');
+  assert.equal(DEEP_LINK_EVENT, 'axf-deep-link');
+});
+
+t('the screen a deep link starts on', () => {
+  assert.equal(startView(openTarget('https://console.amberxai.com/?axf-open=view:axhub-apps')), 'axhub-apps');
+  assert.equal(startView(openTarget('https://console.amberxai.com/?axf-open=view:settings/tab:settings.tabs=plugins')), 'settings');
+  assert.equal(startView(openTarget('https://console.amberxai.com/?axf-open=approvals.view')), '');
+  assert.equal(startView(openTarget('https://console.amberxai.com/?axf-open=button:save')), '');
+  assert.equal(startView(null), '');
 });
 
 t('address vs action id', () => {

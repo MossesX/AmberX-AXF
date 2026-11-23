@@ -204,6 +204,11 @@ def _acked(r: dict[str, Any]) -> bool:
     return any(x.get("ok") for x in r.get("delivered") or [] if isinstance(x, dict))
 
 
+def _in_app(r: dict[str, Any]) -> bool:
+    """A console running inside the phone's console app acked it (its ack carries `shell`): it is on the phone already."""
+    return any(x.get("ok") and x.get("shell") for x in r.get("delivered") or [] if isinstance(x, dict))
+
+
 def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber", focus: str = "") -> dict[str, Any]:
     """Open what Amber names in the owner's consoles (focused + highlighted), or nothing when Follow Amber is off."""
     st = load_state()
@@ -246,10 +251,16 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
                  **({"focus": fx} if fx else {}),
                  "message": f"opened {label}" + (f" on {fx}" if fx else "") + (f" and highlighted {highlight}" if highlight else "")}
         if r.get("ok") and k in ("screen", "settings"):
-            # delivered or still waiting for a console: either way the phone opens the console there
-            ph = to_phone(phone_address(k, name, raw.get("item")), by)
-            if ph is not None:
-                r["phone"] = ph
+            if _in_app(r):
+                # the console inside the phone's app carried it out and brought itself to the front: asking the phone
+                # to open the console there as well would load the page again (Brett, Nov 23 2026: "every time you
+                # send me to any screen, it loads the home screen first")
+                r["phone"] = {"ok": True, "shown": True, "message": "the console app on the phone opened it (no reload)"}
+            else:
+                # delivered elsewhere or still waiting for a console: the phone opens the console there
+                ph = to_phone(phone_address(k, name, raw.get("item")), by)
+                if ph is not None:
+                    r["phone"] = ph
     with _lock:
         _recent.appendleft({"at": _now_iso(), "by": by, "kind": r.get("kind", k), "target": name, "ok": bool(r.get("ok")), "shown": bool(r.get("shown")), "message": _text(r.get("message"))})
     return r

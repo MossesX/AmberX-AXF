@@ -967,7 +967,8 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
         return {**no_console, "message": f"no console answered (tried {', '.join(tried)}): open the console (openUrl), then send the command again", "tried": tried}
     a = acks[who]
     res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": "console-control@1", "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
-    out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
+    out = {**res, "client": who, **({"shell": a["shell"]} if a.get("shell") else {}), **({"surfaced": True} if a.get("surfaced") else {}),
+           "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
     _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
     return out

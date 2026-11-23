@@ -978,9 +978,9 @@ async def _control_focus(address: str, verb: str = "focus", to: str = "recent", 
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
     says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message) and how
-    it got there (`delivery.how`: live, after reconnect, woke via AmberX, or queued). No console open: the command waits
-    on the console server (up to a minute here, 2 minutes there by default) and AmberX opens the console on Brett's
-    phone; `queued: true` = still waiting when this returned (it runs when a console opens). A failure raises a
+    it got there (`delivery.how`: live, after reconnect, woke via AmberX, or queued). No console open: the command stays
+    queued on the console server (2 minutes by default) and the phone opens the console on that screen; the call itself
+    answers within a few seconds, `queued: true` = still waiting when this returned (it runs when a console opens). A failure raises a
     ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
 
     async def go(command: dict[str, Any]) -> dict[str, Any]:
@@ -1098,6 +1098,10 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
             if not st.get("on"):
                 return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
             r = {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
+            if r.get("ok") and r.get("shell"):
+                # the console inside the phone's app answered and brought itself to the front: opening the console
+                # there again would load the page a second time (Brett, Nov 23 2026: no reload to the home screen)
+                return {**r, "phone": {"ok": True, "shown": True, "message": "the console app on the phone opened it (no reload)"}}
             ph = await anyio.to_thread.run_sync(lambda: follow_call("phone", {"address": target.strip()}))
             return {**r, **({"phone": ph["phone"]} if ph.get("phone") else {})}
         return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)

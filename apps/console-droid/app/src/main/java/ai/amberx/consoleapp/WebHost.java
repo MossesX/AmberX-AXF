@@ -80,9 +80,24 @@ final class WebHost {
         ctx.setBaseContext(ctx.getApplicationContext());
     }
 
-    /** Loads a deep link or console URL (see {@link ShellRules#deepLink}). */
+    /**
+     * Opens a deep link or console URL (see {@link ShellRules#deepLink}). A console that is already loaded opens it
+     * itself, with no reload ({@link ShellRules#inPage}): the page keeps its state and goes straight to the screen.
+     * Anything else, and a page that doesn't take the link within {@link ShellRules#HAND_OFF_MS}, is loaded.
+     * Main thread only.
+     */
     static void open(Context c, String link) {
-        get(c, ShellRules.deepLink(link)).loadUrl(ShellRules.deepLink(link));
+        String url = ShellRules.deepLink(link);
+        if (web == null) { get(c, url); return; } // a fresh page starts at the link
+        if (!ShellRules.inPage(NativeBridge.currentUrl, url)) { web.loadUrl(url); return; }
+        WebView w = web;
+        boolean[] settled = { false };
+        Runnable load = () -> { if (!settled[0]) { settled[0] = true; w.loadUrl(url); } };
+        w.postDelayed(load, ShellRules.HAND_OFF_MS); // a page that never answers (its renderer is gone) is loaded
+        w.evaluateJavascript(ShellRules.handOffScript(url), took -> {
+            if (settled[0]) return;
+            if ("true".equals(took)) { settled[0] = true; w.removeCallbacks(load); } else { w.removeCallbacks(load); load.run(); }
+        });
     }
 
     /** Runs JavaScript in the page (events to window.axfNative listeners). */
