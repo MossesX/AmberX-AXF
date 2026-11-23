@@ -100,18 +100,32 @@ public class OverlayService extends Service {
         if (running == null) {
             startIfWanted(c);
             if (running == null) { // no overlay (off or not allowed): the app itself is the full-screen console
-                if (!OverlayContract.PASSIVE_VERBS.contains(verb)) c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                if (OverlayContract.PASSIVE_VERBS.contains(verb)) return;
+                if (OverlayContract.APPROVALS_VERB.equals(verb)) openApprovalsPage(c);
+                c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return;
             }
         }
         if (OverlayContract.DISMISS.equals(verb)) { dismissedAt = waiting; markSeen(); }
-        if (OverlayContract.APPROVALS_VERB.equals(verb)) {
-            // in the running console the list opens without a reload (the page runs approvals.view on this event);
-            // anywhere else (offline page, another site) the deep link loads the console on the approvals page
-            if (ShellRules.bridgeAllowed(NativeBridge.currentUrl)) NativeBridge.emit(OverlayContract.EV_APPROVALS_OPEN, "{\"target\":\"" + OverlayRules.APPROVALS_PAGE + "\"}");
-            else WebHost.open(c, OverlayContract.approvalsLink());
-        }
+        if (OverlayContract.APPROVALS_VERB.equals(verb)) openApprovalsPage(c);
         running.show(OverlayRules.verb(state, verb));
+    }
+
+    /** axHub's approvals page in the one WebView (it keeps its place when it already shows). */
+    private static void openApprovalsPage(Context c) {
+        String page = OverlayRules.approvalsPage(NativeBridge.currentUrl);
+        if (page != null) WebHost.open(c, page);
+    }
+
+    /**
+     * A tap on the toolbar's button: the approvals page while something waits, the console when nothing does (the
+     * approvals page an earlier tap left showing gives way to it), and fold when the overlay is expanded.
+     */
+    private void tapped() {
+        String v = OverlayRules.tapVerb(state, waiting);
+        String console = OverlayContract.EXPAND.equals(v) ? OverlayRules.consolePage(NativeBridge.currentUrl) : null;
+        if (console != null) WebHost.open(this, console);
+        verb(this, v);
     }
 
     /** New settings from the page (the console's approvals-banner.overlay.* values). */
@@ -224,7 +238,7 @@ public class OverlayService extends Service {
         toolbar.setOrientation(LinearLayout.HORIZONTAL);
         toolbar.setGravity(Gravity.CENTER_VERTICAL);
         toolbar.setContentDescription(getString(R.string.overlay_toolbar));
-        consoleBtn = button(getString(R.string.overlay_console), v -> verb(this, "toggle"));
+        consoleBtn = button(getString(R.string.overlay_console), v -> tapped());
         badge = button("", v -> verb(this, "approvals"));
         label = button("", v -> verb(this, "approvals"));
         bar = button("", v -> verb(this, "approvals"));

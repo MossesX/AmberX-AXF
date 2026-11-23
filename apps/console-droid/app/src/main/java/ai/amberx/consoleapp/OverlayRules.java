@@ -159,6 +159,36 @@ final class OverlayRules {
         }
     }
 
+    // ---- a tap on the toolbar (Brett, Nov 23 2026: "it should bring me to the approvals, not to the console") --------
+
+    /**
+     * The verb a tap on the toolbar's button runs: fold when the overlay is expanded; otherwise open the approvals page
+     * while something waits, and the console when nothing does.
+     */
+    static String tapVerb(String now, int waiting) {
+        if (EXPANDED.equals(now)) return OverlayContract.COLLAPSE;
+        return waiting > 0 ? OverlayContract.APPROVALS_VERB : OverlayContract.EXPAND;
+    }
+
+    /** True when {@code url} is axHub's approvals page (the list, or one approval under it). */
+    static boolean onApprovalsPage(String url) {
+        String u = url == null ? "" : url, a = OverlayContract.APPROVALS_URL;
+        return u.equals(a) || u.startsWith(a + "/") || u.startsWith(a + "?") || u.startsWith(a + "#");
+    }
+
+    /** The page the approvals verb loads: axHub's approvals page, or null when it already shows (it keeps its place). */
+    static String approvalsPage(String currentUrl) {
+        return onApprovalsPage(currentUrl) ? null : OverlayContract.APPROVALS_URL;
+    }
+
+    /**
+     * The page a tap loads when nothing waits: the console when an earlier tap left the approvals page showing, else
+     * null (whatever page shows stays).
+     */
+    static String consolePage(String currentUrl) {
+        return onApprovalsPage(currentUrl) ? ShellRules.HOME : null;
+    }
+
     // ---- items: what waits, one by one (ported from AmberX's ApprovalOverlayRules, overlay-toolbar-v2) ------------
 
     /** One thing waiting: a held command (runs at {@link #runsAt} unless stopped) or an approval (waits until decided). */

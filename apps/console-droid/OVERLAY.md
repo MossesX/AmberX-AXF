@@ -27,10 +27,22 @@ of the ones here.
 
 ## Verbs
 
-`expand`, `collapse`, `toggle`, `approvals` (open the console on the approvals list), `dismiss` (hide the bar
-until a new approval arrives; the expanded console stays). `OverlayRules.verb(state, verb)` is the transition table.
-With the overlay off or not allowed, `expand`, `toggle` and `approvals` open the app itself (it is the full-screen
-console then); `collapse` and `dismiss` do nothing.
+`expand`, `collapse`, `toggle`, `approvals` (open axHub's approvals page, `OverlayContract.APPROVALS_URL`, in the
+expanded overlay), `dismiss` (hide the bar until a new approval arrives; the expanded console stays).
+`OverlayRules.verb(state, verb)` is the transition table. With the overlay off or not allowed, `expand`, `toggle` and
+`approvals` open the app itself (it is the full-screen console then, on the approvals page for `approvals`);
+`collapse` and `dismiss` do nothing.
+
+## A tap on the toolbar
+
+Brett, Nov 23 2026: "When there's notifications on the overlay and I click it, it should bring me to the approvals,
+not to the console." `OverlayRules.tapVerb(state, waiting)` (JUnit `OverlayTapTest`):
+
+| The toolbar shows | A tap on its button, badge or label |
+| --- | --- |
+| A pending count | `approvals`: axHub's approvals page (`https://axhub.amberxai.com/auth/admin/approvals`) in the expanded overlay; a page already there keeps its place |
+| Nothing waiting | `expand`: the console, as before; the approvals page an earlier tap left showing gives way to the console (`OverlayRules.consolePage`) |
+| The expanded overlay | `collapse`: back to the toolbar |
 
 ## The four ways in, all the same
 

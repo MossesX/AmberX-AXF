@@ -113,6 +113,8 @@ final class OverlayContract {
     static final String CONTROL_ADDRESS = "panel:phone-app";
     /** The console action the approval bar's link opens; also the deep link {@code axf-console://open/approvals.view}. */
     static final String APPROVALS_TARGET = "approvals.view";
+    /** axHub's approvals page: where a tap on the toolbar lands while something waits, and what the {@link #APPROVALS_VERB} verb opens. */
+    static final String APPROVALS_URL = "https://axhub.amberxai.com/auth/admin/approvals";
     /** The short permission name ({@code Perms.OVERLAY}) and the Android permission behind it. */
     static final String PERMISSION = "overlay";
     static final String ANDROID_PERMISSION = "android.permission.SYSTEM_ALERT_WINDOW";
