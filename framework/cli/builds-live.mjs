@@ -6,7 +6,10 @@
  *
  *   1. every store write that changes a build is queued here (an outbox next to the store: one journal entry per line).
  *      The store is the live copy and is written at once as before; with a file store the console's checkout on this
- *      machine takes the changed builds right away (a file copy, no commit, no push);
+ *      machine takes the changed builds right away (a file copy, no commit, no push). Only a real change is queued
+ *      (builds-merge-core realChanges): stamps, the dispatcher's run bookkeeping, a repeated note, or a shipped build
+ *      touched without moving forward queue nothing, and a publish that would not really change main makes no commit
+ *      (Nov 23 2026: a failed launch repeating every minute put "Builds live" commits for shipped builds on main);
  *   2. the outbox is due on main when a build in it lands, when it has held changes for a day (the daily snapshot)
  *      or when it has grown past its size cap. Everything queued rides along in the same commit. `flush` and
  *      `sync --now` publish at once;
@@ -126,9 +129,15 @@ export function pushTarget() {
 
 // ------------------------------------------------------------------ outbox
 
-/** Queue one journal entry for main (called by builds-store for every write that changes a build). */
+/**
+ * Queue one journal entry for main (called by builds-store for every write that changes a build). Only builds that
+ * really changed are queued (builds-merge-core realChanges): a write that moved nothing but stamps, run bookkeeping or
+ * a repeated note, or that touched a shipped build without moving it forward, is not a change and queues nothing.
+ */
 export function enqueueLive(entry) {
   if (!liveOn()) return;
+  entry = merge.realEntry(entry);
+  if (!entry) return;
   try {
     appendFileSync(outboxFile(), `${JSON.stringify(entry)}\n`);
     if (!existsSync(sinceFile())) writeFileSync(sinceFile(), `${new Date().toISOString()}\n`, { flag: 'wx' });
@@ -277,8 +286,11 @@ export function appendThreads(text, lines) {
  * files = { rel: text } is what main holds now for every builds file (for the pull), or { ok: false, error }.
  */
 export function publish(entries, { journalExtra = {} } = {}) {
+  // lines queued by an older version (or by hand) get the same rule as enqueueLive: no real change, nothing published
+  entries = entries.map((e) => merge.realEntry(e)).filter(Boolean);
   const records = recordsOf(entries);
   const ids = records.map((r) => r.id);
+  if (!records.length && !Object.keys(journalExtra).length) return { ok: true, sha: '', files: {}, skipped: [] };
   const ref = `refs/remotes/${remote()}/${branch()}`;
   let last = '';
   for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
@@ -299,23 +311,26 @@ export function publish(entries, { journalExtra = {} } = {}) {
     if (!v.ok) return { ok: false, error: `the merged store is not valid builds@1, nothing pushed: ${v.errors.slice(0, 3).map((e) => `${e.path} ${e.message}`).join('; ')}` };
     if (skipped.length && !taken.length) return { ok: true, sha: '', files: allFiles(base, { [STORE_REL]: mainText }), skipped };
     const now = new Date().toISOString();
-    if (taken.length) { merged.rev = (mainStore.rev ?? 0) + 1; merged.updatedAt = now; }
+    // the builds whose record on main really moves (realChanges against main's own copy). With none, main's store,
+    // exports and live log stay byte for byte as they are: a newer stamp alone is never a commit
+    const real = taken.filter((id) => merge.realChanges(mainStore.builds.find((b) => b.id === id), merged.builds.find((b) => b.id === id)).length);
+    if (real.length) { merged.rev = (mainStore.rev ?? 0) + 1; merged.updatedAt = now; }
     const files = {};
-    files[STORE_REL] = taken.length ? storeText(merged) : mainText ?? storeText(merged);
+    if (real.length || mainText === null) files[STORE_REL] = storeText(merged);
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
     const sizes = journalOffMain(base) ? null : journalSizes(base);
     if (sizes) for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
-    const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => !skipped.includes(b.id)) }));
+    const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => real.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
-    for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    if (real.length) for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
     // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
     // profile's file an older checkout or a merge brought back) is taken off main, never rewritten. The same for a
     // profile registered only on the hub (test-sandbox, Nov 13 2026): orchestratorExports lists repo-registered
     // profiles only, so its folder leaves main with the next publish instead of failing check-profiles.mjs there.
-    for (const rel of staleProfileExports(base, files)) files[rel] = null;
+    if (real.length) for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
@@ -330,12 +345,12 @@ export function publish(entries, { journalExtra = {} } = {}) {
     }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
-    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files), skipped };
-    const sha = commitOnto(base, changed, message(entries, taken));
+    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, { [STORE_REL]: mainText, ...files }), skipped };
+    const sha = commitOnto(base, changed, message(entries, real, changed.map(([rel]) => rel)));
     if (!sha.ok) return sha;
     const to = pushTarget();
     const p = git(['push', '-q', to?.url ?? remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000, envx: to?.key ? { GIT_SSH_COMMAND: `ssh -i "${to.key}" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new` } : {} });
-    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, files), skipped }; }
+    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, { [STORE_REL]: mainText, ...files }), skipped }; }
     last = p.err;
     // main moved under us: fetch and apply again; anything else (protection, auth) is not retried
     if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
@@ -360,9 +375,17 @@ function allFiles(rev, files) {
   for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
   return out;
 }
-function message(entries, taken) {
-  const lines = entries.flatMap((e) => merge.changeLines(e)).map((l) => l.replace(/^- [^·]*· /, '').replace(/ · [^·]*$/, ''));
-  const head = lines.length === 1 ? lines[0] : `${taken.length || entries.length} build change(s): ${[...new Set(taken)].slice(0, 4).join(', ')}`;
+/**
+ * The commit message: the one change, or how many builds changed and which. A commit with no build change (a shipped
+ * manifest, an origin or a journal line on its own) names its files; the subject never ends in an empty list.
+ */
+export function message(entries, real, rels = []) {
+  const ids = [...new Set(real)];
+  const lines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => ids.includes(b.id)) })).map((l) => l.replace(/^- [^·]*· /, '').replace(/ · [^·]*$/, ''));
+  const names = rels.map((r) => r.replace(/^_claude\/(builds\/)?/, ''));
+  const head = lines.length === 1 ? lines[0]
+    : ids.length ? `${ids.length} build change(s): ${ids.slice(0, 4).join(', ')}${ids.length > 4 ? ` +${ids.length - 4}` : ''}`
+      : `${names.length} status file(s): ${names.slice(0, 3).join(', ') || 'none'}`;
   return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, exports, THREADS live log).`;
 }
 /** A commit on `base` with the given files replaced, through a private index (no working tree is touched). */
@@ -454,7 +477,9 @@ export function syncAll({ now = false } = {}) {
   const mainText = show(rev, STORE_REL);
   const main = mainText ? core.normalizeStore(JSON.parse(mainText)) : core.emptyStore();
   const local = readStoreNow();
-  const ids = merge.mergeStores(main, local).taken;
+  // newer here in a way that matters (realChanges): a copy that differs from main only by stamps or run bookkeeping is not sent
+  const ahead = merge.mergeStores(main, local);
+  const ids = ahead.taken.filter((id) => merge.realChanges(main.builds.find((x) => x.id === id), ahead.store.builds.find((x) => x.id === id)).length);
   if (!ids.length) return { ...pullMain(), pushed: [] };
   const journalExtra = {};
   const mainKeys = Object.keys(journalSizes(rev));
