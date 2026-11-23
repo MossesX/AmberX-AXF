@@ -1,5 +1,7 @@
 # pipeline-bring-up-from-main
 
+**Result.** The pipeline runs from main with one dispatcher, and a real build went from retry to its PR in CI with the pipeline doing the work. The end-to-end proof did not finish: the build ahead of it stopped in landing on a flaky test and still holds the one active place (sections 9 and 10). PR #897 is green.
+
 Hand build, Nov 23 2026. Brett: "I want to get this pipeline working so we don't have to do these hand builds anymore.
 I want everything to start going through Plan Studio and through the orchestrator."
 
@@ -71,12 +73,14 @@ for three reasons:
 
 ## 6. Waiting on Brett's own click
 
+- **Retry the stopped build, after PR #897 is on main.** `node deploy/lander/run.mjs retry orchestrator-settings-collapsible-split` (or Retry on its row). It stopped on a flaky test on main, not on its own code (section 9), and it holds the active place, so nothing else builds until it is retried or cancelled.
 - **Set the budgets.** Settings → Claude settings → Builds → **Budget per build (USD)** and **Daily budget (USD)**. No number was ever saved; the screen showed 15 and 60, which no code read. Real builds here cost 60 to 420 USD each and today's sessions cost about 140 USD, so enforcing 15 and 60 would have stopped every build. Both now default to 0 = no cap, and the first number saved is enforced from the next tick. Raising a cap is owner-only, so I did not pick numbers.
 - **Two of the nine "shipped" builds are not on main.** `pass-approval-hook-deep-link-amberx-notification` (PR #681) and `context-menus-plugin-one-true-source` (PR #659) carry a shipped manifest, but their PRs are open and their branches are 19 and 31 commits ahead of main. They were left as they are: land or close the PRs.
 - **The session watch of the build watchdog is off** (`sessions.enabled`, switched off from the console on Nov 21). It only covers old builds@1 builds; Pipeline 2.0 builds are covered by layer 2. Left as set. To turn it on: `axf watchdog set sessions.enabled=on`.
 
 ## 7. Left open
 
+- The seven shipped builds with merged PRs stand in `landing`. The stale-status watch recorded their merges at 22:15 UTC ("the build never heard: the merge is recorded") and reads CI on the merge commits next; they land by themselves, nothing more to do by hand.
 - Six builds wait their turn behind the active one (`group-chat-audio-hear-agents-talk-while`, `attach-widgets-to-any-toolbar-banner`, `rebuild-fresh-main-hide-any-asset`, `fix-refreshing-console-jumps-back`, `approval-pass-covers-every-call`, `one-build-time-always-split-to-fill`). The pipeline will now build and land them one at a time, on its own. To hold one: Build orchestrator → the build → Hold, or `pipeline2.mjs act <build> hold`.
 - About 70 older builds@1 builds read Failed with their attempts used up (the layer-2 watchdog counts 75 "gave up already"). Not touched.
 - `axf-watchdog-audits`: `builds-store.mjs verify` exits 1 on every run. Not looked into.
@@ -97,3 +101,45 @@ docker update --restart=unless-stopped axf-molly && docker start axf-molly
 The bridge unit points at `/root/axf-builds/axf-molly-container-orchestrator-gate`, which no longer exists, so it cannot launch anything until that checkout is restored. Stop the host tick with `rm /etc/cron.d/axf-orchestrator-tick` (the deploy and watchdog layer 3 put it back: `node deploy/watchdog/cron.mjs install`).
 
 Code: revert PR #897. Hand-build records already filed stay valid Pipeline 2.0 builds. With the PR reverted nothing enforces a budget, as before.
+
+## 9. End-to-end test: timeline, and where it stands
+
+**Not finished.** The proof plan is in the line and has not had its turn. One build at a time may be active, and the build ahead of it stopped in landing. What ran, with no hand on it unless the row says so:
+
+Real build `orchestrator-settings-collapsible-split` (10 steps, sent Nov 13):
+
+| UTC | What happened | By |
+|---|---|---|
+| 20:22 | Retried after the stale dispatcher was retired | by hand (section 2) |
+| 20:23, 20:24 | Steps s1 and s7 launched on Fable | dispatcher |
+| 20:28, 20:29 | Both sessions ended cleanly; s1 recorded, s7's exit lost | launcher |
+| 20:38 | s7 recorded as completed | by hand (the bug in section 4.1) |
+| 20:39 | `build-complete`, then `merging-pr` | dispatcher, lander |
+| 20:40 | Empty branch of s10 pushed | by hand (the bug in section 4.2) |
+| 20:41 | Steps s4 and s5 clash in code: split into one PR per step, PR #896 opened | lander |
+| 20:53, 21:44 | Two fix sessions on PR #896 (a code clash, then the build rule `feature-status-tracker`) | lander |
+| 21:56 | CI running on PR #896 | lander |
+| 22:29 | Stopped at attempt 5 of 5, "needs Brett": CI red on `Build engine sweep (Node)` | lander |
+
+That last red check is not the build's. It is a test on main (`p2-triage.test.mjs`) that compared two records including their millisecond timestamps, and failed whenever the two calls fell in different milliseconds. It failed my own PR once the same way. Fixed in PR #897.
+
+Proof plan "Urgent: pipeline proof run (one docs line)" (build `urgent-pipeline-proof-nov23`, one line appended to `deploy/watchdog/README.md`):
+
+| UTC | What happened | By |
+|---|---|---|
+| 20:44:50 | Created in Plan Studio 2.0 and sent | by hand (the test's start) |
+| 20:45:18 | `splitting`: Fable designs its steps | orchestrator |
+| 20:45:28 | `split`: 1 step, 5 min, model from the triage gate | orchestrator |
+| since | Waiting for the active place. "Urgent" in its title puts it first in line | - |
+
+To let it through:
+
+1. PR #897 lands (the lander has it: this hand build is on record and goes to `build-complete` when this session ends). That puts the flaky-test fix on main.
+2. `node deploy/lander/run.mjs retry orchestrator-settings-collapsible-split` starts the stopped build's landing again. It lands as up to 10 PRs, one at a time, each with its own CI run (about 25 minutes).
+3. The proof plan then takes the active place by itself and runs to `landed`. Nothing needs to touch it.
+
+## 10. The gap this test found
+
+**A build that stops in landing keeps the one active place.** The lander puts a stopped build at the back of its own merge line, but the dispatcher still counts it as the active build, so every build behind it waits until Brett retries or cancels it. With that, "no hand step anywhere" does not hold yet: one build that cannot land stops the whole line. Not changed here: giving the place up means deciding what happens when the stopped build is retried while another is active, and that is a contract change that deserves its own build. Until then: retry (`lander retry <build>`) or cancel (`pipeline2.mjs act <build> cancel`) frees the line.
+
+Also seen: a build that lands as 10 PRs needs 10 full CI runs in a row, so any flaky check is likely to stop it.
