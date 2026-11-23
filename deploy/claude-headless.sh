@@ -592,7 +592,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # call can't run.
   if hand_on; then
     hexit_env=(PATH="$PATH" HOME="$HOME")
-    for v in AXF_HEADLESS_DIR AXF_BUILD_PROFILE AXF_CLAUDE_SETTINGS_FILE; do [[ -n "${!v:-}" ]] && hexit_env+=("$v=${!v}"); done
+    for v in AXF_HEADLESS_DIR AXF_BUILD_PROFILE AXF_BUILDS_STORE AXF_BUILDS_LIVE AXF_BUILDS_EXPORT AXF_BUILD_HOOKS AXF_DATA_DIR AXF_SHIPPED AXF_CREW_SAY AXF_HAND_GIT AXF_HAND_AHEAD; do [[ -n "${!v:-}" ]] && hexit_env+=("$v=${!v}"); done
     ( cd "$HERE/.." && setsid env -i "${hexit_env[@]}" node "$HAND_JS" exit --name "$name" --session "$end_session" --exit "$st" --kind "$exit_kind" --by headless >> "$HDIR/hand-build.log" 2>&1 < /dev/null & )
   fi
   if (( close > 0 )); then
