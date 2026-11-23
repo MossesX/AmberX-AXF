@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10369,
- "updatedAt": "2026-11-23T22:40:30.873Z",
+ "rev": 10370,
+ "updatedAt": "2026-11-23T22:45:22.593Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180150,7 +180150,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -180160,7 +180160,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-23T22:05:14.848Z",
+   "updatedAt": "2026-11-23T22:45:18.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -180338,6 +180338,10 @@
     {
      "text": "Watchdog: PR #772 merged 2026-11-17 19:07 and the build never heard: the merge is recorded, CI on 8f30a4cb22 is next.",
      "at": "2026-11-23T22:05:14.848Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 8f30a4cb22: landed.",
+     "at": "2026-11-23T22:45:18.729Z"
     }
    ],
    "approvals": [
@@ -180416,9 +180420,9 @@
     "pr": 772,
     "sha": "8f30a4cb22179277f88b653506a9300092099512",
     "mergedAt": "2026-11-17T19:07:59Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-23T22:45:18.729Z",
+    "ciRun": "commit@8f30a4cb22179277f88b653506a9300092099512",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -180983,11 +180987,11 @@
     "all"
    ],
    "order": {
-    "all": 799
+    "all": 801
    },
    "kind": "build",
    "planRef": "",
-   "rev": 176,
+   "rev": 178,
    "deleted": false,
    "deletedAt": "",
    "pending": {
