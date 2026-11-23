@@ -201,6 +201,36 @@ def check_hub() -> None:
         assert sum(1 for a in hub.snapshot()["alerts"] if a["key"].startswith("crash:flood")) <= 19, "at most 20 crash alerts in 10 minutes"
         assert hub._outbox.maxsize == 100
 
+        # a burst (one systems check pass raising many) is one push per channel, not one per alert; the bell keeps each
+        burst = [({"key": f"system:r{i}", "source": "system", "severity": "error" if i == 3 else "warning", "title": f"Check {i}", "link": "settings:system", "notifyType": f"type{i}"}, ["ntfy", "phone"]) for i in range(8)]
+        plan = A.plan_deliveries(burst)
+        assert [ch for _, ch in plan] == [["ntfy"], ["phone"]], plan
+        dg = plan[1][0]
+        assert dg["title"] == "8 new console alerts" and dg["severity"] == "error" and dg["notifyType"] == "type3" and dg["source"] == "system" and dg["link"] == "settings:system", dg
+        assert dg["body"].splitlines() == [f"- Check {i}" for i in range(8)] and dg["meta"]["digest"] == [f"system:r{i}" for i in range(8)], dg
+        assert A.plan_deliveries(burst[:1]) == [(burst[0][0], ["ntfy"]), (burst[0][0], ["phone"])], "one alert goes out as itself"
+        assert A.plan_deliveries([burst[0], burst[0]]) == A.plan_deliveries(burst[:1]), "raised twice in a burst: once"
+        mixed = A.plan_deliveries([burst[0], (burst[1][0], ["phone"])])
+        assert mixed[0] == (burst[0][0], ["ntfy"]) and mixed[1][0]["title"] == "2 new console alerts" and mixed[1][1] == ["phone"], mixed
+        assert A.digest_alert([{"key": f"k{i}", "title": f"T{i}", "severity": "warning", "source": "ci" if i else "system"} for i in range(20)])["body"].splitlines()[-1] == "… and 8 more"
+        Fake.posts.clear()
+        hub.set_config({"sources": {"system": True}})
+        while not hub._outbox.empty():
+            hub._outbox.get_nowait()
+        worker = threading.Thread(target=hub._worker, daemon=True)
+        worker.start()
+        for i in range(8):
+            hub.raise_alert({"source": "system", "severity": "error", "key": f"system:burst{i}", "title": f"Burst {i}"})
+        deadline = time.time() + A.BURST_WINDOW_S + 5
+        while not Fake.posts and time.time() < deadline:
+            time.sleep(0.05)
+        time.sleep(0.3)
+        hub._outbox.put(None)
+        worker.join(5)
+        assert len(Fake.posts) == 1 and Fake.posts[0]["body"]["title"] == "8 new console alerts", Fake.posts
+        assert sum(1 for a in hub.snapshot()["alerts"] if a["key"].startswith("system:burst")) == 8, "the bell lists each one"
+        Fake.posts.clear()
+
         # CI runs already seen survive a restart: a dismissed failure doesn't come back
         hub.dismiss(["ci:MossesX/x:.github/workflows/android.yml:main"])
         Fake.runs = [run(9, "failure")]
