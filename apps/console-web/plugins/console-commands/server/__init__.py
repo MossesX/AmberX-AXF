@@ -656,10 +656,10 @@ def _catalog_miss(command: dict[str, Any], r: dict[str, Any]) -> bool:
 
 
 def _young(audience: str) -> bool:
-    """A console of this audience is still loading: its page said its first hello less than YOUNG_S ago."""
+    """A console of this audience that can answer is still loading: its page said its first hello less than YOUNG_S ago."""
     now = _now()
     with _lock:
-        return any(c["audience"] == audience and now - float(c.get("born") or 0) < YOUNG_S for c in _clients.values())
+        return any(c["audience"] == audience and now - float(c.get("born") or 0) < YOUNG_S and (_live(c, now) or _quiet(c, now)) for c in _clients.values())
 
 
 def _ask_catalog(audience: str) -> int:
