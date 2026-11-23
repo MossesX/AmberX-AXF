@@ -405,6 +405,9 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
 
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  // a Pipeline 2.0 build has no Queue of its own: its split moves it on by itself, and Queue gives that a push now
+  // (split it, give it the active place when it is next) instead of refusing a build that shows as Pending
+  if (b.flow === P2.FLOW && !b.deleted) { const r = P2F.actBuild(b.id, 'queue', { by }); return { ...storeCore.findBuild(loadStore(), b.id), say: r.say }; }
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
   const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
@@ -2180,7 +2183,7 @@ async function main(argv) {
     const w = loadAuthWaits();
     return out({ ok: true, authWaits: w }, Object.entries(w).map(([id, x]) => `${id} · ${x.account} · ${x.requeued ? `re-queued ${x.requeuedAt}` : `held since ${x.at}`} · ${x.error}`).join('\n') || 'no build is held on a login failure');
   }
-  if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
+  if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline, ...(b.say ? { say: b.say } : {}) }, b.say || `${b.id} → Queue (by ${by})`); }
   if (BP.BUILD_ACTIONS.includes(cmd)) {
     const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
     const r = buildAction(cmd, ids, { by, why: flag('why') });

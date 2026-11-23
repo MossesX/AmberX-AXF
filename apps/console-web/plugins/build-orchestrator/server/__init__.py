@@ -1126,9 +1126,59 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
                          said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
 
 
+P2_CLI = CLI.parent / "pipeline2.mjs"
+P2_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+
+
+def build_act(build_id: str, action: str, *, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+    """One tap on a Pipeline 2.0 build or one of its steps (pipeline2.mjs actBuild decides everything): queue, hold,
+    release, retry, rebuild, run-ci, land, cancel. A tap that does not fit where the build is → 400 with the reason."""
+    if action not in P2_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(P2_ACTIONS)}")
+    args = ["node", str(P2_CLI), "act", _build_id(build_id), action, "--by", (by or "console")[:80], "--json"]
+    if step:
+        if not ID_RE.match(step):
+            raise HTTPException(400, "bad step id")
+        args += ["--step", step]
+    if why.strip():
+        args += ["--why", why[:300]]
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    env["AXF_ACTOR"] = (by or "console")[:80]
+    try:
+        proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=660, env=env)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(500, f"the orchestrator could not run: {str(e)[:200]}") from None
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "the orchestrator refused")
+        raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err[:400])
+    return res
+
+
+@router.post("/pipeline/act")
+async def pipeline_act(request: Request) -> dict[str, Any]:
+    """{id, action, step?, why?}: one tap on a Pipeline 2.0 build or one of its steps. queue = move it on (split it, give
+    it the active place when it is next); hold / release = a waiting build keeps its place and is skipped; retry = failed
+    parts leave failed forward; rebuild = a failed step is built again, a build that failed while landing is recompiled;
+    run-ci = back to Running CI; land = the lander takes it now; cancel = archived. The VPS decides; a tap that does not
+    fit is refused with the reason."""
+    body = await _json_body(request)
+    return build_act(str(body.get("id") or ""), str(body.get("action") or ""), by=(brett_click(request) or "console"),
+                     why=str(body.get("why") or ""), step=str(body.get("step") or ""))
+
+
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one;
+    act(id, action, by=…, why=…, step=…) is one tap on a Pipeline 2.0 build or step (queue, hold, release, retry,
+    rebuild, run-ci, land, cancel)."""
+
+    def act(self, build_id: str, action: str, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+        return build_act(build_id, action, by=by, why=why, step=step)
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)

@@ -41,6 +41,8 @@
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
  *   … retry <build> [--why w] [--by who]   Brett's retry of a failed build: the attempt counts start again
+ *   … act <build> <queue|hold|release|retry|rebuild|run-ci|land|cancel> [--step s] [--why w] [--by who]
+ *                                          one tap on a build or a step (the console, Plan Studio 2.0, MCP): actBuild below
  *
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
@@ -165,12 +167,14 @@ function splitAll(store, env, out, only = '') {
 
 /* ------------------------------------------------------------------ one active build, then main into each step */
 
+/** On hold (Brett's Hold on a build that waits its turn): it keeps its place and is not activated until released. */
+export const isHeld = (b) => !!str(b?.pipeline?.heldAt, 40);
 /** Waiting its turn: at `split`, or failed there with attempts left (a build that failed while it waited starts like any other). */
 export const waitsTurn = (b, max = P2.MAX_ATTEMPTS) => P2.WAITING.includes(b.status) || (b.status === P2.FAILED && P2.WAITING.includes(b.failedFrom) && !P2.gaveUp(b, max));
 /** The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their own lane. */
 export function nextToActivate(builds, max = P2.MAX_ATTEMPTS) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
 /** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
@@ -446,7 +450,7 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
     const next = nextToActivate(p2Builds(store), attemptCap(env));
     if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
   }
-  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
+  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: isHeld(w) ? 'on hold: release it to give it its turn' : `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
   if (!active) return out;
   out.active = active.id;
   if (build && active.id !== build) return out;
@@ -501,6 +505,135 @@ export function retryBuild(id, { by = process.env.AXF_ACTOR || 'console', why = 
   return { id: b.id, status, steps, by };
 }
 
+/* ------------------------------------------------------------------ taps: one action on a build or a step */
+
+/** What a tap may ask for (the orchestrator's own menu, Plan Studio 2.0's, REST, MCP, the CLI). */
+export const BUILD_ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel']);
+/** Before the active place: not yet split, or split and waiting its turn. */
+const beforeTheLine = (b) => at(b, 'pending', 'splitting', 'split');
+const inLanding = (b) => at(b, ...P2.LANDING_GROUP);
+const SELF = fileURLToPath(import.meta.url);
+
+/** One pass for one build under the dispatcher's lock (a second process when this one does not hold it). */
+function passFor(id, env = process.env) {
+  if (env.AXF_PIPELINE_LOCKED === '1' || spawnSync('flock', ['-V'], { encoding: 'utf8' }).status !== 0) return advance({ env, build: id });
+  const lockFile = PL.pipelineLock();
+  try { mkdirSync(dirname(lockFile), { recursive: true }); } catch { /* flock reports it */ }
+  const r = spawnSync('flock', ['-w', '120', lockFile, process.execPath, SELF, 'advance', '--build', id, '--json'], { encoding: 'utf8', timeout: 600e3, env: { ...env, AXF_PIPELINE_LOCKED: '1' } });
+  try { return JSON.parse((r.stdout || '').trim().split('\n').pop() || '{}'); } catch { return { waits: [], error: str((r.stderr || r.stdout || '').trim(), 300) }; }
+}
+/** Ask the lander for a pass now (it runs within a minute). Best effort: the lander's own timer comes round anyway. */
+function requestLanderTick(by, env = process.env) {
+  if (env.AXF_P2_LANDER === 'off') return false;
+  const cli = join(REPO_ROOT, 'deploy', 'lander', 'run.mjs');
+  if (!existsSync(cli)) return false;
+  try { return spawnSync(process.execPath, [cli, 'run', '--request', '--by', str(by, 80) || 'console'], { encoding: 'utf8', timeout: 30e3, env }).status === 0; } catch { return false; }
+}
+
+/**
+ * One tap on a Pipeline 2.0 build, or on one of its steps (`step`): every decision is made here, on the VPS; the
+ * console only sends the tap and shows the answer. A tap that does not fit where the build is gets a refusal that says
+ * why (code 2) and changes nothing.
+ *   queue    move it on: split it if it is not split yet, and give it the active place when it is next in line.
+ *            Never refused for waiting: the answer says where it stands
+ *   hold     a build still waiting its turn keeps its place and is skipped until released
+ *   release  off hold; it takes its turn again
+ *   retry    a failed build and its failed steps leave `failed` forward where they failed; the attempt counts start again
+ *   rebuild  a failed step is built again (through `ready`); a build that failed while landing has main pulled into its
+ *            PR and is recompiled (`pr-pulling-main`); any other failed build is retried
+ *   run-ci   a build that failed at CI (or after it) goes back to `running-ci`; one already there is checked now
+ *   land     the lander takes a built build on its next pass; one that failed while landing is retried first
+ *   cancel   out of the flow (archived), from any status; a session still running ends on its own and is not landed
+ * → { id, action, step, status, label, held, say }
+ */
+export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', why = '', step = '', env = process.env, pass = passFor, landerTick = requestLanderTick } = {}) {
+  const refuse = (msg) => { throw Object.assign(new Error(msg), { code: 2 }); };
+  if (!BUILD_ACTIONS.includes(action)) refuse(`action is one of ${BUILD_ACTIONS.join(', ')}`);
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b || b.deleted) refuse(`no build "${id}"`);
+  if (b.flow !== P2.FLOW) refuse(`${b.id} is not a Pipeline 2.0 build`);
+  const label = P2.labelOf(b.status, b.attempt);
+  if (b.status === P2.EXIT) refuse(`${b.id} is archived: nothing to ${action}`);
+  if (b.status === 'landed') refuse(`${b.id} has landed: nothing to ${action}`);
+  const s = step ? stepOf(b, step) : null;
+  if (step && !s) refuse(`no step ${step} in ${b.id}`);
+  const reason = `${action} by ${by}${why ? `: ${str(why, 200)}` : ''}`;
+  const note = (text) => (rec) => { rec.notes.push({ text, at: nowIso(), by }); };
+  const done = (say, extra = {}) => {
+    const cur = storeCore.findBuild(loadStore(), b.id);
+    logLine({ event: 'act', build: b.id, action, step: s?.id ?? '', by });
+    return { id: b.id, action, step: s?.id ?? '', status: cur.status, label: P2.labelOf(cur.status, cur.attempt), held: isHeld(cur), say, ...extra };
+  };
+  const setHold = (on) => setFlowStatus(b.id, b.status, { by, action: `pipeline2:${on ? 'hold' : 'release'}`, mutate: (rec) => {
+    rec.pipeline = { ...(rec.pipeline ?? {}), heldAt: on ? nowIso() : '', heldBy: on ? str(by, 80) : '', heldWhy: on ? str(why, 300) : '' };
+    rec.notes.push({ text: on ? `On hold (${by})${why ? `: ${str(why, 200)}` : ''}. It keeps its place and is skipped until released.` : `Released from hold (${by}): it takes its turn again.`, at: nowIso(), by });
+  } });
+  const where = (r) => {
+    const cur = storeCore.findBuild(loadStore(), b.id);
+    const now = P2.labelOf(cur.status, cur.attempt);
+    const w = (r?.waits ?? []).find((x) => x.id === b.id && !x.step);
+    return P2.holdsActive(cur) ? `${b.id} has the active place: ${now}.` : w ? `${b.id} is in line (${now}): ${w.why}.` : `${b.id}: ${now}.`;
+  };
+  switch (action) {
+    case 'queue': {
+      if (isHeld(b)) refuse(`${b.id} is on hold: release it first`);
+      if (P2.gaveUp(b, attemptCap(env))) refuse(`${b.id} gave up (${label}): retry it first`);
+      if (!beforeTheLine(b)) return done(`${b.id} is already past the line: ${label}.`);
+      return done(where(pass(b.id, env)));
+    }
+    case 'hold': {
+      if (isHeld(b)) refuse(`${b.id} is on hold already`);
+      if (P2.isEmergency(b)) refuse(`${b.id} is an emergency build: it is never held`);
+      if (!beforeTheLine(b)) refuse(`${b.id} is ${label}: only a build still waiting its turn is put on hold (Cancel stops one that is being built)`);
+      setHold(true);
+      return done(`${b.id} is on hold: it keeps its place and is skipped until released.`);
+    }
+    case 'release': {
+      if (!isHeld(b)) refuse(`${b.id} is not on hold`);
+      setHold(false);
+      return done(`Released. ${where(pass(b.id, env))}`);
+    }
+    case 'retry': {
+      const r = retryBuild(b.id, { by, why });
+      return done(`${b.id}: retrying from ${P2.labelOf(r.status)}${r.steps.length ? ` (steps ${r.steps.map((x) => x.id).join(', ')})` : ''}; the attempt counts start again.`);
+    }
+    case 'rebuild': {
+      if (s) {
+        if (s.status !== P2.FAILED) refuse(`step ${s.id} is ${P2.labelOf(s.status, s.attempt, 'step')}: only a failed step is built again`);
+        setFlowStatus(b.id, P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending', { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
+        setFlowStatus(b.id, b.status, { by, mutate: note(`Rebuild of step ${s.id} (${by}): it starts again at attempt 1.`) });
+        return done(`${b.id}: step ${s.id} is built again.`);
+      }
+      if (b.status !== P2.FAILED) refuse(`${b.id} is ${label}: only a failed build is rebuilt`);
+      if (!P2.LANDING_GROUP.includes(b.failedFrom)) { const r = retryBuild(b.id, { by, why: why || 'rebuild' }); return done(`${b.id}: building again from ${P2.labelOf(r.status)}.`); }
+      setFlowStatus(b.id, 'pr-pulling-main', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Rebuild (${by}): main is pulled into its PR again and the build is recompiled.`)(rec); } });
+      landerTick(by, env);
+      return done(`${b.id}: main is pulled into its PR again and the build is recompiled.`);
+    }
+    case 'run-ci': {
+      if (!inLanding(b)) refuse(`${b.id} is ${label}: CI runs once its steps are merged into one PR`);
+      if (b.status === P2.FAILED) {
+        if (P2.rank(b.failedFrom) < P2.rank('running-ci')) refuse(`${b.id} failed before CI (at ${P2.labelOf(b.failedFrom)}): rebuild it instead`);
+        setFlowStatus(b.id, 'running-ci', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Run CI (${by}): back at Running CI.`)(rec); } });
+      } else if (b.status === 'merging-main') refuse(`${b.id} is past CI: ${label}`);
+      else if (b.status !== 'running-ci') refuse(`${b.id} is ${label}: CI starts by itself once main is in its PR`);
+      landerTick(by, env);
+      return done(`${b.id}: Running CI. The lander checks it on its next pass.`);
+    }
+    case 'land': {
+      if (b.status === P2.FAILED && P2.LANDING_GROUP.includes(b.failedFrom)) { retryBuild(b.id, { by, why: why || 'land' }); landerTick(by, env); return done(`${b.id}: landing again from ${P2.labelOf(b.failedFrom)}.`); }
+      if (b.status !== 'build-complete' && !(inLanding(b) && b.status !== P2.FAILED)) refuse(`${b.id} is ${label}: it lands once every step is built`);
+      landerTick(by, env);
+      return done(`${b.id}: the lander takes it on its next pass (${label}).`);
+    }
+    default: { // cancel
+      const running = b.steps.filter(inSlot).length;
+      setFlowStatus(b.id, P2.EXIT, { by, why: reason, mutate: note(`Cancelled from ${label} (${by})${why ? `: ${str(why, 200)}` : ''}.${running ? ` ${running} step session${running === 1 ? '' : 's'} still running end on their own; nothing of them is landed.` : ''}`) });
+      return done(`${b.id} is cancelled (archived from ${label}).`);
+    }
+  }
+}
+
 /**
  * The emergency lane: every emergency build that is split goes to pulling-main at once (no waiting for the active
  * place) and is worked on beside the active build, its steps in the emergency slot pool. Grants of builds that are no
@@ -546,7 +679,19 @@ async function main(argv) {
   if (cmd === 'advance') { const r = advance({ build: flag('build') }); return print(r, `active ${r.active || 'none'} · split ${r.split.length} · main pulled ${r.pulled.length} · ready ${r.ready.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`); }
   if (cmd === 'step-exit') { const r = stepExit(rest[0], rest[1], { exit: Number(flag('exit', '0')), hit: flag('hit'), account: flag('account'), session: flag('session'), by: flag('by', 'headless') }); return print(r, r.why || r.status); }
   if (cmd === 'retry') { if (!rest[0]) throw new Error('retry <build> [--why w] [--by who]'); const r = retryBuild(rest[0], { by: flag('by', process.env.AXF_ACTOR || 'cli'), why: flag('why') }); return print({ ok: true, ...r }, `${r.id}: ${P2.labelOf(r.status)}${r.steps.length ? ` · steps ${r.steps.map((x) => `${x.id} → ${x.status}`).join(', ')}` : ''} · the attempt counts start again`); }
+  if (cmd === 'act') {
+    const [id, action] = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why', '--step'].includes(rest[i - 1])));
+    try {
+      if (!id || !action) throw Object.assign(new Error(`act <build> <${BUILD_ACTIONS.join('|')}> [--step s] [--why w] [--by who]`), { code: 2 });
+      const r = actBuild(id, action, { by: flag('by', process.env.AXF_ACTOR || 'cli'), why: flag('why'), step: flag('step') });
+      return print({ ok: true, ...r }, r.say);
+    } catch (e) {
+      if (!(e instanceof FlowRefused) && e.code !== 2) throw e;
+      process.exitCode = 2;
+      return json ? console.log(JSON.stringify({ ok: false, error: e.message })) : console.error(e.message);
+    }
+  }
   if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
-  console.error('usage: pipeline2.mjs advance | status | retry <build> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
+  console.error('usage: pipeline2.mjs advance | status | retry <build> | act <build> <action> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).catch((e) => { console.error(`pipeline2: ${e.message}`); process.exitCode = 1; });

@@ -451,7 +451,7 @@
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
-        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'.",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -465,6 +465,38 @@
           ]
         },
         "output": "{ id, status, pipeline }"
+      },
+      {
+        "id": "pipeline-act",
+        "route": "POST /pipeline/act",
+        "title": "One action on a Pipeline 2.0 build or step",
+        "description": "queue (move it on: split it and give it the active place when it is next), hold / release (a waiting build keeps its place and is skipped), retry (failed parts leave failed forward), rebuild (a failed step is built again; a build that failed while landing is recompiled), run-ci, land (the lander takes it now) or cancel (archived). The VPS decides; an action that does not fit where the build is gets refused with the reason. Say 'retry the plan studio build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "action": {
+              "type": "string",
+              "enum": ["queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel"]
+            },
+            "step": {
+              "type": "string",
+              "description": "A step id, for an action on one step (rebuild)"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason, kept on the build"
+            }
+          },
+          "required": [
+            "id",
+            "action"
+          ]
+        },
+        "output": "{ id, action, step, status, label, held, say }"
       },
       {
         "id": "pipeline-unqueue",

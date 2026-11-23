@@ -35,6 +35,46 @@
 .axp-plan-studio-2__act { flex: 0 0 auto; }
 .axp-plan-studio-2__topdrop { display: flex; align-items: center; justify-content: center; gap: var(--fx-dens-gap-sm); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-md); color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
 
+/* sent plans: the lock, the state badge, the "From orchestrator" mark, and the look of each state (settings → classes → tokens) */
+.axp-plan-studio-2__grip.is-locked { cursor: default; touch-action: auto; }
+.axp-plan-studio-2__mark { display: inline-flex; align-items: center; justify-content: center; width: var(--fx-size-icon-button-size); color: var(--fx-muted); flex: 0 0 auto; }
+.axp-plan-studio-2__mark.is-on { color: var(--fx-success); }
+.axp-plan-studio-2__live { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: 0 0 auto; min-width: 0; }
+/* a step the orchestrator filed carries two badges: they sit on their own line under the title, so the title keeps the row's width */
+.axp-plan-studio-2__row.is-orch { flex-wrap: wrap; }
+.axp-plan-studio-2__row.is-orch .axp-plan-studio-2__title { flex-basis: 0; }
+.axp-plan-studio-2__row.is-orch .axp-plan-studio-2__live { order: 1; flex: 1 0 100%; flex-wrap: wrap; padding-inline-start: calc(var(--fx-size-icon-button-size) * 2 + var(--fx-dens-gap-2xl)); padding-block-end: var(--fx-dens-gap-xs); }
+.axp-plan-studio-2__state, .axp-plan-studio-2__from { display: inline-flex; flex: 0 0 auto; }
+.axp-plan-studio-2__row.is-orch-tint { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-info); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-orch-tint.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-strike .axp-plan-studio-2__text { text-decoration: line-through; }
+.axp-plan-studio-2__row.is-tone-accent .axp-plan-studio-2__text { color: var(--fx-accent); }
+.axp-plan-studio-2__row.is-tone-success .axp-plan-studio-2__text { color: var(--fx-success); }
+.axp-plan-studio-2__row.is-tone-warning .axp-plan-studio-2__text { color: var(--fx-warning); }
+.axp-plan-studio-2__row.is-tone-danger .axp-plan-studio-2__text { color: var(--fx-danger); }
+.axp-plan-studio-2__row.is-tone-info .axp-plan-studio-2__text { color: var(--fx-info); }
+.axp-plan-studio-2__row.is-tone-muted .axp-plan-studio-2__text { color: var(--fx-muted); }
+.axp-plan-studio-2__row.is-fill-accent { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-info { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-muted { background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-font-mono .axp-plan-studio-2__text { font-family: var(--fx-font-mono); }
+.axp-plan-studio-2__row.is-font-display .axp-plan-studio-2__text { font-family: var(--fx-font-display); }
+.axp-plan-studio-2__row.is-weight-medium .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-medium); }
+.axp-plan-studio-2__row.is-weight-strong .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-strong); }
+.axp-plan-studio-2__row.is-style-italic .axp-plan-studio-2__text { font-style: italic; }
+.axp-plan-studio-2__senttitle { margin: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere; }
+.axp-plan-studio-2__sentbody { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fx-type-scale-sm); }
+.axp-plan-studio-2__sentmeta { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-plan-studio-2__history { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-plan-studio-2__history > li { display: flex; flex-direction: column; align-items: start; gap: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid var(--fx-border); padding-bottom: var(--fx-dens-gap-md); }
+.axp-plan-studio-2__history p { margin: 0; white-space: normal; }
+.axp-plan-studio-2__looks { --axp-ps2-hair: var(--fx-border-w) solid var(--fx-border); container: axp-ps2 / inline-size; min-width: 0; }
+.axp-plan-studio-2__looks > p { margin: 0; }
+.axp-plan-studio-2__lookdemo { margin-bottom: var(--fx-dens-gap-md); }
+
 /* the editor */
 .axp-plan-studio-2__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
 .axp-plan-studio-2__editor .fx-eyebrow { margin: 0; overflow-wrap: anywhere; }

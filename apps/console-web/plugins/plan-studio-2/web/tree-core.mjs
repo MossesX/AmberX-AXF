@@ -8,6 +8,10 @@
  *             links: Link[], collapsed, createdAt, updatedAt, by }
  *   Link  = { type: 'todo' | 'build' | 'note' | 'shipped' | 'plan' | 'url', ref, label }
  *
+ * View fields (never stored; the server lays them on from the builds store, live-core.mjs liveView): `live` (the state
+ * of a sent plan or step), `locked` (sent, not landed: no edits) and `origin: 'orchestrator'` (a step the orchestrator
+ * filed, listed under the plan it was sent from). `stored()` drops them before a save.
+ *
  * Any kind holds any other kind (plan, section, step, note, list, item): there is no fixed shape. Nothing is synced into
  * the tree: other parts of the console are reached only through links a person (or a command) adds on purpose.
  * Deleting moves the item and everything under it to the trash; undo puts it back in the same place.
@@ -75,7 +79,15 @@ export function normItem(raw, at = nowIso()) {
     createdAt: str(r.createdAt, 40) || at,
     updatedAt: str(r.updatedAt, 40) || at,
     by: str(r.by, 80),
+    ...(r.origin === 'orchestrator' ? { origin: r.origin } : {}),
+    ...(r.locked === true ? { locked: true } : {}),
+    ...(r.live && typeof r.live === 'object' && !Array.isArray(r.live) ? { live: r.live } : {}),
   };
+}
+
+/** The state as it is saved: no orchestrator rows and no view fields (they are read from the builds store each time). */
+export function stored(state) {
+  return { ...state, items: (state?.items ?? []).filter((i) => i.origin !== 'orchestrator').map(({ origin: _o, locked: _l, live: _v, ...i }) => i) };
 }
 
 /** A well-formed state: unknown parents become roots, cycles are broken, orders are made contiguous. */

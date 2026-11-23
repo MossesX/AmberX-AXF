@@ -4,6 +4,7 @@
  * MCP, CLI, AmberX voice) reads and writes the same thing through the same pure core (web/tree-core.mjs):
  *
  *   <store>/tree.json          plan-tree@1 (items nested to any depth + the trash for undo)
+ *   <store>/sent-history.json  plan-history@1 (the planning steps a send replaced, per item; live-core.mjs)
  *
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
  * plan-studio-2/, per project (projects@1). Elsewhere it is the plugin's data folder (.axf-console/plugins/plan-studio-2).
@@ -25,11 +26,19 @@
  *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
  *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
  *                                                                 builds store; the orchestrator's splitting stage designs the build steps
+ *   … history <item>                                              the planning steps a send replaced (kept beside the tree)
+ *   … restore-steps <item> [<entry id>]                           bring those planning steps back (not while it is locked)
+ *   … sync                                                        bring the tree in line with the builds store now
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
  *   … where
  *   --json on any command prints one JSON line.
+ *
+ * Sent plans (web/live-core.mjs): a sent plan's steps and statuses are read from the builds store on every read, never
+ * copied. Once the orchestrator has split the build, the planning steps that were sent leave the tree (kept in
+ * sent-history.json) and the orchestrator's steps are listed in their place, marked `origin: orchestrator`, checking off
+ * as it moves them. A sent plan is locked until its build lands or is cancelled: every change to it is refused.
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
@@ -37,6 +46,7 @@ import { chmodSync, chownSync, readFileSync, statSync, writeFileSync } from 'nod
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
+import * as live from './web/live-core.mjs';
 import * as P2 from '../../../../framework/core/pipeline-status.mjs';
 import * as BS from '../../../../framework/cli/builds-store.mjs';
 import * as core from '../../../../framework/plan/builds-store-core.mjs';
@@ -49,6 +59,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio-2';
 export const FILE = 'tree.json';
+export const HISTORY_FILE = 'sent-history.json';
 
 // Through data-files (data-store@1): the hub copy maps to planner/v2/tree.json (planner_tree rows on axf-data), so the
 // tree follows the planner namespace's mode (local file, shadow copy, or axf-data only after the cut-over).
@@ -65,7 +76,33 @@ export const onHub = () => !process.env.AXF_PLAN_TREE_DIR && !!persistRoot();
 const file = () => join(storeDir(), FILE);
 
 export function load() { return tc.normalize(readJson(file(), tc.emptyState())); }
-export function save(state) { const s = tc.normalize(state); writeJson(file(), s); handBack(file()); return s; }
+export function save(state) { const s = tc.normalize(tc.stored(state)); writeJson(file(), s); handBack(file()); return s; }
+const historyFile = () => join(storeDir(), HISTORY_FILE);
+/** The planning steps sends replaced (plan-history@1): its own file, so a writer that only knows the tree cannot drop it. */
+export function loadHistory() { return live.normHistory(readJson(historyFile(), live.emptyHistory())); }
+export function saveHistory(history) { const h = live.normHistory(history); writeJson(historyFile(), h); handBack(historyFile()); return h; }
+/** The builds a sent plan is read from, or null when the builds store cannot be read (then nothing is laid over or synced). */
+export function storeBuilds() { try { return BS.loadStore().builds; } catch { return null; } }
+/** Refuse a change to an item a sent build locks (the item itself or one above it). Every write path goes through this. */
+export function assertUnlocked(state, id, builds = storeBuilds()) {
+  const lock = builds && id ? live.lockOf(state, builds, id) : null;
+  if (lock) throw new tc.TreeError('locked', live.lockedWhy(lock));
+}
+/**
+ * Bring the tree in line with the builds store (live-core syncSent): planning steps of a build that has been split move
+ * to the plan's history (sent-history.json); a build cancelled before it landed gives them back. Runs on every read and on the builds
+ * store's change event (build-hook.mjs). → { changed, replaced, restored, state }
+ */
+export function sync({ by = 'plan-studio-2', builds = storeBuilds(), state = load() } = {}) {
+  if (!builds) return { changed: false, replaced: [], restored: [], state };
+  const r = live.syncSent(state, builds, loadHistory(), { by });
+  if (!r.changed) return { ...r, state };
+  // the history first when steps leave the tree (never gone from both), the tree first when they come back
+  if (r.replaced.length) saveHistory(r.history);
+  const st = save(r.state);
+  if (!r.replaced.length) saveHistory(r.history);
+  return { ...r, state: st };
+}
 /** Written as root (a VPS session's CLI): the file goes back to the folder's owner, group-writable, so the console can still write it. */
 function handBack(f) {
   if (process.getuid?.() !== 0) return;
@@ -96,8 +133,10 @@ export function planOf(state, ref, { id = '', said = '' } = {}) {
     steps: change.steps.map((x) => ({ text: x.text, model: x.model, estimate: x.estimate })) });
   const errors = P2.validatePlan(plan);
   if (id && taken.has(id)) errors.push({ path: 'id', why: `"${id}" is already a build: pick another build id` });
-  const live = liveSent(builds, it.id);
-  if (live) errors.push({ path: 'planItem', why: `already sent as ${live.id} (${P2.labelOf(live.status, live.attempt)}): wait for it to land, or archive it first` });
+  const sent = liveSent(builds, it.id);
+  if (sent) errors.push({ path: 'planItem', why: `already sent as ${sent.id} (${P2.labelOf(sent.status, sent.attempt)}): wait for it to land, or cancel it first` });
+  const lock = sent ? null : live.lockOf(state, builds, it.id);
+  if (lock) errors.push({ path: 'planItem', why: `inside "${lock.item.title}", which is sent as ${lock.build.id} and locked until that build lands or is cancelled` });
   return { item: it, plan, errors };
 }
 
@@ -122,11 +161,11 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
   const now = new Date().toISOString(); const who = by || 'plan-studio-2';
   BS.withStore((s) => {
     if (core.findBuild(s, plan.id)) throw new tc.TreeError('validation', `"${plan.id}" is already a build: pick another build id`);
-    const live = liveSent(s.builds, it.id);
-    if (live) throw new tc.TreeError('validation', `"${it.title}" is already sent as ${live.id}: wait for it to land, or archive it first`);
+    const sent = liveSent(s.builds, it.id);
+    if (sent) throw new tc.TreeError('validation', `"${it.title}" is already sent as ${sent.id}: wait for it to land, or cancel it first`);
     const b = P2.transition({
       id: plan.id, title: plan.title, detail: plan.detail, source: FOLDER, planRef: it.id, profiles: [prof], createdAt: now, updatedAt: now, flow: P2.FLOW,
-      notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)}). Passed plan-build@1; sent as one Pipeline 2.0 build with ${plan.steps.length} planning step${plan.steps.length === 1 ? '' : 's'}. The splitting stage designs its build steps.`, at: now }],
+      notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)}). Passed plan-build@1; sent as one Pipeline 2.0 build with ${plan.steps.length} planning step${plan.steps.length === 1 ? '' : 's'}. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.`, at: now }],
       ...(said ? { origin: { said, at: now, source: 'console', by: by || 'Brett' } } : {}),
       planning: plan.steps,
       steps: [],
@@ -143,8 +182,11 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
 
 const view = (s, it) => (it ? { ...it, path: tc.pathOf(s, it.id), depth: tc.depthOf(s, it.id), progress: tc.progress(s, it.id), children: tc.children(s, it.id).length } : null);
 
+/** The whole tree as the page draws it. `s` is the live view; `watch` tells the page a sent plan is still moving. */
 export function stateView(s) {
-  return { ok: true, $axf: tc.SCHEMA, rev: s.rev, count: s.items.length, roots: tc.roots(s).length, trash: s.trash.map((t) => ({ id: t.id, title: t.title, at: t.at, items: t.items.length })), progress: tc.progress(s, null), store: storeDir(), onHub: onHub(), kinds: tc.KINDS, statuses: tc.STATUSES, priorities: tc.PRIORITIES, models: tc.MODELS, linkTypes: tc.LINK_TYPES, items: s.items };
+  const sent = s.items.filter((i) => i.live && !i.origin && i.live.split !== undefined);
+  return { ok: true, $axf: tc.SCHEMA, rev: s.rev, sent: sent.length, watch: sent.some((i) => i.live.locked), states: live.STATES, stateLabels: live.STATE_LABEL, originLabel: live.ORIGIN_LABEL, orchestratorActions: live.ACTIONS,
+    count: s.items.length, roots: tc.roots(s).length, trash: s.trash.map((t) => ({ id: t.id, title: t.title, at: t.at, items: t.items.length })), progress: tc.progress(s, null), store: storeDir(), onHub: onHub(), kinds: tc.KINDS, statuses: tc.STATUSES, priorities: tc.PRIORITIES, models: tc.MODELS, linkTypes: tc.LINK_TYPES, items: s.items };
 }
 
 /**
@@ -153,37 +195,57 @@ export function stateView(s) {
  * duplicate · delete · undo · link · unlink · collapse · import · build · say · clear.
  */
 export function api(r, { by = '' } = {}) {
-  const s = load();
   const who = String(r.by ?? by ?? '');
+  const builds = storeBuilds();
+  // the stored tree (writes work on it), brought in line with the builds store first; `v` is what reads show
+  const s = sync({ by: who || 'plan-studio-2', builds }).state;
+  const v = builds ? live.liveView(s, builds) : s;
+  /** A change to a sent plan (or to a step the orchestrator filed) is refused: `ref` is the item or the place it goes. */
+  const guard = (ref) => {
+    if (ref == null || ref === '') return;
+    if (live.parseStepRowId(String(ref))) throw new tc.TreeError('locked', 'That step was filed by the orchestrator: it is read from the builds store and is not changed in Plan Studio.');
+    const it = tc.resolve(s, ref);
+    const lock = it && builds ? live.lockOf(s, builds, it.id) : null;
+    if (lock) throw new tc.TreeError('locked', live.lockedWhy(lock));
+  };
   const done = (res, msg) => { const st = save(res.state); const it = res.item ? view(st, tc.byId(st, res.item.id) ?? res.item) : null; return { ok: true, rev: st.rev, item: it, say: msg, ...Object.fromEntries(Object.entries(res).filter(([k]) => !['state', 'item'].includes(k))) }; };
   switch (r.op) {
-    case 'state': return stateView(s);
-    case 'tree': { const root = r.id ? tc.resolve(s, r.id) : null; if (r.id && !root) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, rev: s.rev, root: root ? view(s, root) : null, tree: tc.tree(s, root?.id ?? null) }; }
-    case 'get': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: view(s, it), children: tc.children(s, it.id).map((c) => view(s, c)), ancestors: tc.ancestors(s, it.id).map((a) => ({ id: a.id, title: a.title, kind: a.kind })) }; }
-    case 'find': { const under = r.under ? tc.resolve(s, r.under)?.id ?? '' : ''; return { ok: true, hits: tc.find(s, r.q ?? '', { kind: r.kind ?? '', limit: Math.max(1, Math.min(Number(r.limit) || 20, 200)), under }) }; }
-    case 'export': { if (r.format === 'json') return { ok: true, format: 'json', data: tc.toJson(s, r.id || null) }; return { ok: true, format: 'md', markdown: tc.toMarkdown(s, r.id || null) }; }
+    case 'state': return stateView(v);
+    case 'tree': { const root = r.id ? tc.resolve(v, r.id) : null; if (r.id && !root) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, rev: v.rev, root: root ? view(v, root) : null, tree: tc.tree(v, root?.id ?? null) }; }
+    case 'get': { const it = tc.resolve(v, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: view(v, it), children: tc.children(v, it.id).map((c) => view(v, c)), ancestors: tc.ancestors(v, it.id).map((a) => ({ id: a.id, title: a.title, kind: a.kind })) }; }
+    case 'find': { const under = r.under ? tc.resolve(v, r.under)?.id ?? '' : ''; return { ok: true, hits: tc.find(v, r.q ?? '', { kind: r.kind ?? '', limit: Math.max(1, Math.min(Number(r.limit) || 20, 200)), under }) }; }
+    case 'export': { if (r.format === 'json') return { ok: true, format: 'json', data: tc.toJson(s, r.id || null) }; return { ok: true, format: 'md', markdown: tc.toMarkdown(v, r.id || null) }; }
+    case 'sync': { const res = sync({ by: who || 'plan-studio-2', builds, state: s }); return { ok: true, rev: res.state.rev, changed: res.changed, replaced: res.replaced, restored: res.restored, say: res.changed ? `Brought ${res.replaced.length + res.restored.length} sent plan${res.replaced.length + res.restored.length === 1 ? '' : 's'} in line with the builds store.` : 'Already in line with the builds store.' }; }
+    case 'history': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: { id: it.id, title: it.title }, history: live.historyOf(loadHistory(), s, it.id) }; }
+    case 'restore-steps': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); guard(it.id); const res = live.restoreEntry(s, loadHistory(), it.id, r.entry ?? ''); const out = done({ state: res.state, item: it, restored: res.restored, entry: res.entry }, `Brought ${res.restored} planning step${res.restored === 1 ? '' : 's'} back into "${it.title}".`); saveHistory(res.history); return out; }
+    case 'target': {
+      // the build (and step) an orchestrator action on this row is about: the server asks the orchestrator, never the page
+      const tg = builds ? live.actionTarget(s, builds, r.id) : null;
+      if (!tg) throw new tc.TreeError('validation', builds ? 'That is not sent to the orchestrator yet: send it first.' : 'The builds store cannot be read right now.');
+      return { ok: true, build: tg.build.id, step: tg.step, item: tg.item ? { id: tg.item.id, title: tg.item.title } : null, live: live.buildLive(tg.build) };
+    }
     case 'trash': return { ok: true, trash: s.trash.map((t) => ({ id: t.id, title: t.title, at: t.at, by: t.by, items: t.items.length })) };
-    case 'add': { const res = tc.add(s, { parent: r.parent ?? r.in ?? null, kind: r.kind, title: r.title, body: r.body, index: r.index, by: who, status: r.status, priority: r.priority, model: r.model, minutes: r.minutes, tags: r.tags }); return done(res, `Added the ${tc.KIND_LABEL[res.item.kind].toLowerCase()} "${res.item.title}"${res.item.parent ? ` inside "${tc.byId(res.state, res.item.parent).title}"` : ''}.`); }
-    case 'rename': { const res = tc.rename(s, r.id, r.title, who); return done(res, `Renamed to "${res.item.title}".`); }
-    case 'edit': { const res = tc.edit(s, r.id, r.patch ?? r, who); return done(res, res.changed ? `Changed "${res.item.title}".` : 'Nothing changed.'); }
-    case 'move': { const res = tc.move(s, r.id, { parent: r.parent ?? r.in ?? null, index: r.index }); return done(res, `Moved "${res.item.title}" ${res.item.parent ? `into "${tc.byId(res.state, res.item.parent).title}"` : 'to the top level'}.`); }
-    case 'nudge': { const res = tc.nudge(s, r.id, Number(r.delta) || 0); return done(res, `Moved "${res.item.title}" ${Number(r.delta) < 0 ? 'up' : 'down'}.`); }
-    case 'indent': { const res = tc.indent(s, r.id); return done(res, res.changed === false ? 'It is already first; nothing to indent into.' : `Indented "${res.item.title}".`); }
-    case 'outdent': { const res = tc.outdent(s, r.id); return done(res, res.changed === false ? 'It is already at the top level.' : `Outdented "${res.item.title}".`); }
-    case 'duplicate': { const res = tc.duplicate(s, r.id, who); return done(res, `Duplicated it as "${res.item.title}" (${res.count} items).`); }
-    case 'delete': { const res = tc.remove(s, r.id, who); return done(res, `Deleted "${res.item.title}" (${res.removed} items). Say undo to bring it back.`); }
-    case 'undo': { const res = tc.undo(s, r.trashId ?? ''); return done(res, res.item ? `Brought back "${res.item.title}".` : `Brought ${res.restored} items back.`); }
-    case 'link': { const res = tc.link(s, r.id, { type: r.type, ref: r.ref, label: r.label }); return done(res, res.changed ? `Linked "${res.item.title}" to the ${r.type} ${r.label || r.ref}.` : 'That link is already there.'); }
+    case 'add': { guard(r.parent ?? r.in); const res = tc.add(s, { parent: r.parent ?? r.in ?? null, kind: r.kind, title: r.title, body: r.body, index: r.index, by: who, status: r.status, priority: r.priority, model: r.model, minutes: r.minutes, tags: r.tags }); return done(res, `Added the ${tc.KIND_LABEL[res.item.kind].toLowerCase()} "${res.item.title}"${res.item.parent ? ` inside "${tc.byId(res.state, res.item.parent).title}"` : ''}.`); }
+    case 'rename': { guard(r.id); const res = tc.rename(s, r.id, r.title, who); return done(res, `Renamed to "${res.item.title}".`); }
+    case 'edit': { if (Object.keys(r.patch ?? {}).some((k) => k !== 'collapsed') || !r.patch) guard(r.id); const res = tc.edit(s, r.id, r.patch ?? r, who); return done(res, res.changed ? `Changed "${res.item.title}".` : 'Nothing changed.'); }
+    case 'move': { guard(r.id); guard(r.parent ?? r.in); const res = tc.move(s, r.id, { parent: r.parent ?? r.in ?? null, index: r.index }); return done(res, `Moved "${res.item.title}" ${res.item.parent ? `into "${tc.byId(res.state, res.item.parent).title}"` : 'to the top level'}.`); }
+    case 'nudge': { guard(r.id); const res = tc.nudge(s, r.id, Number(r.delta) || 0); return done(res, `Moved "${res.item.title}" ${Number(r.delta) < 0 ? 'up' : 'down'}.`); }
+    case 'indent': { guard(r.id); { const it = tc.resolve(s, r.id); const sibs = it ? tc.children(s, it.parent) : []; const at = sibs.findIndex((x) => x.id === it?.id); if (at > 0) guard(sibs[at - 1].id); } const res = tc.indent(s, r.id); return done(res, res.changed === false ? 'It is already first; nothing to indent into.' : `Indented "${res.item.title}".`); }
+    case 'outdent': { guard(r.id); const res = tc.outdent(s, r.id); return done(res, res.changed === false ? 'It is already at the top level.' : `Outdented "${res.item.title}".`); }
+    case 'duplicate': { if (live.parseStepRowId(String(r.id ?? ''))) guard(r.id); guard(tc.resolve(s, r.id)?.parent); const res = tc.duplicate(s, r.id, who); return done(res, `Duplicated it as "${res.item.title}" (${res.count} items).`); }
+    case 'delete': { guard(r.id); const res = tc.remove(s, r.id, who); return done(res, `Deleted "${res.item.title}" (${res.removed} items). Say undo to bring it back.`); }
+    case 'undo': { guard((r.trashId ? s.trash.find((t) => t.id === r.trashId) : s.trash[s.trash.length - 1])?.parent); const res = tc.undo(s, r.trashId ?? ''); return done(res, res.item ? `Brought back "${res.item.title}".` : `Brought ${res.restored} items back.`); }
+    case 'link': { if (live.parseStepRowId(String(r.id ?? ''))) guard(r.id); const res = tc.link(s, r.id, { type: r.type, ref: r.ref, label: r.label }); return done(res, res.changed ? `Linked "${res.item.title}" to the ${r.type} ${r.label || r.ref}.` : 'That link is already there.'); }
     case 'unlink': { const res = tc.unlink(s, r.id, { type: r.type, ref: r.ref }); return done(res, res.changed ? 'Link removed.' : 'No such link.'); }
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
-    case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
+    case 'import': { guard(r.parent ?? r.in); const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
     case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
-      if (cmd.op === 'open') { const it = tc.resolve(s, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, item: view(s, it), focus: `plan-studio-2.focus:${it.id}`, say: `Opening "${it.title}".` }; }
-      if (cmd.op === 'find') { const hits = tc.find(s, cmd.q, { limit: 5 }); return { ok: true, understood: true, command: cmd, hits, say: hits.length ? `Found ${hits.length}: ${hits.map((h) => h.title).join(', ')}.` : 'Nothing matches.' }; }
+      if (cmd.op === 'open') { const it = tc.resolve(v, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, item: view(v, it), focus: `plan-studio-2.focus:${it.id}`, say: `Opening "${it.title}".` }; }
+      if (cmd.op === 'find') { const hits = tc.find(v, cmd.q, { limit: 5 }); return { ok: true, understood: true, command: cmd, hits, say: hits.length ? `Found ${hits.length}: ${hits.map((h) => h.title).join(', ')}.` : 'Nothing matches.' }; }
       if (cmd.op === 'export') { const it = tc.resolve(s, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, markdown: tc.toMarkdown(s, it.id), say: `Exported "${it.title}" as Markdown.` }; }
       const map = { 'send-to-build': { op: 'build', id: cmd.id, said: r.text }, add: { op: 'add', kind: cmd.kind, title: cmd.title, parent: cmd.parent }, collapse: { op: 'collapse', id: cmd.id, all: !!cmd.all, collapsed: cmd.collapsed } };
       const out = api({ ...(map[cmd.op] ?? cmd), by: who });
@@ -204,7 +266,8 @@ function parseArgs(argv) {
   }
   return { pos, flags };
 }
-const indentTree = (rows, depth = 0, out = []) => { for (const r of rows) { const mark = tc.CHECKABLE.has(r.kind) ? (r.done ? '[x] ' : '[ ] ') : ''; out.push(`${'  '.repeat(depth)}${mark}${r.title}  (${r.kind}${r.model ? `, ${r.model}` : ''}${r.minutes ? `, ${r.minutes} min` : ''})  ${r.id}`); indentTree(r.children, depth + 1, out); } return out; };
+const liveMark = (r) => (r.live ? `  [${r.origin ? `${live.ORIGIN_LABEL} · ` : r.locked ? 'locked · ' : ''}${r.live.stateLabel}${r.live.label && r.live.label !== r.live.stateLabel ? `: ${r.live.label}` : ''}]` : '');
+const indentTree = (rows, depth = 0, out = []) => { for (const r of rows) { const mark = tc.CHECKABLE.has(r.kind) ? (r.done ? '[x] ' : '[ ] ') : ''; out.push(`${'  '.repeat(depth)}${mark}${r.title}  (${r.kind}${r.model ? `, ${r.model}` : ''}${r.minutes ? `, ${r.minutes} min` : ''})${liveMark(r)}  ${r.id}`); indentTree(r.children, depth + 1, out); } return out; };
 
 export async function main(argv = process.argv.slice(2)) {
   const { pos, flags } = parseArgs(argv);
@@ -240,9 +303,12 @@ export async function main(argv = process.argv.slice(2)) {
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
+      case 'sync': { const r = api({ op: 'sync' }); return out(r, r.say); }
+      case 'history': { const r = api({ op: 'history', id: a[0] }); return out(r, r.history.map((h) => `${h.id}  ${h.at}  ${h.title}${h.restoredAt ? ' (brought back)' : ''}\n${h.steps.map((x) => `    - ${x.title}`).join('\n')}`).join('\n') || 'no history: nothing was replaced by a send'); }
+      case 'restore-steps': { const r = api({ op: 'restore-steps', id: a[0], entry: a[1] }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|history|restore-steps|sync|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

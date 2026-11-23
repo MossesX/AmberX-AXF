@@ -29,6 +29,47 @@ steps and need no minutes or model; a model or minutes noted on a step goes alon
 - Send writes one build: `flow: pipeline-2`, status `pending`, `steps: []`, `planning: [{ text, model?, minutes?,
   files? }]` (the store keeps `planning` on Pipeline 2.0 builds, `normPlanning`).
 
+## What Plan Studio reads back
+
+Brett, Nov 23 2026: the orchestrator decides the real steps and files them in the builds store, the one source of truth.
+Plan Studio copies nothing back: every read lays the store over its tree. The build's `planRef` names the plan item.
+
+- While the build is in the flow (not `landed`, not archived or deleted) the plan item and everything under it are
+  locked: no edit, reorder, add or delete.
+- Once the build has its steps (`split` or later) the planning steps that were sent leave the plan (kept on the item's
+  history, recoverable) and the build's steps are listed in their place, marked as the orchestrator's. Each shows its
+  status as one of eight states and is checked off when it is `completed`:
+
+  | State | Step | Build |
+  |---|---|---|
+  | Sent to orchestrator | `pending`, `pulling-main`, `ready` | `pending`, `splitting`, `split` |
+  | Building | `sending`, `building` | `pulling-main` … `building` |
+  | Waiting for merge | `completed` / `in-pr` while the build is not landing yet | `build-complete` |
+  | Merging | built, the build at `merging-pr` or `merging-main` | `merging-pr`, `merging-main` |
+  | Recompiling | built, the build at `pr-pulling-main` | `pr-pulling-main` |
+  | Running CI | built, the build at `running-ci` | `running-ci` |
+  | Landed | any step of a `landed` build | `landed` |
+  | Failed | `failed` | `failed` |
+
+- A build archived or deleted before it lands gives the planning steps back and unlocks the plan.
+
+## Taps on a build or a step
+
+One entry for every surface (the orchestrator's menu, Plan Studio's, REST `POST /pipeline/act`, MCP, the CLI
+`pipeline2.mjs act <build> <action> [--step s]`, the capability `axf.build-dispatch@1` `act()`): `actBuild`. The
+console sends the tap; every decision is made here, and a tap that does not fit where the build is gets a refusal with
+the reason and changes nothing.
+
+| Action | What it does |
+|---|---|
+| `queue` | Moves the build on now: splits it if it is not split, gives it the active place when it is next in line. A Pipeline 2.0 build has no Queue of its own, so a waiting build is never refused: the answer says where it stands. `pipeline.mjs queue` does this for a Pipeline 2.0 build. |
+| `hold` / `release` | A build still before the active place (`pending`, `splitting`, `split`) keeps its place and is skipped by the line and by the watchdog until released (`pipeline.heldAt`). An emergency build is never held. |
+| `retry` | `retryBuild`: the build and its failed steps leave `failed` forward where they failed; attempts reset. |
+| `rebuild` | A failed step is built again (through `ready`). A build that failed in a landing run re-enters at `pr-pulling-main` (main into its PR, recompiled). Any other failed build is retried. |
+| `run-ci` | A build that failed at `running-ci` or later re-enters at `running-ci`; one already there is checked on the lander's next pass. |
+| `land` | The lander is asked for a pass now; a build that failed in a landing run is retried first. Refused before `build-complete`. |
+| `cancel` | Archived, from any status. A session still running ends on its own and is not landed. |
+
 ## Build statuses (in order)
 
 | # | status | shown as | who moves it here |

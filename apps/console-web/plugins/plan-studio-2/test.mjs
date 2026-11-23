@@ -23,7 +23,7 @@ await t('plugin@1 manifest, lifecycle, commands, web part, plans@1', () => {
   assert.equal(m.builtWith.model, 'fable');
   assert.ok(m.provides.includes('service:plan-tree@1') && m.provides.includes('service:plans@1') && m.provides.includes('view:plan-studio-2'));
   assert.equal(m.commands.$axf, 'plugin-commands@1');
-  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'tree.mjs', 'plans.mjs', 'help.json', 'server/__init__.py', 'web/index.tsx', 'web/ui.tsx', 'web/api.ts', 'web/menu.ts', 'web/voice.ts', 'web/tree-core.mjs', 'web/tree-core.d.mts', 'web/plan-studio-2.css']) assert.ok(existsSync(join(here, f)), f);
+  for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'tree.mjs', 'plans.mjs', 'help.json', 'server/__init__.py', 'web/index.tsx', 'web/ui.tsx', 'web/api.ts', 'web/menu.ts', 'web/voice.ts', 'web/tree-core.mjs', 'web/tree-core.d.mts', 'web/live-core.mjs', 'web/live-core.d.mts', 'web/live.tsx', 'build-hook.mjs', 'live.test.mjs', 'web/plan-studio-2.css']) assert.ok(existsSync(join(here, f)), f);
   const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
   assert.match(web, /parent: 'plugins'/); assert.match(web, /PluginLifecyclePanel/); assert.match(web, /plan-studio-2\.focus/);
   for (const a of ['new-inside', 'rename', 'duplicate', 'move', 'link', 'export', 'build', 'delete', 'undo']) assert.match(web, new RegExp(`plan-studio-2\\.${a}`), `context menu action ${a}`);
@@ -243,9 +243,12 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.ok(cliJson('show', 'Launch').item.links.some((l) => l.type === 'build' && l.ref.endsWith(':launch')));
   assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already a build/);
   assert.throws(() => cli('build', 'Launch', '--id', 'launch-again'), /already sent as launch/, 'no second build while the first is pending or active');
-  const del = cliJson('delete', 'Deploy'); assert.equal(del.removed, 1);
-  assert.match(cli('trash'), /Deploy/);
-  assert.equal(cliJson('undo').item.title, 'Deploy');
+  assert.equal(cliFails('delete', 'Deploy', '--json').code, 'locked', 'a sent plan is locked: nothing in it is deleted (live.test.mjs has the rest)');
+  cli('add', 'note', 'Scratch');
+  const del = cliJson('delete', 'Scratch'); assert.equal(del.removed, 1);
+  assert.match(cli('trash'), /Scratch/);
+  assert.equal(cliJson('undo').item.title, 'Scratch');
+  cli('delete', 'Scratch');
   assert.match(cli('export', 'Launch'), /^# Launch/);
   assert.equal(JSON.parse(cli('export', '--json')).$axf, 'plan-tree-export@1');
   assert.equal(cliJson('api', JSON.stringify({ op: 'state' })).count, 3);
@@ -277,6 +280,12 @@ await t('plans@1: add parked, list, get, set, steps, comment, build hand-off, ex
   const sent = ps.turnIntoBuild(a.plan.id, { buildId: 'later-idea', by: 'test' });
   assert.ok(sent.build.id === 'later-idea' && sent.plan.build.id === 'later-idea', 'the plan carries its build');
   assert.throws(() => ps.restore(a.plan.id, 1), /no versions/); assert.deepEqual(ps.history(a.plan.id).versions, []);
+  // sent: locked (plans@1 too) until the build lands or is cancelled; only its status may still be set
+  assert.throws(() => ps.deletePlan(a.plan.id), /locked until the build lands or is cancelled/);
+  assert.throws(() => ps.savePlan({ ...sent.plan, title: 'Renamed while sent' }), /locked/);
+  assert.throws(() => ps.savePlan({ ...sent.plan, steps: [{ text: 'One more' }] }), /locked/);
+  assert.equal(ps.savePlan({ ...sent.plan, status: 'done' }).plan.status, 'done', 'the status of a sent plan may still be set');
+  (await import('../../../../framework/cli/builds-store.mjs')).setFlowStatus('later-idea', 'archived', { by: 'test', why: 'cancelled' });
   assert.equal(ps.deletePlan(a.plan.id).removed, 4); assert.equal(ps.loadPlans().length, 0); assert.throws(() => ps.deletePlan(a.plan.id), /no plan/);
   assert.equal(ps.restoreDeleted().plan.id, a.plan.id); assert.equal(ps.loadPlans().length, 1);
   assert.ok(!existsSync(join(dir, 'plans')), 'no plan@1 files are ever made');

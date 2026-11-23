@@ -142,6 +142,7 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-flow.test.mjs          # pipeline-2@1 flow: split, one active build, worktrees before launch, accounts by usage left, retries forward  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-actions.test.mjs       # pipeline-2@1 taps: queue moves a waiting build on (never refused), hold / release, retry, rebuild, run-ci, land, cancel  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs       # emergency builds: started from Brett's signed-in console only, past the one-active-build line, the 2 emergency slots counted apart, grants taken back  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-parallel.test.mjs      # pipeline-2@1: up to stepsInParallel (4) steps at once, a give-up at maxAttempts is final, act step keeps the flow status  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/settings-sources.test.mjs # settings-sources@1 in the pipeline: sessions per account, launch without asking and the brief size read from their one key, never stored again, migration keeps the one saved last  # axf-plugin:build-orchestrator
@@ -202,6 +203,8 @@ jobs:
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
+      - name: Plan Studio 2.0 sent plans (steps read from the builds store, replace on split, live check-off, From orchestrator, the lock)  # axf-plugin:plan-studio-2
+        run: node apps/console-web/plugins/plan-studio-2/live.test.mjs  # axf-plugin:plan-studio-2
       - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
@@ -438,6 +441,7 @@ jobs:
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
+            python apps/console-web/plugins/plan-studio-2/server/test_orchestrate.py  # sent plans through the server: 409 while locked, the orchestrator's steps listed, its actions through axf.build-dispatch@1, cancel unlocks  # axf-plugin:plan-studio-2
             python apps/console-web/plugins/build-orchestrator/server/test_watchdogs.py  # build-watchdogs@1 routes: status, one flat settings map (bad keys and values 400), Run asks the host, the systems check item  # axf-plugin:build-orchestrator
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log
