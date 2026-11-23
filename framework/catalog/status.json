@@ -2480,5 +2480,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build status-styles-plugin (Nov 21 2026; Brett: animations and styling states for every status level, for builds and every step). Console plugin status-styles (Settings → Plugins → Status styles; REST /api/plugins/status-styles, control@1 status-styles.*): a row style, a badge style and an animated-badge switch per status (Pipeline 2.0 builds and steps, Scoring risk, Fast merge, Post-merge CI, Rolling back, Rolled back, Plan Studio, own ids); 66 presets (whole row or text only) in assets/status-style/library.json plus own saved presets; web/core.ts builds one token-only stylesheet keyed on data-status (innermost row via :has), stopped under reduced motion; badge packs read data-status-animated and data-badge-animated / data-badge-static. Tests: test.mts, test.py."
+  },
+  "cx.consoleopen": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build console-open-no-reload (Nov 23 2026; Brett: \"Every time you send me to any screen, it loads the home screen first. Stop doing that.\"). Root cause: the console app's page kept running behind its folded overlay but its timer-driven beat stopped, so every open took the wake path, the wake loaded the page again at home, and the queued open went to the page that was being torn down and was marked done. Console commands: the page also beats on its stream; a console with an open stream and no recent beat is asked first (2 s) before any wake; a queued command is done only on an ack and goes to the next page load under the same message id; the wake link carries axf-open; a name missing from a loading page's catalog is waited for; calls answer in seconds (wait asks for longer). Console app: a console link for a loaded console is handed to the page (axfNative.open, no reload). Follow Amber no longer sends the phone a second open. The app catalog has its own nav section under Home and opens the Apps menu. Tests: test_console_commands.py (195), follow-amber test.py, nativeRules.test.mjs, hubPages/test.mjs, ShellRulesTest. Not tested on a phone."
   }
 }
