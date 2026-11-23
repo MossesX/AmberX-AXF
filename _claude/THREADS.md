@@ -843,8 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 23:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 23:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 23:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 23:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 23:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1241,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` → archived (all) · Amber (voice)
 - 2026-11-23 16:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
+- 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
+- 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
 
 ## Token passes (log)
 

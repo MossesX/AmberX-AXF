@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-23T20:24:37.740Z",
+ "updatedAt": "2026-11-23T20:25:17.104Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135921,7 +135921,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "failed",
+   "status": "building",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
@@ -135930,7 +135930,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T22:04:01.458Z",
+   "updatedAt": "2026-11-23T20:24:32.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -136444,6 +136444,18 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-22T22:04:01.458Z"
+    },
+    {
+     "text": "Retry by pipeline-bring-up: its steps s1 and s7 were refused five times by a second, stale dispatcher (axf-molly, retired Nov 23) launching beside the host tick; the failures were not the build's. The attempt counts start again (steps s1, s7 too).",
+     "at": "2026-11-23T20:22:32.695Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s1--earl, shared account login)",
+     "at": "2026-11-23T20:23:31.702Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s7--earl, shared account login)",
+     "at": "2026-11-23T20:24:32.549Z"
     }
    ],
    "approvals": [
@@ -200093,15 +200105,16 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-refreshing-console-jumps-back",
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-23T16:14:31.306Z",
+   "updatedAt": "2026-11-23T16:30:38.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -200262,8 +200275,19 @@
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T16:25:01.179Z",
-     "by": "watchdog"
+     "at": "2026-11-23T16:25:01.179Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-23T16:28:01.872Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-23T16:30:01.706Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (",
+     "at": "2026-11-23T18:36:54.805Z"
     }
    ],
    "approvals": [],
@@ -200546,7 +200570,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwr60im11l4qa7",
+     "uid": "st-mwthfg1q1wb3vt",
      "createdAt": "2026-11-22T01:35:33.432Z"
     }
    ]

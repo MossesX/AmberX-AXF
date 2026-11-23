@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10367,
- "updatedAt": "2026-11-23T20:24:37.740Z",
+ "rev": 10368,
+ "updatedAt": "2026-11-23T20:25:17.104Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204108,7 +204108,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "failed",
+   "status": "building",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204116,7 +204116,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-22T22:04:01.458Z",
+   "updatedAt": "2026-11-23T20:24:32.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -204630,6 +204630,18 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-22T22:04:01.458Z"
+    },
+    {
+     "text": "Retry by pipeline-bring-up: its steps s1 and s7 were refused five times by a second, stale dispatcher (axf-molly, retired Nov 23) launching beside the host tick; the failures were not the build's. The attempt counts start again (steps s1, s7 too).",
+     "at": "2026-11-23T20:22:32.695Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s1--earl, shared account login)",
+     "at": "2026-11-23T20:23:31.702Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--s7--earl, shared account login)",
+     "at": "2026-11-23T20:24:32.549Z"
     }
    ],
    "approvals": [
@@ -204739,13 +204751,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 14,
+     "rev": 17,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T01:43:43.192Z",
-     "statusAt": "2026-11-22T01:43:43.135Z",
+     "updatedAt": "2026-11-23T20:23:22.781Z",
+     "statusAt": "2026-11-23T20:23:22.702Z",
      "statusBy": "orchestrator",
-     "attempt": 5,
-     "failedFrom": "sending",
+     "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
@@ -204844,12 +204855,35 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s1 already has a live session: tmux axf-orchestrator-settings-collapsible-split--s1--joey; claude pid 813564; lock axf-orchestrator-settings-collapsible-split--s1--joey (heartbeat 2026-11-22T01:38:19.418Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-23T20:22:18.680Z",
+       "by": "pipeline-bring-up",
+       "attempt": 1,
+       "why": "Retry by pipeline-bring-up: its steps s1 and s7 were refused five times by a second, stale dispatcher (axf-molly, retired Nov 23) launching beside the host tick; the failures were not the build's",
+       "reset": true
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-23T20:22:57.103Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-23T20:23:22.702Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s1--earl on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s1",
-     "branch": "claude/orchestrator-settings-collapsible-split--s1"
+     "branch": "claude/orchestrator-settings-collapsible-split--s1",
+     "tmux": "axf-orchestrator-settings-collapsible-split--s1--earl"
     },
     {
      "id": "s2",
@@ -205267,13 +205301,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 10,
      "createdAt": "2026-11-13T18:42:36.411Z",
-     "updatedAt": "2026-11-22T03:48:05.409Z",
-     "statusAt": "2026-11-22T02:07:53.615Z",
+     "updatedAt": "2026-11-23T20:24:20.048Z",
+     "statusAt": "2026-11-23T20:24:19.962Z",
      "statusBy": "orchestrator",
-     "attempt": 5,
-     "failedFrom": "sending",
+     "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
@@ -205457,16 +205490,35 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "launch on hulu0241: refused: orchestrator-settings-collapsible-split--s7 already has a live session: lock axf-orchestrator-settings-collapsible-split--s7--gina (heartbeat 2026-11-22T01:49:32.245Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-23T20:22:27.261Z",
+       "by": "pipeline-bring-up",
+       "attempt": 1,
+       "why": "Retry by pipeline-bring-up: its steps s1 and s7 were refused five times by a second, stale dispatcher (axf-molly, retired Nov 23) launching beside the host tick; the failures were not the build's",
+       "reset": true
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-23T20:23:48.093Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-23T20:24:19.962Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-orchestrator-settings-collapsible-split--s7--earl on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/orchestrator-settings-collapsible-split--s7",
      "branch": "claude/orchestrator-settings-collapsible-split--s7",
-     "tmux": "axf-orchestrator-settings-collapsible-split--s7--gina",
-     "tried": [
-      "hulu0241"
-     ]
+     "tmux": "axf-orchestrator-settings-collapsible-split--s7--earl"
     },
     {
      "id": "s8",
@@ -205789,7 +205841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 283,
+   "rev": 292,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205820,10 +205872,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-22T22:03:02.165Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
-   "failedFrom": "building",
+   "statusAt": "2026-11-23T20:22:32.695Z",
+   "statusBy": "pipeline-bring-up",
+   "attempt": 1,
    "statusLog": [
     {
      "status": "failed",
@@ -205922,6 +205973,14 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "building did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-23T20:22:32.695Z",
+     "by": "pipeline-bring-up",
+     "attempt": 1,
+     "why": "Retry by pipeline-bring-up: its steps s1 and s7 were refused five times by a second, stale dispatcher (axf-molly, retired Nov 23) launching beside the host tick; the failures were not the build's",
+     "reset": true
     }
    ]
   },
@@ -301305,7 +301364,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -301313,7 +301372,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-23T16:14:31.306Z",
+   "updatedAt": "2026-11-23T16:30:38.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -301474,8 +301533,19 @@
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T16:25:01.179Z",
-     "by": "watchdog"
+     "at": "2026-11-23T16:25:01.179Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-23T16:28:01.872Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-23T16:30:01.706Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (",
+     "at": "2026-11-23T18:36:54.805Z"
     }
    ],
    "approvals": [],
@@ -301566,7 +301636,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:46:42.192Z"
+     "updatedAt": "2026-11-17T21:46:42.192Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
@@ -301593,7 +301676,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:47:24.780Z"
+     "updatedAt": "2026-11-17T21:47:24.780Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
@@ -301617,7 +301713,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:52:04.095Z"
+     "updatedAt": "2026-11-17T21:52:04.095Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
@@ -301642,7 +301751,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:53:52.495Z"
+     "updatedAt": "2026-11-17T21:53:52.495Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s5",
@@ -301667,7 +301789,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:56:46.032Z"
+     "updatedAt": "2026-11-17T21:56:46.032Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s6",
@@ -301693,7 +301828,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:59:06.980Z"
+     "updatedAt": "2026-11-17T21:59:06.980Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s7",
@@ -301718,7 +301866,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:00:51.151Z"
+     "updatedAt": "2026-11-17T22:00:51.151Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s8",
@@ -301744,7 +301905,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:02:41.631Z"
+     "updatedAt": "2026-11-17T22:02:41.631Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s9",
@@ -301771,7 +301945,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:07:24.297Z"
+     "updatedAt": "2026-11-17T22:07:24.297Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s10",
@@ -301796,7 +301983,20 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:14:09.003Z"
+     "updatedAt": "2026-11-17T22:14:09.003Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s11",
@@ -301822,11 +302022,24 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:15:44.809Z"
+     "updatedAt": "2026-11-17T22:15:44.809Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s12",
-     "uid": "st-mwr60im11l4qa7",
+     "uid": "st-mwthfg1q1wb3vt",
      "title": "",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #825 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/fix-refreshing-console-jumps-back, get every check green and push; the PR is #825.",
      "model": "Opus",
@@ -301844,7 +302057,20 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-22T01:35:33.432Z",
-     "updatedAt": "2026-11-22T01:35:33.432Z"
+     "updatedAt": "2026-11-23T16:30:20.635Z",
+     "statusAt": "2026-11-23T16:30:35.478Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T16:30:35.478Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -301855,7 +302081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301886,7 +302112,27 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-23T16:30:38.077Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-23T16:30:01.706Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-23T16:30:38.077Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "12 steps for 6 slots"
+    }
+   ]
   },
   {
    "id": "remove-amberx-app-code-once-phone",
