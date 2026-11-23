@@ -40,7 +40,7 @@ function RuleRow({ t, rule, index, busy, send }: { t: Triage; rule: TriageRule; 
         <Switch label={`${rule.title}: on`} checked={rule.enabled} disabled={busy} onChange={(v) => void send({ op: 'rule', id: rule.id, enabled: v }, `${rule.title} is ${v ? 'on' : 'off'}.`)} />
       </div>
       {fields.length > 0 && (
-        <div className="axp-gate__status axp-gate__arule-wide">
+        <div className="axp-gate__triage axp-gate__arule-wide">
           {fields.map((f) => (
             <div key={f.key} className="axp-gate__stat" data-axf-target={`${address}.${f.key}`}>
               {f.kind === 'toggle'
@@ -131,7 +131,7 @@ export function ModelTriageTab({ refreshSec }: { refreshSec: number }) {
       )}
       <Container title="The gate" icon="shield">
         <p className="axp-gate__sub">Every build step, emergency build, hand build and lander fix session gets its model here, on the VPS. The orchestrator only sends the work.</p>
-        <div className="axp-gate__status">
+        <div className="axp-gate__triage">
           <div className="axp-gate__stat" data-axf-target="setting:vps.modelTriage.enabled">
             <Switch label="Model triage gate" checked={c.enabled} disabled={locked} hint="Off: every lane gets the default model. Explicit overrides still win."
               onChange={(v) => void send({ op: 'enabled', enabled: v }, `The gate is ${v ? 'on' : 'off'}.`)} />

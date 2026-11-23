@@ -1,5 +1,5 @@
 /**
- * Screenshots of Builds → VPS Configuration (the gate plugin): the Build cap, Approval rules and Passes tabs,
+ * Screenshots of Builds → VPS Configuration (the gate plugin): the Build cap, Model triage, Approval rules and Passes tabs,
  * desktop and phone, against `vite preview` of dist/ with the routes answered from a fixed fixture (no VPS, no hub).
  * Each shot opens its tab through console-control (`view:vps-configuration`, then `view:gate/tab:gate.tabs=<tab>`),
  * so it also proves the screen's new address and the tab addresses resolve.
@@ -16,6 +16,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { stage, view } from '../plugins/gate/web/approval-core.mjs'; // axf-plugin:gate
+import * as triage from '../../../framework/core/model-triage.mjs';
 
 const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = join(APP, '../..');
@@ -56,11 +57,25 @@ const TABLE = { veto: { defaultSeconds: 90, min: 10, max: 1800 }, services: [
 ] };
 const DRAFT = { services: stage({}, TABLE, { op: 'add', service: 'vps', rule: { match: 'build_*', policy: 'allow' } }), by: 'paulie', at: inMin(-4) };
 const APPROVALS = { ...view({ hub: 'https://hub.invalid', available: true, table: TABLE }, DRAFT), canSave: true };
+// model-triage@1 as the VPS answers it (framework/cli/model-triage.mjs status): the starting rules and a few decisions the engine itself gave
+const decided = (where, work, min, ctx = {}) => ({ ...triage.normDecision(triage.decide(work, null, { at: inMin(-min), ...ctx })), ...where });
+const TRIAGE = {
+  ok: true, $axf: triage.SCHEMA, config: { ...triage.defaultConfig(), rev: 3, at: inMin(-90), by: 'console:brett' }, registry: triage.REGISTRY, path: '/projects/amberx-axf/_data/model-triage/config.json', stored: true,
+  approvalRequired: false, approvalSource: 'builds.fableUpgradeApproval default (off)', buildPin: null,
+  decisions: [
+    decided({ build: 'plan-studio-live-steps', step: 's3', title: 'Plan Studio live steps' }, { text: 'Rename the step labels in the outline', files: ['apps/console-web/plugins/plan-studio-2/web/ui.tsx'], suggested: 'Opus', suggestedBy: 'splitter' }, 2),
+    decided({ build: 'plan-studio-live-steps', step: 's2', title: 'Plan Studio live steps' }, { text: 'Read the steps from the builds store', files: ['framework/plan/builds-store-core.mjs'] }, 2),
+    decided({ build: 'plan-studio-live-steps', step: 's1', title: 'Plan Studio live steps' }, { text: 'Add the sync button', files: ['apps/console-web/plugins/plan-studio-2/web/index.tsx'], priorFailures: 1, current: 'Opus' }, 3),
+    decided({ name: 'lander-fix-pr912-1', build: 'console-tabs-plugins', title: 'Fix PR #912 so it can land' }, { lane: 'lander-fix', kind: 'ci-red', text: 'CI is red on 7e6a5f9' }, 14),
+    decided({ build: 'hotfix-console-deploy', step: 's1', title: 'Hotfix: console deploy' }, { lane: 'emergency', text: 'Fix the deploy script', files: ['deploy/install-console.sh'], pin: { model: 'Fable', by: 'Brett' } }, 31),
+    decided({ name: 'gate-rules-ui-rebuild', title: 'Hand build: Gates and Rules UI rebuild' }, { lane: 'hand', text: 'Tidy the tab labels and spacing', requested: 'fable' }, 55),
+  ],
+};
 const GATE_SETTINGS = { ok: true, settings: { refreshSec: 600, historySize: 2000, defaultTab: 'rules' } };
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 const ONLY = (process.env.VPS_SHOTS_TABS || '').split(',').filter(Boolean);
-const STATE = { 'build-cap': 'setting:vps.buildCap.stepsInParallel', approvals: 'setting:vps.approvals.vps.1.match', passes: 'setting:vps.passes.maxMinutes' };
-const TABS = [['build-cap', '[data-axf-toolbar="gate.build-cap"]'], ['approvals', '[data-axf-toolbar="gate.approvals"]'], ['passes', '#vps-pass-start, [id$="vps-pass-start"]']].filter(([t]) => !ONLY.length || ONLY.includes(t));
+const STATE = { 'build-cap': 'setting:vps.buildCap.stepsInParallel', 'model-triage': 'setting:vps.modelTriage.default', approvals: 'setting:vps.approvals.vps.1.match', passes: 'setting:vps.passes.maxMinutes' };
+const TABS = [['build-cap', '[data-axf-toolbar="gate.build-cap"]'], ['model-triage', '[data-axf-toolbar="gate.model-triage"]'], ['approvals', '[data-axf-toolbar="gate.approvals"]'], ['passes', '#vps-pass-start, [id$="vps-pass-start"]']].filter(([t]) => !ONLY.length || ONLY.includes(t));
 
 const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: process.env.VPS_SHOTS_DEBUG ? 'inherit' : 'ignore' });
 process.on('exit', () => { try { server.kill('SIGTERM'); } catch { /* gone */ } });
@@ -84,6 +99,7 @@ try {
         if (u.pathname === '/api/me') return json(ME);
         if (u.pathname === '/api/plugins/gate/build-cap') return json(CAP); // axf-plugin:gate
         if (u.pathname === '/api/plugins/gate/settings') return json(GATE_SETTINGS); // axf-plugin:gate
+        if (u.pathname === '/api/plugins/gate/model-triage') return json(TRIAGE); // axf-plugin:gate
         if (u.pathname === '/api/plugins/gate/approval-rules') return json(APPROVALS); // axf-plugin:gate
         if (u.pathname === '/api/plugins/token-control/pass/status') return json(PASSES); // axf-plugin:token-control
         if (u.pathname === '/api/plugins/token-control/pass/settings') return json({ ok: true, maxMinutes: 120, timeZone: 'America/New_York' }); // axf-plugin:token-control
@@ -125,6 +141,14 @@ try {
       const file = join(OUT, `vps-configuration-${tab}-${device}.png`);
       await page.screenshot({ path: file, fullPage: !mobile });
       shots.push(file);
+      if (tab === 'model-triage') {
+        // the decision log sits under the rules: a second shot with it in view
+        await page.locator('[data-decision]').first().scrollIntoViewIfNeeded().catch(() => { /* no decisions drawn */ });
+        await sleep(500);
+        const more = join(OUT, `vps-configuration-${tab}-decisions-${device}.png`);
+        await page.screenshot({ path: more });
+        shots.push(more);
+      }
       await ctx.close();
     }
   }
