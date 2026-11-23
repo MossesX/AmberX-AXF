@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10365,
- "updatedAt": "2026-11-23T16:25:41.172Z",
+ "rev": 10366,
+ "updatedAt": "2026-11-23T16:25:59.033Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -301809,6 +301809,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-23T16:14:31.306Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-23T16:25:01.179Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -302189,7 +302194,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
