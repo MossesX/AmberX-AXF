@@ -159,6 +159,36 @@ final class OverlayRules {
         }
     }
 
+    // ---- a tap on the toolbar (Brett, Nov 23 2026: "it should bring me to the approvals, not to the console") --------
+
+    /**
+     * The verb a tap on the toolbar's button runs: fold when the overlay is expanded; otherwise open the approvals page
+     * while something waits, and the console when nothing does.
+     */
+    static String tapVerb(String now, int waiting) {
+        if (EXPANDED.equals(now)) return OverlayContract.COLLAPSE;
+        return waiting > 0 ? OverlayContract.APPROVALS_VERB : OverlayContract.EXPAND;
+    }
+
+    /** True when {@code url} is axHub's approvals page (the list, or one approval under it). */
+    static boolean onApprovalsPage(String url) {
+        String u = url == null ? "" : url, a = OverlayContract.APPROVALS_URL;
+        return u.equals(a) || u.startsWith(a + "/") || u.startsWith(a + "?") || u.startsWith(a + "#");
+    }
+
+    /** The page the approvals verb loads: axHub's approvals page, or null when it already shows (it keeps its place). */
+    static String approvalsPage(String currentUrl) {
+        return onApprovalsPage(currentUrl) ? null : OverlayContract.APPROVALS_URL;
+    }
+
+    /**
+     * The page a tap loads when nothing waits: the console when an earlier tap left the approvals page showing, else
+     * null (whatever page shows stays).
+     */
+    static String consolePage(String currentUrl) {
+        return onApprovalsPage(currentUrl) ? ShellRules.HOME : null;
+    }
+
     // ---- items: what waits, one by one (ported from AmberX's ApprovalOverlayRules, overlay-toolbar-v2) ------------
 
     /** One thing waiting: a held command (runs at {@link #runsAt} unless stopped) or an approval (waits until decided). */
@@ -177,6 +207,8 @@ final class OverlayRules {
         }
 
         boolean held() { return OverlayContract.HELD_KIND.equals(kind); }
+        /** The hub's own id (the item id without its {@code held:} / {@code approval:} prefix): what the console opens. */
+        String ref() { return id.substring(id.indexOf(':') + 1); }
         boolean timed() { return held() && !shelved && runsAt > 0; }
     }
 
@@ -258,6 +290,46 @@ final class OverlayRules {
         if (items.isEmpty()) return TOOLBAR;
         if (APPROVALS.equals(now)) return APPROVALS; // already open: stays open while anything waits
         return popsFor(c, items, seen) ? APPROVALS : TOOLBAR;
+    }
+
+    // ---- the card: a new item pops the console's own approval card over whatever is on screen ---------------------
+
+    /** How long after its countdown a held command still shows ("Running now") when the hub can't be read. */
+    static final long RAN_GRACE_MS = 5_000;
+    /** How long the overlay stays open after the last item of a card it popped by itself is decided or has run. */
+    static final long FOLD_AFTER_MS = 3_000;
+
+    /**
+     * The item whose card pops: the first one that wasn't shown before and that the {@code expand} setting lets
+     * through, or null. The card is the console's own (Approve / Deny, the countdown), so the tap on it is Brett's.
+     */
+    static Item cardFor(Config c, List<Item> items, Set<String> seen) {
+        for (Item i : items) if (!seen.contains(i.id) && opensFor(c, i)) return i;
+        return null;
+    }
+
+    /**
+     * The state after a reading of the hub's list. A new item pops the card: the overlay expands onto the console
+     * (over whatever app is in front) at once, not when the toolbar is tapped. With the console already on screen
+     * ({@code pageOnScreen}: the app is in front) the page shows its own card and the toolbar opens its bar.
+     */
+    static String afterFeed(String now, Config c, List<Item> items, Set<String> seen, boolean pageOnScreen) {
+        if (EXPANDED.equals(now)) return EXPANDED;
+        if (items.isEmpty()) return TOOLBAR;
+        if (cardFor(c, items, seen) != null) return pageOnScreen ? APPROVALS : EXPANDED;
+        return APPROVALS.equals(now) ? APPROVALS : TOOLBAR;
+    }
+
+    /** True when an overlay that expanded by itself for a card folds back: nothing waits any more. */
+    static boolean foldsWhenClear(String now, boolean expandedForCard, List<Item> items) {
+        return EXPANDED.equals(now) && expandedForCard && items.isEmpty();
+    }
+
+    /** The items still waiting at {@code now}: a held command whose countdown ended {@link #RAN_GRACE_MS} ago has run. */
+    static List<Item> unexpired(List<Item> items, long now) {
+        List<Item> out = new ArrayList<>();
+        if (items != null) for (Item i : items) if (!i.timed() || now <= i.runsAt + RAN_GRACE_MS) out.add(i);
+        return out;
     }
 
     /** Drops ids from {@code seen} that no longer wait, so a later call with the same id pops the bar again. */

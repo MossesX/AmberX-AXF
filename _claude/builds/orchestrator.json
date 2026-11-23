@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-23T09:50:11.769Z",
+ "updatedAt": "2026-11-23T16:25:59.033Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -52,6 +52,31 @@
     "from": "report",
     "addenda": []
    },
+   "steps": []
+  },
+  {
+   "id": "plan-studio-2-outline-kinds-notebooks",
+   "title": "Plan Studio 2.0: outline numbers + clearer item types",
+   "category": "",
+   "detail": "Brett, Nov 20: when he opens a plan there are no numbers. Add outline numbering on every row (1, 1.1, 1.2, 2 ...), shown in the tree and usable by voice ('open step 2.3'). Make the item types obvious: steps (checkbox), plans/sections (folder), notes (paper) - label or legend so he knows which is which. Every step on Fable.",
+   "status": "archived",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-23T16:23:16.360Z",
+   "updatedAt": "2026-11-23T16:23:50.180Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: plan-studio-2-0-outline-numbers--izjw (Plan Studio 2.0: outline numbers + clearer item types). Passed plan-build@1; sent as one Pipeline 2.0 build with 21 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-23T16:23:16.360Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -214,6 +239,7 @@
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
    "status": "failed",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -680,6 +706,7 @@
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
    "status": "failed",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -1094,6 +1121,7 @@
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
    "status": "archived",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
@@ -1431,6 +1459,7 @@
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
    "status": "failed",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -1809,6 +1838,7 @@
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
    "status": "failed",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -2086,6 +2116,7 @@
    "detail": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).\n\nThe flow itself is in the section \"Brett's flow\" below; it wins over anything here.\n\n## Status lifecycle (forward-only)\n- Everything is status; nothing goes back.\n- All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).\n- Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.\n\n## Builds table\n- One table, driven by each build's status, not its location. No tabs at all.\n- Purely filters, carried on the toolbar.\n- Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.\n\n## Fail-safes / redundancy (self-healing, not paging Brett)\n- Multiple independent ways to catch stalls and trigger fixes.\n- Layer 1: the pipeline tick does the normal work.\n- Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).\n- Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.\n- Never fail silently.\n\n## Landing\n- Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.\n\n## Related\n- Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).\n- Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.\n- Visual flow diagrams in Plan Studio 2.0.\n\nOne-PR size cap: Brett, Nov 18 2026 (voice): bundling every step into one PR is better (one CI run instead of each PR waiting, re-pulling main and rerunning CI after the last one lands), as long as it isn't huge.\n\nSize cap: over a certain size, the pieces are combined into two PRs, or three, or however many the size calls for (not one PR per step). Those PRs then land one at a time: each pulls in main, runs CI and merges in turn, etc. Threshold not set yet.\n\nWorktrees cut before launch: Brett, Nov 19 2026 (voice): worktrees are cut BEFORE launch, never at launch. Each step's worktree is created and pulls main during the pending / pulling-main stage, so when a slot frees up, launch only starts the session. Launch must never time out on cutting a worktree under load.",
    "status": "archived",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
@@ -3770,6 +3801,7 @@
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
    "status": "archived",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
@@ -136375,53 +136407,43 @@
     },
     {
      "text": "Watchdog: build stuck at building (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-22T16:51:01.749Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:51:01.749Z"
     },
     {
      "text": "Watchdog: build stuck at building (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-22T16:55:01.946Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:55:01.946Z"
     },
     {
      "text": "Watchdog: build failed at building, attempt 4: building did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-22T16:56:01.645Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:56:01.645Z"
     },
     {
      "text": "Watchdog: build retried at building, attempt 5.",
-     "at": "2026-11-22T16:57:01.540Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:57:01.540Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T16:58:01.516Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:58:01.516Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-22T16:58:01.516Z",
-     "by": "watchdog"
+     "at": "2026-11-22T16:58:01.516Z"
     },
     {
      "text": "Watchdog: build stuck at building (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-22T21:58:02.019Z",
-     "by": "watchdog"
+     "at": "2026-11-22T21:58:02.019Z"
     },
     {
      "text": "Watchdog: build stuck at building (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-22T22:02:01.575Z",
-     "by": "watchdog"
+     "at": "2026-11-22T22:02:01.575Z"
     },
     {
      "text": "Watchdog: build failed at building, attempt 5: building did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-22T22:03:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-22T22:03:02.165Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-22T22:04:01.458Z",
-     "by": "watchdog"
+     "at": "2026-11-22T22:04:01.458Z"
     }
    ],
    "approvals": [
@@ -148510,8 +148532,9 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
@@ -173410,8 +173433,7 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced ",
-     "at": "2026-11-22T06:00:31.122Z",
-     "by": "store"
+     "at": "2026-11-22T06:00:31.122Z"
     }
    ],
    "approvals": [
@@ -180884,8 +180906,9 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
+   "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/rebuild-fresh-main-hide-any-asset",
@@ -181025,23 +181048,29 @@
    },
    "steps": [
     {
-     "id": "s18",
+     "id": "s1",
      "text": "- Read the old attempts' reports in _claude/builds/reports/ (assets-menu-hide-any-asset*) and diff the two old branches against main (git log/diff only, no merge). Write the decisions and what to reuse into _claude/builds/reports/rebuild-fresh-main-hide-any-asset.md (draft section 'Prior attempts').\n- Help + glossary: add a help entry for hiding assets and the Hidden list, descriptions on the new dialog, menu and CLI header, and a plugin/feature status row in framework/catalog/status.json. Run tracker.mjs and catalog.mjs --check.",
      "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
      "estimate": "15 min",
-     "files": [],
+     "files": [
+      "_claude/builds/reports/",
+      "_claude/builds/reports/rebuild-fresh-main-hide-any-asset.md",
+      "apps/console-web/src/help/",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwraqw7k01muzi",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "note": "Part 1: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mwr9h9km1lxuy6",
+     "createdAt": "2026-11-22T03:12:33.718Z"
     },
     {
      "id": "s2",
@@ -181063,7 +181092,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt9486020kba",
+     "uid": "st-mwr9h9km1mfksc",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181085,7 +181114,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948603x2qa",
+     "uid": "st-mwr9h9km1njq2a",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181109,7 +181138,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt9486046sj8",
+     "uid": "st-mwr9h9km1ou21p",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181132,7 +181161,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948605bvhg",
+     "uid": "st-mwr9h9km1p5bjw",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181156,7 +181185,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948606t1rz",
+     "uid": "st-mwr9h9km1ql7yt",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181177,7 +181206,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948607le5m",
+     "uid": "st-mwr9h9km1rwx4s",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181200,7 +181229,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948608zxlg",
+     "uid": "st-mwr9h9kn1s5dty",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181223,7 +181252,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt948609ml1a",
+     "uid": "st-mwr9h9kn1tx171",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181245,7 +181274,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwkt94860arknk",
+     "uid": "st-mwr9h9kn1udxww",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181267,8 +181296,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwkt94860bhoc9",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn1vpg3v",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181290,8 +181319,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwkt94860cduo9",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn1wtuu8",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
@@ -181314,12 +181343,12 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwkt94860dzofs",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn1xz2c1",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
-     "id": "s15",
+     "id": "s14",
      "text": "UI Review: take desktop + phone shots of the right-click Hide, the Assets menu and the Hidden list in the console. Submit at least 3 Hidden-list options as dialog assets through review.mjs submit --choices with the group named after the build.",
      "model": "Opus",
      "why": "",
@@ -181336,12 +181365,12 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwkt94860fgyre",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn1yyqz0",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
-     "id": "s16",
+     "id": "s15",
      "text": "Tests and finish: run check-hidden-assets.mts, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, the server tests and tracker --check. Finish _claude/builds/reports/rebuild-fresh-main-hide-any-asset.md (how each feature is reached: UI, REST, MCP, CLI, voice), add a THREADS.md row, open the PR, and mark the two old builds (claude/assets-menu-hide-any-asset-visible, -hidden-list) archived in the orchestrator.",
      "model": "Opus",
      "why": "",
@@ -181360,12 +181389,12 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwkt94860g81z7",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn1zlur6",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },
     {
-     "id": "s17",
+     "id": "s16",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #824 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/rebuild-fresh-main-hide-any-asset, get every check green and push; the PR is #824.",
      "model": "Opus",
      "why": "watchdog ladder: fresh-session",
@@ -181379,8 +181408,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-22T05:06:25.451Z",
-     "note": "",
-     "uid": "st-mwr5njfd1ljv2f",
+     "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
+     "uid": "st-mwr9h9kn20bv6d",
      "createdAt": "2026-11-22T01:25:27.959Z"
     }
    ]
@@ -194923,7 +194952,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -195328,10 +195357,10 @@
      "createdAt": "2026-11-18T01:13:29.208Z"
     },
     {
-     "id": "s31",
+     "id": "s16",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #819 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/terminal-main-tab-streaming-console-s, get every check green and push; the PR is #819.",
      "model": "Opus",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -195343,8 +195372,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwraqw7l02d8on",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "uid": "st-mwr7skh81la9rr",
+     "createdAt": "2026-11-22T02:25:21.835Z"
     }
    ]
   },
@@ -199149,7 +199178,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200039,10 +200068,10 @@
      "createdAt": "2026-11-17T21:34:10.438Z"
     },
     {
-     "id": "s57",
+     "id": "s29",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #829 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/flagship-professional-skin-covering-2, get every check green and push; the PR is #829.",
      "model": "Opus",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -200054,8 +200083,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwraqw7n03ha0h",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "uid": "st-mwr85iuf1ll74n",
+     "createdAt": "2026-11-22T02:35:26.247Z"
     }
    ]
   },
@@ -200064,7 +200093,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200072,7 +200101,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-23T09:48:32.076Z",
+   "updatedAt": "2026-11-23T16:14:31.306Z",
    "builtAt": "",
    "notes": [
     {
@@ -200226,6 +200255,15 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-23T09:48:32.076Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-23T16:14:31.306Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-23T16:25:01.179Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -202527,7 +202565,7 @@
    "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
    "category": "",
    "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
@@ -202961,10 +202999,10 @@
      "createdAt": "2026-11-17T22:55:15.780Z"
     },
     {
-     "id": "s35",
+     "id": "s18",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #831 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/auto-lander-never-wait-missing-ui-review, get every check green and push; the PR is #831.",
      "model": "Fable",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -202976,8 +203014,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwraqw7o04i5hn",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "uid": "st-mwr8ibzz1l8adg",
+     "createdAt": "2026-11-22T02:45:23.902Z"
     }
    ]
   },
@@ -208883,7 +208921,7 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -209299,10 +209337,10 @@
      "createdAt": "2026-11-18T12:25:38.639Z"
     },
     {
-     "id": "s31",
+     "id": "s16",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 3 days: PR #843 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/plan-studio-2-open-button-working-deep, get every check green and push; the PR is #843.",
      "model": "Opus",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -209314,8 +209352,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwraqw81056t3d",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "uid": "st-mwr9kxz01lyt0t",
+     "createdAt": "2026-11-22T03:15:25.307Z"
     }
    ]
   },
@@ -210079,7 +210117,7 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -210298,10 +210336,10 @@
      "createdAt": "2026-11-18T12:32:10.647Z"
     },
     {
-     "id": "s15",
+     "id": "s8",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 3 days: PR #844 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/every-plugin-gets-own-default-toolbar, get every check green and push; the PR is #844.",
      "model": "Opus",
-     "why": "",
+     "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
      "estimate": "15 min",
@@ -210313,8 +210351,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwraqw8207xzuz",
-     "createdAt": "2026-11-22T03:48:01.521Z"
+     "uid": "st-mwr9xwmm1lsqgw",
+     "createdAt": "2026-11-22T03:25:30.093Z"
     }
    ]
   },

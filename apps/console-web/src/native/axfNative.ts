@@ -26,7 +26,7 @@ import { controlRegistry } from '../axf/react';
 import { loader } from '../pluginLoader';
 import { consoleAlertsTransport } from '../alertsTransport';
 import {
-  APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
+  APPROVALS_TARGET, approvalsOpenSpec, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
   DIALOG_ALERT_KEY, DIALOG_UNSEEN, PHONE_APP_ADDRESS, dialogAlert, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
@@ -183,8 +183,8 @@ export function installNative(rt: AxfRuntime): () => void {
   // a newer console is live while this page is on screen: the console's own "Reload for the new version" bar
   // (off screen the shell reloads by itself)
   offs.push(on('shell.update', () => loader.markStale()));
-  // the approval bar's link and the overlay's "approvals" verb: the approvals list opens in this page (no reload)
-  offs.push(on('approvals.open', () => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(APPROVALS_TARGET); }));
+  // a card the overlay popped for one call (`id`): that approval opens in this page (no reload)
+  offs.push(on('approvals.open', (d) => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(approvalsOpenSpec(d)); }));
   return () => offs.forEach((f) => f());
 }
 

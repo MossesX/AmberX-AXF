@@ -45,6 +45,9 @@ public class OverlayContractTest {
     @Test public void bridgeMethodsAndEvents() {
         assertEquals(Arrays.asList("overlay", "overlayState", "overlayConfigure", "overlayApprovals", "overlayItems"), OverlayContract.METHODS);
         assertEquals(Arrays.asList("overlay", "overlay.moved", "approvals.open", "permissions"), OverlayContract.EVENTS);
+        // approvals.open: the list, or the card of one call (the hub's id)
+        assertEquals("{\"target\":\"approvals.view\"}", OverlayContract.openJson(null));
+        assertEquals("{\"target\":\"approvals.view\",\"id\":\"abc\"}", OverlayContract.openJson("abc"));
     }
 
     @Test public void settingsAreTheConsolesApprovalsBannerOnes() {

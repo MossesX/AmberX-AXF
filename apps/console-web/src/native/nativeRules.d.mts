@@ -5,6 +5,7 @@ export declare const OVERLAY_SETTINGS: readonly string[];
 export declare const WAITING_BADGE: 'approvals.waiting';
 export declare const PHONE_APP_ADDRESS: 'panel:phone-app';
 export declare const APPROVALS_TARGET: 'approvals.view';
+export declare function approvalsOpenSpec(data: unknown): string;
 export declare const THEME_TOKENS: readonly string[];
 export declare const SAFE_TOKENS: readonly string[];
 export declare const OVERLAY_VERBS: readonly string[];

@@ -49,6 +49,8 @@ final class WebHost {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
         s.setUserAgentString(s.getUserAgentString() + " AXFConsoleApp/" + BuildConfigInfo.version(c));
+        // the page keeps working while nothing shows it (it opens the approval card the moment the overlay pops)
+        web.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, false);
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new Chrome());
         NativeBridge.install(web);
