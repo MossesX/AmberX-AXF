@@ -254,6 +254,7 @@ ok(client.get("/api/console/recent").json()["items"][0]["how"] == "woke via Ambe
 # a console that reconnects within the wake delay: after reconnect, nobody woken
 client.post("/api/console/bye", json={"client": "woke-0001"})
 cc.WAKE_AGAIN_S = 0
+cc.WAKE_AFTER_S = 1.5  # room for the hello below on a slow runner
 res = {}
 t = threading.Thread(target=lambda: res.update(client.post("/api/console/open", json={"screen": "home"}).json()))
 t.start()
@@ -261,8 +262,9 @@ wait_for(lambda: any(x["state"] == "queued" for x in client.get("/api/console/qu
 client.post("/api/console/hello", json={"client": "woke-0001", "catalog": CATALOG, "used": True})
 t.join(15)
 eq(res.get("delivery", {}).get("how"), "after reconnect", f"queued then delivered on reconnect ({res})")
-time.sleep(0.4)
+time.sleep(1.8)
 eq(len(WOKEN), 1, "no wake when a console came back in time")
+cc.WAKE_AFTER_S = 0.3
 
 # wake off: queued, nobody woken; the call gives up waiting with queued (still delivered later)
 eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
@@ -270,7 +272,7 @@ eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": 
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
 ok(r["ok"] and r["queued"] and r["delivery"]["how"] == "queued", f"still nobody after the wait: answered queued ({r})")
-ok("queued, not open yet" in r["message"], "the answer says it is waiting, not opened")
+ok("not shown yet" in r["message"] and "stays queued" in r["message"], "the answer says it is waiting, not opened")
 time.sleep(0.4)
 eq(len(WOKEN), 1, "wake off: AmberX not asked")
 ok("off" in r["delivery"]["wake"]["message"] and "off" in r["message"], f"the answer says waking is off ({r['delivery']})")
@@ -399,8 +401,8 @@ fake_cx = types.ModuleType("console_context")
 fake_cx.raise_alert = lambda a: alerts.append(a) or {}
 fake_cx.resolve_alerts = lambda k: resolved.append(k)
 sys.modules["console_context"] = fake_cx
-cc._fallback_alert("cq-1", "couldn't reach axHub")
-ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1"), "the fallback alert is loud and opens the waiting command")
+cc._fallback_alert({"id": "cq-1", "open": "view:plan-studio"}, "couldn't reach axHub")
+ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1&axf-open=view:plan-studio"), "the fallback alert is loud and opens the waiting command on its screen")
 cc._fallback_clear()
 eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
@@ -475,7 +477,7 @@ r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "ac
 eq((r["ok"], r["status"], r["queued"], r["delivery"]["tried"]), (True, "pending", True, ["sleep-0001"]), f"truthful: pending, queued, who was tried ({r.get('delivery')})")
 ok("not shown yet" in r["message"], f"the answer never says opened ({r['message']})")
 ok(wait_for(lambda: len(WOKEN) > woken_before, 5), "AmberX asked to open the console straight after the tries")
-ok(WOKEN[-1][0].endswith(f"?axf-cmd={r['delivery']['id']}"), "the wake link carries the queued command")
+eq(WOKEN[-1][0], f"https://console.amberxai.com/?axf-cmd={r['delivery']['id']}&axf-open=view:plan-studio", "the wake link carries the queued command and the screen it lands on")
 # the sleeping tab wakes in time and does it after all: its late ack settles the queued copy (it never runs twice)
 mid = sleepy_got[-1]["id"]
 eq(client.post("/api/console/ack", json={"client": "sleep-0001", "id": mid, "ok": True, "message": "opened Plan Studio"}).json().get("late"), True, "a late ack is recorded")
