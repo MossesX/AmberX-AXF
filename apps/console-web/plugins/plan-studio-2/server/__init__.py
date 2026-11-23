@@ -258,7 +258,7 @@ async def orchestrate(request: Request) -> dict[str, Any]:
     if svc is None or not hasattr(svc, "act"):
         raise HTTPException(503, "The build orchestrator is switched off or not installed: its actions are not available.")
     res = svc.act(str(target.get("build") or ""), action, by=_by(request), why=str(body.get("why") or "")[:300], step=str(target.get("step") or ""))
-    run({"op": "sync", "by": _by(request)})  # a cancel gives the planning steps back at once
+    run({"op": "sync", "fresh": True, "by": _by(request)})  # read the build again: a cancel gives the planning steps back at once
     return {"ok": True, "build": target.get("build"), "step": target.get("step"), "action": action, "status": res.get("status"),
             "label": res.get("label"), "held": res.get("held"), "say": res.get("say") or "Done."}
 

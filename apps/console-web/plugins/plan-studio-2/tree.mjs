@@ -29,6 +29,7 @@
  *   … history <item>                                              the planning steps a send replaced (kept beside the tree)
  *   … restore-steps <item> [<entry id>]                           bring those planning steps back (not while it is locked)
  *   … sync                                                        bring the tree in line with the builds store now
+ *   … refresh-builds                                              read the sent builds from the builds store again (the cache)
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
@@ -42,7 +43,8 @@
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
-import { chmodSync, chownSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { spawn } from 'node:child_process';
+import { chmodSync, chownSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
@@ -81,8 +83,59 @@ const historyFile = () => join(storeDir(), HISTORY_FILE);
 /** The planning steps sends replaced (plan-history@1): its own file, so a writer that only knows the tree cannot drop it. */
 export function loadHistory() { return live.normHistory(readJson(historyFile(), live.emptyHistory())); }
 export function saveHistory(history) { const h = live.normHistory(history); writeJson(historyFile(), h); handBack(historyFile()); return h; }
-/** The builds a sent plan is read from, or null when the builds store cannot be read (then nothing is laid over or synced). */
-export function storeBuilds() { try { return BS.loadStore().builds; } catch { return null; } }
+/* ------------------------------------------------------------------ the sent builds, read from the builds store */
+
+/*
+ * Reading the whole builds store costs seconds on a large one, and Plan Studio needs only the few builds that were sent
+ * from a plan. They are kept, trimmed to what the page shows, in a small cache file beside the tree:
+ *   - fresh for AXF_PLAN_BUILDS_TTL seconds (default 15; 0 = always read the store: tests);
+ *   - older than that, it is still served while one background process reads the store again (never two at once);
+ *   - the builds store's change event rewrites it at once when one of these builds moves (build-hook.mjs), and a send
+ *     or an orchestrator action rewrites it before answering.
+ * The cache is derived, never the truth: deleting it only costs the next read.
+ */
+export const BUILDS_CACHE = 'sent-builds.cache.json';
+const STALE_MAX_S = 120;
+const REFRESH_LOCK_MS = 90_000;
+const cacheFile = () => join(storeDir(), BUILDS_CACHE);
+const cacheTtl = () => { const n = Number(process.env.AXF_PLAN_BUILDS_TTL ?? 15); return Number.isFinite(n) && n >= 0 ? n : 15; };
+const slimStep = (x) => ({ id: x.id, title: x.title ?? '', text: x.text ?? '', status: x.status ?? '', done: !!x.done, ...(x.skip ? { skip: true } : {}), model: x.model ?? '', estimate: x.estimate ?? '', attempt: x.attempt ?? 1, failedFrom: x.failedFrom ?? '', statusAt: x.statusAt ?? '', ...(x.prNumber ? { prNumber: x.prNumber } : {}), statusLog: (x.statusLog ?? []).slice(0, 1).map((l) => ({ at: l.at })) });
+/** One build as Plan Studio needs it (what live-core reads, nothing else). */
+const slimBuild = (b) => ({ id: b.id, flow: b.flow, planRef: b.planRef, status: b.status, deleted: !!b.deleted, failedFrom: b.failedFrom ?? '', attempt: b.attempt ?? 1, statusAt: b.statusAt ?? '', createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '', profiles: b.profiles ?? [], ...(b.emergency ? { emergency: true } : {}), ...(b.pipeline?.heldAt ? { pipeline: { heldAt: b.pipeline.heldAt } } : {}), steps: (b.steps ?? []).map(slimStep) });
+function readCache() { try { const c = JSON.parse(readFileSync(cacheFile(), 'utf8')); return Array.isArray(c?.builds) && Number.isFinite(Date.parse(c.at)) ? c : null; } catch { return null; } }
+function writeCache(builds) {
+  try { const f = cacheFile(); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ $axf: 'plan-sent-builds-cache@1', at: new Date().toISOString(), builds })}\n`); renameSync(tmp, f); handBack(f); } catch { /* a cache: the next read pays instead */ } // axf-data: not data (a cache derived from the builds store; deleting it loses nothing)
+}
+/** Read the sent builds from the builds store now and keep them. → the builds, or null when the store cannot be read. */
+export function refreshBuilds() {
+  let all;
+  try { all = BS.loadStore().builds; } catch { return null; }
+  const builds = all.filter((b) => b.flow === P2.FLOW && b.planRef).map(slimBuild);
+  writeCache(builds);
+  return builds;
+}
+/** One background read of the builds store at a time (a lock folder; one left by a killed process is taken over). */
+function refreshInBackground() {
+  const lock = join(storeDir(), '.sent-builds.refresh');
+  try { mkdirSync(lock); } catch { try { if (Date.now() - statSync(lock).mtimeMs < REFRESH_LOCK_MS) return; rmSync(lock, { recursive: true, force: true }); mkdirSync(lock); } catch { return; } }
+  try { spawn(process.execPath, [fileURLToPath(import.meta.url), 'refresh-builds'], { detached: true, stdio: 'ignore', env: process.env }).unref(); } catch { try { rmSync(lock, { recursive: true, force: true }); } catch { /* next read */ } }
+}
+/**
+ * The builds a sent plan is read from (each trimmed to what the page shows), or null when the builds store cannot be
+ * read (then nothing is laid over or synced). `fresh` reads the store now.
+ */
+export function storeBuilds({ fresh = false } = {}) {
+  const ttl = cacheTtl();
+  if (!fresh && ttl > 0) {
+    const c = readCache();
+    const age = c ? (Date.now() - Date.parse(c.at)) / 1000 : Infinity;
+    if (age < ttl) return c.builds;
+    if (age < STALE_MAX_S) { refreshInBackground(); return c.builds; }
+  }
+  return refreshBuilds();
+}
+/** The ids of the sent builds as last read (no store read), or null when nothing was read yet: the change event's filter. */
+export function sentBuildIds() { const c = readCache(); return c ? new Set(c.builds.map((b) => b.id)) : null; }
 /** Refuse a change to an item a sent build locks (the item itself or one above it). Every write path goes through this. */
 export function assertUnlocked(state, id, builds = storeBuilds()) {
   const lock = builds && id ? live.lockOf(state, builds, id) : null;
@@ -93,7 +146,7 @@ export function assertUnlocked(state, id, builds = storeBuilds()) {
  * to the plan's history (sent-history.json); a build cancelled before it landed gives them back. Runs on every read and on the builds
  * store's change event (build-hook.mjs). → { changed, replaced, restored, state }
  */
-export function sync({ by = 'plan-studio-2', builds = storeBuilds(), state = load() } = {}) {
+export function sync({ by = 'plan-studio-2', fresh = false, builds = storeBuilds({ fresh }), state = load() } = {}) {
   if (!builds) return { changed: false, replaced: [], restored: [], state };
   const r = live.syncSent(state, builds, loadHistory(), { by });
   if (!r.changed) return { ...r, state };
@@ -174,6 +227,7 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
     return s;
   }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
   if (emergency) sendToEmergency(plan.id, { env });
+  refreshBuilds(); // the new build locks the plan from the next read on
   const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
   return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
 }
@@ -196,9 +250,10 @@ export function stateView(s) {
  */
 export function api(r, { by = '' } = {}) {
   const who = String(r.by ?? by ?? '');
-  const builds = storeBuilds();
+  const builds = storeBuilds({ fresh: r.fresh === true });
   // the stored tree (writes work on it), brought in line with the builds store first; `v` is what reads show
-  const s = sync({ by: who || 'plan-studio-2', builds }).state;
+  const synced = sync({ by: who || 'plan-studio-2', builds });
+  const s = synced.state;
   const v = builds ? live.liveView(s, builds) : s;
   /** A change to a sent plan (or to a step the orchestrator filed) is refused: `ref` is the item or the place it goes. */
   const guard = (ref) => {
@@ -215,7 +270,7 @@ export function api(r, { by = '' } = {}) {
     case 'get': { const it = tc.resolve(v, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: view(v, it), children: tc.children(v, it.id).map((c) => view(v, c)), ancestors: tc.ancestors(v, it.id).map((a) => ({ id: a.id, title: a.title, kind: a.kind })) }; }
     case 'find': { const under = r.under ? tc.resolve(v, r.under)?.id ?? '' : ''; return { ok: true, hits: tc.find(v, r.q ?? '', { kind: r.kind ?? '', limit: Math.max(1, Math.min(Number(r.limit) || 20, 200)), under }) }; }
     case 'export': { if (r.format === 'json') return { ok: true, format: 'json', data: tc.toJson(s, r.id || null) }; return { ok: true, format: 'md', markdown: tc.toMarkdown(v, r.id || null) }; }
-    case 'sync': { const res = sync({ by: who || 'plan-studio-2', builds, state: s }); return { ok: true, rev: res.state.rev, changed: res.changed, replaced: res.replaced, restored: res.restored, say: res.changed ? `Brought ${res.replaced.length + res.restored.length} sent plan${res.replaced.length + res.restored.length === 1 ? '' : 's'} in line with the builds store.` : 'Already in line with the builds store.' }; }
+    case 'sync': { const moved = synced.replaced.length + synced.restored.length; return { ok: true, rev: s.rev, changed: synced.changed, replaced: synced.replaced, restored: synced.restored, say: synced.changed ? `Brought ${moved} sent plan${moved === 1 ? '' : 's'} in line with the builds store.` : 'Already in line with the builds store.' }; }
     case 'history': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: { id: it.id, title: it.title }, history: live.historyOf(loadHistory(), s, it.id) }; }
     case 'restore-steps': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); guard(it.id); const res = live.restoreEntry(s, loadHistory(), it.id, r.entry ?? ''); const out = done({ state: res.state, item: it, restored: res.restored, entry: res.entry }, `Brought ${res.restored} planning step${res.restored === 1 ? '' : 's'} back into "${it.title}".`); saveHistory(res.history); return out; }
     case 'target': {
@@ -303,7 +358,11 @@ export async function main(argv = process.argv.slice(2)) {
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
-      case 'sync': { const r = api({ op: 'sync' }); return out(r, r.say); }
+      case 'sync': { const r = api({ op: 'sync', fresh: true }); return out(r, r.say); }
+      case 'refresh-builds': { // the background read behind a stale cache (storeBuilds)
+        try { const b = refreshBuilds(); return out({ ok: !!b, builds: b?.length ?? 0 }, b ? `${b.length} sent build${b.length === 1 ? '' : 's'} read from the builds store` : 'the builds store cannot be read'); }
+        finally { try { rmSync(join(storeDir(), '.sent-builds.refresh'), { recursive: true, force: true }); } catch { /* gone */ } }
+      }
       case 'history': { const r = api({ op: 'history', id: a[0] }); return out(r, r.history.map((h) => `${h.id}  ${h.at}  ${h.title}${h.restoredAt ? ' (brought back)' : ''}\n${h.steps.map((x) => `    - ${x.title}`).join('\n')}`).join('\n') || 'no history: nothing was replaced by a send'); }
       case 'restore-steps': { const r = api({ op: 'restore-steps', id: a[0], entry: a[1] }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }

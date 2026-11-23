@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const dir = mkdtempSync(join(tmpdir(), 'ps2-live-'));
-Object.assign(process.env, { AXF_PLAN_TREE_DIR: join(dir, 'tree'), AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0', AXF_DATA_DIR: 'off', AXF_SHIPPED: 'off' });
+Object.assign(process.env, { AXF_PLAN_TREE_DIR: join(dir, 'tree'), AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0', AXF_DATA_DIR: 'off', AXF_SHIPPED: 'off', AXF_PLAN_BUILDS_TTL: '0' });
 const tc = await import('./web/tree-core.mjs');
 const live = await import('./web/live-core.mjs');
 const T = await import('./tree.mjs');
@@ -179,7 +179,8 @@ await t('another plan, split through the store\'s change event, then cancelled: 
   api({ op: 'add', kind: 'step', title: 'Alpha', parent: p3.id }); api({ op: 'add', kind: 'step', title: 'Beta', parent: p3.id });
   const b3 = api({ op: 'build', id: p3.id }).build.id;
   split(b3, ['Orchestrator step one', 'Orchestrator step two']);
-  assert.equal(hook.wants([{ event: 'status', to: 'split' }]), true); assert.equal(hook.wants([{ event: 'step-done' }]), false);
+  assert.equal(hook.wants([{ event: 'status', build: { id: b3 } }], new Set([b3])), true); assert.equal(hook.wants([{ event: 'step-done', build: { id: 'someone-elses' } }], new Set([b3])), false, 'a build that was not sent from a plan costs nothing');
+  assert.equal(hook.wants([{ event: 'status', build: { id: 'any' } }], null), true, 'before the first read every build event counts');
   const r = await hook.onBuildEvents([{ event: 'status', to: 'split', build: { id: b3 } }]);
   assert.equal(r.synced, true, 'the builds store\'s change event replaces the steps without waiting for a read');
   assert.deepEqual(r.replaced, [{ item: p3.id, build: b3, steps: 2 }]);
@@ -196,6 +197,29 @@ await t('another plan, split through the store\'s change event, then cancelled: 
   assert.deepEqual(s.items.filter((i) => i.parent === p3.id).map((i) => [i.title, !!i.locked, !!i.origin]), [['Alpha', false, false], ['Beta', false, false]], 'cancelled: the orchestrator\'s steps are gone, the planning steps are back');
   assert.ok(!s.items.find((i) => i.id === p3.id).live && !history().items[p3.id], 'the entry is gone with the cancelled build');
   assert.equal(api({ op: 'rename', id: 'Alpha', title: 'Alpha 2' }).ok, true, 'and the plan is open again');
+});
+
+await t('the sent builds are kept beside the tree: a fresh read is reused, a stale one is refreshed by the store\'s change event', async () => {
+  const cache = () => JSON.parse(readFileSync(join(dir, 'tree', T.BUILDS_CACHE), 'utf8'));
+  const p4 = api({ op: 'add', kind: 'plan', title: 'Fourth' }).item;
+  api({ op: 'add', kind: 'step', title: 'Gamma', parent: p4.id });
+  process.env.AXF_PLAN_BUILDS_TTL = '300';
+  try {
+    const b4 = api({ op: 'build', id: p4.id }).build.id;
+    assert.ok(cache().builds.some((b) => b.id === b4 && b.planRef === p4.id), 'a send is known at once');
+    assert.ok(cache().builds.every((b) => b.planRef && !('notes' in b) && !('statusLog' in b)), 'only sent builds, trimmed to what the page shows');
+    assert.equal(row('Fourth').live.state, 'sent'); assert.ok(row('Fourth').locked);
+    assert.ok(T.sentBuildIds().has(b4));
+    split(b4, ['Delta']);
+    assert.ok(row('Gamma') && !state().items.some((i) => i.title === 'Delta'), 'inside the fresh window the builds store is not read again');
+    const r = await hook.onBuildEvents([{ event: 'status', to: 'split', build: { id: b4 } }]);
+    assert.equal(r.synced, true);
+    assert.deepEqual(state().items.filter((i) => i.parent === p4.id).map((i) => [i.title, i.origin]), [['Delta', 'orchestrator']], 'the change event reads the build again: the page shows it without reading the store itself');
+    assert.equal((await hook.onBuildEvents([{ event: 'status', build: { id: 'not-from-a-plan' } }])).synced, false);
+    move(b4, 'archived', { why: 'cancel' });
+    assert.equal(api({ op: 'sync', fresh: true }).changed, true, 'an orchestrator action asks for a fresh read');
+    assert.ok(row('Gamma') && !row('Fourth').locked);
+  } finally { process.env.AXF_PLAN_BUILDS_TTL = '0'; }
 });
 
 await t('pure core: states, row ids, lock lookup, a store that cannot be read changes nothing', () => {

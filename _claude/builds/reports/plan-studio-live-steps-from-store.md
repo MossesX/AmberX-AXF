@@ -32,6 +32,13 @@ Built. A plan sent from Plan Studio 2.0 now shows the orchestrator's real steps 
 - Menu: row → Orchestrator → send, queue, hold, release, retry, rebuild, run CI, land, cancel, open. The page sends
   the tap; `pipeline2.mjs actBuild` on the VPS decides and answers.
 
+## Speed
+
+Reading the whole live builds store takes about 2.2 seconds (1,083 builds, 13.8 MB). Plan Studio needs 8 of them. They
+are kept, trimmed, in `sent-builds.cache.json` beside the tree: fresh for 15 seconds, refreshed in the background after
+that, and rewritten at once by the builds store's change event when one of those builds moves. A click in Plan Studio
+does not wait on the builds store.
+
 ## The `split` bug: what was and was not fixed
 
 Three causes were behind "sent plan sits at split".
@@ -73,7 +80,7 @@ Three causes were behind "sent plan sits at split".
 
 | Suite | Checks |
 |---|---|
-| `plan-studio-2/live.test.mjs` (new) | 13 |
+| `plan-studio-2/live.test.mjs` (new) | 14 |
 | `plan-studio-2/server/test_orchestrate.py` (new) | 20 |
 | `build-orchestrator/test/p2-actions.test.mjs` (new) | 33 |
 | `plan-studio-2/test.mjs` | 19 |

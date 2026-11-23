@@ -73,7 +73,7 @@ with tempfile.TemporaryDirectory() as d:
         AXF_BUILDS_STORE=str(tmp / "store.json"), AXF_PLAN_TREE_DIR=str(tmp / "tree"), AXF_BUILDS_LIVE="0", AXF_BUILD_HOOKS="off", AXF_BUILDS_EXPORT="0",
         AXF_DATA_DIR="off", AXF_SHIPPED="off", AXF_CREW_SAY="off", AXF_BUILD_LIMIT="off", AXF_PIPELINE_DIR=str(tmp / "pipe"), AXF_DISPATCH_DIR=str(tmp / "pipe"),
         AXF_SLOTS_DIR=str(tmp / "slots"), AXF_SLOTS_TMUX="off", AXF_BUILD_LOCK_TMUX="off", AXF_PIPELINE_CONSOLE="off", AXF_PIPELINE_WORKTREES=str(tmp / "wt"),
-        AXF_PIPELINE_WORKTREE_MODE="mkdir", AXF_PIPELINE_LOCKED="1", AXF_P2_SLOTS="4", AXF_P2_ALIVE="", AXF_P2_LANDER="off",
+        AXF_PIPELINE_WORKTREE_MODE="mkdir", AXF_PIPELINE_LOCKED="1", AXF_PLAN_BUILDS_TTL="0", AXF_P2_SLOTS="4", AXF_P2_ALIVE="", AXF_P2_LANDER="off",
         AXF_P2_ACCOUNTS=json.dumps([{"name": "a", "usable": True, "free": 8, "running": 0, "usageLeft": 0.9}]),
         AXF_PIPELINE_LAUNCHER=script(tmp / "launcher.sh", '#!/bin/bash\nname=""\nwhile [ $# -gt 0 ]; do case "$1" in --name) name="$2"; shift 2;; --) break;; *) shift;; esac; done\necho "started axf-$name in $PWD"\n'),
         AXF_PIPELINE_SPLITTER=script(tmp / "no-fable.sh", '#!/bin/bash\necho "out of credits" >&2\nexit 1\n'),  # the split falls back to one step per planning step
