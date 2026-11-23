@@ -398,6 +398,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   for (const b of queue) {
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
+    // shipped-manifest@1: the gate already shipped it; a Queued status left on the record is stale, never a reason to run it again
+    if (b.shipped?.id) { waits.push({ id: b.id, why: `already shipped (${b.shipped.id}): not launched again` }); continue; }
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }

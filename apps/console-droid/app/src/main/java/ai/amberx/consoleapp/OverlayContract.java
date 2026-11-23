@@ -79,7 +79,10 @@ final class OverlayContract {
     static final String EV_STATE = "overlay";
     /** The toolbar was dragged; {@code data} is {@code {edge, top}}: the page saves them into the settings. */
     static final String EV_MOVED = "overlay.moved";
-    /** Open the approvals list in the running page; {@code data} is {@code {target: "approvals.view"}}. */
+    /**
+     * Open an approval in the running page; {@code data} is {@code {target: "approvals.view", id}}. With an {@code id}
+     * (a card popped for that item) the page opens that one's card; without, the first one waiting.
+     */
     static final String EV_APPROVALS_OPEN = "approvals.open";
     /** A permission prompt was answered; {@code data} is {@code {mic, notifications, overlay}}. */
     static final String EV_PERMISSIONS = "permissions";
@@ -113,6 +116,8 @@ final class OverlayContract {
     static final String CONTROL_ADDRESS = "panel:phone-app";
     /** The console action the approval bar's link opens; also the deep link {@code axf-console://open/approvals.view}. */
     static final String APPROVALS_TARGET = "approvals.view";
+    /** axHub's approvals page: where a tap on the toolbar lands while something waits, and what the {@link #APPROVALS_VERB} verb opens. */
+    static final String APPROVALS_URL = "https://axhub.amberxai.com/auth/admin/approvals";
     /** The short permission name ({@code Perms.OVERLAY}) and the Android permission behind it. */
     static final String PERMISSION = "overlay";
     static final String ANDROID_PERMISSION = "android.permission.SYSTEM_ALERT_WINDOW";
@@ -140,6 +145,11 @@ final class OverlayContract {
     // ---- the state every API reads -------------------------------------------------------------------------------
 
     static final List<String> STATE_KEYS = Arrays.asList("running", "state", "waiting", "held", "dismissedAt", S_ON, S_EDGE, S_TOP, S_SIZE, S_EXPAND, S_IDLE_OPACITY, S_SHOW, "label");
+
+    /** The {@link #EV_APPROVALS_OPEN} event's data: the approvals target, and the hub id of the item whose card opens. */
+    static String openJson(String id) {
+        return "{\"target\":" + quote(APPROVALS_TARGET) + (id == null || id.isEmpty() ? "" : ",\"id\":" + quote(id)) + "}";
+    }
 
     /**
      * {"running":true,"state":"toolbar","waiting":2,"held":0,"dismissedAt":0,"on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85,"show":"next","label":"2 waiting"}

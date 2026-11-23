@@ -60,6 +60,13 @@ final class ShellRules {
         return staysInside(currentUrl);
     }
 
+    /** True when the page now showing is the console itself (it runs the console's actions; the hub's pages don't). */
+    static boolean onConsole(String currentUrl) {
+        String home = HOME.substring(0, HOME.length() - 1);
+        String u = linkOr(currentUrl, "");
+        return u.equals(home) || u.startsWith(HOME) || u.startsWith(home + "?") || u.startsWith(home + "#");
+    }
+
     /**
      * What an incoming link opens. {@code https://…amberxai.com/…} opens as is; {@code axf-console://open/<target>}
      * (a console-control@1 address, the console_open target, e.g. {@code settings.plugins}) becomes

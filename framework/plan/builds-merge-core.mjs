@@ -219,3 +219,58 @@ export function changeLines(entry) {
   }
   return out;
 }
+
+// ------------------------------------------------------------------ real changes (what is worth a commit on main)
+
+/** Statuses of a build whose work is over: nothing but a status move, a link or a removal is news about it. */
+const DONE_STATUSES = ['complete', 'archived'];
+/** Statuses a shipped build may still move into (its record catching up with the landing). */
+const SHIPPED_MOVES = ['landed', 'built', 'complete', 'archived'];
+/** Build fields rewritten on every tick: stamps, counters, hashes and the dispatcher's run bookkeeping. */
+const VOLATILE_BUILD = ['updatedAt', 'rev', 'journalHash', 'defaultSteps', 'statusAt', 'statusBy', 'statusLog', 'pipeline', 'notes', 'steps'];
+const VOLATILE_STEP = ['updatedAt', 'rev', 'statusAt', 'statusBy', 'statusLog', 'tried'];
+/** The part of `pipeline` a person sets (hold, route, limits); the rest is launch and heartbeat bookkeeping. */
+const PIPELINE_STATE = ['heldAt', 'heldBy', 'heldWhy', 'route', 'maxParallel', 'budgetUsd'];
+const canon = (v) => (Array.isArray(v) ? v.map(canon) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v);
+const same = (a, b) => JSON.stringify(canon(a ?? null)) === JSON.stringify(canon(b ?? null));
+const without = (o, keys) => Object.fromEntries(Object.entries(o ?? {}).filter(([k]) => !keys.includes(k)));
+/** The named fields, an unset one and an empty one ('' or 0) reading the same: a record with no `pipeline` yet equals a blank one. */
+const only = (o, keys) => Object.fromEntries(keys.map((k) => [k, o?.[k] || null]));
+
+/** A build whose work is over: it has a shipped manifest (shipped-manifest@1) or is complete / archived. */
+export const isSettled = (b) => !!b && (!!b.shipped?.id || DONE_STATUSES.includes(b.status));
+
+/**
+ * What really changed between two copies of a build, as a list of words ([] = nothing worth publishing). Stamps,
+ * revisions, the dispatcher's run bookkeeping (`pipeline` except what a person sets) and a note whose text the build
+ * already holds are not changes: a watchdog or a failed launch repeating itself every minute rewrote them without the
+ * build moving, and each rewrite used to reach main as a status commit. A settled build (isSettled) changes only by a
+ * status move, a link, its landing evidence or its removal; a shipped one only moves forward (SHIPPED_MOVES), so a
+ * dispatcher flapping it between queued and running is not news either.
+ */
+export function realChanges(before, after) {
+  if (!after) return before ? ['removed'] : [];
+  if (!before) return ['added'];
+  const what = [];
+  if (isSettled(before)) {
+    const moved = before.status !== after.status && (!before.shipped?.id || DONE_STATUSES.includes(before.status) || SHIPPED_MOVES.includes(after.status));
+    if (moved) what.push('status');
+    for (const k of ['deleted', 'hidden', 'branch', 'pr', 'mergedAt', 'landed', 'shipped']) if (!same(before[k], after[k])) what.push(k);
+    return what;
+  }
+  for (const k of new Set([...Object.keys(before), ...Object.keys(after)])) if (!VOLATILE_BUILD.includes(k) && !same(before[k], after[k])) what.push(k);
+  if (!same(only(before.pipeline, PIPELINE_STATE), only(after.pipeline, PIPELINE_STATE))) what.push('pipeline');
+  const stepKeyOf = (s) => str(s.uid) || str(s.id);
+  const old = new Map((before.steps ?? []).map((s) => [stepKeyOf(s), s]));
+  const steps = after.steps ?? [];
+  if (steps.length !== old.size || steps.some((s, i) => stepKeyOf(s) !== stepKeyOf(before.steps[i]) || !same(without(old.get(stepKeyOf(s)), VOLATILE_STEP), without(s, VOLATILE_STEP)))) what.push('steps');
+  const had = new Set((before.notes ?? []).map((n) => str(n.text)));
+  if ((after.notes ?? []).some((n) => !had.has(str(n.text)))) what.push('note');
+  return what;
+}
+
+/** A journal entry with only the builds that really changed (realChanges), or null when none did. */
+export function realEntry(entry) {
+  const builds = (entry?.builds ?? []).filter((c) => realChanges(c.before, c.after).length);
+  return builds.length ? { ...entry, builds } : null;
+}

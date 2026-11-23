@@ -396,7 +396,8 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined;
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
-    if (note) b.notes.push({ text: str(note, 2000), at: now });
+    // a note the build already ends with is not written again (a launch failing every minute left 42 copies of one line)
+    if (note && b.notes.at(-1)?.text !== str(note, 2000)) b.notes.push({ text: str(note, 2000), at: now });
     if (typeof mutate === 'function') mutate(b, now);
     b.updatedAt = now; out = b;
     return s;

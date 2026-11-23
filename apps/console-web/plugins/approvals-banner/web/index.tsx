@@ -49,7 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, readsFeed, SHOWS, SIZES, viewTarget, type OverlayBarVerb, type OverlayVerb } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -101,9 +101,11 @@ const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAI
 
 /* The Android console app's floating toolbar (overlay@1 `overlayItems`): what waits, one by one, sent when it changes. */
 let lastPhone = '';
+// read loosely: the plugin also runs in apps without the console's axfNative typing
+const phoneHost = () => (typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: { overlayItems?: (json: string) => string } }).axfNativeHost : undefined);
+const inConsoleApp = (): boolean => !!phoneHost()?.overlayItems;
 function toPhone(): void {
-  // read loosely: the plugin also runs in apps without the console's axfNative typing
-  const host = typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: { overlayItems?: (json: string) => string } }).axfNativeHost : undefined;
+  const host = phoneHost();
   if (!host?.overlayItems) return;
   const json = JSON.stringify(st.status === 'ok' ? overlayItems(st.held, st.pending) : []);
   if (json === lastPhone) return;
@@ -215,7 +217,8 @@ function start() {
   if (started) return;
   started = true;
   void checkNow();
-  setInterval(() => { if (document.visibilityState === 'visible') void checkNow(); }, POLL_MS);
+  // in the console app the page is hidden while another app is in front: it keeps reading there (overlay.ts readsFeed)
+  setInterval(() => { if (readsFeed(document.visibilityState === 'visible', inConsoleApp())) void checkNow(); }, POLL_MS);
   // Notices + alarm follow the local countdown between reads (the alarm also rings with the page in the background).
   setInterval(() => { if (st.status === 'ok') watch.update(st.held); }, 1_000);
   globalThis.addEventListener('focus', () => void checkNow());
@@ -637,9 +640,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
     // older name. Only opens: a session may show it to him, the deciding stays his.
-    const view = ([id]: string[]) => {
-      if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id);
-      else rt.toast('That one is no longer waiting.', 'info', 'Approvals');
+    // Without an id it opens the first one waiting. The list is read again first when the call isn't in it: the
+    // phone overlay may ask for one this page hasn't read yet.
+    const view = async ([id]: string[]) => {
+      const waiting = () => [...st.held.filter((c) => !c.approvedNow).map((c) => c.id), ...st.pending.map((p) => p.id)];
+      let target = viewTarget(id, waiting());
+      if (!target) { await checkNow(); target = viewTarget(id, waiting()); }
+      if (target) openReview(target);
+      else rt.toast(id ? 'That one is no longer waiting.' : 'Nothing is waiting.', 'info', 'Approvals');
     };
     rt.actions.register('approvals.view', view, { label: 'Show an axHub approval', params: true, searchable: false, effect: 'navigate' });
     rt.actions.register('approvals.review', view, { label: 'Review an axHub approval', params: true, searchable: false, effect: 'navigate' });
