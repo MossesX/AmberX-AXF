@@ -408,7 +408,7 @@ Kotlin twin, none needed; the baked copies ride along unused.
 ## Deferred: pipeline-2@1 status contract (Nov 19 2026)
 
 Build p2-status-core (Pipeline 2.0 part 1) adds `framework/core/pipeline-status.mjs` (pipeline-2@1: build and step
-statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the store guard), `splitParts`, `modelFor`,
+statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the store guard), `splitParts`, `modelFor` (removed Nov 23 2026: model-triage@1 decides),
 `pickAccount`, `activeBuild`, and plan-build@1 `normPlan` / `validatePlan`); schemas
 `framework/schemas/json/pipeline-2.schema.json`, `plan-build.schema.json`; fixture `framework/spec/fixtures/pipeline-2.json`
 (checker `framework/spec/check-pipeline-2.mjs`); spec `framework/spec/PIPELINE-2.md`. **Kotlin twin deferred** (no new
@@ -453,6 +453,18 @@ Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules i
 merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
 view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.
+
+## Deferred: model-triage@1, the VPS model triage gate (Nov 23 2026)
+
+Build vps-model-triage-gate adds `framework/core/model-triage.mjs` (model-triage@1: the ordered, editable rules that
+decide which model a build step, an emergency build, a hand build or a lander fix session runs on; `decide`,
+`applyEdit`, `normConfig`, `normDecision`, `explicitModel`), the VPS side `framework/cli/model-triage.mjs` (store,
+measured facts, decision log), fixture `framework/spec/fixtures/model-triage.json` (checker
+`framework/spec/check-model-triage.mjs`) and spec `framework/spec/MODEL-TRIAGE.md`. `core/pipeline-status.mjs` loses
+`modelFor` and its word list (the orchestrator no longer picks a model; fixture case `models` removed), and
+`fallbackDesign` carries a planning step's noted model as `pin`. Builds-store steps gain `pin`, `pinBy` and `triage`.
+**Kotlin twin deferred**: the gate runs on the VPS only and nothing on Android assigns models or reads these records.
+A twin would be a pure `ModelTriage.kt` replaying the fixture (`decisions`, `held`, `tuned`, `edits`, `says`).
 
 ## Deferred: model-policy@1 work rule and strict model words (Nov 21 2026)
 

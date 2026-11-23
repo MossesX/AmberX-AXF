@@ -8,7 +8,7 @@ nothing saved breaks; `view:vps-configuration`, `console_open vps-configuration`
 Brett: "Where is the gate and rules plugin, open it on my screen.").
 
 The gate a PR must pass before it lands (gate-rules@1) and the auto-lander that lands it, in one place:
-Builds → **VPS Configuration** (`view:gate`), with three tabs (framework TabGroup `gate.tabs`):
+Builds → **VPS Configuration** (`view:gate`), in tabs (framework TabGroup `gate.tabs`; Rules, Auto-lander and History below, then one section per further tab):
 
 - **Rules**: every gate rule with its on/off switch, severity and settings; Reset to defaults (confirm); Check a PR.
 - **Auto-lander**: the one mode switch **Merge queue** (on = PRs go through the stacked merge queue and the
@@ -118,6 +118,30 @@ disabled with the reason); `stepsInParallel` is open.
 | CLI | `axf gate build-cap` | `axf gate build-cap set stepsInParallel <n>` |
 | Voice / actions | `vps.build-cap.status`, `vps.build-cap.open` | `vps.build-cap.set:<key>:<n>` |
 | console-control@1 | `setting:vps.buildCap.maxBuilds \| emergencySlots \| stepsInParallel` | the same, `set` |
+
+## Model triage (model-triage@1)
+
+**Model triage** tab (`tab:gate.tabs=model-triage`): the VPS gate that decides which model every build step, emergency
+build, hand build and lander fix session runs on (Brett, Nov 21 2026: "the orchestrator stops choosing models"). The
+gate is `framework/core/model-triage.mjs` (the rules, pure) and `framework/cli/model-triage.mjs` (the store, the
+measured facts, the decision log); the contract is `framework/spec/MODEL-TRIAGE.md`. This plugin adds no logic: the
+tab (`web/ModelTriageTab.tsx`, `web/modelTriageState.ts`) draws what `GET model-triage` answers, labels and limits
+included, and sends each edit as typed; the VPS checks it and a refusal comes back as its message. The tab shows the
+gate's own settings (on/off, the model when no rule matches, what a hand launch's model means, whether a brief that
+names its model wins), the rules in order (on/off, model, lanes, numbers and lists, earlier / later), and the last
+decisions (build and step or session, lane, model, rule, why). Each decision is also on its step in the builds store
+(`triage`) and in the build's notes.
+
+| Reach | Read | Change |
+| --- | --- | --- |
+| REST | `GET /api/plugins/gate/model-triage`, `model-triage/decisions`, `model-triage/history`, `POST model-triage/decide` | `POST /api/plugins/gate/model-triage {op: rule \| move \| defaults \| enabled \| reset, …}` |
+| MCP | `vps_model_triage`, `vps_model_triage_decisions`, `vps_model_triage_history`, `vps_model_triage_decide` | `vps_model_triage_set` |
+| CLI | `axf gate model-triage [status \| decisions \| history \| decide --text "…"]` | `axf gate model-triage rule <id> on \| off \| model <m> \| set <key> <value> \| lanes <a,b> \| move <n>`, `defaults …`, `gate on \| off`, `reset`, `pin <build> <step \| all> <opus \| fable \| none>` |
+| Voice / actions | `vps.model-triage.status`, `vps.model-triage.open` | `vps.model-triage.rule:<id>:on \| off`, `vps.model-triage.default:<model>` |
+| console-control@1 | `setting:vps.modelTriage.enabled \| default \| handRequest \| <rule>.enabled \| <rule>.model \| <rule>.<setting>` | the same, `set`; buttons `vps-triage-refresh`, `vps-triage-reset`, `vps-triage-<rule>-save` |
+
+The rule store lives with the VPS (`/projects/amberx-axf/_data/model-triage`), not in this plugin's data folder:
+uninstalling the plugin removes the tab, never the gate.
 
 ## Passes
 

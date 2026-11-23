@@ -24,6 +24,8 @@ FAKE.write_text("console.log(JSON.stringify({ ok: true }));\n")
 (LAND / "merge-queue.json").write_text(json.dumps({"items": [{"pr": 702, "title": "Help gate", "branch": "claude/help-gate", "state": "waiting", "why": "its screenshots are waiting in UI Review."}], "waiting": [], "merged": []}))
 os.environ.update(AXF_GATE_DIR=str(TMP / "gate"), AXF_GATE_LANDER_DIR=str(LAND), AXF_GATE_LANDER_CLI=str(FAKE))
 os.environ.update(AXHUB_URL="http://127.0.0.1:9", AXHUB_TOKEN="test-token")  # approval rules: no hub answers here
+os.environ.update(AXF_MODEL_TRIAGE_DIR=str(TMP / "model-triage"), AXF_CLAUDE_SETTINGS_FILE=str(TMP / "no-claude-settings.json"))  # model triage: a scratch rule store
+os.environ.pop("AXF_FABLE_UPGRADE_APPROVAL", None)
 
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -90,6 +92,25 @@ try:
     r = c.post(f"{B}/build-cap", json={"maxBuilds": 9})
     ok(r.status_code == 403 and "Only Brett" in r.json()["message"], "POST build-cap: the hard cap is the owner's own session only")
     ok(c.post(f"{B}/build-cap", json={"emergencySlots": 1, "stepsInParallel": 3}).status_code == 403, "an owner-only key refuses the whole call")
+
+    # model triage: the routes pass every call to the VPS gate (framework/cli/model-triage.mjs), which checks every edit
+    t0 = c.get(f"{B}/model-triage").json()
+    ok(t0["ok"] and t0["$axf"] == "model-triage@1" and t0["config"]["enabled"] is True and t0["stored"] is False, "GET model-triage: the starting rules until the first edit")
+    ok([r["id"] for r in t0["config"]["rules"]][:3] == ["ci-fix", "merge-clash", "second-try"] and t0["registry"]["fields"]["size"][1]["key"] == "files", "the rules in order, with the fields the tab draws")
+    ok(t0["approvalRequired"] is False and t0["buildPin"] is None, "it says whether Fable upgrades wait for Brett and whether a build-wide model is set")
+    r = c.post(f"{B}/model-triage", json={"op": "rule", "id": "size", "settings": {"files": 3}, "reason": {"title": "Smaller steps", "description": ""}})
+    ok(r.status_code == 200 and next(x for x in r.json()["config"]["rules"] if x["id"] == "size")["settings"]["files"] == 3, "POST model-triage edits one rule")
+    ok(c.post(f"{B}/model-triage", json={"op": "rule", "id": "size", "settings": {"files": "lots"}}).status_code == 400, "a bad value is the VPS's refusal (400)")
+    ok(c.post(f"{B}/model-triage", json={"op": "rule", "id": "nope", "enabled": False}).status_code == 400, "an unknown rule is 400")
+    ok(c.post(f"{B}/model-triage", json={"op": "delete-everything"}).status_code == 400, "an unknown op is 400")
+    ok(c.post(f"{B}/model-triage", json={"input": {"op": "defaults", "model": "opus"}, "by": "mcp:test"}).json()["config"]["defaults"]["model"] == "opus", "the plugin-commands body shape works (MCP vps_model_triage_set)")
+    hist = c.get(f"{B}/model-triage/history").json()["entries"]
+    ok([h["what"] for h in hist] == ["defaults", "rule size"] and hist[0]["by"] == "mcp:test" and hist[1]["reason"]["title"] == "Smaller steps", "GET model-triage/history: who, what, why, newest first")
+    d = c.post(f"{B}/model-triage/decide", json={"text": "Add two buttons", "files": ["a/x.tsx", "a/y.tsx", "a/z.tsx"]}).json()
+    ok(d["ok"] and d["decision"]["model"] == "Fable" and d["decision"]["rule"] == "size", "POST model-triage/decide: the gate's answer with the rule that fires")
+    ok(c.post(f"{B}/model-triage/decide", json={"text": "Add a button"}).json()["decision"]["rule"] == "default", "… and the default (Opus now) when none does")
+    ok(c.get(f"{B}/model-triage/decisions").json()["decisions"] == [], "GET model-triage/decisions: a dry run logs nothing")
+    ok(c.post(f"{B}/model-triage", json={"op": "reset"}).json()["config"]["defaults"]["model"] == "fable", "reset puts the starting rules back")
 
     # approval rules: reading never fails the page, a write here only ever stages, and there is no route that saves
     r = c.get(f"{B}/approval-rules")
