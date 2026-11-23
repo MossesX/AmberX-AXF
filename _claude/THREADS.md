@@ -843,10 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 00:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 00:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1239,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → pr-pulling-main (all) · lander
 - 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → running-ci (all) · lander
 - 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `server-rule-done-means-merged-working` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → complete, note (all) · verify
+- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → complete, note (all) · verify
 
 ## Token passes (log)
 

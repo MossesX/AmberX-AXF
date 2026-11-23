@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10370,
- "updatedAt": "2026-11-23T22:45:22.593Z",
+ "rev": 10371,
+ "updatedAt": "2026-11-23T22:45:39.603Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180150,7 +180150,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -180160,7 +180160,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-23T22:45:18.729Z",
+   "updatedAt": "2026-11-23T22:45:26.609Z",
    "builtAt": "",
    "notes": [
     {
@@ -180342,6 +180342,10 @@
     {
      "text": "Watchdog: merged and CI is green on 8f30a4cb22: landed.",
      "at": "2026-11-23T22:45:18.729Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-23T22:45:26.609Z"
     }
    ],
    "approvals": [
@@ -180423,9 +180427,9 @@
     "ci": "success",
     "ciAt": "2026-11-23T22:45:18.729Z",
     "ciRun": "commit@8f30a4cb22179277f88b653506a9300092099512",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-23T22:45:26.609Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
@@ -180991,7 +180995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 178,
+   "rev": 179,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -243873,7 +243877,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -243882,7 +243886,7 @@
    "mergedAt": "2026-11-17T02:53:56Z",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-23T22:05:31.382Z",
+   "updatedAt": "2026-11-23T22:45:30.779Z",
    "builtAt": "",
    "notes": [
     {
@@ -244052,6 +244056,14 @@
     {
      "text": "Watchdog: PR #713 merged 2026-11-17 02:53 and the build never heard: the merge is recorded, CI on 765ca6b513 is next.",
      "at": "2026-11-23T22:05:31.382Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 765ca6b513: landed.",
+     "at": "2026-11-23T22:45:22.832Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-23T22:45:30.779Z"
     }
    ],
    "approvals": [
@@ -244114,12 +244126,12 @@
     "pr": 713,
     "sha": "765ca6b513fb527d478d2faff1f2f1210e8ffd0e",
     "mergedAt": "2026-11-17T02:53:56Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "ci": "success",
+    "ciAt": "2026-11-23T22:45:22.832Z",
+    "ciRun": "commit@765ca6b513fb527d478d2faff1f2f1210e8ffd0e",
+    "verifiedAt": "2026-11-23T22:45:30.779Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-axf-data-postgres-real-tables-own",
@@ -244202,11 +244214,11 @@
     "all"
    ],
    "order": {
-    "all": 906
+    "all": 908
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -268190,7 +268202,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268199,7 +268211,7 @@
    "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-23T22:05:37.170Z",
+   "updatedAt": "2026-11-23T22:45:27.280Z",
    "builtAt": "",
    "notes": [
     {
@@ -268369,6 +268381,10 @@
     {
      "text": "Watchdog: PR #771 merged 2026-11-17 19:06 and the build never heard: the merge is recorded, CI on f549a7643a is next.",
      "at": "2026-11-23T22:05:37.170Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on f549a7643a: landed.",
+     "at": "2026-11-23T22:45:27.280Z"
     }
    ],
    "approvals": [
@@ -268437,9 +268453,9 @@
     "pr": 771,
     "sha": "f549a7643afbc52731a561da38383840be9c7844",
     "mergedAt": "2026-11-17T19:06:28Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-23T22:45:27.280Z",
+    "ciRun": "commit@f549a7643afbc52731a561da38383840be9c7844",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -268877,11 +268893,11 @@
     "all"
    ],
    "order": {
-    "all": 943
+    "all": 945
    },
    "kind": "build",
    "planRef": "",
-   "rev": 138,
+   "rev": 140,
    "deleted": false,
    "deletedAt": "",
    "pending": {

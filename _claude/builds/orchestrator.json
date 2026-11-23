@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-23T22:45:22.593Z",
+ "updatedAt": "2026-11-23T22:45:39.603Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129634,7 +129634,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129643,7 +129643,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-23T22:45:18.729Z",
+   "updatedAt": "2026-11-23T22:45:26.609Z",
    "builtAt": "",
    "notes": [
     {
@@ -129825,6 +129825,10 @@
     {
      "text": "Watchdog: merged and CI is green on 8f30a4cb22: landed.",
      "at": "2026-11-23T22:45:18.729Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-23T22:45:26.609Z"
     }
    ],
    "approvals": [
@@ -164368,278 +164372,6 @@
    ]
   },
   {
-   "id": "axf-data-postgres-real-tables-own",
-   "title": "axf-data on Postgres: real tables in its own container",
-   "category": "",
-   "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/axf-data-postgres-real-tables-own",
-   "pr": "#713",
-   "mergedAt": "2026-11-17T02:53:56Z",
-   "priority": "P0",
-   "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-23T22:05:31.382Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-15T15:12:33.875Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps.",
-     "at": "2026-11-15T15:13:43.323Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-data-postgres-real-tables-own--gina, shared account login)",
-     "at": "2026-11-15T15:14:09.416Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-axf-data-postgres-real-tables-own--gina.",
-     "at": "2026-11-15T15:14:03.897Z"
-    },
-    {
-     "text": "Dispatch gate: axf-data-postgres-real-tables-own still has axf-axf-data-postgres-real-tables-own--gina alive: not launched again, tracking that session.",
-     "at": "2026-11-15T15:15:11.666Z"
-    },
-    {
-     "text": "Split by Claude into 29 steps (7 Fable).",
-     "at": "2026-11-15T16:11:39.179Z"
-    },
-    {
-     "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
-     "at": "2026-11-15T16:12:30.473Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-15T16:40:48.930Z"
-    },
-    {
-     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
-     "at": "2026-11-16T23:21:44.960Z"
-    },
-    {
-     "text": "Back from the Archive as pending (cli).",
-     "at": "2026-11-17T00:06:31.488Z"
-    },
-    {
-     "text": "Queued by brett.",
-     "at": "2026-11-17T00:06:34.119Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-axf-data-postgres-real-tables-own--sully.",
-     "at": "2026-11-17T00:14:35.500Z"
-    },
-    {
-     "text": "Brief only: brief is 24441 characters (~6111 tokens), over the 24000-character budget: trim it to what this job needs",
-     "at": "2026-11-17T00:14:41.773Z"
-    },
-    {
-     "text": "Headless run axf-axf-data-postgres-real-tables-own--sully: brief only · start 17.2K tokens ($0.06) · cost $0.54 · 20 turns · 6 tools, MCP none",
-     "at": "2026-11-17T00:20:50.809Z"
-    },
-    {
-     "text": "Reconciler: PR #713 merged; paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-17T12:39:27.078Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:13:32.247Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2969 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:18:01.648Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2974 min past its budget).",
-     "at": "2026-11-19T14:23:01.277Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-19T14:24:01.548Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:34:02.103Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:39:01.187Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-19T14:44:01.143Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 3.",
-     "at": "2026-11-19T14:45:02.399Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T20:52:35.014Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T21:03:46.519Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
-     "at": "2026-11-19T21:09:02.150Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 4.",
-     "at": "2026-11-19T21:10:01.739Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:20:02.058Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:25:05.623Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:06:03.379Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:11:03.590Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
-     "at": "2026-11-19T22:16:01.483Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 5.",
-     "at": "2026-11-19T22:17:01.276Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:38:01.267Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:53:37.736Z"
-    },
-    {
-     "text": "Shipped manifest sm-axf-data-postgres-real-tables-own rev 1 sent to Shipped features (orchestrator): landed 765ca6b51, 34 file(s), 0 test line(s), 5 open.",
-     "at": "2026-11-20T00:08:28Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:43:39.480Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:53:39.784Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T01:09:47.341Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
-     "at": "2026-11-20T01:15:02.563Z"
-    },
-    {
-     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
-     "at": "2026-11-20T01:16:01.941Z"
-    },
-    {
-     "text": "Watchdog: PR #713 merged 2026-11-17 02:53 and the build never heard: the merge is recorded, CI on 765ca6b513 is next.",
-     "at": "2026-11-23T22:05:31.382Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T00:19:56.628Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
-    "at": "2026-11-15T15:12:29.907Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "axf-data-postgres-real-tables-own",
-    "brief": "# Build: axf-data-postgres-real-tables-own\n\n## Brett said (verbatim)\nAt: 2026-11-15T15:12:29.907Z\n> Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\n\n## What to build\nContinue build \"axf-data on Postgres: real tables in its own container\" (axf-data-postgres-real-tables-own) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 15:12):\n\"Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link axf-data-postgres-real-tables-own --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note axf-data-postgres-real-tables-own \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-     "model": "Fable",
-     "why": "foundation words in the step",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-15T16:11:46.742Z",
-     "note": "",
-     "uid": "st-mwhz5py401kdum",
-     "createdAt": "2026-11-15T15:13:43.323Z"
-    },
-    {
-     "id": "s2",
-     "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:19:56.628Z",
-     "note": "",
-     "uid": "st-mwhz5py40225gk",
-     "createdAt": "2026-11-15T15:13:43.323Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:28:25.929Z",
-     "note": "",
-     "uid": "st-mwhz5py40324l7",
-     "createdAt": "2026-11-15T15:13:43.323Z"
-    }
-   ]
-  },
-  {
    "id": "duplicate-gate-vps-checks-shipped",
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
@@ -165141,6 +164873,286 @@
      "note": "",
      "uid": "st-mwja4rss0krcm6",
      "createdAt": "2026-11-16T13:08:41.019Z"
+    }
+   ]
+  },
+  {
+   "id": "axf-data-postgres-real-tables-own",
+   "title": "axf-data on Postgres: real tables in its own container",
+   "category": "",
+   "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/axf-data-postgres-real-tables-own",
+   "pr": "#713",
+   "mergedAt": "2026-11-17T02:53:56Z",
+   "priority": "P0",
+   "createdAt": "2026-11-15T15:12:29.907Z",
+   "updatedAt": "2026-11-23T22:45:30.779Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T15:12:33.875Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps.",
+     "at": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-data-postgres-real-tables-own--gina, shared account login)",
+     "at": "2026-11-15T15:14:09.416Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-axf-data-postgres-real-tables-own--gina.",
+     "at": "2026-11-15T15:14:03.897Z"
+    },
+    {
+     "text": "Dispatch gate: axf-data-postgres-real-tables-own still has axf-axf-data-postgres-real-tables-own--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-15T15:15:11.666Z"
+    },
+    {
+     "text": "Split by Claude into 29 steps (7 Fable).",
+     "at": "2026-11-15T16:11:39.179Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-15T16:12:30.473Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T16:40:48.930Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:44.960Z"
+    },
+    {
+     "text": "Back from the Archive as pending (cli).",
+     "at": "2026-11-17T00:06:31.488Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-17T00:06:34.119Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-axf-data-postgres-real-tables-own--sully.",
+     "at": "2026-11-17T00:14:35.500Z"
+    },
+    {
+     "text": "Brief only: brief is 24441 characters (~6111 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T00:14:41.773Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--sully: brief only · start 17.2K tokens ($0.06) · cost $0.54 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:20:50.809Z"
+    },
+    {
+     "text": "Reconciler: PR #713 merged; paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2969 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2974 min past its budget).",
+     "at": "2026-11-19T14:23:01.277Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 2.",
+     "at": "2026-11-19T14:24:01.548Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:34:02.103Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:39:01.187Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 3.",
+     "at": "2026-11-19T14:45:02.399Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T20:52:35.014Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T21:03:46.519Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
+     "at": "2026-11-19T21:09:02.150Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 4.",
+     "at": "2026-11-19T21:10:01.739Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:20:02.058Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:25:05.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:06:03.379Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:11:03.590Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
+     "at": "2026-11-19T22:16:01.483Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 5.",
+     "at": "2026-11-19T22:17:01.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z"
+    },
+    {
+     "text": "Shipped manifest sm-axf-data-postgres-real-tables-own rev 1 sent to Shipped features (orchestrator): landed 765ca6b51, 34 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-20T00:08:28Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:43:39.480Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:53:39.784Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T01:09:47.341Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
+     "at": "2026-11-20T01:15:02.563Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T01:16:01.941Z"
+    },
+    {
+     "text": "Watchdog: PR #713 merged 2026-11-17 02:53 and the build never heard: the merge is recorded, CI on 765ca6b513 is next.",
+     "at": "2026-11-23T22:05:31.382Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 765ca6b513: landed.",
+     "at": "2026-11-23T22:45:22.832Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-23T22:45:30.779Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T00:19:56.628Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+    "at": "2026-11-15T15:12:29.907Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "axf-data-postgres-real-tables-own",
+    "brief": "# Build: axf-data-postgres-real-tables-own\n\n## Brett said (verbatim)\nAt: 2026-11-15T15:12:29.907Z\n> Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\n\n## What to build\nContinue build \"axf-data on Postgres: real tables in its own container\" (axf-data-postgres-real-tables-own) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 15:12):\n\"Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link axf-data-postgres-real-tables-own --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note axf-data-postgres-real-tables-own \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T16:11:46.742Z",
+     "note": "",
+     "uid": "st-mwhz5py401kdum",
+     "createdAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s2",
+     "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:19:56.628Z",
+     "note": "",
+     "uid": "st-mwhz5py40225gk",
+     "createdAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:28:25.929Z",
+     "note": "",
+     "uid": "st-mwhz5py40324l7",
+     "createdAt": "2026-11-15T15:13:43.323Z"
     }
    ]
   },
@@ -178486,588 +178498,6 @@
    ]
   },
   {
-   "id": "server-rule-done-means-merged-working",
-   "title": "Server rule: done means merged and working, never stop on failure",
-   "category": "",
-   "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/server-rule-done-means-merged-working",
-   "pr": "#771",
-   "mergedAt": "2026-11-17T19:06:28Z",
-   "priority": "P0",
-   "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-23T22:05:37.170Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-17T00:08:24.492Z"
-    },
-    {
-     "text": "Split by Claude into 16 steps (3 Fable).",
-     "at": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-server-rule-done-means-merged-working--earl.",
-     "at": "2026-11-17T00:15:23.495Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
-     "at": "2026-11-17T00:15:33.018Z"
-    },
-    {
-     "text": "Phase 1 done (Fable): done-means-merged@1 contract (spec/DONE-MEANS-MERGED.md), builds@1 statuses fixing / landing / landed / escalated + attempt@1, failure, landed, escalation records (core/build-pipeline.mjs, builds-store-core normBuild, liveStatus), guardStatus, migrateDone + CLI 'builds-store.mjs done-means-merged [--apply]', retry-ladder@1 (core/retry-ladder.mjs), fixture + spec/check-done-means-merged.mjs (267 checks). For the Opus phase: (1) the migration is dry-run only on purpose: it would move 216 records (192 built→landing, 23 complete→landing, 1 built→landed; 106 pre-pipeline complete records are unprovable and stay) — apply it with --apply once s7/s9 give landing builds a runner that moves them on, not before. (2) There is no plugins/auto-lander/ folder: the lander is framework/core/auto-lander.mjs (branch claude/server-auto-lander-fixes-lands, not yet on main), the gate plugin's lander.mjs and push-banner/land/. (3) check-done-means-merged.mjs already exists; s4 extends it and wires it into android.yml. (4) Every step done now lands in 'landing' (never built); merged = landed; complete only through the verify (s10). The Complete tab shows landing builds until s12 renames it Landing.",
-     "at": "2026-11-17T00:47:11.810Z"
-    },
-    {
-     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $12.73 · 140 turns · 6 tools, MCP none",
-     "at": "2026-11-17T00:47:55.547Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-server-rule-done-means-merged-working--earl.",
-     "at": "2026-11-17T03:33:26.306Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
-     "at": "2026-11-17T03:33:47.945Z"
-    },
-    {
-     "text": "Brief only: brief is 24397 characters (~6100 tokens), over the 24000-character budget: trim it to what this job needs",
-     "at": "2026-11-17T03:33:34.450Z"
-    },
-    {
-     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $27.76 · 365 turns · 6 tools, MCP none",
-     "at": "2026-11-17T04:16:42.077Z"
-    },
-    {
-     "text": "Brett: land after stop-auto-lander-committing-tracking",
-     "at": "2026-11-17T15:06:51.577Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-17T15:30:22.248Z"
-    },
-    {
-     "text": "Reconciler: PR #771 merged",
-     "at": "2026-11-17T19:07:15.016Z"
-    },
-    {
-     "text": "Watchdog: UI Review item r-20261117-yj8u501 → Complete: Its PR merged on main (PR #771 merged 2026-11-17T19:06:28Z (f549a7643afb); on main by squash f549a7643afb; build server-rule-done-means-merged-working: pending)",
-     "at": "2026-11-17T19:10:52.719Z"
-    },
-    {
-     "text": "Repeated steps collapsed: 18 → 17 (step-dedupe cleanup).",
-     "at": "2026-11-17T23:46:10.204Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:13:32.247Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:18:01.648Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2307 min past its budget).",
-     "at": "2026-11-19T14:23:01.277Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-19T14:24:01.548Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:34:02.103Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:39:01.187Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-19T14:44:01.143Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 3.",
-     "at": "2026-11-19T14:45:02.399Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T20:52:35.014Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T21:03:46.519Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
-     "at": "2026-11-19T21:09:02.150Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 4.",
-     "at": "2026-11-19T21:10:01.739Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:20:02.058Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:25:05.623Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:06:03.379Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:11:03.590Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
-     "at": "2026-11-19T22:16:01.483Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 5.",
-     "at": "2026-11-19T22:17:01.276Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:38:01.267Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:53:37.736Z"
-    },
-    {
-     "text": "Shipped manifest sm-server-rule-done-means-merged-working rev 1 sent to Shipped features (orchestrator): PR #771, 59 file(s), 0 test line(s), 5 open.",
-     "at": "2026-11-20T00:10:37Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:43:39.480Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:53:39.784Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T01:09:47.341Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
-     "at": "2026-11-20T01:15:02.563Z"
-    },
-    {
-     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
-     "at": "2026-11-20T01:16:01.941Z"
-    },
-    {
-     "text": "Watchdog: PR #771 merged 2026-11-17 19:06 and the build never heard: the merge is recorded, CI on f549a7643a is next.",
-     "at": "2026-11-23T22:05:37.170Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T03:35:37.646Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
-    "at": "2026-11-17T00:08:19.686Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "server-rule-done-means-merged-working",
-    "brief": "# Build: server-rule-done-means-merged-working\n\n## Brett said (verbatim)\nAt: 2026-11-17T00:08:19.686Z\n> We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\n\n## What to build\nContinue build \"Server rule: done means merged and working, never stop on failure\" (server-rule-done-means-merged-working) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 00:08):\n\"We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records\n[ ] s2 (~10 min) Schema and migration design: add the new statuses and an attempts[] field (attempt@1: n, kind, strategy, model, account, session, startedAt, endedAt, result, log link) to builds@1 in framework/core/build-pipeline.mjs and the builds-store normaliser so normBuild keeps them. Migrate existing built/complete records with no merged PR back to landing or fixing. Add fixture framework/spec/fixtures/done-means-merged.json\n[ ] s3 (~10 min) Retry-strategy engine framework/core/retry-ladder.mjs: given a build's attempts and the failure kind, return the next strategy (same approach retry, then a different fix strategy, then a fresh session, then another model/account, then escalate). Pure and deterministic, with a configurable max-attempt count, checked against the fixture\nRead first: framework/spec/DONE-MEANS-MERGED.md, apps/console-web/plugins/auto-lander/, framework/core/build-pipeline.mjs, framework/cli/builds-store.mjs, framework/spec/fixtures/done-means-merged.json, framework/core/retry-ladder.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-rule-done-means-merged-working \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s17",
-     "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:28:37.853Z",
-     "note": "",
-     "uid": "st-mwlaughy0dkj2k",
-     "createdAt": "2026-11-17T23:04:11.462Z"
-    },
-    {
-     "id": "s1",
-     "text": "Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records",
-     "model": "Fable",
-     "why": "Cross-app contract for build state that every builder, lander and view reads",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/spec/DONE-MEANS-MERGED.md",
-      "apps/console-web/plugins/auto-lander/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:23:53.408Z",
-     "note": "",
-     "uid": "st-mwjxw6550w3qw6",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s2",
-     "text": "Schema and migration design: add the new statuses and an attempts[] field (attempt@1: n, kind, strategy, model, account, session, startedAt, endedAt, result, log link) to builds@1 in framework/core/build-pipeline.mjs and the builds-store normaliser so normBuild keeps them. Migrate existing built/complete records with no merged PR back to landing or fixing. Add fixture framework/spec/fixtures/done-means-merged.json",
-     "model": "Fable",
-     "why": "builds@1 schema plus a migration of existing records",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/build-pipeline.mjs",
-      "framework/cli/builds-store.mjs",
-      "framework/spec/fixtures/done-means-merged.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:41:36.207Z",
-     "note": "",
-     "uid": "st-mwjxw6550xt78k",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s3",
-     "text": "Retry-strategy engine framework/core/retry-ladder.mjs: given a build's attempts and the failure kind, return the next strategy (same approach retry, then a different fix strategy, then a fresh session, then another model/account, then escalate). Pure and deterministic, with a configurable max-attempt count, checked against the fixture",
-     "model": "Fable",
-     "why": "Engine internals that the dispatcher, lander and gate all share",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/retry-ladder.mjs",
-      "framework/spec/fixtures/done-means-merged.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:46:37.580Z",
-     "note": "",
-     "uid": "st-mwjxw6550yr9lh",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s4",
-     "text": "Check script framework/spec/check-done-means-merged.mjs: status-transition guards (built and complete are refused without merge, green CI and verify), the migration loses nothing, the ladder never repeats a failed strategy, and escalation only comes after N different attempts. Wire it into the CI workflow",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/spec/check-done-means-merged.mjs",
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:35:37.646Z",
-     "note": "",
-     "uid": "st-mwjxw6550ze0pe",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s5",
-     "text": "Make the builds store enforce the guard: builds-store.mjs / builds-live.mjs refuse a set-status of built or complete unless the PR is merged, CI on main is green and verify passed, and record the refusal as a note",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/cli/builds-live.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:38:50.452Z",
-     "note": "",
-     "uid": "st-mwjxw65510qj34",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s6",
-     "text": "Add a gate rule 'done-means-merged' to the build-rules@1 store (VPS-side) with its brief text for every build brief: never stop on failure, retry, never mark done until merged + green + verified. Update framework/spec/BUILD-RULES.md",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "7 min",
-     "files": [
-      "framework/spec/BUILD-RULES.md",
-      "apps/console-web/plugins/gate/",
-      "build-rules/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:41:13.736Z",
-     "note": "",
-     "uid": "st-mwjxw65511nzn2",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s7",
-     "text": "Failure detector in the dispatcher: pipeline.mjs tick classifies crash, red CI, clash, push failure, stalled (no heartbeat) and fell-to-pending for every running or queued build, appends an attempt record and sets the status to fixing",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:43:53.575Z",
-     "note": "",
-     "uid": "st-mwjxw65512n3xu",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s8",
-     "text": "Auto-retry: pipeline.mjs asks retry-ladder for the next strategy and relaunches through deploy/claude-headless.sh with the strategy in the brief (a fix-strategy addendum, a fresh session, or --account/model per policy; never above the step's pinned model), logging each attempt",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "deploy/claude-headless.sh"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:49:09.262Z",
-     "note": "",
-     "uid": "st-mwjxw655139lcy",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s9",
-     "text": "Share with the auto-lander: it writes its CI-red/clash fix attempts into the same attempts[] (one log) and sets landing and landed; after the merge it marks complete only once CI on main is green",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/auto-lander/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:53:23.872Z",
-     "note": "",
-     "uid": "st-mwjxw65614zz51",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s10",
-     "text": "Feature verify after merge: run the build's verify command (from its brief/build record, defaulting to its checks) against main or the deployed console; a pass sets complete, a fail opens a fixing attempt",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/verify.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:55:23.008Z",
-     "note": "",
-     "uid": "st-mwjxw656157hj6",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s11",
-     "text": "Escalation: once the ladder says escalate, register one health@1 banner item (what broke, every attempt tried, since when, a Retry/Fix button) and send one phone push through axf.notify@1; declare it in notify.json. Never re-push the same escalation",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/notify.json",
-      "apps/console-web/plugins/systems-check/",
-      "apps/console-web/plugins/build-orchestrator/server/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T03:58:40.930Z",
-     "note": "",
-     "uid": "st-mwjxw65616uvaz",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s12",
-     "text": "UI: the build views show the real status chip (building, fixing, landing, landed, escalated) and an Attempts tab listing every attempt with its strategy, model, account and result. Tokens and framework controls only, TabGroup asset, control@1 targets registered",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/web/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T04:03:50.879Z",
-     "note": "",
-     "uid": "st-mwjxw65617t8il",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s13",
-     "text": "API parity: REST routes GET /attempts/<id> and POST /retry/<id> (with strategy), MCP through plugin-commands, CLI orchestrator.mjs attempts|retry, voice actions, deep link row:<build>/tab:attempts for console_show; check-console-control passes",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/",
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T04:07:10.216Z",
-     "note": "",
-     "uid": "st-mwjxw65618lf2p",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s14",
-     "text": "Tests: Python route tests plus a pipeline tick simulation (crash then red CI then different strategy then escalation; and the merged + green + verified path to complete). Run check-builds-store, check-build-steps and check-done-means-merged",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test.py",
-      "framework/spec/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T04:11:37.655Z",
-     "note": "",
-     "uid": "st-mwjxw65619lo56",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s15",
-     "text": "UI Review: submit 3 options for the Attempts tab and status chip (choices JSON, assets in plugins/build-orchestrator/assets/), and say in the PR that it is waiting there",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/assets/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T04:13:38.448Z",
-     "note": "",
-     "uid": "st-mwjxw6561au4lg",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    },
-    {
-     "id": "s16",
-     "text": "Final: run the full checks, write the report _claude/builds/reports/server-rule-done-means-merged-working.md (contract, ladder, API reach for each feature, before/after), add the THREADS row, push the branch and open the PR, link it with builds-live.mjs, and land it through the merge queue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/server-rule-done-means-merged-working.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T04:16:04.981Z",
-     "note": "",
-     "uid": "st-mwjxw6561bo38o",
-     "createdAt": "2026-11-17T00:13:50.489Z"
-    }
-   ]
-  },
-  {
    "id": "gate-auto-lander-tab-and-controls",
    "title": "Gate auto-lander tab and controls",
    "category": "",
@@ -179619,6 +179049,592 @@
      "note": "",
      "uid": "st-mwjxu5920vcuhh",
      "createdAt": "2026-11-17T00:12:16.022Z"
+    }
+   ]
+  },
+  {
+   "id": "server-rule-done-means-merged-working",
+   "title": "Server rule: done means merged and working, never stop on failure",
+   "category": "",
+   "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
+   "status": "landed",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/server-rule-done-means-merged-working",
+   "pr": "#771",
+   "mergedAt": "2026-11-17T19:06:28Z",
+   "priority": "P0",
+   "createdAt": "2026-11-17T00:08:19.686Z",
+   "updatedAt": "2026-11-23T22:45:27.280Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T00:08:24.492Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (3 Fable).",
+     "at": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-server-rule-done-means-merged-working--earl.",
+     "at": "2026-11-17T00:15:23.495Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
+     "at": "2026-11-17T00:15:33.018Z"
+    },
+    {
+     "text": "Phase 1 done (Fable): done-means-merged@1 contract (spec/DONE-MEANS-MERGED.md), builds@1 statuses fixing / landing / landed / escalated + attempt@1, failure, landed, escalation records (core/build-pipeline.mjs, builds-store-core normBuild, liveStatus), guardStatus, migrateDone + CLI 'builds-store.mjs done-means-merged [--apply]', retry-ladder@1 (core/retry-ladder.mjs), fixture + spec/check-done-means-merged.mjs (267 checks). For the Opus phase: (1) the migration is dry-run only on purpose: it would move 216 records (192 built→landing, 23 complete→landing, 1 built→landed; 106 pre-pipeline complete records are unprovable and stay) — apply it with --apply once s7/s9 give landing builds a runner that moves them on, not before. (2) There is no plugins/auto-lander/ folder: the lander is framework/core/auto-lander.mjs (branch claude/server-auto-lander-fixes-lands, not yet on main), the gate plugin's lander.mjs and push-banner/land/. (3) check-done-means-merged.mjs already exists; s4 extends it and wires it into android.yml. (4) Every step done now lands in 'landing' (never built); merged = landed; complete only through the verify (s10). The Complete tab shows landing builds until s12 renames it Landing.",
+     "at": "2026-11-17T00:47:11.810Z"
+    },
+    {
+     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $12.73 · 140 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:47:55.547Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-server-rule-done-means-merged-working--earl.",
+     "at": "2026-11-17T03:33:26.306Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
+     "at": "2026-11-17T03:33:47.945Z"
+    },
+    {
+     "text": "Brief only: brief is 24397 characters (~6100 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T03:33:34.450Z"
+    },
+    {
+     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $27.76 · 365 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:16:42.077Z"
+    },
+    {
+     "text": "Brett: land after stop-auto-lander-committing-tracking",
+     "at": "2026-11-17T15:06:51.577Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Reconciler: PR #771 merged",
+     "at": "2026-11-17T19:07:15.016Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-yj8u501 → Complete: Its PR merged on main (PR #771 merged 2026-11-17T19:06:28Z (f549a7643afb); on main by squash f549a7643afb; build server-rule-done-means-merged-working: pending)",
+     "at": "2026-11-17T19:10:52.719Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 18 → 17 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:46:10.204Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2307 min past its budget).",
+     "at": "2026-11-19T14:23:01.277Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 2.",
+     "at": "2026-11-19T14:24:01.548Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:34:02.103Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:39:01.187Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 3.",
+     "at": "2026-11-19T14:45:02.399Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T20:52:35.014Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T21:03:46.519Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
+     "at": "2026-11-19T21:09:02.150Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 4.",
+     "at": "2026-11-19T21:10:01.739Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:20:02.058Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:25:05.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:06:03.379Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:11:03.590Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
+     "at": "2026-11-19T22:16:01.483Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 5.",
+     "at": "2026-11-19T22:17:01.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z"
+    },
+    {
+     "text": "Shipped manifest sm-server-rule-done-means-merged-working rev 1 sent to Shipped features (orchestrator): PR #771, 59 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-20T00:10:37Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:43:39.480Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:53:39.784Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T01:09:47.341Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
+     "at": "2026-11-20T01:15:02.563Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T01:16:01.941Z"
+    },
+    {
+     "text": "Watchdog: PR #771 merged 2026-11-17 19:06 and the build never heard: the merge is recorded, CI on f549a7643a is next.",
+     "at": "2026-11-23T22:05:37.170Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on f549a7643a: landed.",
+     "at": "2026-11-23T22:45:27.280Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:35:37.646Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+    "at": "2026-11-17T00:08:19.686Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "server-rule-done-means-merged-working",
+    "brief": "# Build: server-rule-done-means-merged-working\n\n## Brett said (verbatim)\nAt: 2026-11-17T00:08:19.686Z\n> We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\n\n## What to build\nContinue build \"Server rule: done means merged and working, never stop on failure\" (server-rule-done-means-merged-working) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 00:08):\n\"We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records\n[ ] s2 (~10 min) Schema and migration design: add the new statuses and an attempts[] field (attempt@1: n, kind, strategy, model, account, session, startedAt, endedAt, result, log link) to builds@1 in framework/core/build-pipeline.mjs and the builds-store normaliser so normBuild keeps them. Migrate existing built/complete records with no merged PR back to landing or fixing. Add fixture framework/spec/fixtures/done-means-merged.json\n[ ] s3 (~10 min) Retry-strategy engine framework/core/retry-ladder.mjs: given a build's attempts and the failure kind, return the next strategy (same approach retry, then a different fix strategy, then a fresh session, then another model/account, then escalate). Pure and deterministic, with a configurable max-attempt count, checked against the fixture\nRead first: framework/spec/DONE-MEANS-MERGED.md, apps/console-web/plugins/auto-lander/, framework/core/build-pipeline.mjs, framework/cli/builds-store.mjs, framework/spec/fixtures/done-means-merged.json, framework/core/retry-ladder.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-rule-done-means-merged-working \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s17",
+     "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:28:37.853Z",
+     "note": "",
+     "uid": "st-mwlaughy0dkj2k",
+     "createdAt": "2026-11-17T23:04:11.462Z"
+    },
+    {
+     "id": "s1",
+     "text": "Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records",
+     "model": "Fable",
+     "why": "Cross-app contract for build state that every builder, lander and view reads",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/DONE-MEANS-MERGED.md",
+      "apps/console-web/plugins/auto-lander/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:23:53.408Z",
+     "note": "",
+     "uid": "st-mwjxw6550w3qw6",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s2",
+     "text": "Schema and migration design: add the new statuses and an attempts[] field (attempt@1: n, kind, strategy, model, account, session, startedAt, endedAt, result, log link) to builds@1 in framework/core/build-pipeline.mjs and the builds-store normaliser so normBuild keeps them. Migrate existing built/complete records with no merged PR back to landing or fixing. Add fixture framework/spec/fixtures/done-means-merged.json",
+     "model": "Fable",
+     "why": "builds@1 schema plus a migration of existing records",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs",
+      "framework/cli/builds-store.mjs",
+      "framework/spec/fixtures/done-means-merged.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:41:36.207Z",
+     "note": "",
+     "uid": "st-mwjxw6550xt78k",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s3",
+     "text": "Retry-strategy engine framework/core/retry-ladder.mjs: given a build's attempts and the failure kind, return the next strategy (same approach retry, then a different fix strategy, then a fresh session, then another model/account, then escalate). Pure and deterministic, with a configurable max-attempt count, checked against the fixture",
+     "model": "Fable",
+     "why": "Engine internals that the dispatcher, lander and gate all share",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/retry-ladder.mjs",
+      "framework/spec/fixtures/done-means-merged.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:46:37.580Z",
+     "note": "",
+     "uid": "st-mwjxw6550yr9lh",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s4",
+     "text": "Check script framework/spec/check-done-means-merged.mjs: status-transition guards (built and complete are refused without merge, green CI and verify), the migration loses nothing, the ladder never repeats a failed strategy, and escalation only comes after N different attempts. Wire it into the CI workflow",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-done-means-merged.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:35:37.646Z",
+     "note": "",
+     "uid": "st-mwjxw6550ze0pe",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the builds store enforce the guard: builds-store.mjs / builds-live.mjs refuse a set-status of built or complete unless the PR is merged, CI on main is green and verify passed, and record the refusal as a note",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:38:50.452Z",
+     "note": "",
+     "uid": "st-mwjxw65510qj34",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add a gate rule 'done-means-merged' to the build-rules@1 store (VPS-side) with its brief text for every build brief: never stop on failure, retry, never mark done until merged + green + verified. Update framework/spec/BUILD-RULES.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/spec/BUILD-RULES.md",
+      "apps/console-web/plugins/gate/",
+      "build-rules/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:41:13.736Z",
+     "note": "",
+     "uid": "st-mwjxw65511nzn2",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s7",
+     "text": "Failure detector in the dispatcher: pipeline.mjs tick classifies crash, red CI, clash, push failure, stalled (no heartbeat) and fell-to-pending for every running or queued build, appends an attempt record and sets the status to fixing",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:43:53.575Z",
+     "note": "",
+     "uid": "st-mwjxw65512n3xu",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s8",
+     "text": "Auto-retry: pipeline.mjs asks retry-ladder for the next strategy and relaunches through deploy/claude-headless.sh with the strategy in the brief (a fix-strategy addendum, a fresh session, or --account/model per policy; never above the step's pinned model), logging each attempt",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "deploy/claude-headless.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:49:09.262Z",
+     "note": "",
+     "uid": "st-mwjxw655139lcy",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s9",
+     "text": "Share with the auto-lander: it writes its CI-red/clash fix attempts into the same attempts[] (one log) and sets landing and landed; after the merge it marks complete only once CI on main is green",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/auto-lander/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:53:23.872Z",
+     "note": "",
+     "uid": "st-mwjxw65614zz51",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s10",
+     "text": "Feature verify after merge: run the build's verify command (from its brief/build record, defaulting to its checks) against main or the deployed console; a pass sets complete, a fail opens a fixing attempt",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/verify.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:55:23.008Z",
+     "note": "",
+     "uid": "st-mwjxw656157hj6",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s11",
+     "text": "Escalation: once the ladder says escalate, register one health@1 banner item (what broke, every attempt tried, since when, a Retry/Fix button) and send one phone push through axf.notify@1; declare it in notify.json. Never re-push the same escalation",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/systems-check/",
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T03:58:40.930Z",
+     "note": "",
+     "uid": "st-mwjxw65616uvaz",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s12",
+     "text": "UI: the build views show the real status chip (building, fixing, landing, landed, escalated) and an Attempts tab listing every attempt with its strategy, model, account and result. Tokens and framework controls only, TabGroup asset, control@1 targets registered",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:03:50.879Z",
+     "note": "",
+     "uid": "st-mwjxw65617t8il",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s13",
+     "text": "API parity: REST routes GET /attempts/<id> and POST /retry/<id> (with strategy), MCP through plugin-commands, CLI orchestrator.mjs attempts|retry, voice actions, deep link row:<build>/tab:attempts for console_show; check-console-control passes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:07:10.216Z",
+     "note": "",
+     "uid": "st-mwjxw65618lf2p",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s14",
+     "text": "Tests: Python route tests plus a pipeline tick simulation (crash then red CI then different strategy then escalation; and the merged + green + verified path to complete). Run check-builds-store, check-build-steps and check-done-means-merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test.py",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:11:37.655Z",
+     "note": "",
+     "uid": "st-mwjxw65619lo56",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s15",
+     "text": "UI Review: submit 3 options for the Attempts tab and status chip (choices JSON, assets in plugins/build-orchestrator/assets/), and say in the PR that it is waiting there",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:13:38.448Z",
+     "note": "",
+     "uid": "st-mwjxw6561au4lg",
+     "createdAt": "2026-11-17T00:13:50.489Z"
+    },
+    {
+     "id": "s16",
+     "text": "Final: run the full checks, write the report _claude/builds/reports/server-rule-done-means-merged-working.md (contract, ladder, API reach for each feature, before/after), add the THREADS row, push the branch and open the PR, link it with builds-live.mjs, and land it through the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/server-rule-done-means-merged-working.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:16:04.981Z",
+     "note": "",
+     "uid": "st-mwjxw6561bo38o",
+     "createdAt": "2026-11-17T00:13:50.489Z"
     }
    ]
   },
