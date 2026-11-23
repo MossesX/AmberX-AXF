@@ -18,9 +18,11 @@ Everything written goes through redact() first (session@1 rule), whatever the so
 from __future__ import annotations
 
 import json
+import os
 import re
 import sqlite3
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +54,7 @@ CREATE TABLE IF NOT EXISTS cursors (path TEXT PRIMARY KEY, size INTEGER NOT NULL
 CREATE TABLE IF NOT EXISTS runs (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, report TEXT NOT NULL);
 """
 
+UPLOAD_GAP_S = float(os.environ.get("AXF_CHAT_VIEWER_UPLOAD_GAP_S") or 1800)  # seconds between whole-file copies to axf-data
 META_FIELDS = ("via", "origin", "model", "branch", "cwd", "host")
 
 
@@ -68,6 +71,8 @@ class Store:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
+        self._dirty = False  # written since the last copy went to axf-data
+        self._uploaded_at = 0.0
         data_store.sqlite_hydrate(self.path)  # data-store@1 (blob-sqlite): the newest copy from axf-data in cutover
         self.db = sqlite3.connect(str(self.path), check_same_thread=False, isolation_level=None)
         self.db.row_factory = sqlite3.Row
@@ -82,6 +87,29 @@ class Store:
     def close(self) -> None:
         with self._lock:
             self.db.close()
+
+    def flush(self, force: bool = False) -> bool:
+        """data-store@1 (blob-sqlite): send the file to axf-data when it has changed, at most once per UPLOAD_GAP_S.
+
+        The copy is the whole file (VACUUM INTO + one PUT), so it is never sent per write: a sync that stores a
+        hundred sessions used to send the file a hundred times. Writes mark the store dirty; the end of a sync run
+        (and any write once the gap has passed) sends one copy. The local file stays the working copy throughout."""
+        with self._lock:
+            if not self._dirty or (not force and time.time() - self._uploaded_at < UPLOAD_GAP_S):
+                return False
+            self._dirty = False
+            self._uploaded_at = time.time()
+            try:
+                return bool(data_store.sqlite_upload(self.path, self.db))
+            except Exception:
+                self._dirty = True
+                raise
+
+    def _changed(self) -> None:
+        self._dirty = True
+        if self._uploaded_at == 0.0:
+            self._uploaded_at = time.time()  # the first copy waits one gap too: a restart must not resend the file
+        self.flush()
 
     # ------------------------------------------------------------------ writes
 
@@ -104,7 +132,7 @@ class Store:
             except Exception:
                 self.db.execute("ROLLBACK")
                 raise
-            data_store.sqlite_upload(self.path, self.db)  # data-store@1: after the commit, never inside it
+            self._changed()  # data-store@1: after the commit, never inside it (see flush)
             return change
 
     def _upsert(self, cur: sqlite3.Row | None, s: dict[str, Any], msgs: list[dict[str, Any]], title: str, now: str, append: bool) -> str:
@@ -193,7 +221,7 @@ class Store:
                 self.db.execute(f"DELETE FROM {t} WHERE session_id=?", (sid,))  # noqa: S608 — fixed table names
             self.db.execute("UPDATE cursors SET offset=0, size=-1 WHERE session_id=?", (sid,))
             self.db.execute("COMMIT")
-            data_store.sqlite_upload(self.path, self.db)
+            self._changed()
             return n > 0
 
     # ------------------------------------------------------------------ reads

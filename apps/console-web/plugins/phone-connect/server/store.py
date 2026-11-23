@@ -103,19 +103,47 @@ def command(cid: str) -> dict | None:
     return c if isinstance(c, dict) else None
 
 
+# A finished command (done / failed) never changes again, so its file is read once per process and then served from
+# memory: the phone's long poll lists the commands every second, and reading every finished file each time kept a
+# core busy. Open commands are always read fresh; the folder listing still decides what exists.
+FINAL = ("done", "failed")
+_final: dict[str, dict[str, dict]] = {}  # data folder → id → finished command
+
+
+def _finals() -> dict[str, dict]:
+    return _final.setdefault(str(_pd().dir), {})
+
+
 def commands(device_id: str = "", limit: int = 100) -> list[dict]:
-    out = [c for c in (command(i) for i in _list("commands")) if c and (not device_id or c.get("deviceId") == device_id)]
-    return sorted(out, key=lambda c: c.get("at") or "", reverse=True)[:limit]
+    import copy
+    kept = _finals()
+    ids = _list("commands")
+    out = []
+    for i in ids:
+        c = kept.get(i)
+        if c is None:
+            c = command(i)
+            if c and c.get("status") in FINAL:
+                kept[i] = c
+        if c and (not device_id or c.get("deviceId") == device_id):
+            out.append(c)
+    if len(kept) > len(ids):
+        have = set(ids)
+        for i in [k for k in kept if k not in have]:
+            kept.pop(i, None)
+    return [copy.deepcopy(c) for c in sorted(out, key=lambda c: c.get("at") or "", reverse=True)[:limit]]
 
 
 def save_command(c: dict) -> dict:
     with LOCK:
+        _finals().pop(c["id"], None)
         _pd().write_json(f"commands/{c['id']}.json", c)
     return c
 
 
 def drop_command(cid: str) -> bool:
     with LOCK:
+        _finals().pop(cid, None)
         return data_store.remove(_pd().path(f"commands/{cid}.json"))
 
 
