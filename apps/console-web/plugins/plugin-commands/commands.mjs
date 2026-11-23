@@ -282,7 +282,8 @@ async function serve() {
   for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {
     if (!line.trim()) continue;
     let out;
-    try { out = serveOne(JSON.parse(line), state); } catch (e) { out = { id: null, ok: false, error: String(e?.message ?? e).slice(0, 600) }; }
+    let id = null;
+    try { const req = JSON.parse(line); id = req?.id ?? null; out = serveOne(req, state); } catch (e) { out = { id, ok: false, error: String(e?.message ?? e).slice(0, 600) }; } // the id always goes back: the caller waits for it
     process.stdout.write(`${JSON.stringify(out)}\n`);
   }
 }

@@ -82,6 +82,7 @@ def _project(b: dict[str, Any]) -> str:
     return p
 
 
+@router.get("")  # the plugin command route (asked without the trailing slash)
 @router.get("/")
 def list_projects() -> dict[str, Any]:
     return _read("state")

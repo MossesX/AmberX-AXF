@@ -35,6 +35,7 @@ def _endpoint(path: str, method: str) -> Any:
     raise RuntimeError(f"host_services_routes has no {method} {path}")
 
 
+@router.get("")  # the list read (plugin command `list`, the Home card) asks without the trailing slash
 @router.get("/")
 def list_services(fresh: bool = False) -> dict[str, Any]:
     return _endpoint("/", "GET")(fresh=fresh)

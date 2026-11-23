@@ -425,7 +425,7 @@ def next_call(d: dict, at: str = "") -> dict[str, Any] | None:
         if timed or tick - last["sweep"] >= SWEEP_EVERY_S:
             last["sweep"] = tick
             sweep(at)
-        for c in sorted(S.commands(d["deviceId"], limit=200), key=lambda c: c["at"]):
+        for c in sorted(S.commands(d["deviceId"], limit=200, open_only=True), key=lambda c: c["at"]):
             if c.get("status") == "queued":
                 S.save_command({**c, "status": "sent", "sentAt": at, "updatedAt": at})
                 return E.to_wire(c)

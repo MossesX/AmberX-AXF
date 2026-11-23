@@ -102,4 +102,20 @@ c = cli('check');
 ok(c.status === 1 && c.stdout.includes('✗ fixture-quiet') && c.stdout.includes('no reads'), 'check fails a plugin without reads or a block');
 eq(await main(['plugins', 'fixture-todos']), 0, 'main() for axf.mjs');
 
+// serve: one long-lived runner for the console server (a JSON line each way; the id always comes back)
+{
+  const { serveOne } = await import('./commands.mjs');
+  const state = {};
+  const reg = registry();
+  const first = serveOne({ id: 1, op: 'plan', body: { command: act('fixture-plans/state'), registrySig: 'a', registry: reg } }, state);
+  ok(first.id === 1 && first.ok && first.result.dispatch, 'serve: plan with the registry');
+  ok(serveOne({ id: 2, op: 'plan', body: { command: act('fixture-plans/state'), registrySig: 'a' } }, state).result.dispatch, 'serve: the registry is kept by its signature');
+  eq(serveOne({ id: 3, op: 'plan', body: { command: act('fixture-plans/state'), registrySig: 'b' } }, state).error, 'registry_needed', 'serve: another signature asks for the registry');
+  ok(serveOne({ id: 4, op: 'bundle', body: {} }, state).result.tools.length > 0, 'serve: bundle');
+  eq(serveOne({ id: 5, op: 'nope' }, state).ok, false, 'serve: unknown op fails with its id');
+  const out = spawnSync(process.execPath, [fileURLToPath(new URL('./commands.mjs', import.meta.url)), 'serve'], { input: 'not json\n{"id":7,"op":"nope"}\n', encoding: 'utf8', env: process.env });
+  const lines = out.stdout.trim().split('\n').map((l) => JSON.parse(l));
+  ok(lines.length === 2 && lines[0].ok === false && lines[1].id === 7, 'serve: every line is answered, errors included');
+}
+
 console.log(`✓ plugin commands runner — ${n} checks`);
