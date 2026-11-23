@@ -63,9 +63,9 @@ const TRIAGE = {
   ok: true, $axf: triage.SCHEMA, config: { ...triage.defaultConfig(), rev: 3, at: inMin(-90), by: 'console:brett' }, registry: triage.REGISTRY, path: '/projects/amberx-axf/_data/model-triage/config.json', stored: true,
   approvalRequired: false, approvalSource: 'builds.fableUpgradeApproval default (off)', buildPin: null,
   decisions: [
-    decided({ build: 'plan-studio-live-steps', step: 's3', title: 'Plan Studio live steps' }, { text: 'Rename the step labels in the outline', files: ['apps/console-web/plugins/plan-studio-2/web/ui.tsx'], suggested: 'Opus', suggestedBy: 'splitter' }, 2),
+    decided({ build: 'plan-studio-live-steps', step: 's3', title: 'Plan Studio live steps' }, { text: 'Rename the step labels in the outline', files: ['apps/console-web/src/outline/labels.tsx'], suggested: 'Opus', suggestedBy: 'splitter' }, 2),
     decided({ build: 'plan-studio-live-steps', step: 's2', title: 'Plan Studio live steps' }, { text: 'Read the steps from the builds store', files: ['framework/plan/builds-store-core.mjs'] }, 2),
-    decided({ build: 'plan-studio-live-steps', step: 's1', title: 'Plan Studio live steps' }, { text: 'Add the sync button', files: ['apps/console-web/plugins/plan-studio-2/web/index.tsx'], priorFailures: 1, current: 'Opus' }, 3),
+    decided({ build: 'plan-studio-live-steps', step: 's1', title: 'Plan Studio live steps' }, { text: 'Add the sync button', files: ['apps/console-web/src/outline/sync.tsx'], priorFailures: 1, current: 'Opus' }, 3),
     decided({ name: 'lander-fix-pr912-1', build: 'console-tabs-plugins', title: 'Fix PR #912 so it can land' }, { lane: 'lander-fix', kind: 'ci-red', text: 'CI is red on 7e6a5f9' }, 14),
     decided({ build: 'hotfix-console-deploy', step: 's1', title: 'Hotfix: console deploy' }, { lane: 'emergency', text: 'Fix the deploy script', files: ['deploy/install-console.sh'], pin: { model: 'Fable', by: 'Brett' } }, 31),
     decided({ name: 'gate-rules-ui-rebuild', title: 'Hand build: Gates and Rules UI rebuild' }, { lane: 'hand', text: 'Tidy the tab labels and spacing', requested: 'fable' }, 55),

@@ -2455,7 +2455,7 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "Build vps-model-triage-gate (Nov 23 2026; Brett, Nov 21: \"the orchestrator stops choosing models\"): model-triage@1, framework/core/model-triage.mjs (rules, decide) + framework/cli/model-triage.mjs (store, measured facts, decision log, CLI). Every lane asks it: orchestrator steps (split, assigning-models, retries), emergency builds, hand builds (deploy/claude-headless.sh) and lander fix sessions. Decisions on the step (triage) and in the log. Builds → VPS Configuration → Model triage (tab:gate.tabs=model-triage); REST /api/plugins/gate/model-triage, MCP vps_model_triage*, CLI axf gate model-triage, voice vps.model-triage.*. Tests: framework/spec/check-model-triage.mjs, build-orchestrator test/p2-triage.test.mjs. Kotlin twin deferred (PORTING.md)."
+    "notes": "Build vps-model-triage-gate (Nov 23 2026; Brett, Nov 21: \"the orchestrator stops choosing models\"): model-triage@1, framework/core/model-triage.mjs (rules, decide) + framework/cli/model-triage.mjs (store, measured facts, decision log, CLI). Every lane asks it: orchestrator steps (split, assigning-models, retries), emergency builds, hand builds (deploy/claude-headless.sh) and lander fix sessions. Decisions on the step (triage) and in the log. Builds → VPS Configuration → Model triage (tab:gate.tabs=model-triage); REST model-triage routes of the VPS Configuration plugin, MCP vps_model_triage*, CLI axf gate model-triage, voice vps.model-triage.*. Tests: framework/spec/check-model-triage.mjs, build-orchestrator test/p2-triage.test.mjs. Kotlin twin deferred (PORTING.md)."
   },
   "cx.phone": {
     "status": "built",
