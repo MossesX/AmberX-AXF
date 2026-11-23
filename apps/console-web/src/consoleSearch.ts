@@ -66,11 +66,18 @@ export function installConsoleSearch(rt: AxfRuntime): () => void {
     };
   });
 
+  // The plan, tracker and pending lists are read the first time something searches (then kept fresh while the tab is
+  // visible), not at start: a console nobody searches in never asks for them.
+  let used = 0;
+  const want = <T,>(list: () => T): T => {
+    if (!used || Date.now() - used > REFRESH_MS) { used = Date.now(); refresh(); }
+    return list();
+  };
   const removers = [
-    rt.search.add('console.plan', () => plan),
-    rt.search.add('console.tracker', () => tracker),
-    rt.search.add('console.pending', () => pending),
-    rt.search.add('console.plugins', plugins),
+    rt.search.add('console.plan', () => want(() => plan)),
+    rt.search.add('console.tracker', () => want(() => tracker)),
+    rt.search.add('console.pending', () => want(() => pending)),
+    rt.search.add('console.plugins', () => want(plugins)),
   ];
   // console.plan.open:<feature id> → the feature in its own window (same as the Plan view's "Open in window")
   rt.actions.register('console.plan.open', ([id]) => {
@@ -79,16 +86,13 @@ export function installConsoleSearch(rt: AxfRuntime): () => void {
     rt.windows.openFloating([{ id: `plan-${id}-${Date.now().toString(36)}`, title: f?.label ?? id, kind: 'plan-feature', payload: id, icon: 'layers' }], f?.label ?? id, 'floating', 460, 620);
   }, { label: 'Open a plan feature', params: true });
 
-  refresh();
-  const onPlan = () => void loadPlanEntries();
-  const onPlugins = () => void loadPlugins();
+  const onPlan = () => { if (used) void loadPlanEntries(); };
+  const onPlugins = () => { if (used) void loadPlugins(); };
   globalThis.addEventListener('axf:plan-changed', onPlan);
   globalThis.addEventListener(PLUGINS_CHANGED, onPlugins);
-  const timer = setInterval(refresh, REFRESH_MS);
   return () => {
     removers.forEach((r) => r());
     globalThis.removeEventListener('axf:plan-changed', onPlan);
     globalThis.removeEventListener(PLUGINS_CHANGED, onPlugins);
-    clearInterval(timer);
   };
 }

@@ -9,7 +9,7 @@
  * GET/PUT /api/home/layout (a local copy keeps Home drawn while the server is away). The console's five starter
  * cards are card@1 assets in src/assets/card.
  */
-import { useEffect, useMemo, useState, useSyncExternalStore, type DragEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type DragEvent, type ReactNode, type RefObject } from 'react';
 import {
   CARD_DROP_MIME, LIVE_FALLBACK_MS, applyLayout, cardFromDrop, cardKey, cardModel, cardSources, cardViews, defaultFields,
   fieldsOf, homeCards, liveHit, normalizeCard, normalizeLayout, pathGet, pickView, reduceValue, applyWhere, refreshMs, suggestCards,
@@ -149,23 +149,57 @@ async function readUrl(url: string, name: string): Promise<unknown> {
   return rest;
 }
 
-/** A card's result, kept fresh: every N s, on the live feed (with a slow fallback), or by hand (`reload`). */
-export function useCardResult(card: CardData, store: ConsoleStore) {
+/**
+ * True while the element is on screen in a visible tab. A card reads its plugin only then: a card below the fold, on a
+ * hidden tab or behind another screen asks the server for nothing (lazy loading covers a plugin's data, not only its code).
+ */
+export function useOnScreen(ref: RefObject<Element | null>): boolean {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let inView = typeof IntersectionObserver === 'undefined';
+    const tell = () => setOn(inView && (typeof document === 'undefined' || document.visibilityState === 'visible'));
+    const io = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver((es) => { inView = es.some((e) => e.isIntersecting); tell(); }, { rootMargin: '120px' });
+    io?.observe(el);
+    document.addEventListener('visibilitychange', tell);
+    tell();
+    return () => { io?.disconnect(); document.removeEventListener('visibilitychange', tell); };
+  }, [ref]);
+  return on;
+}
+
+/** A read that answered "there is no such plugin or read": asking again cannot help, so the card stops asking. */
+const gone = (e: unknown) => /\b(404|no plugin|has no read|not installed)\b/i.test(String((e as Error)?.message ?? e));
+
+/**
+ * A card's result, kept fresh: every N s, on the live feed (with a slow fallback), or by hand (`reload`).
+ * `active` (default true): false = the card is not on screen, so nothing is read; it reads when it comes back.
+ */
+export function useCardResult(card: CardData, store: ConsoleStore, active = true) {
   const [res, setRes] = useState<{ value?: unknown; error?: string; at?: number }>({});
   const [tick, setTick] = useState(0);
   const key = cardKey(card);
   const isConsole = card.source.kind === 'console';
+  const lastRead = useRef({ key: '', at: 0, tick: 0, dead: false });
   useEffect(() => {
-    if (isConsole || !card.source.plugin || !card.source.command) return;
+    if (isConsole || !card.source.plugin || !card.source.command || !active) return;
     let live = true;
-    const go = () => readCommand(card.source.plugin ?? '', card.source.command ?? '', card.args).then((value) => live && setRes({ value, at: Date.now() }), (e) => live && setRes((r) => ({ ...r, error: String(e?.message ?? e) })));
-    void go();
     const ms = refreshMs(card) || (card.refresh.kind === 'live' ? LIVE_FALLBACK_MS : 0);
+    const mark = lastRead.current;
+    if (mark.key !== key || mark.tick !== tick) lastRead.current = { key, at: 0, tick, dead: false };
+    const go = () => {
+      if (lastRead.current.dead) return undefined;
+      lastRead.current.at = Date.now();
+      return readCommand(card.source.plugin ?? '', card.source.command ?? '', card.args).then((value) => live && setRes({ value, at: Date.now() }), (e) => { if (gone(e)) lastRead.current.dead = true; return live && setRes((r) => ({ ...r, error: String(e?.message ?? e) })); });
+    };
+    // back on screen: read again only when the last answer is older than the card's own refresh (never read: now)
+    if (!lastRead.current.at || (ms && Date.now() - lastRead.current.at >= ms)) void go();
     const timer = ms ? setInterval(go, ms) : undefined;
     let last = 0;
     const off = card.refresh.kind === 'live' ? onLive((ch) => { if (liveHit(card, ch) && Date.now() - last > 2000) { last = Date.now(); void go(); } }) : undefined;
     return () => { live = false; if (timer) clearInterval(timer); off?.(); };
-  }, [key, card.refresh.kind, card.refresh.every, tick, isConsole]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [key, card.refresh.kind, card.refresh.every, tick, isConsole, active]); // eslint-disable-line react-hooks/exhaustive-deps
   if (isConsole) {
     const r = CONSOLE_READS[card.source.id ?? ''];
     return { value: r ? r.read(store) : undefined, error: r ? undefined : `The console has no read ${card.source.id}.`, loading: false, reload: () => setTick((t) => t + 1) };
@@ -182,7 +216,8 @@ export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; inde
   const s = useStore();
   const rt = useRuntime();
   const { card } = entry;
-  const { value, error, loading, reload } = useCardResult(card, s);
+  const box = useRef<HTMLDivElement>(null);
+  const { value, error, loading, reload } = useCardResult(card, s, useOnScreen(box));
   const [over, setOver] = useState(false);
   const model = useMemo(() => (value === undefined ? null : cardModel({ ...card, size: entry.size }, value)), [value, card, entry.size]);
   const panel = card.source.kind === 'console' ? CONSOLE_READS[card.source.id ?? '']?.panel : undefined;
@@ -196,13 +231,13 @@ export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; inde
     'data-card': entry.id,
   };
   if (panel && card.view === 'panel') {
-    return <div {...drag} data-fx-ctx-target={HOME_CARD_CTX} data-fx-ctx-payload={entry.id}>{panel()}</div>;
+    return <div ref={box} {...drag} data-fx-ctx-target={HOME_CARD_CTX} data-fx-ctx-payload={entry.id}>{panel()}</div>;
   }
   const more = (
     <IconButton icon="more" label={`${card.title}: card menu`} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, HOME_CARD_CTX, entry.id); }} />
   );
   return (
-    <div {...drag}>
+    <div ref={box} {...drag}>
       <DataCard
         title={card.title || 'Card'} icon={card.icon} model={model} loading={loading} error={error} size={entry.size}
         ctx={HOME_CARD_CTX} ctxPayload={entry.id}
