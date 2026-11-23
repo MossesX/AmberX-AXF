@@ -207,6 +207,8 @@ final class OverlayRules {
         }
 
         boolean held() { return OverlayContract.HELD_KIND.equals(kind); }
+        /** The hub's own id (the item id without its {@code held:} / {@code approval:} prefix): what the console opens. */
+        String ref() { return id.substring(id.indexOf(':') + 1); }
         boolean timed() { return held() && !shelved && runsAt > 0; }
     }
 
@@ -288,6 +290,46 @@ final class OverlayRules {
         if (items.isEmpty()) return TOOLBAR;
         if (APPROVALS.equals(now)) return APPROVALS; // already open: stays open while anything waits
         return popsFor(c, items, seen) ? APPROVALS : TOOLBAR;
+    }
+
+    // ---- the card: a new item pops the console's own approval card over whatever is on screen ---------------------
+
+    /** How long after its countdown a held command still shows ("Running now") when the hub can't be read. */
+    static final long RAN_GRACE_MS = 5_000;
+    /** How long the overlay stays open after the last item of a card it popped by itself is decided or has run. */
+    static final long FOLD_AFTER_MS = 3_000;
+
+    /**
+     * The item whose card pops: the first one that wasn't shown before and that the {@code expand} setting lets
+     * through, or null. The card is the console's own (Approve / Deny, the countdown), so the tap on it is Brett's.
+     */
+    static Item cardFor(Config c, List<Item> items, Set<String> seen) {
+        for (Item i : items) if (!seen.contains(i.id) && opensFor(c, i)) return i;
+        return null;
+    }
+
+    /**
+     * The state after a reading of the hub's list. A new item pops the card: the overlay expands onto the console
+     * (over whatever app is in front) at once, not when the toolbar is tapped. With the console already on screen
+     * ({@code pageOnScreen}: the app is in front) the page shows its own card and the toolbar opens its bar.
+     */
+    static String afterFeed(String now, Config c, List<Item> items, Set<String> seen, boolean pageOnScreen) {
+        if (EXPANDED.equals(now)) return EXPANDED;
+        if (items.isEmpty()) return TOOLBAR;
+        if (cardFor(c, items, seen) != null) return pageOnScreen ? APPROVALS : EXPANDED;
+        return APPROVALS.equals(now) ? APPROVALS : TOOLBAR;
+    }
+
+    /** True when an overlay that expanded by itself for a card folds back: nothing waits any more. */
+    static boolean foldsWhenClear(String now, boolean expandedForCard, List<Item> items) {
+        return EXPANDED.equals(now) && expandedForCard && items.isEmpty();
+    }
+
+    /** The items still waiting at {@code now}: a held command whose countdown ended {@link #RAN_GRACE_MS} ago has run. */
+    static List<Item> unexpired(List<Item> items, long now) {
+        List<Item> out = new ArrayList<>();
+        if (items != null) for (Item i : items) if (!i.timed() || now <= i.runsAt + RAN_GRACE_MS) out.add(i);
+        return out;
     }
 
     /** Drops ids from {@code seen} that no longer wait, so a later call with the same id pops the bar again. */

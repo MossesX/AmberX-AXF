@@ -35,10 +35,14 @@ import java.util.Set;
  *
  * - **Toolbar**: a small bar (console button, approvals badge) at the side of the screen; drag it anywhere, it settles
  *   on the nearer side and remembers the height.
- * - **Approvals**: when an approval waits (the page reports it with {@code axfNative.overlay.approvals}), the approval
- *   bar opens out of the toolbar with what waits and an "Open approvals" link to the console's approvals page.
+ * - **Approvals**: the approval bar opened out of the toolbar with what waits and an "Open approvals" link to
+ *   axHub's approvals page.
  * - **Expanded**: the full-screen console (the app's one WebView, {@link WebHost}) in an overlay window with the
  *   toolbar docked top-left, in front of whatever app was showing. One tap collapses it to the toolbar again.
+ *
+ * What waits is axHub's live list, read by the shell itself ({@link ApprovalFeed}), never a count kept here. A new
+ * item pops its card at once: the overlay expands onto the console's own approval card (Approve / Deny, the
+ * countdown) over whatever is on screen, and folds back once nothing waits ({@link OverlayRules#afterFeed}).
  *
  * A foreground service: it keeps the process (and so the console page and its live stream) running while another app
  * is on screen. Everything is reachable without touching it: {@code axfNative.overlay.*} in the page, and the intents
@@ -57,9 +61,11 @@ public class OverlayService extends Service {
     /** How many approvals waited when the bar was dismissed: it stays closed until a new one arrives. */
     static int dismissedAt;
     static String firstTitle = "";
-    /** What waits, one by one, once the page sends items ({@code overlayItems}); soonest first. */
+    /** What waits, one by one (the hub's list; the page's {@code overlayItems} until the hub answers); soonest first. */
     static List<OverlayRules.Item> items = new ArrayList<>();
-    static boolean itemsFromPage;
+    static boolean haveItems;
+    /** The overlay expanded by itself to show a card: it folds back once nothing waits. A tap on the toolbar clears it. */
+    static boolean expandedForCard;
     /** Ids already shown in the bar or dismissed: they don't pop it again. */
     static final Set<String> seen = new HashSet<>();
 
@@ -68,7 +74,13 @@ public class OverlayService extends Service {
     private TextView consoleBtn, badge, label, bar, link, dismiss;
     /** Re-renders the countdowns once a second while a held command counts down. */
     private final Handler tick = new Handler(Looper.getMainLooper());
-    private final Runnable ticker = () -> { render(); scheduleTick(); };
+    private final Runnable ticker = this::everySecond;
+    private boolean folding;
+    private final Runnable fold = () -> { folding = false; if (OverlayRules.foldsWhenClear(state, expandedForCard, items)) show(OverlayRules.TOOLBAR); };
+    /** The screen came back on or the phone was unlocked: the list is read again before anything shows. */
+    private final android.content.BroadcastReceiver screen = new android.content.BroadcastReceiver() {
+        @Override public void onReceive(Context c, Intent i) { ApprovalFeed.syncNow(); }
+    };
     private WindowManager.LayoutParams lp;
     private FrameLayout full;
     private WindowManager.LayoutParams fullLp;
@@ -106,6 +118,7 @@ public class OverlayService extends Service {
                 return;
             }
         }
+        expandedForCard = false; // his own move: the overlay stays where he puts it
         if (OverlayContract.DISMISS.equals(verb)) { dismissedAt = waiting; markSeen(); }
         if (OverlayContract.APPROVALS_VERB.equals(verb)) openApprovalsPage(c);
         running.show(OverlayRules.verb(state, verb));
@@ -128,6 +141,17 @@ public class OverlayService extends Service {
         verb(this, v);
     }
 
+    /**
+     * Opens an approval's card in the console ({@code id}: the hub's id; null: the first one waiting), for a card the
+     * overlay pops by itself (a tap goes to axHub's approvals page instead, {@link #openApprovalsPage}). In the running
+     * console it opens without a reload (the page runs approvals.view on this event); anywhere else (the offline page,
+     * another site) the deep link loads the console on it.
+     */
+    private static void openApproval(Context c, String id) {
+        if (ShellRules.onConsole(NativeBridge.currentUrl)) NativeBridge.emit(OverlayContract.EV_APPROVALS_OPEN, OverlayContract.openJson(id));
+        else WebHost.open(c, OverlayContract.approvalsLink() + (id == null ? "" : ":" + id));
+    }
+
     /** New settings from the page (the console's approvals-banner.overlay.* values). */
     static void configure(Context c, Map<String, Object> raw) {
         config = OverlayRules.config(raw);
@@ -138,9 +162,13 @@ public class OverlayService extends Service {
         if (running == null) startIfWanted(c); else running.restyle();
     }
 
-    /** The page's approvals: how many wait, how many are held commands, the first one's title. */
+    /**
+     * The page's count changed: a reason to read the hub's list now. The count itself is only used by a shell that has
+     * no list yet (the hub hasn't answered and the page sent no items).
+     */
     static void approvals(int count, int heldCount, String title) {
-        if (itemsFromPage) return; // the page sends items: they carry the counts, the titles and the countdowns
+        ApprovalFeed.syncNow();
+        if (haveItems || ApprovalFeed.ok()) return;
         waiting = Math.max(0, count);
         held = Math.max(0, heldCount);
         firstTitle = title == null ? "" : title;
@@ -148,23 +176,62 @@ public class OverlayService extends Service {
         if (running != null) running.show(OverlayRules.afterApprovals(state, config, waiting, held, dismissedAt));
     }
 
-    /** The page's items ({@code overlayItems}): counts, titles and countdowns; only an unseen item pops the bar. */
+    /**
+     * The page's items ({@code overlayItems}) changed: a reason to read the hub's list now. They are shown themselves
+     * only while the hub hasn't answered the shell (the page then is the one source there is).
+     */
+    static void pageItems(List<OverlayRules.Item> in) {
+        ApprovalFeed.syncNow();
+        if (!ApprovalFeed.ok()) items(in);
+    }
+
+    /** A reading of the hub's list ({@link ApprovalFeed}): the toolbar shows exactly that. */
+    static void feed(ApprovalFeedRules.Result r) {
+        List<OverlayRules.Item> next = ApprovalFeedRules.after(items, r, System.currentTimeMillis());
+        if (r.ok() || next.size() != items.size()) items(next);
+    }
+
+    /**
+     * What waits now. The counts and the badge are derived from this list every time, never kept apart from it. An
+     * unseen item pops its card: over another app the overlay expands onto the console's approval card; with the app
+     * in front the page shows the card itself and the toolbar opens its bar.
+     */
     static void items(List<OverlayRules.Item> in) {
         items = OverlayRules.order(in);
-        itemsFromPage = true;
+        haveItems = true;
         waiting = items.size();
         held = OverlayRules.heldCount(items);
         firstTitle = items.isEmpty() ? "" : items.get(0).title;
         OverlayRules.forget(seen, items);
         dismissedAt = OverlayRules.dismissedAfter(dismissedAt, waiting);
-        if (running != null) running.show(OverlayRules.afterItems(state, config, items, seen));
+        if (running == null) return;
+        if (OverlayRules.EXPANDED.equals(state)) markSeen(); // the console is on screen: he has seen what waits
+        boolean pageOnScreen = ContentUpdate.appVisible;
+        OverlayRules.Item card = OverlayRules.cardFor(config, items, seen);
+        String next = OverlayRules.afterFeed(state, config, items, seen, pageOnScreen);
+        running.foldWhenClear();
+        if (next.equals(state)) { running.refresh(); return; }
+        if (OverlayRules.EXPANDED.equals(next)) {
+            expandedForCard = true;
+            markSeen();
+            openApproval(running, card == null ? null : card.ref());
+        }
+        running.show(next);
+    }
+
+    /** A card the overlay popped by itself is done with (decided, or it ran): fold back shortly, unless something new waits. */
+    private void foldWhenClear() {
+        boolean clear = OverlayRules.foldsWhenClear(state, expandedForCard, items);
+        if (clear == folding) return;
+        folding = clear;
+        if (clear) tick.postDelayed(fold, OverlayRules.FOLD_AFTER_MS); else tick.removeCallbacks(fold);
     }
 
     static void markSeen() { for (OverlayRules.Item i : items) seen.add(i.id); }
 
     /** The toolbar's label: the next countdown or how many wait (from the counts when the page sent no items). */
     static String label() {
-        if (itemsFromPage) return OverlayRules.toolbarLabel(config, items, System.currentTimeMillis());
+        if (haveItems) return OverlayRules.toolbarLabel(config, items, System.currentTimeMillis());
         return waiting > 0 ? waiting + " waiting" : "";
     }
 
@@ -206,6 +273,11 @@ public class OverlayService extends Service {
         buildToolbar();
         show(OverlayRules.afterApprovals(OverlayRules.TOOLBAR, config, waiting, held, dismissedAt));
         NativeBridge.emit("overlay", stateJson());
+        android.content.IntentFilter woke = new android.content.IntentFilter(Intent.ACTION_SCREEN_ON);
+        woke.addAction(Intent.ACTION_USER_PRESENT);
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(screen, woke, Context.RECEIVER_NOT_EXPORTED);
+        else registerReceiver(screen, woke);
+        ApprovalFeed.start(this);
     }
 
     @Override
@@ -216,11 +288,15 @@ public class OverlayService extends Service {
 
     @Override
     public void onDestroy() {
+        ApprovalFeed.stop();
+        try { unregisterReceiver(screen); } catch (IllegalArgumentException ignored) { /* never registered */ }
         tick.removeCallbacks(ticker);
+        tick.removeCallbacks(fold);
         closeFull();
         if (toolbar != null && toolbar.isAttachedToWindow()) wm.removeViewImmediate(toolbar);
         running = null;
         state = OverlayRules.TOOLBAR;
+        expandedForCard = false;
         NativeBridge.emit("overlay", stateJson());
         super.onDestroy();
     }
@@ -331,7 +407,10 @@ public class OverlayService extends Service {
 
     /** Moves to a state: toolbar, toolbar + approval bar, or the full-screen console with the toolbar docked. */
     void show(String next) {
+        boolean moved = !state.equals(next);
         state = next == null ? OverlayRules.TOOLBAR : next;
+        if (!OverlayRules.EXPANDED.equals(state)) expandedForCard = false;
+        if (moved) ApprovalFeed.syncNow(); // folded, expanded, back in front: the hub's list is read again
         if (OverlayRules.APPROVALS.equals(state)) markSeen(); // shown once: it doesn't pop the bar again
         render();
         scheduleTick();
@@ -340,6 +419,32 @@ public class OverlayService extends Service {
         restyle();
         NativeBridge.emit("overlay", stateJson());
         ContentUpdate.visibility(); // expanded = the console is on screen
+    }
+
+    /** The state and counts the page last heard ({@link #refresh}). */
+    private String told = "";
+
+    /** The same state with a new reading of the list: the badge, the label and the bar follow; the page hears a new count. */
+    private void refresh() {
+        render();
+        scheduleTick();
+        toolbar.setAlpha(OverlayRules.opacity(config, waiting) / 100f);
+        String key = state + ":" + waiting + ":" + held;
+        if (key.equals(told)) return;
+        told = key;
+        NativeBridge.emit("overlay", stateJson());
+    }
+
+    /** Once a second while a countdown runs: the clock moves, and a command whose countdown ended is looked up again. */
+    private void everySecond() {
+        long now = System.currentTimeMillis();
+        boolean ended = false;
+        for (OverlayRules.Item i : items) ended |= i.timed() && now >= i.runsAt;
+        if (ended) ApprovalFeed.syncNow();
+        List<OverlayRules.Item> live = OverlayRules.unexpired(items, now);
+        if (!ApprovalFeed.ok() && live.size() != items.size()) { items(live); return; }
+        render();
+        scheduleTick();
     }
 
     /** The badge, the toolbar label and the bar's line (the countdowns): run on every change and once a second. */
@@ -355,14 +460,14 @@ public class OverlayService extends Service {
         // the label shows on the small toolbar; with the bar open the bar says it
         label.setVisibility(!l.isEmpty() && OverlayRules.TOOLBAR.equals(state) ? View.VISIBLE : View.GONE);
         label.setContentDescription(getString(R.string.overlay_open_approvals));
-        bar.setText(!barOn ? "" : itemsFromPage ? OverlayRules.barText(items, now) : OverlayRules.barText(waiting, firstTitle));
+        bar.setText(!barOn ? "" : haveItems ? OverlayRules.barText(items, now) : OverlayRules.barText(waiting, firstTitle));
         bar.setContentDescription(getString(R.string.overlay_open_approvals));
         for (View v : new View[] { bar, link, dismiss }) v.setVisibility(barOn ? View.VISIBLE : View.GONE);
     }
 
     private void scheduleTick() {
         tick.removeCallbacks(ticker);
-        if (!OverlayRules.EXPANDED.equals(state) && OverlayRules.ticking(items)) tick.postDelayed(ticker, 1000);
+        if (OverlayRules.ticking(items)) tick.postDelayed(ticker, 1000);
     }
 
     /** The full-screen console window: the app's WebView, the toolbar docked top-left inside the safe area. */

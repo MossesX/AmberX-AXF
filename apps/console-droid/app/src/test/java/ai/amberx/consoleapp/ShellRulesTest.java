@@ -53,4 +53,17 @@ public class ShellRulesTest {
         assertEquals("back", ShellRules.back(true));
         assertEquals("leave", ShellRules.back(false));
     }
+
+    @Test public void onlyTheConsoleItselfRunsConsoleActions() {
+        assertTrue(ShellRules.onConsole("https://console.amberxai.com/"));
+        assertTrue(ShellRules.onConsole("https://console.amberxai.com"));
+        assertTrue(ShellRules.onConsole("https://console.amberxai.com/?axf-open=approvals.view"));
+        assertTrue(ShellRules.onConsole("https://console.amberxai.com/builds#x"));
+        // the hub's own pages stay inside the app but don't run the console's actions
+        assertFalse(ShellRules.onConsole("https://axhub.amberxai.com/auth/admin/approvals"));
+        assertFalse(ShellRules.onConsole("https://console.amberxai.com.evil.example/"));
+        assertFalse(ShellRules.onConsole("file:///android_asset/offline.html"));
+        assertFalse(ShellRules.onConsole(""));
+        assertFalse(ShellRules.onConsole(null));
+    }
 }
