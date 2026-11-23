@@ -56,8 +56,10 @@ const HEARTBEAT_MS = CONSOLE_HEARTBEAT_MS;
 const STREAM_IDLE_MS = 45_000;
 /** On a wake, a stream quiet for longer than this is reopened at once rather than trusted. */
 const WAKE_REOPEN_MS = 20_000;
-/** How soon after the console changed its catalog is looked at again (and sent when it differs). */
+/** While the page settles, how soon after a change its catalog is looked at again (and sent when it differs). */
 const CATALOG_RECHECK_MS = 1_000;
+/** How long a page counts as settling: its plugins arrive one by one after the first paint. */
+const CATALOG_SETTLE_MS = 60_000;
 /** The commands after which a console its app hides comes to the front. */
 const SURFACING: readonly string[] = ['open', 'home', 'back'];
 
@@ -77,9 +79,28 @@ function clientId(): string {
 const PAGE_ID = `pg-${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
 
 /** The Android console app around this page (apps/console-droid), read loosely: the plugin also runs where the console's typing isn't. */
-interface ShellHost { overlay?: (verb: string) => string }
+interface ShellHost { overlay?: (verb: string) => string; overlayState?: () => string }
 const shellHost = (): ShellHost | undefined => (typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: ShellHost }).axfNativeHost : undefined);
 const SHELL = 'console-droid';
+
+/** What the app last said about its own screen (`app` event: `{ visible }`); null until it has said anything. */
+let appVisible: boolean | null = null;
+if (typeof window !== 'undefined') {
+  window.addEventListener('axf-native', (e) => {
+    const d = (e as CustomEvent<{ type?: string; data?: { visible?: unknown } }>).detail;
+    if (d?.type === 'app' && typeof d.data?.visible === 'boolean') appVisible = d.data.visible;
+  });
+}
+
+/**
+ * Is nothing showing this page? The page says so itself (`visibilityState`); the app's word counts too, in case a
+ * WebView outside any window still reports itself visible: its screen is not in front and its overlay is not expanded.
+ */
+function shellHidden(host: ShellHost): boolean {
+  if (document.visibilityState !== 'visible') return true;
+  if (appVisible !== false) return false;
+  try { return (JSON.parse(host.overlayState?.() ?? '{}') as { overlay?: { state?: string } }).overlay?.state !== 'expanded'; } catch { return false; }
+}
 
 /**
  * Inside the console app with nothing showing the page (the overlay is folded, another app is in front): ask the app to
@@ -87,7 +108,7 @@ const SHELL = 'console-droid';
  */
 function surface(): boolean {
   const host = shellHost();
-  if (!host?.overlay || document.visibilityState === 'visible') return false;
+  if (!host?.overlay || !shellHidden(host)) return false;
   try { host.overlay('expand'); return true; } catch { return false; }
 }
 
@@ -331,8 +352,13 @@ function ConsoleCommandsClient() {
     // overlay), but every chunk the server sends still arrives, so the console stays on the server's list.
     const onChunk = () => { if (Date.now() - lastBeat >= HEARTBEAT_MS - 2_000) void announce(false); };
     // A plugin's screens join the catalog after the first hello: send it as soon as it changes, not with the next beat.
+    // Only while the page settles: later changes (a plugin switched on) go with the next beat, or when the server asks.
     let recheck: ReturnType<typeof setTimeout> | undefined;
-    const offCatalog = rt.subscribe(() => { if (!recheck) recheck = setTimeout(() => { recheck = undefined; void announce(false, true); }, CATALOG_RECHECK_MS); });
+    const mounted = Date.now();
+    const offCatalog = rt.subscribe(() => {
+      if (recheck || Date.now() - mounted > CATALOG_SETTLE_MS) return;
+      recheck = setTimeout(() => { recheck = undefined; void announce(false, true); }, CATALOG_RECHECK_MS);
+    });
     // The app handed a link to this page instead of loading it (a wake while the console is already up): its queued
     // command is asked for now.
     const onLink = (e: Event) => {
