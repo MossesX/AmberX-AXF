@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-22T23:25:43.390Z",
+ "updatedAt": "2026-11-23T01:48:18.252Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -200072,7 +200072,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-22T23:18:31.891Z",
+   "updatedAt": "2026-11-23T01:38:32.122Z",
    "builtAt": "",
    "notes": [
     {
@@ -200218,6 +200218,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-22T23:18:31.891Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-23T01:38:32.122Z"
     }
    ],
    "approvals": [],
@@ -212064,7 +212068,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-22T23:25:15.640Z",
+   "updatedAt": "2026-11-23T01:48:13.193Z",
    "builtAt": "",
    "notes": [
     {
@@ -212670,6 +212674,22 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-22T21:26:11.474Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:45:18.072Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:46:13.508Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:47:13.248Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:48:13.193Z"
     }
    ],
    "approvals": [
