@@ -89,6 +89,15 @@ async function main() {
   const bLocal = JSON.parse(readFileSync(join(B, STORE_REL), 'utf8'));
   check(stepsDone(bLocal, 'x').includes('s1'), 'B pulled main back: its stale copy now has s1');
 
+  // a lost race quotes commit ids: an id with 403 in it is still "main moved" (retried), a real refusal is not
+  const live0 = await import('../cli/builds-live.mjs');
+  const raced = "remote: error: cannot lock ref 'refs/heads/main': is at d71df58c7622532269e85806133e46908337c5fe but expected b9beaba02f48a3993a9132397e3286f7a0625536\n ! [remote rejected] 4dc9e1f8f88403802d918e54d7574c572235e763 -> main (failed to update ref)";
+  check(live0.pushRetryable(raced), 'a lost push race is retried even when a commit id in the message holds 403');
+  check(live0.pushRetryable(' ! [rejected] abc -> main (fetch first)'), 'main moved (fetch first) is retried');
+  check(!live0.pushRetryable('remote: GH006: Protected branch update failed for refs/heads/main.\n ! [remote rejected] abc -> main (protected branch hook declined)'), 'a protected branch is not retried');
+  check(!live0.pushRetryable('fatal: unable to access: The requested URL returned error: 403\n ! [rejected]'), 'an HTTP 403 is not retried');
+  check(!live0.pushRetryable('fatal: repository not found'), 'an unrelated failure is not retried');
+
   // 3. retry: the remote rejects the first push (main moved), the second goes through
   const hook = join(T, 'remote.git', 'hooks', 'pre-receive');
   writeFileSync(hook, `#!/bin/sh\nif [ ! -f "${T}/rejected-once" ]; then touch "${T}/rejected-once"; echo "rejected: fetch first" >&2; exit 1; fi\nexit 0\n`); chmodSync(hook, 0o755);

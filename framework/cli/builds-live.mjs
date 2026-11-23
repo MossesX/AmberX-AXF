@@ -353,10 +353,20 @@ export function publish(entries, { journalExtra = {} } = {}) {
     if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, { [STORE_REL]: mainText, ...files }), skipped }; }
     last = p.err;
     // main moved under us: fetch and apply again; anything else (protection, auth) is not retried
-    if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
+    if (!pushRetryable(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
     sleep(200 * attempt + Math.floor(Math.random() * 400));
   }
   return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
+}
+/**
+ * Is a refused push worth another try: main moved under us (yes), or the remote refuses us whatever main holds
+ * (protection, auth: no). The refusals are matched as whole words: git's "cannot lock ref" message quotes commit ids,
+ * and an id with 403 in it must not read as an HTTP 403.
+ */
+export function pushRetryable(err) {
+  const text = String(err ?? '');
+  return /non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(text)
+    && !/protected branch|permission|denied|\b403\b|\bGH006\b|\bGH013\b/i.test(text);
 }
 /** { fileKey: bytes } of the journal files at a revision. */
 function journalSizes(rev) {
