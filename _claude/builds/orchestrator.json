@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-23T22:45:39.603Z",
+ "updatedAt": "2026-11-23T23:08:28.367Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -289,31 +289,50 @@
    "title": "pipeline-bring-up-from-main",
    "category": "",
    "detail": "# Build: pipeline-bring-up-from-main\n\n## Brett said (voice, Nov 23 2026)\n\"I want to get this pipeline working so we don't have to do these hand builds anymore. I want everything to start going through Plan Studio and through the orchestrator.\" Then, after hearing the findings below: \"Figure out a way to fix all that stuff. Get her done.\"\n\n## Found today (read-only checks, Nov 23 2026)\n1. The only dispatcher running is stale. Container `axf-molly` (image built Nov 18, its code is not on main) runs a tick, a lease, a reconcile and a lander job every minute. It launches through the host service `axf-molly-bridge.service` (active since Nov 15), which runs from `/root/axf-builds/axf-molly-container-orchestrator-gate`, a folder that no longer exists, so every launch ends `exit 127 ... claude-headless.sh: No such file or directory`. Details: `_claude/builds/reports/stop-ghost-builds-live-commits.md` (sections Root cause and Needs Brett).\n2. The build watchdog is off: settings enabled=false, `/etc/cron.d/axf-build-watchdog` not installed, last pass Nov 18.\n3. The lander is off: the container logs `lander: 0 candidate(s) · on false` every 3 minutes. Four green PRs sat unmerged for over an hour today until they were landed by hand with vps.build_land.\n4. Hand builds have no record in the builds store, so they have no steps to tick and nothing to link.\n5. Nine shipped builds still read Queued or Failed (listed in that report).\n6. Stored budgets (builds.budgetPerBuildUsd, builds.budgetDailyUsd) are read by no code (found by the triage gate build).\n7. 16 failed `axf-adopt-*.scope` systemd units are left over.\n\nOn main now: the VPS model triage gate (c6467a334e83), Plan Studio live steps from the store (4b9372ef7fa9), the builds-live ghost-commit fix (afa8c2c87bfe), host services (fable-rebuild-1-2-vps-host-services-move) and the single watchdog (fable-rebuild-2-2-both-watchdogs-one). Read their reports in `_claude/builds/reports/` first.\n\n## Goal\nA plan sent from Plan Studio 2.0 goes through the orchestrator on its own: split, model from the triage gate, launched on a slot, steps checked off live in Plan Studio, PR opened, CI green, landed on main. No hand step anywhere.\n\n## Do, in this order\n1. Work out exactly how main's code expects the dispatcher, the lander, the reconciler and the watchdog to run on this VPS today (host services, cron, container), and why they are not running. Write that down before changing anything.\n2. Bring up the real ones from main (/opt/axf), the way main's own installers and docs say. One dispatcher only: never two ticking at once.\n3. Only after the new dispatcher has taken the lease and ticked cleanly, retire the stale one: stop `axf-molly` and set it not to restart, disable `axf-molly-bridge.service` and remove its unit file. Keep the exact commands to bring the old one back in the report, in case the new one fails.\n4. Turn on the watchdog and install its cron. Turn on the lander. If any of these is an owner-only setting that only Brett's own console click may change, do NOT work around it: say exactly which switch, where it is, and what it does, in the report and as one console alert.\n5. Settle the nine shipped builds whose status never moved, through the store's own commands.\n6. Make hand builds (vps.build_start) get a record in the builds store, so they show on the board, can be linked to their PR and are landed by the lander like any other build.\n7. Make the budgets real: a build that reaches its cap stops and tells Brett; same for the daily cap.\n8. Clear the 16 failed axf-adopt scopes (reset-failed) and say what left them.\n9. Prove it end to end: create a tiny throwaway plan in Plan Studio 2.0 (one trivial, safe change, e.g. a line in a docs file), send it, and follow it to landed on main without touching it. If it stalls anywhere, fix the cause and run it again until it goes through clean. Put the timeline in the report.\n\n## Rules\n- No logic in the console; decisions and state changes run on the VPS.\n- Do not delete build folders.\n- Do not touch the secrets files or print any credential.\n- Keep the VPS light: this box has 8 cores and overloads easily; run heavy checks one at a time.\n\n## Also\n- Tests for what you add (hand-build records, budget stop, lander picks up a green PR).\n- Record this hand build in Plan Studio 2.0 so Brett can see it (CLI apps/console-web/plugins/plan-studio-2/tree.mjs with AXF_PLAN_TREE_DIR=/var/lib/docker/volumes/jghxpzuudkahgznvffiwtwmj-axhub-projects/_data/amberx-axf/_data/plan-studio-2, then chown -R deploy:deploy on that folder).\n\n## Finish\nCommit, open a PR, get CI green (keep fixing and re-running until green), and land it. Report at `_claude/builds/reports/pipeline-bring-up-from-main.md`: what was wrong, what runs now and from where, anything waiting on Brett's own click, the end-to-end test timeline, and how to roll back. Keep code, comments and commits clean and professional.",
-   "status": "running-ci",
+   "status": "landed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "hand",
    "pendingId": "",
    "branch": "claude/pipeline-bring-up-from-main",
    "pr": "898",
+   "mergedAt": "2026-11-23T23:04:05.994Z",
    "createdAt": "2026-11-23T22:34:54.546Z",
-   "updatedAt": "2026-11-23T22:36:54.846Z",
+   "updatedAt": "2026-11-23T23:06:34Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-pipeline-bring-up-from-main--earl on Fable, in /root/axf-builds/pipeline-bring-up-from-main on claude/pipeline-bring-up-from-main. It runs beside the active build; when its session ends cleanly the lander lands it.",
-     "at": "2026-11-23T22:34:54.546Z",
-     "by": "Earl the Ear"
+     "at": "2026-11-23T22:34:54.546Z"
     },
     {
      "text": "Hand build finished (4 commits on claude/pipeline-bring-up-from-main). Over to the lander.",
-     "at": "2026-11-23T22:36:17.580Z",
-     "by": "Earl the Ear"
+     "at": "2026-11-23T22:36:17.580Z"
     },
     {
      "text": "Lander: PR 1 of 1 (s1)",
-     "at": "2026-11-23T22:36:29.276Z",
-     "by": "lander"
+     "at": "2026-11-23T22:36:29.276Z"
+    },
+    {
+     "text": "Lander: landed (#898).",
+     "at": "2026-11-23T23:05:42.715Z"
+    },
+    {
+     "text": "Headless run axf-pipeline-bring-up-from-main--earl: brief only · start 12.7K tokens ($0.07) · cost $139.04 · 198 turns · 6 tools, MCP none",
+     "at": "2026-11-23T23:06:20.768Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $139.04",
+     "at": "2026-11-23T23:06:26.831Z"
+    },
+    {
+     "text": "Store: refused a write by verify, nothing of it was kept: \"complete\" is not a build status of pipeline-2@1 (pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed, failed)",
+     "at": "2026-11-23T23:06:36.734Z",
+     "by": "store"
+    },
+    {
+     "text": "Shipped manifest sm-pipeline-bring-up-from-main rev 1 sent to Shipped features (orchestrator): PR #898, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-23T23:06:34Z"
     }
    ],
    "approvals": [],
@@ -179057,7 +179076,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179066,7 +179085,7 @@
    "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-23T22:45:27.280Z",
+   "updatedAt": "2026-11-23T22:46:19.006Z",
    "builtAt": "",
    "notes": [
     {
@@ -179240,6 +179259,10 @@
     {
      "text": "Watchdog: merged and CI is green on f549a7643a: landed.",
      "at": "2026-11-23T22:45:27.280Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-23T22:46:19.006Z"
     }
    ],
    "approvals": [
@@ -217380,6 +217403,64 @@
      "note": "",
      "uid": "st-mwqzc2bt1q4fcf",
      "createdAt": "2026-11-21T22:28:34.555Z"
+    }
+   ]
+  },
+  {
+   "id": "account-failover-gate-pinned-build",
+   "title": "Account failover gate: pinned build account falls over when out",
+   "category": "",
+   "detail": "Brett's words: \"We need to put a gate on the VPS. That's not good enough. It didn't.\" Problem: hulu0241 hit its limit (out until 2026-11-24T07:00Z) but was pinned with build-account so it 'takes every build'; every other account was off for builds, so nothing switched over and Moses X sat idle. Gate: in deploy/claude-workers.mjs routing (and worker-routing.mjs + claude-headless.sh switch path), when the pinned build account is marked out (limit or no usage left), ignore the pin and route to the next account with usage left (subscription workers first, API accounts only under their caps); when the pinned account's reset passes, go back to it. Send an FYI to Brett's phone via AmberX on each failover and failback. Add tests in claude-workers.test.mjs covering: pinned+out -> next worker; pinned+out and all out -> queue; reset passed -> back to pin. Also make the claude_accounts status line show the failover target.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-23T23:08:05.611Z",
+   "updatedAt": "2026-11-23T23:08:05.611Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Routing: pinned build account that is out falls over to next account with usage; returns to pin after reset; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwtvmld31nngxy",
+     "createdAt": "2026-11-23T23:08:05.612Z"
+    },
+    {
+     "id": "s2",
+     "text": "Headless switch path + AmberX FYI on failover/failback; status line shows failover target; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwtvmld31ozjw8",
+     "createdAt": "2026-11-23T23:08:05.612Z"
     }
    ]
   }

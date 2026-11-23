@@ -843,14 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 00:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1235,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-23 22:45 UTC · `server-rule-done-means-merged-working` → landed, note (all) · watchdog
 - 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → complete, note (all) · verify
 - 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → complete, note (all) · verify
+- 2026-11-23 22:46 UTC · `server-rule-done-means-merged-working` → complete, note (all) · verify
+- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → merging-main (all) · lander
+- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → landed, merged, note (all) · lander
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · verify
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:08 UTC · `account-failover-gate-pinned-build` added (2 steps) (all) · voice-claude
 
 ## Token passes (log)
 
