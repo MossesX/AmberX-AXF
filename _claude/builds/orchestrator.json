@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-23T01:48:18.252Z",
+ "updatedAt": "2026-11-23T09:50:11.769Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -200072,7 +200072,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-23T01:38:32.122Z",
+   "updatedAt": "2026-11-23T09:48:32.076Z",
    "builtAt": "",
    "notes": [
     {
@@ -200222,6 +200222,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-23T01:38:32.122Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-23T09:48:32.076Z"
     }
    ],
    "approvals": [],
@@ -212068,7 +212072,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-23T01:48:13.193Z",
+   "updatedAt": "2026-11-23T09:49:16.890Z",
    "builtAt": "",
    "notes": [
     {
@@ -212690,6 +212694,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
      "at": "2026-11-23T01:48:13.193Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T09:49:16.890Z"
     }
    ],
    "approvals": [
