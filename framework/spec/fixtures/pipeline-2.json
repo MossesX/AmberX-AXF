@@ -1322,5 +1322,153 @@
    },
    null
   ]
- }
+ },
+ "hand": {
+  "builds": [
+   {
+    "id": "h-first",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "1",
+    "hand": {
+     "at": "2026-11-23T10:00:00.000Z",
+     "by": "Earl the Ear"
+    }
+   },
+   {
+    "id": "active",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "2"
+   },
+   {
+    "id": "h-landing",
+    "flow": "pipeline-2",
+    "status": "running-ci",
+    "statusAt": "3",
+    "hand": {
+     "at": "2026-11-23T09:00:00.000Z",
+     "by": "Earl the Ear"
+    }
+   },
+   {
+    "id": "h-failed",
+    "flow": "pipeline-2",
+    "status": "failed",
+    "failedFrom": "building",
+    "statusAt": "4",
+    "hand": {
+     "at": "2026-11-23T08:00:00.000Z",
+     "by": "Earl the Ear"
+    }
+   },
+   {
+    "id": "h-archived",
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "building",
+    "statusAt": "5",
+    "hand": {
+     "at": "2026-11-23T07:00:00.000Z",
+     "by": "Earl the Ear"
+    }
+   },
+   {
+    "id": "untagged",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "6",
+    "hand": {
+     "by": "someone"
+    }
+   }
+  ],
+  "active": "active",
+  "others": [
+   "untagged"
+  ],
+  "hand": [
+   "h-first"
+  ],
+  "beside": [
+   true,
+   false,
+   true,
+   true,
+   true,
+   false
+  ],
+  "tags": [
+   {
+    "at": "2026-11-23T10:00:00.000Z",
+    "by": "Earl the Ear"
+   },
+   null,
+   {
+    "at": "2026-11-23T09:00:00.000Z",
+    "by": "Earl the Ear"
+   },
+   {
+    "at": "2026-11-23T08:00:00.000Z",
+    "by": "Earl the Ear"
+   },
+   {
+    "at": "2026-11-23T07:00:00.000Z",
+    "by": "Earl the Ear"
+   },
+   null
+  ]
+ },
+ "budgetStops": [
+  {
+   "stop": {
+    "at": "2026-11-23T10:00:00.000Z",
+    "kind": "build",
+    "spentUsd": 55.5,
+    "capUsd": 50
+   },
+   "norm": {
+    "at": "2026-11-23T10:00:00.000Z",
+    "kind": "build",
+    "spentUsd": 55.5,
+    "capUsd": 50
+   },
+   "stopped": true
+  },
+  {
+   "stop": {
+    "at": "2026-11-23T10:00:00.000Z",
+    "kind": "daily",
+    "spentUsd": "65",
+    "capUsd": 60
+   },
+   "norm": {
+    "at": "2026-11-23T10:00:00.000Z",
+    "kind": "daily",
+    "spentUsd": 65,
+    "capUsd": 60
+   },
+   "stopped": true
+  },
+  {
+   "stop": {
+    "at": "2026-11-23T10:00:00.000Z",
+    "kind": "weekly"
+   },
+   "norm": null,
+   "stopped": false
+  },
+  {
+   "stop": {
+    "kind": "build"
+   },
+   "norm": null,
+   "stopped": false
+  },
+  {
+   "stop": null,
+   "norm": null,
+   "stopped": false
+  }
+ ]
 }

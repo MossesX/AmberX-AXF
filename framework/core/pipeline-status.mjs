@@ -57,6 +57,26 @@ export const holdsActive = (b) => !!b && b.flow === FLOW && !b.deleted && (ACTIV
 export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
 /** The tag as stored: { at, by } or null. */
 export const normEmergency = (e) => (e && typeof e === 'object' && !Array.isArray(e) && str(e.at) ? { at: str(e.at, 40), by: str(e.by, 80) } : null);
+/**
+ * Hand builds (Brett, Nov 23 2026): a session started by hand (axHub vps.build_start, a console launch) gets a record
+ * the moment it starts, tagged `hand: { at, by }`. It is one step whose session is already running, so it enters the
+ * flow at `building`. It never waits for the active place and never holds it (it runs beside the active build, in the
+ * slot its launcher booked), the dispatcher never launches it, and from `build-complete` on the lander lands it like
+ * any other build.
+ */
+export const isHand = (b) => !!b && !!b.hand && typeof b.hand === 'object' && !!str(b.hand.at);
+/** The tag as stored: { at, by } or null. */
+export const normHand = (h) => (h && typeof h === 'object' && !Array.isArray(h) && str(h.at) ? { at: str(h.at, 40), by: str(h.by, 80) } : null);
+/** Runs beside the line: an emergency build or a hand build. Neither takes, waits for, or breaches the one active place. */
+export const besideLine = (b) => isEmergency(b) || isHand(b);
+/**
+ * A budget stop (build-budget@1, framework/core/build-budget.mjs): `budgetStop: { at, kind: build | daily, spentUsd,
+ * capUsd }` on a build whose spend reached its cap, or that was running when the day's cap was reached. While it is
+ * set nothing of the build is launched and the watchdog leaves it alone; it is cleared when the cap allows it again.
+ */
+export const normBudgetStop = (x) => (x && typeof x === 'object' && !Array.isArray(x) && str(x.at) && ['build', 'daily'].includes(x.kind)
+  ? { at: str(x.at, 40), kind: x.kind, spentUsd: Math.max(0, Number(x.spentUsd) || 0), capUsd: Math.max(0, Number(x.capUsd) || 0) } : null);
+export const isBudgetStopped = (b) => !!normBudgetStop(b?.budgetStop);
 /** A Pipeline 2.0 build may also be archived (removed from the table); that is the one way out of the flow. */
 export const EXIT = 'archived';
 
@@ -357,7 +377,7 @@ export function enforceFlow(before, after, { at, by = 'store', strict = true } =
     for (const k of ['failedFrom', 'archivedFrom']) if (!(k in t.rec)) delete out[k]; // cleared by the move: never left over from the writer's copy
     return out;
   };
-  const holder = (id) => (after?.builds ?? []).find((x) => x.id !== id && holdsActive(x) && !isEmergency(x)) ?? null;
+  const holder = (id) => (after?.builds ?? []).find((x) => x.id !== id && holdsActive(x) && !besideLine(x)) ?? null;
   const builds = (after?.builds ?? []).map((b) => {
     const prev = old.get(b.id);
     if (!isP2(b) && !isP2(prev)) return b;
@@ -365,7 +385,7 @@ export function enforceFlow(before, after, { at, by = 'store', strict = true } =
     let next = b;
     if (prev && !sameStatus(prev, b)) {
       let c = checkTransition(prev, b.status, 'build', { reset: marked(prev, b, 'reset') });
-      if (c.ok && c.unarchive && holdsActive({ ...b, flow: FLOW }) && !isEmergency(b) && holder(b.id)) c = { ok: false, why: `${holder(b.id).id} holds the active place: an archived build returns into it only when no other build is active` };
+      if (c.ok && c.unarchive && holdsActive({ ...b, flow: FLOW }) && !besideLine(b) && holder(b.id)) c = { ok: false, why: `${holder(b.id).id} holds the active place: an archived build returns into it only when no other build is active` };
       if (!c.ok) { bad.push({ id: b.id, from: prev.status, to: b.status, why: c.why }); next = keep(prev, b, 'build'); }
       else if (b.statusAt === prev.statusAt || !b.statusAt) next = stamp(prev, b, 'build');
     } else if (!prev && b.status && !b.statusAt) next = stamp(null, b, 'build');
@@ -478,10 +498,11 @@ export function pinnedAccount(accounts = [], step = {}, { model = step?.model ||
 
 /**
  * The one build allowed to be active, or null; `others` = every other build that also holds the place (a breach).
- * Emergency builds are left out: they run beside the active build and are never a breach (emergencyBuilds lists them).
+ * Emergency builds and hand builds are left out: they run beside the active build and are never a breach
+ * (emergencyBuilds and handBuilds list them).
  */
 export function activeBuild(builds = []) {
-  const act = builds.filter((b) => holdsActive(b) && !isEmergency(b)).sort((a, b) => String(a.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? a.statusAt).localeCompare(String(b.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? b.statusAt)));
+  const act = builds.filter((b) => holdsActive(b) && !besideLine(b)).sort((a, b) => String(a.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? a.statusAt).localeCompare(String(b.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? b.statusAt)));
   return { active: act[0] ?? null, others: act.slice(1) };
 }
 
@@ -496,6 +517,10 @@ export function emergencyBuilds(builds = []) {
     .sort((a, b) => str(a.emergency.at).localeCompare(str(b.emergency.at)) || str(a.id).localeCompare(str(b.id)));
 }
 
+/** The hand builds whose one session is out (sending or building): the dispatcher only watches for their session's end. */
+export function handBuilds(builds = []) {
+  return builds.filter((b) => isHand(b) && b.flow === FLOW && !b.deleted && ['sending', 'building'].includes(b.status));
+}
 /* ------------------------------------------------------------------ plan-build@1: what Plan Studio may send */
 
 /*

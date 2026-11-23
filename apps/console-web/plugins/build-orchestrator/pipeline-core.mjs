@@ -970,6 +970,8 @@ function alertBody(kind, d, base) {
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     case 'autoqueue': return { ...base, key: `pipeline:autoqueue:${str(list(d.ids).join(','), 200)}`, severity: 'info', title: `Auto-queued ${list(d.ids).length} Pending build${list(d.ids).length === 1 ? '' : 's'}: slots were free`, body: str(list(d.builds).map((b) => `${b.id}${b.priority ? ` (${b.priority})` : ''}${b.title ? `: ${b.title}` : ''}`).join('\n') || list(d.ids).join(', '), 1500), meta: { ...base.meta, build: str(list(d.ids)[0] ?? '', 120), builds: list(d.ids) } };
     case 'step-conflict': return { ...base, key: `pipeline:step-conflict:${d.id}:${d.step}`, severity: 'warning', title: `Step ${str(d.step, 40)} of ${str(d.id, 120)} could not merge back`, body: str(d.note, 1500), meta: { ...base.meta, step: str(d.step, 40) } };
+    // build-budget@1: the title, body and key come from the budget engine (alertOf); this is the alert's frame
+    case 'budget': return { ...base, key: `pipeline:budget:${str(d.id, 200)}`, severity: 'error', title: 'A build budget was reached', body: '' };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
 }

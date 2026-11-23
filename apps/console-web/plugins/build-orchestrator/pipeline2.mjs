@@ -37,6 +37,14 @@
  * the orchestrator's slots by the VPS hard limit and the slot queue). The orchestrator never puts an ordinary build's
  * step in an emergency slot, and an emergency build never takes or waits for the one active place.
  *
+ * Hand builds (Brett, Nov 23 2026): a session started by hand has a record too (framework/cli/hand-build.mjs, tag
+ * `hand`). It is never split, never waits for or holds the active place, and is never launched from here: a pass only
+ * notices its session's end (hand.sweep). From build-complete on the lander lands it like any other build.
+ *
+ * Budgets (build-budget@1, framework/cli/build-budget.mjs): every full pass on the host first stops the builds that
+ * reached the per-build cap, and every build once the day's cap is reached (`budgetStop` on the record, one alert).
+ * A stopped build is not worked on, and while the daily cap is reached no build takes the active place.
+ *
  * Triggers (more than one, so ready can never sit): the orchestrator tick (cron, every minute: orchestrator.mjs tick
  * runs pipeline.mjs tick, which calls advance(); `tick --build <id>` runs advance() for one build), the store change
  * event (build-hook@1 listener pipeline2-hook.mjs runs `advance` as soon as a Pipeline 2.0 build changes status or a
@@ -70,6 +78,8 @@ import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { syncGrants } from '../../../../framework/cli/emergency-builds.mjs';
 import * as triage from '../../../../framework/cli/model-triage.mjs';
+import * as hand from '../../../../framework/cli/hand-build.mjs';
+import * as budget from '../../../../framework/cli/build-budget.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
@@ -480,14 +490,30 @@ function sweepEnded(b, env, out) {
  */
 export function advance({ env = process.env, launch = launchStep, build = '' } = {}) {
   if (!PL) throw new Error('pipeline2: pipeline.mjs is not bound (import it, or call ready() first)');
-  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], ...(build ? { build } : {}) };
+  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], hand: [], budget: null, ...(build ? { build } : {}) };
   let store = loadStore();
+  // sessions, their meters and tmux are on the VPS host: the budgets and the hand builds are looked after there only
+  // (a test harness, which names its accounts in AXF_P2_ACCOUNTS, takes part only when it brings its own meters folder)
+  if (!build && (env.AXF_P2_ACCOUNTS ? !!env.AXF_HEADLESS_DIR : !PL.seesAccounts || PL.seesAccounts(env))) {
+    // build-budget@1: a build at its cap, or every build at the day's cap, is stopped before anything else is decided
+    try {
+      out.budget = budget.enforce({ env, by: 'budget' });
+      for (const x of out.budget.stopped ?? []) logLine({ event: 'budget-stop', build: x.id, kind: x.kind, spentUsd: x.spentUsd, capUsd: x.capUsd });
+      for (const x of out.budget.cleared ?? []) logLine({ event: 'budget-clear', build: x.id, kind: x.kind });
+    } catch (e) { logLine({ event: 'budget-failed', error: str(e.message) }); }
+    // hand builds: only their session's end is watched here (its own exit call is the first to say so)
+    try { out.hand = hand.sweep({ env }); for (const x of out.hand) logLine({ event: 'hand-ended', build: x.id, status: x.status, why: x.why }); }
+    catch (e) { logLine({ event: 'hand-sweep-failed', error: str(e.message) }); }
+    store = loadStore();
+  }
+  const dayStop = out.budget?.daily?.reached ? out.budget.daily : null;
   splitAll(store, env, out, build);
   advanceEmergency(env, out, { launch, build });
   store = loadStore();
   let { active, others } = P2.activeBuild(p2Builds(store));
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
-  if (!active) {
+  if (!active && dayStop) out.waits.push({ id: '', why: `the daily budget is reached ($${dayStop.spentUsd} of $${dayStop.capUsd}): no build takes the active place until tomorrow, or until the cap is raised` });
+  if (!active && !dayStop) {
     const next = nextToActivate(p2Builds(store), attemptCap(env));
     if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
   }
@@ -504,6 +530,8 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
 /** One build past the line: main into its steps, ended sessions swept, steps out to its slot pool, build-complete. */
 function work(b0, env, out, { launch }) {
   let b = b0;
+  // stopped at a budget cap (build-budget@1): nothing of it is pulled, swept or launched until the cap allows it again
+  if (P2.isBudgetStopped(b)) { out.waits.push({ id: b.id, why: `stopped at its budget (${b.budgetStop.kind === 'build' ? 'per build' : 'daily'}: $${b.budgetStop.spentUsd} of $${b.budgetStop.capUsd}): it goes on by itself once the cap allows it` }); return; }
   // attempts used up: the contract refuses every move, so nothing is tried (the watchdog alerted; a retry resets it)
   if (P2.gaveUp(b, attemptCap(env))) { out.waits.push({ id: b.id, why: `gave up after attempt ${b.attempt} at ${b.failedFrom || 'an unknown status'}: \`orchestrator.mjs retry ${b.id}\` starts it again` }); return; }
   if (at(b, 'pulling-main', 'assigning-models')) prepare(b, env, out);
@@ -625,6 +653,7 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
     case 'hold': {
       if (isHeld(b)) refuse(`${b.id} is on hold already`);
       if (P2.isEmergency(b)) refuse(`${b.id} is an emergency build: it is never held`);
+      if (P2.isHand(b)) refuse(`${b.id} is a hand build: it runs beside the line and is never held (Cancel stops it)`);
       if (!beforeTheLine(b)) refuse(`${b.id} is ${label}: only a build still waiting its turn is put on hold (Cancel stops one that is being built)`);
       setHold(true);
       return done(`${b.id} is on hold: it keeps its place and is skipped until released.`);
@@ -699,7 +728,7 @@ function advanceEmergency(env, out, { launch, build = '' }) {
 /** The table's view: every Pipeline 2.0 build with its label and steps. */
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
-  return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
+  return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), ...(P2.isHand(b) ? { hand: true } : {}), ...(P2.isBudgetStopped(b) ? { budgetStop: b.budgetStop } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
     steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
 }
 

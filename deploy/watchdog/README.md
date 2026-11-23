@@ -22,7 +22,8 @@ and removes the retired `axf-pipeline`, `axf-auto-land` and `axf-watchdog` crons
 | Found | Fix |
 |---|---|
 | A build or step status past its time budget (`BUILD_BUDGET_MIN`, `STEP_BUDGET_MIN`) | Re-run the transition (the tick with `--build <id>`), up to `nudges` times, then mark it `failed` |
-| A `building` step whose tmux session is gone | `failed` at `building`, then relaunched through `ready` as attempt N+1 |
+| A `building` step whose tmux session is gone after a clean exit (exit 0 in its session-end event; its exit call was lost) | `completed`, on the attempt it ran on; its build lock is released |
+| A `building` step whose tmux session is gone | `failed` at `building`, its build lock released, then relaunched through `ready` as attempt N+1 |
 | A `building` step whose log shows "You've hit your weekly limit" or any usage limit | Account marked out (`claude-workers.mjs markLimit`), session killed, `failed`, relaunched on the account with usage left as attempt N+1 |
 | A `building` step past twice its estimate (the 15 minute cap when it has none) with a silent log | Session killed, `failed`, relaunched |
 | A `failed` build or step under `maxAttempts` | Retried forward: back into the status it failed in (`failedFrom`), attempt N+1 |
@@ -32,6 +33,9 @@ and removes the retired `axf-pipeline`, `axf-auto-land` and `axf-watchdog` crons
 Waiting is not stuck: a `split` build has no time budget at all while any build holds the active place, and a build
 that failed while active still holds it (the contract's `holdsActive`; Nov 21 2026: four builds were failed and given up
 on while they only waited behind a failed build). A `ready` step waits for a slot unless its build is the active one.
+Two kinds of build are left alone on purpose: a hand build (`hand` on the record) until it reaches `build-complete`
+(its session is started, and started again, by hand), and a build stopped at a budget cap (`budgetStop`) until the cap
+allows it again.
 `maxAttempts` may be lowered in the settings, never raised above the contract's ceiling (5).
 
 Every action is a note on the build (`by: watchdog`) and a line in `<pipeline dir>/watchdog2/actions.jsonl`.

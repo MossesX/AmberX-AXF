@@ -457,13 +457,17 @@ function descendants(procs, root) {
   return out;
 }
 
-/** Moves a process tree into a new scope in the slice (systemd's StartTransientUnit with PIDs). */
+/**
+ * Moves a process tree into a new scope in the slice (systemd's StartTransientUnit with PIDs). The scope is collected
+ * when it ends or fails (CollectMode): a pid that vanished before systemd could move it fails the unit with result
+ * `resources`, and without it every such race left a failed axf-adopt-*.scope behind.
+ */
 export function adopt(name, pids, retry = true) {
   const live = pids.filter((p) => pidAlive(p) && !inSlice(p));
   if (!live.length) return { ok: true, moved: 0 };
   const unit = `axf-adopt-${String(name).replace(/[^A-Za-z0-9_.-]/g, '-').slice(0, 60)}-${Date.now().toString(36)}.scope`;
   const r = run('busctl', ['call', 'org.freedesktop.systemd1', '/org/freedesktop/systemd1', 'org.freedesktop.systemd1.Manager', 'StartTransientUnit', 'ssa(sv)a(sa(sv))',
-    unit, 'fail', '2', 'PIDs', 'au', String(live.length), ...live.map(String), 'Slice', 's', SLICE, '0']);
+    unit, 'fail', '3', 'PIDs', 'au', String(live.length), ...live.map(String), 'Slice', 's', SLICE, 'CollectMode', 's', 'inactive-or-failed', '0']);
   if (r.status !== 0 && retry) return adopt(name, live, false); // a pid that ended in between fails the whole call: once more without it
   return { ok: r.status === 0, moved: r.status === 0 ? live.length : 0, error: r.status === 0 ? '' : (r.stderr || '').trim().slice(0, 200) };
 }

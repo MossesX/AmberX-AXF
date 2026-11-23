@@ -160,6 +160,9 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
   echo $!
 }
 
+HAND_JS="$HERE/../framework/cli/hand-build.mjs"
+# A hand launch: not a step, and not a session the orchestrator, the lander, the swarm or an agent job started.
+hand_on() { [[ "${AXF_HAND_BUILDS:-on}" != off && -z "${step:-}" && ! "${AXF_SURFACE:-}" =~ ^(pipeline|lander|agent-job|swarm|agent)$ && -f "$HAND_JS" ]] && command -v node >/dev/null; }
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
@@ -584,6 +587,14 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     pexit_log="${AXF_PIPELINE_EXIT_LOG:-/var/log/axf-pipeline.log}"; [[ -w "$(dirname "$pexit_log")" ]] || pexit_log="$HDIR/pipeline-exit.log"
     ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} ${AXF_BUILD_STEP:+--step "$AXF_BUILD_STEP"} ${hit:+--hit "$hit"} ${login_account:+--account "$login_account"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
   fi
+  # a hand build: its record hears how the session ended (clean = over to the lander, stopped = archived, else failed).
+  # Detached and in a clean environment, like the dispatcher's exit call; the dispatcher's tick sweeps it when this
+  # call can't run.
+  if hand_on; then
+    hexit_env=(PATH="$PATH" HOME="$HOME")
+    for v in AXF_HEADLESS_DIR AXF_BUILD_PROFILE AXF_CLAUDE_SETTINGS_FILE; do [[ -n "${!v:-}" ]] && hexit_env+=("$v=${!v}"); done
+    ( cd "$HERE/.." && setsid env -i "${hexit_env[@]}" node "$HAND_JS" exit --name "$name" --session "$end_session" --exit "$st" --kind "$exit_kind" --by headless >> "$HDIR/hand-build.log" 2>&1 < /dev/null & )
+  fi
   if (( close > 0 )); then
     if (( clients > 0 )); then read -r -t "$close" -p "Enter closes it (waits up to ${close}s). " _ || true
     else printf 'Closes by itself in %ss.\n' "$close"; sleep "$close"; fi
@@ -693,4 +704,11 @@ for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd
   tmux set-option -t "$session" "${kv%%=*}" "${kv#*=}" >/dev/null 2>&1 || true
 done
 event session-start "$session"
+# Hand builds (hand-build@1, Brett, Nov 23 2026): a session started outside the orchestrator in a build worktree (its own
+# claude/* branch) gets a record in the builds store now that it really runs, so it shows on the board, can be linked
+# to its PR and is landed by the lander when it ends cleanly. Never stops the run. AXF_HAND_BUILDS=off skips it.
+if hand_on; then
+  hand_line="$(timeout 120 node "$HAND_JS" start --name "$name" --session "$session" --dir "$(pwd)" --brief "$brief" ${model:+--model "$model"} ${login_account:+--account "$login_account"} --by "${agent:-hand}" 2>&1 | tail -1)" || true
+  [[ -n "$hand_line" ]] && echo "claude-headless: $hand_line" >&2
+fi
 echo "started $session in $(pwd)"

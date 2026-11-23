@@ -72,6 +72,7 @@ function normEntry(e) {
   };
   if (e.kind === 'choice') out.options = (Array.isArray(e.options) ? e.options : []).filter((o) => isObj(o) && typeof o.value === 'string').map((o) => ({ value: o.value, label: String(o.label || o.value) }));
   if (e.kind === 'number') for (const k of ['min', 'max', 'step']) if (typeof e[k] === 'number') out[k] = e[k];
+  if (e.kind === 'number' && e.zeroIsNoCap === true) out.zeroIsNoCap = true; // a cap where 0 means none: 0 is the highest value, so only the owner sets it
   if (typeof e.shared === 'string') out.shared = e.shared;
   if (typeof e.effect === 'string') out.effect = e.effect;
   return valid(out, out.default) ? out : null;
@@ -185,7 +186,8 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     const before = valueOf(spec, doc);
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
-    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
+    const height = (n) => (spec.zeroIsNoCap && n === 0 ? Infinity : n);
+    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && height(v) > height(before)) throw new SettingsError('denied', `${key} can only be raised${spec.zeroIsNoCap ? ' or removed (0 = no cap)' : ''} by Brett (console); lowering it is fine`);
     if (spec.owner === 'raise' && !isOwner && spec.kind === 'toggle' && v === true && before !== true) throw new SettingsError('denied', `${key} can only be switched on by Brett (console); switching it off is fine`);
     if (v !== before) { next[key] = v; changed.push({ key, from: before, to: v }); }
   }

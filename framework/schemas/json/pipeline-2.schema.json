@@ -17,6 +17,8 @@
     "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
     "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, mainPull, lastMerge" },
     "emergency": { "type": "object", "description": "Sent to emergency by Brett from his signed-in console: skips the one-active-build line, builds in the emergency slot pool, lands first", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
+    "hand": { "type": "object", "description": "Started by hand (axHub vps.build_start, a console launch): one step whose session was already running, so it entered the flow at building. It runs beside the one-active-build line, is never launched by the dispatcher, and lands through the lander like any other build", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
+    "budgetStop": { "type": "object", "description": "build-budget@1: the build was stopped at a budget cap (its own, or the day's). Nothing of it is launched and the watchdog leaves it alone until the cap allows it again", "required": ["at", "kind"], "properties": { "at": { "type": "string", "format": "date-time" }, "kind": { "enum": ["build", "daily"] }, "spentUsd": { "type": "number", "minimum": 0 }, "capUsd": { "type": "number", "minimum": 0 } } },
     "landedAt": { "type": "string", "format": "date-time" },
     "planning": {
       "description": "The plan's steps as Plan Studio sent them: planning context for the splitting stage, never build steps (kept for the record after the split)",

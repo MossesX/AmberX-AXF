@@ -31,6 +31,7 @@ import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as C from './core.mjs';
+import { LOCK_FILE, release as releaseBuildLock } from '../../framework/cli/build-lock.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 export const REPO = resolve(dirname(SELF), '../..');
@@ -93,6 +94,18 @@ export function tmuxByPrefix(prefix) {
   return r.stdout.split('\n').filter((n) => re.test(n));
 }
 
+/** How a session that is gone ended, from the launcher's events file: { exit, kind } or null (no session-end line). */
+export function endedOf(session, env = process.env) {
+  if (!session) return null;
+  try {
+    const t = spawnSync('tail', ['-n', '4000', join(env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless', 'events.jsonl')], { encoding: 'utf8', timeout: 10000 }).stdout || '';
+    const line = t.split('\n').filter((l) => l.includes(`"session":"${session}"`) && l.includes('session-end')).pop();
+    if (!line) return null;
+    const e = JSON.parse(line);
+    return { exit: Number(e.exit) || 0, kind: String(e.kind || '').slice(0, 20) };
+  } catch { return null; }
+}
+
 /** What is alive for every `building` step: tmux, the log tail (limit text), how long the log has been silent. */
 export function probe(store, env = process.env) {
   if (env.AXF_WATCHDOG2_PROBES) return JSON.parse(env.AXF_WATCHDOG2_PROBES);
@@ -104,7 +117,7 @@ export function probe(store, env = process.env) {
     const ages = [log?.ageMin, js?.ageMin].filter((x) => x != null);
     let session = p.session; let tmux = session ? tmuxHas(session) : null;
     if (!session) { const found = tmuxByPrefix(p.prefix); if (found?.length) { session = found[0]; tmux = true; } else if (found) { session = p.prefix; tmux = false; } }
-    out[`${b.id}/${s.id}`] = { session, tmux, logTail: `${log?.text ?? ''}\n${js?.text ?? ''}`, logAgeMin: ages.length ? Math.min(...ages) : null };
+    out[`${b.id}/${s.id}`] = { session, tmux, logTail: `${log?.text ?? ''}\n${js?.text ?? ''}`, logAgeMin: ages.length ? Math.min(...ages) : null, ...(tmux === false ? { ended: endedOf(session, env) } : {}) };
   }
   return out;
 }
@@ -129,6 +142,15 @@ export function nudge(build, env = process.env, { lander = false } = {}) {
   const tick = env.AXF_WATCHDOG2_TICK || DEFAULT_TICK;
   if (!tick) return { ok: false, code: 'no-orchestrator', out: '', err: 'no orchestrator tick here (the build orchestrator plugin is not installed)' };
   return sh(`${tick} --build ${JSON.stringify(build)}`, env, 600000);
+}
+const acting0 = (decisions) => decisions.some(({ d }) => ['fail-dead', 'fail-limit', 'complete'].includes(d.action));
+/** Remove the build lock a step's ended session left in its worktree (framework/cli/build-lock.mjs). */
+function releaseLock(store, issue, env) {
+  if (dry(env)) return;
+  const b = (store?.builds ?? []).find((x) => x.id === issue.build); const s = (b?.steps ?? []).find((x) => x.id === issue.step);
+  if (!b || !s) return;
+  const p = placeOf(b, s, env);
+  try { if (existsSync(join(p.worktree, LOCK_FILE))) releaseBuildLock(`${b.id}--${s.id}`, { dir: p.worktree }); } catch { /* the lock expires by itself */ }
 }
 function kill(session, env) { if (!session || dry(env)) return; spawnSync('tmux', ['kill-session', '-t', `=${session}`], { timeout: 10000 }); }
 async function outAccount(name, text, env) {
@@ -176,12 +198,16 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   if (!S.enabled) { writeJson(f.heartbeat, { $axf: C.SCHEMA, at: started, ok: true, off: true }); return { off: true, actions: [] }; }
   const api = await storeApi(env);
   const { issues, decisions, memory, probes } = await scan({ env, now });
+  const st0 = acting0(decisions) ? api.loadStore() : null;
   const acting = decisions.filter((x) => x.d.action !== 'wait');
   const actions = [];
   // side effects that must happen before the status change: the account out, the dead or hung session gone
   for (const { issue, d } of acting) {
     if (d.action === 'fail-limit') { await outAccount(issue.account, issue.evidence, env); kill(probes[`${issue.build}/${issue.step}`]?.session, env); }
     if (d.action === 'fail-dead' && d.kill) kill(probes[`${issue.build}/${issue.step}`]?.session, env);
+    // the session is gone for good: its build lock goes with it, or the relaunch is refused as "already has a live
+    // session" for as long as the lock's last heartbeat stays fresh
+    if (['fail-dead', 'fail-limit', 'complete'].includes(d.action) && issue.step) releaseLock(st0, issue, env);
   }
   const writes = acting.filter(({ d }) => d.action !== 'nudge');
   if (writes.length) {

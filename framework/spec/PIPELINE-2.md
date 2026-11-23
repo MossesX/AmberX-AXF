@@ -157,6 +157,26 @@ marked reset with its reason, like every other way past the ceiling.
      (`grantEmergency`, owner only). The pools never lend: the orchestrator never uses an emergency slot, an emergency
      build never takes an orchestrator slot. The host runs at most `maxBuilds + emergencySlots` builds.
    - **The merge line.** The lander picks emergency builds first (oldest tag first), ahead of a build already landing.
+   **Hand builds** (Brett, Nov 23 2026) are the other build beside the line. A session started by hand (axHub
+   `vps.build_start`, a console launch) in a worktree on `claude/<its name>` gets a record once it runs
+   (`framework/cli/hand-build.mjs start`, called by `deploy/claude-headless.sh`): `flow: pipeline-2`, tag
+   `hand: { at, by }`, one step `s1` already `building` in that worktree. It never waits for the active place and never
+   holds it (`besideLine`; `activeBuild` leaves it out), it uses the slot its launcher booked, and the dispatcher never
+   launches it: a pass only notices that its session is gone (`handBuilds`, `hand-build.mjs sweep`). Its session's end
+   decides: exit 0 with commits = branch pushed, step `completed`, build `build-complete`, and the lander lands it like
+   any other build; exit 0 with nothing on the branch, or stopped by hand = `archived`; anything else = `failed` at
+   `building`. Neither the dispatcher nor the watchdog relaunches a hand build: started again by hand under the same
+   name, the same record carries on (a reset). The dispatch gate and the model gate pass a hand launch whose record
+   is on file.
+   **Budgets** (build-budget@1, `framework/core/build-budget.mjs`, `framework/cli/build-budget.mjs`): every full pass
+   on the host first reads the caps (Claude settings `builds.budgetPerBuildUsd` and `builds.budgetDailyUsd`; 0 = no
+   cap, the default until Brett saves a number) and the spend (the headless meters). A build whose sessions have cost
+   its cap, and every build with a session out once the day's sessions have cost the daily cap, is stopped: its
+   sessions end, their build locks are released, its steps in a slot are `failed`, and the record carries
+   `budgetStop: { at, kind, spentUsd, capUsd }` with one note and one alert naming the setting. While `budgetStop` is
+   set nothing of the build is launched and the watchdog leaves it alone; while the daily cap is reached no build takes
+   the active place. The stop is cleared by itself when the cap allows it again (raised, removed, a new day): a
+   pipeline build then goes on, a hand build is started again by hand.
 9. **Never merge a stale head.** Right before any merge, emergency or not, the PR must hold main's newest code: when
    main moved after CI went green (an emergency build landed, anything else merged; status-only commits do not count),
    the lander pulls the newest main into the PR (`landing.mainPull { head, at }`), a code conflict goes to a fix

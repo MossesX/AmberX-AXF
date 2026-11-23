@@ -49,7 +49,16 @@ ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'axh
 ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'session', name: 'brett' }, env: CLEAN }), 'denied'), 'a made-up via is not an owner');
 ok(view().values['noWait.enabled'] === false, 'still off after every refusal');
 ok(throwsCode(() => setSettings({ 'builds.alwaysNamedAgent': false }, { owner: BRETT, env: CLEAN }), 'denied'), 'locked: not even the owner');
+ok(view().values['builds.budgetDailyUsd'] === 0 && view().values['builds.budgetPerBuildUsd'] === 0, 'no budget cap until a number is saved (0 = no cap)');
+{ // build-budget@1 enforces these two: the screen must show the default the engine uses, and 0 (no cap) is the owner's
+  const B = await import('../../../../framework/core/build-budget.mjs');
+  const one = (key) => reg.settings.find((s) => s.key === key);
+  ok(one(B.KEYS.perBuild)?.default === B.DEFAULTS.perBuildUsd && one(B.KEYS.daily)?.default === B.DEFAULTS.dailyUsd, 'the budget defaults are the budget engine\'s');
+  ok([B.KEYS.perBuild, B.KEYS.daily].every((k) => one(k)?.owner === 'raise' && one(k)?.zeroIsNoCap === true), 'both caps: only the owner raises or removes them');
+}
+ok(setSettings({ 'builds.budgetDailyUsd': 60 }, { owner: null, env: CLEAN }).changed.length === 1, 'a session may set a cap where there is none (that lowers it)');
 ok(throwsCode(() => setSettings({ 'builds.budgetDailyUsd': 500 }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot raise a budget cap');
+ok(throwsCode(() => setSettings({ 'builds.budgetDailyUsd': 0 }, { owner: null, env: CLEAN }), 'denied'), 'nor remove it: 0 = no cap is the highest value');
 ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot switch on auto-queue');
 ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: BRETT, env: SESSION }), 'denied'), 'nor with an owner handed over inside a session');
 ok(setSettings({ 'builds.fillSlots': false, 'builds.maxParallelPerBuild': 2 }, { owner: null, env: CLEAN }).changed.length === 2, 'a session may switch Fill every slot off and lower the per-build cap');
