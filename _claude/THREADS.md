@@ -843,8 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-22 22:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-22 22:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 22:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-22 22:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-22 22:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1241,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-23 09:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 09:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 09:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 09:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-23 09:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
