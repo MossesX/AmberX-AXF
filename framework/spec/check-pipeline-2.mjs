@@ -61,7 +61,6 @@ const fixture = {
     { steps: [{ estimate: '10 min' }, { estimate: '10 min' }, { estimate: '5 min' }, { estimate: '5 min' }], slots: 2 },
     { steps: [{ files: ['x'], minutes: 12 }, { files: ['x'], minutes: 12 }], slots: 1, maxMinutes: 30 },
   ].map((c) => ({ ...c, parts: P.splitParts(c.steps, c.slots, c.maxMinutes ? { maxMinutes: c.maxMinutes } : {}).map((p) => p.map((s) => c.steps.indexOf(s))) })),
-  models: ['Write the JSON schema', 'Fix the toolbar padding', 'Kernel scheduler', 'Add a button'].map((text) => ({ text, model: P.modelFor({ text }) })),
   plans: [
     { $axf: 'plan-build@1', id: 'good-plan', title: 'Good', steps: [{ text: 'a', model: 'Opus', minutes: 20 }] },
     { $axf: 'plan-build@1', id: 'planning-only', title: 'No hints', steps: [{ text: 'a' }, { text: 'b', minutes: 90 }] },

@@ -49,6 +49,7 @@
       "CLAUDE.md",
       "_claude/rules/RULES.md",
       "framework/spec/BUILD-RULES.md",
+      "framework/spec/MODEL-TRIAGE.md",
       "_claude/builds/BRIEF-TEMPLATE.md",
       ".github/workflows/android.yml",
       "_claude/memory/decisions.md",
@@ -297,6 +298,76 @@
         "description": "Change the lander's settings (deploy/lander/run.mjs): enabled, sizeCapLines (the one-PR size cap), flakyReruns, backoffBaseMin/Factor/MaxMin, ciNoneKickMin, ciTimeoutMin, fixTimeoutMin, notifyAfterAttempts, workflow, mergeMethod; {key: value, …} or {key, value}."
       },
       {
+        "id": "model-triage",
+        "route": "GET /model-triage",
+        "title": "Model triage: rules and decisions",
+        "readOnly": true,
+        "tool": "vps_model_triage",
+        "description": "The VPS model triage gate (model-triage@1): the rules that decide which model each build step, emergency build, hand build and lander fix session runs on, in order, with their settings; the default model; whether Fable upgrades wait for Brett; the last decisions (model, rule, why)."
+      },
+      {
+        "id": "model-triage-set",
+        "route": "POST /model-triage",
+        "title": "Model triage: change a rule",
+        "tool": "vps_model_triage_set",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": { "type": "string", "enum": ["rule", "move", "defaults", "enabled", "reset"], "description": "rule = edit one rule; move = its place; defaults = the gate's own settings; enabled = the whole gate; reset = the starting rules" },
+            "id": { "type": "string", "description": "the rule (ci-fix, merge-clash, second-try, contracts, blast-radius, size, cross-cutting, designer, fable-words, simple-work)" },
+            "enabled": { "type": "boolean", "description": "the rule (op rule) or the whole gate (op enabled) on or off" },
+            "model": { "type": "string", "enum": ["opus", "fable"], "description": "the model the rule sends work to (op rule), or the model for work no rule matched (op defaults)" },
+            "lanes": { "type": "array", "items": { "type": "string", "enum": ["orchestrator", "emergency", "hand", "lander-fix"] }, "description": "the lanes the rule covers" },
+            "settings": { "type": "object", "description": "the rule's numbers and lists, e.g. {\"files\": 8} for size or {\"dependents\": 10} for blast-radius" },
+            "to": { "type": "integer", "minimum": 0, "description": "the rule's new place, 0 = first (op move)" },
+            "handRequest": { "type": "string", "enum": ["floor", "pin", "ignore"], "description": "what a hand launch's own model means (op defaults)" },
+            "briefWords": { "type": "boolean", "description": "a brief or step that names its model wins (op defaults)" }
+          },
+          "required": ["op"],
+          "additionalProperties": false
+        },
+        "description": "Change the model triage gate: one rule's on/off, model, lanes or settings, its place in the order, the default model, or reset to the starting rules. Checked on the VPS; every change is in the history."
+      },
+      {
+        "id": "model-triage-decisions",
+        "route": "GET /model-triage/decisions",
+        "title": "Model triage: decisions",
+        "readOnly": true,
+        "tool": "vps_model_triage_decisions",
+        "description": "The gate's decision log, newest first: build and step (or session), lane, model, the rule that fired and why. Filter by build, lane; limit."
+      },
+      {
+        "id": "model-triage-history",
+        "route": "GET /model-triage/history",
+        "title": "Model triage: rule changes",
+        "readOnly": true,
+        "tool": "vps_model_triage_history",
+        "description": "Every change to the model triage rules, newest first: who, when, what, why."
+      },
+      {
+        "id": "model-triage-decide",
+        "route": "POST /model-triage/decide",
+        "title": "Model triage: what would the gate answer",
+        "readOnly": true,
+        "tool": "vps_model_triage_decide",
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string", "description": "the step or brief text" },
+            "title": { "type": "string" },
+            "files": { "type": "array", "items": { "type": "string" }, "description": "the repo paths it touches" },
+            "minutes": { "type": "integer", "minimum": 0 },
+            "lines": { "type": "integer", "minimum": 0 },
+            "lane": { "type": "string", "enum": ["orchestrator", "emergency", "hand", "lander-fix"] },
+            "kind": { "type": "string", "description": "ci-red, clash-main or rules for a lander fix" },
+            "requested": { "type": "string", "description": "the model a hand launch asked for" }
+          },
+          "required": ["text"],
+          "additionalProperties": false
+        },
+        "description": "Ask the gate which model a piece of work would get and which rule decides. Changes and logs nothing."
+      },
+      {
         "id": "build-cap",
         "route": "GET /build-cap",
         "title": "Build cap: status",
@@ -371,7 +442,7 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, approvals, passes, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, model-triage, approvals, passes, history)."
       },
       {
         "id": "build-rules-list",

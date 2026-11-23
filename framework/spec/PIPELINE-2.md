@@ -213,11 +213,11 @@ marked reset with its reason, like every other way past the ceiling.
 
 - `pending` → `splitting`, a build with no build steps (every build Plan Studio sends): Fable designs the build steps
   from the title, body and `planning` (`p2SplitPrompt` in the orchestrator's pipeline-core, asked once on Fable through
-  the orchestrator's splitter). Each step has text, minutes (1 to 15, `STEP_MAX_MINUTES`) and a model (Fable or Opus); the answer must pass
+  the orchestrator's splitter). Each step has text, minutes (1 to 15, `STEP_MAX_MINUTES`) and a suggested model (Fable or Opus; the model triage gate decides, below); the answer must pass
   `normDesign` or none of it is used. Steps run at the same time in their own worktrees, so designed steps that share
   files are joined into one row (`splitParts`) while the row stays inside the cap. The build's note says how it was split.
 - Fallback, when Fable cannot answer (no credits, no login, the split provider off, an answer that does not pass):
-  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 15, else 15; model by `modelFor`), or
+  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 15, else 15; a model noted in Plan Studio is carried as the step's `pin`), or
   one step for the whole plan when it has no planning steps. The note says why. Away from the VPS host (no logins) a
   planning-only build waits at `pending` for the host's tick instead of falling back.
 - `pending` → `splitting`, a build that already has steps (sent before this change): the steps are cut into as many
@@ -227,8 +227,13 @@ marked reset with its reason, like every other way past the ceiling.
 - `pulling-main` (only when no other build is active): one step at a time, its worktree is cut at
   `<worktrees>/<build>--<step>` on branch `claude/<build>--<step>` from fresh `origin/main`. Step: `pulling-main` →
   `ready`. Worktrees are cut **before** launch, never at launch.
-- `assigning-models`: `modelFor` (Fable for schemas, asset types, contracts, engines / kernel, cross-app protocols, or a
-  step pinned to Fable; Opus otherwise). Never Sonnet or Haiku. A step is never launched above its pinned model.
+- `assigning-models`: the VPS model triage gate (model-triage@1, `framework/spec/MODEL-TRIAGE.md`) gives every step its
+  model. The orchestrator never picks one: a model a step came with is a suggestion the gate reads, a `pin` on the step
+  is an explicit override the gate keeps. The steps already carry the gate's first answer from the split; here it
+  answers again with what could only be measured on the host (the files that depend on the step's files). Each step
+  keeps the decision (`triage`: model, rule, why) and the build's note lists them. A step whose session failed asks the
+  gate again before it is sent back out (the second-try rule). Never Sonnet or Haiku. A step is never launched above
+  the model on its record.
 - `ready` → `sending`: started automatically by two triggers: the orchestrator tick (`orchestrator.mjs tick`, cron every
   minute; `tick --build <id>` is one build, the watchdog's nudge) and the store
   change event (build-hook@1 listener `pipeline2-hook.mjs`, which runs one advance as soon as a build reaches `ready`

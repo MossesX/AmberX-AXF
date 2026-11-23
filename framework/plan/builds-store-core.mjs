@@ -54,6 +54,7 @@ import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { PARALLEL_MODES, dependsOn, explicitAfter, normAfter, normClaim, normParallel } from '../core/build-pipeline.mjs';
 import * as P2 from '../core/pipeline-status.mjs';
+import { normDecision } from '../core/model-triage.mjs';
 import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
@@ -160,6 +161,9 @@ export function normStep(s, i = 0, ctx = {}) {
     ...(after ? { after } : {}),
     ...(parallel ? { parallel } : {}),
     ...(claim ? { claim } : {}),
+    // model-triage@1: an explicit model override on the step, and the gate's last decision for it (model, rule, why)
+    ...(MODELS.includes(o.pin) ? { pin: o.pin, ...(str(o.pinBy).trim() ? { pinBy: str(o.pinBy, 80).trim() } : {}) } : {}),
+    ...(normDecision(o.triage) ? { triage: normDecision(o.triage) } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,

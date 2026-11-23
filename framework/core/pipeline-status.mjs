@@ -452,11 +452,6 @@ export function splitParts(steps = [], slots = 1, { maxMinutes = STEP_MAX_MINUTE
  */
 export const stepBudgetMinutes = (step) => 2 * (minutesHint(step) || STEP_MAX_MINUTES);
 
-/** Words that mark a step as Fable work (schemas, asset types, contracts, engines / kernel, cross-app protocols). */
-export const FABLE_WORDS = /\b(schemas?|asset types?|contracts?|engines?|kernel|cross-app|protocols?|spec(?:ification)?s?)\b/i;
-/** Fable where needed, Opus for everything else; a step already pinned to Fable stays Fable. */
-export const modelFor = (step) => (step?.model === 'Fable' || FABLE_WORDS.test(`${str(step?.text, 2000)} ${str(step?.title, 200)}`) ? 'Fable' : 'Opus');
-
 /**
  * Accounts by usage left, then spread: the account for the next step is the one with usage left that has the fewest
  * steps of this build on it, then the most usage left, then the fewest running sessions, then by name. Accounts
@@ -584,10 +579,12 @@ export function normDesign(answer) {
 
 /**
  * The split without Fable (no credits, no answer, an answer that does not pass normDesign): one build step per planning
- * step, its noted minutes (capped) or the cap, its model by modelFor; a plan with no planning steps is one step.
+ * step, its noted minutes (capped) or the cap; a plan with no planning steps is one step. No model is chosen here: the
+ * VPS triage gate (model-triage@1) assigns it. A model noted on the planning step in Plan Studio is carried as `pin`,
+ * the explicit override the gate keeps; `model` is only the placeholder a step row needs until the gate has answered.
  */
 export function fallbackDesign(b = {}) {
   const planning = normPlanning(b.planning);
   const rows = planning.length ? planning : [{ text: [str(b.title, 300).trim(), str(b.detail, 3000).trim()].filter(Boolean).join('\n\n') || 'The build' }];
-  return rows.map((s) => ({ text: s.text, model: modelFor({ text: s.text, model: s.model, title: planning.length ? '' : b.title }), minutes: Math.min(STEP_MAX_MINUTES, s.minutes || STEP_MAX_MINUTES), files: s.files ?? [] }));
+  return rows.map((s) => ({ text: s.text, model: PLAN_MODELS.includes(s.model) ? s.model : PLAN_MODELS[PLAN_MODELS.length - 1], ...(PLAN_MODELS.includes(s.model) ? { pin: s.model } : {}), minutes: Math.min(STEP_MAX_MINUTES, s.minutes || STEP_MAX_MINUTES), files: s.files ?? [] }));
 }

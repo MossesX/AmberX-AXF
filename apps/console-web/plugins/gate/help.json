@@ -284,6 +284,53 @@
         "kind": "control"
       },
       {
+        "target": "model-triage",
+        "title": "Model triage",
+        "text": "The VPS gate that decides which model every build step, emergency build, hand build and lander fix session runs on. The orchestrator only sends the work; this gate assigns Opus or Fable and records the rule that decided. Same rules as `axf gate model-triage`, the vps_model_triage MCP tools and “what are the model triage rules”."
+      },
+      {
+        "target": "view:gate/tab:model-triage",
+        "title": "Model triage",
+        "text": "An explicit override always wins (a pin on the step, a brief that names its model, the build-wide model in Claude settings). Then the first rule that is on, covers the lane and matches decides. Then the default. Every number and list is a starting point: change it here and the next decision uses it. The tab only shows and sends; the VPS decides.",
+        "kind": "screen"
+      },
+      {
+        "target": "model-triage-gate",
+        "title": "Model triage gate",
+        "text": "The whole gate on or off. Off: every lane gets the default model and no rule is read. An explicit override still wins."
+      },
+      {
+        "target": "when-no-rule-matches",
+        "title": "When no rule matches",
+        "text": "The model for work no rule matched. It starts as Fable (Brett's rule: unsure = Fable). Set it to Opus to make Fable the exception the rules have to earn."
+      },
+      {
+        "target": "the-model-a-hand-launch-asks-for-is",
+        "title": "The model a hand launch asks for",
+        "text": "What the model named by a hand launch (axHub vps.build_start, a console launch) means to the gate. A floor: the gate may raise it, never lower it. A pin: the launch decides. Ignored: only the rules decide."
+      },
+      {
+        "target": "a-brief-or-step-that-names-its-model-wins",
+        "title": "A brief or step that names its model wins",
+        "text": "On: a brief or step that says its model (“Model: Fable”, a leading [Opus], “run it on Fable”, a title ending “(…, Fable)”) gets that model, whatever the rules say. Talking about the models is not naming one."
+      },
+      {
+        "target": "reset-to-starting-rules",
+        "title": "Reset to starting rules",
+        "text": "Puts every rule, number, list and the order back to the starting values, after you confirm. The history keeps what they were."
+      },
+      {
+        "target": "keep-my-rules",
+        "title": "Keep my rules",
+        "text": "Closes the question. Nothing is reset."
+      },
+      {
+        "target": "cli:gate/model-triage",
+        "title": "axf gate model-triage",
+        "text": "`axf gate model-triage` shows the rules; `rule size set files 6`, `rule simple-work off`, `defaults model opus`, `gate off` and `reset` change them; `decide --text '…' --files a,b` asks what the gate would answer; `decisions` and `history` read the logs; `pin <build> <step|all> <opus|fable|none>` puts an explicit override on a build's steps.",
+        "kind": "control"
+      },
+      {
         "target": "approvals",
         "title": "Approval rules",
         "text": "The rules axHub uses to decide each call: which tools run at once, which hold on the veto countdown and for how long, which wait for Brett's confirm and which never run. Same rules as `axf gate approvals`, the vps_approval_rules MCP tools and “what are the approval rules”."

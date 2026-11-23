@@ -2693,6 +2693,14 @@
               "suggests": []
             },
             {
+              "id": "cx.modeltriage",
+              "title": "Model triage gate: the VPS decides which model every build step, emergency build, hand build and lander fix session runs on, from measurable, editable rules; every decision logged with the rule that fired; REST, MCP, CLI and voice",
+              "note": "framework/core/model-triage.mjs + framework/cli/model-triage.mjs (model-triage@1, framework/spec/MODEL-TRIAGE.md): explicit overrides first (a pin, a brief that names its model, the build-wide model), then ordered rules (CI failures, merge clashes, second try, contracts, blast radius, size, cross-cutting, the splitter's suggestion, the model policy's word lists), then the default; respects Fable upgrades need my approval. Asked by the dispatcher (split, assigning-models, retries), the headless launcher (hand builds) and the lander (fix sessions). Builds \u2192 VPS Configuration \u2192 Model triage shows and edits it; no logic in the console.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "cx.phone",
               "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
               "note": "apps/console-web/plugins/phone-connect + apps/phone-connect (phone-connect@1, framework/spec/PHONE-CONNECT.md): Settings \u2192 Plugins \u2192 Phone Connect, capability axf.phone@1, alert hub \u2192 phone push, systems check item, axHub amberx.* tools answered by the paired phone; replaces the AmberX app (code removal staged: remove-amberx-app-code-once-phone); Kotlin engine twin deferred",

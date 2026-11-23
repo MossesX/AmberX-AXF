@@ -64,6 +64,7 @@ public class ConsoleActivity extends Activity {
         OverlayService.collapseIfExpanded(this);
         WebHost.attach(root, this);
         Perms.resumed(this);
+        ApprovalFeed.syncNow(); // back in front: the toolbar's list is the hub's as of now
         NativeBridge.emit("app", "{\"visible\":true}");
         ContentUpdate.visibility();
     }

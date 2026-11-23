@@ -188,7 +188,7 @@ export function applyPlan(p, by = 'reconciler') {
       if (c.set.pr && c.set.pr !== b.pr) b.mergedAt = '';
       for (const [k, v] of Object.entries(c.set)) b[k] = v;
       for (const id of c.steps) { const st = b.steps.find((x) => x.id === id); if (st && !st.done) { st.done = true; st.doneAt = now; if (!st.note) st.note = c.stepNotes[id] ?? ''; } }
-      b.notes.push({ text: `Reconciler: ${c.why.join('; ')}`.slice(0, 2000), at: now });
+      { const text = `Reconciler: ${c.why.join('; ')}`.slice(0, 2000); if (b.notes.at(-1)?.text !== text) b.notes.push({ text, at: now }); } // the same finding twice in a row is one note
       b.updatedAt = now;
       merge.settleStatus(b, now);
       if (c.steps.length && (b.status === 'pending' || b.status === 'queued')) b.status = 'running';

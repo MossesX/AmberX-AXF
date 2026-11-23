@@ -398,6 +398,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   for (const b of queue) {
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
+    // shipped-manifest@1: the gate already shipped it; a Queued status left on the record is stale, never a reason to run it again
+    if (b.shipped?.id) { waits.push({ id: b.id, why: `already shipped (${b.shipped.id}): not launched again` }); continue; }
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
@@ -709,7 +711,7 @@ export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = STEP_MINUTES } = 
     `The plan's steps are planning notes from Plan Studio, not build steps: use them as context, merge, cut or reorder them as the work needs.`,
     `Each build step is a separate headless Claude Code session in its own git worktree cut from main; up to ${Math.max(1, Number(slots) || 1)} run at the same time and their branches land as one PR. So steps must not depend on each other's unmerged work and must not touch the same files.`,
     `Rules: every step ${maxStepMinutes} minutes or less, estimated in whole minutes; 1 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; the last step covers tests and the report (_claude/builds/reports/<build id>.md).`,
-    `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
+    `Suggest a model per step, Opus by default (the VPS model triage gate decides what each step runs on; your model is one of its inputs). Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
     // a split asked to "name the files" reached for tools to look at the repo and never answered (Nov 20 2026)
     'You have no tools and cannot read the repository: design from the plan below alone, in this one reply. Name files or folders from the plan and the AXF layout (apps/console-web/plugins/<plugin>/, apps/console-web/server/, framework/…) as best you can; each step\'s session explores the code itself.',
     'Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","minutes":<n>,"files":["…"]}]}',

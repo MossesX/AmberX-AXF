@@ -110,6 +110,7 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as lock from '../../../../framework/cli/build-lock.mjs';
+import * as modelTriage from '../../../../framework/cli/model-triage.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
@@ -395,7 +396,8 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined;
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
-    if (note) b.notes.push({ text: str(note, 2000), at: now });
+    // a note the build already ends with is not written again (a launch failing every minute left 42 copies of one line)
+    if (note && b.notes.at(-1)?.text !== str(note, 2000)) b.notes.push({ text: str(note, 2000), at: now });
     if (typeof mutate === 'function') mutate(b, now);
     b.updatedAt = now; out = b;
     return s;
@@ -555,6 +557,10 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   }
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
   else { const par = steps.filter((s, i) => i > 0 && Array.isArray(s.dependsOn) && !(s.dependsOn.length === 1 && s.dependsOn[0] === `s${i}`)).length; note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable${par ? `, ${par} can run beside earlier steps` : ''}).`; }
+  // the model of every step is the VPS triage gate's (model-triage@1): the splitter's model is a suggestion it reads
+  let gated = null;
+  try { gated = modelTriage.triageSteps(b, steps.map((st, i) => ({ ...st, id: st.id || `s${i + 1}` })), { lane: 'orchestrator' }); steps = gated.steps.map((st) => ({ ...st, why: st.why || (st.model === 'Fable' ? str(st.triage?.why, 300) : '') })); note = note.replace(/\((\d+) Fable/, `(${steps.filter((x) => x.model === 'Fable').length} Fable`); }
+  catch (e) { logLine({ event: 'triage-failed', build: b.id, error: str(e.message, 200) }); }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
   withStore((s) => {
@@ -571,6 +577,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     rec.notes.push({ text: note, at: now }); rec.updatedAt = now; out = rec;
     return s;
   }, { by, action: 'pipeline:split', note: b.id });
+  if (gated) modelTriage.logSteps(b, gated.decisions);
   logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error });
   return { id: b.id, provider: used, steps: out.steps.length, error, note };
 }

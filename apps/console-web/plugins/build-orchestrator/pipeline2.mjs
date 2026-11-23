@@ -6,13 +6,18 @@
  *
  *   pending → splitting → split          every Pipeline 2.0 build sent from Plan Studio arrives as one plan (title,
  *                                        body, planning steps; no build steps): Fable designs the build steps, each
- *                                        with minutes and a model (one per planning step when Fable cannot answer);
+ *                                        with minutes and a suggested model (one per planning step when Fable cannot
+ *                                        answer); the model each step runs on is the VPS triage gate's;
  *                                        a build that already has steps is cut into as many parts as there are slots,
  *                                        parts never sharing files
  *   split → pulling-main                 only when no other build is active (one active build at a time)
  *   pulling-main                         one step at a time: its worktree cut at <worktrees>/<build>--<step> on
  *                                        claude/<build>--<step> from fresh origin/main (cut BEFORE launch, never at launch)
- *   assigning-models → ready             Fable where needed, Opus otherwise
+ *   assigning-models → ready             the VPS model triage gate (model-triage@1, framework/cli/model-triage.mjs)
+ *                                        gives every step its model; the decision (model, rule, why) is kept on the
+ *                                        step and in the gate's log. The orchestrator never picks a model itself: the
+ *                                        splitter's model is a suggestion the gate reads, and a step that failed in its
+ *                                        session is asked about again before it is sent out (second try)
  *   ready → sending → building           steps go out one at a time to each free slot (never waiting for every slot), on
  *                                        the account with usage left that has the fewest of this build's steps; up to
  *                                        stepsInParallel (default 4) steps of the build run at once, each in its own
@@ -64,12 +69,14 @@ import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { syncGrants } from '../../../../framework/cli/emergency-builds.mjs';
+import * as triage from '../../../../framework/cli/model-triage.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
 const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const nowIso = () => new Date().toISOString();
+const clip = (t, n) => (t.length > n ? `${t.slice(0, n - 1)}…` : t);
 const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
 export const stepName = (b, s) => `${b.id}--${s.id}`;
 const lockEnv = (env) => (env.AXF_SLOTS_TMUX === 'off' && env.AXF_BUILD_LOCK_TMUX == null ? { ...env, AXF_BUILD_LOCK_TMUX: 'off' } : env);
@@ -104,11 +111,13 @@ function slotCount(env) {
   try { const sl = PL.slotsNow(); return Math.max(1, Math.min(sl.cap || 1, sl.hard?.max || sl.cap || 1)); } catch { return 1; }
 }
 const minutesOf = (s) => parseInt(str(s.estimate), 10) || 0;
-/** One step row per part: one step as it is, several joined (their text as a list, files merged, Fable if any is). */
+/** One step row per part: one step as it is, several joined (their text as a list, files merged, Fable suggested or pinned if any is). */
 export function partStep(part, i, { at: when, by }) {
   const one = part.length === 1 ? part[0] : null;
   const base = one ? { ...one } : {
     text: part.map((x) => `- ${str(x.text, 600)}`).join('\n'), model: part.some((x) => x.model === 'Fable') ? 'Fable' : 'Opus',
+    ...(part.some((x) => x.suggestedBy) ? { suggestedBy: part.find((x) => x.suggestedBy).suggestedBy } : {}),
+    ...(part.some((x) => x.pin) ? { pin: part.some((x) => x.pin === 'Fable') ? 'Fable' : 'Opus', pinBy: part.find((x) => x.pin)?.pinBy || 'Plan Studio' } : {}),
     estimate: `${part.reduce((m, x) => m + minutesOf(x), 0)} min`, files: [...new Set(part.flatMap((x) => x.files ?? []))], phase: 1,
     note: `Part ${i + 1}: ${part.length} plan steps in one session (they touch the same files).`,
   };
@@ -141,6 +150,15 @@ export function designSteps(b, { env = process.env, slots = 1 } = {}) {
   return { steps: P2.fallbackDesign(b), by: 'fallback', why: str(why, 300) };
 }
 
+/**
+ * Ask the VPS model triage gate for the model of each step. The gate decides; a gate that cannot answer (a broken
+ * store, a bug) leaves the steps as they are and says so in the log, so a build is never stuck on it.
+ */
+function gate(b, steps, env, opts = {}) {
+  try { return triage.triageSteps(b, steps, { lane: poolOf(b) === 'emergency' ? 'emergency' : 'orchestrator', env, root: REPO_ROOT, ...opts }); }
+  catch (e) { logLine({ event: 'triage-failed', build: b.id, error: str(e.message) }); return { steps, decisions: [], changed: [], error: str(e.message) }; }
+}
+
 function splitAll(store, env, out, only = '') {
   for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting') && (!only || x.id === only))) {
     const planningOnly = !b.steps.length;
@@ -150,17 +168,21 @@ function splitAll(store, env, out, only = '') {
     let parts; let note = '';
     if (planningOnly) {
       const d = designSteps(b, { env, slots });
-      const steps = d.steps.map((x) => ({ text: x.text, model: x.model, estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
+      // a model Fable's design gave is the splitter's judgement (the gate's `designer` rule reads it); the fallback gives none
+      const steps = d.steps.map((x) => ({ text: x.text, model: x.model, ...(d.by === 'fable' ? { suggestedBy: 'splitter' } : {}), ...(x.pin ? { pin: x.pin, pinBy: 'Plan Studio' } : {}), estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
       parts = P2.splitParts(steps, steps.length); // one row per designed step; only steps sharing files go together
       const minutes = d.steps.reduce((m, x) => m + x.minutes, 0);
       note = d.by === 'fable'
-        ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min, ${d.steps.filter((x) => x.model === 'Fable').length} Fable).`
+        ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min). The triage gate assigns the models.`
         : `Fable could not split it (${d.why}): one step per planning step instead (${d.steps.length}, ${minutes} min). Review the steps.`;
       logLine({ event: 'design', build: b.id, by: d.by, steps: d.steps.length, why: d.why });
     } else parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
     const when = nowIso();
+    // the model of every step is the triage gate's: what the step came with (the splitter's model, an older record's) is a suggestion
+    const gated = gate(b, parts.map((p, i) => partStep(p, i, { at: when, by: 'orchestrator' })), env, { at: when });
     const r = move(b.id, 'split', { why: `${parts.length} step${parts.length === 1 ? '' : 's'} for ${slots} slot${slots === 1 ? '' : 's'}`,
-      mutate: (rec) => { rec.steps = parts.map((p, i) => storeCore.normStep(partStep(p, i, { at: when, by: 'orchestrator' }), i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+      mutate: (rec) => { rec.steps = gated.steps.map((st, i) => storeCore.normStep(st, i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+    if (r) triage.logSteps(b, gated.decisions);
     if (r) { out.split.push({ id: b.id, steps: parts.length, slots }); logLine({ event: 'split', build: b.id, steps: parts.length, slots }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
   }
 }
@@ -225,9 +247,16 @@ function prepare(b, env, out) {
   }
   const cur = loadStore().builds.find((x) => x.id === b.id);
   if (cur.status !== 'assigning-models') return;
-  const raised = [];
-  move(b.id, 'ready', { why: 'models assigned', mutate: (rec) => { for (const s of rec.steps) { const m = P2.modelFor(s); if (m !== s.model) raised.push(`${s.id} ${s.model} → ${m}`); s.model = m; } if (raised.length) rec.notes.push({ text: `Models assigned (Fable where needed): ${raised.join(', ')}.`, at: nowIso() }); } });
-  out.ready.push(b.id); logLine({ event: 'ready', build: b.id, raised });
+  // the worktrees exist now, so the gate measures what it could not at the split (the files that depend on the step's files)
+  const gated = gate(cur, cur.steps, env, { measure: true });
+  const byId = new Map(gated.steps.map((s) => [s.id, s]));
+  const summary = gated.decisions.map((d) => `${d.step} ${d.model} (${d.why})`).join('; ');
+  const r = move(b.id, 'ready', { why: 'models assigned by the triage gate', mutate: (rec) => {
+    for (const s of rec.steps) { const g = byId.get(s.id); if (g?.triage) { s.model = g.model; s.triage = g.triage; } }
+    if (summary) rec.notes.push({ text: clip(`Models assigned by the triage gate: ${summary}.`, 1500), at: nowIso(), by: 'triage-gate' });
+  } });
+  if (r) triage.logSteps(cur, gated.decisions);
+  out.ready.push(b.id); logLine({ event: 'ready', build: b.id, raised: gated.changed });
 }
 
 /* ------------------------------------------------------------------ accounts and launches */
@@ -308,6 +337,13 @@ export function launchStep(b, s, { account, model }, { env = process.env, launch
   return { session, slot };
 }
 
+/** The gate's new answer for a failed step, when it differs from the model the step has: { model, triage, decision } or null. */
+function retriage(b, s, env) {
+  const g = gate(b, [s], env);
+  const d = g.decisions[0];
+  return d && d.model !== s.model ? { model: d.model, triage: g.steps[0].triage, decision: d } : null;
+}
+
 /** Accounts a step failed on before (its log: launch refusals and limit exits), newest attempts only. */
 const failedOn = (s) => (s.statusLog ?? []).filter((l) => l.status === P2.FAILED).slice(-4).map((l) => /^launch on ([a-z0-9-]+):/.exec(l.why || '')?.[1] ?? /^([a-z0-9-]+) hit its/.exec(l.why || '')?.[1] ?? '').filter(Boolean);
 
@@ -338,6 +374,10 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
       const onBuild = {}; for (const x of loadStore().builds.find((y) => y.id === b.id).steps) if (['sending', 'building'].includes(x.status) && x.account) onBuild[x.account] = (onBuild[x.account] ?? 0) + 1;
       // a step at `ready` with an `account` is pinned (the watchdog's relaunch chose it): that account, unless it is
       // marked out, full, or refused this step in this pass; otherwise the normal pick (never an out account)
+      // a step that failed in its session asks the gate again before it goes back out (second try); the gate only
+      // changes its model through a rule, and the new model is what the account is picked for
+      const again = fresh.status === P2.FAILED ? retriage(b, fresh, env) : null;
+      if (again) fresh.model = again.model;
       let a = P2.pinnedAccount(accounts, fresh, { model: fresh.model, exclude: [...tried, ...refusedNow] });
       if (a) logLine({ event: 'pinned-account', build: b.id, step: s.id, account: a.name });
       else if (fresh.status === 'ready' && fresh.account && !tried.includes(fresh.account)) logLine({ event: 'pin-skipped', build: b.id, step: s.id, account: fresh.account, why: 'marked out, full or refused: the normal pick chooses' });
@@ -350,7 +390,8 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
         return;
       }
       const to = fresh.status === P2.FAILED ? retryTo(fresh, 'sending') : 'sending';
-      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name } })) break;
+      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name, ...(again ? { model: again.model, triage: again.triage } : {}) } })) break;
+      if (again) { triage.logSteps(b, [{ step: s.id, ...again.decision }]); logLine({ event: 'retriaged', build: b.id, step: s.id, model: again.model, rule: again.decision.rule }); }
       const bNow = loadStore().builds.find((x) => x.id === b.id);
       if (at(bNow, 'ready', 'sending') && bNow.status !== 'sending') move(b.id, bNow.status === P2.FAILED ? retryTo(bNow, 'sending', 'build') : 'sending', { why: `sending ${s.id}` });
       try {
@@ -659,7 +700,7 @@ function advanceEmergency(env, out, { launch, build = '' }) {
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
   return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
-    steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
+    steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
 }
 
 async function main(argv) {
@@ -691,7 +732,7 @@ async function main(argv) {
       return json ? console.log(JSON.stringify({ ok: false, error: e.message })) : console.error(e.message);
     }
   }
-  if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
+  if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.triage ? ` [${s.triage.rule}]` : ''}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
   console.error('usage: pipeline2.mjs advance | status | retry <build> | act <build> <action> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).catch((e) => { console.error(`pipeline2: ${e.message}`); process.exitCode = 1; });

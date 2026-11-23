@@ -45,8 +45,8 @@
       "description": "The console follows the screen Amber is working on. The same switch the Follow Amber build reads: one setting, never a copy." },
 
     { "key": "builds.defaultModel", "group": "builds", "label": "Default model", "kind": "choice", "default": "split", "owner": true, "level": "basic",
-      "options": [{ "value": "split", "label": "Split per step (orchestrator)" }, { "value": "opus", "label": "Opus" }, { "value": "fable", "label": "Fable" }],
-      "description": "Model for new builds. Split = the orchestrator pins each step to Opus or Fable. Whether an upgrade to Fable waits for Brett is the Fable upgrades setting." },
+      "options": [{ "value": "split", "label": "Per step (the VPS model triage gate)" }, { "value": "opus", "label": "Opus for every step" }, { "value": "fable", "label": "Fable for every step" }],
+      "description": "Per step = the VPS model triage gate decides each step's model from its rules (Builds → VPS Configuration → Model triage). Opus or Fable = every step of every build runs on that model: an explicit override the gate keeps, whatever its rules say. A pin on one step still wins. Whether an upgrade to Fable waits for Brett is the Fable upgrades setting." },
     { "key": "builds.fableUpgradeApproval", "group": "builds", "label": "Fable upgrades need my approval", "kind": "toggle", "default": false, "owner": true, "level": "basic",
       "description": "Off (Brett, Nov 4 2026: \"No more approvals. If it needs Fable, set it to be Fable.\"): a phase or step that needs Fable runs on Fable by itself and the switch is logged on the build. On: every Opus → Fable upgrade waits for your console click or axHub approval." },
     { "key": "builds.launchWithoutAsking", "group": "builds", "label": "Launch builds without asking", "kind": "toggle", "default": false, "owner": true, "level": "basic",

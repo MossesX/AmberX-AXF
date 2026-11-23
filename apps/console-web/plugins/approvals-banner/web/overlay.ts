@@ -205,3 +205,19 @@ export function overlayItems(
   for (const a of pending) out.push({ id: `approval:${a.id}`, kind: 'approval', title: a.title || a.summary || a.tool, runsAt: 0, shelved: false });
   return out;
 }
+
+/**
+ * Whether the banner reads the hub's list on this tick. A browser tab reads only while it is visible. Inside the
+ * console app the page is hidden whenever another app is in front, which is exactly when a held call has to reach
+ * Brett, so there it keeps reading.
+ */
+export const readsFeed = (visible: boolean, inConsoleApp: boolean): boolean => visible || inConsoleApp;
+
+/**
+ * The call `approvals.view` opens: the one asked for when it still waits, the first one waiting when none was named,
+ * else null.
+ */
+export function viewTarget(id: string | undefined, waiting: readonly string[]): string | null {
+  if (id) return waiting.includes(id) ? id : null;
+  return waiting[0] ?? null;
+}

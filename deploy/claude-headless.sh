@@ -233,6 +233,36 @@ UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Op
 if command -v node >/dev/null && [[ -f "$HERE/../framework/cli/upgrade-policy.mjs" ]]; then
   rule="$(node "$HERE/../framework/cli/upgrade-policy.mjs" --rule 2>/dev/null)" && [[ -n "$rule" ]] && UPGRADE_NOTE="$rule"
 fi
+# Model triage (model-triage@1, Brett, Nov 21 2026: "a VPS-level gate decides which model each build/step runs on"): a
+# launch outside the orchestrator (a hand build: axHub vps.build_start, a console launch) asks the gate for its model
+# before anything else looks at it. The gate reads the brief and the model the launch named (a floor by default: the
+# gate may raise it, never lower it; a brief that names its model wins), answers with the Claude Code id and logs the
+# decision (VPS Configuration → Model triage). The `--model` in the claude args is replaced with the answer. Orchestrator
+# steps (AXF_SURFACE=pipeline), lander fix sessions and agent jobs were assigned before they got here and are not asked
+# again (AXF_MODEL_TRIAGED). A gate that cannot answer changes nothing: the launch keeps the model it named.
+# AXF_MODEL_TRIAGE=off skips it (tests).
+TRIAGE="$HERE/../framework/cli/model-triage.mjs"
+if [[ -z "$inner" && -z "$queued" && "${AXF_MODEL_TRIAGE:-on}" != off && -z "${AXF_MODEL_TRIAGED:-}" && ! "${AXF_SURFACE:-}" =~ ^(pipeline|lander|agent-job|swarm|agent)$ ]] && command -v node >/dev/null && [[ -f "$TRIAGE" ]]; then
+  asked="${AXF_MODEL:-}"; prev=""
+  if [[ -z "$asked" ]]; then for a in "$@"; do [[ "$prev" == --model ]] && asked="$a"; [[ "$a" == --model=* ]] && asked="${a#--model=}"; prev="$a"; done; fi
+  triaged="$(node "$TRIAGE" launch --name "$name" --brief "$brief" ${asked:+--model "$asked"} --lane hand 2>/dev/null)"; triage_st=$?
+  triaged_id="${triaged%%$'\t'*}"
+  if (( triage_st == 0 )) && [[ "$triaged_id" =~ ^claude-[a-z0-9-]+$ ]]; then
+    triaged_args=(); prev=""; had_model=""
+    for a in "$@"; do
+      if [[ "$prev" == --model ]]; then triaged_args+=("$triaged_id"); had_model=1
+      elif [[ "$a" == --model=* ]]; then triaged_args+=("--model=$triaged_id"); had_model=1
+      else triaged_args+=("$a"); fi
+      prev="$a"
+    done
+    [[ -z "$had_model" ]] && triaged_args+=(--model "$triaged_id")
+    set -- "${triaged_args[@]}"
+    [[ -n "${AXF_MODEL:-}" ]] && export AXF_MODEL="$triaged_id"
+    model="$triaged_id"
+    export AXF_MODEL_TRIAGED=1
+    echo "claude-headless: model triage: ${triaged#*$'\t'}" >&2
+  fi
+fi
 # Upgrades need Brett (framework/cli/model-gate.mjs): a build may not start on a higher model than its orchestrator step,
 # nor start a phase that upgrades the model before Brett approved it. Checked once, before the slot (the queue waiter
 # and the tmux inner run were checked when they were asked for). AXF_BUILD_ID names the build when the name doesn't.

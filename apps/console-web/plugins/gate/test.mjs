@@ -216,6 +216,36 @@ try {
     const r = spawnSync(process.execPath, [join(HERE, 'build-cap.mjs'), 'set', 'maxBuilds', '9', '--json'], { encoding: 'utf8' });
     assert.equal(r.status, 1); assert.equal(JSON.parse(r.stdout).code, 'forbidden');
   });
+  t('model triage: the tab shows and sends, the VPS decides (routes, MCP tools, CLI word, targets, actions)', async () => {
+    const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
+    const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+    const cmds = Object.fromEntries(manifest.commands.items.map((c) => [c.id, c]));
+    assert.deepEqual(['model-triage', 'model-triage-set', 'model-triage-decisions', 'model-triage-history', 'model-triage-decide'].map((id) => [cmds[id].route, cmds[id].tool, cmds[id].readOnly === true]), [
+      ['GET /model-triage', 'vps_model_triage', true], ['POST /model-triage', 'vps_model_triage_set', false], ['GET /model-triage/decisions', 'vps_model_triage_decisions', true],
+      ['GET /model-triage/history', 'vps_model_triage_history', true], ['POST /model-triage/decide', 'vps_model_triage_decide', true]]);
+    const routes = readFileSync(join(HERE, 'server', 'routes.py'), 'utf8');
+    for (const r of ['@router.get("/model-triage")', '@router.post("/model-triage")', '@router.get("/model-triage/decisions")', '@router.get("/model-triage/history")', '@router.post("/model-triage/decide")']) assert.ok(routes.includes(r), r);
+    const { cliWords } = await import('./gate.mjs'); assert.ok(cliWords.includes('model-triage')); assert.match(web('GateView.tsx'), /tab === 'model-triage' && <ModelTriageTab/);
+    // no logic in the console: the tab and its state import no rule engine and never name a rule; every label comes from the VPS
+    for (const f of ['ModelTriageTab.tsx', 'modelTriageState.ts']) {
+      const src = web(f).replace(/\/\*[\s\S]*?\*\//g, '');
+      assert.ok(!/model-triage\.mjs|model-policy|framework\/core/.test(src), `${f} imports no engine`);
+      for (const id of ['ci-fix', 'merge-clash', 'second-try', 'blast-radius', 'cross-cutting', 'fable-words', 'simple-work']) assert.ok(!src.includes(`'${id}'`), `${f} does not name rule ${id}`);
+    }
+    assert.match(web('modelTriageState.ts'), /gateCall<Triage>\('model-triage'\)/); assert.match(web('modelTriageState.ts'), /gateCall\('model-triage', 'POST'/);
+    for (const a of ['vps.model-triage.open', 'vps.model-triage.status', 'vps.model-triage.rule', 'vps.model-triage.default']) assert.ok(web('modelTriageState.ts').includes(`'${a}'`), a);
+    assert.match(web('ModelTriageTab.tsx'), /role="toolbar" aria-label="Model triage"/);
+    // `axf gate model-triage` is the VPS gate's own CLI, on a scratch store
+    const dir = mkdtempSync(join(tmpdir(), 'axf-gate-triage-'));
+    const env = { ...process.env, AXF_MODEL_TRIAGE_DIR: dir, AXF_CLAUDE_SETTINGS_FILE: join(dir, 'none.json'), AXF_FABLE_UPGRADE_APPROVAL: '' };
+    const run = (...a) => spawnSync(process.execPath, [join(HERE, 'gate.mjs'), 'model-triage', ...a, '--json'], { encoding: 'utf8', env });
+    const st = JSON.parse(run('status').stdout);
+    assert.equal(st.$axf, 'model-triage@1'); assert.equal(st.config.rules.length, 10); assert.equal(st.stored, false);
+    assert.equal(JSON.parse(run('rule', 'blast-radius', 'set', 'dependents', '25', '--by', 'test').stdout).config.rules.find((r) => r.id === 'blast-radius').settings.dependents, 25);
+    const bad = run('rule', 'blast-radius', 'set', 'dependents', 'many'); assert.equal(bad.status, 2); assert.equal(JSON.parse(bad.stdout).code, 'invalid');
+    assert.equal(JSON.parse(run('decide', '--text', 'Rename the tab label').stdout).decision.rule, 'simple-work');
+    rmSync(dir, { recursive: true, force: true });
+  });
   t('approval rules: patterns, first match wins, own entries first, guarded tools, the draft and the save', async () => {
     const A = await import('./web/approval-core.mjs');
     // the hub's own pattern test (axHub packages/core/test/policy-rules.test.ts holds the same cases)
@@ -353,7 +383,7 @@ try {
     // the wiring: tab, routes, MCP tools, CLI word, targets, actions; Save and Apply the default want the real click
     const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
     const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
-    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'approvals', 'passes', 'history'\]/);
+    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'passes', 'history'\]/);
     const cmds = Object.fromEntries(manifest.commands.items.map((c) => [c.id, c]));
     assert.equal(cmds['approval-rules'].tool, 'vps_approval_rules'); assert.equal(cmds['approval-rules'].readOnly, true); assert.equal(cmds['approval-rules'].route, 'GET /approval-rules');
     assert.equal(cmds['approval-rules-stage'].tool, 'vps_approval_rules_stage'); assert.equal(cmds['approval-rules-stage'].route, 'POST /approval-rules/draft');
@@ -383,7 +413,7 @@ try {
   t('passes have one home: the Passes tab is here, Token control keeps only the banner, the axHub pass pages keep their addresses', () => {
     const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
     const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
-    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'approvals', 'passes', 'history'\]/);
+    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'passes', 'history'\]/);
     for (const v of ['view:gate', 'view:vps-configuration', 'view:axhub-passes', 'view:axhub-go-pass', 'action:axhub-passes.open', 'action:axhub-go-pass.open']) assert.ok(manifest.provides.includes(v), `provides ${v}`);
     const state = web('passesState.ts');
     for (const a of ['vps.passes.open', 'vps.passes.status', 'vps.passes.grant', 'vps.passes.revoke', 'vps.passes.max', 'axhub-passes.open', 'axhub-go-pass.open']) assert.ok(state.includes(`'${a}'`), `action ${a}`);

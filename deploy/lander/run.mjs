@@ -2,7 +2,8 @@
 /**
  * The lander (lander@1, Pipeline 2.0 part 2; Brett, Nov 18-19 2026).
  * Plain Node on the VPS host: git, the GitHub REST API and the builds store. It never calls a model; a code conflict,
- * red CI or failing build rules start a fix session on Fable (fix-session.mjs), the only hand-off it makes.
+ * red CI or failing build rules start a fix session on the model the triage gate assigns (fix-session.mjs), the only
+ * hand-off it makes.
  *
  * One tick (systemd axf-lander.timer, every minute; one at a time under its lock):
  *   the one build at `build-complete` (or already landing) → merging-pr → pr-pulling-main → running-ci → merging-main →
@@ -543,7 +544,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         if (fr.fix?.at) {
           if (head && head !== fr.fix.head) { if (!write({ status: 'running-ci', note: `Lander: the fix pushed ${head.slice(0, 9)}; CI runs on it` })) return 'stop'; act(`the fix pushed ${head.slice(0, 9)}`); return 'running-ci'; }
           if (L.fixTimedOut(fr.fix, at, cfg)) return fail('fix-timeout', { why: `fix session ${fr.fix.n || 1} (${fr.fix.session || 'no session name'}) pushed nothing to ${branch} in ${cfg.fixTimeoutMin} min`, head, pr, of: src });
-          out.waiting = `fix session ${fr.fix.n || 1}${fr.fix.session ? ` (${fr.fix.session})` : ''} works on ${branch} (${FIX_MODEL}, since ${fr.fix.at})`; return 'stop';
+          out.waiting = `fix session ${fr.fix.n || 1}${fr.fix.session ? ` (${fr.fix.session})` : ''} works on ${branch} (${fr.fix.model || FIX_MODEL}, since ${fr.fix.at})`; return 'stop';
         }
         if (dry) { out.waiting = `would start a fix session on ${branch}`; return 'stop'; }
         const k = L.fixesOf(b, pr) + 1;
@@ -560,8 +561,8 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
           out.waiting = `fix session did not start: ${why}`; return 'stop';
         }
         const { fixStart, ...rest } = fr;
-        if (!write({ failure: { ...rest, fix: { at, head, session: str(job.session, 120), n: k, model: FIX_MODEL, ...(job.queued ? { queued: true } : {}) } }, landing: { fixes: { pr, n: k } }, note: `Lander: attempt ${n}: fix session ${k} of ${cfg.maxFixes} on ${branch} (${FIX_MODEL}${job.session ? `, ${job.session}` : ''})` })) return 'stop';
-        act(`attempt ${n}: fix session ${k} of ${cfg.maxFixes} ${job.queued ? 'waits for a slot' : 'started'} on ${branch} (${FIX_MODEL}${job.session ? `, ${job.session}` : ''})`);
+        if (!write({ failure: { ...rest, fix: { at, head, session: str(job.session, 120), n: k, model: job.model || FIX_MODEL, ...(job.queued ? { queued: true } : {}) } }, landing: { fixes: { pr, n: k } }, note: `Lander: attempt ${n}: fix session ${k} of ${cfg.maxFixes} on ${branch} (${job.model || FIX_MODEL}${job.session ? `, ${job.session}` : ''})` })) return 'stop';
+        act(`attempt ${n}: fix session ${k} of ${cfg.maxFixes} ${job.queued ? 'waits for a slot' : 'started'} on ${branch} (${job.model || FIX_MODEL}${job.session ? `, ${job.session}` : ''})`);
         out.waiting = `fix session ${k}${job.session ? ` (${job.session})` : ''} works on ${branch}`; return 'stop';
       }
       const to = L.retryStatus(fr);

@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { nextPopup, vetoGone } from './web/popup.ts';
-import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, RETIRED_KEYS as R } from './web/overlay.ts';
+import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, readsFeed, RETIRED_KEYS as R, viewTarget } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
@@ -256,4 +256,18 @@ console.log(`✓ approvals-banner: ${n} checks passed`);
     { id: 'approval:a2', kind: 'approval', title: 'files.delete', runsAt: 0, shelved: false },
   ]);
   console.log('ok overlayItems');
+}
+
+// in the console app the page keeps reading the hub while another app is in front (a hidden page): a held call must
+// reach the overlay then; a browser tab reads only while visible
+{
+  assert.equal(readsFeed(true, false), true);
+  assert.equal(readsFeed(false, false), false);
+  assert.equal(readsFeed(false, true), true);
+  // approvals.view: the call asked for while it waits, the first one waiting when none is named
+  assert.equal(viewTarget('b', ['a', 'b']), 'b');
+  assert.equal(viewTarget('gone', ['a', 'b']), null);
+  assert.equal(viewTarget(undefined, ['a', 'b']), 'a');
+  assert.equal(viewTarget(undefined, []), null);
+  console.log('ok readsFeed, viewTarget');
 }

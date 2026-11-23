@@ -13,7 +13,8 @@ the window over other apps, the permission, the foreground service. What the bar
 every setting are the web console's.
 
 Code: `OverlayContract.java` (the names, pure Java, JUnit `OverlayContractTest`), `OverlayRules.java` (the pure
-rules, `OverlayRulesTest`), `OverlayService.java` (the Android side), the overlay methods of `NativeBridge.java`.
+rules, `OverlayRulesTest`), `OverlayService.java` (the Android side), the overlay methods of `NativeBridge.java`,
+`ApprovalFeedRules.java` / `ApprovalFeed.java` (the shell's own reading of axHub's list, `ApprovalFeedRulesTest`).
 Console side: `apps/console-web/src/native/nativeRules.mjs` and `axfNative.ts` (part 1), whose lists are the twins
 of the ones here.
 
@@ -25,12 +26,49 @@ of the ones here.
 | `approvals` | The toolbar with the approval bar opened out of it: what waits ("Run deploy — 2 more"), an "Open approvals" link, a dismiss button. |
 | `expanded` | The full-screen console (the app's one WebView) in the overlay window, in front of whatever app was showing, the toolbar docked top-left inside the safe area. |
 
+## What waits is axHub's live list
+
+Nov 23 2026 (Brett: two held calls, nothing popped, then a badge that stayed at 2). The toolbar used to show whatever
+the console page last told it, and the page reads axHub only while it is on screen. So with another app in front
+nothing arrived, and once the WebView showed another page the last count stayed.
+
+The shell now reads the list itself (`ApprovalFeed`: `GET /auth/admin/approvals.json` on the hub with the WebView's
+hub session, read-only, redirects refused, reply capped) and the badge, the label and the bar are derived from that
+list on every reading; no count is kept apart from it.
+
+- **When it reads**: every 2 s while something waits, every 4 s otherwise, every 30 s with the screen off
+  (`ApprovalFeedRules.pollMs`), and at once when the overlay folds or expands, the app comes to the front, the screen
+  comes on or the phone unlocks, the page reports a change, or a countdown ends (`ApprovalFeed.syncNow`).
+- **A new item pops its card** (`OverlayRules.cardFor` / `afterFeed`): over another app the overlay expands by itself
+  onto the console's own approval card for that call (Approve / Deny, the countdown; event `approvals.open` with the
+  call's `id`), without a tap on the toolbar. With the app in front the page shows the card and the toolbar opens its
+  bar. An item already shown or dismissed does not pop again; the `expand` setting still decides what may pop.
+- **The badge clears** the moment the list no longer has the item: approved, denied, expired or run after its veto,
+  wherever that happened. An overlay that expanded by itself folds back 3 s after the last item goes
+  (`foldsWhenClear`); one Brett opened himself stays.
+- **Without the hub** (signed out, unreachable) the last list stays, minus held commands whose countdown ended 5 s ago
+  (`OverlayRules.unexpired`); nothing new pops. The page's `overlayItems` / `overlayApprovals` are shown only until the
+  hub has answered the shell, and are otherwise a reason to read the list now.
+- **Sound**: the overlay makes none. The push for a held call is axHub's own; the card and the badge are silent.
+
 ## Verbs
 
-`expand`, `collapse`, `toggle`, `approvals` (open the console on the approvals list), `dismiss` (hide the bar
-until a new approval arrives; the expanded console stays). `OverlayRules.verb(state, verb)` is the transition table.
-With the overlay off or not allowed, `expand`, `toggle` and `approvals` open the app itself (it is the full-screen
-console then); `collapse` and `dismiss` do nothing.
+`expand`, `collapse`, `toggle`, `approvals` (open axHub's approvals page, `OverlayContract.APPROVALS_URL`, in the
+expanded overlay), `dismiss` (hide the bar until a new approval arrives; the expanded console stays).
+`OverlayRules.verb(state, verb)` is the transition table. With the overlay off or not allowed, `expand`, `toggle` and
+`approvals` open the app itself (it is the full-screen console then, on the approvals page for `approvals`);
+`collapse` and `dismiss` do nothing.
+
+## A tap on the toolbar
+
+Brett, Nov 23 2026: "When there's notifications on the overlay and I click it, it should bring me to the approvals,
+not to the console." `OverlayRules.tapVerb(state, waiting)` (JUnit `OverlayTapTest`):
+
+| The toolbar shows | A tap on its button, badge or label |
+| --- | --- |
+| A pending count | `approvals`: axHub's approvals page (`https://axhub.amberxai.com/auth/admin/approvals`) in the expanded overlay; a page already there keeps its place |
+| Nothing waiting | `expand`: the console, as before; the approvals page an earlier tap left showing gives way to the console (`OverlayRules.consolePage`) |
+| The expanded overlay | `collapse`: back to the toolbar |
 
 ## The four ways in, all the same
 
@@ -78,9 +116,10 @@ The approvals banner hands the shell every waiting item whenever the list change
 `[{"id":"held:abc","kind":"held","title":"Deploy","runsAt":1763400000000,"shelved":false}, {"id":"approval:x","kind":"approval","title":"Restart nginx","runsAt":0,"shelved":false}]`
 (`runsAt` epoch ms, 0 for approvals and shelved commands). The shell sorts them (running countdowns soonest first, then
 shelved, then approvals), shows the toolbar label (`show`), the bar's line with the first item's title and countdown
-("Deploy — 1 more · Runs in 1:05 unless you stop it", re-rendered once a second while a countdown runs), and pops the
-bar only for an id it hasn't shown yet: one Brett dismissed or already saw keeps the toolbar small. Once items arrive
-they replace `overlayApprovals`' counts. Rules: `OverlayRules.order / toolbarLabel / countdown / afterItems / forget`
+("Deploy — 1 more · Runs in 1:05 unless you stop it", re-rendered once a second while a countdown runs), and pops
+only for an id it hasn't shown yet: one Brett dismissed or already saw keeps the toolbar small. Once items arrive
+they replace `overlayApprovals`' counts. Since Nov 23 2026 the same items come from the shell's own reading of the
+hub (above), with the same ids; the page's are the fallback until the hub answers. Rules: `OverlayRules.order / toolbarLabel / countdown / afterItems / forget`
 (JUnit `OverlayItemsTest`); console side `overlayItems()` in `plugins/approvals-banner/web/overlay.ts`.
 
 ## Permission flow: "Display over other apps"
