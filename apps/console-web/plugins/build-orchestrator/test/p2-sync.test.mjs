@@ -100,7 +100,7 @@ console.log('the draft PR opens the moment the build starts');
 eq([A.pr, A.prUrl, A.prDraft, A.branch], ['4242', 'https://github.example/pull/4242', true, 'lander/alpha'], 'pr number and link are on the build as soon as it started');
 eq(readFileSync(join(tmp, 'pr-calls'), 'utf8').trim().split('\n'), ['alpha lander/alpha'], 'asked once, for the branch the lander lands it from');
 ok(r.prs.some((x) => x.id === 'alpha' && x.pr === 4242), 'the pass reports it');
-ok(A.notes.some((x) => /Draft PR #4242/.test(x.text)), 'a note says so');
+ok(A.notes.some((x) => /Draft PR #4242/.test(x.text)), 'a note says so'); // theme-ok: a PR number, not a colour
 
 console.log('one splitter per build: a second pass never writes over the first');
 // beta's plan touches other files than alpha (which is still building)
