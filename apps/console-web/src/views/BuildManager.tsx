@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { usePlaceSet } from './placeRestore';
 import { Button, Chip, Container, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
@@ -137,7 +138,7 @@ export function BuildManager() {
   const log: Log = (t, l = 'info') => rt.terminal.log('build', t, l);
   const [showDone, setShowDone] = useState(false);
   const [model, setModel] = useState<'' | api.ModelId>('');
-  const [open, setOpen] = useState<Set<string>>(new Set());
+  const [open, setOpen] = usePlaceSet('view:build/list:build.open');
   const [drag, setDrag] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);

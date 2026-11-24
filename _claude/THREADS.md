@@ -843,237 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 04:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 04:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 04:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 04:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 05:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 05:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 05:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 05:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 05:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 05:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 06:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 06:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 06:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 06:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 07:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 07:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 07:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 07:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 08:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 08:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 08:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 08:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 09:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 09:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 09:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-23 09:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
-- 2026-11-23 09:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 10:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 10:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 10:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 10:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 10:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 10:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 10:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 10:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 10:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 11:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 11:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 11:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 11:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 11:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 11:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 11:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 11:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 12:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 12:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 12:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 12:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 12:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 12:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 13:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 13:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 14:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 14:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 14:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 15:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 15:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 15:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 15:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 16:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 16:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 16:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` added (0 steps) (all) · Amber (voice)
-- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` → archived (all) · Amber (voice)
-- 2026-11-23 16:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
-- 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
-- 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
-- 2026-11-23 16:29 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · watchdog
-- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → split (all) · orchestrator
-- 2026-11-23 18:37 UTC · `fix-refreshing-console-jumps-back` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, note (all) · foreign-write
-- 2026-11-23 20:22 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · pipeline-bring-up
-- 2026-11-23 20:23 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:24 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:30 UTC · `orchestrator-settings-collapsible-split` s7 undone, note (all) · watchdog
-- 2026-11-23 20:31 UTC · `orchestrator-settings-collapsible-split` s1 done (all) · headless
-- 2026-11-23 20:34 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 20:38 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · pipeline-bring-up
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → build-complete (all) · orchestrator
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:44 UTC · `urgent-pipeline-proof-nov23` added (0 steps) (all) · plan-studio-2
-- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → splitting (all) · orchestrator
-- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → split, note (all) · orchestrator
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` PR 896 (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → pr-pulling-main (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:53 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
-- 2026-11-23 21:00 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
-- 2026-11-23 21:01 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:05 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:09 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:13 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:19 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:20 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:22 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:24 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:26 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:27 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:29 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 21:45 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
-- 2026-11-23 21:48 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
-- 2026-11-23 21:49 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:53 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:56 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:00 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:04 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
-- 2026-11-23 22:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
-- 2026-11-23 22:05 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
-- 2026-11-23 22:05 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
-- 2026-11-23 22:05 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
-- 2026-11-23 22:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 22:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-23 22:15 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 22:35 UTC · `pipeline-bring-up-from-main` PR #897 (all) · builds-live
-- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → merging-pr, note (all) · lander
-- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` PR 898 (all) · lander
-- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → pr-pulling-main (all) · lander
-- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → running-ci (all) · lander
-- 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → landed, note (all) · watchdog
-- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → landed, note (all) · watchdog
-- 2026-11-23 22:45 UTC · `server-rule-done-means-merged-working` → landed, note (all) · watchdog
-- 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → complete, note (all) · verify
-- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → complete, note (all) · verify
-- 2026-11-23 22:46 UTC · `server-rule-done-means-merged-working` → complete, note (all) · verify
-- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → merging-main (all) · lander
-- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → landed, merged, note (all) · lander
-- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
-- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
-- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · verify
-- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
-- 2026-11-23 23:08 UTC · `account-failover-gate-pinned-build` added (2 steps) (all) · voice-claude
-- 2026-11-23 23:14 UTC · `console-idle-load-fix` added (1 steps) (all) · Snap Sully
-- 2026-11-23 23:19 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
-- 2026-11-23 23:21 UTC · `pipeline-watch-test` added (0 steps) (all) · voice-claude
-- 2026-11-23 23:22 UTC · `pipeline-watch-test` → splitting (all) · orchestrator
-- 2026-11-23 23:22 UTC · `pipeline-watch-test` → split, note (all) · orchestrator
-- 2026-11-23 23:22 UTC · `pipeline-watch-test` note (all) · orchestrator
-- 2026-11-23 23:23 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
-- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → failed, note (all) · watchdog
-- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → split (all) · orchestrator
-- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` added (0 steps) (all) · voice-claude
-- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` → splitting (all) · orchestrator
-- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-23 23:59 UTC · `pipeline-sync-live-badges` → split, note (all) · orchestrator
-- 2026-11-24 00:00 UTC · `pipeline-sync-live-badges` note (all) · orchestrator
-- 2026-11-24 00:01 UTC · `urgent-pipeline-proof-nov23` → archived (all) · voice-claude
-- 2026-11-24 00:01 UTC · `pipeline-watch-test` → archived (all) · voice-claude
-- 2026-11-24 00:02 UTC · `pipeline-sync-hand` added (1 steps) (all) · Earl the Ear
-- 2026-11-24 00:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 00:05 UTC · `pipeline-sync-hand` → failed, note (all) · orchestrator
-- 2026-11-24 00:05 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 00:30 UTC · `console-idle-load-fix` note (all) · orchestrator
-- 2026-11-24 00:30 UTC · `console-idle-load-fix` → build-complete, note (all) · headless
-- 2026-11-24 00:31 UTC · `console-idle-load-fix` note (all) · orchestrator
-- 2026-11-24 00:31 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
-- 2026-11-24 00:31 UTC · `console-idle-load-fix` PR 901 (all) · lander
 - 2026-11-24 00:31 UTC · `console-idle-load-fix` → pr-pulling-main (all) · lander
 - 2026-11-24 00:31 UTC · `console-idle-load-fix` → running-ci (all) · lander
 - 2026-11-24 01:00 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
@@ -1243,6 +1012,237 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 12:50 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
 - 2026-11-24 12:50 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
 - 2026-11-24 13:20 UTC · `orchestrator-settings-collapsible-split` → archived (all) · claude
+- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` → pulling-main (all) · orchestrator
+- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` PR 909, note (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → assigning-models (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → ready, note (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:27 UTC · `fix-refreshing-console-jumps-back` → sending (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` → building (all) · orchestrator
+- 2026-11-24 13:29 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:30 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:34 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:35 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` s1 undone (all) · orchestrator
+- 2026-11-24 13:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:39 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:40 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:41 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:41 UTC · `pipeline-controls-plugin` → archived (all) · claude
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:42 UTC · `settings-consolidation` added (0 steps) (all) · claude
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` s6 undone, note (all) · watchdog
+- 2026-11-24 13:43 UTC · `settings-consolidation` → archived (all) · claude
+- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:44 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:45 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:45 UTC · `fix-refreshing-console-jumps-back` s5 undone, note (all) · watchdog
+- 2026-11-24 13:46 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:47 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:47 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` s4 undone, note (all) · watchdog
+- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` s4 done (all) · headless
+- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` s7 done (all) · headless
+- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:52 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:53 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:53 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:54 UTC · `fix-refreshing-console-jumps-back` s5 undone, s6 undone, note (all) · watchdog
+- 2026-11-24 13:55 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:55 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:56 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:56 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:57 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:57 UTC · `fix-refreshing-console-jumps-back` note (all) · claude
+- 2026-11-24 13:58 UTC · `fix-refreshing-console-jumps-back` s9 done (all) · headless
+- 2026-11-24 13:59 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:59 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:01 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:01 UTC · `fix-refreshing-console-jumps-back` s5 done (all) · headless
+- 2026-11-24 14:06 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:06 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:10 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:10 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 14:23 UTC · `postgres-audit` added (0 steps) (all) · claude
+- 2026-11-24 14:24 UTC · `postgres-audit` → splitting (all) · orchestrator
+- 2026-11-24 14:24 UTC · `postgres-audit` note (all) · claude
+- 2026-11-24 14:25 UTC · `postgres-audit` → split, note (all) · orchestrator
+- 2026-11-24 14:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 14:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 16:02 UTC · `remove-build-breaker` added (0 steps) (all) · claude
+- 2026-11-24 16:02 UTC · `remove-build-breaker` → archived (all) · claude
+- 2026-11-24 16:04 UTC · `plan-tree-multi-select` added (0 steps) (all) · claude
+- 2026-11-24 16:05 UTC · `plan-tree-multi-select` → splitting (all) · orchestrator
+- 2026-11-24 16:07 UTC · `plan-tree-multi-select` → split, note (all) · orchestrator
+- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` → build-complete (all) · headless
+- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · lander
+- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` PR 909 (all) · lander
+- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · orchestrator
+- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 16:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 16:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 16:54 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 16:57 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:03 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:07 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:10 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:14 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:17 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:18 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:19 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 17:19 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` PR 910 (all) · lander
+- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 17:21 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:24 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:35 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:39 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:43 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:46 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` PR 911 (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 17:52 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 17:53 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:56 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:04 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:08 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:12 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:16 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:19 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:22 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:32 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · lander
+- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main, note (all) · lander
+- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · claude
+- 2026-11-24 18:38 UTC · `fable-fix-land-refresh-build-fix` added (0 steps) (all) · pending
+- 2026-11-24 18:39 UTC · `fable-fix-land-refresh-build-fix` note (all) · orchestrator
+- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` note (all) · pending
+- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` → queued, note (all) · auto-queue (slots free)
+- 2026-11-24 18:41 UTC · `fable-fix-land-refresh-build-fix` note (all) · dispatcher
+- 2026-11-24 18:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:43 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` PR 912 (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 18:45 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:48 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:52 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:55 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:59 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:03 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:06 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:10 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
+- 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 19:14 UTC · `fix-refreshing-console-jumps-back` PR 913 (all) · lander
+- 2026-11-24 19:14 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 19:14 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 19:17 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:20 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:24 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:35 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:39 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:43 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:47 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:48 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 19:49 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
+- 2026-11-24 19:49 UTC · `fix-refreshing-console-jumps-back` PR 914 (all) · lander
+- 2026-11-24 19:49 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 19:49 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 19:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:54 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:57 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:04 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:08 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:11 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:15 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:18 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
+- 2026-11-24 20:18 UTC · `fix-refreshing-console-jumps-back` PR 915 (all) · lander
+- 2026-11-24 20:18 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 20:18 UTC · `fix-refreshing-console-jumps-back` → failed (all) · lander
+- 2026-11-24 20:19 UTC · `fable-fix-land-refresh-build-fix` → archived (all) · claude
+- 2026-11-24 20:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 20:30 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 20:31 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:34 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:44 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:48 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:52 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:55 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 20:56 UTC · `fix-refreshing-console-jumps-back` → failed (all) · lander
+- 2026-11-24 21:00 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 21:00 UTC · `x-search-library` added (0 steps) (all) · claude
+- 2026-11-24 21:01 UTC · `x-search-library` → splitting (all) · orchestrator
+- 2026-11-24 21:02 UTC · `token-gate` added (0 steps) (all) · claude
+- 2026-11-24 21:02 UTC · `x-search-library` → split, note (all) · orchestrator
+- 2026-11-24 21:03 UTC · `token-gate` → splitting (all) · orchestrator
+- 2026-11-24 21:04 UTC · `token-gate` → split, note (all) · orchestrator
+- 2026-11-24 21:07 UTC · `landing-frees-slot-autoqueue` added (0 steps) (all) · claude
+- 2026-11-24 21:08 UTC · `landing-frees-slot-autoqueue` → splitting (all) · orchestrator
+- 2026-11-24 21:09 UTC · `landing-frees-slot-autoqueue` → split, note (all) · orchestrator
+- 2026-11-24 21:09 UTC · `claude-emergency-access` added (0 steps) (all) · claude
+- 2026-11-24 21:09 UTC · `claude-emergency-access` → splitting (all) · orchestrator
+- 2026-11-24 21:10 UTC · `claude-emergency-access` → split, note (all) · orchestrator
+- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
+- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` note (all) · console
+- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` PR 916 (all) · lander
+- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 21:14 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:18 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:21 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:22 UTC · `drop-failed-part-remove-feature-whose` added (0 steps) (all) · console
 
 ## Token passes (log)
 

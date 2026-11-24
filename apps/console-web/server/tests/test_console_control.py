@@ -315,6 +315,54 @@ def test_mcp_plugin_settings() -> None:
     assert fake.sent[-1]["address"] == screen["settingsTab"]
 
 
+def test_place() -> None:
+    """The saved place: REST, MCP and voice send the console the same command; a restore is navigation (no veto)."""
+    reset()
+    sent = lambda: {k: v for k, v in fake.sent[-1].items() if not k.startswith("_") and k not in ("$axf", "reason")}  # noqa: E731
+    read, restore = {"verb": "state", "address": cc.PLACE_ADDRESS}, {"verb": "press", "address": cc.PLACE_ADDRESS}
+
+    r = client.get(f"{U}/place")
+    assert r.status_code == 200 and r.json()["address"] == cc.PLACE_ADDRESS and sent() == read
+    assert r.json()["policy"]["tag"] == "allow" and r.json()["policy"]["readOnly"] is True
+    r = client.post(f"{U}/place/restore", json={"reason": "put Brett back"})
+    assert r.status_code == 200 and sent() == restore
+    assert r.json()["policy"] == {"tag": "allow", "effect": "navigate", "readOnly": True, "destructive": False}, "moving the screen back is never a veto"
+    r = client.post(f"{U}/place/restore", json={"from": "saved"})
+    assert sent() == {**restore, "value": "saved"}
+    r = client.post(f"{U}/place/restore", json={"from": "yesterday"})
+    assert r.status_code == 400 and r.json()["field"] == "from"
+    r = client.post(f"{U}/do", json=restore)
+    assert r.json()["policy"]["tag"] == "allow" and sent() == restore, "/do with the address is the same command"
+
+    r = client.post(f"{U}/voice", json={"text": "Amber, put me back"})
+    assert r.status_code == 200 and r.json()["command"] == restore and sent() == restore and r.json()["say"] == "Back where you were."
+    for phrase in ("back to where I was", "take me back to where I left off", "restore my place", "where was I"):
+        assert cc.voice_intent(phrase) == restore, phrase
+    assert cc.voice_intent("go back") != restore and cc.voice_intent("go to the top")["verb"] == "scroll"
+
+    srv = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True}, console_control=lambda body: api.command(body, "mcp"))
+    tools = {t.name: t for t in asyncio.run(srv.list_tools())}
+    assert tools["console_control_place"].annotations.read_only_hint is True, "reads or navigates"
+
+    def call(args: dict[str, Any]) -> dict[str, Any]:
+        res = asyncio.run(srv.call_tool("console_control_place", args))
+        if isinstance(res, tuple):  # (content, structured) on older SDKs
+            res = res[1]
+        if isinstance(res, dict):
+            return res.get("result", res)
+        sc = getattr(res, "structured_content", None)
+        return sc.get("result", sc) if sc else json.loads(res.content[0].text)
+
+    assert call({})["address"] == cc.PLACE_ADDRESS and sent() == read
+    assert call({"restore": True})["ok"] and sent() == restore
+    assert call({"restore": True, "source": "loaded"})["ok"] and sent() == {**restore, "value": "loaded"}
+
+    fake.open = False
+    r = client.post(f"{U}/place/restore", json={})
+    assert r.status_code == 503 and r.json()["openUrl"], "no console open: nothing to put back, with the link"
+    assert client.get(f"{U}/place").status_code == 503
+
+
 if __name__ == "__main__":
     n = 0
     for name, fn in list(globals().items()):

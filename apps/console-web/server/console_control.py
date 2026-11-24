@@ -536,11 +536,32 @@ def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
 
+# The console's saved place (src/place/placeApi.ts; PLACE_ADDRESS and PLACE_RESTORE_RE in console-control-voice.mjs):
+# state = the saved place, press = put it back.
+PLACE_ADDRESS = "panel:console-place"
+PLACE_SOURCES = ("loaded", "saved")
+PLACE_RESTORE_RE = re.compile(r"^(?:put me back(?: where i was)?|(?:take me |go |get me )?back to where i (?:was|left off)|restore (?:my |the )?(?:place|position|spot)|where was i)$")
+
+
+def place_command(restore: bool = False, source: Any = None) -> dict[str, Any]:
+    """The command behind the place shortcuts (REST /place, MCP console_control_place, `axf console place`): read the
+    saved place, or put it back (`source` picks which: the place the page loaded with, or the one saved since)."""
+    if not restore:
+        return {"verb": "state", "address": PLACE_ADDRESS}
+    src = str(source or "").strip().lower()
+    if src and src not in PLACE_SOURCES:
+        raise ControlError("invalid", f"from must be one of {', '.join(PLACE_SOURCES)}", field="from")
+    return {"verb": "press", "address": PLACE_ADDRESS, **({"value": src} if src else {})}
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
     if not p:
         return None
+    # the saved place: before the "go to …" rules, so "go back to where I was" is not taken for a screen name
+    if PLACE_RESTORE_RE.match(p):
+        return {"verb": "press", "address": PLACE_ADDRESS}
     if m := re.match(r"^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$", p):
         return {"verb": "scroll", "scroll": {"dir": "top" if m.group(1) in ("top", "start") else "bottom"}}
     if m := re.match(r"^page (up|down)$", p):
@@ -625,6 +646,8 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
     if v == "focus":
         return f"Showing {what}."
     if v == "press":
+        if PLACE_ADDRESS in (answer.get("address"), intent.get("address")):
+            return "Back where you were."
         return f"Pressed {what}."
     if v == "list":
         targets = answer.get("targets") or []

@@ -7,6 +7,8 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { registerPluginSettingsActions } from './pluginSettingsActions';
 import { App } from './App';
+import { installPullRefresh } from './place/pullRefresh';
+import { installScrollGuard } from './place/scrollGuard';
 import './axf/ui/axf.css';
 import './console.css';
 
@@ -15,6 +17,8 @@ import './console.css';
 // menus, toolbar, help, access policy); then the few shared ids this app tunes for itself (src/assets-overrides).
 // One shared read per source for every card, a quiet background tab and 5xx backoff (src/fetchShare.ts).
 installFetchShare();
+// After an update or refresh the page must scroll: clear any leftover lock now and whenever the page is shown again.
+installScrollGuard();
 
 const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, import: 'default' });
 const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
@@ -50,6 +54,9 @@ try {
 } catch { /* storage unavailable */ }
 
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
+
+// A pull-down refresh on the phone saves the place first, like every other reload (src/place/pullRefresh.ts).
+installPullRefresh(axf);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
