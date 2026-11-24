@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePlaceSelection, usePlaceTab } from './placeRestore';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import * as api from '../api';
@@ -25,8 +26,8 @@ export function LibraryTemplates() {
   const rt = useRuntime();
   const s = useStore();
   const [templates, setTemplates] = useState<LibraryTemplate[]>([]);
-  const [sel, setSel] = useState<string>('feature-screens');
-  const [cat, setCat] = useState('all');
+  const [sel, setSel] = usePlaceSelection<string>('view:libraries/list:libraries.templates', 'feature-screens');
+  const [cat, setCat] = usePlaceTab<string>('view:libraries/tab:libraries.template-categories', 'all');
   const [busy, setBusy] = useState<string | null>(null);
   useEffect(() => { api.loadLibraryTemplates().then(setTemplates, (e) => rt.terminal.error('libraries', String(e))); }, [rt]);
   const cats = useMemo(() => ['all', ...new Set(templates.map((t) => t.category))], [templates]);
