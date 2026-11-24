@@ -1,169 +1,142 @@
 # Fix: refreshing the console jumps back instead of staying put
 
-Status: **draft** (step s1: cause analysis). Build `fix-refreshing-console-jumps-back`.
-
-## How this was checked
-
-Static trace of the code on `main` (a547deee5). No browser run: the live console on this VPS answers loopback only
-with a bearer token, and this step has no build of its own. The "jumps back" cause is certain from the code. The
-scroll-lock cause is **not proven**: the candidates are ranked below and need a browser run in a later step.
+Build `fix-refreshing-console-jumps-back` (Pipeline 2.0). Status: **code complete, checks green, not yet seen in a
+browser** (see "What was checked"). Steps s1 to s9 are merged on `claude/fix-refreshing-console-jumps-back--s11`;
+step s10 (unit test + Playwright run) had not pushed when this report was closed.
 
 ## Result in one line
 
-The console has no "restore my place" at all. Every page load boots on the start view with fresh component state, so
-any reload (pull-down, browser reload, the pushed `refresh` command, the "Reload for the new version" bar, the
-Android shell's own reload) lands on Home at the top.
+The console never saved where Brett was, so every reload booted on Home at the top. It now saves the place (screen,
+tabs, selection, scroll) per browser tab and puts it back after every kind of reload. No scroll lock existed in the
+code; the "won't scroll after an update" came from the layout, and those spots are fixed too.
 
-## What a reload loses
+## Cause
 
-| State | Kept across a reload? | Why |
+### Jumping back
+
+There was no "restore my place" at all (trace on `main` a547deee5):
+
+| State | Before | Why it was lost |
 |---|---|---|
-| Screen (view) | **Lost** | `framework/core/runtime.ts:482` sets `view: opts.manifest.startView ?? 'home'` on every boot. `set()` (`runtime.ts:1411`) only saves `{active, role, defaults}` under `axf:<app>`; the view is never written anywhere (no URL hash, no query, no storage). |
-| Hub page parameters (which approval, which handoff run) | **Lost** | `apps/console-web/src/hubPages/route.ts:25` keeps them in a module variable. An old `#/approvals/<id>` hash is read once and then cleared (`route.ts:61`), so the address never carries the place either. |
-| Tab in a tab row | **Lost** by default | `TabGroup.tsx:107-118` saves the tab under `axf.tabs.<id>.last` only when the row's `rememberLast` is on; the default is off (`chrome-settings-rules.mjs:132`). Rows that are plain `useState` in a view (Build queue, Plan and most plugin pages) keep nothing. |
-| Settings tab | Kept | `axf.settings.lastTab` (settings library). The Settings screen itself is still lost, because the view is. |
-| Scroll position | **Lost** | The page does not scroll; `.fx-main` does (`axf.css:432`), so the browser's own scroll restoration never applies. Nothing saves `.fx-main`'s `scrollTop`, and `AppShell.tsx:91` forces `scrollTo({ top: 0 })` whenever the view changes. Named containers (`data-axf-scroll`) are not saved either. |
-| Selection (focused row, open item) | **Lost** | The focused address lives in memory (`src/control/executor.ts`), and open items are view `useState`. |
-| Open dialog | **Lost** | `state.dialog` starts `null`. The history entry a dialog pushed (`Overlays.tsx:49`, `{ axfDialog: true }`) survives the reload with no dialog behind it. |
-| Floating windows and docked tabs | **Lost** | The window manager state is in memory only. |
-| Look, role, settings, plugin on/off | Kept | `axf:<app>`, `axf:<app>:settings`, the plugin loader's keys. |
+| Screen (view) | Lost | `framework/core/runtime.ts:482` starts on `manifest.startView ?? 'home'` on every boot; the view was never written to the address or to storage. |
+| Tab in a tab row | Lost by default | `TabGroup` only remembers a tab when the row's `rememberLast` is on (default off); rows held in a view's `useState` kept nothing. |
+| Scroll | Lost | The page does not scroll, `.fx-main` does (`axf.css:432`), so the browser's own scroll restoration never applies, and `AppShell.tsx:91` scrolls to the top on every view change. |
+| Selection | Lost | The focused row lives in memory (`src/control/executor.ts`); open items are view `useState`. |
 
-## Every way the console reloads (all take the same path, none saves the place)
+Every reload took that same path, and none saved anything:
 
-1. **Pull-down on the phone.** There is no pull-to-refresh code. `.fx-main`, `html` and `body` set no
-   `overscroll-behavior`, so Chrome's own pull-to-refresh fires when the main pane is at its top: a full page reload.
-2. **Browser reload / F5.** Same.
-3. **Refresh pushed from the server.** `plugins/console-commands/web/index.tsx:299, 442` acks the `refresh` command
-   and calls `reloadPage()` (`:222`): soft is `location.reload()`; hard clears caches and service workers and does
-   `location.replace(<url>?axf-refresh=<stamp>)`. The plugin already knows the place (`hereOf()`, `:166`: screen,
-   open tab of each row, selection, dialog, settings tab) and reports it to the server, but nothing puts it back after
-   the reload. The `axf-refresh` value also stays in the address afterwards.
-4. **"Reload for the new version".** `src/pluginLoader.tsx:579, 595`: `location.reload()` after a redeploy
-   (chunk load error, `vite:preloadError`, or the Android shell's `shell.update`).
-5. **Android console app.** The shell reloads the page by itself when a new console is live and the app is off
-   screen (`src/native/axfNative.ts:23, 224`). Brett comes back to Home without having asked for anything.
+1. **Pull-down on the phone.** The console has no pull-to-refresh of its own. Nothing set `overscroll-behavior`, so a
+   downward drag with the pane at its top (or starting on the banner stack) became the browser's page reload.
+2. **Browser reload.**
+3. **Refresh pushed from the server** (`plugins/console-commands/web/index.tsx`, `reloadPage`): soft is
+   `location.reload()`, hard clears caches and service workers and replaces the address with `?axf-refresh=<stamp>`.
+   The plugin already knew the place and reported it, but nothing put it back, and the query value stayed.
+4. **"Reload for the new version"** (`src/pluginLoader.tsx`) after a redeploy.
+5. **The Android shell's own reload** when a new console is live.
 
-Not a reload: the `console.refresh` action (`src/actions.ts:10`) only re-reads the store's data
-(`store.tsx:46`); it keeps the place. Service worker: only `/alerts-sw.js` for push; it does not reload the page.
-Vite hot reload and Watch Live (`watch-live.ts:194`) only run in previews, not the live console.
+### Locking up after an update
 
-## A second trap for the fix: plugin views arrive late
+Nothing in the console or the framework sets `overflow: hidden`, a lock class or a touch blocker on the page. The
+lock-up is the layout handing the gesture to the wrong thing:
 
-Plugin views are not there on the first render: `App.tsx` `usePlugins()` installs them after `fetchPluginStatus()`
-and the lazy loader's chunks. Until then `AppShell.tsx:83` shows `views[state.view] ?? Object.values(views)[0]`.
-So a restored view id must be kept as it is while the fallback shows (it resolves by itself when the plugin lands),
-and tabs, selection and scroll can only be put back after that view has rendered its data. Restoring scroll in the
-first frame will not hold: the content is not tall enough yet, and the `[state.view]` effect scrolls to the top.
+1. **The banner stack is its own scroller above the page** (`.fx-frame-banners`, up to 45vh, `axf.css:164`). After an
+   update more banners show. A drag that starts there moves the banners or nothing; downward it chained to the
+   browser's pull-to-refresh, which reloaded the page onto Home (the jump back again).
+2. **The update notice could not be put away** (`.axf-new-version`, fixed, z-index 300, nearly full width on a phone).
+   A drag that starts on it does not scroll the page, and it stayed until a reload.
+3. **A dialog open during a reload left its history entry** (`Overlays.tsx`, `{ axfDialog: true }`): the first Back
+   press afterwards did nothing.
 
-## Scroll lock after an update: not proven, ranked candidates
+Ruled out: the drag class (`axf-dnd-dragging`, cursor only), the banner-strip flag (the console's shell never mounts
+the strip), arrange mode (not saved), full-screen layers (none is restored after a reload), the terminal's touch
+handlers (two fingers / Ctrl only).
 
-No code sets `overflow: hidden`, a scroll-lock class or `touch-action: none` on the page or on `.fx-main`. What can
-leave the page unable to scroll, most likely first:
+## Fix
 
-1. **The reload itself, on the phone, mid-gesture.** After an update the page is reloaded (ways 4 and 5), boots on
-   Home at the top, and plugin banners (`.fx-frame-banners`, up to 45vh, its own scroller) and the main pane are
-   rebuilt as plugins load. On a phone a drag that starts on the banner stack scrolls the stack, not the page, and
-   with the page at the top a pull-down starts another reload. This reads as "it won't scroll". Needs a phone-size
-   browser run to confirm.
-2. **A stale dialog history entry.** Reloading with a dialog open leaves `history.state = { axfDialog: true }` with no
-   dialog. The next dialog pushes a second entry and its close runs `history.back()` (`Overlays.tsx:56`) onto the
-   stale one; the Android back button then eats a press doing nothing. Not a scroll lock by itself, but it is wrong
-   state after an update and should be cleared on boot.
-3. **An invisible full-page layer left up.** `app.frame.cover` plugins (`claude-session` asks, `claude-badge`
-   drop-down), the `.fx-backdrop` (z-index 70, fixed, full page) and the root view transition of the skin switch
-   (`runtime.ts:851`; the page takes no input while it runs) all cover the page. The skin switch only runs on a look
-   change the user makes, and its flag clears on `finished`, so it should last a fraction of a second; a backdrop
-   whose dialog id has no renderer draws nothing (`def` is undefined). No stuck case found in the code.
-4. **Touch handlers.** The terminal (`plugins/console-terminal/web/TerminalHost.tsx:221-223`) cancels `wheel` only
-   with Ctrl/Cmd and `touchmove` only with two fingers. Not the cause.
+| Part | Where | What it does |
+|---|---|---|
+| Place store (s3) | `apps/console-web/src/place/placeState.ts` | Saves view, active tab of every tab row, selection and scroll offsets (main pane and named panes) to sessionStorage `axf:console:place@1`, keyed by console-control addresses. Debounced 200 ms; flushed on `pagehide` and when the page is hidden. Per browser tab on purpose: two console tabs do not fight. |
+| View + tabs on load (s4) | `src/App.tsx` (`usePlace`, `placeHost`) | Reopens the saved view before the first paint and switches saved tabs as their rows render. A deep link (`#/…`, `?axf-open=`, `?axf-ref=`) wins over the saved place. A saved plugin view shows an empty page until its plugin loads (no Home flashing by); if the plugin never comes, the start view opens after 15 s. Embedded page mode keeps no place. |
+| Scroll + selection (s5) | `src/views/placeRestore.ts`, six views | `restoreScroll()` retries each container until the content is tall enough, holds the offset 400 ms against a late scroll-to-top, gives up after 5 s and stops the moment Brett scrolls, taps or types. `usePlaceTab` / `usePlaceSelection` / `usePlaceSet` start a view's chip row, selected item and open rows from the saved place: Build queue, Catalog, Components, Boilerplates, Library templates, Pending, Tracker. |
+| Pushed refresh (s6) | `src/place/keepPlace.ts`, `plugins/console-commands/web/index.tsx`, `src/pluginLoader.tsx` | `savePlaceNow` writes the live place right before a soft or hard refresh (twice on hard: cache clearing takes a moment) and before "Reload for the new version". The `axf-refresh` query value is taken off the address after load. |
+| Pull-down (s7) | `src/place/pullRefresh.ts`, `src/main.tsx` | Saves the place the moment a drag becomes a pull that can reload the page, and again on `touchcancel` (the shell took the gesture), because some WebViews skip `pagehide`. Passive listeners only: it cannot hold the page. |
+| Scroll after an update (s8) | `src/place/scrollGuard.ts`, `src/console.css`, `src/pluginLoader.tsx`, `framework/react/components/Overlays.tsx` (+ baked copy) | `.fx-frame-banners` gets `overscroll-behavior-y: contain` (no accidental reload from the banners). The update notice has a Hide button. A leftover dialog history entry is dropped on load. As a safety net, `clearScrollLocks` removes any inline overflow / pointer-events / touch-action lock, `inert`, stuck drag class or stray strip flag from `html`, `body`, `#root` on load, on `pageshow` and when the tab is shown again. |
+| API (s9) | `src/place/placeApi.ts`, `server/console_control*.py`, `server/mcp_server.py`, `framework/cli/console-control.mjs`, `console-control-voice.mjs` (+ fixtures) | One control target, `panel:console-place`: state = the place (read only), press = put it back. |
 
-Recommended for the step that fixes this: reproduce on a phone viewport after a reload with
-`document.elementsFromPoint()` at the touch point and the `scrollHeight` / `clientHeight` of `.fx-main`, which tells
-candidates 1 and 3 apart in one run.
+Pull-down still reloads the page (the browser's own gesture on `.fx-main` is left in place); it now comes back where
+it was. Stopping it outright (`overscroll-behavior` on `.fx-main`) was left out on purpose: Brett uses it.
 
-## Recommended fix (for the next steps)
+## How each part is reached
 
-- **Save the place** in `sessionStorage` (per tab, so two console tabs do not fight; survives reload, soft and hard
-  refresh and the shell's reload): `{ view, hub route params, tabs, selection, dialog, scroll: { main, named } }`.
-  The data already exists: `hereOf()` / `controlState()` give screen, tabs and selection by control address, and
-  `scrollControl.ts` gives `scroll:main` and every named container. Write it on change (throttled) and on
-  `pagehide`, so a reload nobody announced (pull-down, the shell) is covered too.
-- **Put it back on boot**: the runtime starts on the saved view (falls back to `startView` when the view no longer
-  exists once plugins have loaded); then, when that view's targets are registered, set the tabs and selection through
-  their control targets and scroll last. The `[state.view]` scroll-to-top effect in `AppShell` must skip the restored
-  first view.
-- **Pull-down**: `overscroll-behavior-y: contain` on `.fx-main` stops the accidental browser reload; decide in the
-  build whether pull-down should instead run `console.refresh` (data only, place kept).
-- **Hard refresh**: strip `axf-refresh` from the address after load. Clear a stale `axfDialog` history state on boot.
-- **Where the code lives**: `apps/console-web/src/axf/**` is a baked copy of `framework/**` (`framework/cli/rebake.mjs`).
-  The runtime and AppShell changes go in `framework/core` and `framework/react`, then rebake. The copy has already
-  drifted: `framework/react/AppShell.tsx:91` has `scrollTo?.(…)`, the console's copy has `scrollTo(…)`.
-  A view field on the runtime is a reference-engine change: regenerate `framework/spec/fixtures` and record the
-  Android twin as a deferred gap in `framework/spec/PORTING.md`.
+| Part | REST | MCP | CLI | Voice |
+|---|---|---|---|---|
+| Read the place | `GET /api/console-control/place` | `console_control_place` | `axf console place [get]` | none (read only, nothing to say) |
+| Put the place back | `POST /api/console-control/place/restore {from?}` | `console_control_place {restore: true, source?}` | `axf console place restore [--from loaded\|saved]` | "put me back", "back to where I was", "restore my place", "where was I" |
+| Refresh the console, keeping the place | the console-commands plugin's `POST …/refresh {hard?}` route (already there) | `console_refresh {hard?}` (already there) | `axf console refresh [--hard] [--all]` (already there) | none: no refresh phrase was found or added |
 
-## s2: the console locking up (won't scroll) after an update
+`state` answers `saved` (what the store holds now), `loaded` (what this page load found, i.e. where Brett was before
+the reload), `now` (what is on screen) and `restoring`. A restore puts back `loaded` when there is one, else `saved`.
+It only moves the screen, so its policy is navigation (allow). All four drivers send the same command; the restore is
+also the action `console.place.restore`. Details: `_claude/memory/docs/console-control.md`, "Saved place".
 
-Method: read through `apps/console-web/src` and `framework/react` (the console builds from its baked copy,
-`apps/console-web/src/axf/react` and `apps/console-web/src/axf/ui/axf.css`; `framework/ui/axf.css` is identical at the
-lines below). Static trace only: nothing here was reproduced on a phone.
+The save and restore on load, pull-down and the scroll guard have no driver: they run by themselves on every page.
 
-### Result
+## Before / after
 
-There is no scroll lock to leave behind. Nothing in the console or the framework sets `overflow: hidden` on `html`,
-`body` or `#root`, adds a lock class to them, or installs a `touchmove` / `wheel` blocker, and there is no
-pull-to-refresh handler: the pull-down refresh is the browser's own. So the lock-up is not a stale lock; it is the
-layout handing the gesture to the wrong scroller. The causes, most likely first:
+| | Before | After |
+|---|---|---|
+| Pull-down, browser reload, pushed refresh (soft and hard), "Reload for the new version", shell reload | Home, top of the page, default tabs, nothing selected | Same screen, same tabs, same selection, same scroll offset |
+| Address after a hard refresh | `?axf-refresh=…` stays | removed after load |
+| Deep link while a place is saved | n/a | the link wins |
+| Drag on the banner stack | can reload the page | stays in the stack |
+| Update notice | covers the bottom of the page until a reload | Hide button; Reload keeps the place |
+| Back after a reload with a dialog open | first press does nothing | works |
 
-1. **Pull-down is not contained, anywhere.** `apps/console-web/src/axf/ui/axf.css:128`
-   (`html, body, #root { height: 100%; margin: 0; }`) sets no `overscroll-behavior`, and neither does the page's
-   scroller, `.fx-main` at `axf.css:432` (`overflow: auto`). The document itself never scrolls (`.fx-shell` is
-   `overflow: hidden`, `axf.css:414-422`), so every downward drag that `.fx-main` cannot take (it is at its top, or the
-   finger started outside it) chains to the viewport and becomes the browser's pull-to-refresh. That is the
-   accidental refresh behind the jump back, and while the browser owns that gesture the page does not scroll.
-2. **The banner stack is its own scroller above the page.** `axf.css:164`
-   (`.fx-frame-banners { max-height: 45vh; overflow: auto; … }`) is a sibling of the shell, not an ancestor of
-   `.fx-main`. After an update more banners show (builds live, systems check, codebase changes), so up to the top 45%
-   of a phone screen is this region. A drag that starts there scrolls the banners, or, when they fit, nothing at all
-   (downwards it triggers pull-to-refresh, cause 1). The page under it stays still: this is the most likely "won't
-   scroll after an update". It has no `overscroll-behavior: contain` either.
-3. **The update notice sits over the page and cannot be dismissed.** `apps/console-web/src/console.css:266`
-   (`.axf-new-version`: `position: fixed`, bottom, `z-index: 300`, nearly full width on a phone), drawn by
-   `NewVersionNotice` at `apps/console-web/src/pluginLoader.tsx:589-598`, mounted at `apps/console-web/src/App.tsx:216`.
-   It appears once a redeploy removed a plugin chunk (`markStale`, `pluginLoader.tsx:160`, set at `:286` and `:552`)
-   and stays until a reload. It is above everything, including dialogs (70) and the phone's bottom nav, and a drag
-   that starts on it does not scroll the page. In the same stale state the open plugin page is replaced by a short
-   error (`pluginLoader.tsx:574-582`), so there is also nothing left to scroll until the reload.
-4. **A dialog open at the moment of a reload leaves its history entry.** `framework/react/components/Overlays.tsx:49`
-   pushes `{ axfDialog: true }` and only its cleanup (`:53-57`) removes it. A reload (pull-down, the Reload button, a
-   pushed refresh) skips the cleanup, so the entry survives with the dialog closed: the next Back press does nothing.
-   No scrim is left: the backdrop (`axf.css:1054`, `Overlays.tsx:92`) only renders while a dialog is open, and dialog
-   state is not saved (`core/runtime.ts:483`).
+"After" is what the code does, read from the merged branch. It has not been watched in a browser.
 
-### Checked and ruled out
+## What was checked
 
-- `body.axf-dnd-dragging` (`apps/console-web/src/axf/libs/dnd/index.tsx:87`, removed at `:102`): only changes the
-  cursor and text selection (`libs/dnd/dnd.css:3`), and both `pointerup` and `pointercancel` remove it.
-- `html[data-axf-strip='on'] .fx-main { overflow: visible; }` (`axf.css:169`) would stop the page scrolling, but the
-  attribute is only set by the embedded banner-strip page (`framework/react/components/BannerStrip.tsx:77`, removed at
-  `:78`), which the console's own shell never mounts.
-- Arrange mode (`touch-action: none` on every widget, `axf.css:343`) is not saved: it ends on reload
-  (`core/runtime.ts:1595`).
-- Full-screen layers: the Watch live sheet (`axf.css:1789`), the plan lightbox (`console.css:91`,
-  `views/Plan.tsx:403`) and the dialog backdrop all need an explicit open and none is restored after a reload. The
-  help layer, ashes layer and toast stack are `pointer-events: none`.
-- Dialog title-bar swipe (`Overlays.tsx:61-78`) captures the pointer on the title bar only and releases on up / cancel.
+Run on the merged branch (main a547deee5 + s1 to s9), Nov 24 2026:
 
-### Suggested fix (for the fix steps; not made here)
+| Check | Result |
+|---|---|
+| `tsc --noEmit` (apps/console-web) | pass (needs the generated `src/control/inventory.json`: `node scripts/control-inventory.mjs`, as `npm run build` does) |
+| `check-theme` | pass, 1483 files |
+| `check-controls` | pass |
+| `check-console-control` | pass |
+| `check-toolbars` | pass, 570 files |
+| `check-chrome-assets` | pass |
+| `scripts/console-control-parity.mjs` | pass, 14 cases, 132 comparisons across REST, CLI, MCP, voice |
+| `server/tests/test_console_control.py` | 11 passed (includes `test_place`) |
 
-- `overscroll-behavior-y: contain` on `.fx-main` and `.fx-frame-banners`, and `overscroll-behavior-y: none` on
-  `html, body`, in `framework/ui/axf.css` (then re-bake the console copy). This stops the accidental pull-to-refresh
-  and the dead zone over the banners. It also removes the browser's pull-down refresh, so decide whether a deliberate
-  one replaces it.
-- Give `.axf-new-version` a dismiss, or keep it clear of the phone's bottom nav.
-- On load, drop a leftover `axfDialog` history entry (`history.state?.axfDialog` with no dialog open).
+Not done, and it matters:
 
-### Related, for the jump-back steps
+- **No browser run.** Step s10 (unit test for the place store and the Playwright reload / pull / pushed-refresh
+  check) had not pushed. Nothing here proves on a real page that the place comes back or that the page scrolls after
+  an update. The scroll-lock causes were found by reading the code, never reproduced on a phone.
+- **No UI Review item.** The update notice's Hide button is a visible change with no desktop or phone shots yet.
+- **Android shell.** The shell's own reload is covered by the same save (pagehide + pull), but was not run on a device.
+- Merge clashes settled while joining the steps: the report (s1 and s2 both created it) and `src/main.tsx` (s7 and s8
+  each added an install line; both kept).
 
-`framework/react/AppShell.tsx:91` scrolls the main pane to the top whenever `state.view` changes, including the first
-render after a reload, and `:169` keys the page on `state.view`, so any refresh that re-sets the view remounts it at
-the top. The console's baked copy has the same code at the same lines.
+## PR description (for the lander's one PR)
+
+**Fix: refreshing the console stays put (screen, tabs, selection, scroll)**
+
+Cause: the console never saved the place; every reload (pull-down, browser reload, pushed refresh, "Reload for the new
+version", the Android shell) booted on Home at the top. The "won't scroll after an update" was not a lock: the banner
+stack and the update notice took the drag, and a drag on the banners reloaded the page.
+
+Fix: a per-tab place store (sessionStorage) saves view, tabs, selection and scroll; the app reopens them on load
+(deep links win); every reload the console starts saves first; a pull saves as it starts; the banner stack no longer
+chains to pull-to-refresh, the update notice can be hidden, leftover locks and a stale dialog history entry are
+cleared on load.
+
+Reached by: REST `GET /api/console-control/place`, `POST /api/console-control/place/restore`; MCP
+`console_control_place`, `console_refresh`; CLI `axf console place [get|restore]`, `axf console refresh [--hard]`; voice "put me back" /
+"back to where I was" / "restore my place".
+
+Checks: typecheck, check-theme, check-controls, check-console-control, check-toolbars, check-chrome-assets, the
+four-driver parity script and the console-control server tests all pass. Not verified in a browser; the Hide button
+on the update notice is waiting on UI Review shots. Supersedes #825 (the Nov 18 attempt on
+`claude/fix-refreshing-console-jumps-back`).
