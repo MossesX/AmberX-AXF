@@ -43,6 +43,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer, controlState } from '@console/control/executor';
 import { controlRegistry } from '@console/axf/react';
+import { REFRESH_PARAM, savePlaceNow, stripRefreshParam } from '@console/place/keepPlace';
 import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
 import { appMenu } from './menu';
 import './console-commands.css';
@@ -217,14 +218,18 @@ function hashText(t: string): string {
 
 /**
  * Reloads this page: soft is a plain reload; hard clears the page's caches and service workers first, then reloads
- * past the HTTP cache with a one-time query value.
+ * past the HTTP cache with a one-time query value (taken out of the address again once the page is back). Both save
+ * the place (screen, tabs, selection, scroll) first and again right before the page goes, so the console comes back
+ * where it was; the place is in sessionStorage, which a hard refresh leaves alone.
  */
-async function reloadPage(hard: boolean): Promise<void> {
+async function reloadPage(rt: AxfRuntime, hard: boolean): Promise<void> {
+  savePlaceNow(rt);
   if (hard) {
     try { await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch { /* no Cache API here */ }
     try { await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch { /* none */ }
     const u = new URL(location.href);
-    u.searchParams.set('axf-refresh', Date.now().toString(36));
+    u.searchParams.set(REFRESH_PARAM, Date.now().toString(36));
+    savePlaceNow(rt); // clearing the caches took a moment: Brett may have scrolled
     location.replace(u.href);
     return;
   }
@@ -296,7 +301,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       return [true, `closed ${m.label ?? open.id}`];
     }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
-    case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared)' : 'reloading']; // after the ack: see reloadPage
+    case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared), keeping the place' : 'reloading, keeping the place']; // after the ack: see reloadPage
     case 'back': {
       if (rt.getState().dialog) { rt.closeDialog(); return [true, 'closed the dialog']; }
       history.pop(); // the screen we're on
@@ -312,6 +317,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
 /** Mounted once on the page (slot app.frame.cover), draws nothing. */
 function ConsoleCommandsClient() {
   const rt = useRuntime();
+  useEffect(() => stripRefreshParam(), []); // the page a hard refresh loaded: its one-time query value is done
   const [on, setOn] = useState(() => rt.settings.get(KEYS.on) !== false);
   useEffect(() => rt.settings.subscribe(() => setOn(rt.settings.get(KEYS.on) !== false)), [rt]);
   useEffect(() => {
@@ -439,7 +445,7 @@ function ConsoleCommandsClient() {
         // a console the app hides comes to the front on what was opened (no reload)
         const surfaced = res[0] && SURFACING.includes(m.op) && surface();
         const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where(), ...(surfaced ? { surfaced } : {}) }).catch(() => undefined);
-        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
+        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(rt, m.hard === true)); // the caller hears first, then the page goes
       },
       // a deploy restarts the server: come back within seconds, not after a minute of back-off
       { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },
