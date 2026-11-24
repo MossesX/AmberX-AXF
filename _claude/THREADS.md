@@ -843,8 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 21:48 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
-- 2026-11-23 21:49 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-23 21:53 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-23 21:56 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-23 22:00 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
@@ -1243,6 +1241,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
 - 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
 - 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 19:14 UTC · `fix-refreshing-console-jumps-back` PR 913 (all) · lander
+- 2026-11-24 19:14 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
 
 ## Token passes (log)
 

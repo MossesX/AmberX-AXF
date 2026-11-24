@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10393,
- "updatedAt": "2026-11-24T19:14:02.351Z",
+ "rev": 10394,
+ "updatedAt": "2026-11-24T19:14:27.545Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -302893,15 +302893,15 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "merging-pr",
+   "status": "pr-pulling-main",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-refreshing-console-jumps-back",
-   "pr": "912",
+   "pr": "913",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T19:13:49.509Z",
+   "updatedAt": "2026-11-24T19:14:14.095Z",
    "builtAt": "",
    "notes": [
     {
@@ -306045,11 +306045,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 19,
+     "rev": 20,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T14:10:23.942Z",
-     "statusAt": "2026-11-24T14:10:23.813Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-24T19:14:05.493Z",
+     "statusAt": "2026-11-24T19:14:05.404Z",
+     "statusBy": "lander",
      "attempt": 3,
      "statusLog": [
       {
@@ -306149,13 +306149,20 @@
        "by": "headless",
        "attempt": 3,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T19:14:05.404Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s6",
      "branch": "claude/fix-refreshing-console-jumps-back--s6",
      "tmux": "axf-fix-refreshing-console-jumps-back--s6--gina",
+     "prNumber": 913,
      "tried": [
       "mossesx-max-"
      ]
@@ -306783,7 +306790,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 397,
+   "rev": 399,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -306817,7 +306824,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T19:13:49.509Z",
+   "statusAt": "2026-11-24T19:14:14.095Z",
    "statusBy": "lander",
    "attempt": 2,
    "statusLog": [
@@ -307023,6 +307030,12 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: PR 5 of 11 (s6, split after a failure)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T19:14:14.095Z",
+     "by": "lander",
+     "attempt": 1
     }
    ]
   },
