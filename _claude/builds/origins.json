@@ -3134,6 +3134,18 @@
    "from": "",
    "addenda": []
   },
+  "drop-failed-part-remove-feature-whose": {
+   "said": "Once CI fails and the VPS splits up the build into individual PRs to land one thing at a time, I want to be able to remove failed items if they fail again. If they fail as their own PR, I want to be able to just remove the feature altogether.",
+   "at": "2026-11-24T21:22:16.340Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "duplicate-gate-vps-checks-shipped": {
    "said": "You rebuilt this thing five times over the last three days, even though it's already landed on main. Can we put some kind of gate on the server? With shipped features? Because shipped features is already on the server.",
    "at": "2026-11-16T13:06:22.511Z",
