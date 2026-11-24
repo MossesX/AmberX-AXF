@@ -1,0 +1,1723 @@
+{
+ "$axf": "pipeline-status-fixture@1",
+ "schema": "pipeline-status@1",
+ "states": [
+  "pending",
+  "splitting",
+  "split",
+  "pulling-main",
+  "assigning-models",
+  "ready",
+  "sending",
+  "building",
+  "build-complete",
+  "failed",
+  "waiting-to-merge",
+  "merging",
+  "running-ci",
+  "landed"
+ ],
+ "landerStates": [
+  "waiting-to-merge",
+  "merging",
+  "running-ci",
+  "landed"
+ ],
+ "tones": [
+  "muted",
+  "info",
+  "accent",
+  "warning",
+  "success",
+  "danger"
+ ],
+ "info": {
+  "pending": {
+   "label": "Pending",
+   "tone": "muted",
+   "icon": "clock",
+   "line": "Waiting for the VPS to split it into steps."
+  },
+  "splitting": {
+   "label": "Splitting",
+   "tone": "accent",
+   "icon": "layers",
+   "line": "The VPS is splitting it into steps with Fable."
+  },
+  "split": {
+   "label": "Split",
+   "tone": "muted",
+   "icon": "list",
+   "line": "Split into {n}. Next in line for the active place."
+  },
+  "pulling-main": {
+   "label": "Pulling main",
+   "tone": "info",
+   "icon": "download",
+   "line": "The VPS is cutting a worktree for each step and pulling main into it."
+  },
+  "assigning-models": {
+   "label": "Assigning models",
+   "tone": "info",
+   "icon": "user",
+   "line": "The VPS triage gate is giving each step its model."
+  },
+  "ready": {
+   "label": "Ready",
+   "tone": "info",
+   "icon": "check",
+   "line": "Ready. Waiting for the VPS to send its steps to free slots."
+  },
+  "sending": {
+   "label": "Sending",
+   "tone": "accent",
+   "icon": "play",
+   "line": "The VPS is sending its steps to their slots."
+  },
+  "building": {
+   "label": "Building",
+   "tone": "accent",
+   "icon": "zap",
+   "line": "Building: {done} of {n} built."
+  },
+  "build-complete": {
+   "label": "Build complete",
+   "tone": "success",
+   "icon": "check",
+   "line": "Every step is built. The lander takes it next."
+  },
+  "failed": {
+   "label": "Failed (attempt {attempt})",
+   "tone": "danger",
+   "icon": "alert",
+   "line": "Failed at {from}, attempt {attempt} of {max}. The VPS tries again by itself."
+  },
+  "waiting-to-merge": {
+   "label": "Waiting to merge",
+   "tone": "warning",
+   "icon": "clock",
+   "line": "Built and waiting its turn to merge."
+  },
+  "merging": {
+   "label": "Merging",
+   "tone": "warning",
+   "icon": "branch",
+   "line": "The lander is merging it."
+  },
+  "running-ci": {
+   "label": "Running CI",
+   "tone": "warning",
+   "icon": "refresh",
+   "line": "CI is running on its PR."
+  },
+  "landed": {
+   "label": "Landed",
+   "tone": "success",
+   "icon": "check",
+   "line": "Merged into main."
+  }
+ },
+ "views": [
+  {
+   "name": "state pending",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "pending",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042"
+   },
+   "all": [],
+   "view": {
+    "state": "pending",
+    "label": "Pending",
+    "tone": "muted",
+    "icon": "clock",
+    "line": "Waiting for the VPS to split it into steps.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "state splitting",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "splitting",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042"
+   },
+   "all": [],
+   "view": {
+    "state": "splitting",
+    "label": "Splitting",
+    "tone": "accent",
+    "icon": "layers",
+    "line": "The VPS is splitting it into steps with Fable.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "state split",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Split into 2 steps. Next in line for the active place.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state pulling-main",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "pulling-main",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "pulling-main",
+    "label": "Pulling main",
+    "tone": "info",
+    "icon": "download",
+    "line": "The VPS is cutting a worktree for each step and pulling main into it.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state assigning-models",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "assigning-models",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "assigning-models",
+    "label": "Assigning models",
+    "tone": "info",
+    "icon": "user",
+    "line": "The VPS triage gate is giving each step its model.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state ready",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "ready",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "ready",
+    "label": "Ready",
+    "tone": "info",
+    "icon": "check",
+    "line": "Ready. Waiting for the VPS to send its steps to free slots.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state sending",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "sending",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "sending",
+    "label": "Sending",
+    "tone": "accent",
+    "icon": "play",
+    "line": "The VPS is sending its steps to their slots.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state building",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "building",
+    "label": "Building",
+    "tone": "accent",
+    "icon": "zap",
+    "line": "Building: 0 of 2 steps built.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "state build-complete",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "build-complete",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0042",
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [],
+   "view": {
+    "state": "build-complete",
+    "label": "Build complete",
+    "tone": "success",
+    "icon": "check",
+    "line": "Every step is built. The lander takes it next.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "failed, attempt 2",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "failed",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 2,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "failedFrom": "building"
+   },
+   "all": [],
+   "view": {
+    "state": "failed",
+    "label": "Failed (attempt 2)",
+    "tone": "danger",
+    "icon": "alert",
+    "line": "Failed at Building, attempt 2 of 5. The VPS tries again by itself.",
+    "attempt": 2,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "failed and gave up",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "failed",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 5,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "failedFrom": "pulling-main"
+   },
+   "all": [],
+   "view": {
+    "state": "failed",
+    "label": "Failed (attempt 5)",
+    "tone": "danger",
+    "icon": "alert",
+    "line": "Failed at Pulling main, attempt 5 of 5. It gave up: retry it to start again.",
+    "attempt": 5,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "merging-pr shows as merging",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "merging-pr",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ]
+   },
+   "all": [],
+   "view": {
+    "state": "merging",
+    "label": "Merging",
+    "tone": "warning",
+    "icon": "branch",
+    "line": "The lander is putting its steps into one PR.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "pr-pulling-main shows as merging",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "pr-pulling-main",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ]
+   },
+   "all": [],
+   "view": {
+    "state": "merging",
+    "label": "Merging",
+    "tone": "warning",
+    "icon": "branch",
+    "line": "The lander is pulling main into its PR.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "merging-main shows as merging",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "merging-main",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ]
+   },
+   "all": [],
+   "view": {
+    "state": "merging",
+    "label": "Merging",
+    "tone": "warning",
+    "icon": "branch",
+    "line": "The lander is merging its PR into main.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "running-ci",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "running-ci",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ]
+   },
+   "all": [],
+   "view": {
+    "state": "running-ci",
+    "label": "Running CI",
+    "tone": "warning",
+    "icon": "refresh",
+    "line": "CI is running on its PR.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "landed",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "landed",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ]
+   },
+   "all": [],
+   "view": {
+    "state": "landed",
+    "label": "Landed",
+    "tone": "success",
+    "icon": "check",
+    "line": "Merged into main.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "split, another build holds the active place",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Waiting: Build active holds the active place (Building).",
+    "attempt": 1,
+    "waitingOn": {
+     "buildId": "active",
+     "number": "B-0041",
+     "title": "Build active",
+     "reason": "Waiting: Build active holds the active place"
+    },
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "split, nothing active",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   },
+   "all": [
+    "built-1"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Split into 2 steps. Next in line for the active place.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": {
+     "by": "vps",
+     "model": "claude-fable-5-2",
+     "at": "2026-11-23T23:59:53.907Z",
+     "stepCount": 2
+    }
+   }
+  },
+  {
+   "name": "split, on hold",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "pipeline": {
+     "heldAt": "2026-11-24T00:00:00.000Z"
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "On hold: release it to give it its turn.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "split, rejected for a clash",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "clash": {
+     "rejected": true,
+     "reason": "Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
+     "options": []
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Rejected (clash)",
+    "tone": "danger",
+    "icon": "alert",
+    "line": "Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs). Choose: run all now, or run the clean steps and defer the rest.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null,
+    "clash": {
+     "rejected": true,
+     "reason": "Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
+     "answer": ""
+    }
+   }
+  },
+  {
+   "name": "split, clash answered: waits its turn",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "clash": {
+     "rejected": false,
+     "answer": "defer",
+     "reason": "Rejected: 1 step of 2 touches files that B-0041 has not landed yet."
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Waiting: Build active holds the active place (Building).",
+    "attempt": 1,
+    "waitingOn": {
+     "buildId": "active",
+     "number": "B-0041",
+     "title": "Build active",
+     "reason": "Waiting: Build active holds the active place"
+    },
+    "mergeLine": null,
+    "split": null,
+    "clash": {
+     "rejected": false,
+     "reason": "Rejected: 1 step of 2 touches files that B-0041 has not landed yet.",
+     "answer": "defer"
+    }
+   }
+  },
+  {
+   "name": "hand build at split never waits",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "hand": {
+     "at": "2026-11-24T00:00:00.000Z",
+     "by": "brett"
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Split into 2 steps. Next in line for the active place.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "building with a deferred step",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "building"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending",
+      "waitsFor": {
+       "buildId": "built-1",
+       "number": "B-0038",
+       "title": "Build built-1"
+      }
+     }
+    ]
+   },
+   "all": [
+    "built-1"
+   ],
+   "view": {
+    "state": "building",
+    "label": "Building",
+    "tone": "accent",
+    "icon": "zap",
+    "line": "Building: 0 of 2 steps built. 1 step deferred, waiting for B-0038 to land.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "build-complete, first in the merge line",
+   "build": {
+    "id": "built-1",
+    "title": "Build built-1",
+    "flow": "pipeline-2",
+    "status": "build-complete",
+    "statusAt": "2026-11-23T09:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0038",
+    "hand": {
+     "at": "2026-11-23T08:00:00.000Z",
+     "by": "brett"
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "build-complete",
+    "label": "Build complete",
+    "tone": "success",
+    "icon": "check",
+    "line": "Every step is built. The lander takes it next.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "build-complete, second: waiting to merge",
+   "build": {
+    "id": "built-2",
+    "title": "Build built-2",
+    "flow": "pipeline-2",
+    "status": "build-complete",
+    "statusAt": "2026-11-23T09:30:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "number": "B-0039",
+    "hand": {
+     "at": "2026-11-23T08:30:00.000Z",
+     "by": "brett"
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "waiting-to-merge",
+    "label": "Waiting to merge",
+    "tone": "warning",
+    "icon": "clock",
+    "line": "2nd to merge, waiting for B-0038 to merge.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 2,
+     "waitingFor": {
+      "buildId": "built-1",
+      "number": "B-0038",
+      "title": "Build built-1"
+     },
+     "text": "2nd to merge, waiting for B-0038 to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "build-complete, the lander wrote its state and line",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "build-complete",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "landing": {
+     "state": "waiting-to-merge",
+     "mergeLine": {
+      "position": 3,
+      "waitingFor": "B-0039"
+     }
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "waiting-to-merge",
+    "label": "Waiting to merge",
+    "tone": "warning",
+    "icon": "clock",
+    "line": "3rd to merge, waiting for B-0039 to merge.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 3,
+     "waitingFor": {
+      "buildId": "built-2",
+      "number": "B-0039",
+      "title": "Build built-2"
+     },
+     "text": "3rd to merge, waiting for B-0039 to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "running-ci with the lander state",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "running-ci",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "landing": {
+     "state": "running-ci"
+    }
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "running-ci",
+    "label": "Running CI",
+    "tone": "warning",
+    "icon": "refresh",
+    "line": "CI is running on its PR.",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": {
+     "position": 1,
+     "waitingFor": null,
+     "text": "1st to merge"
+    },
+    "split": null
+   }
+  },
+  {
+   "name": "a builds@1 status is shown as itself",
+   "build": {
+    "id": "old",
+    "title": "Old build",
+    "status": "queued",
+    "steps": []
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "queued",
+    "label": "Queued",
+    "tone": "muted",
+    "icon": "circle",
+    "line": "",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "archived is shown as itself",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "archived",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "archivedFrom": "split"
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "archived",
+    "label": "Archived",
+    "tone": "muted",
+    "icon": "circle",
+    "line": "",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "an unknown status never throws",
+   "build": {
+    "id": "odd",
+    "flow": "pipeline-2",
+    "status": "teleporting"
+   },
+   "all": [
+    "active",
+    "built-1",
+    "built-2"
+   ],
+   "view": {
+    "state": "teleporting",
+    "label": "Teleporting",
+    "tone": "muted",
+    "icon": "circle",
+    "line": "",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  },
+  {
+   "name": "no status at all",
+   "build": {
+    "id": "none"
+   },
+   "all": [],
+   "view": {
+    "state": "",
+    "label": "Unknown",
+    "tone": "muted",
+    "icon": "circle",
+    "line": "",
+    "attempt": 1,
+    "waitingOn": null,
+    "mergeLine": null,
+    "split": null
+   }
+  }
+ ],
+ "numbers": {
+  "seq": 12,
+  "given": [
+   {
+    "id": "d",
+    "number": "B-0010"
+   },
+   {
+    "id": "a",
+    "number": "B-0011"
+   },
+   {
+    "id": "c",
+    "number": "B-0012"
+   }
+  ],
+  "numbers": {
+   "a": "B-0011",
+   "b": "B-0007",
+   "c": "B-0012",
+   "d": "B-0010"
+  }
+ },
+ "clash": {
+  "schema": "build-clash@1",
+  "build": {
+   "id": "new",
+   "title": "New build",
+   "flow": "pipeline-2",
+   "status": "split",
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "u1",
+     "text": "Core change",
+     "files": [
+      "framework/core/x.mjs"
+     ]
+    },
+    {
+     "id": "s2",
+     "uid": "u2",
+     "text": "Docs",
+     "files": [
+      "docs/a.md"
+     ]
+    },
+    {
+     "id": "s3",
+     "uid": "u3",
+     "text": "UI",
+     "files": [
+      "apps/ui/"
+     ]
+    }
+   ]
+  },
+  "all": [
+   {
+    "id": "hand-1",
+    "number": "B-0038",
+    "title": "Hand build",
+    "flow": "pipeline-2",
+    "status": "building",
+    "steps": [
+     {
+      "id": "s1",
+      "files": [
+       "framework/core"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "wait-1",
+    "number": "B-0039",
+    "title": "Waiting to merge",
+    "flow": "pipeline-2",
+    "status": "build-complete",
+    "steps": [
+     {
+      "id": "s1",
+      "files": [
+       "apps/ui/web/a.tsx"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "queued",
+    "number": "B-0040",
+    "title": "Not started",
+    "flow": "pipeline-2",
+    "status": "split",
+    "steps": [
+     {
+      "id": "s1",
+      "files": [
+       "docs/a.md"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "done",
+    "number": "B-0001",
+    "title": "Landed",
+    "flow": "pipeline-2",
+    "status": "landed",
+    "steps": [
+     {
+      "id": "s1",
+      "files": [
+       "docs/a.md"
+      ]
+     }
+    ]
+   }
+  ],
+  "record": {
+   "$axf": "build-clash@1",
+   "rejected": true,
+   "at": "2026-11-24T00:00:00.000Z",
+   "reason": "Rejected: 2 steps of 3 touch files that B-0038 (Hand build), B-0039 (Waiting to merge) have not landed yet (framework/core/x.mjs, apps/ui/web/a.tsx).",
+   "with": [
+    {
+     "buildId": "hand-1",
+     "number": "B-0038",
+     "title": "Hand build"
+    },
+    {
+     "buildId": "wait-1",
+     "number": "B-0039",
+     "title": "Waiting to merge"
+    }
+   ],
+   "options": [
+    {
+     "id": "run-all",
+     "action": "run-all",
+     "label": "Run all now",
+     "line": "Run every step now. The 2 clashing steps may need main pulled in again before they merge.",
+     "steps": []
+    },
+    {
+     "id": "defer",
+     "action": "defer",
+     "label": "Run 1 clean step now, defer 2",
+     "line": "s1 waits for B-0038 (Hand build); s3 waits for B-0039 (Waiting to merge). Each starts by itself when that build lands.",
+     "steps": [
+      {
+       "step": "s1",
+       "uid": "u1",
+       "title": "Core change",
+       "files": [
+        "framework/core/x.mjs"
+       ],
+       "waitsFor": {
+        "buildId": "hand-1",
+        "number": "B-0038",
+        "title": "Hand build"
+       }
+      },
+      {
+       "step": "s3",
+       "uid": "u3",
+       "title": "UI",
+       "files": [
+        "apps/ui/web/a.tsx"
+       ],
+       "waitsFor": {
+        "buildId": "wait-1",
+        "number": "B-0039",
+        "title": "Waiting to merge"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
