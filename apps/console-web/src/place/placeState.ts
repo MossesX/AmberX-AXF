@@ -12,8 +12,9 @@
  * An address without a leading `view:` is filed under the current view, so a pane only has to know its own name.
  *
  * Writes are debounced; `install()` also flushes on pagehide and when the page is hidden (the only moments a phone
- * reliably gives before a reload) and records scroll offsets as the person scrolls. This module only saves and answers;
- * putting the place back is the caller's job (`suspend()` keeps the resets of a remount from overwriting what was saved).
+ * reliably gives before a reload) and records scroll offsets as the person scrolls. The store only saves and answers;
+ * `restorePlace()` reopens the saved view and its tabs on load (App.tsx calls it), and whoever puts scroll and selection
+ * back holds `suspend()` meanwhile, so the resets of a remount don't overwrite what was saved.
  */
 import { formatAddress, parseAddress } from '../axf/core/engines/console-control';
 import { SCROLL_CONTAINER_ATTR, mainScrollElement, scrollAddressOf } from '../axf/react/scrollControl';
@@ -145,6 +146,139 @@ export interface PlaceStore {
   subscribe(fn: (place: PlaceState) => void): () => void;
   /** Record scrolling and flush on pagehide / hidden. Returns the uninstall. */
   install(): () => void;
+}
+
+/* ---------------- putting the view and its tabs back on load ---------------- */
+
+/** Query parameters that name a place of their own (`?axf-open=<target>`, `?axf-ref=<id>`). */
+export const PLACE_LINK_PARAMS = ['axf-open', 'axf-ref'] as const;
+/** How long a saved tab waits for its row to render (a row under a tab whose data is still loading), in ms. */
+export const PLACE_TAB_WAIT = 10000;
+
+/** Does this page address name a place of its own (a hash route, an open or reference link)? Such a link wins over the saved place. */
+export function isDeepLink(href: string | null | undefined): boolean {
+  if (!href) return false;
+  let url: URL;
+  try { url = new URL(href, 'http://localhost/'); } catch { return false; }
+  if (url.hash.length > 1) return true;
+  return PLACE_LINK_PARAMS.some((p) => (url.searchParams.get(p) ?? '') !== '');
+}
+
+/** What the place needs from the app shell to follow it and put it back (the console's is built in App.tsx). */
+export interface PlaceHost {
+  /** The id of the view that is open. */
+  view(): string;
+  /** Open a view in the main area. A view the shell can't open here is left alone. */
+  show(view: string): void;
+  /** Called after the open view changed. Returns the unsubscribe. */
+  onView(fn: () => void): () => void;
+  /** The tab rows rendered now: row address → active tab value. */
+  rows(): Record<string, string>;
+  /** Switch a rendered tab row to a tab. False when the row or that tab is not there (yet). */
+  setTab(row: string, value: string): boolean;
+  /** Called when tab rows render, change or go. Returns the unsubscribe. */
+  onRows(fn: () => void): () => void;
+}
+
+export interface PlaceRestore {
+  /** The saved view that was put back on load (its id); null when none was (nothing saved, or the address is a deep link). */
+  readonly view: string | null;
+  /** Was the page opened on a deep link (so the saved place was left alone)? */
+  readonly deepLink: boolean;
+  /** The saved tabs still waiting for their row to render: row address → tab value. */
+  pending(): Record<string, string>;
+  /**
+   * Follow the place from now on (the open view and the active tab of every rendered row go to the store) and put each
+   * saved tab back as soon as its row renders. Call it from a layout effect: rows that are already rendered are switched
+   * before the first paint. Returns the uninstall.
+   */
+  install(): () => void;
+}
+
+/**
+ * Reopen the saved view now (call it before the first render, so the start view is never drawn first) and hand back the
+ * follow-up for its tabs. A deep link wins: the saved place is left alone and the link's own handler opens its target,
+ * which then becomes the saved place. A saved view the shell doesn't have yet (its plugin is still loading) is opened
+ * anyway; the shell decides what to show until it arrives.
+ */
+export function restorePlace(store: PlaceStore, host: PlaceHost, options: { href?: string | null; tabWait?: number } = {}): PlaceRestore {
+  const href = options.href === undefined ? (typeof location === 'undefined' ? null : location.href) : options.href;
+  const tabWait = options.tabWait ?? PLACE_TAB_WAIT;
+  const deepLink = isDeepLink(href);
+  const saved = store.get();
+  const savedView = viewIdOf(saved.view);
+  const pending = new Map<string, string>();
+  let view: string | null = null;
+  if (!deepLink && savedView) {
+    if (host.view() !== savedView) host.show(savedView);
+    if (host.view() === savedView) {
+      view = savedView;
+      for (const [row, value] of Object.entries(saved.tabs)) if (viewIdOf(row) === savedView) pending.set(row, value);
+    }
+  }
+
+  /** Switch every waiting row that has rendered. A row whose tab is not there yet keeps waiting (its tabs may still load). */
+  const apply = (): void => {
+    if (!pending.size) return;
+    const rows = host.rows();
+    for (const [row, value] of [...pending]) {
+      const current = rows[row];
+      if (current === undefined) continue;
+      if (current === value || host.setTab(row, value)) pending.delete(row);
+    }
+  };
+
+  /** The open view and every rendered row into the store; a row still waiting for its saved tab keeps the saved one. */
+  const record = (): void => {
+    store.setView(host.view());
+    for (const [row, value] of Object.entries(host.rows())) {
+      if (pending.has(row) || !row.startsWith('view:')) continue;
+      store.setTab(row, value);
+    }
+  };
+
+  return {
+    view,
+    deepLink,
+    pending: () => Object.fromEntries(pending),
+    install() {
+      let timer: ReturnType<typeof setTimeout> | null = null;
+      // Recording waits a tick: a row that was just switched reports its old tab until it has rendered again.
+      const later = (): void => { if (timer === null) timer = setTimeout(() => { timer = null; record(); }, 0); };
+      const offView = host.onView(() => {
+        if (host.view() !== view) pending.clear();
+        store.setView(host.view());
+        later();
+      });
+      const offRows = host.onRows(() => { apply(); later(); });
+      const giveUp = setTimeout(() => pending.clear(), tabWait);
+      const dom = typeof window !== 'undefined' && typeof document !== 'undefined';
+      // The person picked something themselves: nothing saved may move a tab under them after that.
+      const onInput = (): void => { pending.clear(); later(); };
+      const save = (): void => { record(); store.flush(); };
+      const onVisibility = (): void => { if (document.visibilityState === 'hidden') save(); };
+      if (dom) {
+        document.addEventListener('click', onInput, true);
+        document.addEventListener('keyup', onInput, true);
+        window.addEventListener('pagehide', save);
+        document.addEventListener('visibilitychange', onVisibility);
+      }
+      apply();
+      later();
+      return () => {
+        offView();
+        offRows();
+        clearTimeout(giveUp);
+        if (timer !== null) { clearTimeout(timer); timer = null; }
+        if (dom) {
+          document.removeEventListener('click', onInput, true);
+          document.removeEventListener('keyup', onInput, true);
+          window.removeEventListener('pagehide', save);
+          document.removeEventListener('visibilitychange', onVisibility);
+        }
+      };
+    },
+  };
 }
 
 export function createPlaceStore(options: PlaceStoreOptions = {}): PlaceStore {
