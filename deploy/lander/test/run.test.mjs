@@ -184,9 +184,9 @@ test('status: the merge queue rows are the store rows (read-only)', async () => 
   assert.ok(!readFileSync(new URL('../run.mjs', import.meta.url), 'utf8').match(/anthropic|openai|claude-agent-sdk/i), 'no model client in the lander');
 });
 
-// ------------------------------------------------------------------ the merge line: emergency builds first, never a stale head
+// ------------------------------------------------------------------ the merge line: emergency builds first; a green PR merges as it is
 
-test('an emergency build cuts to the front of the merge line; the build already landing pulls main again and re-runs CI before its own merge', async () => {
+test('an emergency build cuts to the front of the merge line; the build already landing then merges its green PR as it is', async () => {
   const r = repo({ 'claude/n-s1': { 'n.txt': 'n\n' }, 'claude/e-s1': { 'e.txt': 'e\n' } });
   let hold = true; const asked = [];
   const gh = github(r, (head) => { asked.push(head); return hold ? 'running' : 'success'; });
@@ -207,51 +207,70 @@ test('an emergency build cuts to the front of the merge line; the build already 
   assert.ok(!onMain(r, 'n.txt'));
   const merges = () => gh.calls.filter((c) => c.startsWith('PUT')).length;
   assert.equal(merges(), 1);
-  // the ordinary build's CI is green, but on a head from before the emergency landing: main is pulled, CI runs again, no merge yet
+  // the ordinary build's CI is green on a head from before the emergency landing: it merges as it is (Nov 24 2026)
   now.add(1); asked.length = 0;
   out = await tick(opts);
-  let n = byId(store, 'n');
-  assert.equal(out.build, 'n'); assert.equal(merges(), 1, 'never merged on the stale head');
-  assert.equal(n.status, 'running-ci'); assert.match(out.waiting, /newest main/);
-  const secondHead = sh(r.work, 'rev-parse', 'origin/lander/n');
-  assert.notEqual(secondHead, firstHead, 'the PR has a new head');
-  assert.ok(holds(r, secondHead, sh(r.work, 'rev-parse', 'origin/main')), 'the new head holds the newest main (the emergency work in it)');
-  assert.equal(n.landing.mainPull.head, secondHead);
-  assert.ok(out.actions.some((a) => /main moved since CI ran/.test(a)));
-  // CI green on the new head: only now it merges
-  now.add(1); asked.length = 0;
-  out = await tick(opts);
-  n = byId(store, 'n');
-  assert.equal(n.status, 'landed'); assert.equal(merges(), 2);
-  assert.deepEqual(asked, [secondHead], 'CI was read again, on the head that holds the newest main');
-  assert.equal(n.landing.lastMerge.head, secondHead, 'the merge is pinned to that head');
-  assert.ok(!statuses(n).includes('failed'), 'a re-pull is not a failure');
+  const n = byId(store, 'n');
+  assert.equal(out.build, 'n'); assert.equal(n.status, 'landed'); assert.equal(merges(), 2);
+  assert.equal(sh(r.work, 'rev-parse', 'origin/main^2'), firstHead, 'the head that merged is the head CI ran on: main was not pulled in');
+  assert.deepEqual(asked, [firstHead], 'CI was read once, on that head; nothing ran again');
+  assert.equal(n.landing.lastMerge.head, firstHead, 'the merge is pinned to that head');
+  assert.ok(!statuses(n).includes('failed'));
   assert.ok(onMain(r, 'n.txt') && onMain(r, 'e.txt'));
 });
 
-test('right before any merge: main moved while CI ran (no emergency involved) → newest main pulled, CI again, then merged', async () => {
+test('main moved while CI ran: the green PR is merged as it is, main is not pulled in and CI does not run again', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
-  let hold = true; const gh = github(r, () => (hold ? 'running' : 'success'));
+  let hold = true; const asked = []; const gh = github(r, (h) => { asked.push(h); return hold ? 'running' : 'success'; });
   const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
   const opts = base(r, gh, store, now);
   await tick(opts);
   assert.equal(store.list[0].status, 'running-ci');
+  const head = sh(r.work, 'rev-parse', 'origin/lander/b');
   const moved = pushMain(r, { 'other.txt': 'other\n' });
-  hold = false; now.add(1);
-  let out = await tick(opts);
-  assert.equal(store.list[0].status, 'running-ci'); assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 0, 'not merged on the stale head');
-  assert.ok(holds(r, sh(r.work, 'rev-parse', 'origin/lander/b'), moved));
-  now.add(1);
-  out = await tick(opts);
-  assert.equal(store.list[0].status, 'landed'); assert.equal(out.error, '');
-  // main moved only by status-only commits (the builds store's own [skip ci] lines): nothing to pull, no CI again
-  const r2 = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
-  const gh2 = github(r2); const store2 = memoryStore([build([['s1', 'claude/b-s1']])], { now });
-  await tick(base(r2, gh2, store2, now));
-  assert.deepEqual(statuses(store2.list[0]), ['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed'], 'main did not move: one pull, one CI, one merge');
+  hold = false; now.add(1); asked.length = 0;
+  const out = await tick(opts);
+  const b = store.list[0];
+  assert.equal(b.status, 'landed'); assert.equal(out.error, '');
+  assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 1, 'one merge, first try');
+  assert.equal(b.landing.lastMerge.head, head, 'merged on the head CI went green on');
+  assert.ok(!holds(r, head, moved), 'main was never pulled into the PR');
+  assert.deepEqual(asked, [head], 'no second CI run');
+  assert.ok(!gh.calls.some((c) => /dispatches|rerun/.test(c)), 'nothing was started again');
+  assert.equal(gh.prs.size, 1, 'no second PR');
+  assert.ok(onMain(r, 'a.txt') && onMain(r, 'other.txt'));
 });
 
-test('main moved and conflicts in code: a Fable fix session resolves it, CI runs on its push, then it merges', async () => {
+test('only a merge that is refused makes the lander pull main and run CI again, by itself: then it merges', async () => {
+  // both sides add lines to the same log: GitHub refuses the merge, the land rules union the file, CI runs on the new head
+  const r = repo({ 'claude/b-s1': { 'ops.log': 'from the build\n', 'a.txt': 'a\n' } });
+  let hold = true; const asked = []; const gh = github(r, (h) => { asked.push(h); return hold ? 'running' : 'success'; });
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
+  const opts = base(r, gh, store, now);
+  await tick(opts);
+  const first = sh(r.work, 'rev-parse', 'origin/lander/b');
+  const moved = pushMain(r, { 'ops.log': 'from main\n' });
+  hold = false; now.add(1);
+  let out = await tick(opts);
+  let b = store.list[0];
+  assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'merge'); assert.equal(b.failure.retry, 'pull-main'); assert.equal(b.landing.attempt, 1);
+  assert.match(b.failure.why, /as it is was refused/);
+  assert.equal(b.failure.notBefore, b.failure.at, 'the main pull is due at once');
+  assert.equal(sh(r.work, 'rev-parse', 'origin/lander/b'), first, 'the PR was tried as it was');
+  // the retry, with nobody asking: main into the PR, CI on the new head, merged
+  asked.length = 0;
+  out = await tick(opts);
+  b = store.list[0];
+  assert.equal(out.error, ''); assert.equal(b.status, 'landed');
+  const second = b.landing.lastMerge.head;
+  assert.notEqual(second, first); assert.ok(holds(r, second, moved), 'the head that merged holds main');
+  assert.deepEqual(asked, [second], 'CI was read on the new head');
+  assert.deepEqual(statuses(b).slice(-5), ['failed', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed']);
+  sh(r.work, 'fetch', '-q', 'origin');
+  assert.deepEqual(sh(r.work, 'show', 'origin/main:ops.log').split('\n').sort(), ['from main', 'from the build'], 'both sides\' lines are kept');
+});
+
+test('a refused merge whose main pull conflicts in code: a Fable fix session resolves it, CI runs on its push, then it merges', async () => {
   const r = repo({ 'claude/b-s1': { 'shared.txt': 'one\nTWO from the build\nthree\n' } });
   let hold = true; const gh = github(r, () => (hold ? 'running' : 'success'));
   const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
@@ -260,12 +279,15 @@ test('main moved and conflicts in code: a Fable fix session resolves it, CI runs
   await tick(opts);
   pushMain(r, { 'shared.txt': 'one\nTWO from main\nthree\n' }, 'main changes the same line');
   hold = false; now.add(1);
-  await tick(opts);
+  await tick(opts); // green: the merge is tried as it is, and refused
   let b = store.list[0];
+  assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'merge');
+  await tick(opts); // main is pulled: a code conflict
+  b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'clash-main'); assert.equal(b.failure.retry, 'fix');
-  assert.match(b.failure.why, /main moved before the merge/);
-  assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 0, 'never merged with the conflict open');
-  now.add(L.backoffMinutes(1) + 1);
+  assert.match(b.failure.why, /merging main into lander\/b conflicts in code/);
+  assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 1, 'one merge try, refused; never merged with the conflict open');
+  now.add(L.backoffMinutes(2) + 1);
   await tick(opts);
   assert.equal(jobs.length, 1); assert.equal(jobs[0].f.kind, 'clash-main'); assert.equal(jobs[0].branch, 'lander/b');
   assert.equal(store.list[0].failure.fix.model, 'fable', 'the conflict goes to Fable');

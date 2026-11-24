@@ -320,9 +320,9 @@ test('L2-03: the land-build job type is Fable and never pushes to main', () => {
   assert.notEqual(j.data.trigger?.event, 'build.finished', 'a finished build is the lander\'s, not an agent\'s to push');
 });
 
-// ------------------------------------------------------------------ L2-04: never a stale main
+// ------------------------------------------------------------------ L2-04: never an untested head; a green PR merges as it is
 
-test('L2-04: a tick that starts at merging-main and finds main moved goes back through the main pull and CI, without a failure', async () => {
+test('L2-04: a tick that starts at merging-main and finds main moved merges the green PR as it is (Nov 24 2026: no pull, no CI again)', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
   const asked = []; let hold = true; const gh = github(r, (h) => { asked.push(h); return hold ? 'running' : 'success'; });
   const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
@@ -330,19 +330,41 @@ test('L2-04: a tick that starts at merging-main and finds main moved goes back t
   await tick(opts);
   const first = sh(r.work, 'rev-parse', 'origin/lander/b');
   store.write('b', { status: 'merging-main', landing: { green: { head: first, at: now() } } }); // the tick before died right after CI went green
-  const moved = pushMain(r, { 'other.txt': 'other\n' });
+  pushMain(r, { 'other.txt': 'other\n' });
   hold = false; now.add(1); asked.length = 0;
   await tick(opts);
   const b = store.list[0];
   assert.equal(b.status, 'landed'); assert.equal(merges(gh), 1);
   assert.ok(!statuses(b).includes('failed'), 'main moving is not a failure and costs no attempt'); assert.equal(b.landing.attempt ?? 0, 0);
-  assert.notEqual(b.landing.lastMerge.head, first, 'the stale head was never merged');
-  assert.ok(holds(r, b.landing.lastMerge.head, moved), 'the head it merged holds the newest main');
-  assert.deepEqual(asked, [b.landing.lastMerge.head], 'CI was read on the new head before the merge');
-  assert.deepEqual(statuses(b).slice(-5), ['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed']);
+  assert.equal(b.landing.lastMerge.head, first, 'the head CI went green on is the head that merged: main was not pulled in');
+  assert.deepEqual(asked, [], 'CI was not read or run again');
+  assert.deepEqual(statuses(b).slice(-2), ['merging-main', 'landed']);
+  assert.ok(onMain(r, 'a.txt') && onMain(r, 'other.txt'));
 });
 
-test('L2-04: main is read from GitHub again right before the merge, not from the tick\'s first fetch', async () => {
+test('L2-04: a PR head that changed after CI went green is never merged untested: CI runs on the new head first', async () => {
+  const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
+  const asked = []; const gh = github(r, (h) => { asked.push(h); return 'success'; });
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
+  let pushed = '';
+  // someone pushes to the PR branch while the build rules run: after CI went green, before the merge
+  const buildRules = () => {
+    if (!pushed) {
+      sh(r.work, 'fetch', '-q', 'origin'); sh(r.work, 'checkout', '-q', '--detach', 'origin/lander/b');
+      writeFileSync(join(r.work, 'late.txt'), 'late\n'); sh(r.work, 'add', '-A'); sh(r.work, 'commit', '-q', '-m', 'a late push'); sh(r.work, 'push', '-q', 'origin', 'HEAD:lander/b');
+      pushed = sh(r.work, 'rev-parse', 'HEAD'); sh(r.work, 'checkout', '-q', '--detach', 'origin/main');
+    }
+    return { ok: true, failing: [], fixed: [] };
+  };
+  await tick(base(r, gh, store, now, { buildRules }));
+  const b = store.list[0];
+  assert.equal(b.status, 'landed'); assert.equal(merges(gh), 1);
+  assert.equal(b.landing.lastMerge.head, pushed, 'the merge is pinned to the head that was tested last');
+  assert.ok(asked.includes(pushed), 'CI was read on the pushed head before it merged');
+  assert.ok(!statuses(b).includes('failed'));
+});
+
+test('L2-04: main moving while the build rules run changes nothing: the tested head merges as it is, the rules run once', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
   const gh = github(r); const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
   // main moves while the build rules run (they can take 20 minutes): after the tick's fetch, before the merge
@@ -356,8 +378,9 @@ test('L2-04: main is read from GitHub again right before the merge, not from the
   await tick(base(r, gh, store, now, { buildRules }));
   const b = store.list[0];
   assert.equal(b.status, 'landed');
-  assert.ok(holds(r, b.landing.lastMerge.head, moved), 'the merged head holds the commit that landed while the rules ran');
-  assert.equal(merges(gh), 1, 'one merge, on the re-tested head'); assert.equal(ran, 2, 'the rules ran again on the new head');
+  assert.ok(!holds(r, b.landing.lastMerge.head, moved), 'main was not pulled into the PR');
+  assert.equal(merges(gh), 1, 'one merge, on the tested head'); assert.equal(ran, 1, 'the rules ran once');
+  assert.ok(onMain(r, 'a.txt') && onMain(r, 'late.txt'));
 });
 
 test('L2-04: a PR head that is not the head CI went green on is never merged', async () => {
