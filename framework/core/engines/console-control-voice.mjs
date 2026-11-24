@@ -23,6 +23,10 @@ export const VOICE_FRAME = 'console-control-voice@1';
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
 /** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
 export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
+/** The console's saved place (build fix-refreshing-console-jumps-back): the function that puts it back. */
+export const PLACE_RESTORE_ADDRESS = 'function:console.place.restore';
+/** "put me back", "back to where I was", "restore my place", "where was I" */
+export const PLACE_RESTORE_RE = /^(?:put me back|(?:take me |go )?back to where i (?:was|left off)|restore (?:my |the )?(?:place|position|spot)|where was i)$/;
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -51,6 +55,9 @@ export function voiceIntent(text) {
   const p = cleanPhrase(text);
   if (!p) return null;
   let m;
+
+  // the saved place (console-place@1): before the "go to …" rules, so "go back to where I was" isn't a screen name
+  if (PLACE_RESTORE_RE.test(p)) return { verb: 'press', address: PLACE_RESTORE_ADDRESS };
 
   // scrolling
   if ((m = /^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$/.exec(p))) {
@@ -140,7 +147,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
-    case 'press': return `Pressed ${what}.`;
+    case 'press': return answer.address === PLACE_RESTORE_ADDRESS || intent.address === PLACE_RESTORE_ADDRESS ? 'Back where you were.' : `Pressed ${what}.`;
     case 'list': { const n = answer.targets?.length ?? 0; return n ? `${n} item${n === 1 ? '' : 's'}: ${answer.targets.slice(0, 6).map((t) => t.label).join(', ')}.` : `Nothing on ${what || 'it'}.`; }
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;

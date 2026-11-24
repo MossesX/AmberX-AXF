@@ -536,11 +536,19 @@ def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
 
+# The console's saved place (build fix-refreshing-console-jumps-back; PLACE_RESTORE_* in console-control-voice.mjs).
+PLACE_RESTORE_ADDRESS = "function:console.place.restore"
+PLACE_RESTORE_RE = re.compile(r"^(?:put me back|(?:take me |go )?back to where i (?:was|left off)|restore (?:my |the )?(?:place|position|spot)|where was i)$")
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
     if not p:
         return None
+    # the saved place (console-place@1): before the "go to …" rules, so "go back to where I was" isn't a screen name
+    if PLACE_RESTORE_RE.match(p):
+        return {"verb": "press", "address": PLACE_RESTORE_ADDRESS}
     if m := re.match(r"^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$", p):
         return {"verb": "scroll", "scroll": {"dir": "top" if m.group(1) in ("top", "start") else "bottom"}}
     if m := re.match(r"^page (up|down)$", p):
@@ -625,6 +633,8 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
     if v == "focus":
         return f"Showing {what}."
     if v == "press":
+        if PLACE_RESTORE_ADDRESS in (answer.get("address"), intent.get("address")):
+            return "Back where you were."
         return f"Pressed {what}."
     if v == "list":
         targets = answer.get("targets") or []

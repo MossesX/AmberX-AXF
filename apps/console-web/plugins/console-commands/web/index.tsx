@@ -44,6 +44,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer, controlState } from '@console/control/executor';
 import { controlRegistry } from '@console/axf/react';
 import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
+import { savePlaceNow } from '@console/place';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleShotState, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
@@ -220,6 +221,8 @@ function hashText(t: string): string {
  * past the HTTP cache with a one-time query value.
  */
 async function reloadPage(hard: boolean): Promise<void> {
+  // stay put: the view, tabs, selection and scroll come back after the reload (src/place)
+  savePlaceNow(hard ? 'refresh-hard' : 'refresh');
   if (hard) {
     try { await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch { /* no Cache API here */ }
     try { await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch { /* none */ }

@@ -1,4 +1,5 @@
 import type { AxfRuntime } from './axf/core';
+import { capturePlace, releaseScrollLock, restorePlace } from './place';
 
 /** Console actions: menus/toolbars/context menus call these by id. The data-dependent ones read the store through `window.__axfConsole` set by App. */
 export function registerActions(axf: AxfRuntime) {
@@ -7,7 +8,14 @@ export function registerActions(axf: AxfRuntime) {
   const copy = (text: string, msg: string) => navigator.clipboard?.writeText(text).then(() => axf.toast(msg, 'success', 'Copied'), () => axf.toast('Clipboard not available.', 'warning'));
   on('console.exportPlan', () => copy(store()?.exportPlan() ?? '', 'Build plan copied — paste it into Claude Code.'), { label: 'Export build plan' });
   on('console.exportStatus', () => copy(store()?.exportStatusJson() ?? '{}', 'status.json fragment copied.'), { label: 'Export status.json' });
-  on('console.refresh', () => store()?.refresh(), { label: 'Reload data' });
+  // Soft refresh: re-read the data in place. The view, tabs, selection and scroll are taken before and put back after, so a
+  // list that re-renders while it reloads doesn't land at the top (build fix-refreshing-console-jumps-back).
+  on('console.refresh', async () => {
+    const place = capturePlace(axf, 'refresh-soft');
+    await store()?.refresh();
+    const run = restorePlace(axf, place, { navigate: false, timeoutMs: 4000 });
+    void (run?.finished ?? Promise.resolve('')).then(() => releaseScrollLock(axf));
+  }, { label: 'Reload data' });
   on('console.openProject', () => axf.openDialog('project'), { label: 'Open project' });
   on('console.install', ([lib = '']) => axf.openDialog('install', { library: lib }), { label: 'Install library' });
   on('console.importUi', ([src = '']) => axf.openDialog('uiimport', { source: src }), { label: 'Import UI library' });

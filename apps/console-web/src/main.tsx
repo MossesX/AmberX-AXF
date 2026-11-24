@@ -7,6 +7,7 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { registerPluginSettingsActions } from './pluginSettingsActions';
 import { App } from './App';
+import { installPlace } from './place';
 import './axf/ui/axf.css';
 import './console.css';
 
@@ -50,6 +51,10 @@ try {
 } catch { /* storage unavailable */ }
 
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
+
+// Stay put across reloads (build fix-refreshing-console-jumps-back): reopen the saved view before the first paint, then
+// its tabs, selection and scroll as they mount; a URL deep link wins (src/place).
+installPlace(axf);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

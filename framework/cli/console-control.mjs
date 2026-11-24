@@ -13,6 +13,8 @@
  *   axf console plugin-settings <plugin> [--get|--open|--set key=value|--enable|--disable]
  *                                                       one plugin's Settings → Plugins sub-tab: read it (default), open it
  *                                                       in the console (= its screen's settings gear), set one setting, on/off
+ *   axf console place [get|restore]                    the saved place (view, tabs, selection, scroll a reload comes back
+ *                                                       to): read it (default), or put it back (= voice "put me back")
  *   axf console chrome get|set|reset|open <type> <id> [key] [value]
  *                                                       one tab group / toolbar / banner / nav / menu's own settings (the
  *                                                       keys its Settings → Interface tab writes, axf.chrome.<type>.<id>):
@@ -26,11 +28,14 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'place', 'chrome']);
 /** The chrome kinds with a settings dialog (chrome-settings@1 CHROME_TYPES). */
 const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
 /** One chrome instance setting's address: the same key its Settings → Interface tab writes. */
 export const chromeSettingAddress = (type, id, key) => `setting:chrome.${type}.${id}.${key}`;
+/** The console's saved place (src/place/placeApi.ts): read it, put it back. */
+export const PLACE_PANEL_ADDRESS = 'panel:console-place';
+export const PLACE_RESTORE_ADDRESS = 'function:console.place.restore';
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
 const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set']);
@@ -129,6 +134,12 @@ export function toRequest(argv) {
       if (op === 'get' && id) return { method: 'GET', path: `/toolbars/${encodeURIComponent(id)}` };
       if (op === 'press' && id && button) return { method: 'POST', path: `/toolbars/${encodeURIComponent(id)}/press`, body: { button, ...(flags.value !== undefined ? { value: flags.value } : {}), ...(flags.confirm ? { confirm: true } : {}) } };
       throw new Error('usage: axf console toolbar list [--view <view>] | get <toolbar id> | press <toolbar id> <button> [--value v] [--confirm]');
+    }
+    case 'place': {
+      const [op = 'get'] = args;
+      if (op === 'get') return { method: 'GET', path: `/state?address=${encodeURIComponent(PLACE_PANEL_ADDRESS)}` };
+      if (op === 'restore') return { method: 'POST', path: '/do', body: { verb: 'press', address: PLACE_RESTORE_ADDRESS, ...extra } };
+      throw new Error('usage: axf console place [get|restore]');
     }
     case 'voice': {
       const text = args.join(' ').trim();
