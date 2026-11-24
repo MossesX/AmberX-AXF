@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10372,
- "updatedAt": "2026-11-23T23:08:28.367Z",
+ "rev": 10373,
+ "updatedAt": "2026-11-24T00:04:43.008Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31559,11 +31559,11 @@
     "all"
    ],
    "order": {
-    "all": 301
+    "all": 305
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42681,11 +42681,11 @@
     "all"
    ],
    "order": {
-    "all": 271
+    "all": 275
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58543,11 +58543,11 @@
     "all"
    ],
    "order": {
-    "all": 245
+    "all": 249
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61798,11 +61798,11 @@
     "all"
    ],
    "order": {
-    "all": 255
+    "all": 259
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62845,11 +62845,11 @@
     "all"
    ],
    "order": {
-    "all": 125
+    "all": 129
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78410,11 +78410,11 @@
     "all"
    ],
    "order": {
-    "all": 147
+    "all": 151
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78643,11 +78643,11 @@
     "all"
    ],
    "order": {
-    "all": 148
+    "all": 152
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78855,11 +78855,11 @@
     "all"
    ],
    "order": {
-    "all": 149
+    "all": 153
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79084,11 +79084,11 @@
     "all"
    ],
    "order": {
-    "all": 150
+    "all": 154
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79455,11 +79455,11 @@
     "all"
    ],
    "order": {
-    "all": 152
+    "all": 156
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79618,11 +79618,11 @@
     "all"
    ],
    "order": {
-    "all": 153
+    "all": 157
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86251,11 +86251,11 @@
     "all"
    ],
    "order": {
-    "all": 160
+    "all": 164
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86462,11 +86462,11 @@
     "all"
    ],
    "order": {
-    "all": 161
+    "all": 165
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86874,11 +86874,11 @@
     "all"
    ],
    "order": {
-    "all": 163
+    "all": 167
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87106,11 +87106,11 @@
     "all"
    ],
    "order": {
-    "all": 164
+    "all": 168
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87492,11 +87492,11 @@
     "all"
    ],
    "order": {
-    "all": 166
+    "all": 170
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88241,11 +88241,11 @@
     "all"
    ],
    "order": {
-    "all": 168
+    "all": 172
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88854,11 +88854,11 @@
     "all"
    ],
    "order": {
-    "all": 170
+    "all": 174
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89067,11 +89067,11 @@
     "all"
    ],
    "order": {
-    "all": 281
+    "all": 285
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89249,11 +89249,11 @@
     "all"
    ],
    "order": {
-    "all": 171
+    "all": 175
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89386,11 +89386,11 @@
     "all"
    ],
    "order": {
-    "all": 520
+    "all": 524
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89587,11 +89587,11 @@
     "all"
    ],
    "order": {
-    "all": 172
+    "all": 176
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90063,11 +90063,11 @@
     "all"
    ],
    "order": {
-    "all": 173
+    "all": 177
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90368,11 +90368,11 @@
     "all"
    ],
    "order": {
-    "all": 174
+    "all": 178
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90939,11 +90939,11 @@
     "all"
    ],
    "order": {
-    "all": 283
+    "all": 287
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91150,11 +91150,11 @@
     "all"
    ],
    "order": {
-    "all": 284
+    "all": 288
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91309,11 +91309,11 @@
     "all"
    ],
    "order": {
-    "all": 285
+    "all": 289
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92125,11 +92125,11 @@
     "all"
    ],
    "order": {
-    "all": 175
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92314,11 +92314,11 @@
     "all"
    ],
    "order": {
-    "all": 176
+    "all": 180
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93211,11 +93211,11 @@
     "all"
    ],
    "order": {
-    "all": 260
+    "all": 264
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97147,11 +97147,11 @@
     "all"
    ],
    "order": {
-    "all": 193
+    "all": 197
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101476,11 +101476,11 @@
     "all"
    ],
    "order": {
-    "all": 198
+    "all": 202
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101761,11 +101761,11 @@
     "all"
    ],
    "order": {
-    "all": 201
+    "all": 205
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104114,11 +104114,11 @@
     "all"
    ],
    "order": {
-    "all": 206
+    "all": 210
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104776,11 +104776,11 @@
     "all"
    ],
    "order": {
-    "all": 208
+    "all": 212
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105456,11 +105456,11 @@
     "all"
    ],
    "order": {
-    "all": 210
+    "all": 214
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 49,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107677,11 +107677,11 @@
     "all"
    ],
    "order": {
-    "all": 216
+    "all": 220
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108332,11 +108332,11 @@
     "all"
    ],
    "order": {
-    "all": 199
+    "all": 203
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109488,11 +109488,11 @@
     "all"
    ],
    "order": {
-    "all": 218
+    "all": 222
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112919,11 +112919,11 @@
     "all"
    ],
    "order": {
-    "all": 529
+    "all": 533
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114157,11 +114157,11 @@
     "all"
    ],
    "order": {
-    "all": 533
+    "all": 537
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114517,11 +114517,11 @@
     "all"
    ],
    "order": {
-    "all": 534
+    "all": 538
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116593,11 +116593,11 @@
     "all"
    ],
    "order": {
-    "all": 549
+    "all": 553
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117412,11 +117412,11 @@
     "all"
    ],
    "order": {
-    "all": 553
+    "all": 557
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117599,11 +117599,11 @@
     "all"
    ],
    "order": {
-    "all": 554
+    "all": 558
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118204,11 +118204,11 @@
     "all"
    ],
    "order": {
-    "all": 556
+    "all": 560
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119402,11 +119402,11 @@
     "all"
    ],
    "order": {
-    "all": 561
+    "all": 565
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119908,11 +119908,11 @@
     "all"
    ],
    "order": {
-    "all": 564
+    "all": 568
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120091,11 +120091,11 @@
     "all"
    ],
    "order": {
-    "all": 565
+    "all": 569
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123690,11 +123690,11 @@
     "all"
    ],
    "order": {
-    "all": 577
+    "all": 581
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125647,11 +125647,11 @@
     "all"
    ],
    "order": {
-    "all": 591
+    "all": 595
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125805,11 +125805,11 @@
     "all"
    ],
    "order": {
-    "all": 590
+    "all": 594
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125982,11 +125982,11 @@
     "all"
    ],
    "order": {
-    "all": 592
+    "all": 596
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129525,11 +129525,11 @@
     "all"
    ],
    "order": {
-    "all": 608
+    "all": 612
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129858,11 +129858,11 @@
     "all"
    ],
    "order": {
-    "all": 609
+    "all": 613
    },
    "kind": "build",
    "planRef": "",
-   "rev": 129,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130175,11 +130175,11 @@
     "all"
    ],
    "order": {
-    "all": 611
+    "all": 615
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130331,11 +130331,11 @@
     "all"
    ],
    "order": {
-    "all": 612
+    "all": 616
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130491,11 +130491,11 @@
     "all"
    ],
    "order": {
-    "all": 613
+    "all": 617
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130651,11 +130651,11 @@
     "all"
    ],
    "order": {
-    "all": 614
+    "all": 618
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130883,11 +130883,11 @@
     "all"
    ],
    "order": {
-    "all": 615
+    "all": 619
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131151,11 +131151,11 @@
     "all"
    ],
    "order": {
-    "all": 616
+    "all": 620
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131934,11 +131934,11 @@
     "all"
    ],
    "order": {
-    "all": 618
+    "all": 622
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132433,11 +132433,11 @@
     "all"
    ],
    "order": {
-    "all": 620
+    "all": 624
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132641,11 +132641,11 @@
     "all"
    ],
    "order": {
-    "all": 621
+    "all": 625
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132849,11 +132849,11 @@
     "all"
    ],
    "order": {
-    "all": 622
+    "all": 626
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133073,11 +133073,11 @@
     "all"
    ],
    "order": {
-    "all": 623
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133374,11 +133374,11 @@
     "all"
    ],
    "order": {
-    "all": 624
+    "all": 628
    },
    "kind": "build",
    "planRef": "",
-   "rev": 123,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133587,11 +133587,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133758,11 +133758,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133996,11 +133996,11 @@
     "all"
    ],
    "order": {
-    "all": 627
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134156,11 +134156,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 632
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134320,11 +134320,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134480,11 +134480,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 634
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134939,11 +134939,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 636
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135177,11 +135177,11 @@
     "all"
    ],
    "order": {
-    "all": 633
+    "all": 637
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135527,11 +135527,11 @@
     "all"
    ],
    "order": {
-    "all": 635
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135687,11 +135687,11 @@
     "all"
    ],
    "order": {
-    "all": 636
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136085,11 +136085,11 @@
     "all"
    ],
    "order": {
-    "all": 638
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137505,11 +137505,11 @@
     "all"
    ],
    "order": {
-    "all": 644
+    "all": 648
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137665,11 +137665,11 @@
     "all"
    ],
    "order": {
-    "all": 645
+    "all": 649
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137829,11 +137829,11 @@
     "all"
    ],
    "order": {
-    "all": 646
+    "all": 650
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137993,11 +137993,11 @@
     "all"
    ],
    "order": {
-    "all": 647
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138348,11 +138348,11 @@
     "all"
    ],
    "order": {
-    "all": 649
+    "all": 653
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138512,11 +138512,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 654
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139898,11 +139898,11 @@
     "all"
    ],
    "order": {
-    "all": 655
+    "all": 659
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140054,11 +140054,11 @@
     "all"
    ],
    "order": {
-    "all": 656
+    "all": 660
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140727,11 +140727,11 @@
     "all"
    ],
    "order": {
-    "all": 659
+    "all": 663
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144585,11 +144585,11 @@
     "all"
    ],
    "order": {
-    "all": 670
+    "all": 674
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145161,11 +145161,11 @@
     "all"
    ],
    "order": {
-    "all": 672
+    "all": 676
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146126,11 +146126,11 @@
     "all"
    ],
    "order": {
-    "all": 676
+    "all": 680
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146282,11 +146282,11 @@
     "all"
    ],
    "order": {
-    "all": 677
+    "all": 681
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146438,11 +146438,11 @@
     "all"
    ],
    "order": {
-    "all": 678
+    "all": 682
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146598,11 +146598,11 @@
     "all"
    ],
    "order": {
-    "all": 679
+    "all": 683
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146758,11 +146758,11 @@
     "all"
    ],
    "order": {
-    "all": 680
+    "all": 684
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146914,11 +146914,11 @@
     "all"
    ],
    "order": {
-    "all": 682
+    "all": 686
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148179,11 +148179,11 @@
     "all"
    ],
    "order": {
-    "all": 684
+    "all": 688
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,11 +149452,11 @@
     "all"
    ],
    "order": {
-    "all": 687
+    "all": 691
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151356,11 +151356,11 @@
     "all"
    ],
    "order": {
-    "all": 699
+    "all": 703
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151553,11 +151553,11 @@
     "all"
    ],
    "order": {
-    "all": 701
+    "all": 705
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151947,11 +151947,11 @@
     "all"
    ],
    "order": {
-    "all": 702
+    "all": 706
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152107,11 +152107,11 @@
     "all"
    ],
    "order": {
-    "all": 703
+    "all": 707
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153213,11 +153213,11 @@
     "all"
    ],
    "order": {
-    "all": 708
+    "all": 712
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153441,11 +153441,11 @@
     "all"
    ],
    "order": {
-    "all": 709
+    "all": 713
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153673,11 +153673,11 @@
     "all"
    ],
    "order": {
-    "all": 710
+    "all": 714
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154148,11 +154148,11 @@
     "all"
    ],
    "order": {
-    "all": 712
+    "all": 716
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155306,11 +155306,11 @@
     "all"
    ],
    "order": {
-    "all": 721
+    "all": 725
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157055,11 +157055,11 @@
     "all"
    ],
    "order": {
-    "all": 727
+    "all": 731
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157261,11 +157261,11 @@
     "all"
    ],
    "order": {
-    "all": 728
+    "all": 732
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157745,11 +157745,11 @@
     "all"
    ],
    "order": {
-    "all": 730
+    "all": 734
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171005,11 +171005,11 @@
     "all"
    ],
    "order": {
-    "all": 759
+    "all": 763
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174440,11 +174440,11 @@
     "all"
    ],
    "order": {
-    "all": 778
+    "all": 782
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177171,11 +177171,11 @@
     "all"
    ],
    "order": {
-    "all": 791
+    "all": 795
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194628,11 +194628,11 @@
     "all"
    ],
    "order": {
-    "all": 764
+    "all": 768
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200779,11 +200779,11 @@
     "all"
    ],
    "order": {
-    "all": 817
+    "all": 821
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201213,11 +201213,11 @@
     "all"
    ],
    "order": {
-    "all": 818
+    "all": 822
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204872,788 +204872,631 @@
     },
     {
      "text": "Watchdog: step s7 failed at building, attempt 1: tmux session axf-orchestrator-settings-collapsible-split--s7--earl is gone while the step was building.",
-     "at": "2026-11-23T20:30:02.407Z",
-     "by": "watchdog"
+     "at": "2026-11-23T20:30:02.407Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-23T20:34:01.448Z",
-     "by": "watchdog"
+     "at": "2026-11-23T20:34:01.448Z"
     },
     {
      "text": "Lander: PR 1 of 1 (s1, s2, s3, s4, s5, s6, s7, s8, s9, s10)",
-     "at": "2026-11-23T20:39:22.654Z",
-     "by": "lander"
+     "at": "2026-11-23T20:39:22.654Z"
     },
     {
      "text": "Lander: failed in merging-pr, attempt 1: claude/orchestrator-settings-collapsible-split--s10 is not on GitHub",
-     "at": "2026-11-23T20:39:28.414Z",
-     "by": "lander"
+     "at": "2026-11-23T20:39:28.414Z"
     },
     {
      "text": "Lander: attempt 1: retrying merging-pr",
-     "at": "2026-11-23T20:41:23.089Z",
-     "by": "lander"
+     "at": "2026-11-23T20:41:23.089Z"
     },
     {
      "text": "Lander: failed in merging-pr, attempt 2: claude/orchestrator-settings-collapsible-split--s4 and claude/orchestrator-settings-collapsible-split--s5 conflict in code (apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/build-orchestrator/web/status-table-core.d.mts, apps/console-web/plugins/build-orchestrator/web/status-table-core.mjs)",
-     "at": "2026-11-23T20:41:39.181Z",
-     "by": "lander"
+     "at": "2026-11-23T20:41:39.181Z"
     },
     {
      "text": "Lander: attempt 2: split; its steps land one PR each",
-     "at": "2026-11-23T20:45:30.250Z",
-     "by": "lander"
+     "at": "2026-11-23T20:45:30.250Z"
     },
     {
      "text": "Lander: failed in pr-pulling-main, attempt 3: merging main into lander/orchestrator-settings-collapsible-split conflicts in code (apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py)",
-     "at": "2026-11-23T20:45:56.998Z",
-     "by": "lander"
+     "at": "2026-11-23T20:45:56.998Z"
     },
     {
      "text": "Lander: attempt 3: fix session 1 of 2 on lander/orchestrator-settings-collapsible-split (fable, axf-lander-fix-pr896-1--lenny)",
-     "at": "2026-11-23T20:53:54.191Z",
-     "by": "lander"
+     "at": "2026-11-23T20:53:54.191Z"
     },
     {
      "text": "Lander: the fix pushed 9888b9101; CI runs on it",
-     "at": "2026-11-23T21:00:54.639Z",
-     "by": "lander"
+     "at": "2026-11-23T21:00:54.639Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2564 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2569 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2549 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2554 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2557 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2534 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2551 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2550 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:01:02.086Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:01:02.086Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2568 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2573 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2553 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2558 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2561 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2538 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2555 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2554 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:05:01.554Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:05:01.554Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2571 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2576 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2556 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2561 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2564 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2541 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2558 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2557 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:08:01.880Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:08:01.880Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:09:01.323Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:09:01.323Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2574 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2579 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2559 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2564 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2567 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2544 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2561 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2560 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:11:02.043Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:11:02.043Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:13:01.154Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:13:01.154Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2578 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2583 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2563 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2568 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2571 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2548 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2565 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2564 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:15:01.719Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:15:01.719Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (7 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:16:01.822Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:16:01.822Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2582 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2587 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2567 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2572 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2575 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2552 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2569 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2568 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:19:01.772Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:19:01.772Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (11 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T21:20:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:20:01.480Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2586 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2590 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2570 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2575 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2578 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2555 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2572 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2571 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T21:22:02.219Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:22:02.219Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (15 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T21:24:01.544Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:24:01.544Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2589 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2594 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2574 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2579 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2582 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2559 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2576 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2575 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T21:26:02.084Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:26:02.084Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (18 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T21:27:01.700Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:27:01.700Z"
     },
     {
      "text": "Lander: failed in running-ci, attempt 4: build rules fail at the gate (feature-status-tracker)",
-     "at": "2026-11-23T21:29:29.442Z",
-     "by": "lander"
+     "at": "2026-11-23T21:29:29.442Z"
     },
     {
      "text": "Lander: attempt 4: fix session 2 of 2 on lander/orchestrator-settings-collapsible-split (fable, axf-lander-fix-pr896-2--lenny)",
-     "at": "2026-11-23T21:45:24.095Z",
-     "by": "lander"
+     "at": "2026-11-23T21:45:24.095Z"
     },
     {
      "text": "Lander: the fix pushed cfcc15e95; CI runs on it",
-     "at": "2026-11-23T21:48:18.459Z",
-     "by": "lander"
+     "at": "2026-11-23T21:48:18.459Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2612 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2617 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2597 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2602 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2605 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (40 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2582 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2599 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2598 min past budget): re-ran the transition (1).",
-     "at": "2026-11-23T21:49:01.891Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:49:01.891Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2616 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2621 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2601 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2606 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2609 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (44 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2586 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2603 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2602 min past budget): re-ran the transition (2).",
-     "at": "2026-11-23T21:53:01.221Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:53:01.221Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2619 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2624 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2604 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2609 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2612 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (47 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2589 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2606 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2605 min past budget): re-ran the transition (3).",
-     "at": "2026-11-23T21:56:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-23T21:56:02.151Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2624 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2628 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2608 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2613 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2616 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (51 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2593 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2610 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2609 min past budget): re-ran the transition (4).",
-     "at": "2026-11-23T22:00:03.365Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:00:03.365Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2627 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2632 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2612 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2617 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2620 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (55 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2597 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2614 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2613 min past budget): re-ran the transition (5).",
-     "at": "2026-11-23T22:04:02.147Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:04:02.147Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2631 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2636 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2616 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2621 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2624 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (59 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2601 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2618 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2617 min past budget): re-ran the transition (6).",
-     "at": "2026-11-23T22:08:01.480Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:08:01.480Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2634 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2639 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2619 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2624 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2627 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (62 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2604 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2621 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2620 min past budget): re-ran the transition (7).",
-     "at": "2026-11-23T22:11:02.100Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:11:02.100Z"
     },
     {
      "text": "Lander: failed in running-ci, attempt 5: CI is red on cfcc15e95 (Build engine sweep (Node)) Stopped (attempt 5 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry orchestrator-settings-collapsible-split",
-     "at": "2026-11-23T22:15:11.480Z",
-     "by": "lander"
+     "at": "2026-11-23T22:15:11.480Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (2639 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (2643 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s4 stuck at completed (2623 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (2628 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (2631 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (66 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (2608 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (2625 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (2624 min past budget): re-ran the transition (8).",
-     "at": "2026-11-23T22:15:02.165Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:15:02.165Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at running-ci. Alerted Brett.",
-     "at": "2026-11-23T22:16:02.077Z",
-     "by": "watchdog"
+     "at": "2026-11-23T22:16:02.077Z"
     }
    ],
    "approvals": [
@@ -206989,11 +206832,11 @@
     "all"
    ],
    "order": {
-    "all": 827
+    "all": 831
    },
    "kind": "build",
    "planRef": "",
-   "rev": 351,
+   "rev": 354,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210133,11 +209976,11 @@
     "all"
    ],
    "order": {
-    "all": 835
+    "all": 839
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211682,11 +211525,11 @@
     "all"
    ],
    "order": {
-    "all": 841
+    "all": 845
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212840,11 +212683,11 @@
     "all"
    ],
    "order": {
-    "all": 845
+    "all": 849
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214546,11 +214389,11 @@
     "all"
    ],
    "order": {
-    "all": 850
+    "all": 854
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224589,11 +224432,11 @@
     "all"
    ],
    "order": {
-    "all": 874
+    "all": 878
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227243,11 +227086,11 @@
     "all"
    ],
    "order": {
-    "all": 881
+    "all": 885
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232641,11 +232484,11 @@
     "all"
    ],
    "order": {
-    "all": 888
+    "all": 892
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233009,11 +232852,11 @@
     "all"
    ],
    "order": {
-    "all": 889
+    "all": 893
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233346,11 +233189,11 @@
     "all"
    ],
    "order": {
-    "all": 890
+    "all": 894
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259434,11 +259277,11 @@
     "all"
    ],
    "order": {
-    "all": 937
+    "all": 941
    },
    "kind": "build",
    "planRef": "",
-   "rev": 153,
+   "rev": 155,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263703,11 +263546,11 @@
     "all"
    ],
    "order": {
-    "all": 938
+    "all": 942
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264051,10 +263894,10 @@
     "dispatchedAt": "2026-11-17T22:10:38.850Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T00:03:06.259Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -264577,11 +264420,11 @@
     "all"
    ],
    "order": {
-    "all": 939
+    "all": 943
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267325,11 +267168,11 @@
     "all"
    ],
    "order": {
-    "all": 943
+    "all": 947
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -268084,11 +267927,11 @@
     "all"
    ],
    "order": {
-    "all": 944
+    "all": 948
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269558,11 +269401,11 @@
     "all"
    ],
    "order": {
-    "all": 946
+    "all": 950
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270240,11 +270083,11 @@
     "all"
    ],
    "order": {
-    "all": 947
+    "all": 951
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271976,11 +271819,11 @@
     "all"
    ],
    "order": {
-    "all": 950
+    "all": 954
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272902,11 +272745,11 @@
     "all"
    ],
    "order": {
-    "all": 951
+    "all": 955
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273695,11 +273538,11 @@
     "all"
    ],
    "order": {
-    "all": 952
+    "all": 956
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274390,11 +274233,11 @@
     "all"
    ],
    "order": {
-    "all": 953
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275210,11 +275053,11 @@
     "all"
    ],
    "order": {
-    "all": 954
+    "all": 958
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279787,11 +279630,11 @@
     "all"
    ],
    "order": {
-    "all": 961
+    "all": 965
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280607,11 +280450,11 @@
     "all"
    ],
    "order": {
-    "all": 962
+    "all": 966
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281338,11 +281181,11 @@
     "all"
    ],
    "order": {
-    "all": 963
+    "all": 967
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282097,11 +281940,11 @@
     "all"
    ],
    "order": {
-    "all": 964
+    "all": 968
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282771,11 +282614,11 @@
     "all"
    ],
    "order": {
-    "all": 965
+    "all": 969
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283091,11 +282934,11 @@
     "all"
    ],
    "order": {
-    "all": 966
+    "all": 970
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283727,11 +283570,11 @@
     "all"
    ],
    "order": {
-    "all": 967
+    "all": 971
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284537,11 +284380,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 972
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285433,11 +285276,11 @@
     "all"
    ],
    "order": {
-    "all": 969
+    "all": 973
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287219,11 +287062,11 @@
     "all"
    ],
    "order": {
-    "all": 971
+    "all": 975
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287577,11 +287420,11 @@
     "all"
    ],
    "order": {
-    "all": 972
+    "all": 976
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288497,11 +288340,11 @@
     "all"
    ],
    "order": {
-    "all": 973
+    "all": 977
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290423,11 +290266,11 @@
     "all"
    ],
    "order": {
-    "all": 975
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291062,11 +290905,11 @@
     "all"
    ],
    "order": {
-    "all": 976
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291328,10 +291171,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T00:06:25.905Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -291746,11 +291589,11 @@
     "all"
    ],
    "order": {
-    "all": 977
+    "all": 981
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296375,11 +296218,11 @@
     "all"
    ],
    "order": {
-    "all": 978
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296805,11 +296648,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 983
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297191,11 +297034,11 @@
     "all"
    ],
    "order": {
-    "all": 981
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297582,11 +297425,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 984
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297973,11 +297816,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 986
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298363,11 +298206,11 @@
     "all"
    ],
    "order": {
-    "all": 983
+    "all": 987
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298754,11 +298597,11 @@
     "all"
    ],
    "order": {
-    "all": 984
+    "all": 988
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299067,10 +298910,10 @@
     "dispatchedAt": "2026-11-17T22:09:20.596Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T21:51:05.156Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -299415,11 +299258,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300068,11 +299911,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300519,11 +300362,11 @@
     "all"
    ],
    "order": {
-    "all": 987
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301585,11 +301428,11 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 992
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -302005,10 +301848,10 @@
     "dispatchedAt": "2026-11-18T01:08:11.137Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-22T02:37:45.431Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-18T01:08:11.137Z",
@@ -302810,11 +302653,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -303583,11 +303426,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -304701,11 +304544,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -307080,11 +306923,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -308067,11 +307910,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 998
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -311690,10 +311533,10 @@
     "dispatchedAt": "2026-11-18T00:19:41.557Z",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T00:06:25.905Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-18T00:19:41.557Z",
@@ -312126,11 +311969,11 @@
     "all"
    ],
    "order": {
-    "all": 995
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327098,11 +326941,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327728,11 +327571,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328449,11 +328292,11 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329680,11 +329523,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 1004
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330212,11 +330055,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330770,11 +330613,11 @@
     "all"
    ],
    "order": {
-    "all": 1002
+    "all": 1006
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331476,11 +331319,11 @@
     "all"
    ],
    "order": {
-    "all": 1003
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332058,11 +331901,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -332651,11 +332494,11 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 1009
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333278,11 +333121,11 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334137,11 +333980,11 @@
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 1011
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334815,11 +334658,11 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 1012
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335015,10 +334858,10 @@
     "dispatchedAt": "2026-11-18T12:28:07.147Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:23:45.055Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-18T12:28:07.147Z",
@@ -335459,11 +335302,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 1013
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335732,11 +335575,11 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1014
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336685,10 +336528,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -336906,11 +336749,11 @@
     "all"
    ],
    "order": {
-    "all": 1013
+    "all": 1017
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337224,11 +337067,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1018
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337701,11 +337544,11 @@
     "all"
    ],
    "order": {
-    "all": 1015
+    "all": 1019
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339180,11 +339023,11 @@
     "all"
    ],
    "order": {
-    "all": 1016
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339477,11 +339320,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -339727,10 +339570,10 @@
     "dispatchedAt": "2026-11-22T01:17:22.110Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T14:12:50.319Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-22T01:17:22.110Z",
@@ -339813,11 +339656,11 @@
     "all"
    ],
    "order": {
-    "all": 1018
+    "all": 1022
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -341163,11 +341006,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341470,11 +341313,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1025
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341856,11 +341699,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342224,11 +342067,11 @@
     "all"
    ],
    "order": {
-    "all": 1023
+    "all": 1027
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343219,11 +343062,11 @@
     "all"
    ],
    "order": {
-    "all": 1026
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343694,11 +343537,11 @@
     "all"
    ],
    "order": {
-    "all": 1027
+    "all": 1031
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344194,11 +344037,11 @@
     "all"
    ],
    "order": {
-    "all": 1028
+    "all": 1032
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356333,11 +356176,11 @@
     "all"
    ],
    "order": {
-    "all": 9
+    "all": 13
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -357027,11 +356870,11 @@
     "all"
    ],
    "order": {
-    "all": 8
+    "all": 12
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -358800,11 +358643,11 @@
     "all"
    ],
    "order": {
-    "all": 6
+    "all": 10
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -359652,11 +359495,11 @@
     "all"
    ],
    "order": {
-    "all": 5
+    "all": 9
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362319,14 +362162,14 @@
    "title": "Urgent: pipeline proof run (one docs line)",
    "category": "",
    "detail": "Throwaway proof that a plan sent from Plan Studio 2.0 reaches main with no hand step (build pipeline-bring-up-from-main, Nov 23 2026). The whole change is ONE line in one docs file. Append this exact line to the end of deploy/watchdog/README.md, after a blank line: 'Proof run, Nov 23 2026: this line went from Plan Studio 2.0 to main through the orchestrator and the lander, with no hand step.' Change nothing else: no other file, no code, no tests, no tracker rows. Commit and push the step branch.",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-23T20:44:50.398Z",
-   "updatedAt": "2026-11-23T20:45:28.900Z",
+   "updatedAt": "2026-11-24T00:01:48.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -362335,8 +362178,7 @@
     },
     {
      "text": "Split by Fable into 1 step (5 min). The triage gate assigns the models.",
-     "at": "2026-11-23T20:45:26.927Z",
-     "by": "orchestrator"
+     "at": "2026-11-23T20:45:26.927Z"
     }
    ],
    "approvals": [],
@@ -362406,11 +362248,11 @@
     "all"
    ],
    "order": {
-    "all": 1
+    "all": 4
    },
    "kind": "build",
    "planRef": "urgent-pipeline-proof-run-one-do-ddtt",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362421,9 +362263,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-23T20:45:28.900Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-24T00:01:49.031Z",
+   "statusBy": "voice-claude",
    "attempt": 1,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -362445,6 +362288,12 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "1 step for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-24T00:01:49.031Z",
+     "by": "voice-claude",
+     "attempt": 1
     }
    ]
   },
@@ -362697,25 +362546,71 @@
    "title": "Account failover gate: pinned build account falls over when out",
    "category": "",
    "detail": "Brett's words: \"We need to put a gate on the VPS. That's not good enough. It didn't.\" Problem: hulu0241 hit its limit (out until 2026-11-24T07:00Z) but was pinned with build-account so it 'takes every build'; every other account was off for builds, so nothing switched over and Moses X sat idle. Gate: in deploy/claude-workers.mjs routing (and worker-routing.mjs + claude-headless.sh switch path), when the pinned build account is marked out (limit or no usage left), ignore the pin and route to the next account with usage left (subscription workers first, API accounts only under their caps); when the pinned account's reset passes, go back to it. Send an FYI to Brett's phone via AmberX on each failover and failback. Add tests in claude-workers.test.mjs covering: pinned+out -> next worker; pinned+out and all out -> queue; reset passed -> back to pin. Also make the claude_accounts status line show the failover target.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-23T23:08:05.611Z",
-   "updatedAt": "2026-11-23T23:08:05.611Z",
+   "updatedAt": "2026-11-23T23:24:22.318Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-23T23:19:02.216Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-23T23:23:02.207Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-23T23:24:01.653Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-23T23:08:21.246Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwtvmld31nngxy",
+     "uid": "st-mwtw7ijz1lomzt",
      "title": "",
      "text": "Routing: pinned build account that is out falls over to next account with usage; returns to pin after reset; tests",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -362728,16 +362623,43 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:24:20.040Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 30,
+       "priorFailures": 0
+      }
+     },
      "rev": 1,
      "createdAt": "2026-11-23T23:08:05.612Z",
-     "updatedAt": "2026-11-23T23:08:05.612Z"
+     "updatedAt": "2026-11-23T23:24:10.252Z",
+     "statusAt": "2026-11-23T23:24:20.040Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:24:20.040Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
-     "uid": "st-mwtvmld31ozjw8",
+     "uid": "st-mwtw7ijz1m0t90",
      "title": "",
      "text": "Headless switch path + AmberX FYI on failover/failback; status line shows failover target; tests",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -362750,20 +362672,47 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"headless\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:24:20.040Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 30,
+       "priorFailures": 0
+      }
+     },
      "rev": 1,
      "createdAt": "2026-11-23T23:08:05.612Z",
-     "updatedAt": "2026-11-23T23:08:05.612Z"
+     "updatedAt": "2026-11-23T23:24:10.252Z",
+     "statusAt": "2026-11-23T23:24:20.040Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:24:20.040Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 1037
+    "all": 1041
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362772,7 +362721,986 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-23T23:24:22.318Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-23T23:24:01.653Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-23T23:24:22.318Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "2 steps for 6 slots"
+    }
+   ]
+  },
+  {
+   "id": "console-idle-load-fix",
+   "title": "console-idle-load-fix (EMERGENCY)",
+   "category": "",
+   "detail": "# Build: console-idle-load-fix (EMERGENCY)\n\nBrett's words: \"Yeah, that's no good. You need to fix that right now. Ram it through an emergency slot. That's no good.\" Earlier: \"the console shouldn't be fucking using up a core and a half if it's fucking idle.\" and \"We have it on lazy loading. It shouldn't be calling that much. It should only be fucking loading the plugins as needed.\"\n\n## Problem (seen live on the VPS, Nov 23 2026)\n- VPS load 10.7 with no build slots in use. The axf-console container sits at ~127% CPU while idle and has sent 72 GB out.\n- `ps` shows short-lived `node` processes spawning every second inside the console.\n- `docker logs axf-console`: on every console app load, ~30 status calls fire at once even though plugins are lazy-loaded: /api/control/{notify-control/state, claude-accounts/list, console-terminal/sessions-list, host-services/list (404), maintenance/status, glossary-index/stats, phone-connect/status, shipped-features/summary, ui-review/choices-settings, agent-slots/hard-limit, data-store/state, plan-studio-2/state, gate/rules-list, wake-listener/settings, build-orchestrator/priority-list}, plus /api/tracker, /api/plan, /api/pending, /api/build-queue. Each /api/control/<plugin>/... call makes a second HTTP request back into the same server (127.0.0.1:7090/api/plugins/...), doubling the work. /api/plugins/host-services is a 404 that is still called every load.\n\n## Fix\n1. Find where the console web app (apps/console-web) fires these on startup (toolbar badges, nav counts, settings preloads, control@1 state warm-up, etc.). Lazy loading must cover data too: a plugin's status/state calls run only when its screen, panel or a visible badge actually needs it. Nothing for an unopened plugin on load.\n2. Make /api/control/... dispatch in-process to the plugin handler instead of an HTTP round trip to itself.\n3. Find what spawns `node` per request (likely orchestrator status / plugin status endpoints shelling out to node); cache those answers (10-30 s) or keep one long-lived process. See the unlanded branch claude/console-orch-cache for prior art.\n4. Drop or fix the host-services 404 call. Stop dead calls to retired screens (build manager, /api/build-queue, /api/pending, /api/tracker) if nothing visible needs them.\n5. Check what keeps CPU up when no client is connected (background pollers, watchers, du scans) and throttle them.\n\n## Done means\n- Idle console (no screen open) under ~5% CPU; a fresh app load makes only the calls for what's on screen.\n- Measure before/after (docker stats, count of requests per load) and put the numbers in the report.\n- Tests green, commit and push as you go, PR, then land it. Short report in _claude/builds/reports/console-idle-load-fix.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/console-idle-load-fix",
+   "pr": "#900",
+   "createdAt": "2026-11-23T23:14:26.387Z",
+   "updatedAt": "2026-11-23T23:59:20.707Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-console-idle-load-fix--sully on Fable, in /root/axf-builds/console-idle-load-fix on claude/console-idle-load-fix. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-23T23:14:26.387Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "hand": {
+    "at": "2026-11-23T23:14:26.387Z",
+    "by": "Snap Sully"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtvutzv1l9i7t",
+     "title": "",
+     "text": "console-idle-load-fix (EMERGENCY)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T23:59:20.707Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-23T23:14:26.387Z",
+     "updatedAt": "2026-11-23T23:59:21.076Z",
+     "statusAt": "2026-11-23T23:14:26.387Z",
+     "statusBy": "Snap Sully",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-23T23:14:26.387Z",
+       "by": "Snap Sully",
+       "attempt": 1,
+       "why": "hand launch: axf-console-idle-load-fix--sully"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/console-idle-load-fix",
+     "branch": "claude/console-idle-load-fix",
+     "tmux": "axf-console-idle-load-fix--sully"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 2
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-23T23:14:26.387Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-23T23:14:26.387Z",
+   "statusBy": "Snap Sully",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-23T23:14:26.387Z",
+     "by": "Snap Sully",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-watch-test",
+   "title": "Pipeline watch test: seed plan",
+   "category": "",
+   "detail": "Tiny seed plan to watch the full Plan Studio 2.0 pipeline live: split, model triage, queue, build, CI, land, with status on screen at each stage.\n\nSeed data test, requested by Brett on a voice call (Nov 23 2026): \"I want to watch you type up a quick plan with seed data, and then I want to watch it go through the pipeline and appear in all the grids as it goes where it's supposed to with status updates saying exactly what it's doing on the screen.\"\n\nThe change itself is trivial on purpose: add one line to docs/PIPELINE-WATCH.md (create it) reading \"Pipeline watch test, Nov 23 2026: seed plan went from Plan Studio 2.0 to landed.\" No code changes.\n\nWhat to check while it runs:\n- It shows in Plan Studio 2.0, then the Build orchestrator, then the queue/slots grids, in order.\n- Every stage shows a plain status line on screen (splitting, assigning model, queued, building, running CI, merging, landed).\n- The VPS model triage gate picks the model, not a person.",
+   "status": "archived",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-23T23:21:28.563Z",
+   "updatedAt": "2026-11-24T00:01:55.516Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: pipeline-watch-test-seed-plan-7ecc (Pipeline watch test: seed plan). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-23T23:21:28.563Z"
+    },
+    {
+     "text": "Split by Fable into 2 steps (11 min). The triage gate assigns the models.",
+     "at": "2026-11-23T23:22:32.895Z"
+    },
+    {
+     "text": "Store: refused a write by orchestrator, nothing of it was kept: s1 step s1 was replaced by another (pipeline-watch-test is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (pipeline-watch-test is split (Pending): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-23T23:22:41.157Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtw586x1lx6yh",
+     "title": "",
+     "text": "Create docs/PIPELINE-WATCH.md containing the single line \"Pipeline watch test, Nov 23 2026: seed plan went from Plan Studio 2.0 to landed.\" (create the docs/ folder if it does not exist). No code changes. Commit the file.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "3 min",
+     "files": [
+      "docs/PIPELINE-WATCH.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:22:32.895Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 3,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:22:35.577Z",
+     "updatedAt": "2026-11-23T23:22:35.577Z",
+     "statusAt": "2026-11-23T23:22:32.895Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:22:32.895Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwtw586x1mukv1",
+     "title": "",
+     "text": "Tests and report: run the doc-safe checks that apply to a docs-only change (node framework/cli/tracker.mjs --check, node framework/spec/check-json-data-writes.mjs, node framework/cli/builds-store.mjs verify) and write _claude/builds/reports/pipeline-watch-test.md recording Brett's verbatim request, what the build changes (one new line in docs/PIPELINE-WATCH.md, added by the other step, not touched here), the check results, and a checklist of what to watch on screen at each stage (Plan Studio 2.0, Build orchestrator, queue/slots grids; status lines for splitting, assigning model, queued, building, running CI, merging, landed; model picked by the VPS triage gate). Do not touch docs/PIPELINE-WATCH.md. Commit the report.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/pipeline-watch-test.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"spec\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:22:32.895Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 8,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:22:35.577Z",
+     "updatedAt": "2026-11-23T23:22:35.577Z",
+     "statusAt": "2026-11-23T23:22:32.895Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:22:32.895Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 2
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "pipeline-watch-test-seed-plan-7ecc",
+   "rev": 6,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-23T23:22:35.665Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T00:01:55.879Z",
+   "statusBy": "voice-claude",
+   "attempt": 1,
+   "archivedFrom": "split",
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-23T23:21:28.563Z",
+     "by": "voice-claude",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-23T23:22:22.598Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-23T23:22:35.576Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "2 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-24T00:01:55.879Z",
+     "by": "voice-claude",
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "id": "pipeline-sync-live-badges",
+   "title": "Pipeline sync: VPS Fable split feeds Plan Studio 2.0 and orchestrator live, with status badges",
+   "category": "",
+   "detail": "After the VPS splits a build with Fable, the steps and every status change show in Plan Studio 2.0 and the orchestrator at the same time, from the one builds store, with a badge per state and a 'split by Fable on the VPS' badge.\n\nBrett's words (voice, Nov 23 2026): \"The plan studio sends the plan to the orchestrator. The orchestrator lists all the steps. Then the orchestrator combines them all sends them to the VPS, the VPS uses Fable to split them up into steps that won't touch each other's toes, as many splits as it can without touching each other's toes ... everyone that's more than 10 minutes ... it tells the orchestrator and the plan studio at the same time ... how it was broken up, and it will list all the steps in plan studio. Say that ... the steps ... have been ... defined by the VPS, and ... keep updating the status in Plan Studio 2.0. ... the orchestrator needs to grab all of the step information from the same true source as Plan Studio 2.0. So after the VPS splits up the build, it adds it to the build store, and then it sends a command for the orchestrator and Plan Studio to update. ... all through the VPS.\" Also: \"different badges for all the different steps, like waiting for the VPS to do this, waiting for it to do that, merging, waiting to merge\".\n\nSeen live on the pipeline watch test (plan pipeline-watch-test-seed-plan-7ecc, build pipeline-watch-test): the build reached 'split' with 2 steps in the orchestrator, but the Plan Studio 2.0 plan still shows status parked, 0 steps, no badges. It also sits at 'split' because another build holds the one active place, with nothing on screen saying so.\n\nStates (pipeline2.mjs): pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, failed (attempt N); then lander: waiting to merge, merging, running CI, landed.",
+   "status": "split",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-23T23:58:06.241Z",
+   "updatedAt": "2026-11-24T00:04:31.413Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: pipeline-sync-vps-fable-split-fe-rvjv (Pipeline sync: VPS Fable split feeds Plan Studio 2.0 and orchestrator live, with status badges). Passed plan-build@1; sent as one Pipeline 2.0 build with 7 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-23T23:58:06.241Z"
+    },
+    {
+     "text": "Brett (voice, Nov 23): \"make sure it runs a test ... follow a build from split ... all the way to complete. So run it very small so it goes fast. I want it very small, but at least five steps.\" Required last step: create a tiny test build with 5+ trivial steps (e.g. five one-line docs edits in separate files so they never touch), send it from Plan Studio 2.0 through the full pipeline, and follow it through splitting, split, pulling main, assigning models, ready, sending, building, build complete, merging, running CI, landed, confirming each state shows live in both Plan Studio 2.0 and the orchestrator.",
+     "at": "2026-11-23T23:58:49.634Z"
+    },
+    {
+     "text": "Split by Fable into 8 steps (117 min). The triage gate assigns the models.",
+     "at": "2026-11-23T23:59:53.907Z"
+    },
+    {
+     "text": "Store: refused a write by orchestrator, nothing of it was kept: s1 step s1 was replaced by another (pipeline-sync-live-badges is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (pipeline-sync-live-badges is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (pipeline-sync-live-badges is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (pipeline-sync-live-badges is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (pipeline-sync-live-badges is spl",
+     "at": "2026-11-24T00:00:16.733Z"
+    },
+    {
+     "text": "Brett (voice, Nov 23): \"when the VPS splits into steps, it needs to make sure that they can all merge cleanly on their own. They can never conflict with each other after they build ... I want it to be merged first time. So it cannot split steps into any that are going to conflict with each other. And that goes for adding new builds too ... if it can't start building something that's going to conflict with main, with something that's not merged, then it needs to reject it. The whole build.\" Required: (1) the Fable split must guarantee steps never touch the same files/areas so each merges cleanly on its own, first time; (2) on adding any new build, check it against every unmerged build/PR; if it would conflict, reject the whole build (with a plain reason on screen).",
+     "at": "2026-11-24T00:04:31.413Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "planning": [
+    {
+     "text": "Check who split pipeline-watch-test: confirm the split runs on Fable on the VPS (not the orchestrator alone); fix if not"
+    },
+    {
+     "text": "After the VPS split, write steps to the builds store and send one update command to both the orchestrator and Plan Studio 2.0 (no copies; both read the store)"
+    },
+    {
+     "text": "Plan Studio 2.0: list the build's steps under the plan, each with a 'split by Fable on the VPS' badge and the model the triage gate gave it"
+    },
+    {
+     "text": "Status badges in both screens for every state: pending, splitting, split, pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge, merging, running CI, landed; plain status line saying what it's doing now"
+    },
+    {
+     "text": "When a build waits at split, show why on screen (which build holds the active place)"
+    },
+    {
+     "text": "Live updates: both screens refresh from the store in real time on every state change, through the VPS"
+    },
+    {
+     "text": "Tests, then re-run the pipeline watch test end to end and confirm every stage shows in both screens"
+    }
+   ],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtxh8mf1l2k0a",
+     "title": "",
+     "text": "Add the pipeline-status@1 contract as a pure module, framework/core/pipeline-status.mjs, with schema framework/schemas/pipeline-status.json and golden fixture framework/spec/fixtures/pipeline-status.json. Export PIPELINE_STATES in order: pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, failed, then the lander states waiting-to-merge, merging, running-ci, landed. Each state has a label ('Pulling main', 'Failed (attempt N)', 'Waiting to merge'…), a tone, an icon name and a plain status-line template saying what the VPS is doing now. Export pipelineView(build, allBuilds) returning { state, label, tone, icon, line, attempt, waitingOn: { buildId, title, reason } | null, split: { by, model, at, stepCount } | null }. waitingOn is filled when a build sits at split or ready because another build holds the one active place (the build in pulling-main through merging), e.g. 'Waiting: <title> holds the active place'. Unknown states fall back to the raw status and never throw. Then attach it as a read-only computed field `pipelineView` in the read projections of framework/cli/builds-store.mjs, so every reader (orchestrator, Pending, Plan Studio 2.0, console server) gets the same view from the one store. It is worked out on read and never stored. Add framework/spec/check-pipeline-status.mjs (fixture round trip, every state has label, tone and line, waitingOn cases). Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/pipeline-status.mjs",
+      "framework/schemas/pipeline-status.json",
+      "framework/spec/fixtures/pipeline-status.json",
+      "framework/spec/check-pipeline-status.mjs",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/pipeline-status.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Fable",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 5,
+       "areas": 4,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwtxh8mf1mi60o",
+     "title": "",
+     "text": "Split provenance and the update command in the pipeline, in apps/console-web/plugins/build-orchestrator/pipeline2.mjs and pipeline.mjs (intake / splitting stage) only. First find out who split build pipeline-watch-test: read its store record and journal (node framework/cli/builds-store.mjs history pipeline-watch-test) and the splitting code, and confirm the split is a Fable call made by the VPS splitting stage, not an orchestrator-only Opus call. If it is not, fix the splitting stage so it runs on Fable through the model policy. Then record on the build, through the builds store only (no copies anywhere else): split: { by: 'vps', model: '<model that really ran>', at: <iso>, stepCount }, and on each step splitBy: 'vps-fable' plus the triage gate's result as model / modelBy: 'triage' once assigning-models is done. After the split is written, and after every later state change this file makes (pulling-main, assigning-models, ready, sending, building, build-complete, failed with attempt N), send ONE best-effort update command: POST <console base>/api/builds/updated with JSON { build: <id>, state, rev, at }, using the console token the file already uses, short timeout, never failing the pipeline when the console is down. Keep the plugin's existing pipeline tests green and add cases for the provenance fields and the command being sent once per change. Write what the pipeline-watch-test check found to a short note on the build (orchestrator note), not a new file. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline2.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"builds store\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwtxh8mf1nqimn",
+     "title": "",
+     "text": "Console server live channel for builds, in a new file apps/console-web/server/builds_events.py, registered in apps/console-web/server/main.py (one include line). POST /api/builds/updated (console token or signed-in session; body { build, state, rev, at }) is the one update command the VPS pipeline and the lander send. GET /api/builds/events is a Server-Sent Events stream that pushes one event `builds.updated` { build, state, rev, at } to every connected screen, so the orchestrator and Plan Studio 2.0 get the same event at the same moment and re-read the builds store. The event carries no step data. Add a fallback watcher: every few seconds compare the builds store revision read through server/data_store.py and emit `builds.updated` when it moved with no command received, so a missed command still refreshes both screens. Add heartbeat comments, clean disconnect handling and no runtime JSON file writes. Add apps/console-web/server/test_builds_events.py (command fans out to two subscribers, watcher emits on a rev change, auth refused without token). Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/builds_events.py",
+      "apps/console-web/server/main.py",
+      "apps/console-web/server/test_builds_events.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"builds store\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwtxh8mf1o2w1x",
+     "title": "",
+     "text": "Lander states into the store and the update command, in deploy/lander/ only (run.mjs and its helpers and tests). Whenever the lander moves a build, write its landing state on the build record through the builds store as one of: waiting-to-merge, merging, running-ci, landed (plus failed with attempt N on a red run), using the status / landing field the lander already owns. Add the field only if none exists and keep builds@1 valid (node framework/cli/builds-store.mjs verify). After each such write, send the same best-effort command the pipeline sends: POST <console base>/api/builds/updated with { build, state, rev, at }, short timeout, never blocking or failing a landing. Do not change merge behaviour, CI gating or head pinning. Extend the lander's existing tests (node framework/spec/check-landing-line.mjs must stay green; add cases for the four states being written and the command being sent once per change). Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "deploy/lander/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"builds store\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwtxh8mf1pboms",
+     "title": "",
+     "text": "Plan Studio 2.0 server side: a plan shows its build straight from the builds store. In apps/console-web/plugins/plan-studio-2/ touch only the server and CLI files (tree.mjs, the plugin's server routes, their tests), no web UI files. For a plan that was sent to build (its linked build id, e.g. plan pipeline-watch-test-seed-plan-7ecc → build pipeline-watch-test), add GET /api/plugins/plan-studio-2/plans/<planId>/build returning { build: { id, title, status, pipelineView, split }, steps: [{ id, text, model, modelBy, splitBy, status, minutes }] }, read live from the builds store on every call. Never copy steps into the plan tree. If the store read has no `pipelineView` field yet, return pipelineView: null and the raw status. Fix the stale plan status: a plan with a linked build no longer reports 'parked' with 0 steps. Its listed status and step count are derived from the build on read (tree.mjs list/get and the route), while a plan with no build keeps its own status. Add the same read to the CLI (tree.mjs build <planId>) and describe the new route and command so plugin-commands / MCP pick them up. Tests: linked plan returns the store's steps and status, unlinked plan unchanged, nothing written to the plan tree. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/tree.mjs",
+      "apps/console-web/plugins/plan-studio-2/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"builds store\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwtxh8mf1q0weg",
+     "title": "",
+     "text": "Plan Studio 2.0 screen: steps, badges and live status under each plan. In apps/console-web/plugins/plan-studio-2/ touch only the web UI files (the plugin's React views and layout CSS), not tree.mjs or server files. For a plan with a linked build, fetch GET /api/plugins/plan-studio-2/plans/<planId>/build → { build: { id, title, status, pipelineView: { state, label, tone, icon, line, attempt, waitingOn: { buildId, title, reason } | null } | null, split: { by, model, at, stepCount } | null }, steps: [{ id, text, model, modelBy, splitBy, status, minutes }] }. This route lands in the same PR, so code against the shape and mock it in tests. Under the plan show: a status badge from pipelineView (label + tone; when pipelineView is null show the raw status as a neutral badge), the plain status line (pipelineView.line), the waiting reason when waitingOn is set ('Waiting: <title> holds the active place'), a 'Steps defined by the VPS' note with a 'Split by Fable on the VPS' badge when split.by is 'vps', and the list of steps, each with its split badge, the model the triage gate gave it (Fable / Opus chip, 'model not assigned yet' before assigning-models) and its step status. Live: open an EventSource on /api/builds/events and re-fetch on every `builds.updated` event (also on focus), and close it on unmount. Framework controls and tokens only (Chip, Container, existing fx classes; no hardcoded sizes or colours, no var() fallbacks), and register console-control targets for the new rows. Capture desktop and phone shots for UI Review as the brief says. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/web/",
+      "apps/console-web/plugins/plan-studio-2/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwtxh8mf1rddy0",
+     "title": "",
+     "text": "Build orchestrator screen: a badge per state, the status line, the waiting reason and live refresh. In apps/console-web/plugins/build-orchestrator/ touch only the web UI files (React views and layout CSS for the orchestrator and Pipeline tab), not pipeline.mjs, pipeline2.mjs or orchestrator.mjs. Each build read from the store carries (landing in the same PR, so code against the shape and fall back gracefully) pipelineView: { state, label, tone, icon, line, attempt, waitingOn: { buildId, title, reason } | null }, split: { by, model, at, stepCount }, and steps with splitBy, model, modelBy. On every build row and the build detail show: the state badge for all states (pending, splitting, split, pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge, merging, running CI, landed) from pipelineView.label / tone, with the raw status as a neutral badge when pipelineView is missing; the plain status line saying what it is doing now; when waitingOn is set, the reason on screen with a link to the build that holds the active place; a 'Split by Fable on the VPS' badge on the build and on each step when split.by is 'vps'; and the triage model per step. Live: EventSource on /api/builds/events, re-read the builds from the store on every `builds.updated` event and on focus, close on unmount. Framework controls and tokens only, with console-control targets registered for new elements. Capture desktop and phone shots for UI Review as the brief says. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwtxh8mf1smso4",
+     "title": "",
+     "text": "Tests and the report. Add apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs: an end-to-end check written against this build's contracts that skips, with a clear message, any part not present on its own branch. It seeds a temp builds store (AXF_DATA_DIR=off, temp dir) with a plan-linked build, walks it through every state (pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, failed attempt 2, waiting-to-merge, merging, running-ci, landed) and asserts at each one that the store read gives a pipelineView with label and line, that a second build waiting at split names the build holding the active place, that split.by / steps[].splitBy survive store writes and builds-store verify, and that the Plan Studio 2.0 build read and the orchestrator read return the same steps from the one store (no copy in the plan tree). Then write _claude/builds/reports/pipeline-sync-live-badges.md: Brett's words verbatim, what was built per step, the contracts (pipeline-status@1 fields, POST /api/builds/updated, GET /api/builds/events, the Plan Studio build route), who split pipeline-watch-test and what was fixed, the checks to run (check-pipeline-status.mjs, test-pipeline-sync.mjs, check-landing-line.mjs, builds-store.mjs verify, server tests), known gaps (Android twin deferred, to be noted in framework/spec/PORTING.md by the lander's rules) and an exact checklist for re-running the pipeline watch test after landing (plan pipeline-watch-test-seed-plan-7ecc → build pipeline-watch-test: every stage must show in both screens with its badge, the split badge and the waiting reason). Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs",
+      "_claude/builds/reports/pipeline-sync-live-badges.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"contracts\"",
+      "lane": "orchestrator",
+      "at": "2026-11-23T23:59:53.907Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-23T23:59:55.623Z",
+     "updatedAt": "2026-11-23T23:59:55.623Z",
+     "statusAt": "2026-11-23T23:59:53.907Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-23T23:59:53.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 4
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-23T23:59:55.677Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-23T23:59:55.623Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-23T23:58:06.241Z",
+     "by": "voice-claude",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-23T23:58:19.172Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-23T23:59:55.623Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "8 steps for 6 slots"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-sync-hand",
+   "title": "Hand build: pipeline-sync-hand (URGENT, Brett: \"just put it through, run it by hand\")",
+   "category": "",
+   "detail": "# Hand build: pipeline-sync-hand (URGENT, Brett: \"just put it through, run it by hand\")\n\nHand build because the pipeline is what's broken. Register it as a hand build (framework/cli/hand-build.mjs). The same work also sits in the orchestrator as build `pipeline-sync-live-badges` (status split, 8 steps designed by Fable) from Plan Studio 2.0 plan `pipeline-sync-vps-fable-split-fe-rvjv`. Read both first (`node framework/cli/builds-store.mjs` / the orchestrator CLI): use its 8 steps as your work list, tick them there as you finish, and when you land, mark that build landed so the dispatcher never runs it a second time. Do NOT let the dispatcher start it while you work.\n\n## Brett's flow (must be exactly this)\nPlan Studio 2.0 sends the plan to the orchestrator -> orchestrator lists the steps and passes the build to the VPS -> the VPS uses Fable to split it into as many steps as possible that never share files, none over 10 minutes -> the VPS writes the split to the builds store (the one true source) -> the VPS sends one update to BOTH the orchestrator and Plan Studio 2.0 at the same time -> both read steps and status from the store and show them live. Every step shows a badge 'split by Fable on the VPS' and the model the VPS triage gate gave it. All syncing goes through the VPS.\n\n## Seen live today\n- Build `pipeline-watch-test` reached `split` with 2 Fable steps in the store, but its Plan Studio 2.0 plan still showed parked, 0 steps, no badges.\n- Store note on it: \"refused a write by orchestrator ... step s1 was replaced by another (split: its steps are fixed)\" right after the split. Find and fix that.\n- Builds sat at `split` because pipeline2.mjs lets only one build be active; nothing on screen said which build held the place.\n\n## Status badges in both screens (one per state, plus a plain status line saying what it's doing now)\npending, splitting, split (waiting: name the build holding the active place), pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge, merging, running CI, landed. Sources: apps/console-web/plugins/build-orchestrator/pipeline2.mjs, framework/core/pipeline-status.mjs, the lander, Plan Studio 2.0 plugin.\n\n## Required test (Brett: \"follow from Plan Studio all the way ... very small so it goes fast ... at least five steps\")\nAfter the fix lands and is deployed: write a new plan in Plan Studio 2.0 with 5 trivial steps (five one-line docs edits in five separate files so they never touch), send it, and follow it: orchestrator receives it, VPS splits with Fable, triage gate assigns models, store updated, Plan Studio 2.0 and orchestrator both refresh, then pulling main, ready, sending, building, build complete, merging, running CI, landed. Confirm each state shows live in both screens; record any gap and fix it.\n\n## Done means\nTests green; commit and push as you go (an account limit must never lose work). PR, land it, redeploy the console, run the 5-step test, short report in _claude/builds/reports/pipeline-sync-hand.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/pipeline-sync-hand",
+   "pr": "",
+   "createdAt": "2026-11-24T00:02:18.238Z",
+   "updatedAt": "2026-11-24T00:03:26.678Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-pipeline-sync-hand--earl on Fable, in /root/axf-builds/pipeline-sync-hand on claude/pipeline-sync-hand. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T00:02:18.238Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T00:03:26.678Z",
+     "exit": 129,
+     "signal": "HUP",
+     "kind": "crash",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-console-idle-load-fix--sully",
+     "phase": ""
+    }
+   },
+   "hand": {
+    "at": "2026-11-24T00:02:18.238Z",
+    "by": "Earl the Ear"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtxkd5t1lad3a",
+     "title": "",
+     "text": "Hand build: pipeline-sync-hand (URGENT, Brett: \"just put it through, run it by hand\")",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T00:02:18.238Z",
+     "updatedAt": "2026-11-24T00:02:18.238Z",
+     "statusAt": "2026-11-24T00:02:18.238Z",
+     "statusBy": "Earl the Ear",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T00:02:18.238Z",
+       "by": "Earl the Ear",
+       "attempt": 1,
+       "why": "hand launch: axf-pipeline-sync-hand--earl"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/pipeline-sync-hand",
+     "branch": "claude/pipeline-sync-hand",
+     "tmux": "axf-pipeline-sync-hand--earl"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T00:02:18.238Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T00:02:18.238Z",
+   "statusBy": "Earl the Ear",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T00:02:18.238Z",
+     "by": "Earl the Ear",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
   }
  ]
 }

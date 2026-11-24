@@ -843,24 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 00:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1225,24 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · verify
 - 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
 - 2026-11-23 23:08 UTC · `account-failover-gate-pinned-build` added (2 steps) (all) · voice-claude
+- 2026-11-23 23:14 UTC · `console-idle-load-fix` added (1 steps) (all) · Snap Sully
+- 2026-11-23 23:19 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
+- 2026-11-23 23:21 UTC · `pipeline-watch-test` added (0 steps) (all) · voice-claude
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` → splitting (all) · orchestrator
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` → split, note (all) · orchestrator
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` note (all) · orchestrator
+- 2026-11-23 23:23 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
+- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → failed, note (all) · watchdog
+- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → split (all) · orchestrator
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` added (0 steps) (all) · voice-claude
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` → splitting (all) · orchestrator
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-23 23:59 UTC · `pipeline-sync-live-badges` → split, note (all) · orchestrator
+- 2026-11-24 00:00 UTC · `pipeline-sync-live-badges` note (all) · orchestrator
+- 2026-11-24 00:01 UTC · `urgent-pipeline-proof-nov23` → archived (all) · voice-claude
+- 2026-11-24 00:01 UTC · `pipeline-watch-test` → archived (all) · voice-claude
+- 2026-11-24 00:02 UTC · `pipeline-sync-hand` added (1 steps) (all) · Earl the Ear
+- 2026-11-24 00:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
 
 ## Token passes (log)
 
