@@ -3,13 +3,20 @@
  * steps, driven only by status. No tabs: filters sit on the toolbar (status, account, model, date, words). The merge
  * queue is the same table, read-only, filtered to merging-pr through merging-main (mode="queue").
  *
- * Rows come from GET /table (status-table.mjs → the builds store on Postgres), polled every POLL_MS while the page is
- * visible; a poll that finds the store at the same rev carries nothing. The timers tick client-side from each row's
+ * Rows come from GET /table (status-table.mjs → the builds store on Postgres). The table re-reads them the moment the
+ * builds live channel says `builds.updated` (live.ts: GET /api/builds/events), when the window gets the focus back, and
+ * on a poll while the page is visible (every POLL_MS without the channel, every LIVE_POLL_MS with it: a missed event
+ * still shows). A read that finds the store at the same rev carries nothing.
+ *
+ * pipeline-status@1 (Brett, Nov 23 2026): every row and its detail show the build number in its own column, the state
+ * badge, the plain line saying what the VPS is doing now, the reason a build waits with a link to the build holding the
+ * active place, its place in the merge line with "Merge together", who split it ("Split by Fable on the VPS") and, per
+ * step, the step's unique id in its own column and the model the triage gate gave it (pipeline-view-core.mjs). The timers tick client-side from each row's
  * status `at` on one shared clock. Phone first: on a phone the grid keeps Build, Status, Steps, Timer and PR and
  * the rest moves into the expanded row.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Icon, PageToolbar, SelectField, Switch, TextField, flashWhenReady, useIsPhone, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Button, Chip, Icon, PageToolbar, SelectField, Switch, TextField, flashWhenReady, useIsPhone, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import type { pluginApi } from '@console/plugins';
@@ -17,6 +24,9 @@ import * as T from './status-table-core.mjs';
 import { StepDeps } from './StepDeps';
 import type { StepRow, TableRow } from './status-table-core.mjs';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
+import { liveOpen, onBuildsUpdated } from './live';
+import { mergeTogether, mergeTogetherLine } from './mergeTogether';
+import { waitingToMerge, type PipelineView } from './pipeline-view-core.mjs';
 import './status-table.css';
 
 type Api = ReturnType<typeof pluginApi>;
@@ -24,6 +34,8 @@ type TableRes = { ok: boolean; error?: string; unchanged?: boolean; rev?: number
 export type Filters = { status: string; account: string; model: string; date: string; text: string; landed: boolean };
 export const NO_FILTERS: Filters = { status: '', account: '', model: '', date: '', text: '', landed: false };
 const POLL_MS = 5_000;
+/** The poll while the live channel is connected: only a safety net for a missed event. */
+const LIVE_POLL_MS = 30_000;
 
 /** Another part of the console (an action, a deep link) asks for a filter: the table takes it. */
 export const FILTER_EVENT = 'axf:orchestrator-filter';
@@ -48,6 +60,33 @@ function useNow(): number {
 /** The status badge: one colour per contract status; failed carries its attempt. */
 export function StatusBadge({ status, attempt = 0 }: { status: string; attempt?: number }) {
   return <span className={`pd-badge st-badge is-${status}`} data-status={status}>{T.statusLabel(status, attempt)}</span>;
+}
+
+/** The state badge of a build: one per pipeline state, from the store's view (label and tone); failed carries its attempt. */
+export function StateBadge({ view }: { view: PipelineView }) {
+  return <span className={`pd-badge st-badge tone-${view.tone} is-${view.state}`} data-status={view.state} data-tone={view.tone} title={view.line || view.label}>{view.label}</span>;
+}
+
+/** "Split by Fable on the VPS": the VPS split this build (or this step) into steps. */
+export function SplitBadge({ label, at = '' }: { label: string; at?: string }) {
+  if (!label) return null;
+  return <span className="st-split" title={at ? `${label}, ${new Date(at).toLocaleString()}` : label}><Chip tone="accent">{label}</Chip></span>;
+}
+
+/** The build number, in its own column ("—" until the store gives the build one). */
+const BuildNo = ({ n }: { n: string }) => (n ? <span className="st-no fx-small fx-mono" title={`Build number ${n}`}>{n}</span> : <span className="fx-muted" title="No build number yet">—</span>);
+
+/** A link to another build's row (the build holding the active place, the build ahead in the merge line). */
+function BuildLink({ id, children }: { id: string; children: ReactNode }) {
+  return <a className="st-buildlink" href={`#/build-orchestrator/${encodeURIComponent(id)}`} title={`Open ${id}`} onClick={(e) => { e.preventDefault(); e.stopPropagation(); focusBuild(id); }}>{children}</a>;
+}
+
+/** What a build is doing now, in one line: the waiting reason (linked), else its place in the merge line, else the status line. */
+function NowLine({ view }: { view: PipelineView }) {
+  const w = view.waitingOn; const m = view.mergeLine;
+  if (w) return <span className="st-now fx-small" title={w.reason}><Icon name="clock" size={12} />{w.buildId ? <BuildLink id={w.buildId}>{w.reason}</BuildLink> : w.reason}</span>;
+  if (m?.text) return <span className="st-now fx-small" title={m.text}><Icon name="branch" size={12} />{m.waitingFor ? <BuildLink id={m.waitingFor}>{m.text}</BuildLink> : m.text}</span>;
+  return <span className="st-now fx-small fx-muted" title={view.line}>{view.line || '—'}</span>;
 }
 
 /** The Emergency badge: Brett sent this build to the emergency slots (it skips the line and lands first). */
@@ -112,10 +151,13 @@ const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null :
 const TONE: Record<string, string> = { failed: 'danger', landed: 'success', building: 'accent', 'build-complete': 'success', pending: 'muted', split: 'muted' };
 const tone = (s: string) => TONE[s] ?? (T.MERGE_QUEUE.includes(s as never) ? 'warning' : 'info');
 /** On a phone the grid is one Build column: its cell carries status, steps, timer and PR; the rest is in the expanded row. */
-const PHONE_HIDDEN = ['status', 'steps', 'model', 'account', 'slot', 'timer', 'pr'];
-const PHONE_STEP_HIDDEN = ['id', 'status', 'model', 'account', 'slot', 'timer', 'pr'];
+const PHONE_HIDDEN = ['number', 'status', 'now', 'steps', 'model', 'account', 'slot', 'timer', 'pr'];
+const PHONE_STEP_HIDDEN = ['id', 'uid', 'status', 'split', 'model', 'account', 'slot', 'timer', 'pr'];
 
-/** The rows, polled from GET /table while the page is visible (landed ones only when a filter asks for them). */
+/**
+ * The rows from GET /table (landed ones only when a filter asks for them): re-read on every `builds.updated` of the
+ * live channel, when the window gets the focus back, and on the poll while the page is visible.
+ */
 function useTableRows(api: Api, landed: boolean) {
   const [rows, setRows] = useState<TableRow[] | null>(null);
   const [error, setError] = useState('');
@@ -126,16 +168,20 @@ function useTableRows(api: Api, landed: boolean) {
       const q = `table?landed=${landed ? 1 : 0}${!fresh && revRef.current != null ? `&since=${revRef.current}` : ''}`;
       const r = await api.call<TableRes>(q);
       if (!r.ok) throw new Error(r.error ?? 'the builds table did not load');
-      if (!r.unchanged) { setRows(r.rows ?? []); revRef.current = r.rev ?? null; setRev(r.rev ?? null); }
+      if (!r.unchanged) { setRows(T.ensureViews(r.rows)); revRef.current = r.rev ?? null; setRev(r.rev ?? null); }
       setError('');
     } catch (e) { setError((e as Error).message); setRows((x) => x ?? []); }
   };
   useEffect(() => {
     revRef.current = null; void load(true);
-    const t = setInterval(() => { if (document.visibilityState !== 'hidden') void load(); }, POLL_MS);
-    const vis = () => { if (document.visibilityState === 'visible') void load(); };
+    let last = Date.now();
+    const read = () => { last = Date.now(); void load(); };
+    const t = setInterval(() => { if (document.visibilityState !== 'hidden' && Date.now() - last >= (liveOpen() ? LIVE_POLL_MS : POLL_MS) - 250) read(); }, POLL_MS);
+    const vis = () => { if (document.visibilityState === 'visible') read(); };
     document.addEventListener('visibilitychange', vis);
-    return () => { clearInterval(t); document.removeEventListener('visibilitychange', vis); };
+    window.addEventListener('focus', read);
+    const off = onBuildsUpdated(read); // closes the stream with the last table on the page
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', vis); window.removeEventListener('focus', read); off(); };
   }, [landed]);
   return { rows, error, rev, reload: () => load(true) };
 }
@@ -200,17 +246,20 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
 
   const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
   const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && v);
+  const waiting = useMemo(() => waitingToMerge(all).map((r) => r.id), [rows]);
   const cols: GridColumn<TableRow>[] = [
+    { id: 'number', label: 'No.', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.number, render: (r) => <BuildNo n={r.number} /> },
     { id: 'title', label: 'Build', width: phone ? 'calc(var(--fx-font-size) * 20)' : 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 26))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
       render: (r) => (
         <span className="oc-cell-title" title={r.title}>
           <strong>{r.title}</strong>
           {r.emergency && !phone && <EmergencyBadge by={r.emergencyBy} />}
-          {phone ? <span className="st-rowmeta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
+          {phone ? <><span className="st-rowmeta">{r.number && <BuildNo n={r.number} />}{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StateBadge view={r.view} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span><NowLine view={r.view} /></>
             : <span className="fx-small fx-muted fx-mono">{r.id}</span>}
         </span>
       ) },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => T.BUILD_STATUSES.indexOf(r.status), render: (r) => <StatusBadge status={r.status} attempt={r.attempt} /> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => T.BUILD_STATUSES.indexOf(r.status), render: (r) => <StateBadge view={r.view} /> },
+    { id: 'now', label: 'Doing now', width: 'minmax(calc(var(--fx-font-size) * 12), calc(var(--fx-font-size) * 22))', render: (r) => <NowLine view={r.view} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', sortable: true, sortValue: (r) => (r.total ? r.done / r.total : -1), render: (r) => <span className="fx-small fx-mono">{r.done}/{r.total}</span> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.model, render: (r) => (r.model && r.model !== 'mixed' ? <span className={`oc-model is-${r.model.toLowerCase()}`}>{r.model}</span> : <span className="fx-small fx-muted">{dash(r.model)}</span>) },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.account, render: (r) => <span className="fx-small">{dash(r.account)}</span> },
@@ -238,33 +287,69 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
       {rows != null && (
         <div className="oc-grid">
           <DataGrid<TableRow> id={queue ? 'orch-merge-queue' : 'orch-status-table'} label={queue ? 'Merge queue' : 'Builds'} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
-            rowTone={(r) => tone(r.status)} selected={picked || (listed ? focusId : undefined)}
+            rowTone={(r) => (r.view.fromStore ? r.view.tone : tone(r.status))} selected={picked || (listed ? focusId : undefined)}
             hidden={gridHidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
             sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
             expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
             onRowClick={(r) => { setPicked(r.id); setOpen((o) => toggleIn(o, r.id)); }}
             rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
             empty={<div className="fx-empty">{filtered ? 'No builds match these filters.' : queue ? 'Nothing is waiting to merge.' : 'No builds yet. Plan Studio sends them here.'}</div>}
-            renderDetail={(r) => <BuildDetail r={r} phone={phone} api={api} canSend={!queue} onChanged={() => void reload()} />} key={phone ? 'phone' : 'wide'} />
+            renderDetail={(r) => <BuildDetail r={r} phone={phone} api={api} canSend={!queue} waiting={waiting} onChanged={() => void reload()} />} key={phone ? 'phone' : 'wide'} />
         </div>
       )}
     </div>
   );
 }
 
-/** An expanded row: what the phone hides, then every step with its own status, model, account, slot and timer. */
-function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone: boolean; api: Api; canSend: boolean; onChanged: () => void }) {
+/**
+ * The merge line of a build ("2nd to merge, waiting for B-0123") with "Merge together": the lander combines every
+ * waiting build into one branch, runs CI once and merges them in one go (a clashing one lands one at a time).
+ */
+function MergeLineRow({ r, api, waiting, onChanged }: { r: TableRow; api: Api; waiting: string[]; onChanged: () => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const m = r.view.mergeLine;
+  if (!m && r.view.state !== 'waiting-to-merge') return null;
+  const ids = waiting.includes(r.id) ? waiting : [...waiting, r.id];
+  const alone = ids.length < 2;
+  const run = async () => {
+    setBusy(true);
+    try { rt.toast(mergeTogetherLine(await mergeTogether(api, ids), ids.length), 'success', 'Build orchestrator'); onChanged(); }
+    catch (e) { rt.toast((e as Error).message, 'danger', 'Build orchestrator'); } finally { setBusy(false); }
+  };
+  return (
+    <p className="st-merge fx-small" data-merge-line={r.id}>
+      <Icon name="branch" size={14} />
+      <span className="st-merge__text">{m?.text || 'Waiting to merge'}{m?.waitingFor && <> (<BuildLink id={m.waitingFor}>{m.waitingForTitle || m.waitingFor}</BuildLink>)</>}</span>
+      <Button id={`merge-together-${r.id}`} size="sm" icon="branch" disabled={busy || alone} title={alone ? 'Only one build is waiting to merge: there is nothing to combine.' : `Combine the ${ids.length} waiting builds into one branch, run CI once and merge them in one go`} onClick={() => void run()}>Merge together</Button>
+      {!alone && <span className="fx-muted">{ids.length} builds are waiting to merge.</span>}
+    </p>
+  );
+}
+
+/**
+ * An expanded row: the state badge with the plain line, why it waits (with the build holding the active place), its
+ * place in the merge line, who split it, what the phone hides, then every step with its own unique id, status, split
+ * badge, triage model, account, slot and timer.
+ */
+function BuildDetail({ r, phone, api, canSend, waiting, onChanged }: { r: TableRow; phone: boolean; api: Api; canSend: boolean; waiting: string[]; onChanged: () => void }) {
+  const v = r.view;
+  const modelCell = (s: StepRow) => (s.model
+    ? <span className={`oc-model is-${s.model.toLowerCase()}`} title={s.modelBy === 'triage' ? `${s.model}: given by the triage gate` : s.modelBy ? `${s.model}: set by ${s.modelBy}` : s.model}>{s.model}</span>
+    : <span className="fx-small fx-muted" title="The triage gate gives each step its model in the assigning models state">not assigned yet</span>);
   const cols: GridColumn<StepRow>[] = [
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3)', render: (s) => <span className="fx-small fx-mono">{s.id}</span> },
+    { id: 'uid', label: 'Step ID', width: 'calc(var(--fx-font-size) * 11)', render: (s) => (s.uid ? <span className="st-uid fx-small fx-mono" title={`Unique step id ${s.uid}`}>{s.uid}</span> : <span className="fx-muted" title="No unique id on this step yet">—</span>) },
     { id: 'title', label: 'Step', width: phone ? 'calc(var(--fx-font-size) * 18)' : 'minmax(calc(var(--fx-font-size) * 12), calc(var(--fx-font-size) * 22))', fixed: true,
       render: (s) => (
         <span className="oc-cell-title" title={s.title}>
           <span>{phone ? `${s.id} · ` : ''}{s.title || s.id}</span>
-          {phone && <span className="st-rowmeta"><StatusBadge status={s.status} attempt={s.attempt} />{s.model && <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span>}{s.account && <span className="fx-small">{s.account}{s.slot ? ` · slot ${s.slot}` : ''}</span>}<StepTimer s={s} /></span>}
+          {phone && <span className="st-rowmeta">{s.uid && <span className="st-uid fx-small fx-mono">{s.uid}</span>}<StatusBadge status={s.status} attempt={s.attempt} />{modelCell(s)}<SplitBadge label={s.split} />{s.account && <span className="fx-small">{s.account}{s.slot ? ` · slot ${s.slot}` : ''}</span>}<StepTimer s={s} /></span>}
         </span>
       ) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 8)', render: (s) => <StatusBadge status={s.status} attempt={s.attempt} /> },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 4.5)', render: (s) => (s.model ? <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span> : <span className="fx-muted">—</span>) },
+    { id: 'model', label: 'Triage model', width: 'calc(var(--fx-font-size) * 7.5)', render: modelCell },
+    { id: 'split', label: 'Split', width: 'calc(var(--fx-font-size) * 13)', render: (s) => (s.split ? <SplitBadge label={s.split} /> : <span className="fx-muted">—</span>) },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 7)', render: (s) => <span className="fx-small">{dash(s.account)}</span> },
     { id: 'slot', label: 'Slot', width: 'calc(var(--fx-font-size) * 3)', render: (s) => <span className="fx-small fx-mono">{dash(s.slot)}</span> },
     { id: 'timer', label: 'Timer', width: 'calc(var(--fx-font-size) * 6)', align: 'end', render: (s) => <StepTimer s={s} /> },
@@ -272,12 +357,33 @@ function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone
   ];
   const rows = r.steps;
   return (
-    <div className="oc-detail">
+    <div className="oc-detail" data-build-detail={r.id}>
+      <div className="st-state" role="status" data-state={v.state}>
+        <div className="st-state__head">
+          <BuildNo n={r.number} />
+          <StateBadge view={v} />
+          <SplitBadge label={r.splitLabel} at={r.split?.at} />
+          {r.emergency && <EmergencyBadge by={r.emergencyBy} />}
+        </div>
+        {v.line && <p className="st-state__line">{v.line}</p>}
+        {v.waitingOn && (
+          <p className="st-wait fx-small" data-waiting-on={v.waitingOn.buildId}>
+            <Icon name="clock" size={14} />
+            <span>{v.waitingOn.reason}</span>
+            {v.waitingOn.buildId && <Button id={`open-holder-${r.id}`} size="sm" tone="quiet" icon="arrow-right" onClick={() => focusBuild(v.waitingOn?.buildId ?? '')}>{`Open ${v.waitingOn.number || v.waitingOn.title || v.waitingOn.buildId}`}</Button>}
+          </p>
+        )}
+        <MergeLineRow r={r} api={api} waiting={waiting} onChanged={onChanged} />
+      </div>
       <dl className="st-facts fx-small">
+        <dt>Build number</dt><dd className="fx-mono">{dash(r.number)}</dd>
+        <dt>Build id</dt><dd className="fx-mono">{r.id}</dd>
+        {r.split && <><dt>Split</dt><dd>{r.splitLabel || `by ${r.split.by}`}{r.split.stepCount ? ` · ${r.split.stepCount} step${r.split.stepCount === 1 ? '' : 's'}` : ''}{r.split.at ? ` · ${new Date(r.split.at).toLocaleString()}` : ''}</dd></>}
         {phone && <><dt>Model</dt><dd>{dash(r.model)}</dd><dt>Account</dt><dd>{dash(r.account)}</dd><dt>Slot</dt><dd>{dash(r.slot)}</dd></>}
         <dt>Status by</dt><dd>{dash(r.by)}</dd>
         {r.emergency && <><dt>Emergency</dt><dd>sent by {dash(r.emergencyBy)}</dd></>}
         {r.branch && <><dt>Branch</dt><dd className="fx-mono">{r.branch}</dd></>}
+        {r.prNumber > 0 && <><dt>PR</dt><dd><PrLink n={r.prNumber} href={r.pr} /></dd></>}
       </dl>
       {canSend && T.canSendEmergency(r) && <SendToEmergency api={api} id={r.id} onSent={onChanged} />}
       {rows.length ? (
