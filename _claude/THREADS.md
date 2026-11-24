@@ -843,19 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 03:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 04:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 04:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 04:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 04:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 04:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
@@ -1243,6 +1230,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 12:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · builds-live
 - 2026-11-24 12:38 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
 - 2026-11-24 12:38 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · builds-live
+- 2026-11-24 12:40 UTC · `banner-widget-shapes-plus-change-icon` s1 done, s2 done, s3 done, s4 done, s5 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `terminal-main-tab-streaming-console-s` s1 done, s2 done, s3 done, s14 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `icon-picker-every-banner-settings-widget` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `flagship-professional-skin-covering-2` s5 done, note (all) · reconciler
+- 2026-11-24 12:41 UTC · `pipeline-controls-plugin` added (0 steps) (all) · claude
+- 2026-11-24 12:42 UTC · `pipeline-controls-plugin` → splitting (all) · orchestrator
+- 2026-11-24 12:43 UTC · `pipeline-controls-plugin` → split, note (all) · orchestrator
+- 2026-11-24 12:47 UTC · `plan-autoqueue-manifest` added (0 steps) (all) · claude
+- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → splitting (all) · orchestrator
+- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → split, note (all) · orchestrator
+- 2026-11-24 12:50 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
+- 2026-11-24 12:50 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
+- 2026-11-24 13:20 UTC · `orchestrator-settings-collapsible-split` → archived (all) · claude
 
 ## Token passes (log)
 

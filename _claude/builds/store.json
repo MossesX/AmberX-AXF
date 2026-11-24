@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10384,
- "updatedAt": "2026-11-24T12:38:07.468Z",
+ "rev": 10385,
+ "updatedAt": "2026-11-24T13:20:49.322Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31559,11 +31559,11 @@
     "all"
    ],
    "order": {
-    "all": 315
+    "all": 317
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42681,11 +42681,11 @@
     "all"
    ],
    "order": {
-    "all": 285
+    "all": 287
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58543,11 +58543,11 @@
     "all"
    ],
    "order": {
-    "all": 259
+    "all": 261
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61798,11 +61798,11 @@
     "all"
    ],
    "order": {
-    "all": 269
+    "all": 271
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62845,11 +62845,11 @@
     "all"
    ],
    "order": {
-    "all": 139
+    "all": 141
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78410,11 +78410,11 @@
     "all"
    ],
    "order": {
-    "all": 161
+    "all": 163
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78643,11 +78643,11 @@
     "all"
    ],
    "order": {
-    "all": 162
+    "all": 164
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78855,11 +78855,11 @@
     "all"
    ],
    "order": {
-    "all": 163
+    "all": 165
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79084,11 +79084,11 @@
     "all"
    ],
    "order": {
-    "all": 164
+    "all": 166
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79455,11 +79455,11 @@
     "all"
    ],
    "order": {
-    "all": 166
+    "all": 168
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79618,11 +79618,11 @@
     "all"
    ],
    "order": {
-    "all": 167
+    "all": 169
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86251,11 +86251,11 @@
     "all"
    ],
    "order": {
-    "all": 174
+    "all": 176
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86462,11 +86462,11 @@
     "all"
    ],
    "order": {
-    "all": 175
+    "all": 177
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86874,11 +86874,11 @@
     "all"
    ],
    "order": {
-    "all": 177
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87106,11 +87106,11 @@
     "all"
    ],
    "order": {
-    "all": 178
+    "all": 180
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87492,11 +87492,11 @@
     "all"
    ],
    "order": {
-    "all": 180
+    "all": 182
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88241,11 +88241,11 @@
     "all"
    ],
    "order": {
-    "all": 182
+    "all": 184
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88854,11 +88854,11 @@
     "all"
    ],
    "order": {
-    "all": 184
+    "all": 186
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89067,11 +89067,11 @@
     "all"
    ],
    "order": {
-    "all": 295
+    "all": 297
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89249,11 +89249,11 @@
     "all"
    ],
    "order": {
-    "all": 185
+    "all": 187
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89386,11 +89386,11 @@
     "all"
    ],
    "order": {
-    "all": 534
+    "all": 536
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89587,11 +89587,11 @@
     "all"
    ],
    "order": {
-    "all": 186
+    "all": 188
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90063,11 +90063,11 @@
     "all"
    ],
    "order": {
-    "all": 187
+    "all": 189
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90368,11 +90368,11 @@
     "all"
    ],
    "order": {
-    "all": 188
+    "all": 190
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90939,11 +90939,11 @@
     "all"
    ],
    "order": {
-    "all": 297
+    "all": 299
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91150,11 +91150,11 @@
     "all"
    ],
    "order": {
-    "all": 298
+    "all": 300
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91309,11 +91309,11 @@
     "all"
    ],
    "order": {
-    "all": 299
+    "all": 301
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92125,11 +92125,11 @@
     "all"
    ],
    "order": {
-    "all": 189
+    "all": 191
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92314,11 +92314,11 @@
     "all"
    ],
    "order": {
-    "all": 190
+    "all": 192
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93211,11 +93211,11 @@
     "all"
    ],
    "order": {
-    "all": 274
+    "all": 276
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97147,11 +97147,11 @@
     "all"
    ],
    "order": {
-    "all": 207
+    "all": 209
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101476,11 +101476,11 @@
     "all"
    ],
    "order": {
-    "all": 212
+    "all": 214
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101761,11 +101761,11 @@
     "all"
    ],
    "order": {
-    "all": 215
+    "all": 217
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104114,11 +104114,11 @@
     "all"
    ],
    "order": {
-    "all": 220
+    "all": 222
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104776,11 +104776,11 @@
     "all"
    ],
    "order": {
-    "all": 222
+    "all": 224
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105456,11 +105456,11 @@
     "all"
    ],
    "order": {
-    "all": 224
+    "all": 226
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107677,11 +107677,11 @@
     "all"
    ],
    "order": {
-    "all": 230
+    "all": 232
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108332,11 +108332,11 @@
     "all"
    ],
    "order": {
-    "all": 213
+    "all": 215
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109488,11 +109488,11 @@
     "all"
    ],
    "order": {
-    "all": 232
+    "all": 234
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112919,11 +112919,11 @@
     "all"
    ],
    "order": {
-    "all": 543
+    "all": 545
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114157,11 +114157,11 @@
     "all"
    ],
    "order": {
-    "all": 547
+    "all": 549
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114517,11 +114517,11 @@
     "all"
    ],
    "order": {
-    "all": 548
+    "all": 550
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116593,11 +116593,11 @@
     "all"
    ],
    "order": {
-    "all": 563
+    "all": 565
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117412,11 +117412,11 @@
     "all"
    ],
    "order": {
-    "all": 567
+    "all": 569
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117599,11 +117599,11 @@
     "all"
    ],
    "order": {
-    "all": 568
+    "all": 570
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118204,11 +118204,11 @@
     "all"
    ],
    "order": {
-    "all": 570
+    "all": 572
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119402,11 +119402,11 @@
     "all"
    ],
    "order": {
-    "all": 575
+    "all": 577
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119908,11 +119908,11 @@
     "all"
    ],
    "order": {
-    "all": 578
+    "all": 580
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120091,11 +120091,11 @@
     "all"
    ],
    "order": {
-    "all": 579
+    "all": 581
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123690,11 +123690,11 @@
     "all"
    ],
    "order": {
-    "all": 591
+    "all": 593
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125647,11 +125647,11 @@
     "all"
    ],
    "order": {
-    "all": 605
+    "all": 607
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125805,11 +125805,11 @@
     "all"
    ],
    "order": {
-    "all": 604
+    "all": 606
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125982,11 +125982,11 @@
     "all"
    ],
    "order": {
-    "all": 606
+    "all": 608
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129525,11 +129525,11 @@
     "all"
    ],
    "order": {
-    "all": 622
+    "all": 624
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129858,11 +129858,11 @@
     "all"
    ],
    "order": {
-    "all": 623
+    "all": 625
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 137,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130175,11 +130175,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130331,11 +130331,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 628
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130491,11 +130491,11 @@
     "all"
    ],
    "order": {
-    "all": 627
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130651,11 +130651,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130883,11 +130883,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131151,11 +131151,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 632
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131934,11 +131934,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 634
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132433,11 +132433,11 @@
     "all"
    ],
    "order": {
-    "all": 634
+    "all": 636
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132641,11 +132641,11 @@
     "all"
    ],
    "order": {
-    "all": 635
+    "all": 637
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132849,11 +132849,11 @@
     "all"
    ],
    "order": {
-    "all": 636
+    "all": 638
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133073,11 +133073,11 @@
     "all"
    ],
    "order": {
-    "all": 637
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133374,11 +133374,11 @@
     "all"
    ],
    "order": {
-    "all": 638
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 129,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133587,11 +133587,11 @@
     "all"
    ],
    "order": {
-    "all": 639
+    "all": 641
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133758,11 +133758,11 @@
     "all"
    ],
    "order": {
-    "all": 640
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133996,11 +133996,11 @@
     "all"
    ],
    "order": {
-    "all": 641
+    "all": 643
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134156,11 +134156,11 @@
     "all"
    ],
    "order": {
-    "all": 642
+    "all": 644
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134320,11 +134320,11 @@
     "all"
    ],
    "order": {
-    "all": 643
+    "all": 645
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134480,11 +134480,11 @@
     "all"
    ],
    "order": {
-    "all": 644
+    "all": 646
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134939,11 +134939,11 @@
     "all"
    ],
    "order": {
-    "all": 646
+    "all": 648
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135177,11 +135177,11 @@
     "all"
    ],
    "order": {
-    "all": 647
+    "all": 649
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135527,11 +135527,11 @@
     "all"
    ],
    "order": {
-    "all": 649
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135687,11 +135687,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 652
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136085,11 +136085,11 @@
     "all"
    ],
    "order": {
-    "all": 652
+    "all": 654
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137505,11 +137505,11 @@
     "all"
    ],
    "order": {
-    "all": 658
+    "all": 660
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137665,11 +137665,11 @@
     "all"
    ],
    "order": {
-    "all": 659
+    "all": 661
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137829,11 +137829,11 @@
     "all"
    ],
    "order": {
-    "all": 660
+    "all": 662
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137993,11 +137993,11 @@
     "all"
    ],
    "order": {
-    "all": 661
+    "all": 663
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138348,11 +138348,11 @@
     "all"
    ],
    "order": {
-    "all": 663
+    "all": 665
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138512,11 +138512,11 @@
     "all"
    ],
    "order": {
-    "all": 664
+    "all": 666
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139898,11 +139898,11 @@
     "all"
    ],
    "order": {
-    "all": 669
+    "all": 671
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140054,11 +140054,11 @@
     "all"
    ],
    "order": {
-    "all": 670
+    "all": 672
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140727,11 +140727,11 @@
     "all"
    ],
    "order": {
-    "all": 673
+    "all": 675
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144585,11 +144585,11 @@
     "all"
    ],
    "order": {
-    "all": 684
+    "all": 686
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145161,11 +145161,11 @@
     "all"
    ],
    "order": {
-    "all": 686
+    "all": 688
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146126,11 +146126,11 @@
     "all"
    ],
    "order": {
-    "all": 690
+    "all": 692
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146282,11 +146282,11 @@
     "all"
    ],
    "order": {
-    "all": 691
+    "all": 693
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146438,11 +146438,11 @@
     "all"
    ],
    "order": {
-    "all": 692
+    "all": 694
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146598,11 +146598,11 @@
     "all"
    ],
    "order": {
-    "all": 693
+    "all": 695
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146758,11 +146758,11 @@
     "all"
    ],
    "order": {
-    "all": 694
+    "all": 696
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146914,11 +146914,11 @@
     "all"
    ],
    "order": {
-    "all": 696
+    "all": 698
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148179,11 +148179,11 @@
     "all"
    ],
    "order": {
-    "all": 698
+    "all": 700
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,11 +149452,11 @@
     "all"
    ],
    "order": {
-    "all": 701
+    "all": 703
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151356,11 +151356,11 @@
     "all"
    ],
    "order": {
-    "all": 713
+    "all": 715
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151553,11 +151553,11 @@
     "all"
    ],
    "order": {
-    "all": 715
+    "all": 717
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151947,11 +151947,11 @@
     "all"
    ],
    "order": {
-    "all": 716
+    "all": 718
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152107,11 +152107,11 @@
     "all"
    ],
    "order": {
-    "all": 717
+    "all": 719
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153213,11 +153213,11 @@
     "all"
    ],
    "order": {
-    "all": 722
+    "all": 724
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153441,11 +153441,11 @@
     "all"
    ],
    "order": {
-    "all": 723
+    "all": 725
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153673,11 +153673,11 @@
     "all"
    ],
    "order": {
-    "all": 724
+    "all": 726
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154148,11 +154148,11 @@
     "all"
    ],
    "order": {
-    "all": 726
+    "all": 728
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155306,11 +155306,11 @@
     "all"
    ],
    "order": {
-    "all": 735
+    "all": 737
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157055,11 +157055,11 @@
     "all"
    ],
    "order": {
-    "all": 741
+    "all": 743
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157261,11 +157261,11 @@
     "all"
    ],
    "order": {
-    "all": 742
+    "all": 744
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157745,11 +157745,11 @@
     "all"
    ],
    "order": {
-    "all": 744
+    "all": 746
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171005,11 +171005,11 @@
     "all"
    ],
    "order": {
-    "all": 773
+    "all": 775
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174440,11 +174440,11 @@
     "all"
    ],
    "order": {
-    "all": 792
+    "all": 794
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177171,11 +177171,11 @@
     "all"
    ],
    "order": {
-    "all": 805
+    "all": 807
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194628,11 +194628,11 @@
     "all"
    ],
    "order": {
-    "all": 778
+    "all": 780
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200779,11 +200779,11 @@
     "all"
    ],
    "order": {
-    "all": 831
+    "all": 833
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201213,11 +201213,11 @@
     "all"
    ],
    "order": {
-    "all": 832
+    "all": 834
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204319,7 +204319,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "failed",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204327,7 +204327,7 @@
    "pr": "896",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-24T03:58:13.940Z",
+   "updatedAt": "2026-11-24T13:20:26.523Z",
    "builtAt": "",
    "notes": [
     {
@@ -206827,11 +206827,11 @@
     "all"
    ],
    "order": {
-    "all": 841
+    "all": 843
    },
    "kind": "build",
    "planRef": "",
-   "rev": 359,
+   "rev": 361,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206862,10 +206862,11 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-23T22:15:11.480Z",
-   "statusBy": "lander",
-   "attempt": 5,
+   "statusAt": "2026-11-24T13:20:26.975Z",
+   "statusBy": "claude",
+   "attempt": 6,
    "failedFrom": "running-ci",
+   "archivedFrom": "failed",
    "statusLog": [
     {
      "status": "failed",
@@ -207055,6 +207056,12 @@
      "by": "lander",
      "attempt": 5,
      "why": "Lander: failed in running-ci, attempt 5: CI is red on cfcc15e95 (Build engine sweep (Node)) Stopped (attempt 5 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry orchestrator-settings-collapsible-split"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-24T13:20:26.975Z",
+     "by": "claude",
+     "attempt": 6
     }
    ]
   },
@@ -209971,11 +209978,11 @@
     "all"
    ],
    "order": {
-    "all": 849
+    "all": 851
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 123,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211520,11 +211527,11 @@
     "all"
    ],
    "order": {
-    "all": 855
+    "all": 857
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212678,11 +212685,11 @@
     "all"
    ],
    "order": {
-    "all": 859
+    "all": 861
    },
    "kind": "build",
    "planRef": "",
-   "rev": 123,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214384,11 +214391,11 @@
     "all"
    ],
    "order": {
-    "all": 864
+    "all": 866
    },
    "kind": "build",
    "planRef": "",
-   "rev": 122,
+   "rev": 124,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224427,11 +224434,11 @@
     "all"
    ],
    "order": {
-    "all": 888
+    "all": 890
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227089,11 +227096,11 @@
     "all"
    ],
    "order": {
-    "all": 895
+    "all": 897
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232487,11 +232494,11 @@
     "all"
    ],
    "order": {
-    "all": 902
+    "all": 904
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232855,11 +232862,11 @@
     "all"
    ],
    "order": {
-    "all": 903
+    "all": 905
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233192,11 +233199,11 @@
     "all"
    ],
    "order": {
-    "all": 904
+    "all": 906
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259280,11 +259287,11 @@
     "all"
    ],
    "order": {
-    "all": 951
+    "all": 953
    },
    "kind": "build",
    "planRef": "",
-   "rev": 159,
+   "rev": 161,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263549,11 +263556,11 @@
     "all"
    ],
    "order": {
-    "all": 952
+    "all": 954
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263688,7 +263695,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-24T12:36:38.542Z",
+   "updatedAt": "2026-11-24T12:40:34.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -263845,33 +263852,31 @@
     },
     {
      "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T12:30:02.493Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:30:02.493Z"
     },
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T12:34:01.754Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:34:01.754Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-24T12:35:01.188Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:35:01.188Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-24T12:36:01.825Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:36:01.825Z"
     },
     {
      "text": "Rejected: 1 step of 5 touches files that Orchestrator settings: collapsible Split section with parallel-split option has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 4 clean steps now, defer 1 (defer).",
-     "at": "2026-11-24T12:36:34.910Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T12:36:34.910Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-24T12:38:02.654Z",
-     "by": "store"
+     "at": "2026-11-24T12:38:02.654Z"
+    },
+    {
+     "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5 done",
+     "at": "2026-11-24T12:40:34.724Z"
     }
    ],
    "approvals": [
@@ -263991,8 +263996,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T12:40:34.724Z",
      "note": "Part 1: 16 plan steps in one session (they touch the same files).",
      "triage": {
       "model": "Fable",
@@ -264008,9 +264013,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T12:36:34.925Z",
-     "updatedAt": "2026-11-24T12:36:34.925Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:34.910Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -264027,7 +264032,7 @@
     },
     {
      "id": "s2",
-     "uid": "st-mwjveb4r116ou2",
+     "uid": "st-mwuoiay61m6vxd",
      "title": "",
      "text": "CSS: banner widget section in framework/ui/axf.css reads the compiled shape tokens (radius, clip-path, size) with no var() fallbacks; attached widgets keep the snap/no-overlap rule for every shape",
      "model": "Opus",
@@ -264043,11 +264048,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:16:47.896Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #821 (claude/banner-widget-shapes-plus-change-icon)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"css\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:34.910Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 8,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-18T08:59:08.648Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:34.910Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -264064,7 +264083,7 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwjveb4r1by5mc",
+     "uid": "st-mwuoiay61n8hd4",
      "title": "",
      "text": "Shared assets + rebake: bake the new assets into every shared-assets app (shared-assets.mjs bake), re-bake the console src/axf via rebake.mjs, run check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs",
      "model": "Fable",
@@ -264082,11 +264101,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:36:23.382Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #821 (claude/banner-widget-shapes-plus-change-icon)",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/shared-assets.json",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:34.910Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-18T08:59:08.648Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:34.910Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -264103,7 +264136,7 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwjveb4r1eyq3h",
+     "uid": "st-mwuoiay61o2nhd",
      "title": "",
      "text": "Final: run tracker.mjs, validate --framework, full checks; write _claude/builds/reports/banner-widget-shapes-plus-change-icon.md (what changed, how each feature is reached by deep link/REST/MCP/CLI/voice, Android deferred gap); THREADS row; push branch and open the PR into the merge queue, noting the UI Review hold",
      "model": "Fable",
@@ -264122,11 +264155,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T23:03:16.256Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #821 (claude/banner-widget-shapes-plus-change-icon)",
+     "triage": {
+      "model": "Fable",
+      "rule": "cross-cutting",
+      "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:34.910Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-18T08:59:08.648Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:34.910Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -264156,9 +264203,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #821 (claude/banner-widget-shapes-plus-change-icon)",
      "triage": {
       "model": "Fable",
       "rule": "fable-words",
@@ -264173,9 +264220,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-22T01:45:32.586Z",
-     "updatedAt": "2026-11-24T12:35:33.959Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:34.910Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -264195,11 +264242,11 @@
     "all"
    ],
    "order": {
-    "all": 953
+    "all": 955
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266977,11 +267024,11 @@
     "all"
    ],
    "order": {
-    "all": 957
+    "all": 959
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267736,11 +267783,11 @@
     "all"
    ],
    "order": {
-    "all": 958
+    "all": 960
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269210,11 +269257,11 @@
     "all"
    ],
    "order": {
-    "all": 960
+    "all": 962
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269892,11 +269939,11 @@
     "all"
    ],
    "order": {
-    "all": 961
+    "all": 963
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271628,11 +271675,11 @@
     "all"
    ],
    "order": {
-    "all": 964
+    "all": 966
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272554,11 +272601,11 @@
     "all"
    ],
    "order": {
-    "all": 965
+    "all": 967
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273347,11 +273394,11 @@
     "all"
    ],
    "order": {
-    "all": 966
+    "all": 968
    },
    "kind": "build",
    "planRef": "",
-   "rev": 136,
+   "rev": 138,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274042,11 +274089,11 @@
     "all"
    ],
    "order": {
-    "all": 967
+    "all": 969
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274862,11 +274909,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 970
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279447,11 +279494,11 @@
     "all"
    ],
    "order": {
-    "all": 975
+    "all": 977
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280267,11 +280314,11 @@
     "all"
    ],
    "order": {
-    "all": 976
+    "all": 978
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280998,11 +281045,11 @@
     "all"
    ],
    "order": {
-    "all": 977
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281757,11 +281804,11 @@
     "all"
    ],
    "order": {
-    "all": 978
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282431,11 +282478,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 981
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282751,11 +282798,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283387,11 +283434,11 @@
     "all"
    ],
    "order": {
-    "all": 981
+    "all": 983
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284197,11 +284244,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 984
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285093,11 +285140,11 @@
     "all"
    ],
    "order": {
-    "all": 983
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286879,11 +286926,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 987
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287237,11 +287284,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 988
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288157,11 +288204,11 @@
     "all"
    ],
    "order": {
-    "all": 987
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 136,
+   "rev": 138,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290091,11 +290138,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290730,11 +290777,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 992
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290852,7 +290899,7 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-24T12:36:46.055Z",
+   "updatedAt": "2026-11-24T12:40:34.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -290953,28 +291000,31 @@
     },
     {
      "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T12:30:02.493Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:30:02.493Z"
     },
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T12:34:01.754Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:34:01.754Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-24T12:35:01.188Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:35:01.188Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-24T12:36:01.825Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:36:01.825Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was repla",
-     "at": "2026-11-24T12:38:02.654Z",
-     "by": "store"
+     "at": "2026-11-24T12:38:02.654Z"
+    },
+    {
+     "text": "Reconciler: PR #819 names s1, s2, s3, s14 done",
+     "at": "2026-11-24T12:40:34.724Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s8 step s8 was repla",
+     "at": "2026-11-24T12:50:16.077Z"
     }
    ],
    "approvals": [],
@@ -291101,8 +291151,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T12:40:34.724Z",
      "note": "Part 1: 2 plan steps in one session (they touch the same files).",
      "triage": {
       "model": "Fable",
@@ -291118,9 +291168,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T12:36:41.343Z",
-     "updatedAt": "2026-11-24T12:36:41.343Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:41.331Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -291137,7 +291187,7 @@
     },
     {
      "id": "s2",
-     "uid": "st-mwlaugimcl0qf7",
+     "uid": "st-mwuoifwf22f6rq",
      "title": "",
      "text": "Server event bus: add an in-memory ring buffer (default 2000 events, set from the plugin's settings) plus a JSONL tail under the plugin's dataDir, written through data_store (data-store@1, namespace plugins/console-terminal). Add an append(event) function that redacts tokens and keys. Include unit tests for the ring and the redaction",
      "model": "Fable",
@@ -291151,11 +291201,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T19:54:15.835Z",
-     "note": "",
-     "rev": 3,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:41.331Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 2,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:41.331Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -291172,7 +291236,7 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwlaugimcm84zz",
+     "uid": "st-mwuoifwf23k8e4",
      "title": "",
      "text": "REST: GET /api/plugins/console-terminal/claude-link (snapshot, with since, kind, q and limit filters), GET .../claude-link/stream (SSE live feed with heartbeat and Last-Event-ID resume), POST .../claude-link/clear (clears the view marker, not the log), GET .../claude-link/state (connected, last event, counts per kind). Add route tests",
      "model": "Fable",
@@ -291186,11 +291250,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T19:55:33.683Z",
-     "note": "",
-     "rev": 3,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:41.331Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 2,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:41.331Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -291557,7 +291635,7 @@
     },
     {
      "id": "s14",
-     "uid": "st-mwlw36n26qbbvm",
+     "uid": "st-mwuoifwf2e7z8r",
      "title": "",
      "text": "Auto-lander fix, attempt 1: make CI green on claude/terminal-main-tab-streaming-console-s so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 3a05e5805 (claude/terminal-main-tab-streaming-console-s):\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption\n- Build engine sweep (Node) › Run node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs\nBrett said (verbatim): \"Give terminal a main tab that outputs in real time the console's connection to cloud.\"",
      "model": "Fable",
@@ -291571,11 +291649,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T00:17:10.970Z",
-     "note": "",
-     "rev": 1,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
+     "triage": {
+      "model": "Fable",
+      "rule": "ci-fix",
+      "why": "CI failures: it says \"failing checks\"",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:41.331Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 2,
      "createdAt": "2026-11-18T01:13:29.208Z",
-     "updatedAt": "2026-11-18T08:58:49.324Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:41.331Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -291644,11 +291736,11 @@
     "all"
    ],
    "order": {
-    "all": 991
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296307,11 +296399,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296737,11 +296829,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 995
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297123,11 +297215,11 @@
     "all"
    ],
    "order": {
-    "all": 995
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297514,11 +297606,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297905,11 +297997,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 998
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298295,11 +298387,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298686,11 +298778,11 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298798,7 +298890,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-24T12:36:57.598Z",
+   "updatedAt": "2026-11-24T12:40:34.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -298947,33 +299039,31 @@
     },
     {
      "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T12:30:02.493Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:30:02.493Z"
     },
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T12:34:01.754Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:34:01.754Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-24T12:35:01.188Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:35:01.188Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-24T12:36:01.825Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:36:01.825Z"
     },
     {
      "text": "Rejected: 1 step of 10 touches files that Orchestrator settings: collapsible Split section with parallel-split option has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 9 clean steps now, defer 1 (defer).",
-     "at": "2026-11-24T12:36:51.872Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T12:36:51.872Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s6 step ",
-     "at": "2026-11-24T12:38:02.654Z",
-     "by": "store"
+     "at": "2026-11-24T12:38:02.654Z"
+    },
+    {
+     "text": "Reconciler: PR #820 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 done",
+     "at": "2026-11-24T12:40:34.724Z"
     }
    ],
    "approvals": [
@@ -299052,7 +299142,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwl76ubk01w860",
+     "uid": "st-mwuoio2u1llk8p",
      "title": "",
      "text": "Design the widget icon override contract: a settings key per banner widget and per settings widget (axf.widget.<id>.icon, plus a display mode of icon / icon+text / text), a rule for how it resolves against icon-map and icon packs, and the rule that a widget showing long text falls back to an icon with the text as a tooltip. Write it in framework/spec/WIDGET-ICONS.md with a fixture.",
      "model": "Fable",
@@ -299069,11 +299159,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T21:34:49.819Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/WIDGET-ICONS.md",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T21:34:50.334Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299090,7 +299194,7 @@
     },
     {
      "id": "s2",
-     "uid": "st-mwl76ubl02wc67",
+     "uid": "st-mwuoio2u1m2dyf",
      "title": "",
      "text": "Add the resolver engine resolveWidgetIcon(widget, settings, iconMap) → {icon, label, tooltip, mode}, plus a long-text detector (character threshold read from a token), with unit checks against the fixture.",
      "model": "Fable",
@@ -299107,11 +299211,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T21:38:16.051Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/engines/widget-icons.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T21:38:16.707Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299151,8 +299269,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T12:40:34.724Z",
      "note": "Part 3: 4 plan steps in one session (they touch the same files).",
      "triage": {
       "model": "Fable",
@@ -299168,9 +299286,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T12:36:51.942Z",
-     "updatedAt": "2026-11-24T12:36:51.942Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299187,7 +299305,7 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwl76ubl041zog",
+     "uid": "st-mwuoio2u1o7z8x",
      "title": "",
      "text": "Make a reusable IconPicker dialog on the framework controls: search, the icon pack's grid, a preview, Reset to default. It uses tokens only and registers as a control target.",
      "model": "Opus",
@@ -299204,11 +299322,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:16:38.515Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"icon\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:16:38.901Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299225,7 +299357,7 @@
     },
     {
      "id": "s5",
-     "uid": "st-mwl76ubl06ref4",
+     "uid": "st-mwuoio2u1pfxgr",
      "title": "",
      "text": "Add 'Choose icon…' and 'Show as icon / icon+text / text' to the banner widget's right-click menu (ChromeContext) and to its widget settings dialog. Both open IconPicker and save axf.widget.<id>.icon.",
      "model": "Opus",
@@ -299242,11 +299374,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:21:23.883Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"icon\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:21:24.468Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299263,7 +299409,7 @@
     },
     {
      "id": "s6",
-     "uid": "st-mwl76ubl07moc4",
+     "uid": "st-mwuoio2u1qgl9x",
      "title": "",
      "text": "Wire the settings widgets (Settings tabs, plugin sub-tab widgets, setting rows that act as widgets) to resolveWidgetIcon, and add Choose icon to their right-click menu and their settings.",
      "model": "Opus",
@@ -299280,11 +299426,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:24:04.755Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"icon\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:24:06.168Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299301,7 +299461,7 @@
     },
     {
      "id": "s7",
-     "uid": "st-mwl76ubl08bwhj",
+     "uid": "st-mwuoio2u1rf4jm",
      "title": "",
      "text": "API part: REST routes GET/PUT /api/widget-icons (list widgets with their resolved icon and mode, set, reset) and a deep link view:settings/…/dialog:icon-picker?widget=<id> for console_show/console_open.",
      "model": "Opus",
@@ -299318,11 +299478,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:27:28.552Z",
-     "note": "",
-     "rev": 3,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"icon\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:38:05.267Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299339,7 +299513,7 @@
     },
     {
      "id": "s8",
-     "uid": "st-mwl76ubl098bzd",
+     "uid": "st-mwuoio2u1skit7",
      "title": "",
      "text": "API part: MCP tools widget_icons_list/get/set/reset, a CLI axf widget-icon list|get|set|reset, voice actions widget.icon.set/reset in the console actions, and control@1 targets appended at the end.",
      "model": "Fable",
@@ -299358,11 +299532,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:38:11.904Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/control-targets.json",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-18T00:47:07.950Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299379,7 +299567,7 @@
     },
     {
      "id": "s9",
-     "uid": "st-mwl76ubl0cmdsf",
+     "uid": "st-mwuoio2u1tsvpg",
      "title": "",
      "text": "Run the tests and fixtures (check-widget-icons, the server route tests, the CLI and MCP parity check), write the report _claude/builds/reports/icon-picker-every-banner-settings-widget.md with how each feature is reached (REST, MCP, CLI, voice, deep link), add the THREADS row and open the PR.",
      "model": "Fable",
@@ -299396,11 +299584,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T23:31:47.269Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"fixtures\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:36:51.872Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-18T01:13:35.361Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299430,9 +299632,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #820 (claude/icon-picker-every-banner-settings-widget)",
      "triage": {
       "model": "Fable",
       "rule": "fable-words",
@@ -299447,9 +299649,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-22T01:55:28.766Z",
-     "updatedAt": "2026-11-24T12:35:33.959Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:36:51.872Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -299469,11 +299671,11 @@
     "all"
    ],
    "order": {
-    "all": 999
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300156,11 +300358,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300607,11 +300809,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 1003
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301673,11 +301875,11 @@
     "all"
    ],
    "order": {
-    "all": 1002
+    "all": 1004
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301808,7 +302010,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-24T12:37:13.694Z",
+   "updatedAt": "2026-11-24T12:40:34.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -302041,28 +302243,31 @@
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T12:30:02.493Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:30:02.493Z"
     },
     {
      "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T12:34:01.754Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:34:01.754Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-24T12:35:01.188Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:35:01.188Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-24T12:36:01.825Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:36:01.825Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was repla",
-     "at": "2026-11-24T12:38:02.654Z",
-     "by": "store"
+     "at": "2026-11-24T12:38:02.654Z"
+    },
+    {
+     "text": "Reconciler: PR #829 names s5 done",
+     "at": "2026-11-24T12:40:34.724Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s7 step s7 was repla",
+     "at": "2026-11-24T12:50:16.077Z"
     }
    ],
    "approvals": [
@@ -302384,7 +302589,7 @@
     },
     {
      "id": "s5",
-     "uid": "st-mwl7mosm0d5cu4",
+     "uid": "st-mwuoizsq2kpd1s",
      "title": "",
      "text": "Flagship skin, part 4: tab-group and toolbar assets (chips style, position, overflow to the More menu, sticky, tap-confirm arm 3 s), referenced from the skin.",
      "model": "Opus",
@@ -302401,11 +302606,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:50:42.200Z",
-     "note": "",
+     "doneAt": "2026-11-24T12:40:34.724Z",
+     "note": "PR #829 (claude/flagship-professional-skin-covering-2)",
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"style\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:37:07.086Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 8,
+       "priorFailures": 0
+      }
+     },
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-18T00:47:07.950Z",
+     "updatedAt": "2026-11-24T12:40:34.955Z",
      "statusAt": "2026-11-24T12:37:07.086Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -302589,11 +302808,11 @@
     "all"
    ],
    "order": {
-    "all": 1003
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 131,
+   "rev": 135,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -303396,11 +303615,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1006
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -304514,11 +304733,11 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -306893,11 +307112,11 @@
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 1009
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -307880,11 +308099,11 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -311460,28 +311679,23 @@
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T12:30:02.493Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:30:02.493Z"
     },
     {
      "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T12:34:01.754Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:34:01.754Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-24T12:35:01.188Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:35:01.188Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-24T12:36:01.825Z",
-     "by": "watchdog"
+     "at": "2026-11-24T12:36:01.825Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s7 step ",
-     "at": "2026-11-24T12:38:02.654Z",
-     "by": "store"
+     "at": "2026-11-24T12:38:02.654Z"
     }
    ],
    "approvals": [],
@@ -312174,11 +312388,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 1011
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327180,11 +327394,11 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1012
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327810,11 +328024,11 @@
     "all"
    ],
    "order": {
-    "all": 1011
+    "all": 1013
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328531,11 +328745,11 @@
     "all"
    ],
    "order": {
-    "all": 1012
+    "all": 1014
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329762,11 +329976,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1016
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330294,11 +330508,11 @@
     "all"
    ],
    "order": {
-    "all": 1015
+    "all": 1017
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330852,11 +331066,11 @@
     "all"
    ],
    "order": {
-    "all": 1016
+    "all": 1018
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331558,11 +331772,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1019
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332140,11 +332354,11 @@
     "all"
    ],
    "order": {
-    "all": 1018
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -332733,11 +332947,11 @@
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333360,11 +333574,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1022
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334219,11 +334433,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1023
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334897,11 +335111,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335818,11 +336032,11 @@
     "all"
    ],
    "order": {
-    "all": 1024
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -337314,11 +337528,11 @@
     "all"
    ],
    "order": {
-    "all": 1028
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337791,11 +338005,11 @@
     "all"
    ],
    "order": {
-    "all": 1029
+    "all": 1031
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339270,11 +339484,11 @@
     "all"
    ],
    "order": {
-    "all": 1030
+    "all": 1032
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339567,11 +339781,11 @@
     "all"
    ],
    "order": {
-    "all": 1031
+    "all": 1033
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341265,11 +341479,11 @@
     "all"
    ],
    "order": {
-    "all": 1034
+    "all": 1036
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341572,11 +341786,11 @@
     "all"
    ],
    "order": {
-    "all": 1035
+    "all": 1037
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341958,11 +342172,11 @@
     "all"
    ],
    "order": {
-    "all": 1036
+    "all": 1038
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342326,11 +342540,11 @@
     "all"
    ],
    "order": {
-    "all": 1037
+    "all": 1039
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343321,11 +343535,11 @@
     "all"
    ],
    "order": {
-    "all": 1040
+    "all": 1042
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343796,11 +344010,11 @@
     "all"
    ],
    "order": {
-    "all": 1041
+    "all": 1043
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344296,11 +344510,11 @@
     "all"
    ],
    "order": {
-    "all": 1042
+    "all": 1044
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356435,11 +356649,11 @@
     "all"
    ],
    "order": {
-    "all": 23
+    "all": 25
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -357129,11 +357343,11 @@
     "all"
    ],
    "order": {
-    "all": 22
+    "all": 24
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -358902,11 +359116,11 @@
     "all"
    ],
    "order": {
-    "all": 20
+    "all": 22
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -359754,11 +359968,11 @@
     "all"
    ],
    "order": {
-    "all": 19
+    "all": 21
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362967,11 +363181,11 @@
     "all"
    ],
    "order": {
-    "all": 1051
+    "all": 1053
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363977,12 +364191,12 @@
     "all"
    ],
    "order": {
-    "all": 14
+    "all": 16
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364139,11 +364353,11 @@
     "all"
    ],
    "order": {
-    "all": 11
+    "all": 13
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364294,11 +364508,11 @@
     "all"
    ],
    "order": {
-    "all": 8
+    "all": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364449,11 +364663,11 @@
     "all"
    ],
    "order": {
-    "all": 9
+    "all": 11
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364693,11 +364907,11 @@
     "all"
    ],
    "order": {
-    "all": 10
+    "all": 12
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364981,11 +365195,11 @@
     "all"
    ],
    "order": {
-    "all": 4
+    "all": 6
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365265,11 +365479,11 @@
     "all"
    ],
    "order": {
-    "all": 5
+    "all": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365701,11 +365915,11 @@
     "all"
    ],
    "order": {
-    "all": 7
+    "all": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365984,12 +366198,12 @@
     "all"
    ],
    "order": {
-    "all": 2
+    "all": 4
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-3-tiny-docs-edits-5hxf",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366452,8 +366666,7 @@
     },
     {
      "text": "Split by Fable into 5 steps (32 min). The triage gate assigns the models.",
-     "at": "2026-11-24T12:31:45.548Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T12:31:45.548Z"
     }
    ],
    "approvals": [],
@@ -366726,12 +366939,12 @@
     "all"
    ],
    "order": {
-    "all": 1
+    "all": 3
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-5-four-docs-edits--4i3u",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366766,6 +366979,582 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "5 steps for 6 slots"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-controls-plugin",
+   "title": "Pipeline Controls plugin: new settings interface only",
+   "category": "",
+   "detail": "Create a new console plugin, Pipeline Controls: a settings-only plugin (one settings tab, no screen). It should declare the pipeline settings: slots, auto-queue pending builds, max parallel, split provider, fill settings, lander and merge options, budgets. Touch only the new plugin's own files. Do not edit build-orchestrator, claude-settings, the VPS config or any other plugin; moving the settings out of those is a separate plan.\n\nBrett: the plugin is just a settings interface, no screen of its own.: Brett: the plugin is just a settings interface, no screen of its own.",
+   "status": "split",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T12:41:53.360Z",
+   "updatedAt": "2026-11-24T12:43:09.544Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: new-pipeline-controls-plugin-one-5mvw (Fixes › Pipeline Controls plugin: new settings interface only). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-24T12:41:53.360Z"
+    },
+    {
+     "text": "Split by Fable into 4 steps (55 min). The triage gate assigns the models.",
+     "at": "2026-11-24T12:43:05.509Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwuoqobv1lu2rz",
+     "title": "",
+     "text": "Create the new plugin folder apps/console-web/plugins/pipeline-controls/ with its manifest and settings declarations only. Write plugin.json (id pipeline-controls, name Pipeline Controls, a clear description, builtWith {model, builtAt}, lifecycle.dataDir, settings-only: no screen, no nav entry, no opens target; copy the shape from a neighbouring settings-only plugin and take defaults from framework/schemas/build-defaults.json). Write settings.json (or the declaration file neighbouring plugins use) declaring these keys with label, description, type, default, min/max and level (Simple/Basic/Developer/Administrator), grouped: Slots (pipeline-controls.slots.maxAgents default 6, pipeline-controls.slots.memoryFloorGb default 2, pipeline-controls.slots.heavyMax default 3); Queue (pipeline-controls.autoQueue.pending default off, marked ownerOnly; pipeline-controls.parallel.max default 6); Split (pipeline-controls.split.provider, a choice); Fill (pipeline-controls.fill.enabled, pipeline-controls.fill.mode); Lander and merge (pipeline-controls.lander.enabled, pipeline-controls.lander.sizeCapLines, pipeline-controls.lander.retryMax, pipeline-controls.merge.method, pipeline-controls.merge.requireUiReview); Budgets (pipeline-controls.budgets.perBuildUsd, pipeline-controls.budgets.dailyUsd, raising marked ownerOnly). Write README.md saying the plugin only declares the settings and their interface, that nothing reads them yet, and that moving the live settings out of build-orchestrator, claude-settings and the VPS config is a separate plan. Touch no file outside this folder.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/pipeline-controls/plugin.json",
+      "apps/console-web/plugins/pipeline-controls/settings.json",
+      "apps/console-web/plugins/pipeline-controls/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"schemas\"",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:43:05.509Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:43:05.515Z",
+     "updatedAt": "2026-11-24T12:43:05.515Z",
+     "statusAt": "2026-11-24T12:43:05.509Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:43:05.509Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwuoqobv1mm51z",
+     "title": "",
+     "text": "Build the plugin's one settings tab in apps/console-web/plugins/pipeline-controls/web/ (index.tsx plus a layout-only pipeline-controls.css with axp-pipeline-controls class names). Export the web library the way neighbouring plugins do, contributing exactly one SettingsTab with parent 'plugins' (a sub-tab of Settings → Plugins), no view, no route, no nav item. The tab shows the standard settings level toolbar (Simple / Basic / Developer / Administrator, on by default, hideable) and collapsible containers for Slots, Queue, Split, Fill, Lander and merge, and Budgets, built only from framework controls (Switch, TextField, SelectField, Slider, Container, Button) and theme tokens: no hardcoded sizes or colours, no var() fallbacks. Bind each control through the settings registry to these keys (define them in a local const list in this file so the step stands alone): pipeline-controls.slots.maxAgents, .slots.memoryFloorGb, .slots.heavyMax, .autoQueue.pending, .parallel.max, .split.provider, .fill.enabled, .fill.mode, .lander.enabled, .lander.sizeCapLines, .lander.retryMax, .merge.method, .merge.requireUiReview, .budgets.perBuildUsd, .budgets.dailyUsd. Show the owner-only ones (autoQueue.pending, raising budgets) as owner-only. Give every control a console-control address through the framework controls or data-axf-target. Touch only the web/ folder of this plugin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/pipeline-controls/web/index.tsx",
+      "apps/console-web/plugins/pipeline-controls/web/pipeline-controls.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:43:05.509Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:43:05.515Z",
+     "updatedAt": "2026-11-24T12:43:05.515Z",
+     "statusAt": "2026-11-24T12:43:05.509Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:43:05.509Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwuoqobv1nkd6k",
+     "title": "",
+     "text": "Add the plugin lifecycle scripts for apps/console-web/plugins/pipeline-controls/: install.mjs and uninstall.mjs following plugin-lifecycle@1 (copy the pattern from a neighbouring settings-only plugin; see apps/console-web/plugins/README.md → Lifecycle). install.mjs registers the plugin and creates nothing outside its own folder and dataDir; uninstall.mjs --all removes its saved settings keys (prefix pipeline-controls.) and its dataDir and leaves nothing behind. Use built-in Node modules only, and write no runtime JSON data files (no-json-data@1). Touch only these two files.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/pipeline-controls/install.mjs",
+      "apps/console-web/plugins/pipeline-controls/uninstall.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:43:05.509Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:43:05.515Z",
+     "updatedAt": "2026-11-24T12:43:05.515Z",
+     "statusAt": "2026-11-24T12:43:05.509Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:43:05.509Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwuoqobv1o9rpl",
+     "title": "",
+     "text": "Tests and report. Write apps/console-web/plugins/pipeline-controls/test.mjs: a Node test that reads the plugin folder and asserts plugin.json is valid (id, description, builtWith, lifecycle.dataDir, no screen or nav entry), every declared setting key starts with pipeline-controls. and covers slots, auto-queue, max parallel, split provider, fill, lander and merge, and budgets, the web library contributes exactly one SettingsTab with parent 'plugins' and no view, and install.mjs / uninstall.mjs exist; each assertion skips with a clear message when its file is not in this worktree yet, because the other steps land in the same PR. Write _claude/builds/reports/pipeline-controls-plugin.md: what was built, the settings list with defaults and levels, that it is a settings interface only (Brett: no screen of its own), that no other plugin was edited and nothing reads the settings yet (moving them is a separate plan), and the checks to run on the combined branch with their results where they can run here: node framework/cli/check-theme.mjs, check-controls.mjs, check-console-control.mjs, node framework/cli/plugin-lifecycle.mjs check pipeline-controls --after-uninstall, node apps/console-web/plugins/glossary-index/catalog.mjs --check, node framework/spec/check-json-data-writes.mjs, and the console typecheck. Report failures as they are, with the output.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/pipeline-controls/test.mjs",
+      "_claude/builds/reports/pipeline-controls-plugin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"spec\"",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:43:05.509Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:43:05.515Z",
+     "updatedAt": "2026-11-24T12:43:05.515Z",
+     "statusAt": "2026-11-24T12:43:05.509Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:43:05.509Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 2
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "new-pipeline-controls-plugin-one-5mvw",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T12:43:09.823Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T12:43:09.544Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-24T12:41:53.360Z",
+     "by": "claude",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-24T12:42:29.750Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-24T12:43:09.544Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "4 steps for 6 slots"
+    }
+   ]
+  },
+  {
+   "id": "plan-autoqueue-manifest",
+   "title": "Plan Studio stamps auto-queue into the build manifest (required field)",
+   "category": "",
+   "detail": "When Plan Studio sends a plan to the orchestrator, it reads the auto-queue setting itself and writes its value (on or off) into the build manifest. The orchestrator never checks the setting later; it just follows the manifest. Make autoQueue a required field in the plan-build@1 schema, so a manifest without it fails validation and is not sent.\n\nBrett: also change plan-build@1 so steps must have at least one step (minItems 1). One long step is fine; the VPS split decides the real build steps. Update both the schema/validator and the Plan Studio writer.: Brett: also change plan-build@1 so steps must have at least one step (minItems 1). One long step is fine; the VPS split decides the real build steps. Update both the schema/validator and the Plan Studio writer.\n\nBrett: scrap the at-least-one-step change. Leave steps as they are (empty is fine when there's a description). Only add the required autoQueue field.: Brett: scrap the at-least-one-step change. Leave steps as they are (empty is fine when there's a description). Only add the required autoQueue field.",
+   "status": "split",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T12:47:30.101Z",
+   "updatedAt": "2026-11-24T12:48:42.756Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: plan-studio-stamps-auto-queue-in-vpxx (Fixes › Plan Studio stamps auto-queue into the build manifest (required field)). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-24T12:47:30.101Z"
+    },
+    {
+     "text": "Split by Fable into 4 steps (60 min). The triage gate assigns the models.",
+     "at": "2026-11-24T12:48:39.911Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwuoxucu1l0b81",
+     "title": "",
+     "text": "plan-build@1 contract: add autoQueue as a required boolean field (true = on, false = off) to the plan-build@1 schema and its validator, so a manifest without it (or with a non-boolean value) fails validation with the field named. Leave the steps rule exactly as it is (empty steps stay valid when there is a description; no minItems change). Regenerate the generated JSON Schema and update the plan-build fixtures so every valid fixture carries autoQueue and there is one invalid fixture each for missing and non-boolean autoQueue. Touch only the schema, validator and fixture files for plan-build@1 (find them under framework/schemas/, framework/core/ and framework/spec/fixtures/); do not edit Plan Studio or the orchestrator plugin. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/schemas/plan-build.json",
+      "framework/schemas/json/",
+      "framework/core/plan-build.mjs",
+      "framework/spec/fixtures/plan-build.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/plan-build.json",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:48:39.911Z",
+      "suggested": "Fable",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:48:39.918Z",
+     "updatedAt": "2026-11-24T12:48:39.918Z",
+     "statusAt": "2026-11-24T12:48:39.911Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:48:39.911Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwuoxucu1m0hgq",
+     "title": "",
+     "text": "Plan Studio writer: in the Plan Studio 2.0 plugin's send-to-build path (Send to build / Turn into a build, CLI and server route), read the auto-queue setting itself at send time and stamp its value into the build manifest as autoQueue: true|false (always written, never omitted, default off when the setting is unset). Before sending, validate the manifest and refuse to send (clear error naming autoQueue, nothing reaches the orchestrator) when it fails; add a local guard for a missing autoQueue so the refusal holds even before the shared validator change lands. Do not change how steps are written. Touch only apps/console-web/plugins/plan-studio-2/ (writer, its server route and its README line on the manifest). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:48:39.911Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:48:39.918Z",
+     "updatedAt": "2026-11-24T12:48:39.918Z",
+     "statusAt": "2026-11-24T12:48:39.911Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:48:39.911Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwuoxucu1nt1c0",
+     "title": "",
+     "text": "Orchestrator follows the manifest: in the build-orchestrator plugin's intake and pipeline code, for builds that arrive from a plan-build@1 manifest, take the queue decision only from the manifest's autoQueue (true = move to the Queue once split, false = stay in Pending for Brett) and remove the later read of the auto-queue / launch-without-asking setting for those builds. Keep the manifest's autoQueue on the build record so it survives splitting and restarts, and show it in the intake note. Builds that do not come from a plan manifest keep today's behaviour. Touch only apps/console-web/plugins/build-orchestrator/ (pipeline.mjs, intake code, README line). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:48:39.911Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:48:39.918Z",
+     "updatedAt": "2026-11-24T12:48:39.918Z",
+     "statusAt": "2026-11-24T12:48:39.911Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:48:39.911Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwuoxucu1owi2m",
+     "title": "",
+     "text": "Tests and report: add a new check script framework/spec/check-plan-build-autoqueue.mjs covering: a manifest without autoQueue fails validation and is not sent; a non-boolean autoQueue fails; autoQueue true and false both validate; empty steps with a description still validate (no minItems rule); Plan Studio stamps the setting's value at send time; the orchestrator queues on autoQueue true, leaves the build in Pending on false, and never reads the setting for a manifest build. Write it against the agreed contract (required boolean autoQueue on plan-build@1) since the other steps land in the same PR, and wire it into the CI checks list in a new line only. Write the report _claude/builds/reports/plan-autoqueue-manifest.md: what changed, the contract change and its compatibility note (older manifests without autoQueue are now refused), the scrapped at-least-one-step change, checks run and known gaps. Touch only the new check script, the CI workflow line and the report. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/check-plan-build-autoqueue.mjs",
+      ".github/workflows/android.yml",
+      "_claude/builds/reports/plan-autoqueue-manifest.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-plan-build-autoqueue.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-24T12:48:39.911Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T12:48:39.918Z",
+     "updatedAt": "2026-11-24T12:48:39.918Z",
+     "statusAt": "2026-11-24T12:48:39.911Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T12:48:39.911Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "plan-studio-stamps-auto-queue-in-vpxx",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T12:48:43.013Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T12:48:42.756Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-24T12:47:30.101Z",
+     "by": "claude",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-24T12:48:17.134Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-24T12:48:42.756Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "4 steps for 6 slots"
     }
    ]
   }
