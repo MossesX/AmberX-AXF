@@ -27,6 +27,16 @@ export type DialogMap = Record<string, DialogDef>;
 
 /* ---------------- DialogHost (dialog asset) ---------------- */
 
+// A reload while a dialog was open skips the cleanup that drops its history entry, so the page comes back with the
+// dialog shut and the entry still current: the first Back press would do nothing. Dialogs are not restored on load, so
+// an entry found at start-up is that leftover; step back off it. Once per page, however many hosts mount.
+let leftoverChecked = false;
+function dropLeftoverDialogEntry(): void {
+  if (leftoverChecked || typeof history === 'undefined') return;
+  leftoverChecked = true;
+  try { if ((history.state as { axfDialog?: boolean } | null)?.axfDialog) history.back(); } catch { /* history unavailable */ }
+}
+
 export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const rt = useRuntime();
   const state = useAxfState();
@@ -44,6 +54,8 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   // Android back (and the browser's back) closes the dialog: one history entry while any dialog is open here. Keyed on
   // open / shut, not the id, so going from one dialog straight to another keeps the one entry.
   const isOpen = !!def;
+  const openAtStart = useRef(!!state.dialog);
+  useEffect(() => { if (!openAtStart.current) dropLeftoverDialogEntry(); }, []);
   useEffect(() => {
     if (!isOpen) return;
     history.pushState({ axfDialog: true }, '');
