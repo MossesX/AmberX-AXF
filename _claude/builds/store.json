@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10392,
- "updatedAt": "2026-11-24T19:13:41.479Z",
+ "rev": 10393,
+ "updatedAt": "2026-11-24T19:14:02.351Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -302893,7 +302893,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running-ci",
+   "status": "merging-pr",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -302901,29 +302901,9 @@
    "pr": "912",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T19:13:28.030Z",
+   "updatedAt": "2026-11-24T19:13:49.509Z",
    "builtAt": "",
    "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-17T21:37:07.527Z"
-    },
-    {
-     "text": "Split by Claude into 11 steps (0 Fable).",
-     "at": "2026-11-17T21:38:35.623Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-fix-refreshing-console-jumps-back--rhonda.",
-     "at": "2026-11-17T21:43:29.345Z"
-    },
-    {
-     "text": "Brief only: brief is 24329 characters (~6083 tokens), over the 24000-character budget: trim it to what this job needs",
-     "at": "2026-11-17T21:43:37.469Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fix-refreshing-console-jumps-back--rhonda, shared account login)",
-     "at": "2026-11-17T21:43:47.010Z"
-    },
     {
      "text": "Headless run axf-fix-refreshing-console-jumps-back--rhonda: brief only · start 17.0K tokens ($0.06) · cost $5.16 · 110 turns · 6 tools, MCP none",
      "at": "2026-11-17T22:16:46.442Z"
@@ -305293,6 +305273,36 @@
      "text": "Watchdog: step s12 stuck at completed (246 min past budget): re-ran the transition (11).",
      "at": "2026-11-24T19:13:02.439Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Lander: PR 5 of 11 (s6, split after a failure)",
+     "at": "2026-11-24T19:13:49.509Z",
+     "by": "lander"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Merging to one PR): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T19:13:57.318Z",
+     "by": "store"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T21:37:07.527Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (0 Fable).",
+     "at": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-fix-refreshing-console-jumps-back--rhonda.",
+     "at": "2026-11-17T21:43:29.345Z"
+    },
+    {
+     "text": "Brief only: brief is 24329 characters (~6083 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T21:43:37.469Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-refreshing-console-jumps-back--rhonda, shared account login)",
+     "at": "2026-11-17T21:43:47.010Z"
     }
    ],
    "approvals": [],
@@ -305375,29 +305385,16 @@
     "merged": [
      909,
      910,
-     911
+     911,
+     912
     ],
-    "rules": {
-     "head": "e9711909e0c80171cf8a7052606ca2746a19607a",
-     "ok": true,
-     "failing": [],
-     "fixed": [],
-     "at": "2026-11-24T19:12:29.897Z"
-    },
-    "green": {
-     "head": "e9711909e0c80171cf8a7052606ca2746a19607a",
-     "at": "2026-11-24T19:12:29.897Z"
-    },
     "lastMerge": {
-     "pr": 911,
-     "sha": "655b4c64934531fd764702efe24656cb73a3dd52",
-     "head": "c32b120d006b83074ecd2ca69183f2490bf99353",
-     "at": "2026-11-24T18:43:27Z",
-     "byHand": true,
-     "ci": "running",
-     "by": "MossesX"
+     "pr": 912,
+     "sha": "ed001861ebd9c42826371c791547b8951fd0cde5",
+     "head": "e9711909e0c80171cf8a7052606ca2746a19607a",
+     "at": "2026-11-24T19:12:29.897Z"
     },
-    "state": "running-ci",
+    "state": "merging",
     "mergeLine": {
      "position": 1,
      "waitingFor": ""
@@ -306786,7 +306783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 393,
+   "rev": 397,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -306820,7 +306817,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T18:44:32.099Z",
+   "statusAt": "2026-11-24T19:13:49.509Z",
    "statusBy": "lander",
    "attempt": 2,
    "statusLog": [
@@ -307013,6 +307010,19 @@
      "at": "2026-11-24T18:44:32.099Z",
      "by": "lander",
      "attempt": 1
+    },
+    {
+     "status": "merging-main",
+     "at": "2026-11-24T19:13:33.410Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T19:13:49.509Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 5 of 11 (s6, split after a failure)"
     }
    ]
   },
