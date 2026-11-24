@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10389,
- "updatedAt": "2026-11-24T13:44:43.052Z",
+ "rev": 10390,
+ "updatedAt": "2026-11-24T14:24:41.573Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31559,11 +31559,11 @@
     "all"
    ],
    "order": {
-    "all": 318
+    "all": 319
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42681,11 +42681,11 @@
     "all"
    ],
    "order": {
-    "all": 288
+    "all": 289
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58543,11 +58543,11 @@
     "all"
    ],
    "order": {
-    "all": 262
+    "all": 263
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61798,11 +61798,11 @@
     "all"
    ],
    "order": {
-    "all": 272
+    "all": 273
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62845,11 +62845,11 @@
     "all"
    ],
    "order": {
-    "all": 142
+    "all": 143
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78410,11 +78410,11 @@
     "all"
    ],
    "order": {
-    "all": 164
+    "all": 165
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78643,11 +78643,11 @@
     "all"
    ],
    "order": {
-    "all": 165
+    "all": 166
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78855,11 +78855,11 @@
     "all"
    ],
    "order": {
-    "all": 166
+    "all": 167
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79084,11 +79084,11 @@
     "all"
    ],
    "order": {
-    "all": 167
+    "all": 168
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79455,11 +79455,11 @@
     "all"
    ],
    "order": {
-    "all": 169
+    "all": 170
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79618,11 +79618,11 @@
     "all"
    ],
    "order": {
-    "all": 170
+    "all": 171
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86251,11 +86251,11 @@
     "all"
    ],
    "order": {
-    "all": 177
+    "all": 178
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86462,11 +86462,11 @@
     "all"
    ],
    "order": {
-    "all": 178
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86874,11 +86874,11 @@
     "all"
    ],
    "order": {
-    "all": 180
+    "all": 181
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87106,11 +87106,11 @@
     "all"
    ],
    "order": {
-    "all": 181
+    "all": 182
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87492,11 +87492,11 @@
     "all"
    ],
    "order": {
-    "all": 183
+    "all": 184
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88241,11 +88241,11 @@
     "all"
    ],
    "order": {
-    "all": 185
+    "all": 186
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88854,11 +88854,11 @@
     "all"
    ],
    "order": {
-    "all": 187
+    "all": 188
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89067,11 +89067,11 @@
     "all"
    ],
    "order": {
-    "all": 298
+    "all": 299
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89249,11 +89249,11 @@
     "all"
    ],
    "order": {
-    "all": 188
+    "all": 189
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89386,11 +89386,11 @@
     "all"
    ],
    "order": {
-    "all": 537
+    "all": 538
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89587,11 +89587,11 @@
     "all"
    ],
    "order": {
-    "all": 189
+    "all": 190
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90063,11 +90063,11 @@
     "all"
    ],
    "order": {
-    "all": 190
+    "all": 191
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90368,11 +90368,11 @@
     "all"
    ],
    "order": {
-    "all": 191
+    "all": 192
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90939,11 +90939,11 @@
     "all"
    ],
    "order": {
-    "all": 300
+    "all": 301
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91150,11 +91150,11 @@
     "all"
    ],
    "order": {
-    "all": 301
+    "all": 302
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91309,11 +91309,11 @@
     "all"
    ],
    "order": {
-    "all": 302
+    "all": 303
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92125,11 +92125,11 @@
     "all"
    ],
    "order": {
-    "all": 192
+    "all": 193
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92314,11 +92314,11 @@
     "all"
    ],
    "order": {
-    "all": 193
+    "all": 194
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93211,11 +93211,11 @@
     "all"
    ],
    "order": {
-    "all": 277
+    "all": 278
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97147,11 +97147,11 @@
     "all"
    ],
    "order": {
-    "all": 210
+    "all": 211
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101476,11 +101476,11 @@
     "all"
    ],
    "order": {
-    "all": 215
+    "all": 216
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101761,11 +101761,11 @@
     "all"
    ],
    "order": {
-    "all": 218
+    "all": 219
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104114,11 +104114,11 @@
     "all"
    ],
    "order": {
-    "all": 223
+    "all": 224
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104776,11 +104776,11 @@
     "all"
    ],
    "order": {
-    "all": 225
+    "all": 226
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105456,11 +105456,11 @@
     "all"
    ],
    "order": {
-    "all": 227
+    "all": 228
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107677,11 +107677,11 @@
     "all"
    ],
    "order": {
-    "all": 233
+    "all": 234
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108332,11 +108332,11 @@
     "all"
    ],
    "order": {
-    "all": 216
+    "all": 217
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109488,11 +109488,11 @@
     "all"
    ],
    "order": {
-    "all": 235
+    "all": 236
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112919,11 +112919,11 @@
     "all"
    ],
    "order": {
-    "all": 546
+    "all": 547
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114157,11 +114157,11 @@
     "all"
    ],
    "order": {
-    "all": 550
+    "all": 551
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114517,11 +114517,11 @@
     "all"
    ],
    "order": {
-    "all": 551
+    "all": 552
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116593,11 +116593,11 @@
     "all"
    ],
    "order": {
-    "all": 566
+    "all": 567
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117412,11 +117412,11 @@
     "all"
    ],
    "order": {
-    "all": 570
+    "all": 571
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117599,11 +117599,11 @@
     "all"
    ],
    "order": {
-    "all": 571
+    "all": 572
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118204,11 +118204,11 @@
     "all"
    ],
    "order": {
-    "all": 573
+    "all": 574
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119402,11 +119402,11 @@
     "all"
    ],
    "order": {
-    "all": 578
+    "all": 579
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119908,11 +119908,11 @@
     "all"
    ],
    "order": {
-    "all": 581
+    "all": 582
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120091,11 +120091,11 @@
     "all"
    ],
    "order": {
-    "all": 582
+    "all": 583
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123690,11 +123690,11 @@
     "all"
    ],
    "order": {
-    "all": 594
+    "all": 595
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125647,11 +125647,11 @@
     "all"
    ],
    "order": {
-    "all": 608
+    "all": 609
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125805,11 +125805,11 @@
     "all"
    ],
    "order": {
-    "all": 607
+    "all": 608
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125982,11 +125982,11 @@
     "all"
    ],
    "order": {
-    "all": 609
+    "all": 610
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129525,11 +129525,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 626
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129858,11 +129858,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 138,
+   "rev": 139,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130175,11 +130175,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130331,11 +130331,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130491,11 +130491,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130651,11 +130651,11 @@
     "all"
    ],
    "order": {
-    "all": 631
+    "all": 632
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130883,11 +130883,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131151,11 +131151,11 @@
     "all"
    ],
    "order": {
-    "all": 633
+    "all": 634
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131934,11 +131934,11 @@
     "all"
    ],
    "order": {
-    "all": 635
+    "all": 636
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132433,11 +132433,11 @@
     "all"
    ],
    "order": {
-    "all": 637
+    "all": 638
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132641,11 +132641,11 @@
     "all"
    ],
    "order": {
-    "all": 638
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132849,11 +132849,11 @@
     "all"
    ],
    "order": {
-    "all": 639
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133073,11 +133073,11 @@
     "all"
    ],
    "order": {
-    "all": 640
+    "all": 641
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133374,11 +133374,11 @@
     "all"
    ],
    "order": {
-    "all": 641
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 132,
+   "rev": 133,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133587,11 +133587,11 @@
     "all"
    ],
    "order": {
-    "all": 642
+    "all": 643
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133758,11 +133758,11 @@
     "all"
    ],
    "order": {
-    "all": 643
+    "all": 644
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133996,11 +133996,11 @@
     "all"
    ],
    "order": {
-    "all": 644
+    "all": 645
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134156,11 +134156,11 @@
     "all"
    ],
    "order": {
-    "all": 645
+    "all": 646
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134320,11 +134320,11 @@
     "all"
    ],
    "order": {
-    "all": 646
+    "all": 647
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134480,11 +134480,11 @@
     "all"
    ],
    "order": {
-    "all": 647
+    "all": 648
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134939,11 +134939,11 @@
     "all"
    ],
    "order": {
-    "all": 649
+    "all": 650
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135177,11 +135177,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135527,11 +135527,11 @@
     "all"
    ],
    "order": {
-    "all": 652
+    "all": 653
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135687,11 +135687,11 @@
     "all"
    ],
    "order": {
-    "all": 653
+    "all": 654
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136085,11 +136085,11 @@
     "all"
    ],
    "order": {
-    "all": 655
+    "all": 656
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137505,11 +137505,11 @@
     "all"
    ],
    "order": {
-    "all": 661
+    "all": 662
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137665,11 +137665,11 @@
     "all"
    ],
    "order": {
-    "all": 662
+    "all": 663
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137829,11 +137829,11 @@
     "all"
    ],
    "order": {
-    "all": 663
+    "all": 664
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137993,11 +137993,11 @@
     "all"
    ],
    "order": {
-    "all": 664
+    "all": 665
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138348,11 +138348,11 @@
     "all"
    ],
    "order": {
-    "all": 666
+    "all": 667
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138512,11 +138512,11 @@
     "all"
    ],
    "order": {
-    "all": 667
+    "all": 668
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139898,11 +139898,11 @@
     "all"
    ],
    "order": {
-    "all": 672
+    "all": 673
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140054,11 +140054,11 @@
     "all"
    ],
    "order": {
-    "all": 673
+    "all": 674
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140727,11 +140727,11 @@
     "all"
    ],
    "order": {
-    "all": 676
+    "all": 677
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144585,11 +144585,11 @@
     "all"
    ],
    "order": {
-    "all": 687
+    "all": 688
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145161,11 +145161,11 @@
     "all"
    ],
    "order": {
-    "all": 689
+    "all": 690
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146126,11 +146126,11 @@
     "all"
    ],
    "order": {
-    "all": 693
+    "all": 694
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146282,11 +146282,11 @@
     "all"
    ],
    "order": {
-    "all": 694
+    "all": 695
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146438,11 +146438,11 @@
     "all"
    ],
    "order": {
-    "all": 695
+    "all": 696
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146598,11 +146598,11 @@
     "all"
    ],
    "order": {
-    "all": 696
+    "all": 697
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146758,11 +146758,11 @@
     "all"
    ],
    "order": {
-    "all": 697
+    "all": 698
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146914,11 +146914,11 @@
     "all"
    ],
    "order": {
-    "all": 699
+    "all": 700
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148179,11 +148179,11 @@
     "all"
    ],
    "order": {
-    "all": 701
+    "all": 702
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,11 +149452,11 @@
     "all"
    ],
    "order": {
-    "all": 704
+    "all": 705
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151356,11 +151356,11 @@
     "all"
    ],
    "order": {
-    "all": 716
+    "all": 717
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151553,11 +151553,11 @@
     "all"
    ],
    "order": {
-    "all": 718
+    "all": 719
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151947,11 +151947,11 @@
     "all"
    ],
    "order": {
-    "all": 719
+    "all": 720
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152107,11 +152107,11 @@
     "all"
    ],
    "order": {
-    "all": 720
+    "all": 721
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153213,11 +153213,11 @@
     "all"
    ],
    "order": {
-    "all": 725
+    "all": 726
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153441,11 +153441,11 @@
     "all"
    ],
    "order": {
-    "all": 726
+    "all": 727
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153673,11 +153673,11 @@
     "all"
    ],
    "order": {
-    "all": 727
+    "all": 728
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154148,11 +154148,11 @@
     "all"
    ],
    "order": {
-    "all": 729
+    "all": 730
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155306,11 +155306,11 @@
     "all"
    ],
    "order": {
-    "all": 738
+    "all": 739
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157055,11 +157055,11 @@
     "all"
    ],
    "order": {
-    "all": 744
+    "all": 745
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157261,11 +157261,11 @@
     "all"
    ],
    "order": {
-    "all": 745
+    "all": 746
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157745,11 +157745,11 @@
     "all"
    ],
    "order": {
-    "all": 747
+    "all": 748
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171005,11 +171005,11 @@
     "all"
    ],
    "order": {
-    "all": 776
+    "all": 777
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174440,11 +174440,11 @@
     "all"
    ],
    "order": {
-    "all": 795
+    "all": 796
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177171,11 +177171,11 @@
     "all"
    ],
    "order": {
-    "all": 808
+    "all": 809
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194628,11 +194628,11 @@
     "all"
    ],
    "order": {
-    "all": 781
+    "all": 782
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200779,11 +200779,11 @@
     "all"
    ],
    "order": {
-    "all": 834
+    "all": 835
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201213,11 +201213,11 @@
     "all"
    ],
    "order": {
-    "all": 835
+    "all": 836
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -209978,11 +209978,11 @@
     "all"
    ],
    "order": {
-    "all": 852
+    "all": 853
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211527,11 +211527,11 @@
     "all"
    ],
    "order": {
-    "all": 858
+    "all": 859
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212685,11 +212685,11 @@
     "all"
    ],
    "order": {
-    "all": 862
+    "all": 863
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 127,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214391,11 +214391,11 @@
     "all"
    ],
    "order": {
-    "all": 867
+    "all": 868
    },
    "kind": "build",
    "planRef": "",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224434,11 +224434,11 @@
     "all"
    ],
    "order": {
-    "all": 891
+    "all": 892
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227096,11 +227096,11 @@
     "all"
    ],
    "order": {
-    "all": 898
+    "all": 899
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232494,11 +232494,11 @@
     "all"
    ],
    "order": {
-    "all": 905
+    "all": 906
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232862,11 +232862,11 @@
     "all"
    ],
    "order": {
-    "all": 906
+    "all": 907
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233199,11 +233199,11 @@
     "all"
    ],
    "order": {
-    "all": 907
+    "all": 908
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259287,11 +259287,11 @@
     "all"
    ],
    "order": {
-    "all": 954
+    "all": 955
    },
    "kind": "build",
    "planRef": "",
-   "rev": 162,
+   "rev": 163,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263556,11 +263556,11 @@
     "all"
    ],
    "order": {
-    "all": 955
+    "all": 956
    },
    "kind": "build",
    "planRef": "",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264242,11 +264242,11 @@
     "all"
    ],
    "order": {
-    "all": 956
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267024,11 +267024,11 @@
     "all"
    ],
    "order": {
-    "all": 960
+    "all": 961
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267783,11 +267783,11 @@
     "all"
    ],
    "order": {
-    "all": 961
+    "all": 962
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269257,11 +269257,11 @@
     "all"
    ],
    "order": {
-    "all": 963
+    "all": 964
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269939,11 +269939,11 @@
     "all"
    ],
    "order": {
-    "all": 964
+    "all": 965
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271675,11 +271675,11 @@
     "all"
    ],
    "order": {
-    "all": 967
+    "all": 968
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272601,11 +272601,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 969
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273394,11 +273394,11 @@
     "all"
    ],
    "order": {
-    "all": 969
+    "all": 970
    },
    "kind": "build",
    "planRef": "",
-   "rev": 139,
+   "rev": 140,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274089,11 +274089,11 @@
     "all"
    ],
    "order": {
-    "all": 970
+    "all": 971
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274909,11 +274909,11 @@
     "all"
    ],
    "order": {
-    "all": 971
+    "all": 972
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279494,11 +279494,11 @@
     "all"
    ],
    "order": {
-    "all": 978
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280314,11 +280314,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281045,11 +281045,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 981
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281804,11 +281804,11 @@
     "all"
    ],
    "order": {
-    "all": 981
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282478,11 +282478,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 983
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282798,11 +282798,11 @@
     "all"
    ],
    "order": {
-    "all": 983
+    "all": 984
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283434,11 +283434,11 @@
     "all"
    ],
    "order": {
-    "all": 984
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284244,11 +284244,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 986
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285140,11 +285140,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 987
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286926,11 +286926,11 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287284,11 +287284,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288204,11 +288204,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 139,
+   "rev": 140,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290138,11 +290138,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290777,11 +290777,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291736,11 +291736,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 995
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296399,11 +296399,11 @@
     "all"
    ],
    "order": {
-    "all": 995
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296829,11 +296829,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297215,11 +297215,11 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297606,11 +297606,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 998
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297997,11 +297997,11 @@
     "all"
    ],
    "order": {
-    "all": 999
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298387,11 +298387,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298778,11 +298778,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299671,11 +299671,11 @@
     "all"
    ],
    "order": {
-    "all": 1002
+    "all": 1003
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300358,11 +300358,11 @@
     "all"
    ],
    "order": {
-    "all": 1003
+    "all": 1004
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300809,11 +300809,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301875,11 +301875,11 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 1006
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -302808,11 +302808,11 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 136,
+   "rev": 137,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -302905,11 +302905,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/fix-refreshing-console-jumps-back--s1",
-   "pr": "909",
+   "branch": "claude/fix-refreshing-console-jumps-back",
+   "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T13:44:25.769Z",
+   "updatedAt": "2026-11-24T14:19:53.383Z",
    "builtAt": "",
    "notes": [
     {
@@ -303210,18 +303210,203 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by anoth",
-     "at": "2026-11-24T13:43:48.139Z",
-     "by": "store"
+     "at": "2026-11-24T13:43:48.139Z"
     },
     {
      "text": "Watchdog: step s6 retried at ready, attempt 2 on mossesx-max-.",
-     "at": "2026-11-24T13:44:01.731Z",
-     "by": "watchdog"
+     "at": "2026-11-24T13:44:01.731Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by anoth",
-     "at": "2026-11-24T13:44:19.395Z",
-     "by": "store"
+     "at": "2026-11-24T13:44:19.395Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s6--earl, shared account login)",
+     "at": "2026-11-24T13:45:08.384Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by anoth",
+     "at": "2026-11-24T13:45:21.244Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 1: tmux session axf-fix-refreshing-console-jumps-back--s5--gina is gone while the step was building.",
+     "at": "2026-11-24T13:45:03.142Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by anoth",
+     "at": "2026-11-24T13:45:47.146Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-24T13:46:01.561Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s9--gina, shared account login)",
+     "at": "2026-11-24T13:46:49.942Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s4--earl: brief only · start 11.4K tokens ($0.05) · cost $3.78 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:47:02.985Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.78",
+     "at": "2026-11-24T13:47:13.051Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by ano",
+     "at": "2026-11-24T13:47:26.174Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s5--rhonda, shared account login)",
+     "at": "2026-11-24T13:48:20.288Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by ano",
+     "at": "2026-11-24T13:48:40.446Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.66",
+     "at": "2026-11-24T13:48:51.348Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s7--paulie: brief only · start 11.3K tokens ($0.05) · cost $1.66 · 21 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:48:58.238Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 1: tmux session axf-fix-refreshing-console-jumps-back--s4--earl is gone while the step was building.",
+     "at": "2026-11-24T13:49:02.328Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s8--sully: brief only · start 11.4K tokens ($0.05) · cost $1.12 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:49:36.458Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.12",
+     "at": "2026-11-24T13:49:42.694Z"
+    },
+    {
+     "text": "Watchdog: step s7 failed at building, attempt 2: tmux session axf-fix-refreshing-console-jumps-back--s7--paulie is gone while the step was building.",
+     "at": "2026-11-24T13:51:01.988Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s6--earl: brief only · start 11.5K tokens ($0.05) · cost $0.45 · 8 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:51:41.286Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s5--rhonda: brief only · start 11.3K tokens ($0.05) · cost $0.33 · 5 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:51:50.598Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.33",
+     "at": "2026-11-24T13:51:58.570Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.45",
+     "at": "2026-11-24T13:52:17.800Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s8--paulie, shared account login)",
+     "at": "2026-11-24T13:53:13.094Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s11 step s11 was replaced by a",
+     "at": "2026-11-24T13:53:30.020Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s11--sully, shared account login)",
+     "at": "2026-11-24T13:53:54.249Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 2: tmux session axf-fix-refreshing-console-jumps-back--s5--rhonda is gone while the step was building.",
+     "at": "2026-11-24T13:54:02.192Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at building, attempt 2: tmux session axf-fix-refreshing-console-jumps-back--s6--earl is gone while the step was building.",
+     "at": "2026-11-24T13:54:02.192Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s11 step s11 was replaced by a",
+     "at": "2026-11-24T13:54:18.862Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s5--earl, shared account login)",
+     "at": "2026-11-24T13:55:08.963Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at ready, attempt 3 on mossesx-max-.",
+     "at": "2026-11-24T13:55:02.664Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s11 step s11 was replaced by a",
+     "at": "2026-11-24T13:55:33.651Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s9--gina: brief only · start 11.4K tokens ($0.05) · cost $4.19 · 37 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:56:22.535Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $4.19",
+     "at": "2026-11-24T13:56:28.654Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s6--gina, shared account login)",
+     "at": "2026-11-24T13:57:10.674Z"
+    },
+    {
+     "text": "Store: refused a write by claude, nothing of it was kept: s13 step s13 was added: fix-refreshing-console-jumps-back is past the split (Building): no step is added to a build that is being built",
+     "at": "2026-11-24T13:57:24.294Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s11 step s11 was replaced by a",
+     "at": "2026-11-24T13:57:40.197Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s5--earl: brief only · start 11.3K tokens ($0.00) · cost $0.25 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-24T13:59:34.463Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.25",
+     "at": "2026-11-24T13:59:39.990Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s12--rhonda, shared account login)",
+     "at": "2026-11-24T14:01:00.977Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s11 step s11 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T14:01:28.716Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s11--sully: brief only · start 11.4K tokens ($0.05) · cost $1.73 · 24 turns · 6 tools, MCP none",
+     "at": "2026-11-24T14:06:27.842Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.73",
+     "at": "2026-11-24T14:06:33.143Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s6--gina: brief only · start 11.5K tokens ($0.00) · cost $0.58 · 10 turns · 6 tools, MCP none",
+     "at": "2026-11-24T14:08:36.515Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.58",
+     "at": "2026-11-24T14:08:42.520Z"
+    },
+    {
+     "text": "s8 done and pushed (claude/fix-refreshing-console-jumps-back--s8, 02d901d1b). UI Review NOT submitted: this session has no AXF_CONSOLE_URL / AXF_TOKEN. The 'new version' notice gained a hide button; shots are on the VPS at /tmp/s8shots-wro0 (notice-desktop.png, notice-phone.png, hidden-desktop.png, hidden-phone.png). Lander: submit them with review.mjs submit --console before calling the PR ready.",
+     "at": "2026-11-24T14:09:26.750Z"
+    },
+    {
+     "text": "Headless run axf-fix-refreshing-console-jumps-back--s8--paulie: brief only · start 11.3K tokens ($0.05) · cost $1.33 · 32 turns · 6 tools, MCP none",
+     "at": "2026-11-24T14:10:29.101Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.33",
+     "at": "2026-11-24T14:10:40.326Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T14:20:25.440Z"
     }
    ],
    "approvals": [],
@@ -303288,13 +303473,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-24T13:41:56.181Z",
+     "at": "2026-11-24T14:10:08.085Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "mossesx-max-",
-     "session": "axf-fix-refreshing-console-jumps-back--s5--gina",
+     "session": "axf-fix-refreshing-console-jumps-back--s8--paulie",
      "phase": ""
     }
    },
@@ -303641,7 +303826,7 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwl7sdev046hwh",
+     "uid": "st-mwthfg1q1ob7jg",
      "title": "",
      "text": "Restore view + tab on load: wire the place store into the console's router/app shell so a reload reopens the saved view and tabs before the first paint, and URL deep links still win over the saved place",
      "model": "Fable",
@@ -303658,14 +303843,29 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T21:53:52.157Z",
+     "doneAt": "2026-11-24T13:49:17.113Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T13:26:31.849Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "dependents": 8,
+       "priorFailures": 0
+      }
+     },
+     "rev": 10,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:53:52.495Z",
-     "statusAt": "2026-11-24T13:29:56.995Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-24T13:49:17.259Z",
+     "statusAt": "2026-11-24T13:49:17.113Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -303701,13 +303901,30 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-fix-refreshing-console-jumps-back--s4--earl on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:49:02.328Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s4--earl is gone while the step was building"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T13:49:17.113Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s4",
      "branch": "claude/fix-refreshing-console-jumps-back--s4",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s4--earl"
+     "tmux": "axf-fix-refreshing-console-jumps-back--s4--earl",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s5",
@@ -303728,7 +303945,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-24T13:41:37.595Z",
+     "doneAt": "2026-11-24T14:01:15.925Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -303745,12 +303962,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 8,
+     "rev": 17,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T13:41:38.425Z",
-     "statusAt": "2026-11-24T13:31:55.063Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-24T14:01:16.030Z",
+     "statusAt": "2026-11-24T14:01:15.925Z",
+     "statusBy": "headless",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -303786,13 +304003,65 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-fix-refreshing-console-jumps-back--s5--gina on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:45:03.142Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s5--gina is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-24T13:46:01.561Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:47:43.823Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:48:13.041Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-fix-refreshing-console-jumps-back--s5--rhonda on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:54:02.192Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s5--rhonda is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:54:34.112Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T14:01:15.925Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s5",
      "branch": "claude/fix-refreshing-console-jumps-back--s5",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s5--gina"
+     "tmux": "axf-fix-refreshing-console-jumps-back--s5--earl",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s6",
@@ -303813,8 +304082,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T14:08:11.908Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -303831,12 +304100,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 11,
+     "rev": 19,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T13:44:25.854Z",
-     "statusAt": "2026-11-24T13:44:25.769Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-24T14:10:23.942Z",
+     "statusAt": "2026-11-24T14:10:23.813Z",
+     "statusBy": "headless",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -303893,20 +304162,62 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:44:54.795Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-fix-refreshing-console-jumps-back--s6--earl on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:54:02.192Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s6--earl is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-24T13:55:02.664Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:56:39.589Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:57:02.708Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-fix-refreshing-console-jumps-back--s6--gina on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T14:10:23.813Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "sending",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s6",
      "branch": "claude/fix-refreshing-console-jumps-back--s6",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s6--rhonda",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s6--gina",
      "tried": [
       "mossesx-max-"
      ]
     },
     {
      "id": "s7",
-     "uid": "st-mwl7sdev07jt43",
+     "uid": "st-mwthfg1q1ralm7",
      "title": "",
      "text": "Pull-down refresh keeps the place: make the pull-to-refresh path save and restore the same state as reload, and leave scroll unlocked when it finishes",
      "model": "Fable",
@@ -303923,14 +304234,28 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:00:50.101Z",
+     "doneAt": "2026-11-24T13:51:29.141Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T13:26:31.849Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 8,
+       "priorFailures": 0
+      }
+     },
+     "rev": 12,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:00:51.151Z",
-     "statusAt": "2026-11-24T13:42:08.735Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-24T13:51:29.239Z",
+     "statusAt": "2026-11-24T13:51:29.141Z",
+     "statusBy": "headless",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -303987,17 +304312,34 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "axf-fix-refreshing-console-jumps-back--s7--paulie on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:51:01.988Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s7--paulie is gone while the step was building"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T13:51:29.141Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s7",
      "branch": "claude/fix-refreshing-console-jumps-back--s7",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s7--paulie"
+     "tmux": "axf-fix-refreshing-console-jumps-back--s7--paulie",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s8",
-     "uid": "st-mwl7sdev08d0mj",
+     "uid": "st-mwthfg1q1s8980",
      "title": "",
      "text": "Fix the scroll lock after an update: clear any leftover overflow/pointer-events lock or stale overlay when the update/refresh flow ends (and on load as a safety net), using the cause found in step 2",
      "model": "Fable",
@@ -304015,14 +304357,29 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:02:40.943Z",
+     "doneAt": "2026-11-24T14:09:18.479Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T13:26:31.849Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 2,
+       "priorFailures": 0
+      }
+     },
+     "rev": 13,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:02:41.631Z",
-     "statusAt": "2026-11-24T13:43:10.150Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-24T14:11:40.736Z",
+     "statusAt": "2026-11-24T14:11:40.655Z",
+     "statusBy": "headless",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -304058,17 +304415,52 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-fix-refreshing-console-jumps-back--s8--sully on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:52:08.024Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:52:35.126Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:52:43.503Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on mossesx-max-: refused: fix-refreshing-console-jumps-back--s8 already has a live session: lock launching (heartbeat 2026-11-24T13:52:38.981Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:53:00.905Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-fix-refreshing-console-jumps-back--s8--paulie on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T14:11:40.655Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s8",
      "branch": "claude/fix-refreshing-console-jumps-back--s8",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s8--sully"
+     "tmux": "axf-fix-refreshing-console-jumps-back--s8--paulie"
     },
     {
      "id": "s9",
-     "uid": "st-mwl7sdev09fzi3",
+     "uid": "st-mwthfg1q1tcub1",
      "title": "",
      "text": "API part: expose the saved place read-only and the restore action through the console API, keeping all four drivers the same: REST GET/POST /api/console-control place (read state, restore), MCP console tool, axf console place [get|restore], and an AmberX voice action; register targets with control@1 (append-only)",
      "model": "Fable",
@@ -304087,13 +304479,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:07:23.803Z",
+     "doneAt": "2026-11-24T13:58:09.364Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "cross-cutting",
+      "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+      "lane": "orchestrator",
+      "at": "2026-11-24T13:26:31.849Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 8,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:07:24.297Z",
-     "statusAt": "2026-11-24T13:25:00.174Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-24T13:58:09.443Z",
+     "statusAt": "2026-11-24T13:58:09.364Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -304116,11 +304522,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:45:38.789Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:46:32.114Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-refreshing-console-jumps-back--s9--gina on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T13:58:09.364Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s9",
-     "branch": "claude/fix-refreshing-console-jumps-back--s9"
+     "branch": "claude/fix-refreshing-console-jumps-back--s9",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s9--gina"
     },
     {
      "id": "s10",
@@ -304146,9 +304575,9 @@
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
      "updatedAt": "2026-11-17T22:14:09.003Z",
-     "statusAt": "2026-11-24T13:25:25.129Z",
+     "statusAt": "2026-11-24T13:50:51.241Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -304170,15 +304599,38 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:49:58.917Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:50:15.375Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: fix-refreshing-console-jumps-back--s10 already has a live session: lock launching (heartbeat 2026-11-24T13:50:06.991Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:50:51.241Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-fix-refreshing-console-jumps-back--s10--joey on mossesx-max-"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s10",
-     "branch": "claude/fix-refreshing-console-jumps-back--s10"
+     "branch": "claude/fix-refreshing-console-jumps-back--s10",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s10--joey"
     },
     {
      "id": "s11",
-     "uid": "st-mwl7sdev0bwa7c",
+     "uid": "st-mwthfg1q1v5p9p",
      "title": "",
      "text": "Run the checks (typecheck, check-theme, check-controls, check-console-control, check-toolbars), finish the report _claude/builds/reports/fix-refreshing-console-jumps-back.md (cause, fix, before/after), update the THREADS row and open the PR naming how each part is reached (REST, MCP, CLI, voice)",
      "model": "Fable",
@@ -304196,13 +304648,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:15:44.447Z",
+     "doneAt": "2026-11-24T14:05:54.218Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-24T13:26:31.849Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 9,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T22:15:44.809Z",
-     "statusAt": "2026-11-24T13:25:50.109Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-24T14:07:27.890Z",
+     "statusAt": "2026-11-24T14:07:27.804Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -304225,11 +304691,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:53:17.764Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:53:46.709Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-refreshing-console-jumps-back--s11--sully on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T14:07:27.804Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s11",
-     "branch": "claude/fix-refreshing-console-jumps-back--s11"
+     "branch": "claude/fix-refreshing-console-jumps-back--s11",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s11--sully"
     },
     {
      "id": "s12",
@@ -304246,8 +304735,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T14:07:56.310Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -304263,10 +304752,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 5,
+     "rev": 8,
      "createdAt": "2026-11-22T01:35:33.432Z",
-     "updatedAt": "2026-11-24T13:26:43.416Z",
-     "statusAt": "2026-11-24T13:26:15.945Z",
+     "updatedAt": "2026-11-24T14:07:57.155Z",
+     "statusAt": "2026-11-24T14:00:46.928Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -304290,26 +304779,42 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:59:53.236Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T14:00:46.928Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-refreshing-console-jumps-back--s12--rhonda on mossesx-max-"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s12",
-     "branch": "claude/fix-refreshing-console-jumps-back--s12"
+     "branch": "claude/fix-refreshing-console-jumps-back--s12",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s12--rhonda"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 182,
+   "rev": 279,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T22:15:44.447Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T21:36:54.206Z",
     "estimate": "",
     "model": "Opus",
@@ -304318,17 +304823,18 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwl7sdev01k0v1": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev0219vc": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev03dcug": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev046hwh": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev05yk7a": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev069b56": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev07jt43": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev08d0mj": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev09fzi3": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev0a4wlo": "2026-11-17T21:38:35.623Z",
-     "st-mwl7sdev0bwa7c": "2026-11-17T21:38:35.623Z"
+     "st-mwthfg1q1l3j3n": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1mx0xf": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1njuer": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1ob7jg": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1p6xz2": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1qmx8a": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1ralm7": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1s8980": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1tcub1": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1u5kjo": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1v5p9p": "2026-11-17T21:38:35.623Z",
+     "st-mwthfg1q1wb3vt": "2026-11-22T01:35:33.432Z"
     }
    },
    "queue": null,
@@ -305454,11 +305960,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -307833,11 +308339,11 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1011
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -308820,11 +309326,11 @@
     "all"
    ],
    "order": {
-    "all": 1011
+    "all": 1012
    },
    "kind": "build",
    "planRef": "",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313109,11 +313615,11 @@
     "all"
    ],
    "order": {
-    "all": 1012
+    "all": 1013
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328115,11 +328621,11 @@
     "all"
    ],
    "order": {
-    "all": 1013
+    "all": 1014
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328745,11 +329251,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1015
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -329466,11 +329972,11 @@
     "all"
    ],
    "order": {
-    "all": 1015
+    "all": 1016
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330697,11 +331203,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1018
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -331229,11 +331735,11 @@
     "all"
    ],
    "order": {
-    "all": 1018
+    "all": 1019
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -331787,11 +332293,11 @@
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -332493,11 +332999,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333075,11 +333581,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1022
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -333668,11 +334174,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1023
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334295,11 +334801,11 @@
     "all"
    ],
    "order": {
-    "all": 1023
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -335154,11 +335660,11 @@
     "all"
    ],
    "order": {
-    "all": 1024
+    "all": 1025
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -335832,11 +336338,11 @@
     "all"
    ],
    "order": {
-    "all": 1025
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336753,11 +337259,11 @@
     "all"
    ],
    "order": {
-    "all": 1027
+    "all": 1028
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -338249,11 +338755,11 @@
     "all"
    ],
    "order": {
-    "all": 1031
+    "all": 1032
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -338726,11 +339232,11 @@
     "all"
    ],
    "order": {
-    "all": 1032
+    "all": 1033
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -340205,11 +340711,11 @@
     "all"
    ],
    "order": {
-    "all": 1033
+    "all": 1034
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -340502,11 +341008,11 @@
     "all"
    ],
    "order": {
-    "all": 1034
+    "all": 1035
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342200,11 +342706,11 @@
     "all"
    ],
    "order": {
-    "all": 1037
+    "all": 1038
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342507,11 +343013,11 @@
     "all"
    ],
    "order": {
-    "all": 1038
+    "all": 1039
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342893,11 +343399,11 @@
     "all"
    ],
    "order": {
-    "all": 1039
+    "all": 1040
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343261,11 +343767,11 @@
     "all"
    ],
    "order": {
-    "all": 1040
+    "all": 1041
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344256,11 +344762,11 @@
     "all"
    ],
    "order": {
-    "all": 1043
+    "all": 1044
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344731,11 +345237,11 @@
     "all"
    ],
    "order": {
-    "all": 1044
+    "all": 1045
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345231,11 +345737,11 @@
     "all"
    ],
    "order": {
-    "all": 1045
+    "all": 1046
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -357370,11 +357876,11 @@
     "all"
    ],
    "order": {
-    "all": 26
+    "all": 27
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -358064,11 +358570,11 @@
     "all"
    ],
    "order": {
-    "all": 25
+    "all": 26
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -359837,11 +360343,11 @@
     "all"
    ],
    "order": {
-    "all": 23
+    "all": 24
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -360689,11 +361195,11 @@
     "all"
    ],
    "order": {
-    "all": 22
+    "all": 23
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363902,11 +364408,11 @@
     "all"
    ],
    "order": {
-    "all": 1054
+    "all": 1055
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364912,12 +365418,12 @@
     "all"
    ],
    "order": {
-    "all": 17
+    "all": 18
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365074,11 +365580,11 @@
     "all"
    ],
    "order": {
-    "all": 14
+    "all": 15
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365229,11 +365735,11 @@
     "all"
    ],
    "order": {
-    "all": 11
+    "all": 12
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365384,11 +365890,11 @@
     "all"
    ],
    "order": {
-    "all": 12
+    "all": 13
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365628,11 +366134,11 @@
     "all"
    ],
    "order": {
-    "all": 13
+    "all": 14
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365916,11 +366422,11 @@
     "all"
    ],
    "order": {
-    "all": 7
+    "all": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366200,11 +366706,11 @@
     "all"
    ],
    "order": {
-    "all": 8
+    "all": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366636,11 +367142,11 @@
     "all"
    ],
    "order": {
-    "all": 10
+    "all": 11
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366919,12 +367425,12 @@
     "all"
    ],
    "order": {
-    "all": 5
+    "all": 6
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-3-tiny-docs-edits-5hxf",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -367378,7 +367884,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T12:31:10.497Z",
-   "updatedAt": "2026-11-24T12:31:48.502Z",
+   "updatedAt": "2026-11-24T14:13:46.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -367390,7 +367896,16 @@
      "at": "2026-11-24T12:31:45.548Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-24T14:13:46.185Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "steps": [
     {
@@ -367660,12 +368175,12 @@
     "all"
    ],
    "order": {
-    "all": 4
+    "all": 5
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-5-four-docs-edits--4i3u",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -368277,12 +368792,12 @@
     "all"
    ],
    "order": {
-    "all": 2
+    "all": 3
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "plan-studio-stamps-auto-queue-in-vpxx",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -368388,6 +368903,73 @@
      "at": "2026-11-24T13:43:23.536Z",
      "by": "claude",
      "attempt": 1
+    }
+   ]
+  },
+  {
+   "id": "postgres-audit",
+   "title": "Postgres audit: find everything still hardcoded or in JSON",
+   "category": "",
+   "detail": "Brett thought everything moved to Postgres weeks ago; the agent roster (agent-swarm/agents/roster.json, 16 agents) is still a hardcoded repo file. Audit the WHOLE repo once, read-only first: list every hardcoded list, registry, roster, name set, config or data file (JSON, arrays in code) that holds runtime data and should live in Postgres. For each: what it is, file path, who reads it, whether a Postgres copy exists and which one is actually read. Write it to _claude/builds/reports/postgres-audit.md as a table, then add one fix step per item to move it, so nothing is found one at a time later.\n\nBrett: run it on Fable as one pass over the whole repo. Find every hardcoded data store. Rule: anything holding more than two fields and two values goes to Postgres. Audit report first, then move each one.: Brett: run it on Fable as one pass over the whole repo. Find every hardcoded data store. Rule: anything holding more than two fields and two values goes to Postgres. Audit report first, then move each one.",
+   "status": "splitting",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T14:23:41.717Z",
+   "updatedAt": "2026-11-24T14:24:27.286Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: postgres-audit-find-everything-s-56pe (Fixes › Postgres audit: find everything still hardcoded or in JSON). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-24T14:23:41.717Z"
+    },
+    {
+     "text": "Brett: follow the existing schema for what stays in the repo (declarations, schemas, fixtures, assets in plugin JSON; runtime values in Postgres). Write the report first; Brett reviews the list before anything is moved.",
+     "at": "2026-11-24T14:24:27.286Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "postgres-audit-find-everything-s-56pe",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T14:24:21.387Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-24T14:23:41.717Z",
+     "by": "claude",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-24T14:24:21.387Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
     }
    ]
   }
