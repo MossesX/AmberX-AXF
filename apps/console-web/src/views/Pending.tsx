@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePlaceTab } from './placeRestore';
 import { BuildOrigin, Button, ControlScope, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
@@ -31,7 +32,7 @@ export function Pending() {
   const [error, setError] = useState('');
   const [sort, setSort] = useState<PendingSort>(() => api.readLocal<PendingSort>('pending-sort', 'status'));
   const [dir, setDir] = useState<'asc' | 'desc'>(() => api.readLocal<'asc' | 'desc'>('pending-dir', 'asc'));
-  const [filter, setFilter] = useState<PendingStatus | ''>('');
+  const [filter, setFilter] = usePlaceTab<PendingStatus | ''>('view:pending/tab:pending.status', '');
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
@@ -90,7 +91,7 @@ export function Pending() {
 
       <div className="pd-strip" role="group" aria-label="Filter by status">
         {core.STATUSES.map((s) => (
-          <button key={s} data-fx-row className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter((f) => (f === s ? '' : s))}>
+          <button key={s} data-fx-row className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter(filter === s ? '' : s)}>
             <b>{counts[s]}</b><span>{core.STATUS_LABEL[s]}</span>
           </button>
         ))}

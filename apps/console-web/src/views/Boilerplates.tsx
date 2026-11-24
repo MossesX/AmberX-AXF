@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePlaceSelection, usePlaceTab } from './placeRestore';
 import { Button, Chip, Container, Icon, Slider, Switch, useRuntime } from '../axf/react';
 import { BUILD_OPTIONS, buildOptionFlags, resolveBuildOptions, type BuildOptionValues } from '../axf/core';
 import { useStore } from '../store';
@@ -9,7 +10,7 @@ const SCREEN_KINDS = ['landing', 'list-detail', 'dashboard', 'settings', 'feed',
 
 /** Boilerplate manager: browse by category, assemble a new one from catalog features with a live preview, import third-party boilerplates for porting, build an app from one. */
 export function Boilerplates() {
-  const [mode, setMode] = useState<'browse' | 'build' | 'import'>('browse');
+  const [mode, setMode] = usePlaceTab<'browse' | 'build' | 'import'>('view:boilerplates/tab:boilerplates.mode', 'browse', ['browse', 'build', 'import']);
   return (
     <div className="fx-stack fx-stack--lg">
       <div className="fx-row">{(['browse', 'build', 'import'] as const).map((m) => <button key={m} className={`fx-chip ${mode === m ? 'is-selected' : ''}`} onClick={() => setMode(m)}>{m === 'browse' ? 'Browse' : m === 'build' ? 'Build a boilerplate' : 'Import third-party'}</button>)}</div>
@@ -21,8 +22,8 @@ export function Boilerplates() {
 function Browse() {
   const s = useStore();
   const rt = useRuntime();
-  const [cat, setCat] = useState('all');
-  const [sel, setSel] = useState<string | null>(null);
+  const [cat, setCat] = usePlaceTab<string>('view:boilerplates/tab:boilerplates.categories', 'all');
+  const [sel, setSel] = usePlaceSelection<string | null>('view:boilerplates/list:boilerplates.catalog', null);
   const cats = [{ id: 'all', label: 'All' }, ...s.boilerplateIndex.categories, { id: 'custom', label: 'My boilerplates' }];
   const list = s.boilerplates.filter((b) => cat === 'all' || b.category === cat || (cat === 'custom' && b.source === 'console'));
   const cur = s.boilerplates.find((b) => b.id === sel) ?? list[0];
