@@ -27,6 +27,20 @@ const statusFile = baseDataPath('framework/catalog/status.json');
 const status = existsSync(statusFile) ? JSON.parse(readFileSync(statusFile, 'utf8')) : {};
 const check = process.argv.includes('--check');
 
+// On the hub the status map lives in the data folder, so a status row that arrived through a merged PR sits only in
+// the repo copy. Seed those rows into the hub map (catalog ids the hub has no row for; a hub row is never changed).
+const repoStatusFile = join(FRAMEWORK_DIR, 'catalog/status.json');
+if (statusFile !== repoStatusFile && existsSync(repoStatusFile)) {
+  const repoStatus = JSON.parse(readFileSync(repoStatusFile, 'utf8'));
+  const ids = catalog.tabs.flatMap((t) => t.groups.flatMap((g) => g.items.flatMap((it) => [it.id, ...(it.suggests ?? []).map((sg) => sg.id)])));
+  const seeded = ids.filter((id) => !status[id] && repoStatus[id]);
+  if (seeded.length) {
+    for (const id of seeded) status[id] = repoStatus[id];
+    writeFileSync(statusFile, JSON.stringify(status, null, 2) + '\n');
+    console.log(`status.json: seeded ${seeded.length} row(s) from the repo copy: ${seeded.join(', ')}`);
+  }
+}
+
 const STATUSES = ['built', 'partial', 'placeholder', 'planned'];
 const items = [];
 const missing = [];
