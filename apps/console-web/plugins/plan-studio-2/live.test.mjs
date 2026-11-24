@@ -326,7 +326,13 @@ await t('a sent plan reads from its build: never parked with 0 steps, the steps 
   assert.equal(pl.status, 'building'); assert.deepEqual(pl.steps.map((x) => x.id), ['s1', 's2']); assert.equal(pl.build.id, id); assert.equal(pl.build.status, 'pulling-main');
   const text = []; const log = console.log; console.log = (x) => text.push(x);
   try { await T.main(['build-status', p.id]); await T.main(['list', '--kind', 'step', '--under', p.id]); } finally { console.log = log; }
-  assert.match(text[0], new RegExp(`^build ${id} \\(${id}\\) · Pulling in main`)); assert.match(text[0], /s1\s+Fable\s+Building\s+Write the doc/);
+  // the head names the build by the number the store gave it (its id before it has one) and reads the store's pipeline
+  // view when the build carries one (the raw status label before)
+  const num = String(BS.loadStore().builds.find((x) => x.id === id).number ?? ''); const pv = r.build.pipelineView;
+  if (pv) assert.equal(pv.state, 'pulling-main', 'the pipeline view follows the move');
+  assert.equal(text[0].split('\n')[0], `build ${num ? `#${num}` : id} (${id}) · ${pv ? pv.label : 'Pulling in main'}`);
+  if (pv?.line) assert.equal(text[0].split('\n')[1], pv.line, 'the status line is the pipeline view\'s');
+  assert.match(text[0], /s1\s+Fable\s+Building\s+Write the doc/);
   assert.match(text[1], /Write the doc/, 'the CLI list shows the build\'s steps under the sent plan');
   BS.setFlowStatus(id, 'archived', { by: 'test', why: 'cancelled' });
   assert.equal(api({ op: 'plan-build', id: p.id }).build, null, 'a cancelled build is no longer the plan\'s build');

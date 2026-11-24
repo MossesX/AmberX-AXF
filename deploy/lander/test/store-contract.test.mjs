@@ -178,8 +178,9 @@ test('the merge line and the store\'s contract: a store that does not name `merg
   let lineWrites = 0; const write = store.write; store.write = (id, ch) => { if (ch.mergeLine !== undefined) lineWrites += 1; return write(id, ch); };
   await run(base(r, gh, store, now));
   const waiting = store.list.find((x) => x.id === 'b2');
-  if (kept) assert.deepEqual([waiting.mergeLine.position, waiting.mergeLine.waitingFor.id], [2, 'a'], 'the store keeps each build\'s place and the build it waits for');
-  else { assert.equal(lineWrites, 0, 'no write is spent on a field the store drops'); assert.equal(waiting.mergeLine, undefined); }
+  // kept = on the build or in its landing record (storedLine); the contract names the build waited for by `buildId`
+  if (kept) { const line = L.storedLine(waiting); assert.deepEqual([line?.position, line?.waitingFor?.buildId], [2, 'a'], 'the store keeps each build\'s place and the build it waits for'); }
+  else { assert.equal(lineWrites, 0, 'no write is spent on a field the store drops'); assert.equal(L.storedLine(waiting), null); }
   assert.equal(waiting.status, 'build-complete', 'a build waiting in the line is not moved by its place being written');
   assert.ok(memoryStore([]).keeps === undefined, 'the memory store keeps everything: nothing to ask');
 });

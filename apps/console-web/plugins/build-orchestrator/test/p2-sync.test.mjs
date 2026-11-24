@@ -34,7 +34,7 @@ writeFileSync(design, JSON.stringify({ steps: [
 ] }));
 const fable = `cat >/dev/null; cat ${design}`;
 const updates = join(tmp, 'updates.jsonl');
-const prCmd = `if [ "$AXF_PR_ACTION" = ready ]; then echo "ready $AXF_PR_NUMBER" >> ${join(tmp, 'pr-calls')}; exit 0; fi; echo "$AXF_BUILD_ID $AXF_BUILD_BRANCH" >> ${join(tmp, 'pr-calls')}; echo '{"number": 4242, "url": "https://github.example/pull/4242"}'`;
+const prCmd = `if [ "$AXF_PR_ACTION" = ready ]; then echo "ready $AXF_PR_NUMBER" >> ${join(tmp, 'pr-calls')}; exit 0; fi; echo "$AXF_BUILD_ID $AXF_BUILD_BRANCH" >> ${join(tmp, 'pr-calls')}; echo '{"number": 90210, "url": "https://github.example/pull/90210"}'`;
 Object.assign(process.env, {
   AXF_BUILDS_STORE: join(tmp, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0', AXF_DATA_DIR: 'off', AXF_SHIPPED: 'off',
   AXF_PIPELINE_DIR: join(tmp, 'pipe'), AXF_DISPATCH_DIR: join(tmp, 'pipe'), AXF_SLOTS_DIR: join(tmp, 'slots'), AXF_SLOTS_TMUX: 'off', AXF_BUILD_LOCK_TMUX: 'off',
@@ -97,10 +97,10 @@ eq(F.notifyUpdated({ id: 'alpha', status: 'building' }, 1, { env: { AXF_PIPELINE
 ok(F.notifyUpdated({ id: 'zz', status: 'split' }, 7, { env: { AXF_PIPELINE_CONSOLE: 'no-such-container', PATH: '/nonexistent' } }) !== undefined, 'a console that is down never fails the pipeline');
 
 console.log('the draft PR opens the moment the build starts');
-eq([A.pr, A.prUrl, A.prDraft, A.branch], ['4242', 'https://github.example/pull/4242', true, 'lander/alpha'], 'pr number and link are on the build as soon as it started');
+eq([A.pr, A.prUrl, A.prDraft, A.branch], ['90210', 'https://github.example/pull/90210', true, 'lander/alpha'], 'pr number and link are on the build as soon as it started');
 eq(readFileSync(join(tmp, 'pr-calls'), 'utf8').trim().split('\n'), ['alpha lander/alpha'], 'asked once, for the branch the lander lands it from');
-ok(r.prs.some((x) => x.id === 'alpha' && x.pr === 4242), 'the pass reports it');
-ok(A.notes.some((x) => /Draft PR #4242/.test(x.text)), 'a note says so');
+ok(r.prs.some((x) => x.id === 'alpha' && x.pr === 90210), 'the pass reports it');
+ok(A.notes.some((x) => /Draft PR #90210/.test(x.text)), 'a note says so');
 
 console.log('one splitter per build: a second pass never writes over the first');
 // beta's plan touches other files than alpha (which is still building)
@@ -147,9 +147,9 @@ console.log('intake: a build that clashes with one not on main yet is rejected, 
 for (const s of get('alpha').steps) F.stepExit('alpha', s.id, { exit: 0 });
 eq(get('alpha').status, 'build-complete', 'alpha is built');
 adv();
-eq([get('alpha').prDraft, get('alpha').pr], [false, '4242'], 'built: its PR is taken out of draft so the lander can merge it');
-ok(readFileSync(join(tmp, 'pr-calls'), 'utf8').includes('ready 4242'), 'the PR was marked ready once the build was built');
-land('alpha', 4242);
+eq([get('alpha').prDraft, get('alpha').pr], [false, '90210'], 'built: its PR is taken out of draft so the lander can merge it');
+ok(readFileSync(join(tmp, 'pr-calls'), 'utf8').includes('ready 90210'), 'the PR was marked ready once the build was built');
+land('alpha', 90210);
 BS.setFlowStatus('beta', 'archived', { by: 't' });
 sendSteps('hand-x', [{ text: 'By hand', files: ['apps/ui/web/'] }], { hand: { at: new Date().toISOString(), by: 'brett' } });
 BS.setFlowStatus('hand-x', 'building', { by: 'hand' });
