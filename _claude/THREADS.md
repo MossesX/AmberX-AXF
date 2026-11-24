@@ -843,36 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 02:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 03:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 03:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 03:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 03:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1213,36 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 12:31 UTC · `pipeline-test-5` → splitting (all) · orchestrator
 - 2026-11-24 12:31 UTC · `pipeline-test-5` → split, note (all) · orchestrator
 - 2026-11-24 12:32 UTC · `fix907-ci` → landed, note (all) · lander
+- 2026-11-24 12:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
+- 2026-11-24 12:35 UTC · `banner-widget-shapes-plus-change-icon` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `terminal-main-tab-streaming-console-s` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `icon-picker-every-banner-settings-widget` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `flagship-professional-skin-covering-2` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `auto-lander-never-wait-missing-ui-review` → failed, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → split, note (all) · orchestrator
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → split (all) · orchestrator
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → split, note (all) · orchestrator
+- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → splitting (all) · orchestrator
+- 2026-11-24 12:37 UTC · `flagship-professional-skin-covering-2` → split (all) · orchestrator
+- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → splitting (all) · orchestrator
+- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → split (all) · orchestrator
 
 ## Token passes (log)
 
