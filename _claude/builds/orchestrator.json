@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T01:05:38.669Z",
+ "updatedAt": "2026-11-24T01:06:15.961Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -211663,798 +211663,6 @@
    ]
   },
   {
-   "id": "urgent-all-data-to-postgres-builds-store",
-   "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
-   "category": "data",
-   "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/urgent-all-data-to-postgres-builds-store",
-   "pr": "#848",
-   "mergedAt": "2026-11-19T00:25:51Z",
-   "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-23T22:05:19.929Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
-     "at": "2026-11-18T16:02:33.839Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
-     "at": "2026-11-18T19:48:31.816Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-18T19:49:46.715Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-urgent-all-data-to-postgres-builds-store--lenny.",
-     "at": "2026-11-18T19:51:35.914Z"
-    },
-    {
-     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--lenny: brief only · start 13.8K tokens ($0.04) · cost $1.12 · 26 turns · 6 tools, MCP none",
-     "at": "2026-11-18T19:59:33.537Z"
-    },
-    {
-     "text": "s1 done: framework/spec/DATA-INVENTORY.md. Key facts for s2/s3: axf-data is in shadow mode since Nov 17 (1760 drift entries) - read the builds/* drift before cut-over. builds + build_steps tables already exist as a mirror (985/5951 rows); make them the source and lift notes/approvals/pipeline out of extra. 106 orphan store.json.tmp-* files sit next to the live store. s4 is ~2-3 h: split it into s4.1-s4.6 as listed in the inventory.",
-     "at": "2026-11-18T19:58:46.532Z"
-    },
-    {
-     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
-     "at": "2026-11-18T20:29:05.528Z"
-    },
-    {
-     "text": "s2 (Fable): builds store is on Postgres tables. builds (keyed by id), build_steps, build_notes, journal (view build_journal); row-level patch writes (SELECT … FOR UPDATE on the touched builds only); key-level modes so store.json + journal/ move ahead of the rest of the namespace. Live: axf-data redeployed at a fixed address with host.env for host processes; engine moved shadow → postgres (SQLite side held 119 keys, Postgres 16 105; reads had been answering not_found); store copied and verified: 1 060 builds, 6 718 steps, 7 594 notes on both sides and as rows; journal: 22 parts, 15 731 entries (2 torn lines in p7 cannot be copied). Keys NOT flipped yet: a writer on older code would keep writing the file. s3 flips once main carries this: builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json (cli token, host URL), then drops the lock path and tmp files. Report: _claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
-     "at": "2026-11-18T22:57:10.231Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
-     "at": "2026-11-18T20:59:53.928Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--joey, shared account login)",
-     "at": "2026-11-18T21:00:01.858Z"
-    },
-    {
-     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--joey: brief only · start 15.7K tokens ($0.13) · cost $26.28 · 235 turns · 6 tools, MCP none",
-     "at": "2026-11-18T22:58:57.550Z"
-    },
-    {
-     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
-     "at": "2026-11-18T22:57:27.033Z"
-    },
-    {
-     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
-     "at": "2026-11-18T23:19:26.843Z"
-    },
-    {
-     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
-     "at": "2026-11-18T23:39:45.838Z"
-    },
-    {
-     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
-     "at": "2026-11-19T00:09:45.626Z"
-    },
-    {
-     "text": "Brett, Nov 18 2026 (voice): split the rest so it runs on three slots without interfering. This build (part A) keeps s3 (builds cut-over), s4.1 only (pending, build queue, agent-slots, auto-lander: contended by every launch, stays with builds) and s5. s4.2, s4.3, s4.6 moved to 'Postgres part B'; s4.4, s4.5 moved to 'Postgres part C'. Do not do those here. Run s5 (CLAUDE.md rule + CI check that fails new JSON data writes) last, after parts B and C have merged, so the CI check doesn't fail their branches.",
-     "at": "2026-11-19T00:11:02.021Z"
-    },
-    {
-     "text": "PR #848 opened by hand (builds-live is paused, so no PR was opened after s2); merge queue lands it, then s3 cuts over.",
-     "at": "2026-11-19T00:26:18.724Z"
-    },
-    {
-     "text": "Queued by cli.",
-     "at": "2026-11-19T00:33:06.533Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T00:35:58.320Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
-     "at": "2026-11-19T00:37:18.137Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--gina, shared account login)",
-     "at": "2026-11-19T00:37:52.626Z"
-    },
-    {
-     "text": "s4 split: s4 is s4.1 only (pending, build queue, agent-slots, auto-lander). s4.2/s4.3/s4.6 are build postgres-part-b-plan-plan-studio-catalog, s4.4/s4.5 are postgres-part-c-console-state-settings; extra sub-steps added here by mistake were removed so nothing is built twice.",
-     "at": "2026-11-19T01:24:15.746Z"
-    },
-    {
-     "text": "Phase 3 (Opus) done: s3 cut code, s4.1 agent-slots table + cut tool, s5 no-json-data@1 rule + CI ratchet. Main CI has been red since 00:25 (Plugin lifecycle: DATA-INVENTORY.md from PR #848 named plugin files); fixed on this branch (7a29d61c8), lands with this PR. Console redeployed to main (image rebuilt, healthy). The builds flip waits for this PR on main: new step s6 carries the exact command.",
-     "at": "2026-11-19T02:26:36.528Z"
-    },
-    {
-     "text": "Reconciler: PR #848; PR #848 merged",
-     "at": "2026-11-19T02:13:34.737Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T02:22:00.656Z"
-    },
-    {
-     "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T02:22:00.738Z"
-    },
-    {
-     "text": "When s3 flips builds/store.json (console running main with key-level modes), also run: node framework/cli/data-tables.mjs cutover plan --apply --keys && node framework/cli/data-tables.mjs cutover catalog --apply --keys (postgres-part-b: plan/catalog console keys and planner/v2 wait for the same precondition). Report: _claude/builds/reports/postgres-part-b.md",
-     "at": "2026-11-19T02:38:25.531Z"
-    },
-    {
-     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--gina: brief only · start 13.9K tokens ($0.04) · cost $8.56 · 175 turns · 6 tools, MCP none",
-     "at": "2026-11-19T02:32:46.328Z"
-    },
-    {
-     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
-     "at": "2026-11-19T02:33:14.133Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T02:34:37.031Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T02:34:00.568Z"
-    },
-    {
-     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T02:34:00.569Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T02:35:46.432Z"
-    },
-    {
-     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
-     "at": "2026-11-19T02:40:49.753Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T02:41:03.840Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T02:41:43.030Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--rhonda, shared account login)",
-     "at": "2026-11-19T02:43:49.249Z"
-    },
-    {
-     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
-     "at": "2026-11-19T02:43:17.443Z"
-    },
-    {
-     "text": "Self-check: urgent-all-data-to-postgres-builds-store had no session on record but axf-urgent-all-data-to-postgres-builds-store--rhonda is alive: kept running and tracking it.",
-     "at": "2026-11-19T02:54:49.824Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T03:23:19.717Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T03:32:52.213Z"
-    },
-    {
-     "text": "s8: builds store and journal flipped to axf-data tables (cutover, counts equal: 1066 builds, 6765 steps, 7683 notes). agent-slots left local: live worktrees (fix-main-ci-apk, postgres-part-b, postgres-part-c) still run pre-s4.1 agent-slots.mjs; flip with 'agent-slots.mjs data cutover --apply' once they carry it.",
-     "at": "2026-11-19T03:40:40.732Z"
-    },
-    {
-     "text": "s8 verify: write through /opt/axf after the flip.",
-     "at": "2026-11-19T03:41:53.628Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T03:44:55.335Z"
-    },
-    {
-     "text": "Refused running → landed (asked by orchestrator): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T03:45:30.829Z"
-    },
-    {
-     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--rhonda: brief only · start 14.5K tokens ($0.04) · cost $0.91 · 39 turns · 6 tools, MCP none",
-     "at": "2026-11-19T03:48:02.628Z"
-    },
-    {
-     "text": "Session axf-urgent-all-data-to-postgres-builds-store--rhonda on hulu0241 finished: every step done.",
-     "at": "2026-11-19T03:48:50.327Z"
-    },
-    {
-     "text": "Refused running → landed (asked by pipeline): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T03:48:50.327Z"
-    },
-    {
-     "text": "Session axf-urgent-all-data-to-postgres-builds-store--rhonda on hulu0241 finished: every step done.",
-     "at": "2026-11-19T03:47:53.228Z"
-    },
-    {
-     "text": "Refused running → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T03:49:14.332Z"
-    },
-    {
-     "text": "Shipped manifest sm-urgent-all-data-to-postgres-builds-store rev 1 sent to Shipped features (orchestrator): landed 212fb1f83, 33 file(s), 0 test line(s), 5 open.",
-     "at": "2026-11-19T03:49:14Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T03:55:25.632Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:03:47.824Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:13:57.623Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:23:28.009Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:32:51.024Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:42:54.229Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T04:52:44.638Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:03:27.818Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:13:37.610Z"
-    },
-    {
-     "text": "Update from postgres-part-b (#851 merged): before the key flips, redeploy axf-data from main (bash deploy/install-data.sh) once no pg_dump is running, so the host token can read console/framework/*; then data-tables.mjs cutover plan --apply --keys and cutover catalog --apply --keys.",
-     "at": "2026-11-19T05:15:40.630Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:22:51.428Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:32:56.517Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:42:58.522Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T05:52:43.138Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:02:03.129Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:11:42.616Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:21:24.424Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:31:56.909Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:41:49.217Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T06:52:56.341Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:02:50.426Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:13:59.135Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:22:06.336Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:31:57.312Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:42:39.930Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T07:51:58.226Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:02:14.954Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:13:03.958Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:22:27.254Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:32:39.632Z"
-    },
-    {
-     "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T06:47:21.630Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:42:01.643Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T08:51:52.015Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:02:23.238Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:12:23.253Z"
-    },
-    {
-     "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T06:46:55.619Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:21:59.036Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:32:14.545Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:42:21.741Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T09:51:59.710Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:02:20.810Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:12:20.335Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:22:20.539Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:32:29.752Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:41:50.852Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T10:52:03.831Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T11:01:50.909Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T11:12:31.027Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T11:32:43.234Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T11:48:54.522Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: complete",
-     "at": "2026-11-19T11:54:49.641Z"
-    },
-    {
-     "text": "Refused running → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T11:56:25.550Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T12:01:44.928Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-19T12:11:15.424Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: complete",
-     "at": "2026-11-19T12:18:28.671Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-22T00:18:27.594Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: complete",
-     "at": "2026-11-22T00:28:30.658Z"
-    },
-    {
-     "text": "Self-check: urgent-all-data-to-postgres-builds-store was marked running on hulu0241 with no session: released and back in the Queue.",
-     "at": "2026-11-22T00:20:35.682Z"
-    },
-    {
-     "text": "Watchdog: Queued build urgent-all-data-to-postgres-builds-store → Complete: Its PR merged on main (PR #848 merged 2026-11-19T00:25:51Z (9c20047d4c75); not on main; build urgent-all-data-to-postgres-builds-store: queued) (queued → landing)",
-     "at": "2026-11-22T00:25:39.659Z"
-    },
-    {
-     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-22T00:35:55.808Z"
-    },
-    {
-     "text": "Watchdog: PR #848 merged 2026-11-19 00:25 and the build never heard: the merge is recorded, CI on 9c20047d4c is next.",
-     "at": "2026-11-22T00:45:22.991Z"
-    },
-    {
-     "text": "Reconciler: branch claude/urgent-all-data-to-postgres-builds-store (no PR yet)",
-     "at": "2026-11-22T03:45:58.563Z"
-    },
-    {
-     "text": "Self-check: urgent-all-data-to-postgres-builds-store was marked running on hulu0241 with no session: released and back in the Queue.",
-     "at": "2026-11-22T03:46:26.238Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:35:07.735Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:36:04.831Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:37:04.407Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:30:09.830Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:31:04.252Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T04:32:04.488Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:00:13.212Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:01:04.786Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T05:20:10.255Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T05:21:04.435Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:25:08.925Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:26:05.446Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:20:09.327Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T06:21:04.423Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T09:05:10.335Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T11:40:10.093Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T10:40:09.371Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T10:41:05.560Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T10:42:06.021Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T10:43:05.613Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T10:44:05.920Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T14:10:11.529Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T16:20:14.672Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T16:21:09.121Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T16:00:18.437Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T16:01:09.118Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T18:40:12.838Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T18:41:09.989Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T17:45:12.024Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T17:46:09.232Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T21:05:14.198Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T21:06:11.783Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T19:35:13.412Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T19:36:10.642Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T23:25:15.640Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T21:25:14.368Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-22T21:26:11.474Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-23T01:45:18.072Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-23T01:46:13.508Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-23T01:47:13.248Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-23T01:48:13.193Z"
-    },
-    {
-     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
-     "at": "2026-11-23T09:49:16.890Z"
-    },
-    {
-     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
-     "at": "2026-11-23T20:25:22.406Z"
-    },
-    {
-     "text": "Refused running → landed (asked by pipeline-bring-up): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-23T20:26:11.616Z"
-    },
-    {
-     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
-     "at": "2026-11-23T20:30:49.617Z"
-    },
-    {
-     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-23T20:30:49.618Z"
-    },
-    {
-     "text": "Watchdog: PR #848 merged 2026-11-19 00:25 and the build never heard: the merge is recorded, CI on 9c20047d4c is next.",
-     "at": "2026-11-23T22:05:19.929Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 2,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-19T01:41:01.880Z",
-     "by": "auto",
-     "kind": "downgrade"
-    },
-    {
-     "phase": 1,
-     "from": "Opus",
-     "to": "Fable",
-     "at": "2026-11-23T20:25:22.406Z",
-     "by": "auto",
-     "via": "policy",
-     "kind": "upgrade",
-     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "urgent-all-data-to-postgres-builds-store",
-    "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 3, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store · PR #848\nSteps in this phase (1 left, ~15 min):\n[x] s3 (~25 min) Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed\n[x] s4 (~30 min) s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over\n[x] s5 (~15 min) Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write\n[skip] s6 (~30 min) s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over\n[skip] s10 (~30 min) s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over\n[ ] s8 (~15 min) Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
-    "verbatim": false,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Inventory every JSON/JSONL data file and file-backed namespace (repo _claude/, .axf-console/, /projects/*/_data); list owner, writer and target table",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:25:12.740Z",
-     "note": "",
-     "uid": "st-mwm8h2vi06h4qn",
-     "createdAt": "2026-11-18T14:45:31.829Z"
-    },
-    {
-     "id": "s2",
-     "text": "Builds: Postgres tables for builds, steps, notes, journal; builds-store.mjs and the console server read/write them with row-level locking; migrate store.json + journal, verify counts",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:25:22.406Z",
-     "note": "",
-     "uid": "st-mwm8h2vi070oxb",
-     "createdAt": "2026-11-18T14:45:31.829Z"
-    },
-    {
-     "id": "s3",
-     "text": "Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:25:31.428Z",
-     "note": "",
-     "uid": "st-mwm8h2vi086tbx",
-     "createdAt": "2026-11-18T14:45:31.829Z"
-    },
-    {
-     "id": "s12",
-     "text": "Move the remaining data namespaces from the inventory to tables, one per step, each verified then cut over",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:25:39.983Z",
-     "note": "",
-     "uid": "st-mwraod7b1x7akt",
-     "createdAt": "2026-11-22T03:46:04.356Z"
-    },
-    {
-     "id": "s5",
-     "text": "Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "15 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:26:10.626Z",
-     "note": "",
-     "uid": "st-mwm8h2vj0a7ucv",
-     "createdAt": "2026-11-18T14:45:31.829Z"
-    }
-   ]
-  },
-  {
    "id": "every-plugin-gets-own-default-toolbar",
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
@@ -214775,6 +213983,802 @@
      "note": "",
      "uid": "st-mwreynil043j79",
      "createdAt": "2026-11-22T05:46:02.707Z"
+    }
+   ]
+  },
+  {
+   "id": "urgent-all-data-to-postgres-builds-store",
+   "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
+   "category": "data",
+   "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
+   "status": "landed",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/urgent-all-data-to-postgres-builds-store",
+   "pr": "#848",
+   "mergedAt": "2026-11-19T00:25:51Z",
+   "createdAt": "2026-11-18T14:45:31.823Z",
+   "updatedAt": "2026-11-24T01:05:51.073Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
+     "at": "2026-11-18T16:02:33.839Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T19:48:31.816Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T19:49:46.715Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-urgent-all-data-to-postgres-builds-store--lenny.",
+     "at": "2026-11-18T19:51:35.914Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--lenny: brief only · start 13.8K tokens ($0.04) · cost $1.12 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-18T19:59:33.537Z"
+    },
+    {
+     "text": "s1 done: framework/spec/DATA-INVENTORY.md. Key facts for s2/s3: axf-data is in shadow mode since Nov 17 (1760 drift entries) - read the builds/* drift before cut-over. builds + build_steps tables already exist as a mirror (985/5951 rows); make them the source and lift notes/approvals/pipeline out of extra. 106 orphan store.json.tmp-* files sit next to the live store. s4 is ~2-3 h: split it into s4.1-s4.6 as listed in the inventory.",
+     "at": "2026-11-18T19:58:46.532Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T20:29:05.528Z"
+    },
+    {
+     "text": "s2 (Fable): builds store is on Postgres tables. builds (keyed by id), build_steps, build_notes, journal (view build_journal); row-level patch writes (SELECT … FOR UPDATE on the touched builds only); key-level modes so store.json + journal/ move ahead of the rest of the namespace. Live: axf-data redeployed at a fixed address with host.env for host processes; engine moved shadow → postgres (SQLite side held 119 keys, Postgres 16 105; reads had been answering not_found); store copied and verified: 1 060 builds, 6 718 steps, 7 594 notes on both sides and as rows; journal: 22 parts, 15 731 entries (2 torn lines in p7 cannot be copied). Keys NOT flipped yet: a writer on older code would keep writing the file. s3 flips once main carries this: builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json (cli token, host URL), then drops the lock path and tmp files. Report: _claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+     "at": "2026-11-18T22:57:10.231Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
+     "at": "2026-11-18T20:59:53.928Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--joey, shared account login)",
+     "at": "2026-11-18T21:00:01.858Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--joey: brief only · start 15.7K tokens ($0.13) · cost $26.28 · 235 turns · 6 tools, MCP none",
+     "at": "2026-11-18T22:58:57.550Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-18T22:57:27.033Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:19:26.843Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:39:45.838Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-19T00:09:45.626Z"
+    },
+    {
+     "text": "Brett, Nov 18 2026 (voice): split the rest so it runs on three slots without interfering. This build (part A) keeps s3 (builds cut-over), s4.1 only (pending, build queue, agent-slots, auto-lander: contended by every launch, stays with builds) and s5. s4.2, s4.3, s4.6 moved to 'Postgres part B'; s4.4, s4.5 moved to 'Postgres part C'. Do not do those here. Run s5 (CLAUDE.md rule + CI check that fails new JSON data writes) last, after parts B and C have merged, so the CI check doesn't fail their branches.",
+     "at": "2026-11-19T00:11:02.021Z"
+    },
+    {
+     "text": "PR #848 opened by hand (builds-live is paused, so no PR was opened after s2); merge queue lands it, then s3 cuts over.",
+     "at": "2026-11-19T00:26:18.724Z"
+    },
+    {
+     "text": "Queued by cli.",
+     "at": "2026-11-19T00:33:06.533Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T00:35:58.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
+     "at": "2026-11-19T00:37:18.137Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--gina, shared account login)",
+     "at": "2026-11-19T00:37:52.626Z"
+    },
+    {
+     "text": "s4 split: s4 is s4.1 only (pending, build queue, agent-slots, auto-lander). s4.2/s4.3/s4.6 are build postgres-part-b-plan-plan-studio-catalog, s4.4/s4.5 are postgres-part-c-console-state-settings; extra sub-steps added here by mistake were removed so nothing is built twice.",
+     "at": "2026-11-19T01:24:15.746Z"
+    },
+    {
+     "text": "Phase 3 (Opus) done: s3 cut code, s4.1 agent-slots table + cut tool, s5 no-json-data@1 rule + CI ratchet. Main CI has been red since 00:25 (Plugin lifecycle: DATA-INVENTORY.md from PR #848 named plugin files); fixed on this branch (7a29d61c8), lands with this PR. Console redeployed to main (image rebuilt, healthy). The builds flip waits for this PR on main: new step s6 carries the exact command.",
+     "at": "2026-11-19T02:26:36.528Z"
+    },
+    {
+     "text": "Reconciler: PR #848; PR #848 merged",
+     "at": "2026-11-19T02:13:34.737Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T02:22:00.656Z"
+    },
+    {
+     "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:22:00.738Z"
+    },
+    {
+     "text": "When s3 flips builds/store.json (console running main with key-level modes), also run: node framework/cli/data-tables.mjs cutover plan --apply --keys && node framework/cli/data-tables.mjs cutover catalog --apply --keys (postgres-part-b: plan/catalog console keys and planner/v2 wait for the same precondition). Report: _claude/builds/reports/postgres-part-b.md",
+     "at": "2026-11-19T02:38:25.531Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--gina: brief only · start 13.9K tokens ($0.04) · cost $8.56 · 175 turns · 6 tools, MCP none",
+     "at": "2026-11-19T02:32:46.328Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-19T02:33:14.133Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:34:37.031Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T02:34:00.568Z"
+    },
+    {
+     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:34:00.569Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:35:46.432Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-19T02:40:49.753Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:41:03.840Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:41:43.030Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--rhonda, shared account login)",
+     "at": "2026-11-19T02:43:49.249Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
+     "at": "2026-11-19T02:43:17.443Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store had no session on record but axf-urgent-all-data-to-postgres-builds-store--rhonda is alive: kept running and tracking it.",
+     "at": "2026-11-19T02:54:49.824Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:23:19.717Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:32:52.213Z"
+    },
+    {
+     "text": "s8: builds store and journal flipped to axf-data tables (cutover, counts equal: 1066 builds, 6765 steps, 7683 notes). agent-slots left local: live worktrees (fix-main-ci-apk, postgres-part-b, postgres-part-c) still run pre-s4.1 agent-slots.mjs; flip with 'agent-slots.mjs data cutover --apply' once they carry it.",
+     "at": "2026-11-19T03:40:40.732Z"
+    },
+    {
+     "text": "s8 verify: write through /opt/axf after the flip.",
+     "at": "2026-11-19T03:41:53.628Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:44:55.335Z"
+    },
+    {
+     "text": "Refused running → landed (asked by orchestrator): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T03:45:30.829Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--rhonda: brief only · start 14.5K tokens ($0.04) · cost $0.91 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-19T03:48:02.628Z"
+    },
+    {
+     "text": "Session axf-urgent-all-data-to-postgres-builds-store--rhonda on hulu0241 finished: every step done.",
+     "at": "2026-11-19T03:48:50.327Z"
+    },
+    {
+     "text": "Refused running → landed (asked by pipeline): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T03:48:50.327Z"
+    },
+    {
+     "text": "Session axf-urgent-all-data-to-postgres-builds-store--rhonda on hulu0241 finished: every step done.",
+     "at": "2026-11-19T03:47:53.228Z"
+    },
+    {
+     "text": "Refused running → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T03:49:14.332Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-all-data-to-postgres-builds-store rev 1 sent to Shipped features (orchestrator): landed 212fb1f83, 33 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-19T03:49:14Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:55:25.632Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:03:47.824Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:13:57.623Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:23:28.009Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:32:51.024Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:42:54.229Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:52:44.638Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:03:27.818Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:13:37.610Z"
+    },
+    {
+     "text": "Update from postgres-part-b (#851 merged): before the key flips, redeploy axf-data from main (bash deploy/install-data.sh) once no pg_dump is running, so the host token can read console/framework/*; then data-tables.mjs cutover plan --apply --keys and cutover catalog --apply --keys.",
+     "at": "2026-11-19T05:15:40.630Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:22:51.428Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:32:56.517Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:42:58.522Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:52:43.138Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:02:03.129Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:11:42.616Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:21:24.424Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:31:56.909Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:41:49.217Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T06:52:56.341Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:02:50.426Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:13:59.135Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:22:06.336Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:31:57.312Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:42:39.930Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:51:58.226Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:02:14.954Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:13:03.958Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:22:27.254Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:32:39.632Z"
+    },
+    {
+     "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T06:47:21.630Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:42:01.643Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T08:51:52.015Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:02:23.238Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:12:23.253Z"
+    },
+    {
+     "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T06:46:55.619Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:21:59.036Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:32:14.545Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:42:21.741Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:51:59.710Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:02:20.810Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:12:20.335Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:22:20.539Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:32:29.752Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:41:50.852Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:52:03.831Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T11:01:50.909Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T11:12:31.027Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T11:32:43.234Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T11:48:54.522Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: complete",
+     "at": "2026-11-19T11:54:49.641Z"
+    },
+    {
+     "text": "Refused running → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T11:56:25.550Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T12:01:44.928Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T12:11:15.424Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: complete",
+     "at": "2026-11-19T12:18:28.671Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-22T00:18:27.594Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: complete",
+     "at": "2026-11-22T00:28:30.658Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T00:20:35.682Z"
+    },
+    {
+     "text": "Watchdog: Queued build urgent-all-data-to-postgres-builds-store → Complete: Its PR merged on main (PR #848 merged 2026-11-19T00:25:51Z (9c20047d4c75); not on main; build urgent-all-data-to-postgres-builds-store: queued) (queued → landing)",
+     "at": "2026-11-22T00:25:39.659Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-22T00:35:55.808Z"
+    },
+    {
+     "text": "Watchdog: PR #848 merged 2026-11-19 00:25 and the build never heard: the merge is recorded, CI on 9c20047d4c is next.",
+     "at": "2026-11-22T00:45:22.991Z"
+    },
+    {
+     "text": "Reconciler: branch claude/urgent-all-data-to-postgres-builds-store (no PR yet)",
+     "at": "2026-11-22T03:45:58.563Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-22T03:46:26.238Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:35:07.735Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:36:04.831Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:37:04.407Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:30:09.830Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:31:04.252Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T04:32:04.488Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:00:13.212Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:01:04.786Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:20:10.255Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T05:21:04.435Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:25:08.925Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:26:05.446Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:20:09.327Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T06:21:04.423Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T09:05:10.335Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T11:40:10.093Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T10:40:09.371Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T10:41:05.560Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T10:42:06.021Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T10:43:05.613Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T10:44:05.920Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T14:10:11.529Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:20:14.672Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:21:09.121Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:00:18.437Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T16:01:09.118Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T18:40:12.838Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T18:41:09.989Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T17:45:12.024Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T17:46:09.232Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:05:14.198Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:06:11.783Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T19:35:13.412Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T19:36:10.642Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T23:25:15.640Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:25:14.368Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-22T21:26:11.474Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:45:18.072Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:46:13.508Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:47:13.248Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T01:48:13.193Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 127: bash: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: No such file or directory",
+     "at": "2026-11-23T09:49:16.890Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-23T20:25:22.406Z"
+    },
+    {
+     "text": "Refused running → landed (asked by pipeline-bring-up): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-23T20:26:11.616Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-23T20:30:49.617Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-23T20:30:49.618Z"
+    },
+    {
+     "text": "Watchdog: PR #848 merged 2026-11-19 00:25 and the build never heard: the merge is recorded, CI on 9c20047d4c is next.",
+     "at": "2026-11-23T22:05:19.929Z"
+    },
+    {
+     "text": "Watchdog: merged, and main is green at 88eb36b4c0 with 9c20047d4c in it (CI on the merge commit itself: red, fixed on main since): landed.",
+     "at": "2026-11-24T01:05:51.073Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-19T01:41:01.880Z",
+     "by": "auto",
+     "kind": "downgrade"
+    },
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-23T20:25:22.406Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "urgent-all-data-to-postgres-builds-store",
+    "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 3, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store · PR #848\nSteps in this phase (1 left, ~15 min):\n[x] s3 (~25 min) Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed\n[x] s4 (~30 min) s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over\n[x] s5 (~15 min) Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write\n[skip] s6 (~30 min) s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over\n[skip] s10 (~30 min) s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over\n[ ] s8 (~15 min) Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Inventory every JSON/JSONL data file and file-backed namespace (repo _claude/, .axf-console/, /projects/*/_data); list owner, writer and target table",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:25:12.740Z",
+     "note": "",
+     "uid": "st-mwm8h2vi06h4qn",
+     "createdAt": "2026-11-18T14:45:31.829Z"
+    },
+    {
+     "id": "s2",
+     "text": "Builds: Postgres tables for builds, steps, notes, journal; builds-store.mjs and the console server read/write them with row-level locking; migrate store.json + journal, verify counts",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:25:22.406Z",
+     "note": "",
+     "uid": "st-mwm8h2vi070oxb",
+     "createdAt": "2026-11-18T14:45:31.829Z"
+    },
+    {
+     "id": "s3",
+     "text": "Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:25:31.428Z",
+     "note": "",
+     "uid": "st-mwm8h2vi086tbx",
+     "createdAt": "2026-11-18T14:45:31.829Z"
+    },
+    {
+     "id": "s12",
+     "text": "Move the remaining data namespaces from the inventory to tables, one per step, each verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:25:39.983Z",
+     "note": "",
+     "uid": "st-mwraod7b1x7akt",
+     "createdAt": "2026-11-22T03:46:04.356Z"
+    },
+    {
+     "id": "s5",
+     "text": "Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:26:10.626Z",
+     "note": "",
+     "uid": "st-mwm8h2vj0a7ucv",
+     "createdAt": "2026-11-18T14:45:31.829Z"
     }
    ]
   },

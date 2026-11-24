@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10374,
- "updatedAt": "2026-11-24T01:05:38.669Z",
+ "rev": 10375,
+ "updatedAt": "2026-11-24T01:06:15.961Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -339718,7 +339718,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -339726,7 +339726,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-23T22:05:19.929Z",
+   "updatedAt": "2026-11-24T01:05:51.073Z",
    "builtAt": "",
    "notes": [
     {
@@ -340372,6 +340372,10 @@
     {
      "text": "Watchdog: PR #848 merged 2026-11-19 00:25 and the build never heard: the merge is recorded, CI on 9c20047d4c is next.",
      "at": "2026-11-23T22:05:19.929Z"
+    },
+    {
+     "text": "Watchdog: merged, and main is green at 88eb36b4c0 with 9c20047d4c in it (CI on the merge commit itself: red, fixed on main since): landed.",
+     "at": "2026-11-24T01:05:51.073Z"
     }
    ],
    "approvals": [
@@ -340455,9 +340459,9 @@
     "pr": 848,
     "sha": "9c20047d4c75f81abcc09f4ec759b7700f270022",
     "mergedAt": "2026-11-19T00:25:51Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-24T01:05:51.073Z",
+    "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -340584,11 +340588,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 181,
+   "rev": 186,
    "deleted": false,
    "deletedAt": "",
    "pending": {
