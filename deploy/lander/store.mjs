@@ -4,7 +4,9 @@
  * it changes, with `at` and `by`, and read back so a refused write is never silent.
  *
  * Fields the lander writes (Pipeline 2.0 contract; the builds@1 schema itself belongs to p2-status-core):
- *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why?, reset? }], failure, pr,
+ *   build  mergeLine { position, waitingFor: { buildId, id, number, title } | null } (its place in the merge line; also
+ *          kept as landing.mergeLine), landing.state (waiting-to-merge | merging | running-ci | landed | failed),
+ *          status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why?, reset? }], failure, pr,
  *          attempt (while landing: the landing run's count, because the contract's attempt ceiling reads this field),
  *          landing { attempt (this landing run's failures: the lander's own count, whatever the dispatcher counted
  *                    before the build was complete), split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing | error },
@@ -24,7 +26,7 @@ const clone = (v) => JSON.parse(JSON.stringify(v));
 
 /**
  * One change to a build → { build, refused: [why] }. `ch` = { status, group, reset, attempt, failure (null clears), landing
- * (merged into), pr, note, steps: [{ id, status, prNumber }] }. A backward move is refused (forward-only), the rest of
+ * (merged into), mergeLine (null clears), pr, note, steps: [{ id, status, prNumber }] }. A backward move is refused (forward-only), the rest of
  * the change still applies.
  */
 export function applyChange(build, ch = {}, { at = new Date().toISOString(), by = 'lander' } = {}) {
@@ -50,6 +52,12 @@ export function applyChange(build, ch = {}, { at = new Date().toISOString(), by 
   if (ch.failure !== undefined) { if (ch.failure) b.failure = clone(ch.failure); else delete b.failure; }
   if (ch.landing) b.landing = { ...(b.landing || {}), ...clone(ch.landing) };
   if (ch.pr !== undefined) b.pr = str(ch.pr, 200);
+  // the build's place in the merge line (null: it left the line)
+  // (on the build, and in the landing record, where pipeline-status@1 keeps it: the store keeps whichever its contract names)
+  if (ch.mergeLine !== undefined) {
+    if (ch.mergeLine) { b.mergeLine = clone(ch.mergeLine); b.landing = { ...(b.landing || {}), mergeLine: clone(ch.mergeLine) }; }
+    else { delete b.mergeLine; if (b.landing) delete b.landing.mergeLine; }
+  }
   if (ch.mergedAt) b.mergedAt = str(ch.mergedAt, 40);
   if (ch.landed) b.landed = { ...(b.landed || {}), ...clone(ch.landed) };
   if (ch.note) b.notes = log(b.notes, { text: str(ch.note, 2000), at, by }, 500);
@@ -64,6 +72,9 @@ export function applyChange(build, ch = {}, { at = new Date().toISOString(), by 
     if (sc.prNumber !== undefined) s.prNumber = Number(sc.prNumber) || null;
     if (moved) { s.statusAt = at; s.statusBy = by; s.statusLog = log(s.statusLog, { status: s.status, at, by, ...(s.prNumber ? { prNumber: s.prNumber } : {}) }, STEP_LOG_MAX); }
   }
+  // pipeline-status@1: the landing state every screen shows, beside the status it is worked out from
+  const state = L.landingState(b);
+  if (state && (b.landing || ch.status)) b.landing = { ...(b.landing || {}), state };
   b.updatedAt = at;
   return { build: b, refused };
 }
@@ -99,6 +110,20 @@ export function memoryStore(builds = [], { by = 'lander', now = () => new Date()
 }
 
 /**
+ * Does the builds store's normalizer keep the merge line of a Pipeline 2.0 build (`mergeLine`, or `landing.mergeLine`)? (builds@1 names every field it keeps;
+ * a checkout whose contract does not name the merge line yet drops it.) `core` = framework/plan/builds-store-core.mjs.
+ * → true | false; undefined when it can't be told (the lander then simply tries).
+ */
+export function keepsMergeLine(core) {
+  try {
+    const line = { position: 2, waitingFor: { buildId: 'other', id: 'other', number: '', title: 'Other' } };
+    const probe = { id: 'merge-line-probe', title: 'probe', flow: 'pipeline-2', status: 'build-complete', steps: [], mergeLine: line, landing: { mergeLine: line } };
+    const b = (core.normalizeStore({ builds: [probe] }).builds || []).find((x) => x.id === probe.id);
+    return b ? !!L.storedLine(b) : undefined;
+  } catch { return undefined; }
+}
+
+/**
  * The real builds store (framework/cli/builds-store.mjs: readStoreNow / withStore, one lock, every write journaled and
  * published live). A write the store does not keep (a schema without the lander@1 fields) comes back { ok: false, lost }.
  */
@@ -106,7 +131,10 @@ export async function makeStore({ by = 'lander', repo } = {}) {
   const base = repo ? new URL(`file://${repo.replace(/\/?$/, '/')}`) : new URL('../../', import.meta.url);
   const S = await import(new URL('framework/cli/builds-store.mjs', base).href);
   const find = (store, id) => (store?.builds || []).find((b) => b.id === id) || null;
+  let keeps; try { keeps = keepsMergeLine(await import(new URL('framework/plan/builds-store-core.mjs', base).href)); } catch { keeps = undefined; }
   return {
+    /** What the store's contract keeps of the lander's optional fields (undefined: not known, try). */
+    keeps: { mergeLine: keeps },
     read: () => (S.readStoreNow().builds || []).filter((b) => !b.deleted),
     write(id, ch) {
       let refused = []; let missing = false;
