@@ -16,8 +16,8 @@ any grid row or build step pulled into focus, all by address. Build
 | Palette | `apps/console-web/src/control/SearchPalette.tsx`: Ctrl+K, `console.control.search`, `?axf-cmd=search&q=` |
 | Console actions | `apps/console-web/src/actions/console-control.ts` (`console.control.open/focus/scroll/search/state/press/set/plugin`), `voice-control.ts` |
 | Server | `apps/console-web/server/console_control.py` (inventory, search, plugins, voice twin), `console_control_api.py` (REST, guards, audit, rate limit) |
-| MCP | `console_control_targets`, `_state`, `_do`, `_search`, `_focus`, `_scroll`, `_plugin`, `_voice`; `console_open` / `console_show` take an address |
-| CLI | `axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice … [--json]` (`framework/cli/console-control.mjs`) |
+| MCP | `console_control_targets`, `_state`, `_do`, `_search`, `_focus`, `_scroll`, `_plugin`, `_voice`, `_place`; `console_open` / `console_show` take an address |
+| CLI | `axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice|place … [--json]` (`framework/cli/console-control.mjs`) |
 | Checks | `framework/cli/check-console-control.mjs` (ratchet `framework/spec/console-control-baseline.json`), `server/tests/test_console_control.py`, `scripts/console-control.e2e.mjs`, `scripts/console-control-parity.mjs` |
 
 ## Addresses
@@ -78,3 +78,31 @@ A toolbar drawn from a page toolbar asset (page-toolbar@1) is `toolbar:<settings
 transport: REST `GET /api/console-control/toolbars`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press {button}`; MCP
 `console_control_toolbar`; control@1 `console.toolbars`; CLI `axf console toolbar list|get|press`; voice "press <button> on
 the <x> toolbar", "what's on the <x> toolbar".
+
+## Saved place (Nov 24 2026, build fix-refreshing-console-jumps-back)
+
+The console keeps its place per browser tab (`apps/console-web/src/place/placeState.ts`, sessionStorage
+`axf:console:place@1`): the view, the open tab of every tab row, selections and scroll offsets, all keyed by
+console-control addresses, so a reload, a pull-down refresh or a pushed `console.refresh` comes back where Brett was.
+`src/place/placeApi.ts` puts it on the API as one target, `panel:console-place`:
+
+- `state` (read only) adds `saved` (what the store holds now: it follows him as he moves), `loaded` (what this page
+  load found saved, i.e. where he was before the last reload; null when nothing was), `now` (what is on screen: view,
+  tabs, focused row, scroll) and `restoring` (a restore still waiting for tab rows or rows to render).
+- `press` puts the place back: opens the view, switches its tab rows, selects its rows, reapplies its scroll offsets,
+  and answers `result: {from, view, tabs, selection, scroll}`. It puts back `loaded` when there is one, else `saved`;
+  the value `loaded` or `saved` picks one. No place yet, or a view that can't open here: `unavailable`. It stops the
+  moment he scrolls, taps or types. It only moves the screen, so its policy is navigation (`allow`, never a veto).
+- The same restore is the action `console.place.restore` (`function:console.place.restore`: palette, menus,
+  `axf console action console.place.restore`); the drivers below press the panel, which answers what was put back.
+
+| Driver | Read | Restore |
+|---|---|---|
+| REST | `GET /api/console-control/place` | `POST /api/console-control/place/restore {from?, reason?, to?}` |
+| MCP | `console_control_place` | `console_control_place {restore: true, source?}` |
+| CLI | `axf console place [get]` | `axf console place restore [--from loaded|saved]` |
+| Voice | | "put me back", "back to where I was", "take me back to where I left off", "restore my place", "where was I" → "Back where you were." |
+
+All four send the console the same command (`state` / `press` on `panel:console-place`, built by
+`console_control.place_command`); `test_place` in `server/tests/test_console_control.py` holds them to it. The phrases
+are `PLACE_RESTORE_RE` in `framework/core/engines/console-control-voice.mjs` and its Python twin.

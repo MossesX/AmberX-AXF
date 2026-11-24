@@ -1127,7 +1127,7 @@ def shot_result(r: dict[str, Any]) -> CallToolResult:
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar", "console_control_place")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
 
 
@@ -1266,6 +1266,21 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         if open:
             return await go({"verb": "open", "address": address, "reason": reason, "to": to})
         return await go({"verb": "state", "address": address, "to": to})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_control_place(restore: bool = False, source: Literal["", "loaded", "saved"] = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """The console's place: the screen, tabs, selection and scroll offsets it keeps so a reload, a pull-down refresh
+        or a pushed console refresh comes back where Brett was. With no argument: read it (state.saved = what is kept,
+        state.loaded = what this page load found, state.now = what is on screen, state.restoring = a restore still
+        running). restore=true puts it back (source: `loaded` = where he was before the last reload, the default when
+        there is one; `saved` = the one kept since). Same as GET /api/console-control/place, POST …/place/restore
+        and `axf console place get|restore`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses
+        try:
+            cmd = cc.place_command(restore, source)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        return await go({**cmd, **({"reason": reason} if restore else {}), "to": to})
 
     @mcp.tool(annotations=WRITE)
     async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:

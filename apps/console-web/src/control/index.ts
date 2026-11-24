@@ -11,6 +11,7 @@ import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
 import { installSearchPalette } from './SearchPalette';
+import { installPlaceApi } from '../place/placeApi';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -21,5 +22,6 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); toolbars(); search(); executor(); voice(); verbs(); palette(); };
+  const place = installPlaceApi(rt);
+  return () => { actions.off(); plugins(); toolbars(); search(); executor(); voice(); verbs(); palette(); place(); };
 }
