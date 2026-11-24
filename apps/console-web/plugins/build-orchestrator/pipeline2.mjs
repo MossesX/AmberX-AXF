@@ -54,21 +54,30 @@
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
  *   … retry <build> [--why w] [--by who]   Brett's retry of a failed build: the attempt counts start again
- *   … act <build> <queue|hold|release|retry|rebuild|run-ci|land|cancel> [--step s] [--why w] [--by who]
+ *   … act <build> <queue|hold|release|retry|rebuild|run-ci|land|cancel|run-all|defer> [--step s] [--why w] [--by who]
  *                                          one tap on a build or a step (the console, Plan Studio 2.0, MCP): actBuild below
+ *
+ * pipeline-status@1 (framework/core/pipeline-status.mjs; Brett, Nov 23 and 24 2026): the split writes its provenance
+ * to the build (`split: { by: 'vps', model, at, stepCount }`, `splitBy` on each step) and `modelBy: 'triage'` once the
+ * models are assigned; one pass at a time splits a build (splitClaim); steps never share files, and a build that
+ * touches what another build has not landed yet is rejected with two answers, run-all or defer (build-clash@1); a
+ * build gets a draft PR the moment it starts (`pr`, `prUrl`); and after every store change this file makes, one update
+ * command goes to the console (POST /api/builds/updated { build, state, rev, at }: notifyUpdated).
  *
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
  * live tmux sessions instead of tmux), AXF_P2_PARALLEL (steps at once instead of the stepsInParallel setting),
  * AXF_P2_MAX_ATTEMPTS (instead of the watchdog's maxAttempts), AXF_P2_EMERGENCY_SLOTS (emergency slot count, with
- * AXF_P2_SLOTS).
+ * AXF_P2_SLOTS), AXF_P2_UPDATES (a file the update commands are appended to instead of being sent), AXF_P2_DRAFT_PR=off,
+ * AXF_P2_DRAFT_PR_CMD (a command that prints the draft PR as JSON instead of asking GitHub).
  */
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { homedir, hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P2 from '../../../../framework/core/pipeline-status.mjs';
+import * as BC from '../../../../framework/core/build-clash.mjs';
 import * as PC from './pipeline-core.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { FlowRefused, loadStore, setFlowStatus } from '../../../../framework/cli/builds-store.mjs';
@@ -103,9 +112,43 @@ const say = (who, kind, text, ref) => { try { if (who === 'dispatcher') crewSay(
 /** Every live Pipeline 2.0 build. */
 export const p2Builds = (store) => store.builds.filter((b) => b.flow === P2.FLOW && !b.deleted && b.status !== P2.EXIT);
 
+/* ------------------------------------------------------------------ the update command */
+
+/** Seconds the update command may take: the console being slow or down never holds the pipeline. */
+export const UPDATE_TIMEOUT_S = 3;
+const lastSent = new Map(); // build → the store rev its last command carried (one command per change)
+/**
+ * Tell the console that a build changed (Brett, Nov 23 2026: "it adds it to the build store, and then it sends a
+ * command for the orchestrator and Plan Studio to update"): POST <console>/api/builds/updated { build, state, rev, at }
+ * with the console's own token, as pipeline.mjs's alerts go (inside the console container). One command per store
+ * change, sent detached with a short timeout: the screens re-read the builds store, the command carries no step data,
+ * and a console that is down costs nothing. AXF_PIPELINE_CONSOLE=off sends none; AXF_P2_UPDATES=<file> (tests) appends
+ * each command to that file instead. → the command, or null when none was sent.
+ */
+export function notifyUpdated(build, rev, { step = '', env = process.env } = {}) {
+  try {
+    if (!build?.id || lastSent.get(build.id) === rev) return null;
+    lastSent.set(build.id, rev);
+    const body = { build: build.id, state: str(build.status, 40), rev, at: nowIso(), ...(step ? { step } : {}) };
+    if (env.AXF_P2_UPDATES) { appendFileSync(env.AXF_P2_UPDATES, `${JSON.stringify(body)}\n`); return body; } // axf-data: not data (a test's record of the update commands)
+    const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
+    if (name === 'off') return null;
+    const cmd = `curl -s -o /dev/null -m ${UPDATE_TIMEOUT_S} -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary "$AXF_UPDATE_BODY" "http://127.0.0.1:${Number(env.AXF_CONSOLE_PORT) || 7090}/api/builds/updated"`;
+    const child = spawn('docker', ['exec', '-e', `AXF_UPDATE_BODY=${JSON.stringify(body)}`, name, 'sh', '-c', cmd], { detached: true, stdio: 'ignore' });
+    child.on('error', () => { /* no docker here, or the console is down: the screens' own watcher catches up */ });
+    child.unref();
+    return body;
+  } catch { return null; }
+}
+/** One status change (or one change of the record at the same status) through the contract, then the update command. */
+function flow(id, to, opts = {}) {
+  const r = setFlowStatus(id, to, opts);
+  notifyUpdated(r.build, r.rev, { step: opts.step || '' });
+  return r;
+}
 /** Move through the contract; a refusal is logged (never silent) and returns null instead of throwing. */
 function move(id, to, opts = {}) {
-  try { return setFlowStatus(id, to, { by: 'orchestrator', ...opts }); }
+  try { return flow(id, to, { by: 'orchestrator', ...opts }); }
   catch (e) { if (e instanceof FlowRefused) { logLine({ event: 'refused', build: id, step: opts.step || '', to, error: str(e.message) }); return null; } throw e; }
 }
 const stepOf = (b, sid) => b.steps.find((x) => x.id === sid || x.uid === sid);
@@ -169,33 +212,108 @@ function gate(b, steps, env, opts = {}) {
   catch (e) { logLine({ event: 'triage-failed', build: b.id, error: str(e.message) }); return { steps, decisions: [], changed: [], error: str(e.message) }; }
 }
 
+/**
+ * One splitter per build. Fable takes minutes to design a build's steps, and more than one pass can find the same
+ * build at `pending` in that time (the cron tick, the store-change hook, a tap on Queue). Until Nov 24 2026 each of
+ * them asked Fable, and the second answer was written over the first: the store refused it ("step s1 was replaced by
+ * another") and left that note on the build after every split. Now the pass that moves a build to `splitting` writes
+ * its claim (`splitClaim: { by, at }`) in the same store write; a pass that finds another's fresh claim leaves the
+ * build alone, and a split is written only by the pass whose claim is still on the record.
+ */
+export const SPLIT_CLAIM_MS = 9 * 60e3; // past the splitter's own timeout (pipeline.mjs SPLIT_TIMEOUT_MS): a dead splitter's claim lapses
+const ME = `${hostname()}:${process.pid}`;
+class Claimed extends Error {}
+const claimedByOther = (b, now = Date.now()) => { const c = b?.splitClaim; return !!c && typeof c === 'object' && !!c.by && c.by !== ME && now - Date.parse(c.at) < SPLIT_CLAIM_MS; };
+/** Take the build for this pass (pending → splitting, or the claim alone on a build already there). → true when it is ours. */
+function claimSplit(id, why) {
+  const cur = loadStore().builds.find((x) => x.id === id);
+  if (!cur || !at(cur, 'pending', 'splitting') || claimedByOther(cur)) return false;
+  try { return !!move(id, cur.status === 'pending' ? 'splitting' : cur.status, { ...(cur.status === 'pending' ? { why } : {}), action: 'pipeline2:split-claim', mutate: (rec) => { if (claimedByOther(rec)) throw new Claimed(); rec.splitClaim = { by: ME, at: nowIso() }; } }); }
+  catch (e) { if (e instanceof Claimed) return false; throw e; }
+}
+/** The model id that really ran the split (the model policy's Fable), as the provenance records it. */
+const SPLIT_MODEL = MODEL_IDS[modelKey('fable')] || 'fable';
+
 function splitAll(store, env, out, only = '') {
   for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting') && (!only || x.id === only))) {
     const planningOnly = !b.steps.length;
     if (planningOnly && !canAskFable(env)) { out.waits.push({ id: b.id, why: 'Fable designs its steps on the VPS host (the next host tick)' }); continue; }
-    if (b.status === 'pending' && !move(b.id, 'splitting', { why: planningOnly ? 'Fable is designing its steps' : 'the orchestrator is splitting it' })) continue;
+    if (!claimSplit(b.id, planningOnly ? 'Fable is designing its steps' : 'the orchestrator is splitting it')) { out.waits.push({ id: b.id, why: 'another pass is splitting it (one splitter per build)' }); continue; }
     const slots = slotCount(env);
-    let parts; let note = '';
+    let parts; let note = ''; let splitBy = 'vps-rules';
     if (planningOnly) {
       const d = designSteps(b, { env, slots });
       // a model Fable's design gave is the splitter's judgement (the gate's `designer` rule reads it); the fallback gives none
       const steps = d.steps.map((x) => ({ text: x.text, model: x.model, ...(d.by === 'fable' ? { suggestedBy: 'splitter' } : {}), ...(x.pin ? { pin: x.pin, pinBy: 'Plan Studio' } : {}), estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
-      parts = P2.splitParts(steps, steps.length); // one row per designed step; only steps sharing files go together
+      // one row per designed step; steps that share a file, directly or through a third, go together (build-clash@1), so
+      // no two rows touch the same file and each merges cleanly alone
+      parts = BC.disjointParts(steps);
+      splitBy = d.by === 'fable' ? 'vps-fable' : 'vps-rules';
       const minutes = d.steps.reduce((m, x) => m + x.minutes, 0);
       note = d.by === 'fable'
         ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min). The triage gate assigns the models.`
         : `Fable could not split it (${d.why}): one step per planning step instead (${d.steps.length}, ${minutes} min). Review the steps.`;
       logLine({ event: 'design', build: b.id, by: d.by, steps: d.steps.length, why: d.why });
-    } else parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
+    } else parts = BC.separateParts(P2.splitParts(b.steps.filter((s) => !s.skip), slots)); // parts for the slots, joined until none shares a file
     const when = nowIso();
     // the model of every step is the triage gate's: what the step came with (the splitter's model, an older record's) is a suggestion
     const gated = gate(b, parts.map((p, i) => partStep(p, i, { at: when, by: 'orchestrator' })), env, { at: when });
-    const r = move(b.id, 'split', { why: `${parts.length} step${parts.length === 1 ? '' : 's'} for ${slots} slot${slots === 1 ? '' : 's'}`,
-      mutate: (rec) => { rec.steps = gated.steps.map((st, i) => storeCore.normStep(st, i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+    // the rows as they are stored: each with its unique id (uid) and who split it
+    const rows = gated.steps.map((st, i) => Object.assign(storeCore.normStep(st, i), { splitBy }));
+    // split provenance: where it ran, the model that really ran, when, how many steps
+    const split = { by: 'vps', model: splitBy === 'vps-fable' ? SPLIT_MODEL : 'rules', at: when, stepCount: rows.length, host: hostname() };
+    // intake: a build that touches what another build has not landed yet is rejected as a whole (it keeps its steps and waits for an answer)
+    const clash = intakeClash({ ...b, steps: rows }, when);
+    let r = null;
+    try {
+      r = move(b.id, 'split', { why: `${parts.length} step${parts.length === 1 ? '' : 's'} for ${slots} slot${slots === 1 ? '' : 's'}`,
+        mutate: (rec) => {
+          // only the pass that holds the claim writes a split, and only once: a late answer is dropped, never written over the steps
+          if (rec.splitClaim?.by !== ME) throw new Claimed();
+          rec.steps = rows; rec.split = split; rec.splitClaim = null;
+          if (clash) rec.clash = clash;
+          if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' });
+          if (clash) rec.notes.push({ text: clip(`${clash.reason} Answers: ${clash.options.map((o) => `${o.label} (${o.id})`).join(', or ')}.`, 1500), at: when, by: 'orchestrator' });
+        } });
+    } catch (e) {
+      if (!(e instanceof Claimed)) throw e;
+      logLine({ event: 'split-dropped', build: b.id, why: 'another pass split it first: this answer is not written' });
+      continue;
+    }
     if (r) triage.logSteps(b, gated.decisions);
-    if (r) { out.split.push({ id: b.id, steps: parts.length, slots }); logLine({ event: 'split', build: b.id, steps: parts.length, slots }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
+    if (r) { out.split.push({ id: b.id, steps: parts.length, slots, by: split.by, model: split.model }); logLine({ event: 'split', build: b.id, steps: parts.length, slots, by: split.by, model: split.model, splitBy }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
+    if (r && clash) { out.rejected.push({ id: b.id, why: clash.reason }); logLine({ event: 'clash-rejected', build: b.id, with: clash.with.map((w) => w.buildId) }); say('orchestrator', 'blocked', clip(`${b.id}: ${clash.reason} Run all, or defer the clashing steps.`, 400), b.id); }
   }
 }
+
+/* ------------------------------------------------------------------ intake: clashes with builds not on main yet */
+
+/**
+ * The clash record of a build against every build that is not on main yet (building, or built and waiting to merge),
+ * or null: build-clash@1. Emergency builds and hand builds are never checked (they run beside the line by Brett's own
+ * hand), and a build that already carries a record is not judged twice (its answer stands).
+ */
+function intakeClash(b, when = nowIso()) {
+  if (P2.besideLine(b) || b.clash) return null;
+  try { return BC.clashRecord(b, p2Builds(loadStore()), { at: when }); }
+  catch (e) { logLine({ event: 'clash-check-failed', build: b.id, error: str(e.message) }); return null; }
+}
+/** The same check when a waiting build is about to start (a hand build may have started since its split). → true when it was rejected now. */
+function rejectAtStart(b, out) {
+  const clash = intakeClash(b);
+  if (!clash) return false;
+  const r = move(b.id, b.status, { action: 'pipeline2:clash', mutate: (rec) => { rec.clash = clash; rec.notes.push({ text: clip(`${clash.reason} Answers: ${clash.options.map((o) => `${o.label} (${o.id})`).join(', or ')}.`, 1500), at: nowIso(), by: 'orchestrator' }); } });
+  if (!r) return false;
+  out.rejected.push({ id: b.id, why: clash.reason }); logLine({ event: 'clash-rejected', build: b.id, with: clash.with.map((w) => w.buildId), at: 'start' });
+  say('orchestrator', 'blocked', clip(`${b.id}: ${clash.reason} Run all, or defer the clashing steps.`, 400), b.id);
+  return true;
+}
+/** Is this step deferred right now: it waits for a build that has not landed (build-clash@1 stillDeferred)? → that build or null. */
+const deferredNow = (s, builds) => (s?.waitsFor ? BC.stillDeferred(s, builds) : null);
+/** Is every counted step that is not deferred at one of `statuses` (and is there one)? */
+const everyNow = (b, builds, ...statuses) => { const l = P2.liveSteps(b).filter((s) => !deferredNow(s, builds)); return l.length > 0 && l.every((s) => statuses.includes(s.status)); };
+/** Nothing of the build can start yet: every step it still has to build waits for another build to land. */
+const allDeferred = (b, builds) => { const l = P2.liveSteps(b).filter((s) => !s.done); return l.length > 0 && l.every((s) => deferredNow(s, builds)); };
 
 /* ------------------------------------------------------------------ one active build, then main into each step */
 
@@ -203,10 +321,14 @@ function splitAll(store, env, out, only = '') {
 export const isHeld = (b) => !!str(b?.pipeline?.heldAt, 40);
 /** Waiting its turn: at `split`, or failed there with attempts left (a build that failed while it waited starts like any other). */
 export const waitsTurn = (b, max = P2.MAX_ATTEMPTS) => P2.WAITING.includes(b.status) || (b.status === P2.FAILED && P2.WAITING.includes(b.failedFrom) && !P2.gaveUp(b, max));
-/** The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their own lane. */
+/**
+ * The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their
+ * own lane. A build rejected for a clash waits for its answer, and one whose every step is deferred waits for the build
+ * they wait for: neither takes the place, and neither holds up the builds behind it.
+ */
 export function nextToActivate(builds, max = P2.MAX_ATTEMPTS) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b) && !BC.isRejected(b) && !allDeferred(b, builds)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
 /** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
@@ -230,6 +352,9 @@ function pullMain(b, env, out) {
   for (const s0 of b.steps) {
     const s = stepOf(loadStore().builds.find((x) => x.id === b.id), s0.id);
     if (!needsMain(s)) continue;
+    // deferred (build-clash@1): it waits for another build to land, then gets a worktree cut from the main that has it
+    const waitsFor = deferredNow(s, loadStore().builds);
+    if (waitsFor) { out.waits.push({ id: b.id, step: s.id, why: `deferred: it starts by itself when ${BC.refName(waitsFor)} lands` }); continue; }
     if (P2.gaveUp(s, maxAttempts)) { out.waits.push({ id: b.id, step: s.id, why: `the main pull gave up after attempt ${s.attempt} of ${maxAttempts}: retry the build to start it again` }); return false; }
     const name = stepName(b, s);
     const dir = join(worktreesRoot(env), name);
@@ -251,8 +376,9 @@ function prepare(b, env, out) {
   if (at(b, 'pulling-main')) {
     if (b.status === P2.FAILED && !move(b.id, 'pulling-main', { why: 'retrying the main pull' })) return;
     if (!pullMain(b, env, out)) return;
-    const fresh = loadStore().builds.find((x) => x.id === b.id);
-    if (!P2.everyStep(fresh, 'ready')) return;
+    const all = loadStore().builds;
+    const fresh = all.find((x) => x.id === b.id);
+    if (!everyNow(fresh, all, 'ready')) return; // deferred steps join later, each with main pulled in when its wait is over
     if (!move(b.id, 'assigning-models', { why: 'every step has main' })) return;
   }
   const cur = loadStore().builds.find((x) => x.id === b.id);
@@ -262,7 +388,7 @@ function prepare(b, env, out) {
   const byId = new Map(gated.steps.map((s) => [s.id, s]));
   const summary = gated.decisions.map((d) => `${d.step} ${d.model} (${d.why})`).join('; ');
   const r = move(b.id, 'ready', { why: 'models assigned by the triage gate', mutate: (rec) => {
-    for (const s of rec.steps) { const g = byId.get(s.id); if (g?.triage) { s.model = g.model; s.triage = g.triage; } }
+    for (const s of rec.steps) { const g = byId.get(s.id); if (g?.triage) { s.model = g.model; s.triage = g.triage; s.modelBy = 'triage'; } }
     if (summary) rec.notes.push({ text: clip(`Models assigned by the triage gate: ${summary}.`, 1500), at: nowIso(), by: 'triage-gate' });
   } });
   if (r) triage.logSteps(cur, gated.decisions);
@@ -400,7 +526,7 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
         return;
       }
       const to = fresh.status === P2.FAILED ? retryTo(fresh, 'sending') : 'sending';
-      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name, ...(again ? { model: again.model, triage: again.triage } : {}) } })) break;
+      if (!move(b.id, to, { step: s.id, why: `to ${a.name}`, extra: { account: a.name, ...(again ? { model: again.model, triage: again.triage, modelBy: 'triage' } : {}) } })) break;
       if (again) { triage.logSteps(b, [{ step: s.id, ...again.decision }]); logLine({ event: 'retriaged', build: b.id, step: s.id, model: again.model, rule: again.decision.rule }); }
       const bNow = loadStore().builds.find((x) => x.id === b.id);
       if (at(bNow, 'ready', 'sending') && bNow.status !== 'sending') move(b.id, bNow.status === P2.FAILED ? retryTo(bNow, 'sending', 'build') : 'sending', { why: `sending ${s.id}` });
@@ -490,7 +616,7 @@ function sweepEnded(b, env, out) {
  */
 export function advance({ env = process.env, launch = launchStep, build = '' } = {}) {
   if (!PL) throw new Error('pipeline2: pipeline.mjs is not bound (import it, or call ready() first)');
-  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], hand: [], budget: null, ...(build ? { build } : {}) };
+  const out = { split: [], rejected: [], prs: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], hand: [], budget: null, ...(build ? { build } : {}) };
   let store = loadStore();
   // sessions, their meters and tmux are on the VPS host: the budgets and the hand builds are looked after there only
   // (a test harness, which names its accounts in AXF_P2_ACCOUNTS, takes part only when it brings its own meters folder)
@@ -505,8 +631,12 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
     try { out.hand = hand.sweep({ env }); for (const x of out.hand) logLine({ event: 'hand-ended', build: x.id, status: x.status, why: x.why }); }
     catch (e) { logLine({ event: 'hand-sweep-failed', error: str(e.message) }); }
     store = loadStore();
+    // a hand build started outside this flow: the first pass that sees it building opens its draft PR
+    for (const h of P2.handBuilds(p2Builds(store))) ensureDraftPr(h, env, out);
   }
   const dayStop = out.budget?.daily?.reached ? out.budget.daily : null;
+  // a built build's draft PR goes out of draft (on the host: git and the GitHub token are there)
+  if (!build && (env.AXF_P2_ACCOUNTS || !PL.seesAccounts || PL.seesAccounts(env))) readyDraftPrs(env, out);
   splitAll(store, env, out, build);
   advanceEmergency(env, out, { launch, build });
   store = loadStore();
@@ -514,17 +644,164 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
   if (!active && dayStop) out.waits.push({ id: '', why: `the daily budget is reached ($${dayStop.spentUsd} of $${dayStop.capUsd}): no build takes the active place until tomorrow, or until the cap is raised` });
   if (!active && !dayStop) {
-    const next = nextToActivate(p2Builds(store), attemptCap(env));
-    if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
+    // the next in line starts, unless it now clashes with a build that is not on main yet: then it is rejected and the one behind it is looked at
+    for (let i = 0; i < 20 && !active; i += 1) {
+      const next = nextToActivate(p2Builds(loadStore()), attemptCap(env));
+      if (!next || (build && next.id !== build)) break;
+      if (rejectAtStart(next, out)) continue;
+      if (move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
+      break;
+    }
+    store = loadStore();
   }
-  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: isHeld(w) ? 'on hold: release it to give it its turn' : `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
+  { const all = p2Builds(store);
+    const whyWaits = (w) => (isHeld(w) ? 'on hold: release it to give it its turn'
+      : BC.isRejected(w) ? `rejected for a clash: ${str(w.clash.reason, 200)} Answer it: run-all or defer`
+        : allDeferred(w, all) ? `every step is deferred: it starts by itself when ${BC.refName(deferredNow(P2.liveSteps(w).find((s) => deferredNow(s, all)), all))} lands`
+          : `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)`);
+    for (const w of all.filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: whyWaits(w) }); }
   if (!active) return out;
   out.active = active.id;
   if (build && active.id !== build) return out;
   // worktrees, tmux and the logins are on the VPS host: elsewhere (the console's container) the pass stops after the split
   if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: active.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); return out; }
+  ensureDraftPr(active, env, out);
   work(active, env, out, { launch });
   return out;
+}
+
+/* ------------------------------------------------------------------ the draft PR a build gets the moment it starts */
+
+/**
+ * Brett, Nov 24 2026: open a PR as soon as a build starts, "because I want that in the build store, so the
+ * orchestrator and Plan Studio knows what PRs ... are going on." The moment a build has the active place (an emergency
+ * build: the moment it skips the line; a hand build: the first pass that sees it building) it gets a draft PR and the
+ * store gets its number and link (`pr`, `prUrl`, `prDraft`, `branch`).
+ *
+ * The PR is on the branch the lander lands the build from (lander@1 groupBranch: `lander/<build>`). Nothing is built
+ * yet, so the branch starts as one empty commit on main marked [skip ci]: CI is held until real commits arrive. The
+ * lander later force-pushes the combined step branches to the same branch, so this PR is the one that lands. Once the
+ * build is built the PR is taken out of draft (readyDraftPrs), since GitHub refuses to merge a draft.
+ * A failure never stops the build: it is logged and tried again after DRAFT_PR_RETRY_MS.
+ * AXF_P2_DRAFT_PR=off turns it off; AXF_P2_DRAFT_PR_CMD (tests) is a command that prints { number, url } as JSON.
+ */
+export const DRAFT_PR_RETRY_MS = 5 * 60e3;
+export const prBranch = (b) => `lander/${b.id}`;
+const prTriesFile = () => join(PL.pipeDir(), 'draft-pr-tries.json');
+const readTries = () => { try { return JSON.parse(readFileSync(prTriesFile(), 'utf8')) ?? {}; } catch { return {}; } };
+
+/** git in this checkout and the GitHub API of its origin: { git, need, slug, api(method, path, body) → { code, data } }. */
+function github(env) {
+  const git = (...a) => spawnSync('git', a, { cwd: REPO_ROOT, encoding: 'utf8', timeout: 120e3 });
+  const need = (r, what) => { if (r.status !== 0) throw new Error(`${what}: ${str((r.stderr || r.stdout || r.error?.message || '').trim(), 200)}`); return (r.stdout || '').trim(); };
+  const slug = /github\.com[:/]([^/\s]+\/[^/\s]+?)(?:\.git)?$/.exec(need(git('remote', 'get-url', 'origin'), 'reading the remote'))?.[1];
+  if (!slug) throw new Error('origin is not a GitHub repository');
+  let tok = '';
+  // the token goes to curl on stdin (a config), never on the command line
+  const api = (method, path, body) => {
+    tok ||= need(spawnSync(process.execPath, [join(REPO_ROOT, 'framework', 'cli', 'github-token.mjs'), 'token'], { encoding: 'utf8', timeout: 60e3, env }), 'the GitHub token');
+    if (!tok) throw new Error('no GitHub token (framework/cli/github-token.mjs token)');
+    const r = spawnSync('curl', ['-sS', '-m', '20', '-X', method, '-K', '-', '-w', '\n%{http_code}', ...(body ? ['--data-binary', JSON.stringify(body)] : []), `https://api.github.com${path}`],
+      { input: `header = "Authorization: Bearer ${tok}"\nheader = "Accept: application/vnd.github+json"\nheader = "User-Agent: axf-orchestrator"\n`, encoding: 'utf8', timeout: 30e3 });
+    if (r.status !== 0) throw new Error(`GitHub ${method} ${path}: ${str((r.stderr || '').trim(), 200) || 'no answer'}`);
+    const i = r.stdout.lastIndexOf('\n'); const code = Number(r.stdout.slice(i + 1)); let data = null; try { data = JSON.parse(r.stdout.slice(0, i)); } catch { /* not JSON */ }
+    return { code, data };
+  };
+  return { git, need, slug, api };
+}
+
+/** Open (or find) the draft PR of a build. → { number, url, branch }; null when this host opens none; throws with the reason. */
+export function openDraftPr(b, env = process.env) {
+  const branch = prBranch(b);
+  if (env.AXF_P2_DRAFT_PR_CMD) {
+    const r = spawnSync('bash', ['-c', env.AXF_P2_DRAFT_PR_CMD], { encoding: 'utf8', timeout: 60e3, env: { ...env, AXF_BUILD_ID: b.id, AXF_BUILD_BRANCH: branch } });
+    if (r.status !== 0) throw new Error(`draft PR command exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 200)}`);
+    const j = JSON.parse((r.stdout || '').trim().split('\n').pop() || 'null');
+    return j && Number(j.number) > 0 ? { number: Number(j.number), url: str(j.url, 300), branch } : null;
+  }
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') return null; // a test harness without git
+  const { git, need, slug, api } = github(env);
+  if (!need(git('ls-remote', '--heads', 'origin', branch), `looking for ${branch}`)) {
+    need(git('fetch', '-q', 'origin', 'main'), 'fetching main');
+    const who = git('config', 'user.email').stdout?.trim() ? [] : ['-c', 'user.name=AXF orchestrator', '-c', 'user.email=orchestrator@axf.local'];
+    const sha = need(git(...who, 'commit-tree', 'origin/main^{tree}', '-p', 'origin/main', '-m', `Build ${b.id}: started [skip ci]\n\nAn empty commit so the build has a draft PR from the start. The lander replaces it with the build's steps.`), 'the start commit');
+    need(git('push', '-q', 'origin', `${sha}:refs/heads/${branch}`), `pushing ${branch}`);
+  }
+  const open = api('GET', `/repos/${slug}/pulls?state=open&head=${encodeURIComponent(`${slug.split('/')[0]}:${branch}`)}`);
+  let pr = Array.isArray(open.data) && open.data[0] ? open.data[0] : null;
+  if (!pr) {
+    const body = [`Build \`${b.id}\`${b.number ? ` (${b.number})` : ''}: opened by the orchestrator the moment the build started, so the builds store carries its PR from the start.`, '', 'Draft until the build is built: the lander puts the build\'s steps on this branch, runs CI once and merges it.'].join('\n');
+    const make = (draft) => api('POST', `/repos/${slug}/pulls`, { title: str(b.title || b.id, 100), head: branch, base: 'main', body, draft });
+    let made = make(true);
+    if (made.code === 422 && /draft/i.test(JSON.stringify(made.data ?? ''))) made = make(false); // a repository without draft PRs
+    if (made.code !== 201) throw new Error(`opening the PR: GitHub ${made.code} ${str(made.data?.message, 200)}`);
+    pr = made.data;
+  }
+  return { number: Number(pr.number), url: str(pr.html_url, 300), branch, draft: pr.draft === true };
+}
+
+/**
+ * Take a built build's PR out of draft, so the lander can merge it (GitHub refuses to merge a draft). GitHub's REST
+ * cannot do this; its GraphQL `markPullRequestReadyForReview` can. → true when the PR is ready; throws with the reason.
+ */
+export function readyDraftPr(b, env = process.env) {
+  if (env.AXF_P2_DRAFT_PR_CMD) {
+    const r = spawnSync('bash', ['-c', env.AXF_P2_DRAFT_PR_CMD], { encoding: 'utf8', timeout: 60e3, env: { ...env, AXF_BUILD_ID: b.id, AXF_BUILD_BRANCH: prBranch(b), AXF_PR_ACTION: 'ready', AXF_PR_NUMBER: String(b.pr) } });
+    if (r.status !== 0) throw new Error(`draft PR command exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 200)}`);
+    return true;
+  }
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') return false;
+  const { slug, api } = github(env);
+  const pr = api('GET', `/repos/${slug}/pulls/${Number(b.pr)}`);
+  if (pr.code !== 200) throw new Error(`reading PR #${b.pr}: GitHub ${pr.code} ${str(pr.data?.message, 200)}`);
+  if (pr.data.draft !== true) return true;
+  const q = api('POST', '/graphql', { query: 'mutation($id: ID!) { markPullRequestReadyForReview(input: { pullRequestId: $id }) { pullRequest { isDraft } } }', variables: { id: pr.data.node_id } });
+  if (q.code !== 200 || q.data?.errors?.length) throw new Error(`marking PR #${b.pr} ready: GitHub ${q.code} ${str(q.data?.errors?.[0]?.message ?? q.data?.message, 200)}`);
+  return true;
+}
+/** Every built build whose PR is still a draft: out of draft, and the store says so (tried again after DRAFT_PR_RETRY_MS on a failure). */
+function readyDraftPrs(env, out) {
+  if (env.AXF_P2_DRAFT_PR === 'off') return;
+  for (const b of p2Builds(loadStore()).filter((x) => x.prDraft === true && Number(x.pr) > 0 && at(x, 'build-complete', ...P2.LANDING_GROUP))) {
+    try {
+      const key = `${b.id}:ready`; const tries = readTries();
+      if (tries[key] && Date.now() - Date.parse(tries[key].at) < DRAFT_PR_RETRY_MS) continue;
+      let done = false; let error = '';
+      try { done = readyDraftPr(b, env); } catch (e) { error = str(e.message); }
+      if (error) {
+        mkdirSync(dirname(prTriesFile()), { recursive: true }); writeFileSync(prTriesFile(), `${JSON.stringify(Object.fromEntries(Object.entries({ ...tries, [key]: { at: nowIso(), error } }).slice(-200)))}\n`); // axf-data: not data (host-local: when a draft PR was last tried)
+        logLine({ event: 'pr-ready-failed', build: b.id, pr: Number(b.pr), error });
+        out.waits.push({ id: b.id, why: `PR #${b.pr} is still a draft and could not be marked ready (${str(error, 160)}): the lander cannot merge it until it is; tried again in ${Math.round(DRAFT_PR_RETRY_MS / 60e3)} min` });
+        continue;
+      }
+      if (done && move(b.id, b.status, { action: 'pipeline2:pr-ready', mutate: (rec) => { rec.prDraft = false; rec.notes.push({ text: `PR #${b.pr} is out of draft: the build is built, the lander takes it.`, at: nowIso(), by: 'orchestrator' }); } })) logLine({ event: 'pr-ready', build: b.id, pr: Number(b.pr) });
+    } catch (e) { logLine({ event: 'pr-ready-failed', build: b.id, error: str(e.message) }); }
+  }
+}
+
+/** Give a started build its draft PR, once: the number and the link go to the store and the screens are told. */
+function ensureDraftPr(b, env, out) {
+  if (env.AXF_P2_DRAFT_PR === 'off' || !b || Number(b.pr) > 0 || b.prUrl) return;
+  if (!at(b, 'pulling-main', 'assigning-models', 'ready', 'sending', 'building')) return; // from build-complete on the PR is the lander's
+  try {
+    const tries = readTries();
+    if (tries[b.id] && Date.now() - Date.parse(tries[b.id].at) < DRAFT_PR_RETRY_MS) return;
+    let pr = null; let error = '';
+    try { pr = openDraftPr(b, env); } catch (e) { error = str(e.message); }
+    if (error) {
+      const next = Object.fromEntries(Object.entries({ ...tries, [b.id]: { at: nowIso(), error } }).slice(-200));
+      mkdirSync(dirname(prTriesFile()), { recursive: true }); writeFileSync(prTriesFile(), `${JSON.stringify(next)}\n`); // axf-data: not data (host-local: when a draft PR was last tried, so a failing GitHub is not asked every minute)
+      logLine({ event: 'draft-pr-failed', build: b.id, error });
+      out.waits.push({ id: b.id, why: `its draft PR could not be opened (${str(error, 160)}): tried again in ${Math.round(DRAFT_PR_RETRY_MS / 60e3)} min; the build goes on` });
+      return;
+    }
+    if (!pr) return;
+    const r = move(b.id, b.status, { action: 'pipeline2:pr', mutate: (rec) => {
+      rec.pr = String(pr.number); rec.prUrl = pr.url; rec.prDraft = pr.draft !== false; if (!rec.branch) rec.branch = pr.branch;
+      rec.notes.push({ text: `Draft PR #${pr.number} opened as the build started${pr.url ? `: ${pr.url}` : ''}.`, at: nowIso(), by: 'orchestrator' });
+    } });
+    if (r) { out.prs.push({ id: b.id, pr: pr.number, url: pr.url }); logLine({ event: 'draft-pr', build: b.id, pr: pr.number, branch: pr.branch }); }
+  } catch (e) { logLine({ event: 'draft-pr-failed', build: b.id, error: str(e.message) }); }
 }
 
 /** One build past the line: main into its steps, ended sessions swept, steps out to its slot pool, build-complete. */
@@ -562,14 +839,14 @@ export function retryBuild(id, { by = process.env.AXF_ACTOR || 'console', why = 
   for (const s of failedSteps) {
     const to = P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending';
     // a fresh start: the accounts it failed on may be tried again
-    setFlowStatus(b.id, to, { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
+    flow(b.id, to, { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
     steps.push({ id: s.id, status: to });
   }
   let status = b.status;
   if (b.status === P2.FAILED) {
     status = b.failedFrom || 'pending';
-    setFlowStatus(b.id, status, { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; rec.notes.push({ text: `${reason}. The attempt counts start again${steps.length ? ` (steps ${steps.map((x) => x.id).join(', ')} too)` : ''}.`, at: nowIso(), by }); } });
-  } else setFlowStatus(b.id, b.status, { by, mutate: (rec) => { rec.notes.push({ text: `${reason}. Steps ${steps.map((x) => x.id).join(', ')} start again at attempt 1.`, at: nowIso(), by }); } });
+    flow(b.id, status, { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; rec.notes.push({ text: `${reason}. The attempt counts start again${steps.length ? ` (steps ${steps.map((x) => x.id).join(', ')} too)` : ''}.`, at: nowIso(), by }); } });
+  } else flow(b.id, b.status, { by, mutate: (rec) => { rec.notes.push({ text: `${reason}. Steps ${steps.map((x) => x.id).join(', ')} start again at attempt 1.`, at: nowIso(), by }); } });
   logLine({ event: 'retry-hand', build: b.id, by, status, steps: steps.map((x) => x.id) });
   return { id: b.id, status, steps, by };
 }
@@ -577,7 +854,7 @@ export function retryBuild(id, { by = process.env.AXF_ACTOR || 'console', why = 
 /* ------------------------------------------------------------------ taps: one action on a build or a step */
 
 /** What a tap may ask for (the orchestrator's own menu, Plan Studio 2.0's, REST, MCP, the CLI). */
-export const BUILD_ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel']);
+export const BUILD_ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel', ...BC.ANSWERS]);
 /** Before the active place: not yet split, or split and waiting its turn. */
 const beforeTheLine = (b) => at(b, 'pending', 'splitting', 'split');
 const inLanding = (b) => at(b, ...P2.LANDING_GROUP);
@@ -613,6 +890,9 @@ function requestLanderTick(by, env = process.env) {
  *   run-ci   a build that failed at CI (or after it) goes back to `running-ci`; one already there is checked now
  *   land     the lander takes a built build on its next pass; one that failed while landing is retried first
  *   cancel   out of the flow (archived), from any status; a session still running ends on its own and is not landed
+ *   run-all  the answer to a clash rejection (build-clash@1): every step runs now; the build takes its turn
+ *   defer    the other answer: the clean steps run now, each clashing step waits for the build it clashes with
+ *            (`waitsFor` on the step) and starts by itself once that build has landed
  * → { id, action, step, status, label, held, say }
  */
 export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', why = '', step = '', env = process.env, pass = passFor, landerTick = requestLanderTick } = {}) {
@@ -633,7 +913,7 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
     logLine({ event: 'act', build: b.id, action, step: s?.id ?? '', by });
     return { id: b.id, action, step: s?.id ?? '', status: cur.status, label: P2.labelOf(cur.status, cur.attempt), held: isHeld(cur), say, ...extra };
   };
-  const setHold = (on) => setFlowStatus(b.id, b.status, { by, action: `pipeline2:${on ? 'hold' : 'release'}`, mutate: (rec) => {
+  const setHold = (on) => flow(b.id, b.status, { by, action: `pipeline2:${on ? 'hold' : 'release'}`, mutate: (rec) => {
     rec.pipeline = { ...(rec.pipeline ?? {}), heldAt: on ? nowIso() : '', heldBy: on ? str(by, 80) : '', heldWhy: on ? str(why, 300) : '' };
     rec.notes.push({ text: on ? `On hold (${by})${why ? `: ${str(why, 200)}` : ''}. It keeps its place and is skipped until released.` : `Released from hold (${by}): it takes its turn again.`, at: nowIso(), by });
   } });
@@ -644,8 +924,19 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
     return P2.holdsActive(cur) ? `${b.id} has the active place: ${now}.` : w ? `${b.id} is in line (${now}): ${w.why}.` : `${b.id}: ${now}.`;
   };
   switch (action) {
+    case 'run-all': case 'defer': {
+      if (!BC.isRejected(b)) refuse(`${b.id} has no clash waiting for an answer`);
+      const a = BC.answerClash(b, action, { by, at: nowIso() });
+      flow(b.id, b.status, { by, action: `pipeline2:${action}`, mutate: (rec) => {
+        rec.clash = a.clash;
+        for (const d of a.defer) { const st = rec.steps.find((x) => (d.uid && x.uid === d.uid) || x.id === d.step); if (st) { st.waitsFor = d.waitsFor; if (d.alsoWaitsFor) st.alsoWaitsFor = d.alsoWaitsFor; } }
+        rec.notes.push({ text: action === 'defer' ? `Clash answered (${by}): the clean steps run now; deferred: ${a.defer.map((d) => `${d.step} waits for ${BC.refName(d.waitsFor)}`).join('; ')}. Each starts by itself when that build lands.` : `Clash answered (${by}): every step runs now.`, at: nowIso(), by });
+      } });
+      return done(`${action === 'defer' ? `${a.defer.length} step${a.defer.length === 1 ? '' : 's'} deferred` : 'Running all'}. ${where(pass(b.id, env))}`);
+    }
     case 'queue': {
       if (isHeld(b)) refuse(`${b.id} is on hold: release it first`);
+      if (BC.isRejected(b)) refuse(`${b.id} was rejected for a clash: answer it first (run-all, or defer)`);
       if (P2.gaveUp(b, attemptCap(env))) refuse(`${b.id} gave up (${label}): retry it first`);
       if (!beforeTheLine(b)) return done(`${b.id} is already past the line: ${label}.`);
       return done(where(pass(b.id, env)));
@@ -670,13 +961,13 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
     case 'rebuild': {
       if (s) {
         if (s.status !== P2.FAILED) refuse(`step ${s.id} is ${P2.labelOf(s.status, s.attempt, 'step')}: only a failed step is built again`);
-        setFlowStatus(b.id, P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending', { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
-        setFlowStatus(b.id, b.status, { by, mutate: note(`Rebuild of step ${s.id} (${by}): it starts again at attempt 1.`) });
+        flow(b.id, P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending', { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
+        flow(b.id, b.status, { by, mutate: note(`Rebuild of step ${s.id} (${by}): it starts again at attempt 1.`) });
         return done(`${b.id}: step ${s.id} is built again.`);
       }
       if (b.status !== P2.FAILED) refuse(`${b.id} is ${label}: only a failed build is rebuilt`);
       if (!P2.LANDING_GROUP.includes(b.failedFrom)) { const r = retryBuild(b.id, { by, why: why || 'rebuild' }); return done(`${b.id}: building again from ${P2.labelOf(r.status)}.`); }
-      setFlowStatus(b.id, 'pr-pulling-main', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Rebuild (${by}): main is pulled into its PR again and the build is recompiled.`)(rec); } });
+      flow(b.id, 'pr-pulling-main', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Rebuild (${by}): main is pulled into its PR again and the build is recompiled.`)(rec); } });
       landerTick(by, env);
       return done(`${b.id}: main is pulled into its PR again and the build is recompiled.`);
     }
@@ -684,7 +975,7 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
       if (!inLanding(b)) refuse(`${b.id} is ${label}: CI runs once its steps are merged into one PR`);
       if (b.status === P2.FAILED) {
         if (P2.rank(b.failedFrom) < P2.rank('running-ci')) refuse(`${b.id} failed before CI (at ${P2.labelOf(b.failedFrom)}): rebuild it instead`);
-        setFlowStatus(b.id, 'running-ci', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Run CI (${by}): back at Running CI.`)(rec); } });
+        flow(b.id, 'running-ci', { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; note(`Run CI (${by}): back at Running CI.`)(rec); } });
       } else if (b.status === 'merging-main') refuse(`${b.id} is past CI: ${label}`);
       else if (b.status !== 'running-ci') refuse(`${b.id} is ${label}: CI starts by itself once main is in its PR`);
       landerTick(by, env);
@@ -698,7 +989,7 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
     }
     default: { // cancel
       const running = b.steps.filter(inSlot).length;
-      setFlowStatus(b.id, P2.EXIT, { by, why: reason, mutate: note(`Cancelled from ${label} (${by})${why ? `: ${str(why, 200)}` : ''}.${running ? ` ${running} step session${running === 1 ? '' : 's'} still running end on their own; nothing of them is landed.` : ''}`) });
+      flow(b.id, P2.EXIT, { by, why: reason, mutate: note(`Cancelled from ${label} (${by})${why ? `: ${str(why, 200)}` : ''}.${running ? ` ${running} step session${running === 1 ? '' : 's'} still running end on their own; nothing of them is landed.` : ''}`) });
       return done(`${b.id} is cancelled (archived from ${label}).`);
     }
   }
@@ -721,6 +1012,7 @@ function advanceEmergency(env, out, { launch, build = '' }) {
     }
     out.emergency.push(e.id);
     if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: e.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); continue; }
+    ensureDraftPr(e, env, out);
     work(e, env, out, { launch });
   }
 }
@@ -728,8 +1020,8 @@ function advanceEmergency(env, out, { launch, build = '' }) {
 /** The table's view: every Pipeline 2.0 build with its label and steps. */
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
-  return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), ...(P2.isHand(b) ? { hand: true } : {}), ...(P2.isBudgetStopped(b) ? { budgetStop: b.budgetStop } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
-    steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
+  return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, number: b.number ?? '', title: b.title, pr: b.pr ?? '', prUrl: b.prUrl ?? '', split: P2.normSplit(b.split, b.steps), ...(b.clash ? { clash: b.clash } : {}), pipelineView: b.pipelineView ?? P2.pipelineView(b, builds), ...(P2.isEmergency(b) ? { emergency: true } : {}), ...(P2.isHand(b) ? { hand: true } : {}), ...(P2.isBudgetStopped(b) ? { budgetStop: b.budgetStop } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
+    steps: b.steps.map((s) => ({ id: s.id, uid: s.uid ?? '', splitBy: s.splitBy ?? '', modelBy: s.modelBy ?? '', ...(s.waitsFor ? { waitsFor: s.waitsFor } : {}), status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
 }
 
 async function main(argv) {

@@ -36,6 +36,10 @@
  *   … demo <build>                                        demo-build@1 check, exit 1 if not demo (--demo above: a demo action)
  *   … dedupe-steps [--dry-run|--apply] [--from f] [b…]            step-dedupe: collapse repeated steps (done copy wins, collision
  *                                                        ids tidied), one journal revision per build; dry run by default
+ *   … numbers [--apply]                                    pipeline-status@1: a build number (B-0123) for every build without
+ *                                                        one, oldest first (new and changed builds get theirs on write)
+ *   … view <build>                                         pipeline-status@1: the read every screen gets (number, pr, split,
+ *                                                        pipelineView, each step's uid / splitBy / model / modelBy / status)
  *   … history <id>                                          every journal revision of one build
  *   … journal status | migrate | verify | rotate [--days n] [--apply]   the journal's home, and gzip of old parts
  *   … repair-mojibake [--apply] [--journal-dir d]           put back characters lost to U+FFFD from the journal (dry run by default)
@@ -190,7 +194,8 @@ function known() {
   knownMemo = {
     store: new Set(Object.keys(core.emptyStore())),
     // `demo` and `profile` are known to normBuild without being read from the record on every path
-    build: new Set([...fieldsOf((b) => core.normBuild(b), samples), 'demo', 'profile', 'defaultSteps']),
+    // `pipelineView` is worked out on read (pipeline-status@1) and never stored: known, so it is never carried into a write
+    build: new Set([...fieldsOf((b) => core.normBuild(b), samples), 'demo', 'profile', 'defaultSteps', 'pipelineView']),
     step: fieldsOf((x) => core.normStep(x, 0), samples),
   };
   return knownMemo;
@@ -346,10 +351,58 @@ export function loadStore() {
   // A read never fails on the lock (urgent-console-perf, Nov 4 2026): when another process holds it, that writer
   // absorbs the foreign write itself, so the read takes the store as it is instead of waiting 20 s and erroring.
   if (exportsOn() && foreignWrites().length) {
-    try { return withStore((s) => s, { by: 'foreign-write', action: 'absorb', lockWaitMs: 2000 }).store; }
+    try { return withView(withStore((s) => s, { by: 'foreign-write', action: 'absorb', lockWaitMs: 2000 }).store); }
     catch (e) { if (!(e instanceof StoreLocked)) throw e; }
   }
-  return readStore();
+  return withView(readStore());
+}
+
+// ------------------------------------------------------------------ pipeline-status@1: the view on read, numbers on write
+/*
+ * Every read (loadStore) gives each build a computed `pipelineView` (framework/core/pipeline-status.mjs pipelineView:
+ * state, label, tone, icon, line, attempt, waitingOn, mergeLine, split), so the orchestrator, Pending, Plan Studio 2.0
+ * and the console server show the same thing from the one record. It is worked out when first looked at, shows up in
+ * JSON like any field, and is never stored: every write drops it (stripView), and keepBuild never carries it.
+ * Stored beside it, and read as they are: the build's `number` (B-0123, given once here: giveNumbers), `pr` / `prUrl`
+ * (the draft PR opened when the build starts), `split` (who split it) and `clash`; each step's `uid`, `splitBy`,
+ * `model`, `modelBy`, `status` and `waitsFor`.
+ */
+/** The store with `pipelineView` on every build (in place; computed on first use, one shared context per read). */
+export function withView(store) {
+  if (!store || !Array.isArray(store.builds)) return store;
+  let ctx = null;
+  for (const b of store.builds) {
+    if (!b || typeof b !== 'object') continue;
+    let view;
+    Object.defineProperty(b, 'pipelineView', { enumerable: true, configurable: true, get() { return (view ??= P2.pipelineView(b, (ctx ??= P2.pipelineContext(store.builds)))); }, set(v) { view = v; } });
+  }
+  return store;
+}
+/** Drop the computed view from every build of a store about to be written (in place). */
+function stripView(store) { for (const b of store?.builds ?? []) if (b && typeof b === 'object' && 'pipelineView' in b) delete b.pipelineView; return store; }
+/**
+ * Build numbers (Brett, Nov 23 2026: "give every build a number too, a unique ID that shows up in the orchestrator and
+ * the Plan Studio"): every build this write adds or changes that has none gets the next `B-nnnn`, once. The store's
+ * `buildSeq` is the high-water mark, so a number is never used again after its build is deleted. Two writers that
+ * numbered two builds at the same moment (the cutover write locks rows, not the head) are put right by the next write:
+ * the older build keeps the number. `all`: every build without one (the `numbers --apply` backfill).
+ */
+function giveNumbers(start, next, { all = false } = {}) {
+  const old = new Map((start?.builds ?? []).map((b) => [b.id, b]));
+  // only what this write adds or changes (cheap: a build that already has its number is never compared)
+  const same = (o, b) => JSON.stringify({ ...o, rev: 0, updatedAt: '' }) === JSON.stringify({ ...b, rev: 0, updatedAt: '' });
+  const ids = all ? null : new Set(next.builds.filter((b) => !b.number && !(old.has(b.id) && same(old.get(b.id), b))).map((b) => b.id));
+  if (ids && !ids.size) return [];
+  const r = P2.assignNumbers(next.builds, { seq: Number(start?.buildSeq) || 0, ids });
+  if (r.given.length || r.seq !== (Number(start?.buildSeq) || 0)) next.buildSeq = r.seq;
+  return r.given;
+}
+/** Number every build that has none, oldest first (one write). Dry run unless `apply`. → { given: [{ id, number }], apply } */
+export function numberBuildsNow({ apply = false, by = 'numbers' } = {}) {
+  if (!apply) { const copy = JSON.parse(JSON.stringify(stripView(readStore()))); return { apply: false, given: P2.assignNumbers(copy.builds, { seq: Number(copy.buildSeq) || 0 }).given }; }
+  let given = [];
+  withStore((s) => { given = giveNumbers(s, s, { all: true }); return s; }, { by, action: 'numbers', note: 'build numbers for every build without one' });
+  return { apply: true, given };
 }
 
 // ------------------------------------------------------------------ the old files as read-only exports
@@ -709,7 +762,8 @@ function withStoreOnce(fn, meta) {
   // move gets its at / by
   const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli', strict: meta.strict !== false });
   // S5-01: whatever fn, the guards or a merge rebuilt, a stored field this checkout does not know stays on its record
-  const next = keepStore(start, flowed.store);
+  const next = stripView(keepStore(start, flowed.store));
+  giveNumbers(start, next);
   if (flowed.refused.length) {
     const text = flowed.refused.map((x) => `refused ${x.id}${x.step ? `/${x.step}` : ''} ${x.from || '(none)'} → ${x.to || '(none)'}: ${x.why}`);
     process.stderr.write(text.map((t) => `builds-store: ${t}\n`).join(''));
@@ -1065,6 +1119,17 @@ async function main(argv) {
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
+  if (cmd === 'numbers') {
+    // pipeline-status@1: numbers [--apply]   every build without a number gets one, oldest first (dry run by default)
+    const r = numberBuildsNow({ apply: rest.includes('--apply'), by: process.env.AXF_ACTOR || 'numbers' });
+    return out({ ok: true, ...r }, `${r.apply ? 'numbered' : 'dry run (--apply writes)'}: ${r.given.length} build(s)${r.given.length ? ` (${r.given[0].number} … ${r.given[r.given.length - 1].number})` : ''}`);
+  }
+  if (cmd === 'view') {
+    // pipeline-status@1: view <build>   the read every screen gets: number, pr, split, pipelineView and the step view
+    const b = core.findBuild(loadStore(), rest[0] || ''); if (!b) throw new Error(`no build "${rest[0] || ''}"`);
+    const v = { id: b.id, number: b.number ?? '', title: b.title, status: b.status, pr: b.pr ?? '', prUrl: b.prUrl ?? '', split: P2.normSplit(b.split, b.steps), ...(b.clash ? { clash: b.clash } : {}), pipelineView: b.pipelineView, steps: b.steps.map((s) => ({ ...P2.stepView(s), ...(s.waitsFor ? { waitsFor: s.waitsFor } : {}) })) };
+    return out({ ok: true, build: v }, [`${v.number || '(no number)'} ${v.id}: ${v.pipelineView.label}${v.pr ? ` · PR ${v.pr}` : ''}`, v.pipelineView.line, v.split ? `split by ${v.split.by} (${v.split.model || 'no model'}) into ${v.split.stepCount} step(s) at ${v.split.at}` : '', v.pipelineView.mergeLine ? v.pipelineView.mergeLine.text : '', ...v.steps.map((s) => `  ${s.id} ${s.uid} ${s.status} ${s.model}${s.modelBy ? ` (by ${s.modelBy})` : ''}${s.splitBy ? ` · ${s.splitBy}` : ''}${s.waitsFor ? ` · waits for ${s.waitsFor.number || s.waitsFor.buildId}` : ''}`)].filter(Boolean).join('\n'));
+  }
   if (cmd === 'dedupe-steps') {
     const fi = rest.indexOf('--from'); const from = fi >= 0 ? resolve(rest[fi + 1] || '') : '';
     const r = dedupeStepsNow({ apply: rest.includes('--apply'), from, ids: rest.filter((a, i) => !a.startsWith('--') && !(fi >= 0 && i === fi + 1)), by: process.env.AXF_ACTOR || 'dedupe-steps' });
@@ -1199,7 +1264,13 @@ async function main(argv) {
     // 4. step dependencies: an `after` / `dependsOn` id naming no step of its build, and dependency cycles
     const deps = core.stepDepsReport(store);
     if (deps.missing.length || deps.cycles.length) process.exitCode = 1;
-    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`),
+    // 5. pipeline-status@1: a build number is B-nnnn and belongs to one build; `pipelineView` is never stored
+    const numbered = store.builds.filter((b) => b.number !== undefined && b.number !== '');
+    const numberErrors = [...numbered.filter((b) => !P2.NUMBER_RE.test(String(b.number))).map((b) => `${b.id} has the number "${b.number}" (not B-nnnn)`),
+      ...[...numbered.reduce((m, b) => m.set(b.number, [...(m.get(b.number) ?? []), b.id]), new Map())].filter(([, ids]) => ids.length > 1).map(([num, ids]) => `${num} is held by ${ids.join(' and ')}`),
+      ...readStoreNow().builds.filter((b) => 'pipelineView' in b).map((b) => `${b.id} has a stored pipelineView (it is worked out on read)`)];
+    if (numberErrors.length) process.exitCode = 1;
+    const lines = [...numberErrors.map((e) => `✗ numbers ${e}`), ...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`),
       ...deps.missing.map((m) => `✗ deps ${m.build}/${m.step} depends on "${m.missing}", which is not a step of the build`),
       ...deps.cycles.map((c) => `✗ deps ${c.build} dependency cycle: ${c.cycle.join(' → ')}`)];
     const jtext = jv.warning ? `; ${jv.warning}` : jv.checked ? `; journal: ${jv.checked} part(s) on the hub match the pointer` : '';
@@ -1208,7 +1279,7 @@ async function main(argv) {
     const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
     // demo-build@1: demo builds (tag + demo- id) are counted, never mixed with the rest
     const demo = { builds: store.builds.filter((b) => core.isDemo(b)).map((b) => b.id) };
-    const ok = !bad.length && v.ok && jv.ok && !deps.missing.length && !deps.cycles.length;
+    const ok = !bad.length && v.ok && jv.ok && !deps.missing.length && !deps.cycles.length && !numberErrors.length;
     const depsLine = `step deps v${store.meta?.versions?.stepDeps?.version ?? 0}: ${deps.withDeps} build(s) with a dependency list, no missing ids, no cycles`;
     return out({ ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo, deps }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without\n${depsLine}`);
   }

@@ -289,6 +289,10 @@ export function normLanding(l) {
   const fx = obj(x.fixes); if (fx && nums([fx.pr]).length && count(fx.n)) out.fixes = { pr: nums([fx.pr])[0], n: count(fx.n) };
   const lm = obj(x.lastMerge);
   if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40), ...(lm.byHand === true ? { byHand: true, ci: LAND_CI.includes(lm.ci) ? lm.ci : 'unknown', by: str(lm.by, 80) } : {}) };
+  // pipeline-status@1: the lander's display state and its merge line (the place in line and the build it waits for)
+  if (['waiting-to-merge', 'merging', 'running-ci', 'landed'].includes(x.state)) out.state = x.state;
+  const ml = obj(x.mergeLine);
+  if (ml && (Number(ml.position) > 0 || ml.waitingFor)) out.mergeLine = { position: Math.max(0, Math.floor(Number(ml.position) || 0)), waitingFor: obj(ml.waitingFor) ? { buildId: str(ml.waitingFor.buildId ?? ml.waitingFor.id, 80), number: str(ml.waitingFor.number, 24), title: str(ml.waitingFor.title, 300) } : str(ml.waitingFor, 80), ...(str(ml.at) ? { at: str(ml.at, 40) } : {}) };
   return Object.keys(out).length ? out : null;
 }
 /** What GitHub says about CI on a PR merged by hand (the done-means-merged@1 `landed.ci` words). */
@@ -612,4 +616,168 @@ export function fallbackDesign(b = {}) {
   const planning = normPlanning(b.planning);
   const rows = planning.length ? planning : [{ text: [str(b.title, 300).trim(), str(b.detail, 3000).trim()].filter(Boolean).join('\n\n') || 'The build' }];
   return rows.map((s) => ({ text: s.text, model: PLAN_MODELS.includes(s.model) ? s.model : PLAN_MODELS[PLAN_MODELS.length - 1], ...(PLAN_MODELS.includes(s.model) ? { pin: s.model } : {}), minutes: Math.min(STEP_MAX_MINUTES, s.minutes || STEP_MAX_MINUTES), files: s.files ?? [] }));
+}
+
+/* ------------------------------------------------------------------ pipeline-status@1: what a build is doing, in words */
+
+/*
+ * One view of a build for every screen (Brett, Nov 23 2026: "different badges for all the different steps, like waiting
+ * for the VPS to do this, waiting for it to do that, merging, waiting to merge"). The builds store works it out on
+ * every read (framework/cli/builds-store.mjs attaches `pipelineView`) and never stores it, so the orchestrator, Pending,
+ * Plan Studio 2.0 and the console server all say the same thing from the one record.
+ * JSON Schema: framework/schemas/pipeline-status.json. Golden cases: framework/spec/fixtures/pipeline-status.json.
+ */
+export const STATUS_SCHEMA = 'pipeline-status@1';
+/** The lander's states: a built build waits its turn, is merged, has CI run, lands. */
+export const LANDER_STATES = Object.freeze(['waiting-to-merge', 'merging', 'running-ci', 'landed']);
+/** Every state a build shows a badge for, in order: the build's own, `failed`, then the lander's. */
+export const PIPELINE_STATES = Object.freeze(['pending', 'splitting', 'split', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building', 'build-complete', FAILED, ...LANDER_STATES]);
+export const PIPELINE_TONES = Object.freeze(['muted', 'info', 'accent', 'warning', 'success', 'danger']);
+/** Per state: label, tone, icon name and the plain status line (a template: {n} steps, {done} built, {attempt}, {max}, {from}). */
+export const PIPELINE_STATE_INFO = Object.freeze({
+  pending: { label: 'Pending', tone: 'muted', icon: 'clock', line: 'Waiting for the VPS to split it into steps.' },
+  splitting: { label: 'Splitting', tone: 'accent', icon: 'layers', line: 'The VPS is splitting it into steps with Fable.' },
+  split: { label: 'Split', tone: 'muted', icon: 'list', line: 'Split into {n}. Next in line for the active place.' },
+  'pulling-main': { label: 'Pulling main', tone: 'info', icon: 'download', line: 'The VPS is cutting a worktree for each step and pulling main into it.' },
+  'assigning-models': { label: 'Assigning models', tone: 'info', icon: 'user', line: 'The VPS triage gate is giving each step its model.' },
+  ready: { label: 'Ready', tone: 'info', icon: 'check', line: 'Ready. Waiting for the VPS to send its steps to free slots.' },
+  sending: { label: 'Sending', tone: 'accent', icon: 'play', line: 'The VPS is sending its steps to their slots.' },
+  building: { label: 'Building', tone: 'accent', icon: 'zap', line: 'Building: {done} of {n} built.' },
+  'build-complete': { label: 'Build complete', tone: 'success', icon: 'check', line: 'Every step is built. The lander takes it next.' },
+  failed: { label: 'Failed (attempt {attempt})', tone: 'danger', icon: 'alert', line: 'Failed at {from}, attempt {attempt} of {max}. The VPS tries again by itself.' },
+  'waiting-to-merge': { label: 'Waiting to merge', tone: 'warning', icon: 'clock', line: 'Built and waiting its turn to merge.' },
+  merging: { label: 'Merging', tone: 'warning', icon: 'branch', line: 'The lander is merging it.' },
+  'running-ci': { label: 'Running CI', tone: 'warning', icon: 'refresh', line: 'CI is running on its PR.' },
+  landed: { label: 'Landed', tone: 'success', icon: 'check', line: 'Merged into main.' },
+});
+/** A stored status that has no badge of its own → the state it shows as, with its own line. */
+const SHOWN_AS = Object.freeze({
+  'merging-pr': { state: 'merging', line: 'The lander is putting its steps into one PR.' },
+  'pr-pulling-main': { state: 'merging', line: 'The lander is pulling main into its PR.' },
+  'merging-main': { state: 'merging', line: 'The lander is merging its PR into main.' },
+});
+const ordinal = (n) => { const t = n % 100; const u = n % 10; return `${n}${t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'}`; };
+const refOf = (b) => ({ buildId: str(b?.id, 80), number: str(b?.number, 24), title: str(b?.title, 300) });
+const nameOf = (r) => r.number || r.title || r.buildId;
+const stepsWord = (n) => `${n} step${n === 1 ? '' : 's'}`;
+const fill = (t, v) => str(t, 400).replace(/\{(\w+)\}/g, (m, k) => (k in v ? String(v[k]) : m));
+const isoOf = (b, ...statuses) => str((Array.isArray(b?.statusLog) ? b.statusLog : []).filter((l) => statuses.includes(l?.status)).pop()?.at || b?.statusAt || b?.updatedAt, 40);
+
+/** Split provenance as stored on the build (`split`): { by, model, at, stepCount }, or null before the split. */
+export function normSplit(s, steps = []) {
+  const x = obj(s); if (!x || !str(x.by)) return null;
+  const n = Number(x.stepCount);
+  return { by: str(x.by, 40), model: str(x.model, 80), at: str(x.at, 40), stepCount: Number.isInteger(n) && n > 0 ? n : (Array.isArray(steps) ? steps.length : 0) };
+}
+
+/**
+ * What every view of one read shares: the build holding the one active place and the merge line (the builds in a
+ * landing run first, then the built ones in the order the lander takes them: emergency builds, then the oldest
+ * build-complete). Work it out once per read and hand it to pipelineView instead of the list.
+ */
+export function pipelineContext(allBuilds = []) {
+  const all = (Array.isArray(allBuilds) ? allBuilds : []).filter((b) => b && b.flow === FLOW && !b.deleted && b.status !== EXIT);
+  const holder = activeBuild(all).active;
+  const landing = (b) => LANDING_GROUP.includes(b.status) || (b.status === FAILED && LANDING_GROUP.includes(b.failedFrom));
+  const inRun = all.filter(landing).sort((a, b) => isoOf(a, 'merging-pr').localeCompare(isoOf(b, 'merging-pr')) || str(a.id).localeCompare(str(b.id)));
+  const built = all.filter((b) => b.status === 'build-complete').sort((a, b) => Number(isEmergency(b)) - Number(isEmergency(a)) || isoOf(a, 'build-complete').localeCompare(isoOf(b, 'build-complete')) || str(a.id).localeCompare(str(b.id)));
+  return { $ctx: STATUS_SCHEMA, holder, line: [...inRun, ...built] };
+}
+
+/** The merge line of one build: its place and the build right ahead of it; the lander's own record on the build wins. */
+function mergeLineOf(b, ctx) {
+  const stored = obj(b?.mergeLine) ?? obj(obj(b?.landing)?.mergeLine);
+  const i = ctx.line.findIndex((x) => x.id === b?.id);
+  if (!stored && i < 0) return null;
+  const ahead = i > 0 ? ctx.line[i - 1] : null;
+  const sw = stored ? (obj(stored.waitingFor) ?? (str(stored.waitingFor) ? (ctx.line.find((x) => x.id === stored.waitingFor || (x.number && x.number === stored.waitingFor)) ?? { id: str(stored.waitingFor, 80) }) : null)) : null;
+  const position = Number.isInteger(Number(stored?.position)) && Number(stored.position) > 0 ? Number(stored.position) : i + 1;
+  const waitingFor = sw ? { buildId: str(sw.buildId ?? sw.id, 80), number: str(sw.number, 24), title: str(sw.title, 300) } : ahead ? refOf(ahead) : null;
+  if (!position && !waitingFor) return null;
+  const text = [position ? `${ordinal(position)} to merge` : '', waitingFor ? `waiting for ${nameOf(waitingFor)} to merge` : ''].filter(Boolean).join(', ');
+  return { position, waitingFor, text: text.charAt(0).toUpperCase() + text.slice(1) };
+}
+
+/**
+ * pipeline-status@1: the view of one build → { state, label, tone, icon, line, attempt, waitingOn: { buildId, number,
+ * title, reason } | null, mergeLine: { position, waitingFor: { buildId, number, title } | null, text } | null,
+ * split: { by, model, at, stepCount } | null, clash?: { reason, options } }.
+ *   state       one of PIPELINE_STATES; a status outside them (a builds@1 status, archived, anything unknown) is shown
+ *               as itself: the raw status as state and label, tone muted. Never throws.
+ *   waitingOn   set while the build sits at split (or ready) because another build holds the one active place.
+ *   mergeLine   set from build-complete to the merge: the place in the lander's line and the build it waits for.
+ * `all` is every build of the same read, or a pipelineContext() of them.
+ */
+export function pipelineView(build, all = []) {
+  const b = obj(build) ?? {};
+  try {
+    const ctx = all && all.$ctx === STATUS_SCHEMA ? all : pipelineContext(all);
+    const raw = str(b.status, 40);
+    const attempt = Math.max(1, Math.floor(Number(b.attempt) || 1));
+    const steps = liveSteps(b);
+    const split = normSplit(b.split, b.steps);
+    const mergeLine = b.flow === FLOW || isP2(b) ? mergeLineOf(b, ctx) : null;
+    let state = raw; let line = '';
+    const lander = str(obj(b.landing)?.state || b.landingState || b.landerState || b.mergeState, 40); // wherever the lander wrote its state
+    if (SHOWN_AS[raw]) { state = SHOWN_AS[raw].state; line = SHOWN_AS[raw].line; }
+    if (LANDER_STATES.includes(lander) && (raw === 'build-complete' || LANDING_GROUP.includes(raw))) { if (lander !== state) line = ''; state = lander; }
+    else if (raw === 'build-complete' && mergeLine && mergeLine.position > 1) state = 'waiting-to-merge';
+    const info = PIPELINE_STATE_INFO[state];
+    if (!info || !(isP2(b) || state === 'landed')) {
+      // outside the contract: the raw status, as it is
+      const label = raw ? (BUILD_LABELS[raw] ?? raw.charAt(0).toUpperCase() + raw.slice(1).replace(/-/g, ' ')) : 'Unknown';
+      return { state: raw, label, tone: 'muted', icon: 'circle', line: '', attempt, waitingOn: null, mergeLine: null, split };
+    }
+    const from = str(b.failedFrom, 40);
+    const vars = { n: stepsWord(steps.length), done: steps.filter((s) => s.status === 'completed' || s.status === 'in-pr').length, attempt, max: MAX_ATTEMPTS, from: (PIPELINE_STATE_INFO[SHOWN_AS[from]?.state ?? from]?.label ?? from) || 'an unknown status' };
+    let label = fill(info.label, vars); let tone = info.tone; let icon = info.icon;
+    line = line || fill(info.line, vars);
+    let waitingOn = null;
+    if (state === FAILED && gaveUp(b)) line = `Failed at ${vars.from}, attempt ${attempt} of ${MAX_ATTEMPTS}. It gave up: retry it to start again.`;
+    if (state === 'building' && isHand(b)) line = 'A session started by hand is building it.';
+    if (['waiting-to-merge', 'merging', 'running-ci', 'build-complete'].includes(state) && mergeLine?.waitingFor) line = `${mergeLine.text}.`;
+    const clash = obj(b.clash);
+    const waits = state === 'split' || (state === FAILED && WAITING.includes(from));
+    if (waits && clash && clash.rejected !== false && !clash.answer) {
+      label = 'Rejected (clash)'; tone = 'danger'; icon = 'alert';
+      line = `${str(clash.reason, 500)} Choose: run all now, or run the clean steps and defer the rest.`;
+    } else if (waits && str(obj(b.pipeline)?.heldAt)) line = 'On hold: release it to give it its turn.';
+    else if ((state === 'split' || state === 'ready') && !besideLine(b) && ctx.holder && ctx.holder.id !== b.id) {
+      const r = refOf(ctx.holder);
+      waitingOn = { ...r, reason: `Waiting: ${r.title || r.buildId} holds the active place` };
+      line = `${waitingOn.reason} (${labelOf(ctx.holder.status, ctx.holder.attempt)}).`;
+    }
+    const deferred = steps.filter((s) => obj(s.waitsFor) && s.status === 'pending');
+    if (deferred.length && ['pulling-main', 'assigning-models', 'ready', 'sending', 'building'].includes(state)) line = `${line} ${stepsWord(deferred.length)} deferred, waiting for ${[...new Set(deferred.map((s) => nameOf({ buildId: str(s.waitsFor.buildId, 80), number: str(s.waitsFor.number, 24), title: str(s.waitsFor.title, 300) })))].join(', ')} to land.`;
+    return { state, label, tone, icon, line, attempt, waitingOn, mergeLine, split, ...(clash && str(clash.reason) ? { clash: { rejected: clash.rejected !== false && !clash.answer, reason: str(clash.reason, 600), answer: str(clash.answer, 20) } } : {}) };
+  } catch {
+    const raw = str(b.status, 40);
+    return { state: raw, label: raw || 'Unknown', tone: 'muted', icon: 'circle', line: '', attempt: 1, waitingOn: null, mergeLine: null, split: null };
+  }
+}
+
+/** The view fields a read exposes per step: its unique id, who split it, its model and who chose it, its status. */
+export const stepView = (s) => ({ id: str(s?.id, 40), uid: str(s?.uid, 60), splitBy: str(s?.splitBy, 40), model: str(s?.model, 20), modelBy: str(s?.modelBy, 40), status: str(s?.status, 40) || (s?.done ? 'completed' : 'pending') });
+
+/* ------------------------------------------------------------------ build numbers */
+
+/** A build's short unique number: `B-0123`, given once by the builds store and never changed or used again. */
+export const NUMBER_RE = /^B-(\d{4,})$/;
+export const numberText = (n) => `B-${String(Math.max(1, Math.floor(Number(n) || 1))).padStart(4, '0')}`;
+export const numberValue = (text) => { const m = NUMBER_RE.exec(str(text, 24)); return m ? Number(m[1]) : 0; };
+/**
+ * Give every build in `ids` (or every build, when `ids` is null) that has no number its own, oldest first, counting on
+ * from `seq` (the store's high-water mark) or the highest number in use. A number held by two builds (two writers at
+ * the same moment) stays with the older one; the other gets a new one. Changes the builds in place.
+ * → { seq, given: [{ id, number }] }
+ */
+export function assignNumbers(builds = [], { seq = 0, ids = null } = {}) {
+  const all = (Array.isArray(builds) ? builds : []).filter((b) => b && typeof b === 'object');
+  let top = Math.max(Math.floor(Number(seq) || 0), ...all.map((b) => numberValue(b.number)), 0);
+  const age = (a, b) => str(a.createdAt, 40).localeCompare(str(b.createdAt, 40)) || str(a.id).localeCompare(str(b.id));
+  const holders = new Map();
+  for (const b of [...all].sort(age)) { const v = numberValue(b.number); if (!v) continue; if (holders.has(v)) b.number = ''; else holders.set(v, b); }
+  const given = [];
+  for (const b of all.filter((x) => !numberValue(x.number) && (x.number === '' || !ids || ids.has(x.id))).sort(age)) { top += 1; b.number = numberText(top); given.push({ id: b.id, number: b.number }); }
+  return { seq: top, given };
 }
