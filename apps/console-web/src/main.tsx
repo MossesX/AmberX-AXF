@@ -7,6 +7,7 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { registerPluginSettingsActions } from './pluginSettingsActions';
 import { App } from './App';
+import { installPullRefresh } from './place/pullRefresh';
 import './axf/ui/axf.css';
 import './console.css';
 
@@ -50,6 +51,9 @@ try {
 } catch { /* storage unavailable */ }
 
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
+
+// A pull-down refresh on the phone saves the place first, like every other reload (src/place/pullRefresh.ts).
+installPullRefresh(axf);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
