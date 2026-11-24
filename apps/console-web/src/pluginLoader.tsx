@@ -26,6 +26,7 @@ import { Button, IconButton, Note } from './axf/react';
 import { PluginViewHost } from './PluginSettingsGear';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
+import { placeStore } from './place/placeState';
 import { CORE_PLUGINS, evictions, importOnce, inWaves, isChunkLoadError, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, STARTUP_WAVES, touch, type LazyConfig, type LazyMode, type StartItem, type StartReason, type UsageStat } from './lazyEngine';
 
 type WebModule = { plugin?: AxfWebLibrary };
@@ -576,7 +577,7 @@ function LazyCall({ folder, path, args }: { folder: string; path: string[]; args
       <div className="axf-lazy">
         <Note tone="danger">{folder}: {err}</Note>
         <Button icon="refresh" onClick={() => void loader.request(folder)}>Retry</Button>
-        {loader.stale && <Button tone="primary" icon="refresh" onClick={() => globalThis.location.reload()}>Reload for the new version</Button>}
+        {loader.stale && <Button tone="primary" icon="refresh" onClick={reloadKeepingPlace}>Reload for the new version</Button>}
       </div>
     );
   }
@@ -586,6 +587,12 @@ function LazyCall({ folder, path, args }: { folder: string; path: string[]; args
 }
 
 /** The "New version, reload" banner: shown once a plugin chunk couldn't load twice (the console was redeployed). */
+/** Reload for the new version, back on the same screen, tabs and scroll. */
+function reloadKeepingPlace(): void {
+  try { placeStore.captureScroll(); placeStore.flush(); } catch { /* the reload goes ahead */ }
+  globalThis.location.reload();
+}
+
 export function NewVersionNotice(): ReactNode {
   useLoaderVersion();
   // It sits over the page until a reload, so it can be put away: the page under it stays usable and scrollable, and a
@@ -596,7 +603,7 @@ export function NewVersionNotice(): ReactNode {
     <div className="axf-new-version" role="alert">
       <IconButton icon="x" label="Hide this notice" onClick={() => setHidden(true)} />
       <Note tone="warning">New version of the console: part of it couldn't load until you reload.</Note>
-      <Button tone="primary" icon="refresh" onClick={() => globalThis.location.reload()}>Reload</Button>
+      <Button tone="primary" icon="refresh" onClick={reloadKeepingPlace}>Reload</Button>
     </div>
   );
 }
