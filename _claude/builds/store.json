@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10386,
- "updatedAt": "2026-11-24T13:43:12.812Z",
+ "rev": 10387,
+ "updatedAt": "2026-11-24T13:43:55.033Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -302909,7 +302909,7 @@
    "pr": "909",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T13:42:51.487Z",
+   "updatedAt": "2026-11-24T13:43:29.429Z",
    "builtAt": "",
    "notes": [
     {
@@ -303199,6 +303199,14 @@
     {
      "text": "Worker accounts: mossesx-max-: 1 run, $2.51",
      "at": "2026-11-24T13:42:51.487Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at building, attempt 1: tmux session axf-fix-refreshing-console-jumps-back--s6--rhonda is gone while the step was building.",
+     "at": "2026-11-24T13:43:02.090Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s8--sully, shared account login)",
+     "at": "2026-11-24T13:43:29.429Z"
     }
    ],
    "approvals": [],
@@ -303790,8 +303798,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-24T13:40:34.148Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -303808,12 +303816,13 @@
        "priorFailures": 0
       }
      },
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T13:40:34.953Z",
-     "statusAt": "2026-11-24T13:34:19.238Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-24T13:43:22.047Z",
+     "statusAt": "2026-11-24T13:43:02.090Z",
+     "statusBy": "watchdog",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -303849,13 +303858,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-fix-refreshing-console-jumps-back--s6--rhonda on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T13:43:02.090Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-fix-refreshing-console-jumps-back--s6--rhonda is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s6",
      "branch": "claude/fix-refreshing-console-jumps-back--s6",
-     "tmux": "axf-fix-refreshing-console-jumps-back--s6--rhonda"
+     "tmux": "axf-fix-refreshing-console-jumps-back--s6--rhonda",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s7",
@@ -303973,7 +303992,7 @@
      "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
      "updatedAt": "2026-11-17T22:02:41.631Z",
-     "statusAt": "2026-11-24T13:42:23.361Z",
+     "statusAt": "2026-11-24T13:43:10.150Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -304004,12 +304023,20 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-24T13:43:10.150Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-refreshing-console-jumps-back--s8--sully on mossesx-max-"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s8",
-     "branch": "claude/fix-refreshing-console-jumps-back--s8"
+     "branch": "claude/fix-refreshing-console-jumps-back--s8",
+     "tmux": "axf-fix-refreshing-console-jumps-back--s8--sully"
     },
     {
      "id": "s9",
@@ -304250,7 +304277,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 175,
+   "rev": 178,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -368270,14 +368297,14 @@
    "title": "Settings Consolidation plugin",
    "category": "",
    "detail": "New settings-only plugin, Settings Consolidation. It declares NO new keys and moves nothing: every setting stays in its own plugin and store. It shows them grouped in one place and reads/writes the existing keys where they live, on the shared settings layout (collapsible sections, level toolbar). One section per type; more types get added over time.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T13:42:30.466Z",
-   "updatedAt": "2026-11-24T13:42:30.466Z",
+   "updatedAt": "2026-11-24T13:43:22.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -368305,7 +368332,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "settings-consolidation-plugin-ciuy",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -368316,9 +368343,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T13:42:30.466Z",
+   "statusAt": "2026-11-24T13:43:23.536Z",
    "statusBy": "claude",
    "attempt": 1,
+   "archivedFrom": "pending",
    "statusLog": [
     {
      "status": "pending",
@@ -368326,6 +368354,12 @@
      "by": "claude",
      "attempt": 1,
      "why": "Send to orchestrator"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-24T13:43:23.536Z",
+     "by": "claude",
+     "attempt": 1
     }
    ]
   }

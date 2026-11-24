@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T13:43:12.812Z",
+ "updatedAt": "2026-11-24T13:43:55.033Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84,7 +84,7 @@
    "title": "Settings Consolidation plugin",
    "category": "",
    "detail": "New settings-only plugin, Settings Consolidation. It declares NO new keys and moves nothing: every setting stays in its own plugin and store. It shows them grouped in one place and reads/writes the existing keys where they live, on the shared settings layout (collapsible sections, level toolbar). One section per type; more types get added over time.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -92,7 +92,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T13:42:30.466Z",
-   "updatedAt": "2026-11-24T13:42:30.466Z",
+   "updatedAt": "2026-11-24T13:43:22.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -202622,7 +202622,7 @@
    "pr": "909",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T13:42:51.487Z",
+   "updatedAt": "2026-11-24T13:43:29.429Z",
    "builtAt": "",
    "notes": [
     {
@@ -202912,6 +202912,14 @@
     {
      "text": "Worker accounts: mossesx-max-: 1 run, $2.51",
      "at": "2026-11-24T13:42:51.487Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at building, attempt 1: tmux session axf-fix-refreshing-console-jumps-back--s6--rhonda is gone while the step was building.",
+     "at": "2026-11-24T13:43:02.090Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-refreshing-console-jumps-back--s8--sully, shared account login)",
+     "at": "2026-11-24T13:43:29.429Z"
     }
    ],
    "approvals": [],
@@ -203058,8 +203066,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-24T13:40:34.148Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mwthfg1q1qmx8a",
      "createdAt": "2026-11-17T21:38:35.623Z"
