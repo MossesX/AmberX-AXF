@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T12:04:21.642Z",
+ "updatedAt": "2026-11-24T12:04:37.991Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -568,9 +568,9 @@
    "source": "hand",
    "pendingId": "",
    "branch": "claude/fix907-ci",
-   "pr": "",
+   "pr": "908",
    "createdAt": "2026-11-24T10:39:59.498Z",
-   "updatedAt": "2026-11-24T12:04:17.589Z",
+   "updatedAt": "2026-11-24T12:04:31.210Z",
    "builtAt": "",
    "notes": [
     {

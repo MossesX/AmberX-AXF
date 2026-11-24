@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10379,
- "updatedAt": "2026-11-24T12:04:21.642Z",
+ "rev": 10380,
+ "updatedAt": "2026-11-24T12:04:37.991Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -365817,9 +365817,9 @@
    "source": "hand",
    "pendingId": "",
    "branch": "claude/fix907-ci",
-   "pr": "",
+   "pr": "908",
    "createdAt": "2026-11-24T10:39:59.498Z",
-   "updatedAt": "2026-11-24T12:04:17.589Z",
+   "updatedAt": "2026-11-24T12:04:31.210Z",
    "builtAt": "",
    "notes": [
     {
@@ -365906,11 +365906,11 @@
      "done": true,
      "doneAt": "2026-11-24T12:03:35.763Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-24T10:39:59.498Z",
-     "updatedAt": "2026-11-24T12:03:35.831Z",
-     "statusAt": "2026-11-24T12:03:35.763Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-24T12:04:31.270Z",
+     "statusAt": "2026-11-24T12:04:31.210Z",
+     "statusBy": "lander",
      "attempt": 1,
      "statusLog": [
       {
@@ -365926,12 +365926,19 @@
        "by": "headless",
        "attempt": 1,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T12:04:31.210Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "worktree": "/root/axf-builds/fix907-ci",
      "branch": "claude/fix907-ci",
-     "tmux": "axf-fix907-ci--rhonda"
+     "tmux": "axf-fix907-ci--rhonda",
+     "prNumber": 908
     }
    ],
    "profiles": [
@@ -365942,7 +365949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
