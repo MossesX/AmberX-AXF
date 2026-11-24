@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10380,
- "updatedAt": "2026-11-24T12:04:37.991Z",
+ "rev": 10381,
+ "updatedAt": "2026-11-24T12:04:52.777Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -365812,14 +365812,14 @@
    "title": "Get PR 907 green",
    "category": "",
    "detail": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
-   "status": "merging-pr",
+   "status": "running-ci",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/fix907-ci",
    "pr": "908",
    "createdAt": "2026-11-24T10:39:59.498Z",
-   "updatedAt": "2026-11-24T12:04:31.210Z",
+   "updatedAt": "2026-11-24T12:04:42.178Z",
    "builtAt": "",
    "notes": [
     {
@@ -365949,7 +365949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365960,7 +365960,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T12:04:17.589Z",
+   "statusAt": "2026-11-24T12:04:42.178Z",
    "statusBy": "lander",
    "attempt": 1,
    "statusLog": [
@@ -365984,6 +365984,18 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T12:04:36.461Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T12:04:42.178Z",
+     "by": "lander",
+     "attempt": 1
     }
    ]
   }
