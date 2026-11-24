@@ -66,6 +66,21 @@ the voice session combines the four branches.
   `src/control/inventory.json`, which `npm run build` creates); `npm run build` passes
 - Screenshots, desktop and phone, from a fixture carrying the full contract: `/root/axf-builds/_shots/psync-c/`
 
+## Open: UI Review not submitted
+
+`review.mjs submit --console` needs `AXF_CONSOLE_URL` and `AXF_TOKEN`, and this headless session has neither. The shots
+are ready in `/root/axf-builds/_shots/psync-c/` (6 for review: `sent-tree`, `build-waiting-rejected`, `sent-step`, each
+desktop and phone). Submit them with the combined PR number:
+
+```
+S=/root/axf-builds/_shots/psync-c
+node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name "Plan Studio 2.0: build panel under each sent plan" \
+  --app console-web --screen plan-studio-2 --group "psync-c-planstudio - Nov 24 1:30 AM" \
+  --shots $S/plan-studio-2-sent-tree-desktop.png,$S/plan-studio-2-build-waiting-rejected-desktop.png,$S/plan-studio-2-sent-step-desktop.png,$S/plan-studio-2-sent-tree-phone.png,$S/plan-studio-2-build-waiting-rejected-phone.png,$S/plan-studio-2-sent-step-phone.png \
+  --build psync-c-planstudio --branch claude/psync-c-planstudio --pr <combined PR> \
+  --single-option "The layout is set by the requirements" --console
+```
+
 ## Not verified
 
 - Against the real sibling code: `pipelineView`, `number`, `split`, `mergeLine`, `clash` and `/api/builds/events` do
