@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10375,
- "updatedAt": "2026-11-24T01:06:15.961Z",
+ "rev": 10376,
+ "updatedAt": "2026-11-24T01:06:40.935Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -225290,7 +225290,7 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
@@ -225298,7 +225298,7 @@
    "pr": "#780",
    "mergedAt": "2026-11-17T18:59:35Z",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-23T22:05:25.603Z",
+   "updatedAt": "2026-11-24T01:06:23.209Z",
    "builtAt": "",
    "notes": [
     {
@@ -225488,6 +225488,10 @@
     {
      "text": "Watchdog: PR #780 merged 2026-11-17 18:59 and the build never heard: the merge is recorded, CI on e5452d2cad is next.",
      "at": "2026-11-23T22:05:25.603Z"
+    },
+    {
+     "text": "Watchdog: merged, and main is green at 88eb36b4c0 with e5452d2cad in it (CI on the merge commit itself: red, fixed on main since): landed.",
+     "at": "2026-11-24T01:06:23.209Z"
     }
    ],
    "approvals": [
@@ -225566,9 +225570,9 @@
     "pr": 780,
     "sha": "e5452d2cadf16350aa6b43d9e75107d533f5b2f5",
     "mergedAt": "2026-11-17T18:59:35Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-24T01:06:23.209Z",
+    "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -226157,11 +226161,11 @@
     "all"
    ],
    "order": {
-    "all": 878
+    "all": 887
    },
    "kind": "build",
    "planRef": "",
-   "rev": 161,
+   "rev": 166,
    "deleted": false,
    "deletedAt": "",
    "pending": {

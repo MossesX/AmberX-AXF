@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T01:06:15.961Z",
+ "updatedAt": "2026-11-24T01:06:40.935Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151156,747 +151156,6 @@
    ]
   },
   {
-   "id": "orchestrator-stale-row-watchdog-vps",
-   "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
-   "category": "",
-   "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "landing",
-   "hidden": false,
-   "source": "mcp",
-   "pendingId": "orchestrator-stale-row-watchdog-vps",
-   "branch": "claude/orchestrator-stale-row-watchdog-vps",
-   "pr": "#780",
-   "mergedAt": "2026-11-17T18:59:35Z",
-   "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-23T22:05:25.603Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by Claude into 15 steps (2 Fable).",
-     "at": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "text": "Queued by brett.",
-     "at": "2026-11-16T23:20:12.320Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-orchestrator-stale-row-watchdog-vps--paulie.",
-     "at": "2026-11-17T00:34:24.725Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--paulie, shared account login)",
-     "at": "2026-11-17T00:34:29.175Z"
-    },
-    {
-     "text": "Clash note: the prompt engine (prompt-engine@1, framework/core/engines/prompt-engine.mjs, plugin prompt-engine, branch claude/prompting-engine-control-panel-to-create) is the general rules engine: triggers + conditions + limits + what to ask + actions, with manifests every source registers. Watch rules here should register a manifest and fire events through axf.prompt-engine@1 rather than ship a second rules engine.",
-     "at": "2026-11-17T00:41:56.359Z"
-    },
-    {
-     "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--paulie: brief only · start 17.3K tokens ($0.12) · cost $4.09 · 33 turns · 6 tools, MCP none",
-     "at": "2026-11-17T00:44:34.661Z"
-    },
-    {
-     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
-     "at": "2026-11-17T03:38:03.346Z"
-    },
-    {
-     "text": "Back to Pending (cli).",
-     "at": "2026-11-17T03:42:11.631Z"
-    },
-    {
-     "text": "Brief only: brief is 24727 characters (~6182 tokens), over the 24000-character budget: trim it to what this job needs",
-     "at": "2026-11-17T12:29:51.916Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--earl, shared account login)",
-     "at": "2026-11-17T12:29:56.717Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-stale-row-watchdog-vps--earl.",
-     "at": "2026-11-17T12:29:47.664Z"
-    },
-    {
-     "text": "s15: PR #780 open, all checks pass, main merged in. Not done: UI Review 3-option submit — a local capture of the Watchdog card (rebuild-shots, AXF_APPEARANCE_HUB=off) never reached the panel, so there are no screenshots to submit; take them from the deployed console after landing (ui-predict.mjs real). check-done-means-merged.mjs named in the brief does not exist on main.",
-     "at": "2026-11-17T13:04:57.572Z"
-    },
-    {
-     "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--earl: brief only · start 17.4K tokens ($0.06) · cost $11.38 · 180 turns · 6 tools, MCP none",
-     "at": "2026-11-17T13:05:18.092Z"
-    },
-    {
-     "text": "Reconciler: PR #780",
-     "at": "2026-11-17T13:10:23.017Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-17T13:40:22.024Z"
-    },
-    {
-     "text": "Brett: land after server-watchdog-orchestrator-auto-recovers-stuck",
-     "at": "2026-11-17T15:06:58.322Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-17T15:30:22.248Z"
-    },
-    {
-     "text": "Watchdog: Pending build orchestrator-stale-row-watchdog-vps → Complete: Its PR merged on main (PR #780 merged 2026-11-17T18:59:35Z (e5452d2cadf1); on main by squash e5452d2cadf1; build orchestrator-stale-row-watchdog-vps: pending) (status stays pending: steps still open)",
-     "at": "2026-11-17T19:02:22.905Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2581 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:13:32.247Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2586 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:18:01.648Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2591 min past its budget).",
-     "at": "2026-11-19T14:23:01.277Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-19T14:24:01.548Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:34:02.103Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:39:01.187Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-19T14:44:01.143Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 3.",
-     "at": "2026-11-19T14:45:02.399Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T20:52:35.014Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T21:03:46.519Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
-     "at": "2026-11-19T21:09:02.150Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 4.",
-     "at": "2026-11-19T21:10:01.739Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:20:02.058Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:25:05.623Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:06:03.379Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:11:03.590Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
-     "at": "2026-11-19T22:16:01.483Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 5.",
-     "at": "2026-11-19T22:17:01.276Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:38:01.267Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:53:37.736Z"
-    },
-    {
-     "text": "Shipped manifest sm-orchestrator-stale-row-watchdog-vps rev 1 sent to Shipped features (orchestrator): PR #780, 38 file(s), 0 test line(s), 12 open.",
-     "at": "2026-11-20T00:07:27Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:43:39.480Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:53:39.784Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T01:09:47.341Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
-     "at": "2026-11-20T01:15:02.563Z"
-    },
-    {
-     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
-     "at": "2026-11-20T01:16:01.941Z"
-    },
-    {
-     "text": "Superseded by fable-rebuild-2-2-both-watchdogs-one (branch claude/fable-rebuild-2-2-both-watchdogs-one): its watchdog is now one watch of the single build watchdog (watchdog.mjs). Do not rebuild this row; see _claude/builds/reports/fable-rebuild-2-2-both-watchdogs-one.md.",
-     "at": "2026-11-21T20:03:14.466Z"
-    },
-    {
-     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
-     "at": "2026-11-23T20:26:37.133Z"
-    },
-    {
-     "text": "Watchdog: PR #780 merged 2026-11-17 18:59 and the build never heard: the merge is recorded, CI on e5452d2cad is next.",
-     "at": "2026-11-23T22:05:25.603Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T12:33:21.051Z",
-     "by": "auto",
-     "kind": "downgrade"
-    },
-    {
-     "phase": 2,
-     "from": "Opus",
-     "to": "Fable",
-     "at": "2026-11-23T20:26:37.133Z",
-     "by": "auto",
-     "via": "policy",
-     "kind": "upgrade",
-     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "I want a server fucking watchdog on the VPS to do that.",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "orchestrator-stale-row-watchdog-vps",
-    "brief": "# Build: orchestrator-stale-row-watchdog-vps\n\n## Brett said (verbatim)\n> I want a server fucking watchdog on the VPS to do that.\n\n## What to build\nContinue build \"Watchdog + watch-rule system (orchestrator, Plan Studio, everything)\" (orchestrator-stale-row-watchdog-vps) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"I want a server fucking watchdog on the VPS to do that.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Design the stale-row contract stale-row@1 in framework/core/stale-rows.mjs: a pure classifier that takes a row (pending, queued, building, merge-queue entry, UI Review item) plus facts (PR merged on main, commits on main, build status complete/failed/cancelled, branch deleted, PR closed) and returns keep | complete | remove with a reason code. Add framework/schemas/stale-row.json for the cleanup log record (row kind, row id, build id, action, reason, evidence, at, by: watchdog)\n[ ] s2 (~10 min) Write fixture cases for the classifier (landed via merge queue, landed by direct merge commit, closed unmerged PR, build complete but row still queued, UI Review item whose PR merged, a running build that must stay, a missing-facts row that must stay) plus a check script\nRead first: framework/core/stale-rows.mjs, framework/schemas/stale-row.json, framework/spec/fixtures/stale-rows.json, framework/spec/check-stale-rows.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-stale-row-watchdog-vps <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-stale-row-watchdog-vps <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-stale-row-watchdog-vps \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Design the stale-row contract stale-row@1 in framework/core/stale-rows.mjs: a pure classifier that takes a row (pending, queued, building, merge-queue entry, UI Review item) plus facts (PR merged on main, commits on main, build status complete/failed/cancelled, branch deleted, PR closed) and returns keep | complete | remove with a reason code. Add framework/schemas/stale-row.json for the cleanup log record (row kind, row id, build id, action, reason, evidence, at, by: watchdog)",
-     "model": "Fable",
-     "why": "New cross-table contract and log schema that every orchestrator table and the console read",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/stale-rows.mjs",
-      "framework/schemas/stale-row.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:41:16.469Z",
-     "note": "",
-     "uid": "st-mwgp7o6s01gxlu",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s2",
-     "text": "Write fixture cases for the classifier (landed via merge queue, landed by direct merge commit, closed unmerged PR, build complete but row still queued, UI Review item whose PR merged, a running build that must stay, a missing-facts row that must stay) plus a check script",
-     "model": "Fable",
-     "why": "Fixtures are the contract for the classifier",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/spec/fixtures/stale-rows.json",
-      "framework/spec/check-stale-rows.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T00:43:59.320Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0266e5",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s3",
-     "text": "Facts gatherer: framework/cli/stale-facts.mjs reads origin/main (git log --merges, branch heads) and the GitHub PR states through github-token.mjs with ETag caching, so a run costs almost no API calls; returns one facts map keyed by build id / branch / PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/cli/stale-facts.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:33:21.051Z",
-     "note": "",
-     "uid": "st-mwgp7o6s03f630",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s4",
-     "text": "Table readers for builds-store rows: pending, queued and building projections from _claude/builds/store.json via builds-store.mjs, each mapped to classifier input",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/watchdog/tables/builds.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:33:50.450Z",
-     "note": "",
-     "uid": "st-mwgp7o6s04yld9",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s5",
-     "text": "Table readers for the merge queue (land.mjs queue list / merge-queue.mjs state) and UI Review items (review.mjs list), mapped to classifier input; reached through the capabilities, not folder names, where the framework calls them",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/watchdog/tables/merge-queue.mjs",
-      "apps/console-web/plugins/build-orchestrator/watchdog/tables/ui-review.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:35:13.064Z",
-     "note": "",
-     "uid": "st-mwgp7o6s05sj8a",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s6",
-     "text": "Watchdog core apps/console-web/plugins/build-orchestrator/watchdog.mjs: run = gather facts, read every table, classify, and with --dry-run only print the plan; settings (enabled, interval minutes, dry-run, per-table on/off) in the plugin settings registry",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:37:31.152Z",
-     "note": "",
-     "uid": "st-mwgp7o6s067q8x",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s7",
-     "text": "Apply actions: builds store rows marked complete with the merged PR (builds-live.mjs so main sees it at once), merge-queue entries removed through land.mjs queue remove, UI Review items closed as merged; every write under the store lock and journalled, never touching a running build",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
-      "framework/cli/builds-live.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:40:12.518Z",
-     "note": "",
-     "uid": "st-mwgp7o6s075nbw",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s8",
-     "text": "Cleanup log: append each action as a stale-row@1 record to the plugin dataDir (watchdog/log.jsonl, rotated monthly) plus a build note on the affected build; also a Codebase changes log line per run that did anything",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
-      "apps/console-web/plugins/build-orchestrator/plugin.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:41:57.932Z",
-     "note": "",
-     "uid": "st-mwgp7o6s08z79v",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s9",
-     "text": "FYI to AmberX: one batched notification per run that cleaned something (count + row list), declared in the plugin's notify.json (notify-types@1) and sent through axf.notify@1 so the Notifications panel controls it",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/notify.json",
-      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:42:56.182Z",
-     "note": "",
-     "uid": "st-mwgp7o6s09b4by",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s10",
-     "text": "VPS schedule: cron axf-stale-watchdog every 5 minutes running watchdog.mjs run with a lockfile so runs never overlap; install/uninstall in the plugin's install.mjs / uninstall.mjs",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/install.mjs",
-      "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
-      "deploy/cron/axf-stale-watchdog"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:43:48.892Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0a1q0m",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s11",
-     "text": "Health check: register a health@1 check in the systems check (watchdog last run older than 3 intervals or last run failed = red banner item with Auto fix that reruns it / reinstalls the cron)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/routes.py",
-      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:45:37.676Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0byebm",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s12",
-     "text": "API: REST routes /api/plugins/build-orchestrator/watchdog (GET status + last runs + log, POST run, POST dry-run, PUT settings), MCP via plugin-commands (watchdog-status, watchdog-run, watchdog-log, watchdog-settings), CLI axf watchdog status|run|log|set, voice actions orchestrator.watchdog.*",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/routes.py",
-      "apps/console-web/plugins/build-orchestrator/commands.json",
-      "framework/cli/axf.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:47:24.716Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0cxzp2",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s13",
-     "text": "UI: a Watchdog card in Settings → Plugins → Build orchestrator (settings, last run, Run now, Dry run) and a Cleanups log tab using framework controls and TabGroup; register console-control targets (view:…/tab:watchdog, setting:…) and console_show deep link",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/web/WatchdogPanel.tsx",
-      "apps/console-web/plugins/build-orchestrator/web/index.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:50:03.742Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0d5msi",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s14",
-     "text": "Tests: unit tests for table readers and apply actions against a temp store, merge-queue and UI Review fixtures (dry-run makes no writes, running builds untouched, second run is a no-op); wire check-stale-rows.mjs into CI",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs",
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:51:22.077Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0ezx6o",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s15",
-     "text": "Run checks (check-stale-rows, watchdog tests, builds-store verify, check-theme, check-controls, check-toolbars, check-console-control, plugin-lifecycle check, glossary catalog --check), dry-run on the VPS data and paste its plan, UI Review submit with 3 options, write _claude/builds/reports/orchestrator-stale-row-watchdog-vps.md, add the THREADS.md row, open the PR saying how REST/MCP/CLI/voice reach each part",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/orchestrator-stale-row-watchdog-vps.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T13:05:00.027Z",
-     "note": "",
-     "uid": "st-mwgp7o6s0felsc",
-     "createdAt": "2026-11-14T17:47:32.020Z"
-    },
-    {
-     "id": "s31",
-     "text": "Shared watch-rule engine on the VPS: rules = a pre-built thing to watch + conditions combined with AND / OR (with grouping) + a pre-built action, with values chosen from lists. Reusable by any screen; the stale-row cleanup becomes the first built-in rule.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:26:37.133Z",
-     "note": "",
-     "uid": "st-mwgp8wo201ni29",
-     "createdAt": "2026-11-14T17:48:28.598Z"
-    },
-    {
-     "id": "s33",
-     "text": "Collapsible 'Watches' section on the Build orchestrator page listing its rules (expandable rows, on/off, last fired), with an 'Add watch' button.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:26:55.590Z",
-     "note": "",
-     "uid": "st-mwgp8yiv01gpag",
-     "createdAt": "2026-11-14T17:48:31.116Z"
-    },
-    {
-     "id": "s35",
-     "text": "'Add watch' wizard, zero typing: a grid of pre-built things to watch; selecting one expands the row to pick pre-built conditions and actions from lists and enter values (dropdowns, pickers, number steppers). Plain-English summary of the rule before saving.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:10.164Z",
-     "note": "",
-     "uid": "st-mwgp90ar01n24d",
-     "createdAt": "2026-11-14T17:48:33.277Z"
-    },
-    {
-     "id": "s37",
-     "text": "AND / OR conditions per watch: '+ add condition' in the wizard, each joined by an AND/OR picker, plus condition groups (e.g. (A AND B) OR C) built by clicking, no typing; the plain-English summary shows the logic.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:20.827Z",
-     "note": "",
-     "uid": "st-mwgp922101206r",
-     "createdAt": "2026-11-14T17:48:35.593Z"
-    },
-    {
-     "id": "s39",
-     "text": "Same collapsible 'Watches' container with the Add-watch wizard on the Plan Studio page, with Plan Studio's own pre-built things to watch and actions.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:31.508Z",
-     "note": "",
-     "uid": "st-mwgp93r201ob6m",
-     "createdAt": "2026-11-14T17:48:37.949Z"
-    },
-    {
-     "id": "s41",
-     "text": "A master collapsible 'All watches' container listing every possible thing that can be monitored across the system (orchestrator, Plan Studio, UI Review, merge queue, accounts, VPS, etc.), grouped by area, each addable with one click via the same wizard.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:41.654Z",
-     "note": "",
-     "uid": "st-mwgp95h301bwsu",
-     "createdAt": "2026-11-14T17:48:40.127Z"
-    },
-    {
-     "id": "s43",
-     "text": "Gates tab in the Watchdog panel: lists every existing gate on the VPS (test gate on landing, UI Review gate, merge approval, budget caps, etc.) as expandable rows with on/off, what it blocks, last triggered; plus 'Add gate' using the same zero-typing wizard (pre-built things to check, AND/OR conditions, pre-built block/notify actions).",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:50.162Z",
-     "note": "",
-     "uid": "st-mwgpar6q018b7v",
-     "createdAt": "2026-11-14T17:49:54.851Z"
-    },
-    {
-     "id": "s45",
-     "text": "Watchdog panel has exactly three tabs: 1) Watches (things being monitored + actions, incl. stale-row cleanup), 2) Gates (everything that blocks/holds work), 3) Rules (every standing rule the VPS enforces, e.g. account routing, auto-merge, rebuild-on-conflict, step splitting). Each tab: count in the tab label, expandable rows, on/off, and an Add button using the same zero-typing wizard.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:27:59.480Z",
-     "note": "",
-     "uid": "st-mwgpbnm601a6vg",
-     "createdAt": "2026-11-14T17:50:36.725Z"
-    },
-    {
-     "id": "s47",
-     "text": "Move Claude account selection out of the orchestrator: a VPS rules service decides which account each build runs on (orchestrator just asks it before starting a session). Move all existing account-routing options from console Settings (Claude accounts routing, subscriptions-first, per-account queued/parallel limits, etc.) into the Rules tab as pre-built rules, remove them from the old settings screen, keep routing-test preview working, and make sure no build ever starts without an account during the switch.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-23T20:28:11.599Z",
-     "note": "",
-     "uid": "st-mwgpdvjk012cot",
-     "createdAt": "2026-11-14T17:52:20.336Z"
-    }
-   ]
-  },
-  {
    "id": "themed-native-controls-plugin",
    "title": "Themed native controls plugin",
    "category": "",
@@ -155421,6 +154680,751 @@
      "note": "",
      "uid": "st-mwh0wszf096f4y",
      "createdAt": "2026-11-14T23:15:00.410Z"
+    }
+   ]
+  },
+  {
+   "id": "orchestrator-stale-row-watchdog-vps",
+   "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
+   "category": "",
+   "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
+   "status": "landed",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "orchestrator-stale-row-watchdog-vps",
+   "branch": "claude/orchestrator-stale-row-watchdog-vps",
+   "pr": "#780",
+   "mergedAt": "2026-11-17T18:59:35Z",
+   "createdAt": "2026-11-14T17:45:54.293Z",
+   "updatedAt": "2026-11-24T01:06:23.209Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by Claude into 15 steps (2 Fable).",
+     "at": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:12.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-orchestrator-stale-row-watchdog-vps--paulie.",
+     "at": "2026-11-17T00:34:24.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--paulie, shared account login)",
+     "at": "2026-11-17T00:34:29.175Z"
+    },
+    {
+     "text": "Clash note: the prompt engine (prompt-engine@1, framework/core/engines/prompt-engine.mjs, plugin prompt-engine, branch claude/prompting-engine-control-panel-to-create) is the general rules engine: triggers + conditions + limits + what to ask + actions, with manifests every source registers. Watch rules here should register a manifest and fire events through axf.prompt-engine@1 rather than ship a second rules engine.",
+     "at": "2026-11-17T00:41:56.359Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--paulie: brief only · start 17.3K tokens ($0.12) · cost $4.09 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:44:34.661Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:03.346Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:42:11.631Z"
+    },
+    {
+     "text": "Brief only: brief is 24727 characters (~6182 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T12:29:51.916Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--earl, shared account login)",
+     "at": "2026-11-17T12:29:56.717Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-stale-row-watchdog-vps--earl.",
+     "at": "2026-11-17T12:29:47.664Z"
+    },
+    {
+     "text": "s15: PR #780 open, all checks pass, main merged in. Not done: UI Review 3-option submit — a local capture of the Watchdog card (rebuild-shots, AXF_APPEARANCE_HUB=off) never reached the panel, so there are no screenshots to submit; take them from the deployed console after landing (ui-predict.mjs real). check-done-means-merged.mjs named in the brief does not exist on main.",
+     "at": "2026-11-17T13:04:57.572Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--earl: brief only · start 17.4K tokens ($0.06) · cost $11.38 · 180 turns · 6 tools, MCP none",
+     "at": "2026-11-17T13:05:18.092Z"
+    },
+    {
+     "text": "Reconciler: PR #780",
+     "at": "2026-11-17T13:10:23.017Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T13:40:22.024Z"
+    },
+    {
+     "text": "Brett: land after server-watchdog-orchestrator-auto-recovers-stuck",
+     "at": "2026-11-17T15:06:58.322Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Watchdog: Pending build orchestrator-stale-row-watchdog-vps → Complete: Its PR merged on main (PR #780 merged 2026-11-17T18:59:35Z (e5452d2cadf1); on main by squash e5452d2cadf1; build orchestrator-stale-row-watchdog-vps: pending) (status stays pending: steps still open)",
+     "at": "2026-11-17T19:02:22.905Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2581 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2586 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2591 min past its budget).",
+     "at": "2026-11-19T14:23:01.277Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 2.",
+     "at": "2026-11-19T14:24:01.548Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:34:02.103Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:39:01.187Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 3.",
+     "at": "2026-11-19T14:45:02.399Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T20:52:35.014Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T21:03:46.519Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
+     "at": "2026-11-19T21:09:02.150Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 4.",
+     "at": "2026-11-19T21:10:01.739Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:20:02.058Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:25:05.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:06:03.379Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:11:03.590Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
+     "at": "2026-11-19T22:16:01.483Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 5.",
+     "at": "2026-11-19T22:17:01.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z"
+    },
+    {
+     "text": "Shipped manifest sm-orchestrator-stale-row-watchdog-vps rev 1 sent to Shipped features (orchestrator): PR #780, 38 file(s), 0 test line(s), 12 open.",
+     "at": "2026-11-20T00:07:27Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:43:39.480Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:53:39.784Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T01:09:47.341Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
+     "at": "2026-11-20T01:15:02.563Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T01:16:01.941Z"
+    },
+    {
+     "text": "Superseded by fable-rebuild-2-2-both-watchdogs-one (branch claude/fable-rebuild-2-2-both-watchdogs-one): its watchdog is now one watch of the single build watchdog (watchdog.mjs). Do not rebuild this row; see _claude/builds/reports/fable-rebuild-2-2-both-watchdogs-one.md.",
+     "at": "2026-11-21T20:03:14.466Z"
+    },
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-23T20:26:37.133Z"
+    },
+    {
+     "text": "Watchdog: PR #780 merged 2026-11-17 18:59 and the build never heard: the merge is recorded, CI on e5452d2cad is next.",
+     "at": "2026-11-23T22:05:25.603Z"
+    },
+    {
+     "text": "Watchdog: merged, and main is green at 88eb36b4c0 with e5452d2cad in it (CI on the merge commit itself: red, fixed on main since): landed.",
+     "at": "2026-11-24T01:06:23.209Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T12:33:21.051Z",
+     "by": "auto",
+     "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-23T20:26:37.133Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want a server fucking watchdog on the VPS to do that.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "orchestrator-stale-row-watchdog-vps",
+    "brief": "# Build: orchestrator-stale-row-watchdog-vps\n\n## Brett said (verbatim)\n> I want a server fucking watchdog on the VPS to do that.\n\n## What to build\nContinue build \"Watchdog + watch-rule system (orchestrator, Plan Studio, everything)\" (orchestrator-stale-row-watchdog-vps) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"I want a server fucking watchdog on the VPS to do that.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Design the stale-row contract stale-row@1 in framework/core/stale-rows.mjs: a pure classifier that takes a row (pending, queued, building, merge-queue entry, UI Review item) plus facts (PR merged on main, commits on main, build status complete/failed/cancelled, branch deleted, PR closed) and returns keep | complete | remove with a reason code. Add framework/schemas/stale-row.json for the cleanup log record (row kind, row id, build id, action, reason, evidence, at, by: watchdog)\n[ ] s2 (~10 min) Write fixture cases for the classifier (landed via merge queue, landed by direct merge commit, closed unmerged PR, build complete but row still queued, UI Review item whose PR merged, a running build that must stay, a missing-facts row that must stay) plus a check script\nRead first: framework/core/stale-rows.mjs, framework/schemas/stale-row.json, framework/spec/fixtures/stale-rows.json, framework/spec/check-stale-rows.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-stale-row-watchdog-vps <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-stale-row-watchdog-vps <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-stale-row-watchdog-vps \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the stale-row contract stale-row@1 in framework/core/stale-rows.mjs: a pure classifier that takes a row (pending, queued, building, merge-queue entry, UI Review item) plus facts (PR merged on main, commits on main, build status complete/failed/cancelled, branch deleted, PR closed) and returns keep | complete | remove with a reason code. Add framework/schemas/stale-row.json for the cleanup log record (row kind, row id, build id, action, reason, evidence, at, by: watchdog)",
+     "model": "Fable",
+     "why": "New cross-table contract and log schema that every orchestrator table and the console read",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/stale-rows.mjs",
+      "framework/schemas/stale-row.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:41:16.469Z",
+     "note": "",
+     "uid": "st-mwgp7o6s01gxlu",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write fixture cases for the classifier (landed via merge queue, landed by direct merge commit, closed unmerged PR, build complete but row still queued, UI Review item whose PR merged, a running build that must stay, a missing-facts row that must stay) plus a check script",
+     "model": "Fable",
+     "why": "Fixtures are the contract for the classifier",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/stale-rows.json",
+      "framework/spec/check-stale-rows.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T00:43:59.320Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0266e5",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s3",
+     "text": "Facts gatherer: framework/cli/stale-facts.mjs reads origin/main (git log --merges, branch heads) and the GitHub PR states through github-token.mjs with ETag caching, so a run costs almost no API calls; returns one facts map keyed by build id / branch / PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/stale-facts.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:33:21.051Z",
+     "note": "",
+     "uid": "st-mwgp7o6s03f630",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s4",
+     "text": "Table readers for builds-store rows: pending, queued and building projections from _claude/builds/store.json via builds-store.mjs, each mapped to classifier input",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog/tables/builds.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:33:50.450Z",
+     "note": "",
+     "uid": "st-mwgp7o6s04yld9",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s5",
+     "text": "Table readers for the merge queue (land.mjs queue list / merge-queue.mjs state) and UI Review items (review.mjs list), mapped to classifier input; reached through the capabilities, not folder names, where the framework calls them",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog/tables/merge-queue.mjs",
+      "apps/console-web/plugins/build-orchestrator/watchdog/tables/ui-review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:35:13.064Z",
+     "note": "",
+     "uid": "st-mwgp7o6s05sj8a",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s6",
+     "text": "Watchdog core apps/console-web/plugins/build-orchestrator/watchdog.mjs: run = gather facts, read every table, classify, and with --dry-run only print the plan; settings (enabled, interval minutes, dry-run, per-table on/off) in the plugin settings registry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:37:31.152Z",
+     "note": "",
+     "uid": "st-mwgp7o6s067q8x",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s7",
+     "text": "Apply actions: builds store rows marked complete with the merged PR (builds-live.mjs so main sees it at once), merge-queue entries removed through land.mjs queue remove, UI Review items closed as merged; every write under the store lock and journalled, never touching a running build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:40:12.518Z",
+     "note": "",
+     "uid": "st-mwgp7o6s075nbw",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s8",
+     "text": "Cleanup log: append each action as a stale-row@1 record to the plugin dataDir (watchdog/log.jsonl, rotated monthly) plus a build note on the affected build; also a Codebase changes log line per run that did anything",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:41:57.932Z",
+     "note": "",
+     "uid": "st-mwgp7o6s08z79v",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s9",
+     "text": "FYI to AmberX: one batched notification per run that cleaned something (count + row list), declared in the plugin's notify.json (notify-types@1) and sent through axf.notify@1 so the Notifications panel controls it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:42:56.182Z",
+     "note": "",
+     "uid": "st-mwgp7o6s09b4by",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s10",
+     "text": "VPS schedule: cron axf-stale-watchdog every 5 minutes running watchdog.mjs run with a lockfile so runs never overlap; install/uninstall in the plugin's install.mjs / uninstall.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/install.mjs",
+      "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+      "deploy/cron/axf-stale-watchdog"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:43:48.892Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0a1q0m",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s11",
+     "text": "Health check: register a health@1 check in the systems check (watchdog last run older than 3 intervals or last run failed = red banner item with Auto fix that reruns it / reinstalls the cron)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py",
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:45:37.676Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0byebm",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s12",
+     "text": "API: REST routes /api/plugins/build-orchestrator/watchdog (GET status + last runs + log, POST run, POST dry-run, PUT settings), MCP via plugin-commands (watchdog-status, watchdog-run, watchdog-log, watchdog-settings), CLI axf watchdog status|run|log|set, voice actions orchestrator.watchdog.*",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:47:24.716Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0cxzp2",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s13",
+     "text": "UI: a Watchdog card in Settings → Plugins → Build orchestrator (settings, last run, Run now, Dry run) and a Cleanups log tab using framework controls and TabGroup; register console-control targets (view:…/tab:watchdog, setting:…) and console_show deep link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/WatchdogPanel.tsx",
+      "apps/console-web/plugins/build-orchestrator/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:50:03.742Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0d5msi",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s14",
+     "text": "Tests: unit tests for table readers and apply actions against a temp store, merge-queue and UI Review fixtures (dry-run makes no writes, running builds untouched, second run is a no-op); wire check-stale-rows.mjs into CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:51:22.077Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0ezx6o",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run checks (check-stale-rows, watchdog tests, builds-store verify, check-theme, check-controls, check-toolbars, check-console-control, plugin-lifecycle check, glossary catalog --check), dry-run on the VPS data and paste its plan, UI Review submit with 3 options, write _claude/builds/reports/orchestrator-stale-row-watchdog-vps.md, add the THREADS.md row, open the PR saying how REST/MCP/CLI/voice reach each part",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-stale-row-watchdog-vps.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T13:05:00.027Z",
+     "note": "",
+     "uid": "st-mwgp7o6s0felsc",
+     "createdAt": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "id": "s31",
+     "text": "Shared watch-rule engine on the VPS: rules = a pre-built thing to watch + conditions combined with AND / OR (with grouping) + a pre-built action, with values chosen from lists. Reusable by any screen; the stale-row cleanup becomes the first built-in rule.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:26:37.133Z",
+     "note": "",
+     "uid": "st-mwgp8wo201ni29",
+     "createdAt": "2026-11-14T17:48:28.598Z"
+    },
+    {
+     "id": "s33",
+     "text": "Collapsible 'Watches' section on the Build orchestrator page listing its rules (expandable rows, on/off, last fired), with an 'Add watch' button.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:26:55.590Z",
+     "note": "",
+     "uid": "st-mwgp8yiv01gpag",
+     "createdAt": "2026-11-14T17:48:31.116Z"
+    },
+    {
+     "id": "s35",
+     "text": "'Add watch' wizard, zero typing: a grid of pre-built things to watch; selecting one expands the row to pick pre-built conditions and actions from lists and enter values (dropdowns, pickers, number steppers). Plain-English summary of the rule before saving.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:10.164Z",
+     "note": "",
+     "uid": "st-mwgp90ar01n24d",
+     "createdAt": "2026-11-14T17:48:33.277Z"
+    },
+    {
+     "id": "s37",
+     "text": "AND / OR conditions per watch: '+ add condition' in the wizard, each joined by an AND/OR picker, plus condition groups (e.g. (A AND B) OR C) built by clicking, no typing; the plain-English summary shows the logic.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:20.827Z",
+     "note": "",
+     "uid": "st-mwgp922101206r",
+     "createdAt": "2026-11-14T17:48:35.593Z"
+    },
+    {
+     "id": "s39",
+     "text": "Same collapsible 'Watches' container with the Add-watch wizard on the Plan Studio page, with Plan Studio's own pre-built things to watch and actions.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:31.508Z",
+     "note": "",
+     "uid": "st-mwgp93r201ob6m",
+     "createdAt": "2026-11-14T17:48:37.949Z"
+    },
+    {
+     "id": "s41",
+     "text": "A master collapsible 'All watches' container listing every possible thing that can be monitored across the system (orchestrator, Plan Studio, UI Review, merge queue, accounts, VPS, etc.), grouped by area, each addable with one click via the same wizard.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:41.654Z",
+     "note": "",
+     "uid": "st-mwgp95h301bwsu",
+     "createdAt": "2026-11-14T17:48:40.127Z"
+    },
+    {
+     "id": "s43",
+     "text": "Gates tab in the Watchdog panel: lists every existing gate on the VPS (test gate on landing, UI Review gate, merge approval, budget caps, etc.) as expandable rows with on/off, what it blocks, last triggered; plus 'Add gate' using the same zero-typing wizard (pre-built things to check, AND/OR conditions, pre-built block/notify actions).",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:50.162Z",
+     "note": "",
+     "uid": "st-mwgpar6q018b7v",
+     "createdAt": "2026-11-14T17:49:54.851Z"
+    },
+    {
+     "id": "s45",
+     "text": "Watchdog panel has exactly three tabs: 1) Watches (things being monitored + actions, incl. stale-row cleanup), 2) Gates (everything that blocks/holds work), 3) Rules (every standing rule the VPS enforces, e.g. account routing, auto-merge, rebuild-on-conflict, step splitting). Each tab: count in the tab label, expandable rows, on/off, and an Add button using the same zero-typing wizard.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:27:59.480Z",
+     "note": "",
+     "uid": "st-mwgpbnm601a6vg",
+     "createdAt": "2026-11-14T17:50:36.725Z"
+    },
+    {
+     "id": "s47",
+     "text": "Move Claude account selection out of the orchestrator: a VPS rules service decides which account each build runs on (orchestrator just asks it before starting a session). Move all existing account-routing options from console Settings (Claude accounts routing, subscriptions-first, per-account queued/parallel limits, etc.) into the Rules tab as pre-built rules, remove them from the old settings screen, keep routing-test preview working, and make sure no build ever starts without an account during the switch.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-23T20:28:11.599Z",
+     "note": "",
+     "uid": "st-mwgpdvjk012cot",
+     "createdAt": "2026-11-14T17:52:20.336Z"
     }
    ]
   },

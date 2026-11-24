@@ -843,7 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 01:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1242,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 01:05 UTC · `psync-c-planstudio` added (1 steps) (all) · Ping Paulie
 - 2026-11-24 01:05 UTC · `psync-d-orch-ui` added (1 steps) (all) · Snap Sully
 - 2026-11-24 01:05 UTC · `urgent-all-data-to-postgres-builds-store` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
