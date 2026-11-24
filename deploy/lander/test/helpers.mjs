@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 process.env.AXF_CREW_SAY = 'off';
+process.env.AXF_LANDER_NOTIFY = 'off'; // no update command to a real console from a test (tests that check it inject `notify`)
 const { makeGit } = await import('../git.mjs');
 const L = await import('../lander-core.mjs');
 
@@ -36,7 +37,7 @@ export const check = (name, conclusion = 'success', more = {}) => ({ id: more.id
 /**
  * A fake GitHub: PRs, check runs per head, merges done in git. `ci(head)` → 'success' | 'failure' | 'running' | 'none' |
  * 'light', or the check runs themselves (an array: served 100 a page, like GitHub). `gh.logs` = { jobId: text } for
- * gh.text; `gh.mergeByHand(n)` merges a PR behind the lander's back.
+ * gh.text; `gh.mergeByHand(n)` merges a PR behind the lander's back. A merge that conflicts with main answers 405.
  */
 export function github(r, ci = () => 'success') {
   const prs = new Map(); let next = 1; const calls = [];
@@ -45,7 +46,9 @@ export function github(r, ci = () => 'success') {
     if (sha) assert.equal(sh(r.work, 'rev-parse', `origin/${p.head.ref}`), sha, 'the merge is pinned to the tested head');
     p.head.sha = sh(r.work, 'rev-parse', `origin/${p.head.ref}`);
     sh(r.work, 'checkout', '-q', '--detach', 'origin/main');
-    sh(r.work, 'merge', '-q', '--no-ff', '-m', `Merge #${p.number}`, `origin/${p.head.ref}`);
+    // a PR that conflicts with main is refused, as GitHub refuses it: 405, nothing merged
+    const m = spawnSync('git', ['merge', '-q', '--no-ff', '-m', `Merge #${p.number}`, `origin/${p.head.ref}`], { cwd: r.work, encoding: 'utf8' });
+    if (m.status) { spawnSync('git', ['merge', '--abort'], { cwd: r.work }); const e = new Error('GitHub 405: Pull Request is not mergeable'); e.status = 405; throw e; }
     sh(r.work, 'push', '-q', 'origin', 'HEAD:main'); sh(r.work, 'fetch', '-q', 'origin');
     p.state = 'closed'; p.merged = true; p.merged_at = '2026-11-19T12:00:00Z'; p.merge_commit_sha = sh(r.work, 'rev-parse', 'origin/main');
     return p;

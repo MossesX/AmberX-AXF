@@ -144,7 +144,10 @@ with tempfile.TemporaryDirectory() as d:
         # plans@1 from the same plugin: the tree's plans with the build each was sent as (the orchestrator's priority rows read this)
         plans = plan.PlansService()
         rows = {p["id"]: p for p in plans.list()}
-        check(rows[item]["build"] == {"id": "hot-fix-now"} and rows[item2]["build"] == {"id": "ordinary-work"} and plans.get(item)["title"] == "Hot fix now" and plans.get("nope") is None, "plans@1: list / get carry the linked build")
+        # a sent plan carries its build live from the builds store: id, number, status and steps (never a copy in the tree)
+        sent = {k: (rows[k]["build"], rows[k]["steps"]) for k in (item, item2)}
+        check(sent[item][0]["id"] == "hot-fix-now" and sent[item2][0]["id"] == "ordinary-work" and plans.get(item)["title"] == "Hot fix now" and plans.get("nope") is None, "plans@1: list / get carry the linked build")
+        check(all(b["status"] == "pending" and b["label"] == "Pending" and b["number"] == build(b["id"]).get("number", "") and b["number"] and st == {"done": 0, "total": 0} for b, st in sent.values()), f"plans@1: the linked build's number, status and steps are read live {sent}")
         parked = plans.park("Do it later", "A parked idea", by="test")
         check(parked["ok"] and parked["item"]["status"] == "parked" and parked["item"]["kind"] == "plan" and not any(b["id"] == "do-it-later" for b in json.loads(store.read_text())["builds"]), "plans@1 park: a parked plan, never a build")
 

@@ -415,6 +415,17 @@ statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the stor
 Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
 `PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
 
+## Deferred: pipeline-status@1 view and build-clash@1 (Nov 24 2026)
+
+Hand build psync-a-core-2 (pipeline sync, part A) adds two pure reference engines: `pipelineView` / `pipelineContext` /
+`assignNumbers` in `framework/core/pipeline-status.mjs` (pipeline-status@1: the state, label, tone, icon, status line,
+waiting reason and merge line of a build, worked out by the builds store on every read; build numbers `B-nnnn`) and
+`framework/core/build-clash.mjs` (build-clash@1: steps that never share files, the rejection of a build that clashes
+with one not on main yet, its `run-all` / `defer` answers). Schema `framework/schemas/pipeline-status.json`; fixture
+`framework/spec/fixtures/pipeline-status.json` (checker `framework/spec/check-pipeline-status.mjs`, `--write`
+regenerates it). **Kotlin twin deferred** (no new Android work): AmberX shows the `pipelineView` the console's REST
+gives it; a Kotlin twin answering the fixture's views is needed only once an Android surface reads the builds store itself.
+
 Pipeline repair part A (Nov 21 2026, the Fable deep audit): the contract now owns every limit. `checkTransition` /
 `transition` take `reset` and `max` (the attempt ceiling `MAX_ATTEMPTS`: out of `failed` past it only as a reset with a
 reason, attempt 1 again) and `resplit`; archive records `archivedFrom` and an archived build returns only there or to

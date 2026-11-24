@@ -11,7 +11,55 @@ export interface HistoryEntry { id: string; at: string; by: string; build: strin
 export interface History { $axf: 'plan-history@1'; items: Record<string, HistoryEntry[]> }
 export interface HistoryRow { id: string; at: string; by: string; build: string; title: string; restoredAt: string; steps: { id: string; kind: string; title: string; done: boolean }[] }
 
+/** A reference to another build: its short number, its id, its title (any may be empty). */
+export interface BuildRef { buildId: string; number: string; title: string }
+/** pipeline-status@1 `pipelineView`, as the builds store works it out on read. Read loosely: any field may be missing. */
+export interface PipelineView {
+  state?: string; label?: string; tone?: string; icon?: string; line?: string; attempt?: number;
+  waitingOn?: { buildId?: string; title?: string; reason?: string; number?: number | string } | null;
+  mergeLine?: { position?: number; waitingFor?: unknown; text?: string } | null;
+  [k: string]: unknown;
+}
+export interface SplitInfo { by: string; model: string; at: string; stepCount: number }
+export interface ClashStep { step: string; uid: string; title: string; waitsFor: BuildRef | null }
+export interface ClashOption { id: string; label: string; line: string; action: string; steps: ClashStep[] }
+export interface Clash { rejected: boolean; reason: string; with: BuildRef[]; options: ClashOption[] }
+/** The build a plan was sent as (GET plans/<id>/build → build). */
+export interface BuildInfo {
+  id: string; number: string; title: string; status: string; label: string; state: LiveState; stateLabel: string; attempt: number; at: string;
+  pipelineView: PipelineView | null; split: SplitInfo | null; clash: Clash | null; pr: number; prUrl: string; branch: string; held: boolean; landed: boolean; emergency?: boolean;
+}
+/** One step of that build: `uid` is the step's unique id, `row` the tree row that opens it. */
+export interface StepInfo {
+  id: string; uid: string; row: string; title: string; text: string; model: string; modelBy: string; splitBy: string; status: string; label: string;
+  state: LiveState; stateLabel: string; attempt: number; done: boolean; minutes: number; pr?: number; skipped?: boolean; waitsFor?: BuildRef;
+}
+export interface BuildDetail { build: BuildInfo; steps: StepInfo[] }
+export interface BuildSummary {
+  name: string; state: string; label: string; tone: string; icon: string; raw: boolean; line: string; attempt: number;
+  waiting: string; waitingOn: BuildRef | null; merge: string; split: string; splitByVps: boolean;
+}
+export type ClashAction = 'run-all' | 'defer';
+
 export const SCHEMA: 'plan-live@1';
+export const CLASH_ACTIONS: readonly ClashAction[];
+export function planStatus(b: Build | null | undefined): 'active' | 'done';
+export function numberOf(b: unknown): string;
+export function buildName(b: unknown): string;
+export function buildRef(v: unknown): BuildRef | null;
+export function refName(r: BuildRef | null | undefined): string;
+export function ordinal(n: number): string;
+export function splitOf(b: Build | null | undefined): SplitInfo | null;
+export function splitLabel(by: string, model?: string): string;
+export function mergeLineText(ml: unknown): string;
+export function waitingText(w: unknown): string;
+export function clashOf(b: unknown): Clash | null;
+export function deferLine(waitsFor: BuildRef | null | undefined): string;
+export function stepDetail(b: Build, s: BuildStep): StepInfo;
+export function buildDetail(b: Build): BuildDetail;
+export function buildSummary(build: Partial<BuildInfo> | null | undefined): BuildSummary;
+export function modelText(step: { model?: string } | null | undefined): string;
+export function byTriage(step: { model?: string; modelBy?: string } | null | undefined): boolean;
 export const ORIGIN: 'orchestrator';
 export const ORIGIN_LABEL: string;
 export const FLOW: string;

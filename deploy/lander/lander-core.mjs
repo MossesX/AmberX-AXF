@@ -15,9 +15,17 @@
  * flight; per group it only moves forward.
  *
  * The merge line (Brett, Nov 20 2026): an emergency build (`emergency` on the build) goes to the front, ahead of a
- * build already landing. And no build merges on a stale head: right before the merge, when main has code the PR lacks
- * (an emergency build landed, or anything else did), the newest main is pulled into the PR, a code conflict goes to a
- * Fable fix session, CI runs again on that head, and only then it merges.
+ * build already landing. Every build in the line carries its place in the builds store (`mergeLine: { position,
+ * waitingFor }`, Nov 24 2026), so every screen can say "2nd to merge, waiting for build 41".
+ *
+ * The merge rule (Brett, Nov 24 2026): a green PR is ALWAYS merged as it is first. Main having moved is no reason to
+ * pull it in or to run CI again: only a merge that GitHub actually refuses (a conflict, a head that changed) makes the
+ * lander pull main into the PR and run CI again, by itself. A build that already has its own open PR (a hand build's
+ * session opened it) lands on that PR: no second PR, no second CI run.
+ *
+ * Merge together (Brett, Nov 24 2026): on request, every build waiting at `build-complete` is combined into one branch
+ * and one PR, CI runs once and they merge in one go. A build that clashes in code with the ones before it is left out
+ * and lands by itself, one at a time, after them.
  *
  * Failures: the build goes `failed` with a `failure` record and the landing run's own attempt count
  * (`landing.attempt`, never the dispatcher's `attempt`), and the next tick retries forward by itself after a backoff:
@@ -30,7 +38,7 @@
  *   rules        build rules (phase gate) fail after their fixers → a fix session, then CI again
  *   fix-timeout  a fix session pushed nothing in time             → the next fix session (the failing log attached)
  *   fix-start    a fix session did not start, several ticks running → the next try after the backoff
- *   merge        GitHub refused the merge (not mergeable)         → pull main again
+ *   merge        GitHub refused the merge (not mergeable)         → pull main into the PR at once, then CI again
  *   infra        push / API / git error, build rules that could not run → the same phase again
  *   pr-closed    the PR was closed without merging                → stop until it is reopened or re-sent
  *   hand-merge   the PR was merged by hand and CI is not green on it → stop until CI is green or Brett decides
@@ -165,6 +173,12 @@ export const isHeld = (b) => b?.status === 'failed' && b.failure?.retry === 'hol
  * runner reports them and never works on two at once).
  */
 export function pickBuild(builds) {
+  const all = lineOf(builds);
+  return { build: all[0] || null, others: all.slice(1).map((b) => b.id) };
+}
+
+/** The whole merge line, in the order the lander works it: emergency builds, the ones already landing, the oldest finished, then the stopped ones. */
+export function lineOf(builds) {
   const landing = (Array.isArray(builds) ? builds : []).filter(isLanding);
   const list = landing.filter((b) => !isHeld(b));
   const held = landing.filter(isHeld);
@@ -174,9 +188,85 @@ export function pickBuild(builds) {
     ...xs.filter((b) => failedIn(b) === 'build-complete').sort((x, y) => age(x).localeCompare(age(y))),
   ];
   const urgent = list.filter(isEmergency).sort((x, y) => str(x.emergency.at).localeCompare(str(y.emergency.at)) || age(x).localeCompare(age(y)));
-  const all = [...urgent, ...line(list.filter((b) => !isEmergency(b))), ...held.sort((x, y) => age(x).localeCompare(age(y)))];
-  return { build: all[0] || null, others: all.slice(1).map((b) => b.id) };
+  return [...urgent, ...line(list.filter((b) => !isEmergency(b))), ...held.sort((x, y) => age(x).localeCompare(age(y)))];
 }
+
+// ------------------------------------------------------------------ the merge line in the store, the landing state
+
+/** The landing states every screen shows (pipeline-status@1's lander states), and the build statuses behind them. */
+export const LANDING_STATES = Object.freeze(['waiting-to-merge', 'merging', 'running-ci', 'landed', 'failed']);
+/**
+ * A build's landing state in the contract's words: waiting-to-merge (finished, not picked up yet), merging (its PR is
+ * being put together, main pulled in, or merged), running-ci, landed, failed (with the landing run's attempt N).
+ * '' when the build is not the lander's.
+ */
+export function landingState(b) {
+  const s = str(b?.status, 40);
+  if (s === 'landed') return 'landed';
+  if (s === 'failed') return LANDING.includes(failedIn(b)) ? 'failed' : '';
+  if (s === 'build-complete') return 'waiting-to-merge';
+  if (s === 'running-ci') return 'running-ci';
+  return GROUP_FLOW.includes(s) ? 'merging' : '';
+}
+
+/** The PR a build has in flight, 0 when none. */
+export const prInFlight = (b) => groupState(b).inFlight?.pr || 0;
+
+/**
+ * The merge line as the store carries it: build id → { position, waitingFor } (position 1 = merging now, or next;
+ * waitingFor = the build right ahead: { buildId, id, number, title }, null at the front). Builds that share one PR
+ * (merge together) share one place. A build that stopped for Brett has no place: it is not going to merge until he
+ * acts. `number` is the build's short number when the store gives it one (pipeline-status@1), else ''.
+ */
+export function mergeLine(builds) {
+  const out = new Map(); const byPr = new Map();
+  let position = 0; let ahead = null;
+  for (const b of lineOf(builds)) {
+    if (isHeld(b)) continue;
+    const pr = prInFlight(b);
+    const shared = pr && togetherWith(builds, b).length ? pr : 0; // one PR for several builds: one place in the line
+    let place = shared ? byPr.get(shared) : null;
+    if (!place) { position += 1; place = { position, waitingFor: ahead ? { ...ahead } : null }; if (shared) byPr.set(shared, place); }
+    out.set(b.id, { position: place.position, waitingFor: place.waitingFor ? { ...place.waitingFor } : null });
+    ahead = { buildId: b.id, id: b.id, number: b.number == null ? '' : str(b.number, 24), title: str(b.title || b.id, 200) };
+  }
+  return out;
+}
+/**
+ * The merge line a build record carries: on the build (`mergeLine`) or in its landing record (`landing.mergeLine`,
+ * where pipeline-status@1 keeps it); the lander writes both and reads whichever the store kept.
+ */
+export const storedLine = (b) => obj(b?.mergeLine)?.position ? b.mergeLine : obj(obj(b?.landing).mergeLine)?.position ? b.landing.mergeLine : null;
+/** The build a merge-line entry waits for, as an id ('' at the front), whatever shape the store kept it in. */
+export const waitsFor = (m) => { const w = m?.waitingFor; return typeof w === 'string' ? w : str(w?.buildId ?? w?.id, 120); };
+/** The other builds whose PR in flight is this build's (merge together). */
+export function togetherWith(builds, b) {
+  const pr = prInFlight(b); if (!pr) return [];
+  return (Array.isArray(builds) ? builds : []).filter((x) => x && x.id !== b.id && isLanding(x) && prInFlight(x) === pr);
+}
+/** Are two merge-line entries the same (nothing to write)? */
+export const sameLine = (a, b) => num(a?.position) === num(b?.position) && waitsFor(a) === waitsFor(b);
+/** "1st", "2nd", "3rd", "4th" … */
+export function ordinal(n) {
+  const k = Math.max(0, Math.floor(num(n))); const t = k % 100;
+  return `${k}${t >= 11 && t <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][k % 10] || 'th'}`;
+}
+/** Plain words for a build's place: "2nd to merge, waiting for build 41". */
+export function lineText(m) {
+  if (!m || !num(m.position)) return '';
+  const w = m.waitingFor; const name = w ? (typeof w === 'object' && w.number != null && w.number !== '' ? `build ${w.number}` : waitsFor(m)) : '';
+  return `${ordinal(m.position)} to merge${name ? `, waiting for ${name}` : ''}`;
+}
+
+/** The step branch a build's own PR would be on: the one branch all its steps share, '' when they have several. */
+export function ownBranch(b, steps = landSteps(b)) {
+  const set = [...new Set(steps.map((s) => stepBranch(b, s)).filter(Boolean))];
+  return set.length === 1 ? set[0] : '';
+}
+/** Is `branch` one the lander made itself (lander/…)? Anything else in a PR is the build's own branch. */
+export const isLanderBranch = (branch) => /^lander\//.test(str(branch, 300));
+/** The one PR branch of a merge-together batch (named after the build at its front). */
+export const togetherBranch = (leadId) => `lander/together-${leadId}`;
 
 // ------------------------------------------------------------------ steps, branches, groups
 
@@ -361,8 +451,9 @@ export function failure(b, kind, ctx = {}, cfg = DEFAULTS) {
   else if (k === 'hand-merge') { stopped = 'merged by hand without green CI'; resume = 'same'; }
   if (!stopped && attempt >= c.maxAttempts) { stopped = `attempt ${attempt} of ${c.maxAttempts}`; resume = retry; }
   if (stopped) retry = 'hold';
-  // a flaky re-run goes at once; everything else waits its backoff (the first retry included); a stopped build has no next try
-  const wait = retry === 'rerun' && attempt === 1 ? 0 : backoffMinutes(attempt, c);
+  // a flaky re-run goes at once; everything else waits its backoff (the first retry included); a stopped build has no next try,
+  // and so does the main pull after the first refused merge (the merge rule: try it, and only then pull main)
+  const wait = (retry === 'rerun' || retry === 'pull-main') && attempt === 1 ? 0 : backoffMinutes(attempt, c);
   const list = (v, f, n = 10) => (Array.isArray(v) && v.length ? v.slice(0, n).map(f).filter(Boolean) : null);
   const failing = list(ctx.failing, (x) => str(x, 120)); const runIds = list(ctx.runIds, (x) => num(x)); const jobIds = list(ctx.jobIds, (x) => num(x));
   const of = obj(ctx.of);

@@ -468,6 +468,20 @@
         "title": "Watchdog on (every watch)",
         "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
         "kind": "toggle"
+      },
+      {
+        "target": "merge-together",
+        "title": "Merge together",
+        "text": "Merges together. Only through its pull request, once CI is green. Part of Build orchestrator.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "column:triage-model",
+        "title": "Triage model",
+        "text": "The “Triage model” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []

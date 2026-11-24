@@ -2,6 +2,13 @@
 
 /* one colour per contract status (build and step), mixed from the theme's own colours */
 .st-badge { --st-c: var(--fx-muted); color: var(--st-c); border-color: var(--st-c); white-space: nowrap }
+/* a state the table has no colour of its own for takes its tone from the store's view (pipeline-status@1) */
+.st-badge.tone-muted { --st-c: var(--fx-muted) }
+.st-badge.tone-info { --st-c: var(--fx-info) }
+.st-badge.tone-accent { --st-c: var(--fx-accent) }
+.st-badge.tone-warning { --st-c: var(--fx-warning) }
+.st-badge.tone-success { --st-c: var(--fx-success) }
+.st-badge.tone-danger { --st-c: var(--fx-danger) }
 .st-badge.is-pending { --st-c: var(--fx-muted) }
 .st-badge.is-splitting { --st-c: var(--fx-brand-1) }
 .st-badge.is-split { --st-c: color-mix(in srgb, var(--fx-muted), var(--fx-info)) }
@@ -15,6 +22,8 @@
 .st-badge.is-pr-pulling-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-info)) }
 .st-badge.is-running-ci { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-accent)) }
 .st-badge.is-merging-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-success)) }
+.st-badge.is-waiting-to-merge { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-muted)) }
+.st-badge.is-merging { --st-c: var(--fx-warning) }
 .st-badge.is-landed { --st-c: var(--fx-success) }
 .st-badge.is-failed { --st-c: var(--fx-danger) }
 /* an emergency build (Brett sent it to the emergency slots): filled, so it stands out from the status badges */
@@ -38,3 +47,17 @@
 /* the phone's one-line row meta (status, steps, timer, PR); its own class: .st-meta is the Standards page's meta row in console.css */
 .st-rowmeta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); white-space: normal }
 .oc-cell-title > .st-rowmeta { overflow: visible }
+
+/* pipeline-status@1: the build number, what the build is doing now, why it waits, the merge line and the split badge */
+.st-no, .st-uid { white-space: nowrap }
+.st-now { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.st-now > .fx-icon { flex: none }
+.st-now > a { overflow: hidden; text-overflow: ellipsis }
+.oc-cell-title > .st-now { white-space: normal }
+.st-split { display: inline-flex; white-space: nowrap }
+.st-state { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.st-state__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.st-state__line { margin: 0; white-space: normal; overflow-wrap: anywhere }
+.st-wait, .st-merge { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); margin: 0; white-space: normal }
+.st-wait > .fx-icon, .st-merge > .fx-icon { flex: none; color: var(--fx-warning) }
+.st-merge__text, .st-wait > span { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }

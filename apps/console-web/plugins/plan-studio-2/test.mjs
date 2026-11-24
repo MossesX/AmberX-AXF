@@ -284,7 +284,9 @@ await t('plans@1: add parked, list, get, set, steps, comment, build hand-off, ex
   assert.throws(() => ps.deletePlan(a.plan.id), /locked until the build lands or is cancelled/);
   assert.throws(() => ps.savePlan({ ...sent.plan, title: 'Renamed while sent' }), /locked/);
   assert.throws(() => ps.savePlan({ ...sent.plan, steps: [{ text: 'One more' }] }), /locked/);
-  assert.equal(ps.savePlan({ ...sent.plan, status: 'done' }).plan.status, 'done', 'the status of a sent plan may still be set');
+  assert.equal(sent.plan.status, 'building', 'a sent plan lists with its build\'s status, not the parked it had before');
+  assert.equal(ps.savePlan({ ...sent.plan, status: 'done' }).plan.status, 'building', 'the status of a sent plan may still be set; it reads as its build\'s while the build is under way');
+  assert.equal(tc.byId(JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8')), a.plan.id).status, 'done', 'what was set is what the tree keeps');
   (await import('../../../../framework/cli/builds-store.mjs')).setFlowStatus('later-idea', 'archived', { by: 'test', why: 'cancelled' });
   assert.equal(ps.deletePlan(a.plan.id).removed, 4); assert.equal(ps.loadPlans().length, 0); assert.throws(() => ps.deletePlan(a.plan.id), /no plan/);
   assert.equal(ps.restoreDeleted().plan.id, a.plan.id); assert.equal(ps.loadPlans().length, 1);

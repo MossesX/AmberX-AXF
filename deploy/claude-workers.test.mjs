@@ -95,6 +95,8 @@ ok(new Date(X.parseReset('Claude AI usage limit reached|1795503600', now)).getTi
   ok(X.route({ exclude: ['w1', 'w3', 'console'] }, env, now) === '', 'no usage left = never routed (usage checked before routing)');
   X.recordUsage('w2', { ...info, status: 'rejected' }, env, now);
   ok(X.status(env, now).accounts.find((a) => a.name === 'w2').limited?.until === new Date(1795503600e3).toISOString(), 'a rejected rate_limit_event benches it until the reset');
+  // the CLI reads the wall clock, so bench w2 against it: the fixed reset above is a real date, and it passes
+  X.recordUsage('w2', { ...info, status: 'rejected', resetsAt: Date.now() + 24 * 3600e3 }, env);
   const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), ...a], { env: { ...process.env }, encoding: 'utf8' });
   ok(cli('out', 'w2').status === 0 && /out until/.test(cli('out', 'w2').stdout) && cli('out', 'w3').status === 1, 'CLI out: a marked-out account says so (the launcher skips it)'); }
 for (let i = 0; i < 5; i += 1) ok(!['w1', 'w2'].includes(X.claim(`never-${i}`, {}, {}, env, now).account), `claim ${i}: never an account marked out`);

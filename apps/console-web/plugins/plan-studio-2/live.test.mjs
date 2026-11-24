@@ -280,5 +280,117 @@ await t('the page and the server: a From orchestrator badge, a lock, the orchest
   for (const id of ['orchestrate', 'history', 'restore-steps', 'sync']) assert.ok(m.commands.items.some((c) => c.id === id), `command ${id}`);
 });
 
+/* ------------------------------------------------------------------ the build of a sent plan (GET plans/<id>/build) */
+
+await t('a plan that was not sent: no build, its own status, its own steps', async () => {
+  const idle = api({ op: 'add', kind: 'plan', title: 'Parked idea', status: 'parked' }).item;
+  api({ op: 'add', kind: 'step', title: 'Think about it', parent: idle.id });
+  const r = api({ op: 'plan-build', id: idle.id });
+  assert.ok(r.ok && r.build === null && r.steps.length === 0); assert.equal(r.plan.status, 'parked');
+  assert.match(r.say, /has not been sent to build/);
+  assert.equal(row('Parked idea').status, 'parked', 'a plan with no build keeps its own status');
+  const ps = await import('./plans.mjs');
+  const p = ps.getPlan(idle.id);
+  assert.equal(p.status, 'parked'); assert.equal(p.steps.length, 1); assert.ok(!p.build);
+  assert.equal(refused({ op: 'plan-build', id: 'no such plan at all' }).code, 'not_found');
+});
+
+await t('a sent plan reads from its build: never parked with 0 steps, the steps are the store\'s, nothing is written to the tree', async () => {
+  const p = api({ op: 'add', kind: 'plan', title: 'Watch test', status: 'parked' }).item;
+  api({ op: 'add', kind: 'step', title: 'Seed step', parent: p.id });
+  const id = api({ op: 'build', id: p.id }).build.id;
+  let r = api({ op: 'plan-build', id: p.id });
+  assert.equal(r.build.id, id); assert.equal(r.build.status, 'pending'); assert.equal(r.steps.length, 0); assert.equal(r.plan.status, 'active');
+  assert.equal(row('Watch test').status, 'active', 'a sent plan no longer lists as parked');
+  split(id, ['Write the doc\nOne line', 'Check the doc']);
+  r = api({ op: 'plan-build', id: p.id });
+  const before = JSON.stringify(stored()); // after the one sync a split brings (the sent planning steps move to the history)
+  assert.equal(r.build.status, 'split'); assert.equal(r.build.label, 'Pending'); assert.equal(r.build.landed, false);
+  assert.deepEqual(r.steps.map((x) => [x.id, x.title, x.model, x.status, x.minutes]), [['s1', 'Write the doc', 'Fable', 'pending', 10], ['s2', 'Check the doc', 'Opus', 'pending', 10]]);
+  const inStore = BS.loadStore().builds.find((b) => b.id === id);
+  assert.deepEqual(r.steps.map((x) => x.uid), inStore.steps.map((x) => x.uid ?? ''), 'each step carries the unique id the store gave it');
+  assert.ok(r.steps.every((x) => x.row === `orch--${id}--${x.id}`));
+  if (!('pipelineView' in inStore) && typeof P2.pipelineView !== 'function') assert.equal(r.build.pipelineView, null, 'no pipeline view from the store yet: null, and the raw status is the state');
+  else assert.ok(r.build.pipelineView && typeof r.build.pipelineView === 'object', 'the store\'s pipeline view is passed on as it is');
+  // read live on every call: a move in the store shows on the very next read, with no sync in between
+  move(id, 'pulling-main'); for (const to of ['pulling-main', 'ready', 'sending', 'building']) move(id, to, { step: 's1' });
+  r = api({ op: 'plan-build', id: p.id });
+  assert.equal(r.build.status, 'pulling-main'); assert.equal(r.steps[0].status, 'building'); assert.equal(r.steps[0].label, 'Building'); assert.equal(r.steps[1].status, 'pending');
+  api({ op: 'plan-build', id: p.id });
+  assert.equal(JSON.stringify(stored()), before, 'reading the build writes nothing to the plan tree');
+  assert.ok(!stored().items.some((i) => /^orch--/.test(i.id) || i.live), 'no step and no status of the build is copied into the tree');
+  assert.equal(stored().items.find((i) => i.id === p.id).status, 'parked', 'the stored plan keeps what it had; only the read follows the build');
+  // plans@1 and the CLI list read the same thing
+  const ps = await import('./plans.mjs');
+  const pl = ps.getPlan(p.id);
+  assert.equal(pl.status, 'building'); assert.deepEqual(pl.steps.map((x) => x.id), ['s1', 's2']); assert.equal(pl.build.id, id); assert.equal(pl.build.status, 'pulling-main');
+  const text = []; const log = console.log; console.log = (x) => text.push(x);
+  try { await T.main(['build-status', p.id]); await T.main(['list', '--kind', 'step', '--under', p.id]); } finally { console.log = log; }
+  // the head names the build by the number the store gave it (its id before it has one) and reads the store's pipeline
+  // view when the build carries one (the raw status label before)
+  const num = String(BS.loadStore().builds.find((x) => x.id === id).number ?? ''); const pv = r.build.pipelineView;
+  if (pv) assert.equal(pv.state, 'pulling-main', 'the pipeline view follows the move');
+  assert.equal(text[0].split('\n')[0], `build ${num ? `#${num}` : id} (${id}) · ${pv ? pv.label : 'Pulling in main'}`);
+  if (pv?.line) assert.equal(text[0].split('\n')[1], pv.line, 'the status line is the pipeline view\'s');
+  assert.match(text[0], /s1\s+Fable\s+Building\s+Write the doc/);
+  assert.match(text[1], /Write the doc/, 'the CLI list shows the build\'s steps under the sent plan');
+  BS.setFlowStatus(id, 'archived', { by: 'test', why: 'cancelled' });
+  assert.equal(api({ op: 'plan-build', id: p.id }).build, null, 'a cancelled build is no longer the plan\'s build');
+  assert.equal(row('Watch test').status, 'parked', 'and the plan has its own status back');
+});
+
+await t('the build as the page shows it: number, pipeline view, waiting reason, split mark, merge line, clash options, step columns', () => {
+  const b = {
+    id: 'watch', number: 41, title: 'Watch', flow: 'pipeline-2', planRef: 'p1', status: 'build-complete', attempt: 2, profiles: ['amberx'], pr: 912,
+    pipelineView: { state: 'waiting-to-merge', label: 'Waiting to merge', tone: 'warning', icon: 'clock', line: 'Built. In line to merge.', attempt: 2, waitingOn: null, mergeLine: { position: 2, waitingFor: { number: 40, buildId: 'other', title: 'Other build' } } },
+    split: { by: 'vps', model: 'claude-fable-5-2', at: '2026-11-24T00:00:00Z', stepCount: 2 },
+    steps: [{ id: 's1', uid: 'st-aaa', text: 'One', splitBy: 'vps-fable', model: 'Fable', modelBy: 'triage', status: 'completed', done: true }, { id: 's2', uid: 'st-bbb', text: 'Two', status: 'pending', estimate: '5 min', waitsFor: { number: 39 } }],
+  };
+  const d = live.buildDetail(b);
+  assert.equal(d.build.number, '41'); assert.equal(d.build.pr, 912); assert.deepEqual(d.build.split, { by: 'vps', model: 'claude-fable-5-2', at: '2026-11-24T00:00:00Z', stepCount: 2 });
+  assert.deepEqual(d.steps.map((x) => [x.id, x.uid, x.splitBy, x.model, x.modelBy, x.status]), [['s1', 'st-aaa', 'vps-fable', 'Fable', 'triage', 'completed'], ['s2', 'st-bbb', 'vps-fable', '', '', 'pending']]);
+  assert.equal(d.steps[1].label, 'Deferred, waiting for build #39'); assert.equal(d.steps[1].minutes, 5);
+  assert.ok(live.byTriage(d.steps[0]) && !live.byTriage(d.steps[1])); assert.equal(live.modelText(d.steps[0]), 'Fable'); assert.equal(live.modelText(d.steps[1]), 'Model not assigned yet');
+  const sum = live.buildSummary(d.build);
+  assert.deepEqual([sum.name, sum.state, sum.label, sum.tone, sum.raw, sum.line, sum.attempt], ['#41', 'waiting-to-merge', 'Waiting to merge', 'warning', false, 'Built. In line to merge.', 2]);
+  assert.equal(sum.merge, '2nd to merge, waiting for build #40'); assert.equal(sum.split, 'Split by Fable on the VPS'); assert.equal(sum.splitByVps, true); assert.equal(sum.waiting, '');
+  assert.equal(live.buildLive(b).number, '41', 'the plan row carries the build number too');
+  // waiting for the active place: the store's words, else a plain sentence
+  assert.equal(live.waitingText({ buildId: 'x', title: 'Big build', reason: '' }), 'Waiting: Big build holds the active place');
+  assert.equal(live.waitingText({ buildId: 'x', title: 'Big build', reason: 'Waiting: Big build holds the active place' }), 'Waiting: Big build holds the active place');
+  assert.equal(live.waitingText(null), '');
+  assert.equal(live.mergeLineText({ position: 1 }), '1st to merge'); assert.equal(live.mergeLineText({ position: 3, waitingFor: 12 }), '3rd to merge, waiting for build #12');
+  assert.equal(live.mergeLineText({ position: 11, waitingFor: 'some-build' }), '11th to merge, waiting for build some-build'); assert.equal(live.mergeLineText(null), '');
+  assert.deepEqual([1, 2, 3, 4, 11, 12, 13, 21, 22, 103].map(live.ordinal), ['1st', '2nd', '3rd', '4th', '11th', '12th', '13th', '21st', '22nd', '103rd']);
+  assert.equal(live.splitLabel('vps', 'Opus'), 'Split by Opus on the VPS'); assert.equal(live.splitLabel('vps-fable'), 'Split by Fable on the VPS'); assert.equal(live.splitLabel(''), '');
+  // no pipeline view yet (the store's read does not carry one): the raw status, a plain badge, no lines
+  const raw = live.buildSummary(live.buildDetail({ id: 'old', flow: 'pipeline-2', planRef: 'p1', status: 'assigning-models', steps: [] }).build);
+  assert.deepEqual([raw.name, raw.state, raw.label, raw.tone, raw.raw, raw.line, raw.merge, raw.split], ['old', 'assigning-models', 'Assigning models', '', true, '', '', '']);
+  assert.equal(live.buildSummary({ id: 'x', status: 'brand-new-state' }).label, 'brand-new-state', 'a status nobody knows shows as it is, and never throws');
+  assert.equal(live.buildSummary(null).label, 'Unknown');
+  // a rejected build: the reason and the options, each deferred step naming the build it waits for
+  const c = live.clashOf({ id: 'r', clash: { reason: 'Touches files build #40 has not merged yet', with: [{ number: 40, title: 'Other build' }], options: [{ id: 'run-all', label: 'Run all now' }, { id: 'defer', steps: [{ step: 's2', uid: 'st-bbb', waitsFor: { number: 40 } }] }] } });
+  assert.equal(c.rejected, true); assert.equal(c.reason, 'Touches files build #40 has not merged yet'); assert.deepEqual(c.with.map(live.refName), ['build #40']);
+  assert.deepEqual(c.options.map((o) => [o.id, o.label, o.action]), [['run-all', 'Run all now', 'run-all'], ['defer', 'Run the clean steps now, defer 1 step', 'defer']]);
+  assert.equal(live.deferLine(c.options[1].steps[0].waitsFor), 'Deferred, waiting for build #40');
+  assert.deepEqual(live.clashOf({ clash: { reason: 'x', deferred: [{ step: 's3', waitsFor: 'other-build' }] } }).options.map((o) => [o.id, o.steps[0].step, live.deferLine(o.steps[0].waitsFor)]), [['defer', 's3', 'Deferred, waiting for build other-build']]);
+  assert.equal(live.clashOf({ id: 'fine' }), null);
+  assert.deepEqual(live.CLASH_ACTIONS, ['run-all', 'defer']);
+});
+
+await t('the route and the page: the build is read through the server op, drawn as a table, and refreshed by the builds event stream', () => {
+  const srv = readFileSync(new URL('./server/__init__.py', import.meta.url), 'utf8');
+  assert.match(srv, /@router\.get\("\/plans\/\{plan_id\}\/build"\)[\s\S]{0,900}"op": "plan-build"/);
+  assert.deepEqual(srv.match(/CLASH_ACTIONS = \(([^)]*)\)/)[1].split(',').map((x) => x.trim().replace(/"/g, '')), [...live.CLASH_ACTIONS]);
+  const manifest = JSON.parse(readFileSync(new URL('./plugin.json', import.meta.url), 'utf8'));
+  assert.ok(JSON.stringify(manifest).includes('GET /plans/{plan_id}/build'), 'the route is a plugin command (REST, MCP, CLI)');
+  const panel = readFileSync(new URL('./web/build-panel.tsx', import.meta.url), 'utf8');
+  assert.match(panel, /<th[^>]*>Step ID<\/th>/, 'the step\'s unique id has its own column');
+  for (const col of ['Step', 'Split', 'Model', 'Status']) assert.match(panel, new RegExp(`<th[^>]*>${col}</th>`), `column ${col}`);
+  const feed = readFileSync(new URL('./web/build-feed.ts', import.meta.url), 'utf8');
+  assert.match(feed, /new ES\(EVENTS_URL\)/); assert.match(feed, /'\/api\/builds\/events'/); assert.match(feed, /builds\.updated/); assert.match(feed, /\.close\(\)/, 'the stream is closed when the last panel goes');
+  assert.match(feed, /visibilitychange|'focus'/, 'read again on focus');
+});
+
 rmSync(dir, { recursive: true, force: true });
 console.log(`plan-studio-2 live: ${n} checks passed`);

@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { sh, repo, github, clock, onMain, statuses, base, pushMain, holds } from './helpers.mjs';
 
 const { tick } = await import('../run.mjs');
-const { applyChange, lost } = await import('../store.mjs');
+const { applyChange, lost, keepsMergeLine, memoryStore } = await import('../store.mjs');
 const L = await import('../lander-core.mjs');
 const core = await import('../../../framework/plan/builds-store-core.mjs');
 const P2 = await import('../../../framework/core/pipeline-status.mjs');
@@ -121,7 +121,7 @@ test('the store lets a hand merge through: recorded from running-ci, landed with
   assert.equal(b.status, 'landed'); assert.equal(b.landed.sha, pr.merge_commit_sha); assert.equal(b.landed.ci, 'success'); assert.equal(b.landing.lastMerge.ci, 'success');
 });
 
-test('the store lets a landing run go back from merging-main through the main pull and CI (main moved), and from a closed PR to a reopened one', async () => {
+test('the store lets a landing run go on from a closed PR to a reopened one, and merge a green head as it is after main moved', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
   let state = 'running'; const gh = github(r, () => state);
   const now = clock(); const store = contractStore([p2(now, [['s1', 'claude/b-s1']])], { now });
@@ -141,8 +141,9 @@ test('the store lets a landing run go back from merging-main through the main pu
   state = 'success'; now.add(1);
   await run(opts);
   b = store.list[0];
-  assert.equal(b.status, 'landed'); assert.ok(holds(r, b.landing.lastMerge.head, moved));
-  assert.deepEqual(statuses(b).slice(-5), ['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed']);
+  assert.equal(b.status, 'landed'); assert.equal(b.landing.lastMerge.head, green, 'merged as it is, on the head CI went green on');
+  assert.ok(!holds(r, b.landing.lastMerge.head, moved), 'main was not pulled into the PR');
+  assert.deepEqual(statuses(b).slice(-2), ['merging-main', 'landed']);
   assert.ok(onMain(r, 'a.txt'));
 });
 
@@ -162,4 +163,24 @@ test('the store keeps rules that could not run as an error with its try count: t
   const gh2 = github(r2); const store2 = contractStore([p2(now, [['s1', 'claude/b-s1']])], { now });
   const out = await run(base(r2, gh2, store2, now, { buildRules: () => ({ skipped: 'no build-rules provider installed' }) }));
   assert.equal(store2.list[0].status, 'landed'); assert.ok(out.actions.some((a) => a.includes('build rules skipped: no build-rules provider installed')));
+});
+
+test('the merge line and the store\'s contract: a store that does not name `mergeLine` is never written to for it; one that does keeps it', async () => {
+  const kept = keepsMergeLine(core);
+  assert.equal(typeof kept, 'boolean', 'the store\'s own normalizer answers the question');
+  assert.equal(keepsMergeLine({ normalizeStore: () => { throw new Error('no'); } }), undefined, 'a contract that can\'t be asked: not known');
+  const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b2': { 'b.txt': 'b\n' } });
+  const gh = github(r, () => 'running'); const now = clock();
+  const a = p2(now, [['s1', 'claude/a']], { id: 'a', title: 'Build A' }); now.add(1);
+  const b2 = p2(now, [['s1', 'claude/b2']], { id: 'b2', title: 'Build B2' });
+  // a store bound to the contract's answer, as makeStore binds it
+  const store = contractStore([a, b2], { now }); store.keeps = { mergeLine: kept };
+  let lineWrites = 0; const write = store.write; store.write = (id, ch) => { if (ch.mergeLine !== undefined) lineWrites += 1; return write(id, ch); };
+  await run(base(r, gh, store, now));
+  const waiting = store.list.find((x) => x.id === 'b2');
+  // kept = on the build or in its landing record (storedLine); the contract names the build waited for by `buildId`
+  if (kept) { const line = L.storedLine(waiting); assert.deepEqual([line?.position, line?.waitingFor?.buildId], [2, 'a'], 'the store keeps each build\'s place and the build it waits for'); }
+  else { assert.equal(lineWrites, 0, 'no write is spent on a field the store drops'); assert.equal(L.storedLine(waiting), null); }
+  assert.equal(waiting.status, 'build-complete', 'a build waiting in the line is not moved by its place being written');
+  assert.ok(memoryStore([]).keeps === undefined, 'the memory store keeps everything: nothing to ask');
 });
