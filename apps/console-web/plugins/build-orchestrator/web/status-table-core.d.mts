@@ -1,8 +1,9 @@
 // Types for status-table-core.mjs (status-table@1, Pipeline 2.0).
+import type { PipelineView, SplitInfo } from './pipeline-view-core.mjs';
 export type BuildStatus = 'pending' | 'splitting' | 'split' | 'pulling-main' | 'assigning-models' | 'ready' | 'sending' | 'building' | 'build-complete' | 'merging-pr' | 'pr-pulling-main' | 'running-ci' | 'merging-main' | 'landed' | 'failed';
 export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'building' | 'completed' | 'in-pr' | 'failed';
-export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string };
-export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string };
+export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string; uid: string; splitBy: string; split: string; modelBy: string };
+export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; number: string; view: PipelineView; split: SplitInfo | null; splitLabel: string };
 export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];
@@ -20,7 +21,8 @@ export function statusSince(x: unknown): string;
 export function statusBy(x: unknown): string;
 export function stepRow(s: unknown, build: BuildStatus | null, b?: unknown): StepRow;
 export function prNumber(b: unknown): number;
-export function buildRow(b: unknown): TableRow | null;
+export function buildRow(b: unknown, all?: unknown[]): TableRow | null;
+export function ensureViews(rows: unknown[] | null | undefined): TableRow[];
 export function tableRows(store: { builds?: unknown[] } | null | undefined): TableRow[];
 export function filterOptions(rows: TableRow[]): { counts: Record<BuildStatus, number>; accounts: string[]; models: string[] };
 export function filterRows(rows: TableRow[], f?: TableFilter, now?: number): TableRow[];

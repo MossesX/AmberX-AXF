@@ -7,8 +7,10 @@ import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
 import { StatusTable } from './StatusTable';
-import { statusLabel, type TableRow } from './status-table-core.mjs';
+import { ensureViews, statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
+import { mergeTogether, mergeTogetherLine } from './mergeTogether';
+import { waitingToMerge } from './pipeline-view-core.mjs';
 import { fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
 import { FILL_ANCHOR, FillSettingsPanel } from './Settings';
 import { SLOTS_ANCHOR } from './SlotsStrip';
@@ -50,10 +52,12 @@ let rows: TableRow[] = []; let loadedAt = 0;
 async function loadRows(force = false): Promise<TableRow[]> {
   if (!force && Date.now() - loadedAt < 30_000) return rows;
   const r = await pipeApi.call<{ ok: boolean; rows?: TableRow[] }>('table?landed=1');
-  rows = r.rows ?? []; loadedAt = Date.now();
+  rows = ensureViews(r.rows); loadedAt = Date.now();
   return rows;
 }
-const label = (r: TableRow) => statusLabel(r.status, r.attempt);
+/** A build's state as the table shows it (the store's pipeline view; older rows: the status label). */
+const label = (r: TableRow) => r.view?.label || statusLabel(r.status, r.attempt);
+const numbered = (r: TableRow) => (r.number ? `${r.number} · ` : '');
 
 // the tags on every build screen read through this plugin; with it removed they simply draw nothing
 const priorityApi = pluginApi(FOLDER, 'Build priority', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -177,6 +181,15 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // Merge together (Brett, Nov 23 2026): the lander combines every build waiting in the merge line into one branch,
+    // runs CI once and merges them in one go; the same call as the button on a build's merge line. Named builds only
+    // narrow it (comma separated); with none it takes every build the table shows as waiting to merge.
+    rt.actions.register('build-orchestrator.merge-together', ([arg]) => {
+      const named = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
+      void loadRows(true)
+        .then((all) => { const ids = named.length ? named : waitingToMerge(all).map((r) => r.id); if (ids.length < 2) throw new Error(ids.length ? 'Only one build is waiting to merge: there is nothing to combine.' : 'No build is waiting to merge.'); return mergeTogether(pipeApi, ids).then((r) => rt.toast(mergeTogetherLine(r, ids.length), 'success')); })
+        .catch((e: Error) => rt.toast(e.message, 'warning'));
+    }, { label: 'Build orchestrator: merge the waiting builds together (one branch, CI once, one merge)', params: true });
     // done-means-merged@1: a build's Attempts tab (deep link row:<build>/tab:attempts) and Retry, the same calls as
     // REST GET attempts/<id> + POST retry/<id>, the MCP commands attempts / retry and orchestrator.mjs attempts | retry.
     // Voice: "what's wrong with <build>", "why did <build> stop" → attempts; "retry <build> [in a fresh session]" → retry.
@@ -197,15 +210,15 @@ export const plugin: AxfWebLibrary = {
       address: `row:${r.id}/tab:attempts`, kind: 'tab' as const, label: `${r.title}: attempts`, icon: 'refresh', detail: `Build attempts · ${label(r)}`, keywords: [r.id, 'attempts', 'retry', 'failed', r.status].filter(Boolean),
       open: () => rt.dispatch(`build-orchestrator.attempts:${encodeURIComponent(r.id)}`),
     })), ...rows.map((r) => ({
-      address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${label(r)}`, keywords: [r.id, r.status, r.model, r.account].filter(Boolean),
+      address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${numbered(r)}${label(r)}`, keywords: [r.id, r.number, r.status, r.view?.state, r.model, r.account].filter(Boolean),
       open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(r.id)}`),
     }))]; });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
         id: `orch:${r.id}`, kind: 'build', label: r.title, icon: 'layers',
-        detail: `Build orchestrator · ${label(r)} · ${r.done}/${r.total} steps${r.model ? ` · ${r.model}` : ''}${r.account ? ` · on ${r.account}` : ''}${r.prNumber ? ` · PR #${r.prNumber}` : ''}`,
-        keywords: [r.id, r.status, r.model, r.account].filter(Boolean), focus: { kind: 'action' as const, spec: `build-orchestrator.open:${encodeURIComponent(r.id)}` },
+        detail: `Build orchestrator · ${numbered(r)}${label(r)} · ${r.done}/${r.total} steps${r.model ? ` · ${r.model}` : ''}${r.account ? ` · on ${r.account}` : ''}${r.prNumber ? ` · PR #${r.prNumber}` : ''}`,
+        keywords: [r.id, r.number, r.status, r.view?.state, r.model, r.account].filter(Boolean), focus: { kind: 'action' as const, spec: `build-orchestrator.open:${encodeURIComponent(r.id)}` },
       }));
     });
     rt.contextExtras.set('*:build-orchestrator', (target, payload) => {

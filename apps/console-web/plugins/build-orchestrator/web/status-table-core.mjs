@@ -34,6 +34,8 @@ export const TERMINAL = Object.freeze(['landed']);
 /** An older record's status → the contract status it stands for (null = not on the table: archived / deleted). */
 export const LEGACY_BUILD = Object.freeze({ running: 'building', waiting: 'building', queued: 'ready', built: 'build-complete', landing: 'merging-pr', fixing: 'failed', blocked: 'failed', escalated: 'failed', complete: 'landed', archived: null });
 
+import { buildNumber, normSplit, splitLabel, stepSplitLabel, viewOf } from './pipeline-view-core.mjs';
+
 const str = (v) => (typeof v === 'string' ? v : '');
 const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Math.floor(Number(v)) : 0);
 
@@ -92,6 +94,8 @@ export function stepRow(s, build, b = {}) {
     id: str(s.id), title: (str(s.title) || str(s.text).split('\n')[0]).slice(0, 100), status, attempt: status === 'failed' ? attemptOf(s) : 0,
     model: str(s.model), account: str(s.account), slot: str(s.slot), prNumber: num(s.prNumber) || (status === 'in-pr' ? prNumber(b) : 0),
     at: statusSince(s) || str(s.doneAt), by: statusBy(s),
+    // pipeline-status@1: the step's own unique id, who split it and who gave it its model (the triage gate)
+    uid: str(s.uid), splitBy: str(s.splitBy), split: stepSplitLabel(s.splitBy, normSplit(b.split)), modelBy: str(s.modelBy),
   };
 }
 
@@ -108,8 +112,11 @@ function common(values) {
   return set.length === 1 ? set[0] : set.length > 1 ? 'mixed' : '';
 }
 
-/** One build as the table shows it (compact: what the toolbar filters and the columns draw, plus its steps). */
-export function buildRow(b) {
+/**
+ * One build as the table shows it (compact: what the toolbar filters and the columns draw, plus its steps). `all` is
+ * every build read with it: the view names the build that holds the active place and the one ahead in the merge line.
+ */
+export function buildRow(b, all = []) {
   const status = buildStatus(b);
   if (!status) return null;
   const raw = (Array.isArray(b.steps) ? b.steps : []).filter((s) => !s.skip);
@@ -127,14 +134,34 @@ export function buildRow(b) {
     slot: common(steps.map((s) => s.slot)) || str(pipe.slot),
     prNumber: prNumber(b), pr: /^https?:\/\//.test(str(b.pr)) ? str(b.pr) : '', branch: str(b.branch),
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
+    // pipeline-status@1: the build number, what it is doing now (badge, line, waiting reason, merge line) and who split it
+    number: buildNumber(b), view: viewOf(b, Array.isArray(all) ? all : []), split: normSplit(b.split), splitLabel: splitLabel(normSplit(b.split)),
   };
 }
 
 /** Every table row of a store (builds@1 or orchestrator@1 state): emergency builds still in flight first, then newest change first. */
 export function tableRows(store) {
-  const rows = (store?.builds ?? []).map(buildRow).filter(Boolean);
+  const builds = store?.builds ?? [];
+  const rows = builds.map((b) => buildRow(b, builds)).filter(Boolean);
   const urgent = (r) => (r.emergency && r.status !== 'landed' ? 1 : 0);
   return rows.sort((a, c) => urgent(c) - urgent(a) || (c.updatedAt || c.at).localeCompare(a.updatedAt || a.at));
+}
+
+/**
+ * Rows as the screen needs them, whoever made them: a row from a server older than the screen carries no view, number
+ * or step ids, so they are worked out from the row itself (its status, attempt and steps). Rows that have them pass
+ * through untouched.
+ */
+export function ensureViews(rows) {
+  const list = Array.isArray(rows) ? rows : [];
+  return list.map((r) => {
+    if (!r || (r.view && typeof r.view === 'object' && typeof r.number === 'string')) return r;
+    const split = normSplit(r.split);
+    return {
+      ...r, number: buildNumber(r), view: r.view && typeof r.view === 'object' ? r.view : viewOf(r, list), split, splitLabel: str(r.splitLabel) || splitLabel(split),
+      steps: (Array.isArray(r.steps) ? r.steps : []).map((s) => ({ ...s, uid: str(s.uid), splitBy: str(s.splitBy), split: str(s.split) || stepSplitLabel(s.splitBy, split), modelBy: str(s.modelBy) })),
+    };
+  });
 }
 
 /** The values each toolbar filter offers, from the rows (accounts and models as seen on builds and steps). */
@@ -169,7 +196,7 @@ export function filterRows(rows, f = {}, now = Date.now()) {
     if (f.account && r.account !== f.account && !r.steps.some((s) => s.account === f.account)) return false;
     if (f.model && r.model !== f.model && !r.steps.some((s) => s.model === f.model)) return false;
     if (from && Date.parse(r.updatedAt || r.at || '') < from) return false;
-    if (text && !`${r.id} ${r.title} ${r.branch}`.toLowerCase().includes(text)) return false;
+    if (text && !`${r.id} ${r.number ?? ''} ${r.title} ${r.branch}`.toLowerCase().includes(text)) return false;
     return true;
   });
 }
