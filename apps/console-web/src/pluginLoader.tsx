@@ -17,12 +17,12 @@
  *
  * Dev: each plugin's web/index.tsx is its own HMR boundary (scripts/plugin-chunks.mjs); an edit swaps that plugin only.
  */
-import { createElement, useEffect, useSyncExternalStore, type ReactNode } from 'react';
+import { createElement, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import hashes from 'virtual:axf-plugin-hashes';
 import type { AxfRuntime } from './axf/core';
 import type { ActionMeta } from './axf/core/engines/actions';
 import type { AxfWebLibrary } from './axf/react/library';
-import { Button, Note } from './axf/react';
+import { Button, IconButton, Note } from './axf/react';
 import { PluginViewHost } from './PluginSettingsGear';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
@@ -588,9 +588,13 @@ function LazyCall({ folder, path, args }: { folder: string; path: string[]; args
 /** The "New version, reload" banner: shown once a plugin chunk couldn't load twice (the console was redeployed). */
 export function NewVersionNotice(): ReactNode {
   useLoaderVersion();
-  if (!loader.stale) return null;
+  // It sits over the page until a reload, so it can be put away: the page under it stays usable and scrollable, and a
+  // part that can't load still offers its own Reload.
+  const [hidden, setHidden] = useState(false);
+  if (!loader.stale || hidden) return null;
   return (
     <div className="axf-new-version" role="alert">
+      <IconButton icon="x" label="Hide this notice" onClick={() => setHidden(true)} />
       <Note tone="warning">New version of the console: part of it couldn't load until you reload.</Note>
       <Button tone="primary" icon="refresh" onClick={() => globalThis.location.reload()}>Reload</Button>
     </div>
