@@ -2723,6 +2723,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.consoleopen",
+              "title": "Console opens go straight to the screen: a loaded console is never reloaded to its home screen, a wake lands on the target, a queued open is never lost, answers come in seconds",
+              "note": "apps/console-web/plugins/console-commands (server + web), src/native, apps/console-droid WebHost / ShellRules (Nov 23 2026); framework/spec/CONTROL.md \u2192 Straight to the screen",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

@@ -229,6 +229,14 @@ const view = (name) => new URL(PLUGIN_OF[name].includes('/') ? PLUGIN_OF[name] :
   const navSrc = ['axhub-approvals', 'axhub-apps', 'axhub-users', 'axhub-handoff', 'axhub-account'].map((p) => readFileSync(new URL(`${p}/web/index.tsx`, pageSrc), 'utf8')).join('\n');
   ok(readFileSync(new URL('gate/web/menu.ts', pageSrc), 'utf8').includes("action: 'axhub-passes.open'"), 'the axHub menu reaches the passes (VPS Configuration → Passes)');
   for (const v of ['axhub-approvals', 'axhub-approvals-log', 'axhub-users', 'axhub-handoff', 'axhub-account', 'axhub-apps']) ok(navSrc.includes(`view: '${v}' }`), `the axHub nav section reaches ${v}`);
+  // The app catalog is one tap away (Brett, Nov 23 2026: "we need an app catalog, a link in the console, so I can
+  // download all the Android apps"): its own nav section right under Home, and the first entry of the Apps menu.
+  const navAsset = JSON.parse(readFileSync(new URL('../src/assets/nav-menu/default-console-web-nav.json', pageSrc), 'utf8')).data.sections;
+  eq([navAsset[0].items[0].view, navAsset[1].label, navAsset[1].items.length], ['home', 'Apps', 0], 'the nav has an Apps anchor right under Home');
+  const appsSrc = readFileSync(new URL('axhub-apps/web/index.tsx', pageSrc), 'utf8');
+  ok(/nav: \{ label: 'Apps', items: \[\{ id: 'axhub-apps', label: 'Android apps', icon: 'download', view: 'axhub-apps' \}\] \}/.test(appsSrc), 'the app catalog files its nav entry under Apps, named for what it holds');
+  const appsMenu = readFileSync(new URL('axhub-apps/web/menu.ts', pageSrc), 'utf8');
+  ok(/menu: 'apps', order: 1, items: \[\s*\{ id: 'android-apps', label: 'Android apps \(downloads\)', icon: 'download', action: 'nav:axhub-apps' \}/.test(appsMenu), 'and the Apps menu opens with it');
 }
 
 /* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */

@@ -28,7 +28,9 @@ import org.json.JSONObject;
  *
  * {@code browser.open}: a URL with {@code axf-overlay=expand|collapse} is an overlay verb; any other page of Brett's
  * own sites opens in the console WebView and the floating toolbar expands to show it (with the overlay off or not
- * allowed, the app comes to the front). {@code where: "browser"} sends it to the phone's browser instead.
+ * allowed, the app comes to the front). A console link for a console that is already loaded is handed to the page
+ * ({@link WebHost#open}): it goes straight to the screen, with no reload. {@code where: "browser"} sends it to the
+ * phone's browser instead.
  */
 final class DeviceLink {
     private DeviceLink() {}

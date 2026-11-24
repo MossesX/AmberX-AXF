@@ -20,5 +20,7 @@ export const plugin: AxfWebLibrary = {
   views: {
     'axhub-apps': { title: 'Apps', icon: 'download', keywords: ["apk", "download", "catalog"], render: () => <Apps /> },
   },
-  nav: { label: 'System', items: [{ id: 'axhub-apps', label: 'Apps', icon: 'download', view: 'axhub-apps' }] },
+  // Its own section right under Home (the nav-menu asset's "Apps" anchor), so the downloads are one tap away on a
+  // phone too (Brett, Nov 23 2026: "we need an app catalog, a link in the console, so I can download all the Android apps").
+  nav: { label: 'Apps', items: [{ id: 'axhub-apps', label: 'Android apps', icon: 'download', view: 'axhub-apps' }] },
 };

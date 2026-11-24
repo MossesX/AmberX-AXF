@@ -226,6 +226,15 @@ ok(r["phone"] == {"ok": True, "shown": True, "message": "the phone is opening th
 n = len(phone.asked)
 svc.show("builds.open", kind="action")
 ok(len(phone.asked) == n, "an action never goes to the phone")
+# console-open-no-reload (Nov 23 2026): the console inside the phone's app acked it (its ack carries `shell`) and came
+# to the front itself; asking the phone to open the console there as well loaded the page again, at its home screen
+in_app = fake.run
+fake.run = lambda command, grants=None, by="", audience="owner": (lambda r: {**r, "delivered": [{**d, "shell": "console-droid", "surfaced": True} for d in r.get("delivered") or []]})(in_app(command, grants, by, audience))  # type: ignore[method-assign]
+n = len(phone.asked)
+r = svc.show("plan studio")
+ok(r["shown"] and len(phone.asked) == n, f"shown by the phone app's own page: the phone is not asked to open it again ({phone.asked[n:]})")
+ok(r["phone"]["shown"] is True and "no reload" in r["phone"]["message"], f"the answer says so ({r.get('phone')})")
+fake.run = in_app  # type: ignore[method-assign]
 ok(svc.phone("grid:queue/row:b1") == {"ok": True, "shown": True, "message": "the phone is opening the console there"} and phone.asked[-1][0] == "grid:queue/row:b1", "an address console_show opened itself reaches the phone too")
 c.post(f"{P}/state", json={"on": False})
 n = len(phone.asked)

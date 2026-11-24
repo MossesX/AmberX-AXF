@@ -254,6 +254,7 @@ ok(client.get("/api/console/recent").json()["items"][0]["how"] == "woke via Ambe
 # a console that reconnects within the wake delay: after reconnect, nobody woken
 client.post("/api/console/bye", json={"client": "woke-0001"})
 cc.WAKE_AGAIN_S = 0
+cc.WAKE_AFTER_S = 1.5  # room for the hello below on a slow runner
 res = {}
 t = threading.Thread(target=lambda: res.update(client.post("/api/console/open", json={"screen": "home"}).json()))
 t.start()
@@ -261,8 +262,9 @@ wait_for(lambda: any(x["state"] == "queued" for x in client.get("/api/console/qu
 client.post("/api/console/hello", json={"client": "woke-0001", "catalog": CATALOG, "used": True})
 t.join(15)
 eq(res.get("delivery", {}).get("how"), "after reconnect", f"queued then delivered on reconnect ({res})")
-time.sleep(0.4)
+time.sleep(1.8)
 eq(len(WOKEN), 1, "no wake when a console came back in time")
+cc.WAKE_AFTER_S = 0.3
 
 # wake off: queued, nobody woken; the call gives up waiting with queued (still delivered later)
 eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
@@ -270,7 +272,7 @@ eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": 
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
 ok(r["ok"] and r["queued"] and r["delivery"]["how"] == "queued", f"still nobody after the wait: answered queued ({r})")
-ok("queued, not open yet" in r["message"], "the answer says it is waiting, not opened")
+ok("not shown yet" in r["message"] and "stays queued" in r["message"], "the answer says it is waiting, not opened")
 time.sleep(0.4)
 eq(len(WOKEN), 1, "wake off: AmberX not asked")
 ok("off" in r["delivery"]["wake"]["message"] and "off" in r["message"], f"the answer says waking is off ({r['delivery']})")
@@ -399,8 +401,8 @@ fake_cx = types.ModuleType("console_context")
 fake_cx.raise_alert = lambda a: alerts.append(a) or {}
 fake_cx.resolve_alerts = lambda k: resolved.append(k)
 sys.modules["console_context"] = fake_cx
-cc._fallback_alert("cq-1", "couldn't reach axHub")
-ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1"), "the fallback alert is loud and opens the waiting command")
+cc._fallback_alert({"id": "cq-1", "open": "view:plan-studio"}, "couldn't reach axHub")
+ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1&axf-open=view:plan-studio"), "the fallback alert is loud and opens the waiting command on its screen")
 cc._fallback_clear()
 eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
@@ -475,7 +477,7 @@ r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "ac
 eq((r["ok"], r["status"], r["queued"], r["delivery"]["tried"]), (True, "pending", True, ["sleep-0001"]), f"truthful: pending, queued, who was tried ({r.get('delivery')})")
 ok("not shown yet" in r["message"], f"the answer never says opened ({r['message']})")
 ok(wait_for(lambda: len(WOKEN) > woken_before, 5), "AmberX asked to open the console straight after the tries")
-ok(WOKEN[-1][0].endswith(f"?axf-cmd={r['delivery']['id']}"), "the wake link carries the queued command")
+eq(WOKEN[-1][0], f"https://console.amberxai.com/?axf-cmd={r['delivery']['id']}&axf-open=view:plan-studio", "the wake link carries the queued command and the screen it lands on")
 # the sleeping tab wakes in time and does it after all: its late ack settles the queued copy (it never runs twice)
 mid = sleepy_got[-1]["id"]
 eq(client.post("/api/console/ack", json={"client": "sleep-0001", "id": mid, "ok": True, "message": "opened Plan Studio"}).json().get("late"), True, "a late ack is recorded")
@@ -610,6 +612,177 @@ os.utime(old_f, (time.time() - cc.SHOT_TTL_S - 5,) * 2)
 eq(cc.sweep_shots(), 1, "an upload nobody read is swept after the TTL")
 ok(not old_f.exists(), "and is gone")
 ok(oct(cc.SHOT_DIR.stat().st_mode & 0o777) == "0o700", "the temp folder is private to the server")
+
+
+# ======================================================================== straight to the screen (console-open-no-reload, Nov 23 2026)
+# Brett: "Every time you try to load a screen, it refreshes and loads the main console first." The console app's page
+# kept running behind its folded overlay, but its beat went quiet there, so every open took the wake path and the wake
+# reloaded the page to its home screen, losing the queued open.
+ok(cc.QUIET_TRY_S + cc.RETRY_WAIT_S <= 5.5 and cc.DELIVERY_WAIT_S <= 5 and cc.LIVE_TRY_S <= 3, "an open answers within seconds, not 20 to 45")
+cc.QUIET_TRY_S, cc.RETRY_WAIT_S, cc.DELIVERY_WAIT_S, cc.LIVE_TRY_S, cc.WAKE_AFTER_S, cc.WAKE_AGAIN_S = 0.6, 0.6, 0.8, 0.6, 0.2, 0
+client.post("/api/console/settings", json={"wake": True, "ttlS": 120})
+
+
+def all_gone() -> None:
+    """Every console so far has closed its tab; nothing waits."""
+    with cc._lock:
+        for c in cc._clients.values():
+            if c["audience"] == cc.OWNER:
+                c["lastSeen"], c["lastUsed"], c["missed"] = 0.0, 0.0, cc._now()
+        for e in cc._queue:
+            if e["state"] == "queued":
+                e["state"] = "expired"
+
+
+def page_console(cid: str, page: str, got: list[dict], catalog=lambda: CATALOG, acks: bool = True, pick: str = "", shell: str = "console-droid") -> threading.Thread:  # type: ignore[no-untyped-def]
+    """One page load of a console in the phone's app: says hello with its page id, reads its stream, sends its catalog
+    when asked, and (unless `acks` is off: a page being torn down) acks what it gets."""
+    def hello(**more) -> None:  # type: ignore[no-untyped-def]
+        client.post("/api/console/hello", json={"client": cid, "page": page, "shell": shell, "device": "phone", "catalog": catalog(), **more})
+
+    def loop() -> None:
+        with client.stream("GET", f"/api/console/stream?client={cid}&page={page}") as st:
+            for line in st.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                m = json.loads(line[6:])
+                if m.get("$axf") == "console-hello@1":
+                    hello()
+                    continue
+                got.append(m)
+                if acks:
+                    client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": True, "message": f"opened {m.get('label') or m['op']}", "here": {"screen": m.get("target", "")}, "surfaced": True})
+
+    hello(used=True, **({"pick": pick} if pick else {}))
+    t = threading.Thread(target=loop, daemon=True)
+    t.start()
+    return t
+
+
+def quiet(cid: str) -> None:
+    """The page's timers are throttled (nothing shows it): its beat is older than STALE_S, its stream is still open."""
+    with cc._lock:
+        cc._clients[cid]["lastSeen"] = cc._now() - cc.STALE_S - 5
+
+
+# ---- an open to a loaded page does not reload: the quiet console is asked first and answers; nobody is woken
+all_gone()
+fold_got: list[dict] = []
+page_console("fold-0001", "pg-fold0001", fold_got)
+wait_for(lambda: stream_open("fold-0001"))
+quiet("fold-0001")
+ok("fold-0001" not in listed(), "the folded overlay's console has not beaten lately")
+woken, queued_n = len(WOKEN), len(client.get("/api/console/queue").json()["items"])
+j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
+eq((j["status"], j["delivery"]["how"], j["delivery"].get("client")), ("delivered", "live", "fold-0001"), f"a console with its stream open answers without a wake ({j.get('delivery')})")
+eq((fold_got[-1]["op"], fold_got[-1]["target"]), ("open", "plan-studio"), "it went straight to the screen")
+ok("delivery" not in fold_got[-1], "as a live command, not a queued one")
+eq((j["delivered"][0].get("shell"), j["delivered"][0].get("surfaced")), ("console-droid", True), "the ack says it is the phone app's page and that it came to the front")
+time.sleep(0.5)
+eq((len(WOKEN), len(client.get("/api/console/queue").json()["items"])), (woken, queued_n), "nothing queued, the phone is not asked to load the console")
+ok("fold-0001" in listed(), "its ack proves it is alive: it is back on console.clients")
+quiet("fold-0001")
+j = cc.control({"verb": "open", "address": "view:plan-studio"}, "t")
+eq((j["ok"], j["client"], j.get("shell"), j["delivery"]["how"]), (True, "fold-0001", "console-droid", "live"), f"a console-control address reaches the quiet console too ({j})")
+eq(len(WOKEN), woken, "still nobody woken")
+
+# ---- an undeliverable open answers fast, with a plain reason, and stays queued
+all_gone()
+frozen_got: list[dict] = []
+client.post("/api/console/hello", json={"client": "froz-0001", "device": "phone", "catalog": CATALOG, "used": True})
+sleepy_console("froz-0001", frozen_got)
+wait_for(lambda: stream_open("froz-0001"))
+quiet("froz-0001")
+woken = len(WOKEN)
+t0 = time.time()
+r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER)
+took = time.time() - t0
+ok(took < cc.QUIET_TRY_S + cc.RETRY_WAIT_S + 2.5, f"a console that doesn't answer costs seconds, not a hang ({took:.1f} s)")
+eq((r["ok"], r["status"], r["queued"], r["delivery"]["tried"]), (True, "pending", True, ["froz-0001"]), f"pending, queued, and who was asked ({r.get('delivery')})")
+ok("not shown yet" in r["message"] and "stays queued" in r["message"], f"the reason is plain ({r['message']})")
+ok(wait_for(lambda: len(WOKEN) > woken, 5), "only now is the phone asked")
+eq(WOKEN[-1][0], f"https://console.amberxai.com/?axf-cmd={r['delivery']['id']}&axf-open=view:plan-studio", "and the wake link lands on the screen, not at home")
+t0 = time.time()
+r = cc.run({"op": "act", "target": "console.screens", "path": "home", "action": "open"}, ["*"], "Amber", cc.OWNER)
+took = time.time() - t0
+ok(took < cc.DELIVERY_WAIT_S + 2.5, f"no console at all: answered fast too ({took:.1f} s)")
+eq((r["status"], r["queued"], r["delivery"]["tried"] if "tried" in r["delivery"] else []), ("pending", True, []), "the frozen console is not asked twice")
+ok("no console is open" in r["message"] and "stays queued" in r["message"], f"it says why ({r['message']})")
+eq(cc.open_address({"op": "act", "action": "open", "target": "console.settings"}, {"item": {"kind": "settings", "id": "sample-tools", "parent": "plugins"}}),
+   "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-tools", "a settings sub-tab has an address for the wake link")
+eq(cc.open_address({"op": "act", "action": "open", "target": "console.dialogs"}, {"item": {"kind": "dialog", "id": "asset-json"}}), "", "a dialog has none")
+eq(cc.open_address({"op": "act", "action": "open", "target": "console.screens"}, {"item": {"kind": "screen", "id": "a b&c"}}), "", "an id that is not address-safe is left off the link")
+eq(cc.wake_link("cq-1"), "https://console.amberxai.com/?axf-cmd=cq-1", "no address: the plain wake link")
+
+# ---- a wake lands on the target: the open the old page got while it was being reloaded is not lost; the page the
+# phone loads gets it, under the same id, the moment it says hello
+all_gone()
+cc.ACK_WAIT_S = 6.0
+old_got: list[dict] = []
+page_console("wake-0002", "pg-old00001", old_got, acks=False)
+wait_for(lambda: stream_open("wake-0002"))
+woken = len(WOKEN)
+res = {}
+t = threading.Thread(target=lambda: res.update(cc.run({"op": "act", "target": "console.screens", "path": "build orchestrator", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=12)))
+t.start()
+ok(wait_for(lambda: len(WOKEN) > woken, 8), "the page did not answer: the phone is asked to open the console")
+ok(WOKEN[-1][0].endswith("&axf-open=view:build-orchestrator"), f"on the screen that was asked for ({WOKEN[-1][0]})")
+entry = WOKEN[-1][0].split("axf-cmd=")[1].split("&")[0]
+# the wake brings the old page to the front first: it beats, the queued open is sent to it, and the reload takes the page away
+client.post("/api/console/seen", json={"client": "wake-0002", "used": True})
+ok(wait_for(lambda: len(old_got) >= 2, 8), "the queued open went to the page that was about to be reloaded")
+eq(old_got[-1].get("delivery"), "queued", "as a queued command")
+ok(not res, "nobody acked it: the call is still waiting, the command is not called delivered")
+new_got: list[dict] = []
+t0 = time.time()
+page_console("wake-0002", "pg-new00001", new_got, pick=entry)
+t.join(10)
+took = time.time() - t0
+eq((res.get("status"), res.get("delivery", {}).get("how")), ("delivered", "woke via AmberX"), f"the page the phone loaded got it ({res.get('delivery')}, {res.get('message')})")
+ok(took < 4, f"at once: the wait on the old page ended with the new page's hello ({took:.1f} s)")
+time.sleep(0.4)
+eq([(m["op"], m["target"], m["id"]) for m in new_got], [("open", "build-orchestrator", old_got[-1]["id"])], "exactly once, under the same message id (a page that already ran it only acks again)")
+eq(next(x for x in client.get("/api/console/queue").json()["items"] if x["id"] == entry)["state"], "delivered", "the queue shows it delivered, not lost")
+client.post("/api/console/bye", json={"client": "wake-0002", "page": "pg-old00001"})
+ok("wake-0002" in listed(), "a late goodbye from the old page does not take the new page off the list")
+client.post("/api/console/bye", json={"client": "wake-0002", "page": "pg-new00001"})
+ok("wake-0002" not in listed(), "its own goodbye does")
+cc.ACK_WAIT_S = 10.0
+
+# ---- an early open waits for the screens list: a page that just loaded knows only its first screens; the open waits
+# for the catalog with the plugin's screen instead of answering "no screen"
+all_gone()
+SMALL = {"app": "console-web", "items": [{"kind": "screen", "id": "home", "label": "Home"}], "here": {"screen": "home"}}
+cat = {"now": SMALL}
+early_got: list[dict] = []
+page_console("early-0001", "pg-early001", early_got, catalog=lambda: cat["now"])
+wait_for(lambda: stream_open("early-0001"))
+ok(any(i["id"] == "build-orchestrator" for i in cc.remembered_catalog(cc.OWNER)["items"]), "a loading page's short catalog does not replace the full one the server remembers")
+res = {}
+t0 = time.time()
+t = threading.Thread(target=lambda: res.update(cc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open"}, ["*"], "Amber", cc.OWNER)))
+t.start()
+time.sleep(1.2)
+ok(not res, "the screen is not there yet: the open waits")
+cat["now"] = CATALOG  # the plugin arrived: the page sends its catalog (and answers the server's next ask with it)
+client.post("/api/console/hello", json={"client": "early-0001", "page": "pg-early001", "shell": "console-droid", "catalog": CATALOG})
+t.join(10)
+took = time.time() - t0
+eq((res.get("ok"), res.get("status"), res.get("delivery", {}).get("client")), (True, "delivered", "early-0001"), f"opened once the screens list had it ({res.get('message')})")
+ok(1.0 < took < cc.CATALOG_YOUNG_WAIT_S + 2, f"within the loading window ({took:.1f} s)")
+eq([(m["op"], m["target"]) for m in early_got], [("open", "build-orchestrator")], "the page ran it once")
+# a settled page: a name it really doesn't have still fails, quickly
+with cc._lock:
+    cc._clients["early-0001"]["born"] = cc._now() - cc.YOUNG_S - 1
+t0 = time.time()
+r = client.post("/api/console/open", json={"screen": "spreadsheet"})
+ok(r.status_code == 404 and "no screen" in r.json()["message"] and time.time() - t0 < cc.CATALOG_WAIT_S + 2, f"a wrong name on a loaded console: 'no screen', fast ({time.time() - t0:.1f} s)")
+# `wait` on the REST body asks for longer; nonsense is ignored
+all_gone()
+t0 = time.time()
+r = client.post("/api/console/open", json={"screen": "home", "wait": 2.0}).json()
+ok(r["queued"] and 1.8 < time.time() - t0 < 4.5, f"wait: the call may ask to wait longer ({time.time() - t0:.1f} s)")
+ok(client.post("/api/console/open", json={"screen": "home", "wait": "soon"}).json()["queued"], "a wait that is no number is ignored")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

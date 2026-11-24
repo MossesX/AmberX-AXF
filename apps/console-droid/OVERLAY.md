@@ -83,6 +83,24 @@ not to the console." `OverlayRules.tapVerb(state, waiting)` (JUnit `OverlayTapTe
 
 Outside the app (a desktop browser) the actions answer that the Android console app is not running this page.
 
+## A link for a console that is already loaded (no reload)
+
+Brett, Nov 23 2026: "Every time you try to load a screen, it refreshes and loads the main console first." Every open
+that reached the phone as a link (the console's wake `…/?axf-cmd=<id>&axf-open=<address>`, Follow Amber's
+`…/?axf-open=<address>`, an `axf-console://open/…` deep link) was loaded into the WebView whatever it was showing, so
+the page started again at its home screen.
+
+`WebHost.open` now asks first (`ShellRules.inPage`, JUnit `ShellRulesTest`): when the console already shows and the
+link is the console's own root carrying only hints, the link goes to the page (`window.axfNative.open(url)`) and the
+overlay expands on it. The page opens the target through its control executor and picks its queued command; nothing
+is loaded. The shell loads the link as before when no console shows (the offline page, axHub's approvals page), for
+any other path or site, for the search palette's link, and when the page doesn't take it within 1.5 s (a console
+from before this change, a page still starting, a renderer that is gone).
+
+The page also stays reachable while the overlay is folded: it beats on its command stream, which is not throttled
+the way its timers are, and after it ran a command it asks the shell to expand (`overlay('expand')`), so an open
+normally never needs the link at all.
+
 ## State (every API reads the same JSON)
 
 ```json

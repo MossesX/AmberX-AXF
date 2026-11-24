@@ -4,7 +4,7 @@
   "id": "default-console-web-nav",
   "name": "GizmoX AI Studio navigation menu (default)",
   "version": "2.0.0",
-  "description": "GizmoX AI Studio's own default navigation menu, locked until another one built for console-web is picked (app-menus@1). Started from \"console-nav\". Sections come in a fixed order and each one is an anchor: a plugin's nav entry joins the section whose label it names (Plan, Builds, AI & agents, Framework, Standards, Design, Docs & media, System), so the menu keeps the same shape whichever plugins are on. A section with nothing in it is not drawn.",
+  "description": "GizmoX AI Studio's own default navigation menu, locked until another one built for console-web is picked (app-menus@1). Started from \"console-nav\". Sections come in a fixed order and each one is an anchor: a plugin's nav entry joins the section whose label it names (Apps, Plan, Builds, AI & agents, Framework, Standards, Design, Docs & media, System), so the menu keeps the same shape whichever plugins are on. A section with nothing in it is not drawn.",
   "author": "AmberX AXF",
   "tags": [
     "default",
@@ -25,6 +25,10 @@
             "view": "home"
           }
         ]
+      },
+      {
+        "label": "Apps",
+        "items": []
       },
       {
         "label": "Plan",

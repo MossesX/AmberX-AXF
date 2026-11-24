@@ -61,6 +61,33 @@ export function openTarget(href) {
   return { target, kind: isAddress(target) ? 'address' : 'action', rest: u.toString() };
 }
 
+/** The event a link handed to the running page is announced with (`detail.url`); plugins that own a parameter listen. */
+export const DEEP_LINK_EVENT = 'axf-deep-link';
+/** How long a deep-link target the console doesn't know yet is tried again (a plugin's screen arrives after the load). */
+export const DEEP_LINK_WAIT_MS = 10_000;
+export const DEEP_LINK_RETRY_MS = 400;
+
+/** The screen a deep-link target starts on (`view:<id>` or `view:<id>/…`), or '' when it names no screen first. */
+export function startView(t) {
+  if (!t || t.kind !== 'address') return '';
+  const first = String(t.target).split('/')[0];
+  if (!first.startsWith('view:')) return '';
+  try { return decodeURIComponent(first.slice(5)); } catch { return ''; }
+}
+
+/**
+ * A link the page can open without being loaded again: the console's own root on this origin, carrying only hints
+ * (`axf-open`, `axf-cmd=<queued command>`). → the absolute link, or '' when the shell must load it (another origin,
+ * another path, the search palette's `axf-cmd=search`, a hard refresh).
+ */
+export function inPageLink(url, here) {
+  let u, h;
+  try { h = new URL(String(here)); u = new URL(String(url), h); } catch { return ''; }
+  if (u.origin !== h.origin || u.pathname !== '/') return '';
+  if (u.searchParams.get('axf-cmd') === 'search' || u.searchParams.has('axf-refresh')) return '';
+  return u.toString();
+}
+
 /** `kind:id` segments joined by `/`, the first kind a word (an action id has no `:` before its first `.`). */
 export function isAddress(s) {
   const first = String(s).split('/')[0];

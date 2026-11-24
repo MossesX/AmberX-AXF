@@ -90,6 +90,60 @@ final class ShellRules {
         return linkOr(s, HOME);
     }
 
+    /**
+     * True when a link is the running console page's to open, with no reload: the console already shows
+     * ({@link #onConsole}) and the link is the console's own root carrying only hints ({@code axf-open=<address>},
+     * {@code axf-cmd=<queued command>}). The search palette's link ({@code axf-cmd=search}), a hard refresh
+     * ({@code axf-refresh}) and every other path or site are loaded as before.
+     *
+     * Brett, Nov 23 2026: "Every time you try to load a screen, it refreshes and loads the main console first." A
+     * wake or a show used to load its link into the WebView whatever was showing, so the page started again at its
+     * home screen and the screen that was asked for came late or never.
+     */
+    static boolean inPage(String currentUrl, String url) {
+        if (!onConsole(currentUrl)) return false;
+        String u = linkOr(url, "");
+        if (!onConsole(u)) return false;
+        try {
+            URI x = new URI(u);
+            String path = x.getRawPath();
+            if (path != null && !path.isEmpty() && !"/".equals(path)) return false;
+            String q = x.getRawQuery();
+            if (q == null) return true;
+            for (String part : q.split("&")) {
+                int eq = part.indexOf('=');
+                String k = eq < 0 ? part : part.substring(0, eq);
+                String v = eq < 0 ? "" : part.substring(eq + 1);
+                if ("axf-refresh".equals(k) || ("axf-cmd".equals(k) && "search".equals(v))) return false;
+            }
+            return true;
+        } catch (Exception e) { return false; }
+    }
+
+    /** How long the page has to say it took a link ({@link #handOffScript}) before the shell loads it instead. */
+    static final long HAND_OFF_MS = 1_500;
+
+    /**
+     * The script that hands a link to the running page ({@code window.axfNative.open(url)},
+     * apps/console-web/src/native/axfNative.ts). It evaluates to {@code true} only when the page took the link; a
+     * console from before this (no {@code open}), or a page still starting, answers anything else and the shell loads
+     * the link as it always did.
+     */
+    static String handOffScript(String url) {
+        return "(function(){try{return !!(window.axfNative&&window.axfNative.open&&window.axfNative.open(" + jsString(url) + "))}catch(e){return false}})()";
+    }
+
+    /** A JavaScript string literal (quotes, backslashes, line ends and {@code <} escaped). */
+    static String jsString(String s) {
+        StringBuilder b = new StringBuilder("\"");
+        for (char ch : (s == null ? "" : s).toCharArray()) {
+            if (ch == '"' || ch == '\\') b.append('\\').append(ch);
+            else if (ch < 0x20 || ch == '<' || ch == 0x2028 || ch == 0x2029) b.append(String.format("\\u%04x", (int) ch));
+            else b.append(ch);
+        }
+        return b.append('"').toString();
+    }
+
     /** The back key: one page back while there is history, else leave the app (the overlay stays). */
     static String back(boolean canGoBack) { return canGoBack ? "back" : "leave"; }
 
