@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10378,
- "updatedAt": "2026-11-24T12:04:04.778Z",
+ "rev": 10379,
+ "updatedAt": "2026-11-24T12:04:21.642Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -365812,14 +365812,14 @@
    "title": "Get PR 907 green",
    "category": "",
    "detail": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
-   "status": "build-complete",
+   "status": "merging-pr",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/fix907-ci",
    "pr": "",
    "createdAt": "2026-11-24T10:39:59.498Z",
-   "updatedAt": "2026-11-24T12:03:48.051Z",
+   "updatedAt": "2026-11-24T12:04:17.589Z",
    "builtAt": "",
    "notes": [
     {
@@ -365833,6 +365833,15 @@
     {
      "text": "Headless run axf-fix907-ci--rhonda: brief only · start 10.8K tokens ($0.07) · cost $8.45 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-24T12:03:48.051Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $8.45",
+     "at": "2026-11-24T12:04:05.418Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T12:04:17.589Z",
+     "by": "lander"
     }
    ],
    "approvals": [],
@@ -365933,7 +365942,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -365944,8 +365953,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T12:03:40.298Z",
-   "statusBy": "headless",
+   "statusAt": "2026-11-24T12:04:17.589Z",
+   "statusBy": "lander",
    "attempt": 1,
    "statusLog": [
     {
@@ -365961,6 +365970,13 @@
      "by": "headless",
      "attempt": 1,
      "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T12:04:17.589Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
     }
    ]
   }
