@@ -12,7 +12,7 @@
 ## Fix
 - `apps/console-droid/app/debug.keystore`: a committed debug key (standard debug credentials, protects nothing).
 - `apps/console-droid/app/build.gradle`: the debug variant signs with that key through an explicit `signingConfigs.debug`; versionCode stays the run number (1 locally) and versionName now shows it (`0.2.<build>`).
-- `.github/workflows/android.yml`: the same keystore is copied to `~/.android/debug.keystore` for every run, which covers console-debug.apk and the other app APKs without touching their Gradle files. The secret is no longer used.
+- `.github/workflows/android.yml`: every run hands the same keystore to every app build explicitly (AGP injected signing properties in the Gradle user home), which covers console-debug.apk and the other app APKs without touching their Gradle files. Only dropping the key at the default `~/.android/debug.keystore` was not enough: the first CI run of this change still signed the Dev Console with a fresh key, and the new check caught it. The secret is no longer used.
 - New CI step: `apksigner` checks both console APKs against the committed certificate and fails the job if the key ever drifts again.
 
 ## Checks
