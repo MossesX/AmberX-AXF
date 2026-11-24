@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10373,
- "updatedAt": "2026-11-24T00:04:43.008Z",
+ "rev": 10374,
+ "updatedAt": "2026-11-24T01:05:38.669Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31559,11 +31559,11 @@
     "all"
    ],
    "order": {
-    "all": 305
+    "all": 308
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42681,11 +42681,11 @@
     "all"
    ],
    "order": {
-    "all": 275
+    "all": 278
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58543,11 +58543,11 @@
     "all"
    ],
    "order": {
-    "all": 249
+    "all": 252
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61798,11 +61798,11 @@
     "all"
    ],
    "order": {
-    "all": 259
+    "all": 262
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62845,11 +62845,11 @@
     "all"
    ],
    "order": {
-    "all": 129
+    "all": 132
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78410,11 +78410,11 @@
     "all"
    ],
    "order": {
-    "all": 151
+    "all": 154
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78643,11 +78643,11 @@
     "all"
    ],
    "order": {
-    "all": 152
+    "all": 155
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78855,11 +78855,11 @@
     "all"
    ],
    "order": {
-    "all": 153
+    "all": 156
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79084,11 +79084,11 @@
     "all"
    ],
    "order": {
-    "all": 154
+    "all": 157
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79455,11 +79455,11 @@
     "all"
    ],
    "order": {
-    "all": 156
+    "all": 159
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79618,11 +79618,11 @@
     "all"
    ],
    "order": {
-    "all": 157
+    "all": 160
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86251,11 +86251,11 @@
     "all"
    ],
    "order": {
-    "all": 164
+    "all": 167
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86462,11 +86462,11 @@
     "all"
    ],
    "order": {
-    "all": 165
+    "all": 168
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86874,11 +86874,11 @@
     "all"
    ],
    "order": {
-    "all": 167
+    "all": 170
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87106,11 +87106,11 @@
     "all"
    ],
    "order": {
-    "all": 168
+    "all": 171
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87492,11 +87492,11 @@
     "all"
    ],
    "order": {
-    "all": 170
+    "all": 173
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88241,11 +88241,11 @@
     "all"
    ],
    "order": {
-    "all": 172
+    "all": 175
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88854,11 +88854,11 @@
     "all"
    ],
    "order": {
-    "all": 174
+    "all": 177
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89067,11 +89067,11 @@
     "all"
    ],
    "order": {
-    "all": 285
+    "all": 288
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89249,11 +89249,11 @@
     "all"
    ],
    "order": {
-    "all": 175
+    "all": 178
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89386,11 +89386,11 @@
     "all"
    ],
    "order": {
-    "all": 524
+    "all": 527
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89587,11 +89587,11 @@
     "all"
    ],
    "order": {
-    "all": 176
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90063,11 +90063,11 @@
     "all"
    ],
    "order": {
-    "all": 177
+    "all": 180
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90368,11 +90368,11 @@
     "all"
    ],
    "order": {
-    "all": 178
+    "all": 181
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90939,11 +90939,11 @@
     "all"
    ],
    "order": {
-    "all": 287
+    "all": 290
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91150,11 +91150,11 @@
     "all"
    ],
    "order": {
-    "all": 288
+    "all": 291
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91309,11 +91309,11 @@
     "all"
    ],
    "order": {
-    "all": 289
+    "all": 292
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92125,11 +92125,11 @@
     "all"
    ],
    "order": {
-    "all": 179
+    "all": 182
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92314,11 +92314,11 @@
     "all"
    ],
    "order": {
-    "all": 180
+    "all": 183
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93211,11 +93211,11 @@
     "all"
    ],
    "order": {
-    "all": 264
+    "all": 267
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97147,11 +97147,11 @@
     "all"
    ],
    "order": {
-    "all": 197
+    "all": 200
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101476,11 +101476,11 @@
     "all"
    ],
    "order": {
-    "all": 202
+    "all": 205
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101761,11 +101761,11 @@
     "all"
    ],
    "order": {
-    "all": 205
+    "all": 208
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104114,11 +104114,11 @@
     "all"
    ],
    "order": {
-    "all": 210
+    "all": 213
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104776,11 +104776,11 @@
     "all"
    ],
    "order": {
-    "all": 212
+    "all": 215
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105456,11 +105456,11 @@
     "all"
    ],
    "order": {
-    "all": 214
+    "all": 217
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107677,11 +107677,11 @@
     "all"
    ],
    "order": {
-    "all": 220
+    "all": 223
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108332,11 +108332,11 @@
     "all"
    ],
    "order": {
-    "all": 203
+    "all": 206
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109488,11 +109488,11 @@
     "all"
    ],
    "order": {
-    "all": 222
+    "all": 225
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112919,11 +112919,11 @@
     "all"
    ],
    "order": {
-    "all": 533
+    "all": 536
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114157,11 +114157,11 @@
     "all"
    ],
    "order": {
-    "all": 537
+    "all": 540
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114517,11 +114517,11 @@
     "all"
    ],
    "order": {
-    "all": 538
+    "all": 541
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116593,11 +116593,11 @@
     "all"
    ],
    "order": {
-    "all": 553
+    "all": 556
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117412,11 +117412,11 @@
     "all"
    ],
    "order": {
-    "all": 557
+    "all": 560
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117599,11 +117599,11 @@
     "all"
    ],
    "order": {
-    "all": 558
+    "all": 561
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118204,11 +118204,11 @@
     "all"
    ],
    "order": {
-    "all": 560
+    "all": 563
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119402,11 +119402,11 @@
     "all"
    ],
    "order": {
-    "all": 565
+    "all": 568
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119908,11 +119908,11 @@
     "all"
    ],
    "order": {
-    "all": 568
+    "all": 571
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120091,11 +120091,11 @@
     "all"
    ],
    "order": {
-    "all": 569
+    "all": 572
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123690,11 +123690,11 @@
     "all"
    ],
    "order": {
-    "all": 581
+    "all": 584
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125647,11 +125647,11 @@
     "all"
    ],
    "order": {
-    "all": 595
+    "all": 598
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125805,11 +125805,11 @@
     "all"
    ],
    "order": {
-    "all": 594
+    "all": 597
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125982,11 +125982,11 @@
     "all"
    ],
    "order": {
-    "all": 596
+    "all": 599
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129525,11 +129525,11 @@
     "all"
    ],
    "order": {
-    "all": 612
+    "all": 615
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129858,11 +129858,11 @@
     "all"
    ],
    "order": {
-    "all": 613
+    "all": 616
    },
    "kind": "build",
    "planRef": "",
-   "rev": 131,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130175,11 +130175,11 @@
     "all"
    ],
    "order": {
-    "all": 615
+    "all": 618
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130331,11 +130331,11 @@
     "all"
    ],
    "order": {
-    "all": 616
+    "all": 619
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130491,11 +130491,11 @@
     "all"
    ],
    "order": {
-    "all": 617
+    "all": 620
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130651,11 +130651,11 @@
     "all"
    ],
    "order": {
-    "all": 618
+    "all": 621
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130883,11 +130883,11 @@
     "all"
    ],
    "order": {
-    "all": 619
+    "all": 622
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131151,11 +131151,11 @@
     "all"
    ],
    "order": {
-    "all": 620
+    "all": 623
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131934,11 +131934,11 @@
     "all"
    ],
    "order": {
-    "all": 622
+    "all": 625
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132433,11 +132433,11 @@
     "all"
    ],
    "order": {
-    "all": 624
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132641,11 +132641,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 628
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132849,11 +132849,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133073,11 +133073,11 @@
     "all"
    ],
    "order": {
-    "all": 627
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133374,11 +133374,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133587,11 +133587,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 632
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133758,11 +133758,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133996,11 +133996,11 @@
     "all"
    ],
    "order": {
-    "all": 631
+    "all": 634
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134156,11 +134156,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 635
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134320,11 +134320,11 @@
     "all"
    ],
    "order": {
-    "all": 633
+    "all": 636
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134480,11 +134480,11 @@
     "all"
    ],
    "order": {
-    "all": 634
+    "all": 637
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134939,11 +134939,11 @@
     "all"
    ],
    "order": {
-    "all": 636
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135177,11 +135177,11 @@
     "all"
    ],
    "order": {
-    "all": 637
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135527,11 +135527,11 @@
     "all"
    ],
    "order": {
-    "all": 639
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135687,11 +135687,11 @@
     "all"
    ],
    "order": {
-    "all": 640
+    "all": 643
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136085,11 +136085,11 @@
     "all"
    ],
    "order": {
-    "all": 642
+    "all": 645
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137505,11 +137505,11 @@
     "all"
    ],
    "order": {
-    "all": 648
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137665,11 +137665,11 @@
     "all"
    ],
    "order": {
-    "all": 649
+    "all": 652
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137829,11 +137829,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 653
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137993,11 +137993,11 @@
     "all"
    ],
    "order": {
-    "all": 651
+    "all": 654
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138348,11 +138348,11 @@
     "all"
    ],
    "order": {
-    "all": 653
+    "all": 656
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138512,11 +138512,11 @@
     "all"
    ],
    "order": {
-    "all": 654
+    "all": 657
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139898,11 +139898,11 @@
     "all"
    ],
    "order": {
-    "all": 659
+    "all": 662
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140054,11 +140054,11 @@
     "all"
    ],
    "order": {
-    "all": 660
+    "all": 663
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140727,11 +140727,11 @@
     "all"
    ],
    "order": {
-    "all": 663
+    "all": 666
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144585,11 +144585,11 @@
     "all"
    ],
    "order": {
-    "all": 674
+    "all": 677
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145161,11 +145161,11 @@
     "all"
    ],
    "order": {
-    "all": 676
+    "all": 679
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146126,11 +146126,11 @@
     "all"
    ],
    "order": {
-    "all": 680
+    "all": 683
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146282,11 +146282,11 @@
     "all"
    ],
    "order": {
-    "all": 681
+    "all": 684
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146438,11 +146438,11 @@
     "all"
    ],
    "order": {
-    "all": 682
+    "all": 685
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146598,11 +146598,11 @@
     "all"
    ],
    "order": {
-    "all": 683
+    "all": 686
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146758,11 +146758,11 @@
     "all"
    ],
    "order": {
-    "all": 684
+    "all": 687
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146914,11 +146914,11 @@
     "all"
    ],
    "order": {
-    "all": 686
+    "all": 689
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148179,11 +148179,11 @@
     "all"
    ],
    "order": {
-    "all": 688
+    "all": 691
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,11 +149452,11 @@
     "all"
    ],
    "order": {
-    "all": 691
+    "all": 694
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151356,11 +151356,11 @@
     "all"
    ],
    "order": {
-    "all": 703
+    "all": 706
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151553,11 +151553,11 @@
     "all"
    ],
    "order": {
-    "all": 705
+    "all": 708
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151947,11 +151947,11 @@
     "all"
    ],
    "order": {
-    "all": 706
+    "all": 709
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152107,11 +152107,11 @@
     "all"
    ],
    "order": {
-    "all": 707
+    "all": 710
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153213,11 +153213,11 @@
     "all"
    ],
    "order": {
-    "all": 712
+    "all": 715
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153441,11 +153441,11 @@
     "all"
    ],
    "order": {
-    "all": 713
+    "all": 716
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153673,11 +153673,11 @@
     "all"
    ],
    "order": {
-    "all": 714
+    "all": 717
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154148,11 +154148,11 @@
     "all"
    ],
    "order": {
-    "all": 716
+    "all": 719
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155306,11 +155306,11 @@
     "all"
    ],
    "order": {
-    "all": 725
+    "all": 728
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157055,11 +157055,11 @@
     "all"
    ],
    "order": {
-    "all": 731
+    "all": 734
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157261,11 +157261,11 @@
     "all"
    ],
    "order": {
-    "all": 732
+    "all": 735
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157745,11 +157745,11 @@
     "all"
    ],
    "order": {
-    "all": 734
+    "all": 737
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171005,11 +171005,11 @@
     "all"
    ],
    "order": {
-    "all": 763
+    "all": 766
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174440,11 +174440,11 @@
     "all"
    ],
    "order": {
-    "all": 782
+    "all": 785
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177171,11 +177171,11 @@
     "all"
    ],
    "order": {
-    "all": 795
+    "all": 798
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194628,11 +194628,11 @@
     "all"
    ],
    "order": {
-    "all": 768
+    "all": 771
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200779,11 +200779,11 @@
     "all"
    ],
    "order": {
-    "all": 821
+    "all": 824
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201213,11 +201213,11 @@
     "all"
    ],
    "order": {
-    "all": 822
+    "all": 825
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206832,11 +206832,11 @@
     "all"
    ],
    "order": {
-    "all": 831
+    "all": 834
    },
    "kind": "build",
    "planRef": "",
-   "rev": 354,
+   "rev": 355,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -209976,11 +209976,11 @@
     "all"
    ],
    "order": {
-    "all": 839
+    "all": 842
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211525,11 +211525,11 @@
     "all"
    ],
    "order": {
-    "all": 845
+    "all": 848
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212683,11 +212683,11 @@
     "all"
    ],
    "order": {
-    "all": 849
+    "all": 852
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214389,11 +214389,11 @@
     "all"
    ],
    "order": {
-    "all": 854
+    "all": 857
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224432,11 +224432,11 @@
     "all"
    ],
    "order": {
-    "all": 878
+    "all": 881
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227086,11 +227086,11 @@
     "all"
    ],
    "order": {
-    "all": 885
+    "all": 888
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232484,11 +232484,11 @@
     "all"
    ],
    "order": {
-    "all": 892
+    "all": 895
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232852,11 +232852,11 @@
     "all"
    ],
    "order": {
-    "all": 893
+    "all": 896
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233189,11 +233189,11 @@
     "all"
    ],
    "order": {
-    "all": 894
+    "all": 897
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259277,11 +259277,11 @@
     "all"
    ],
    "order": {
-    "all": 941
+    "all": 944
    },
    "kind": "build",
    "planRef": "",
-   "rev": 155,
+   "rev": 156,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263546,11 +263546,11 @@
     "all"
    ],
    "order": {
-    "all": 942
+    "all": 945
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 127,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264420,11 +264420,11 @@
     "all"
    ],
    "order": {
-    "all": 943
+    "all": 946
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267168,11 +267168,11 @@
     "all"
    ],
    "order": {
-    "all": 947
+    "all": 950
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267927,11 +267927,11 @@
     "all"
    ],
    "order": {
-    "all": 948
+    "all": 951
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269401,11 +269401,11 @@
     "all"
    ],
    "order": {
-    "all": 950
+    "all": 953
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270083,11 +270083,11 @@
     "all"
    ],
    "order": {
-    "all": 951
+    "all": 954
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271819,11 +271819,11 @@
     "all"
    ],
    "order": {
-    "all": 954
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272745,11 +272745,11 @@
     "all"
    ],
    "order": {
-    "all": 955
+    "all": 958
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273538,11 +273538,11 @@
     "all"
    ],
    "order": {
-    "all": 956
+    "all": 959
    },
    "kind": "build",
    "planRef": "",
-   "rev": 132,
+   "rev": 133,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274233,11 +274233,11 @@
     "all"
    ],
    "order": {
-    "all": 957
+    "all": 960
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275053,11 +275053,11 @@
     "all"
    ],
    "order": {
-    "all": 958
+    "all": 961
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279630,11 +279630,11 @@
     "all"
    ],
    "order": {
-    "all": 965
+    "all": 968
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280450,11 +280450,11 @@
     "all"
    ],
    "order": {
-    "all": 966
+    "all": 969
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281181,11 +281181,11 @@
     "all"
    ],
    "order": {
-    "all": 967
+    "all": 970
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281940,11 +281940,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 971
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282614,11 +282614,11 @@
     "all"
    ],
    "order": {
-    "all": 969
+    "all": 972
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282934,11 +282934,11 @@
     "all"
    ],
    "order": {
-    "all": 970
+    "all": 973
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283570,11 +283570,11 @@
     "all"
    ],
    "order": {
-    "all": 971
+    "all": 974
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284380,11 +284380,11 @@
     "all"
    ],
    "order": {
-    "all": 972
+    "all": 975
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285276,11 +285276,11 @@
     "all"
    ],
    "order": {
-    "all": 973
+    "all": 976
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287062,11 +287062,11 @@
     "all"
    ],
    "order": {
-    "all": 975
+    "all": 978
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287420,11 +287420,11 @@
     "all"
    ],
    "order": {
-    "all": 976
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288340,11 +288340,11 @@
     "all"
    ],
    "order": {
-    "all": 977
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 132,
+   "rev": 133,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290266,11 +290266,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290905,11 +290905,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 983
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291589,11 +291589,11 @@
     "all"
    ],
    "order": {
-    "all": 981
+    "all": 984
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296218,11 +296218,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296648,11 +296648,11 @@
     "all"
    ],
    "order": {
-    "all": 983
+    "all": 986
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297034,11 +297034,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 988
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297425,11 +297425,11 @@
     "all"
    ],
    "order": {
-    "all": 984
+    "all": 987
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297816,11 +297816,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298206,11 +298206,11 @@
     "all"
    ],
    "order": {
-    "all": 987
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298597,11 +298597,11 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299258,11 +299258,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 992
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299911,11 +299911,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300362,11 +300362,11 @@
     "all"
    ],
    "order": {
-    "all": 991
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301428,11 +301428,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 995
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -302653,11 +302653,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -303426,11 +303426,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -304544,11 +304544,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -306923,11 +306923,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -307910,11 +307910,11 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 127,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -311969,11 +311969,11 @@
     "all"
    ],
    "order": {
-    "all": 999
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -326941,11 +326941,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 1003
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327571,11 +327571,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 1004
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328292,11 +328292,11 @@
     "all"
    ],
    "order": {
-    "all": 1002
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329523,11 +329523,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330055,11 +330055,11 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330613,11 +330613,11 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 1009
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331319,11 +331319,11 @@
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331901,11 +331901,11 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 1011
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -332494,11 +332494,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 1012
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333121,11 +333121,11 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1013
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333980,11 +333980,11 @@
     "all"
    ],
    "order": {
-    "all": 1011
+    "all": 1014
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334658,11 +334658,11 @@
     "all"
    ],
    "order": {
-    "all": 1012
+    "all": 1015
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335302,11 +335302,11 @@
     "all"
    ],
    "order": {
-    "all": 1013
+    "all": 1016
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335575,11 +335575,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1017
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336749,11 +336749,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337067,11 +337067,11 @@
     "all"
    ],
    "order": {
-    "all": 1018
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337544,11 +337544,11 @@
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1022
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339023,11 +339023,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1023
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339320,11 +339320,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -339656,11 +339656,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1025
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -341006,11 +341006,11 @@
     "all"
    ],
    "order": {
-    "all": 1024
+    "all": 1027
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341313,11 +341313,11 @@
     "all"
    ],
    "order": {
-    "all": 1025
+    "all": 1028
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341699,11 +341699,11 @@
     "all"
    ],
    "order": {
-    "all": 1026
+    "all": 1029
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342067,11 +342067,11 @@
     "all"
    ],
    "order": {
-    "all": 1027
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343062,11 +343062,11 @@
     "all"
    ],
    "order": {
-    "all": 1030
+    "all": 1033
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343537,11 +343537,11 @@
     "all"
    ],
    "order": {
-    "all": 1031
+    "all": 1034
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344037,11 +344037,11 @@
     "all"
    ],
    "order": {
-    "all": 1032
+    "all": 1035
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356176,11 +356176,11 @@
     "all"
    ],
    "order": {
-    "all": 13
+    "all": 16
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356870,11 +356870,11 @@
     "all"
    ],
    "order": {
-    "all": 12
+    "all": 15
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -358643,11 +358643,11 @@
     "all"
    ],
    "order": {
-    "all": 10
+    "all": 13
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -359495,11 +359495,11 @@
     "all"
    ],
    "order": {
-    "all": 9
+    "all": 12
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362708,11 +362708,11 @@
     "all"
    ],
    "order": {
-    "all": 1041
+    "all": 1044
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362748,26 +362748,126 @@
    "title": "console-idle-load-fix (EMERGENCY)",
    "category": "",
    "detail": "# Build: console-idle-load-fix (EMERGENCY)\n\nBrett's words: \"Yeah, that's no good. You need to fix that right now. Ram it through an emergency slot. That's no good.\" Earlier: \"the console shouldn't be fucking using up a core and a half if it's fucking idle.\" and \"We have it on lazy loading. It shouldn't be calling that much. It should only be fucking loading the plugins as needed.\"\n\n## Problem (seen live on the VPS, Nov 23 2026)\n- VPS load 10.7 with no build slots in use. The axf-console container sits at ~127% CPU while idle and has sent 72 GB out.\n- `ps` shows short-lived `node` processes spawning every second inside the console.\n- `docker logs axf-console`: on every console app load, ~30 status calls fire at once even though plugins are lazy-loaded: /api/control/{notify-control/state, claude-accounts/list, console-terminal/sessions-list, host-services/list (404), maintenance/status, glossary-index/stats, phone-connect/status, shipped-features/summary, ui-review/choices-settings, agent-slots/hard-limit, data-store/state, plan-studio-2/state, gate/rules-list, wake-listener/settings, build-orchestrator/priority-list}, plus /api/tracker, /api/plan, /api/pending, /api/build-queue. Each /api/control/<plugin>/... call makes a second HTTP request back into the same server (127.0.0.1:7090/api/plugins/...), doubling the work. /api/plugins/host-services is a 404 that is still called every load.\n\n## Fix\n1. Find where the console web app (apps/console-web) fires these on startup (toolbar badges, nav counts, settings preloads, control@1 state warm-up, etc.). Lazy loading must cover data too: a plugin's status/state calls run only when its screen, panel or a visible badge actually needs it. Nothing for an unopened plugin on load.\n2. Make /api/control/... dispatch in-process to the plugin handler instead of an HTTP round trip to itself.\n3. Find what spawns `node` per request (likely orchestrator status / plugin status endpoints shelling out to node); cache those answers (10-30 s) or keep one long-lived process. See the unlanded branch claude/console-orch-cache for prior art.\n4. Drop or fix the host-services 404 call. Stop dead calls to retired screens (build manager, /api/build-queue, /api/pending, /api/tracker) if nothing visible needs them.\n5. Check what keeps CPU up when no client is connected (background pollers, watchers, du scans) and throttle them.\n\n## Done means\n- Idle console (no screen open) under ~5% CPU; a fresh app load makes only the calls for what's on screen.\n- Measure before/after (docker stats, count of requests per load) and put the numbers in the report.\n- Tests green, commit and push as you go, PR, then land it. Short report in _claude/builds/reports/console-idle-load-fix.md.",
-   "status": "building",
+   "status": "landed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/console-idle-load-fix",
-   "pr": "#900",
+   "pr": "901",
+   "mergedAt": "2026-11-24T01:01:57Z",
    "createdAt": "2026-11-23T23:14:26.387Z",
-   "updatedAt": "2026-11-23T23:59:20.707Z",
+   "updatedAt": "2026-11-24T01:03:36Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-console-idle-load-fix--sully on Fable, in /root/axf-builds/console-idle-load-fix on claude/console-idle-load-fix. It runs beside the active build; when its session ends cleanly the lander lands it.",
      "at": "2026-11-23T23:14:26.387Z"
+    },
+    {
+     "text": "Headless run axf-console-idle-load-fix--sully: brief only · start 14.1K tokens ($0.08) · cost $31.18 · 123 turns · 6 tools, MCP none",
+     "at": "2026-11-24T00:30:42.734Z"
+    },
+    {
+     "text": "Hand build finished (7 commits on claude/console-idle-load-fix). Over to the lander.",
+     "at": "2026-11-24T00:30:41.073Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $31.18",
+     "at": "2026-11-24T00:31:03.984Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T00:31:11.781Z"
+    },
+    {
+     "text": "Lander: PR #901 was merged by hand by MossesX (88eb36b4c, CI running): recorded, the build goes on.",
+     "at": "2026-11-24T01:02:06.860Z",
+     "by": "lander"
+    },
+    {
+     "text": "Lander: landed (#901).",
+     "at": "2026-11-24T01:03:13.408Z",
+     "by": "lander"
+    },
+    {
+     "text": "Shipped manifest sm-console-idle-load-fix rev 1 sent to Shipped features (orchestrator): PR #901, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-24T01:03:36Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T00:30:30.488Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-console-idle-load-fix--sully",
+     "phase": ""
+    }
+   },
+   "landing": {
+    "merged": [
+     901
+    ],
+    "lastMerge": {
+     "pr": 901,
+     "sha": "88eb36b4c04260b5f00d37f77118707f708b505c",
+     "head": "e2ba7e3c7f0fcfe826788f22ed6fab5371588559",
+     "at": "2026-11-24T01:01:57Z",
+     "byHand": true,
+     "ci": "success",
+     "by": "MossesX"
+    }
+   },
+   "landedAt": "2026-11-24T01:03:13.408Z",
    "hand": {
     "at": "2026-11-23T23:14:26.387Z",
     "by": "Snap Sully"
+   },
+   "landed": {
+    "pr": 901,
+    "sha": "88eb36b4c04260b5f00d37f77118707f708b505c",
+    "mergedAt": "2026-11-24T01:01:57Z",
+    "ci": "success",
+    "ciAt": "2026-11-24T01:01:57Z",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
+   },
+   "shipped": {
+    "id": "sm-console-idle-load-fix",
+    "rev": 1,
+    "at": "2026-11-24T01:03:36Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -362788,11 +362888,11 @@
      "done": true,
      "doneAt": "2026-11-23T23:59:20.707Z",
      "note": "",
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-23T23:14:26.387Z",
-     "updatedAt": "2026-11-23T23:59:21.076Z",
-     "statusAt": "2026-11-23T23:14:26.387Z",
-     "statusBy": "Snap Sully",
+     "updatedAt": "2026-11-24T00:31:25.522Z",
+     "statusAt": "2026-11-24T00:31:25.452Z",
+     "statusBy": "lander",
      "attempt": 1,
      "statusLog": [
       {
@@ -362801,12 +362901,26 @@
        "by": "Snap Sully",
        "attempt": 1,
        "why": "hand launch: axf-console-idle-load-fix--sully"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T00:30:47.543Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T00:31:25.452Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "building",
+     "status": "in-pr",
      "worktree": "/root/axf-builds/console-idle-load-fix",
      "branch": "claude/console-idle-load-fix",
-     "tmux": "axf-console-idle-load-fix--sully"
+     "tmux": "axf-console-idle-load-fix--sully",
+     "prNumber": 901
     }
    ],
    "profiles": [
@@ -362817,7 +362931,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362828,8 +362942,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-23T23:14:26.387Z",
-   "statusBy": "Snap Sully",
+   "statusAt": "2026-11-24T01:03:13.408Z",
+   "statusBy": "lander",
    "attempt": 1,
    "statusLog": [
     {
@@ -362838,6 +362952,46 @@
      "by": "Snap Sully",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T00:30:57.309Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T00:31:11.781Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T00:31:31.544Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T00:31:37.874Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T01:02:06.860Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR #901 was merged by hand by MossesX (88eb36b4c, CI running): recorded, the build goes on."
+    },
+    {
+     "status": "landed",
+     "at": "2026-11-24T01:03:13.408Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: landed (#901)."
     }
    ]
   },
@@ -363043,7 +363197,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-23T23:58:06.241Z",
-   "updatedAt": "2026-11-24T00:04:31.413Z",
+   "updatedAt": "2026-11-24T01:04:47.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -363065,6 +363219,38 @@
     {
      "text": "Brett (voice, Nov 23): \"when the VPS splits into steps, it needs to make sure that they can all merge cleanly on their own. They can never conflict with each other after they build ... I want it to be merged first time. So it cannot split steps into any that are going to conflict with each other. And that goes for adding new builds too ... if it can't start building something that's going to conflict with main, with something that's not merged, then it needs to reject it. The whole build.\" Required: (1) the Fable split must guarantee steps never touch the same files/areas so each merges cleanly on its own, first time; (2) on adding any new build, check it against every unmerged build/PR; if it would conflict, reject the whole build (with a plain reason on screen).",
      "at": "2026-11-24T00:04:31.413Z"
+    },
+    {
+     "text": "Brett (voice, Nov 23), adds to the conflict rule: reject a new build that clashes with anything not on main — still building OR done and waiting to merge. \"It is to offer solutions and workarounds ... other ways to do it or be able to do most of this build while deferring certain steps. So it will say, oh, be able to run everything, or it'll say one step may be deferred, waiting for another build, and put what other build it's waiting for.\" Required: on a clash, show options: run all now (no clash), or run the clean steps now and defer the clashing step(s), each deferred step naming the build it waits for and starting automatically once that build lands. Also: \"give every build a number too, a unique ID that shows up in the orchestrator and the Plan Studio ... once it goes through and split into steps, the steps in the Plan Studio need to show the unique ID of the step in its own column.\" Required: a short unique build number on every build, shown in both screens; every step's unique id in its own column in Plan Studio 2.0 (and the orchestrator).",
+     "at": "2026-11-24T00:05:53.020Z"
+    },
+    {
+     "text": "Brett (voice, Nov 23): \"when they're done building and they're waiting to merge one at a time, the status will update in the build store ... in the Plan Studio and orchestrator, that this one is waiting for this or that to merge ... and each one in the merge, you will say the order that they're going to be merged in.\" Required: the lander writes its merge line to the builds store; each build waiting to merge shows its place in line (e.g. '2nd to merge') and the build it is waiting on ('waiting for <build #id> to merge'), live in both Plan Studio 2.0 and the orchestrator.",
+     "at": "2026-11-24T00:06:36.303Z"
+    },
+    {
+     "text": "Brett (voice, Nov 23): \"I want the option to compile them all into one and merge them all together.\" Required: a 'Merge together' option on the merge line (both screens) that combines the waiting builds into one branch, runs CI once, and merges them in one go; if one clashes, say which and fall back to one at a time for that one.",
+     "at": "2026-11-24T00:06:41.990Z"
+    },
+    {
+     "text": "Brett (voice, Nov 24): the lander re-ran full CI on a new PR (901) after PR 900 was already green, though main had only moved by a [skip ci] 'Builds live' status-sync commit. \"It's supposed to only do it if main changes underneath.\" Required fix in deploy/lander: when the only commits on main since the green run are status syncs ([skip ci] / _claude/builds sync files, no code), reuse the green run and merge the original PR directly; never open a second PR or rerun CI. Rerun only when main gained real code changes.",
+     "at": "2026-11-24T01:00:18.928Z"
+    },
+    {
+     "text": "Brett (voice, Nov 24): \"And it has to get my approval ... to redo it.\" Required: the lander never reruns CI (or opens a second PR) on its own. When main gained real code changes since a build's green run, it asks Brett for approval first (axHub approval / phone notification saying which build, what changed on main, and that a rerun is needed); it reruns only after he approves.",
+     "at": "2026-11-24T01:01:02.124Z"
+    },
+    {
+     "text": "Brett (voice, Nov 24): the CI-rerun approval has \"a 30 minute timer\": the lander asks, and if Brett neither approves nor denies within 30 minutes, it goes ahead with the rerun (veto-style countdown). Show the countdown on the approval and on the build in both screens.",
+     "at": "2026-11-24T01:01:11.797Z"
+    },
+    {
+     "text": "SUPERSEDES the two notes above about approval and a 30-minute veto. Brett (voice, Nov 24): \"Fuck all that ... There's no point in doing it without trying it first ... It doesn't hurt to have it fail merging and then to rerun it.\" Required lander rule: when a build's PR is green, ALWAYS try to merge it first, as is. No approval, no veto, no second PR, no CI rerun up front. Only if that merge actually fails (conflict or the merge is refused) does the lander pull in main and rerun CI, on its own.",
+     "at": "2026-11-24T01:01:24.863Z"
+    },
+    {
+     "text": "Brett (voice, Nov 24): open a PR as soon as a build starts, \"because I want that in the build store, so the orchestrator and Plan Studio knows what PRs ... are going on.\" Required: when a build (or step) starts, open a draft PR right away (CI held until it's marked ready), write the PR number and link to the build record in the builds store, and show it in both Plan Studio 2.0 and the orchestrator from the start.",
+     "at": "2026-11-24T01:04:47.143Z"
     }
    ],
    "approvals": [],
@@ -363524,12 +363710,12 @@
     "all"
    ],
    "order": {
-    "all": 4
+    "all": 7
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
-   "rev": 7,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363572,19 +363758,23 @@
    "title": "Hand build: pipeline-sync-hand (URGENT, Brett: \"just put it through, run it by hand\")",
    "category": "",
    "detail": "# Hand build: pipeline-sync-hand (URGENT, Brett: \"just put it through, run it by hand\")\n\nHand build because the pipeline is what's broken. Register it as a hand build (framework/cli/hand-build.mjs). The same work also sits in the orchestrator as build `pipeline-sync-live-badges` (status split, 8 steps designed by Fable) from Plan Studio 2.0 plan `pipeline-sync-vps-fable-split-fe-rvjv`. Read both first (`node framework/cli/builds-store.mjs` / the orchestrator CLI): use its 8 steps as your work list, tick them there as you finish, and when you land, mark that build landed so the dispatcher never runs it a second time. Do NOT let the dispatcher start it while you work.\n\n## Brett's flow (must be exactly this)\nPlan Studio 2.0 sends the plan to the orchestrator -> orchestrator lists the steps and passes the build to the VPS -> the VPS uses Fable to split it into as many steps as possible that never share files, none over 10 minutes -> the VPS writes the split to the builds store (the one true source) -> the VPS sends one update to BOTH the orchestrator and Plan Studio 2.0 at the same time -> both read steps and status from the store and show them live. Every step shows a badge 'split by Fable on the VPS' and the model the VPS triage gate gave it. All syncing goes through the VPS.\n\n## Seen live today\n- Build `pipeline-watch-test` reached `split` with 2 Fable steps in the store, but its Plan Studio 2.0 plan still showed parked, 0 steps, no badges.\n- Store note on it: \"refused a write by orchestrator ... step s1 was replaced by another (split: its steps are fixed)\" right after the split. Find and fix that.\n- Builds sat at `split` because pipeline2.mjs lets only one build be active; nothing on screen said which build held the place.\n\n## Status badges in both screens (one per state, plus a plain status line saying what it's doing now)\npending, splitting, split (waiting: name the build holding the active place), pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge, merging, running CI, landed. Sources: apps/console-web/plugins/build-orchestrator/pipeline2.mjs, framework/core/pipeline-status.mjs, the lander, Plan Studio 2.0 plugin.\n\n## Required test (Brett: \"follow from Plan Studio all the way ... very small so it goes fast ... at least five steps\")\nAfter the fix lands and is deployed: write a new plan in Plan Studio 2.0 with 5 trivial steps (five one-line docs edits in five separate files so they never touch), send it, and follow it: orchestrator receives it, VPS splits with Fable, triage gate assigns models, store updated, Plan Studio 2.0 and orchestrator both refresh, then pulling main, ready, sending, building, build complete, merging, running CI, landed. Confirm each state shows live in both screens; record any gap and fix it.\n\n## Done means\nTests green; commit and push as you go (an account limit must never lose work). PR, land it, redeploy the console, run the 5-step test, short report in _claude/builds/reports/pipeline-sync-hand.md.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/pipeline-sync-hand",
    "pr": "",
    "createdAt": "2026-11-24T00:02:18.238Z",
-   "updatedAt": "2026-11-24T00:03:26.678Z",
+   "updatedAt": "2026-11-24T00:05:28.189Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-pipeline-sync-hand--earl on Fable, in /root/axf-builds/pipeline-sync-hand on claude/pipeline-sync-hand. It runs beside the active build; when its session ends cleanly the lander lands it.",
      "at": "2026-11-24T00:02:18.238Z"
+    },
+    {
+     "text": "Hand build failed: its session ended with exit 1. Nothing relaunches a hand build: start it again under the same name to carry on in /root/axf-builds/pipeline-sync-hand.",
+     "at": "2026-11-24T00:05:21.699Z"
     }
    ],
    "approvals": [],
@@ -363649,12 +363839,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T00:02:18.238Z",
-     "updatedAt": "2026-11-24T00:02:18.238Z",
-     "statusAt": "2026-11-24T00:02:18.238Z",
-     "statusBy": "Earl the Ear",
+     "updatedAt": "2026-11-24T00:05:24.273Z",
+     "statusAt": "2026-11-24T00:05:24.194Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "building",
@@ -363662,12 +363853,162 @@
        "by": "Earl the Ear",
        "attempt": 1,
        "why": "hand launch: axf-pipeline-sync-hand--earl"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T00:05:24.194Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "worktree": "/root/axf-builds/pipeline-sync-hand",
      "branch": "claude/pipeline-sync-hand",
      "tmux": "axf-pipeline-sync-hand--earl"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 4
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T00:02:18.238Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T00:05:28.189Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "failedFrom": "building",
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T00:02:18.238Z",
+     "by": "Earl the Ear",
+     "attempt": 1,
+     "why": "hand launch"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T00:05:28.189Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "session exit 1"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-sync-hand-2",
+   "title": "Hand build: pipeline-sync-hand-2 (URGENT, Brett: run it by hand, from fresh main)",
+   "category": "",
+   "detail": "# Hand build: pipeline-sync-hand-2 (URGENT, Brett: run it by hand, from fresh main)\n\nRestart of `pipeline-sync-hand`, which was paused so it could start from main after PR 899 (console-open-no-reload) and PR 900 (console-idle-load-fix) merged. Both are on main now. Ignore the old folder /root/axf-builds/pipeline-sync-hand.\n\nHand build because the pipeline is what's broken. Register it as a hand build (framework/cli/hand-build.mjs). The same work sits in the orchestrator as build `pipeline-sync-live-badges` (status split, 8 steps designed by Fable) from Plan Studio 2.0 plan `pipeline-sync-vps-fable-split-fe-rvjv`. Read that build record FIRST (`node framework/cli/builds-store.mjs` / orchestrator CLI): its detail, its 8 steps AND EVERY NOTE ON IT are the requirements (Brett added many by voice: conflict-free splits, rejecting clashing builds with defer options, unique build and step IDs in their own column, merge-line order and 'waiting for' on screen, a Merge together option, and the lander rule). Where notes conflict, the later note wins. Tick its steps as you finish, and when you land, mark that build landed so the dispatcher never runs it again. Do NOT let the dispatcher start it while you work.\n\n## Brett's flow (must be exactly this)\nPlan Studio 2.0 sends the plan to the orchestrator -> orchestrator lists steps and passes the build to the VPS -> the VPS uses Fable to split it into as many steps as possible that never share files (each must merge cleanly on its own, first time), none over 10 minutes -> the VPS writes the split to the builds store (one true source) -> the VPS sends one update to BOTH the orchestrator and Plan Studio 2.0 at the same time -> both read from the store and show it live. Each step: badge 'split by Fable on the VPS', the triage gate's model, its own unique ID in its own column.\n\n## Lander rule (latest, Brett Nov 24)\nWhen a build's PR is green, ALWAYS try to merge it as is first. No approval, no veto, no second PR, no CI rerun up front. Only if that merge actually fails does the lander pull in main and rerun CI, on its own. (Today it opened PR 901 and reran full CI after PR 900 was green, when main had only moved by a [skip ci] status sync. Fix that.)\n\n## Seen live\n- `pipeline-watch-test` reached `split` with 2 Fable steps in the store, but Plan Studio 2.0 still showed parked, 0 steps, no badges.\n- Store note right after each split: \"refused a write by orchestrator ... step s1 was replaced by another (split: its steps are fixed)\". Find and fix.\n- Builds sat at `split` (only one active build allowed) with nothing on screen saying which build held the place.\n\n## Status badges in both screens (plus a plain status line saying what it's doing now)\npending, splitting, split (waiting: name the build holding the active place), pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge (place in line + which build it waits for), merging, running CI, landed.\n\n## Required test (Brett: follow from Plan Studio all the way, very small, at least five steps)\nAfter landing and the console redeploy: write a new plan in Plan Studio 2.0 with 5 trivial steps (five one-line docs edits in five separate files), send it, and follow it through every state to landed. Confirm each state shows live in both screens with IDs and badges; fix any gap.\n\n## Done means\nTests green; commit and push as you go (an account limit must never lose work). PR, land it, run the 5-step test, short report in _claude/builds/reports/pipeline-sync-hand-2.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/pipeline-sync-hand-2",
+   "pr": "",
+   "createdAt": "2026-11-24T01:03:14.032Z",
+   "updatedAt": "2026-11-24T01:03:41.440Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-pipeline-sync-hand-2--gina on Fable, in /root/axf-builds/pipeline-sync-hand-2 on claude/pipeline-sync-hand-2. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:03:14.032Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:03:41.440Z",
+     "exit": 129,
+     "signal": "HUP",
+     "kind": "crash",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axt-test-645d45",
+     "phase": ""
+    }
+   },
+   "hand": {
+    "at": "2026-11-24T01:03:14.032Z",
+    "by": "Greenlight Gina"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtzqrjg1ljv4v",
+     "title": "",
+     "text": "Hand build: pipeline-sync-hand-2 (URGENT, Brett: run it by hand, from fresh main)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T01:03:14.032Z",
+     "updatedAt": "2026-11-24T01:03:14.032Z",
+     "statusAt": "2026-11-24T01:03:14.032Z",
+     "statusBy": "Greenlight Gina",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:03:14.032Z",
+       "by": "Greenlight Gina",
+       "attempt": 1,
+       "why": "hand launch: axf-pipeline-sync-hand-2--gina"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/pipeline-sync-hand-2",
+     "branch": "claude/pipeline-sync-hand-2",
+     "tmux": "axf-pipeline-sync-hand-2--gina"
     }
    ],
    "profiles": [
@@ -363683,20 +364024,414 @@
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-24T00:02:18.238Z",
+   "defaultAt": "2026-11-24T01:03:14.032Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T00:02:18.238Z",
-   "statusBy": "Earl the Ear",
+   "statusAt": "2026-11-24T01:03:14.032Z",
+   "statusBy": "Greenlight Gina",
    "attempt": 1,
    "statusLog": [
     {
      "status": "building",
-     "at": "2026-11-24T00:02:18.238Z",
-     "by": "Earl the Ear",
+     "at": "2026-11-24T01:03:14.032Z",
+     "by": "Greenlight Gina",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
+  },
+  {
+   "id": "psync-a-core",
+   "title": "Hand build psync-a-core (part A of 4, parallel; Brett: split the pipeline repair into 4)",
+   "category": "",
+   "detail": "# Hand build psync-a-core (part A of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Three sibling hand builds run in parallel: psync-b-server-lander, psync-c-planstudio, psync-d-orch-ui. Touch ONLY your files below so all four merge cleanly on their own.\n\n## Your part: store contract + pipeline (its steps s1 and s2)\nFiles: framework/core/pipeline-status.mjs, framework/schemas/pipeline-status.json, framework/spec/fixtures/pipeline-status.json, framework/spec/check-pipeline-status.mjs, framework/cli/builds-store.mjs, apps/console-web/plugins/build-orchestrator/pipeline2.mjs, pipeline.mjs, and new framework/core/build-clash.mjs if needed.\n- s1: pipeline-status@1 states + pipelineView computed on read (see step text). Add `number` (short unique build number, e.g. B-0123, assigned once in the store) and keep each step's unique `uid`; expose both in the read so the UIs can show them in their own columns.\n- s2: confirm the split runs on Fable on the VPS; record split provenance; fix the 'refused a write by orchestrator ... step replaced' error right after each split; send POST /api/builds/updated after each state change.\n- Conflict rules (notes): Fable split must give steps that never share files so each merges cleanly alone. On intake, check a new build against every build not yet on main (building or waiting to merge); on a clash reject the whole build with a plain reason and offer options: run all, or run clean steps now and defer the clashing steps, each naming the build it waits for and starting by itself when that lands.\n\nShared contract for siblings: build read carries { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine}, split{by,model,at,stepCount} }, steps carry { uid, splitBy, model, modelBy }. Commit and push as you go. Tests green, PR, land it (lander rule: try merging the green PR first). Report: _claude/builds/reports/psync-a-core.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/psync-a-core",
+   "pr": "",
+   "createdAt": "2026-11-24T01:04:03.592Z",
+   "updatedAt": "2026-11-24T01:04:03.592Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-psync-a-core--rhonda on Fable, in /root/axf-builds/psync-a-core on claude/psync-a-core. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:04:03.592Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "hand": {
+    "at": "2026-11-24T01:04:03.592Z",
+    "by": "Reel Rhonda"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtzrt9z1l2le1",
+     "title": "",
+     "text": "Hand build psync-a-core (part A of 4, parallel; Brett: split the pipeline repair into 4)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T01:04:03.592Z",
+     "updatedAt": "2026-11-24T01:04:03.592Z",
+     "statusAt": "2026-11-24T01:04:03.592Z",
+     "statusBy": "Reel Rhonda",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:04:03.592Z",
+       "by": "Reel Rhonda",
+       "attempt": 1,
+       "why": "hand launch: axf-psync-a-core--rhonda"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/psync-a-core",
+     "branch": "claude/psync-a-core",
+     "tmux": "axf-psync-a-core--rhonda"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 2
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T01:04:03.592Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T01:04:03.592Z",
+   "statusBy": "Reel Rhonda",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T01:04:03.592Z",
+     "by": "Reel Rhonda",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
+  },
+  {
+   "id": "psync-b-server-lander",
+   "title": "Hand build psync-b-server-lander (part B of 4, parallel; Brett: split the pipeline repair into 4)",
+   "category": "",
+   "detail": "# Hand build psync-b-server-lander (part B of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-c-planstudio, psync-d-orch-ui. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: live channel + lander (its steps s3 and s4)\nFiles: apps/console-web/server/builds_events.py (new), apps/console-web/server/main.py (one include line), apps/console-web/server/test_builds_events.py, deploy/lander/**.\n- s3: POST /api/builds/updated + GET /api/builds/events SSE to every screen, fallback store-rev watcher (see step text).\n- s4: lander writes waiting-to-merge / merging / running-ci / landed / failed(attempt N) to the store and sends the update command.\n- Merge line (notes): write each waiting build's place in line and the build it waits for into the store (field `mergeLine: { position, waitingFor }`), so both screens show 'Nth to merge, waiting for <build number>'.\n- 'Merge together' (notes): an action that combines all waiting builds into one branch, runs CI once, merges them in one go; a clashing one falls back to one at a time.\n- LANDER RULE (latest, Brett Nov 24): when a PR is green, ALWAYS try to merge it as is first. No approval, no second PR, no CI rerun up front. Only if that merge actually fails does it pull main and rerun CI, by itself. Today it opened PR 901 and reran CI after PR 900 was green with only a [skip ci] status sync on main: fix that.\n\nCode against psync-a-core's contract (build `number`, `pipelineView`, steps `uid`); fall back gracefully when absent.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files (check-landing-line.mjs, test_builds_events.py), commit and push branch claude/psync-b-server-lander. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Write a short report: _claude/builds/reports/psync-b-server-lander.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/psync-b-server-lander",
+   "pr": "",
+   "createdAt": "2026-11-24T01:04:27.905Z",
+   "updatedAt": "2026-11-24T01:04:27.905Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-psync-b-server-lander--joey on Fable, in /root/axf-builds/psync-b-server-lander on claude/psync-b-server-lander. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:04:27.905Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "hand": {
+    "at": "2026-11-24T01:04:27.905Z",
+    "by": "Janitor Joey"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtzsb3g1lzqjh",
+     "title": "",
+     "text": "Hand build psync-b-server-lander (part B of 4, parallel; Brett: split the pipeline repair into 4)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T01:04:27.905Z",
+     "updatedAt": "2026-11-24T01:04:27.905Z",
+     "statusAt": "2026-11-24T01:04:27.905Z",
+     "statusBy": "Janitor Joey",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:04:27.905Z",
+       "by": "Janitor Joey",
+       "attempt": 1,
+       "why": "hand launch: axf-psync-b-server-lander--joey"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/psync-b-server-lander",
+     "branch": "claude/psync-b-server-lander",
+     "tmux": "axf-psync-b-server-lander--joey"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 3
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T01:04:27.905Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T01:04:27.905Z",
+   "statusBy": "Janitor Joey",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T01:04:27.905Z",
+     "by": "Janitor Joey",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
+  },
+  {
+   "id": "psync-c-planstudio",
+   "title": "Hand build psync-c-planstudio (part C of 4, parallel; Brett: split the pipeline repair into 4)",
+   "category": "",
+   "detail": "# Hand build psync-c-planstudio (part C of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-d-orch-ui. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: Plan Studio 2.0 (its steps s5 and s6)\nFiles: apps/console-web/plugins/plan-studio-2/** only.\n- s5: GET /api/plugins/plan-studio-2/plans/<planId>/build read live from the builds store; fix the stale plan status (a sent plan no longer shows parked, 0 steps). Never copy steps into the plan tree.\n- s6: under each sent plan show the build number, the state badge and plain status line, the waiting reason, 'Split by Fable on the VPS' badge, the merge line ('Nth to merge, waiting for <build number>'), and the steps in a table with the step's unique ID in ITS OWN COLUMN, split badge, triage model, step status. Live via EventSource /api/builds/events + refetch on focus. Show the clash options when a build was rejected (run all / defer steps, naming what they wait for).\n\nContract from siblings (code against it, mock in tests, fall back when absent): build { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine{position,waitingFor}}, split{by,model,at,stepCount} }, steps { uid, splitBy, model, modelBy, status }. Framework controls and tokens only.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files, commit and push branch claude/psync-c-planstudio. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Short report: _claude/builds/reports/psync-c-planstudio.md.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/psync-c-planstudio",
+   "pr": "",
+   "createdAt": "2026-11-24T01:05:00.966Z",
+   "updatedAt": "2026-11-24T01:05:00.966Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-psync-c-planstudio--paulie on Fable, in /root/axf-builds/psync-c-planstudio on claude/psync-c-planstudio. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:05:00.966Z",
+     "by": "Ping Paulie"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "hand": {
+    "at": "2026-11-24T01:05:00.966Z",
+    "by": "Ping Paulie"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtzt3171lisd8",
+     "title": "",
+     "text": "Hand build psync-c-planstudio (part C of 4, parallel; Brett: split the pipeline repair into 4)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T01:05:00.966Z",
+     "updatedAt": "2026-11-24T01:05:00.966Z",
+     "statusAt": "2026-11-24T01:05:00.966Z",
+     "statusBy": "Ping Paulie",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:05:00.966Z",
+       "by": "Ping Paulie",
+       "attempt": 1,
+       "why": "hand launch: axf-psync-c-planstudio--paulie"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/psync-c-planstudio",
+     "branch": "claude/psync-c-planstudio",
+     "tmux": "axf-psync-c-planstudio--paulie"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T01:05:00.966Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T01:05:00.966Z",
+   "statusBy": "Ping Paulie",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T01:05:00.966Z",
+     "by": "Ping Paulie",
+     "attempt": 1,
+     "why": "hand launch"
+    }
+   ]
+  },
+  {
+   "id": "psync-d-orch-ui",
+   "title": "Hand build psync-d-orch-ui (part D of 4, parallel; Brett: split the pipeline repair into 4)",
+   "category": "",
+   "detail": "# Hand build psync-d-orch-ui (part D of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-c-planstudio. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: Build orchestrator screen + end-to-end test (its steps s7 and s8)\nFiles: apps/console-web/plugins/build-orchestrator/web/**, apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs, _claude/builds/reports/psync-d-orch-ui.md.\n- s7: every build row and detail shows the build number in its own column, the state badge for all states, the plain status line, the waiting reason with a link to the build holding the active place, the merge line ('Nth to merge, waiting for <build number>') and a 'Merge together' button (calls the lander action from psync-b), 'Split by Fable on the VPS' badge, and the steps with each step's unique ID in ITS OWN COLUMN plus the triage model. Live via EventSource /api/builds/events + refetch on focus.\n- s8: test-pipeline-sync.mjs end to end against the contract (skips cleanly any part not on this branch).\n\nContract (code against it, fall back when absent): build { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine{position,waitingFor}}, split{by,model,at,stepCount} }, steps { uid, splitBy, model, modelBy, status }. Framework controls and tokens only.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files, commit and push branch claude/psync-d-orch-ui. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Report as above.",
+   "status": "building",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/psync-d-orch-ui",
+   "pr": "",
+   "createdAt": "2026-11-24T01:05:24.101Z",
+   "updatedAt": "2026-11-24T01:05:24.101Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-psync-d-orch-ui--sully on Fable, in /root/axf-builds/psync-d-orch-ui on claude/psync-d-orch-ui. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:05:24.101Z",
+     "by": "Snap Sully"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "hand": {
+    "at": "2026-11-24T01:05:24.101Z",
+    "by": "Snap Sully"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtztjxr1lv4m4",
+     "title": "",
+     "text": "Hand build psync-d-orch-ui (part D of 4, parallel; Brett: split the pipeline repair into 4)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-24T01:05:24.101Z",
+     "updatedAt": "2026-11-24T01:05:24.101Z",
+     "statusAt": "2026-11-24T01:05:24.101Z",
+     "statusBy": "Snap Sully",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:05:24.101Z",
+       "by": "Snap Sully",
+       "attempt": 1,
+       "why": "hand launch: axf-psync-d-orch-ui--sully"
+      }
+     ],
+     "status": "building",
+     "worktree": "/root/axf-builds/psync-d-orch-ui",
+     "branch": "claude/psync-d-orch-ui",
+     "tmux": "axf-psync-d-orch-ui--sully"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T01:05:24.101Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T01:05:24.101Z",
+   "statusBy": "Snap Sully",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T01:05:24.101Z",
+     "by": "Snap Sully",
      "attempt": 1,
      "why": "hand launch"
     }

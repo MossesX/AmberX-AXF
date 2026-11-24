@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-idle-load-fix",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-24T01:03:36Z",
+ "build": {
+  "id": "console-idle-load-fix",
+  "title": "console-idle-load-fix (EMERGENCY)",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "# Build: console-idle-load-fix (EMERGENCY)\n\nBrett's words: \"Yeah, that's no good. You need to fix that right now. Ram it through an emergency slot. That's no good.\" Earlier: \"the console shouldn't be fucking using up a core and a half if it's fucking idle.\" and \"We have it on lazy loading. It shouldn't be calling that much. It should only be fucking loading the plugins as needed.\"\n\n## Problem (seen live on the VPS, Nov 23 2026)\n- VPS load 10.7 with no build slots in use. The axf-console container sits at ~127% CPU while idle and has sent 72 GB out.\n- `ps` shows short-lived `node` processes spawning every second inside the console.\n- `docker logs axf-console`: on every console app load, ~30 status calls fire at once even though plugins are lazy-loaded: /api/control/{notify-control/state, claude-accounts/list, console-terminal/sessions-list, host-services/list (404), maintenance/status, glossary-index/stats, phone-connect/status, shipped-features/summary, ui-review/choices-settings, agent-slots/hard-limit, data-store/state, plan-studio-2/state, gate/rules-list, wake-listener/settings, build-orchestrator/priority-list}, plus /api/tracker, /api/plan, /api/pending, /api/build-queue. Each /api/control/<plugin>/... call makes a second HTTP request back into the same server (127.0.0.1:7090/api/plugins/...), doubling the work. /api/plugins/host-services is a 404 that is still called every load.\n\n## Fix\n1. Find where the console web app (apps/console-web) fires these on startup (toolbar badges, nav counts, settings preloads, control@1 state warm-up, etc.). Lazy loading must cover data too: a plugin's status/state calls run only when its screen, panel or a visible badge actually needs it. Nothing for an unopened plugin on load.\n2. Make /api/control/... dispatch in-process to the plugin handler instead of an HTTP round trip to itself.\n3. Find what spawns `node` per request (likely orchestrator status / plugin status endpoints shelling out to node); cache those answers (10-30 s) or keep one long-lived process. See the unlanded branch claude/console-orch-cache for prior art.\n4. Drop or fix the host-services 404 call. Stop dead calls to retired screens (build manager, /api/build-queue, /api/pending, /api/tracker) if nothing visible needs them.\n5. Check what keeps CPU up when no client is connected (background pollers, watchers, du scans) and throttle them.\n\n## Done means\n- Idle console (no screen open) under ~5% CPU; a fresh app load makes only the calls for what's on screen.\n- Measure before/after (docker stats, count of requests per load) and put the numbers in the report.\n- Tests green, commit and push as you go, PR, then land it. Short report in _claude/builds/reports/console-idle-load-fix.md.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-console-idle-load-fix--sully",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-23T23:14:26.278Z",
+   "endedAt": "2026-11-24T00:30:36.903Z",
+   "exit": 0,
+   "costUsd": 31.1754
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "console-idle-load-fix (EMERGENCY)",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-23T23:14:26.278Z",
+   "doneAt": "2026-11-23T23:59:20.707Z",
+   "actualMin": 45,
+   "done": true
+  }
+ ],
+ "branch": "claude/console-idle-load-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 901,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/901"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-24T01:01:57Z",
+ "landedAt": "2026-11-24T01:01:57Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 31.1754,
+  "estimated": false,
+  "tokens": {
+   "input": 252,
+   "output": 2198,
+   "cacheRead": 17604051,
+   "cacheWrite": 218356
+  }
+ },
+ "report": "",
+ "open": []
+}

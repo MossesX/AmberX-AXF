@@ -843,30 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 00:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 00:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 00:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 01:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 01:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1219,30 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 00:01 UTC · `pipeline-watch-test` → archived (all) · voice-claude
 - 2026-11-24 00:02 UTC · `pipeline-sync-hand` added (1 steps) (all) · Earl the Ear
 - 2026-11-24 00:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:05 UTC · `pipeline-sync-hand` → failed, note (all) · orchestrator
+- 2026-11-24 00:05 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:30 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 00:30 UTC · `console-idle-load-fix` → build-complete, note (all) · headless
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` PR 901 (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → pr-pulling-main (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → running-ci (all) · lander
+- 2026-11-24 01:00 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:02 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
+- 2026-11-24 01:03 UTC · `console-idle-load-fix` → landed, merged, note (all) · lander
+- 2026-11-24 01:03 UTC · `pipeline-sync-hand-2` added (1 steps) (all) · Greenlight Gina
+- 2026-11-24 01:03 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 01:04 UTC · `psync-a-core` added (1 steps) (all) · Reel Rhonda
+- 2026-11-24 01:04 UTC · `psync-b-server-lander` added (1 steps) (all) · Janitor Joey
+- 2026-11-24 01:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:05 UTC · `psync-c-planstudio` added (1 steps) (all) · Ping Paulie
+- 2026-11-24 01:05 UTC · `psync-d-orch-ui` added (1 steps) (all) · Snap Sully
 
 ## Token passes (log)
 
