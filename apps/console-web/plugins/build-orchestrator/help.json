@@ -468,6 +468,18 @@
         "title": "Watchdog on (every watch)",
         "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
         "kind": "toggle"
+      },
+      {
+        "target": "merge-together",
+        "title": "Merge together",
+        "text": "Asks the lander to combine every build waiting in the merge line into one branch, run CI once and merge them in one go. A build that clashes with the others is named and lands one at a time. Greyed out when only one build is waiting: there is nothing to combine.",
+        "kind": "button"
+      },
+      {
+        "target": "column:triage-model",
+        "title": "Triage model",
+        "text": "The model this step runs on (Opus or Fable). The triage gate gives each step its model in the assigning models state; hover the model to see who set it. Shows not assigned yet until then.",
+        "kind": "column"
       }
     ],
     "intros": []
