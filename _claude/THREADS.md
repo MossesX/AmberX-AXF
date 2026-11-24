@@ -843,11 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 03:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 03:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 03:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 03:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 03:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1238,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 12:37 UTC · `flagship-professional-skin-covering-2` → split (all) · orchestrator
 - 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → splitting (all) · orchestrator
 - 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → split (all) · orchestrator
+- 2026-11-24 12:38 UTC · `banner-widget-shapes-plus-change-icon` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · builds-live
 
 ## Token passes (log)
 

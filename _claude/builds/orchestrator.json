@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T12:37:41.454Z",
+ "updatedAt": "2026-11-24T12:38:07.468Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -180268,6 +180268,11 @@
      "text": "Rejected: 1 step of 5 touches files that Orchestrator settings: collapsible Split section with parallel-split option has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 4 clean steps now, defer 1 (defer).",
      "at": "2026-11-24T12:36:34.910Z",
      "by": "orchestrator"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (banner-widget-shapes-plus-change-icon is split (Pending): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T12:38:02.654Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -197232,6 +197237,11 @@
      "text": "Watchdog: build retried at pending, attempt 2.",
      "at": "2026-11-24T12:36:01.825Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was repla",
+     "at": "2026-11-24T12:38:02.654Z",
+     "by": "store"
     }
    ],
    "approvals": [],
@@ -199967,6 +199977,11 @@
      "text": "Rejected: 1 step of 10 touches files that Orchestrator settings: collapsible Split section with parallel-split option has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 9 clean steps now, defer 1 (defer).",
      "at": "2026-11-24T12:36:51.872Z",
      "by": "orchestrator"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (icon-picker-every-banner-settings-widget is split (Pending): its steps are fixed, none is removed or replaced); s6 step ",
+     "at": "2026-11-24T12:38:02.654Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -202052,6 +202067,11 @@
      "text": "Watchdog: build retried at pending, attempt 2.",
      "at": "2026-11-24T12:36:01.825Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (flagship-professional-skin-covering-2 is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was repla",
+     "at": "2026-11-24T12:38:02.654Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -204673,6 +204693,11 @@
      "text": "Watchdog: build retried at pending, attempt 2.",
      "at": "2026-11-24T12:36:01.825Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (auto-lander-never-wait-missing-ui-review is split (Pending): its steps are fixed, none is removed or replaced); s7 step ",
+     "at": "2026-11-24T12:38:02.654Z",
+     "by": "store"
     }
    ],
    "approvals": [],
