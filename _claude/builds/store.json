@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10388,
- "updatedAt": "2026-11-24T13:44:23.865Z",
+ "rev": 10389,
+ "updatedAt": "2026-11-24T13:44:43.052Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -302909,7 +302909,7 @@
    "pr": "909",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T13:44:01.731Z",
+   "updatedAt": "2026-11-24T13:44:25.769Z",
    "builtAt": "",
    "notes": [
     {
@@ -303217,6 +303217,11 @@
      "text": "Watchdog: step s6 retried at ready, attempt 2 on mossesx-max-.",
      "at": "2026-11-24T13:44:01.731Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (fix-refreshing-console-jumps-back is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by anoth",
+     "at": "2026-11-24T13:44:19.395Z",
+     "by": "store"
     }
    ],
    "approvals": [],
@@ -303826,11 +303831,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 10,
+     "rev": 11,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T13:44:11.646Z",
-     "statusAt": "2026-11-24T13:44:01.731Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-24T13:44:25.854Z",
+     "statusAt": "2026-11-24T13:44:25.769Z",
+     "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
       {
@@ -303881,9 +303886,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-24T13:44:25.769Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s6",
      "branch": "claude/fix-refreshing-console-jumps-back--s6",
@@ -304293,7 +304305,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 180,
+   "rev": 182,
    "deleted": false,
    "deletedAt": "",
    "pending": {
