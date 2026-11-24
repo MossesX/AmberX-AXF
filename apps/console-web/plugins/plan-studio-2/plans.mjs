@@ -10,7 +10,8 @@
  * back as `building`. The tree keeps no versions: a deleted plan comes back with the tree's undo (`restoreDeleted`).
  */
 import * as tc from './web/tree-core.mjs';
-import { assertUnlocked, load, save, sendToBuild, storeDir, onHub } from './tree.mjs';
+import * as live from './web/live-core.mjs';
+import { assertUnlocked, load, save, sendToBuild, storeBuilds, storeDir, onHub } from './tree.mjs';
 
 export { storeDir, onHub };
 export const FOLDER = 'plan-studio-2';
@@ -27,10 +28,32 @@ function orderedSteps(s, id, out = []) {
 
 const notesOf = (s, id) => tc.children(s, id).filter((i) => i.kind === 'note');
 
+/** The build a plan was sent as (the builds store, as Plan Studio last read it), or null: a plan with none keeps its own status and steps. */
+function sentAs(it) {
+  let builds = null;
+  try { builds = storeBuilds(); } catch { /* the store cannot be read: the plan as it is */ }
+  const sent = builds ? live.sentBuilds(builds, it.id) : [];
+  return sent.length ? sent[sent.length - 1] : null;
+}
+
 function toPlan(s, it) {
   const body = it.body ?? '';
   const build = it.links.find((l) => l.type === 'build');
   const buildId = build ? build.ref.slice(build.ref.indexOf(':') + 1) : '';
+  // a sent plan reads from its build: its status follows the build and its steps are the ones the build has (never copied)
+  const sent = sentAs(it);
+  if (sent) {
+    const d = live.buildDetail(sent);
+    return {
+      id: it.id, title: it.title, status: d.build.landed ? 'done' : 'building', priority: it.priority, tags: it.tags,
+      category: tc.ancestors(s, it.id).map((a) => a.title).join(' > '), project: '', profile: build && build.ref.includes(':') ? build.ref.slice(0, build.ref.indexOf(':')) : '',
+      summary: body.split('\n').find((l) => l.trim())?.trim().slice(0, 300) ?? '', body,
+      steps: (d.steps.length ? d.steps.map((x) => ({ id: x.id, uid: x.uid, text: x.title, done: x.done, model: x.model, minutes: x.minutes, status: x.status })) : orderedSteps(s, it.id).map((x) => ({ id: x.id, text: x.title, done: x.done, model: x.model, minutes: x.minutes }))),
+      comments: notesOf(s, it.id).map((n) => ({ text: n.body || n.title, by: n.by, at: n.createdAt })),
+      links: it.links, build: { id: d.build.id, number: d.build.number, status: d.build.status, label: live.buildSummary(d.build).label },
+      focus: `${FOLDER}.focus:${it.id}`, createdAt: it.createdAt, updatedAt: it.updatedAt, by: it.by,
+    };
+  }
   return {
     id: it.id, title: it.title, status: FROM_TREE[it.status] ?? it.status, priority: it.priority, tags: it.tags,
     category: tc.ancestors(s, it.id).map((a) => a.title).join(' > '), project: '', profile: build && build.ref.includes(':') ? build.ref.slice(0, build.ref.indexOf(':')) : '',

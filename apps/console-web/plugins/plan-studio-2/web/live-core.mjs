@@ -21,6 +21,12 @@
  * writer that only knows plan-tree@1 rewrites the tree and cannot drop it.
  *
  * Builds are read as the builds store has them (pipeline-2@1 statuses). Only Pipeline 2.0 builds carry a `planRef`.
+ *
+ * The build of a sent plan (buildDetail, buildSummary): the build's number, its pipeline view (pipeline-status@1
+ * `pipelineView`, worked out by the builds store on read), who split it, the merge line, a clash with builds that are
+ * not on main yet, and its steps with each step's unique id, split mark, triage model and status. All of it is read
+ * from the store's record; a field the record does not carry yet reads as empty and the raw status is shown instead.
+ * A sent plan's listed status follows its build (planStatus): it is never the status the plan had before it was sent.
  */
 import * as tc from './tree-core.mjs';
 
@@ -54,6 +60,8 @@ const BUILD_LABEL = Object.freeze({
 const STEP_LABEL = Object.freeze({ pending: 'Pending', 'pulling-main': 'Pulling in main', ready: 'Ready', sending: 'Sending to slot', building: 'Building', completed: 'Completed', 'in-pr': 'In PR' });
 /** What the orchestrator may be asked to do with a sent plan or one of its steps (the server decides each one). */
 export const ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel']);
+/** The answers to a clash (a build rejected because it touches what is not on main yet): the orchestrator decides each. */
+export const CLASH_ACTIONS = Object.freeze(['run-all', 'defer']);
 export const ACTION_LABEL = Object.freeze({ queue: 'Queue', hold: 'Hold', release: 'Release', retry: 'Retry', rebuild: 'Rebuild', 'run-ci': 'Run CI', land: 'Land', cancel: 'Cancel' });
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -103,7 +111,7 @@ export function buildLive(b) {
   const steps = list(b.steps).filter((s) => !s.skip);
   const state = buildState(b);
   return {
-    $axf: SCHEMA, build: b.id, profile: profileOf(b), status: str(b.status, 40), label: buildLabel(b), state, stateLabel: STATE_LABEL[state],
+    $axf: SCHEMA, build: b.id, ...(numberOf(b) ? { number: numberOf(b) } : {}), profile: profileOf(b), status: str(b.status, 40), label: buildLabel(b), state, stateLabel: STATE_LABEL[state],
     attempt: attemptOf(b), at: str(b.statusAt || b.updatedAt, 40), locked: !isLanded(b), split: hasSteps(b), held: isHeld(b),
     ...(b.emergency ? { emergency: true } : {}), steps: { done: steps.filter((s) => s.done || isLanded(b)).length, total: steps.length },
   };
@@ -137,6 +145,136 @@ export function stepRow(b, s, parent, order) {
   };
 }
 
+/* ------------------------------------------------------------------ the build of a sent plan, as the store has it */
+
+/** The plan-tree status a sent plan is listed with: its build is under way (`active`) or has landed (`done`). */
+export const planStatus = (b) => (isLanded(b) ? 'done' : 'active');
+/** A build's short unique number (builds store `number`), as text; '' while the record has none. */
+export const numberOf = (b) => (b?.number == null || b.number === '' ? '' : str(b.number, 20).replace(/^#/, ''));
+/** "#41", else the build id. */
+export const buildName = (b) => (numberOf(b) ? `#${numberOf(b)}` : str(b?.id ?? b?.buildId, 80));
+const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : null);
+/** A reference to another build, however it was written (a number, an id, or { number, buildId | id, title }). */
+export function buildRef(v) {
+  if (v == null || v === '') return null;
+  const o = obj(v);
+  if (!o) return typeof v === 'number' || /^#?\d+$/.test(String(v)) ? { buildId: '', number: String(v).replace(/^#/, ''), title: '' } : { buildId: str(v, 80), number: '', title: '' };
+  const r = { buildId: str(o.buildId ?? o.id ?? o.build, 80), number: numberOf(o), title: str(o.title, 300) };
+  return r.buildId || r.number || r.title ? r : null;
+}
+/** How a referenced build is named in a sentence: "build #41", else its title, else its id. */
+export const refName = (r) => (!r ? '' : r.number ? `build #${r.number}` : r.title ? `"${r.title}"` : `build ${r.buildId}`);
+/** 1 → "1st", 2 → "2nd", 11 → "11th". */
+export function ordinal(n) {
+  const i = Math.max(0, Math.round(Number(n) || 0));
+  const t = i % 100;
+  return `${i}${t >= 11 && t <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][i % 10] ?? 'th'}`;
+}
+/** Who split the build into steps (the store's `split`: { by, model, at, stepCount }), or null before the split. */
+export function splitOf(b) {
+  const sp = obj(b?.split) ?? obj(b?.pipelineView?.split);
+  if (!sp || !str(sp.by, 40)) return null;
+  return { by: str(sp.by, 40), model: str(sp.model, 80), at: str(sp.at, 40), stepCount: Number(sp.stepCount) > 0 ? Math.round(Number(sp.stepCount)) : list(b?.steps).length };
+}
+const isFable = (model) => /fable/i.test(str(model, 80));
+/** The words of a split mark: "Split by Fable on the VPS" (the model that really ran, the place it ran). */
+export function splitLabel(by, model = '') {
+  const who = str(by, 40).toLowerCase();
+  if (!who) return '';
+  const m = isFable(model) || /fable/.test(who) ? 'Fable' : /opus/i.test(`${model} ${who}`) ? 'Opus' : '';
+  const where = who.startsWith('vps') ? 'on the VPS' : who.startsWith('orchestrator') ? 'by the orchestrator' : '';
+  return ['Split', m && `by ${m}`, where || (!m && `by ${str(by, 40)}`)].filter(Boolean).join(' ');
+}
+/** The merge line: "2nd to merge, waiting for build #41" ({ position, waitingFor }); '' when the build is not in line. */
+export function mergeLineText(ml) {
+  const o = obj(ml);
+  if (!o) return '';
+  if (str(o.text ?? o.line, 300)) return str(o.text ?? o.line, 300);
+  const pos = Math.round(Number(o.position) || 0);
+  const wait = buildRef(o.waitingFor);
+  return [pos > 0 && `${ordinal(pos)} to merge`, wait && `waiting for ${refName(wait)}`].filter(Boolean).join(', ');
+}
+/** The waiting reason: the store's own words, else "Waiting: <title> holds the active place". */
+export function waitingText(w) {
+  const o = obj(w);
+  if (!o) return '';
+  const ref = buildRef(o);
+  return str(o.reason, 300) || (ref ? `Waiting: ${ref.title || refName(ref)} holds the active place` : '');
+}
+const PV_TONES = ['accent', 'success', 'warning', 'danger', 'info', 'muted'];
+/**
+ * A clash with builds that are not on main yet (the store's `clash`), or null. The build was rejected as a whole; the
+ * options are what may be done instead: run everything, or run the clean steps and defer the clashing ones, each
+ * deferred step naming the build it waits for. → { rejected, reason, with: Ref[], options: [{ id, label, line,
+ * action, steps: [{ step, uid, title, waitsFor: Ref | null }] }] }
+ */
+export function clashOf(b) {
+  const c = obj(b?.clash) ?? obj(b?.pipelineView?.clash) ?? obj(b?.rejected) ?? obj(b?.rejection);
+  if (!c) return null;
+  const waitOf = (d) => buildRef(d?.waitsFor ?? d?.waitingFor ?? d?.waitingOn);
+  const stepOf = (d) => (obj(d) ? { step: str(d.step ?? d.id, 40), uid: str(d.uid, 40), title: str(d.title ?? d.text, 300), waitsFor: waitOf(d) } : { step: str(d, 40), uid: '', title: '', waitsFor: null });
+  const deferred = list(c.deferred ?? c.steps).map(stepOf).filter((d) => d.step || d.uid);
+  let options = list(c.options).map((o) => obj(o)).filter(Boolean).map((o) => {
+    const id = str(o.id ?? o.kind, 40);
+    const steps = list(o.steps ?? o.deferred).map(stepOf).filter((d) => d.step || d.uid);
+    return { id, label: str(o.label ?? o.title, 120) || (id === 'run-all' ? 'Run all now' : steps.length ? `Run the clean steps now, defer ${steps.length} step${steps.length === 1 ? '' : 's'}` : id), line: str(o.line ?? o.why ?? o.reason, 300), action: str(o.action, 40) || (CLASH_ACTIONS.includes(id) ? id : ''), steps };
+  }).filter((o) => o.id || o.label);
+  if (!options.length && deferred.length) options = [{ id: 'defer', label: `Run the clean steps now, defer ${deferred.length} step${deferred.length === 1 ? '' : 's'}`, line: '', action: 'defer', steps: deferred }];
+  if (!options.length && c.runAll === true) options = [{ id: 'run-all', label: 'Run all now', line: '', action: 'run-all', steps: [] }];
+  return { rejected: c.rejected !== false, reason: str(c.reason ?? c.why ?? c.line, 600), with: list(c.with ?? c.builds ?? c.clashesWith).map(buildRef).filter(Boolean), options };
+}
+/** The line under a deferred step: "Deferred, waiting for build #41". */
+export const deferLine = (waitsFor) => (waitsFor ? `Deferred, waiting for ${refName(waitsFor)}` : '');
+
+/** One step of the build as the page lists it: the unique id in its own field, who split it, the model and who picked it, its status. */
+export function stepDetail(b, s) {
+  const state = stepState(b, s);
+  const text = str(s.text, 100_000);
+  const sp = splitOf(b);
+  const waitsFor = buildRef(s.waitsFor ?? s.waitingFor ?? obj(s.deferred)?.waitsFor);
+  return {
+    id: str(s.id, 40), uid: str(s.uid, 40), row: stepRowId(b.id, s.id), title: str(s.title, 300).trim() || firstLine(text) || `Step ${s.id}`, text,
+    model: str(s.model, 40), modelBy: str(s.modelBy, 40), splitBy: str(s.splitBy, 40) || (sp ? `${sp.by}${isFable(sp.model) ? '-fable' : ''}` : ''),
+    status: str(s.status, 40) || (s.done ? 'completed' : 'pending'), label: waitsFor && !s.done ? deferLine(waitsFor) : stepLabel(s), state, stateLabel: STATE_LABEL[state],
+    attempt: attemptOf(s), done: !!s.done || isLanded(b), minutes: minutesOf(s), ...(Number(s.prNumber) > 0 ? { pr: Number(s.prNumber) } : {}), ...(s.skip ? { skipped: true } : {}), ...(waitsFor ? { waitsFor } : {}),
+  };
+}
+/**
+ * The build a plan was sent as, as the page shows it under the plan: { build, steps }. `pipelineView` is the store's
+ * own (null while the store does not work one out: the raw status is shown then); nothing here is kept anywhere.
+ */
+export function buildDetail(b) {
+  const state = buildState(b);
+  return {
+    build: {
+      id: b.id, number: numberOf(b), title: str(b.title, 300), status: str(b.status, 40), label: buildLabel(b), state, stateLabel: STATE_LABEL[state], attempt: attemptOf(b),
+      at: str(b.statusAt || b.updatedAt, 40), pipelineView: obj(b.pipelineView), split: splitOf(b), clash: clashOf(b), pr: Number(b.pr) > 0 ? Number(b.pr) : 0, prUrl: str(b.prUrl, 300), branch: str(b.branch, 200),
+      held: isHeld(b), landed: isLanded(b), ...(b.emergency ? { emergency: true } : {}),
+    },
+    steps: list(b.steps).map((s) => stepDetail(b, s)),
+  };
+}
+/**
+ * What the page writes under a sent plan, in words (display only): the build's name, its state badge (the pipeline
+ * view's label and tone; the raw status as a plain badge without one), the plain status line, the waiting reason, the
+ * split mark and the merge line. `build` is buildDetail().build.
+ */
+export function buildSummary(build) {
+  const pv = obj(build?.pipelineView);
+  const sp = obj(build?.split);
+  const attempt = Math.max(1, Number(pv?.attempt ?? build?.attempt) || 1);
+  return {
+    name: buildName(build), state: str(pv?.state, 40) || str(build?.status, 40), label: str(pv?.label, 80) || str(build?.label, 80) || str(build?.status, 40) || 'Unknown',
+    tone: pv && PV_TONES.includes(pv.tone) ? pv.tone : '', icon: str(pv?.icon, 40), raw: !pv, line: str(pv?.line, 400), attempt,
+    waiting: waitingText(pv?.waitingOn), waitingOn: buildRef(pv?.waitingOn), merge: mergeLineText(pv?.mergeLine),
+    split: sp ? splitLabel(sp.by, sp.model) : '', splitByVps: !!sp && str(sp.by, 40).toLowerCase().startsWith('vps'),
+  };
+}
+/** How a step's model is written: "Fable", with who picked it when the triage gate did; "model not assigned yet" before. */
+export const modelText = (step) => (str(step?.model, 40) ? str(step.model, 40) : 'Model not assigned yet');
+/** Did the triage gate give the step its model? */
+export const byTriage = (step) => !!str(step?.model, 40) && str(step?.modelBy, 40).toLowerCase() === 'triage';
+
 /* ------------------------------------------------------------------ the tree as shown: the store laid over it */
 
 /** The planning steps a send takes along (tree-core toBuild picks the same ones): open steps, else open list items. */
@@ -164,6 +302,7 @@ export function liveView(state, builds) {
     const cur = sent[sent.length - 1];
     const live = buildLive(cur);
     it.live = live;
+    it.status = planStatus(cur); // where its build is, not what the plan was before it was sent (view only)
     if (live.locked) {
       it.locked = true;
       for (const d of tc.descendants(state, it.id)) byId.get(d.id).locked = true;

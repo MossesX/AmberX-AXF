@@ -26,6 +26,8 @@
  *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
  *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
  *                                                                 builds store; the orchestrator's splitting stage designs the build steps
+ *   … build-status <item>                                         the build a plan was sent as, read from the builds store now: its number,
+ *                                                                 state, status line, waiting reason, merge line and steps (unique id, model, status)
  *   … history <item>                                              the planning steps a send replaced (kept beside the tree)
  *   … restore-steps <item> [<entry id>]                           bring those planning steps back (not while it is locked)
  *   … sync                                                        bring the tree in line with the builds store now
@@ -99,9 +101,18 @@ const STALE_MAX_S = 120;
 const REFRESH_LOCK_MS = 90_000;
 const cacheFile = () => join(storeDir(), BUILDS_CACHE);
 const cacheTtl = () => { const n = Number(process.env.AXF_PLAN_BUILDS_TTL ?? 15); return Number.isFinite(n) && n >= 0 ? n : 15; };
-const slimStep = (x) => ({ id: x.id, title: x.title ?? '', text: x.text ?? '', status: x.status ?? '', done: !!x.done, ...(x.skip ? { skip: true } : {}), model: x.model ?? '', estimate: x.estimate ?? '', attempt: x.attempt ?? 1, failedFrom: x.failedFrom ?? '', statusAt: x.statusAt ?? '', ...(x.prNumber ? { prNumber: x.prNumber } : {}), statusLog: (x.statusLog ?? []).slice(0, 1).map((l) => ({ at: l.at })) });
+const slimStep = (x) => ({ id: x.id, ...(x.uid ? { uid: x.uid } : {}), ...(x.splitBy ? { splitBy: x.splitBy } : {}), ...(x.modelBy ? { modelBy: x.modelBy } : {}), ...(x.waitsFor ?? x.waitingFor ? { waitsFor: x.waitsFor ?? x.waitingFor } : {}), title: x.title ?? '', text: x.text ?? '', status: x.status ?? '', done: !!x.done, ...(x.skip ? { skip: true } : {}), model: x.model ?? '', estimate: x.estimate ?? '', attempt: x.attempt ?? 1, failedFrom: x.failedFrom ?? '', statusAt: x.statusAt ?? '', ...(x.prNumber ? { prNumber: x.prNumber } : {}), statusLog: (x.statusLog ?? []).slice(0, 1).map((l) => ({ at: l.at })) });
+/**
+ * The store's pipeline view of a build (pipeline-status@1): the field the store's read carries, else worked out here
+ * with the store's own function when this checkout has it, else null (the page then shows the raw status).
+ */
+function pipelineViewOf(b, all) {
+  if (b.pipelineView && typeof b.pipelineView === 'object') return b.pipelineView;
+  try { return typeof P2.pipelineView === 'function' ? P2.pipelineView(b, all) ?? null : null; } catch { return null; }
+}
+const keep = (b, keys) => Object.fromEntries(keys.filter((k) => b[k] != null && b[k] !== '').map((k) => [k, b[k]]));
 /** One build as Plan Studio needs it (what live-core reads, nothing else). */
-const slimBuild = (b) => ({ id: b.id, flow: b.flow, planRef: b.planRef, status: b.status, deleted: !!b.deleted, failedFrom: b.failedFrom ?? '', attempt: b.attempt ?? 1, statusAt: b.statusAt ?? '', createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '', profiles: b.profiles ?? [], ...(b.emergency ? { emergency: true } : {}), ...(b.pipeline?.heldAt ? { pipeline: { heldAt: b.pipeline.heldAt } } : {}), steps: (b.steps ?? []).map(slimStep) });
+const slimBuild = (b, all = []) => ({ ...keep(b, ['number', 'title', 'split', 'clash', 'pr', 'prUrl', 'branch']), pipelineView: pipelineViewOf(b, all), id: b.id, flow: b.flow, planRef: b.planRef, status: b.status, deleted: !!b.deleted, failedFrom: b.failedFrom ?? '', attempt: b.attempt ?? 1, statusAt: b.statusAt ?? '', createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '', profiles: b.profiles ?? [], ...(b.emergency ? { emergency: true } : {}), ...(b.pipeline?.heldAt ? { pipeline: { heldAt: b.pipeline.heldAt } } : {}), steps: (b.steps ?? []).map(slimStep) });
 function readCache() { try { const c = JSON.parse(readFileSync(cacheFile(), 'utf8')); return Array.isArray(c?.builds) && Number.isFinite(Date.parse(c.at)) ? c : null; } catch { return null; } }
 function writeCache(builds) {
   try { const f = cacheFile(); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ $axf: 'plan-sent-builds-cache@1', at: new Date().toISOString(), builds })}\n`); renameSync(tmp, f); handBack(f); } catch { /* a cache: the next read pays instead */ } // axf-data: not data (a cache derived from the builds store; deleting it loses nothing)
@@ -110,7 +121,7 @@ function writeCache(builds) {
 export function refreshBuilds() {
   let all;
   try { all = BS.loadStore().builds; } catch { return null; }
-  const builds = all.filter((b) => b.flow === P2.FLOW && b.planRef).map(slimBuild);
+  const builds = all.filter((b) => b.flow === P2.FLOW && b.planRef).map((b) => slimBuild(b, all));
   writeCache(builds);
   return builds;
 }
@@ -250,7 +261,7 @@ export function stateView(s) {
  */
 export function api(r, { by = '' } = {}) {
   const who = String(r.by ?? by ?? '');
-  const builds = storeBuilds({ fresh: r.fresh === true });
+  const builds = storeBuilds({ fresh: r.fresh === true || r.op === 'plan-build' }); // a plan's build is read from the store on every call
   // the stored tree (writes work on it), brought in line with the builds store first; `v` is what reads show
   const synced = sync({ by: who || 'plan-studio-2', builds });
   const s = synced.state;
@@ -273,6 +284,16 @@ export function api(r, { by = '' } = {}) {
     case 'sync': { const moved = synced.replaced.length + synced.restored.length; return { ok: true, rev: s.rev, changed: synced.changed, replaced: synced.replaced, restored: synced.restored, say: synced.changed ? `Brought ${moved} sent plan${moved === 1 ? '' : 's'} in line with the builds store.` : 'Already in line with the builds store.' }; }
     case 'history': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: { id: it.id, title: it.title }, history: live.historyOf(loadHistory(), s, it.id) }; }
     case 'restore-steps': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); guard(it.id); const res = live.restoreEntry(s, loadHistory(), it.id, r.entry ?? ''); const out = done({ state: res.state, item: it, restored: res.restored, entry: res.entry }, `Brought ${res.restored} planning step${res.restored === 1 ? '' : 's'} back into "${it.title}".`); saveHistory(res.history); return out; }
+    case 'plan-build': {
+      // the build a plan was sent as, straight from the builds store (read just now): nothing of it is kept in the tree
+      const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`);
+      if (!builds) throw new tc.TreeError('validation', 'The builds store cannot be read right now.');
+      const sent = live.sentBuilds(builds, it.id);
+      const plan = { id: it.id, title: it.title, status: tc.byId(v, it.id)?.status ?? it.status };
+      if (!sent.length) return { ok: true, plan, build: null, steps: [], say: `"${it.title}" has not been sent to build.` };
+      const d = live.buildDetail(sent[sent.length - 1]); const sum = live.buildSummary(d.build);
+      return { ok: true, plan, ...d, earlier: sent.slice(0, -1).map((b) => ({ id: b.id, number: live.numberOf(b), status: b.status })), say: `"${it.title}" is build ${sum.name}: ${sum.label}, ${d.steps.filter((x) => x.done).length}/${d.steps.length} steps done.` };
+    }
     case 'target': {
       // the build (and step) an orchestrator action on this row is about: the server asks the orchestrator, never the page
       const tg = builds ? live.actionTarget(s, builds, r.id) : null;
@@ -334,7 +355,8 @@ export async function main(argv = process.argv.slice(2)) {
     switch (cmd) {
       case 'where': return out({ store: storeDir(), onHub: onHub() }, storeDir());
       case 'tree': { const r = api({ op: 'tree', id: a[0] }); if (flags.md) return out(r, api({ op: 'export', id: a[0] }).markdown); return out(r, indentTree(r.tree).join('\n') || '(empty: nothing in Plan Studio 2.0 yet)'); }
-      case 'list': { const s = load(); const under = flags.under ? tc.resolve(s, flags.under)?.id ?? '' : ''; const rows = tc.find(s, flags.q ?? '', { kind: flags.kind ?? '', limit: 1000, under }); return out({ ok: true, rows }, rows.map((h) => `${h.kind.padEnd(7)} ${h.id.padEnd(40)} ${h.path}`).join('\n')); }
+      // list: a sent plan lists with its build's status and steps (the live view)
+      case 'list': { const stored = load(); const sb = storeBuilds(); const s = sb ? live.liveView(stored, sb) : stored; const under = flags.under ? tc.resolve(s, flags.under)?.id ?? '' : ''; const rows = tc.find(s, flags.q ?? '', { kind: flags.kind ?? '', limit: 1000, under }); return out({ ok: true, rows }, rows.map((h) => `${h.kind.padEnd(7)} ${h.id.padEnd(40)} ${h.path}`).join('\n')); }
       case 'show': { const r = api({ op: 'get', id: a[0] }); return out(r, `${r.item.path}\n${r.item.kind} · ${r.item.status || '-'} · ${r.item.priority || '-'} · ${r.item.model || '-'}${r.item.minutes ? ` · ${r.item.minutes} min` : ''} · ${r.item.progress.done}/${r.item.progress.total} done\n${r.item.body}\n${r.item.links.map((l) => `↳ ${l.type}: ${l.label || l.ref}`).join('\n')}`); }
       case 'find': { const r = api({ op: 'find', q: a.join(' '), kind: flags.kind, under: flags.under }); return out(r, r.hits.map((h) => `${h.kind.padEnd(7)} ${h.path}  →  ${h.focus}`).join('\n') || 'nothing matches'); }
       case 'add': { const r = api({ op: 'add', kind: a[0], title: a.slice(1).join(' '), parent: flags.in, index: flags.at === undefined ? undefined : Number(flags.at), body: flags.body, model: flags.model, minutes: flags.minutes, priority: flags.priority, status: flags.status, tags: flags.tags ? String(flags.tags).split(',') : undefined }); return out(r, `${r.say} id ${r.item.id}`); }
@@ -357,6 +379,13 @@ export async function main(argv = process.argv.slice(2)) {
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
+      case 'build-status': {
+        const r = api({ op: 'plan-build', id: a[0] });
+        if (!r.build) return out(r, r.say);
+        const sum = live.buildSummary(r.build);
+        return out(r, [`build ${sum.name} (${r.build.id}) · ${sum.label}${sum.split ? ` · ${sum.split}` : ''}`, sum.line, sum.waiting, sum.merge, ...(r.build.clash ? [`Rejected: ${r.build.clash.reason}`, ...r.build.clash.options.map((o) => `  option: ${o.label}${o.steps.map((x) => `\n    ${x.step || x.uid}: ${live.deferLine(x.waitsFor)}`).join('')}`)] : []),
+          ...r.steps.map((x) => `  ${(x.uid || '-').padEnd(20)} ${x.id.padEnd(5)} ${(x.model || 'no model yet').padEnd(13)} ${x.label.padEnd(18)} ${x.title.slice(0, 80)}`)].filter(Boolean).join('\n'));
+      }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'sync': { const r = api({ op: 'sync', fresh: true }); return out(r, r.say); }
       case 'refresh-builds': { // the background read behind a stale cache (storeBuilds)
@@ -367,7 +396,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'restore-steps': { const r = api({ op: 'restore-steps', id: a[0], entry: a[1] }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|history|restore-steps|sync|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|build-status|history|restore-steps|sync|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };
