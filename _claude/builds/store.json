@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10377,
- "updatedAt": "2026-11-24T01:07:14.055Z",
+ "rev": 10378,
+ "updatedAt": "2026-11-24T12:04:04.778Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31559,11 +31559,11 @@
     "all"
    ],
    "order": {
-    "all": 308
+    "all": 314
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42681,11 +42681,11 @@
     "all"
    ],
    "order": {
-    "all": 278
+    "all": 284
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58543,11 +58543,11 @@
     "all"
    ],
    "order": {
-    "all": 252
+    "all": 258
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61798,11 +61798,11 @@
     "all"
    ],
    "order": {
-    "all": 262
+    "all": 268
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62845,11 +62845,11 @@
     "all"
    ],
    "order": {
-    "all": 132
+    "all": 138
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78410,11 +78410,11 @@
     "all"
    ],
    "order": {
-    "all": 154
+    "all": 160
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78643,11 +78643,11 @@
     "all"
    ],
    "order": {
-    "all": 155
+    "all": 161
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78855,11 +78855,11 @@
     "all"
    ],
    "order": {
-    "all": 156
+    "all": 162
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79084,11 +79084,11 @@
     "all"
    ],
    "order": {
-    "all": 157
+    "all": 163
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79455,11 +79455,11 @@
     "all"
    ],
    "order": {
-    "all": 159
+    "all": 165
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79618,11 +79618,11 @@
     "all"
    ],
    "order": {
-    "all": 160
+    "all": 166
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86251,11 +86251,11 @@
     "all"
    ],
    "order": {
-    "all": 167
+    "all": 173
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86462,11 +86462,11 @@
     "all"
    ],
    "order": {
-    "all": 168
+    "all": 174
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86874,11 +86874,11 @@
     "all"
    ],
    "order": {
-    "all": 170
+    "all": 176
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87106,11 +87106,11 @@
     "all"
    ],
    "order": {
-    "all": 171
+    "all": 177
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87492,11 +87492,11 @@
     "all"
    ],
    "order": {
-    "all": 173
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88241,11 +88241,11 @@
     "all"
    ],
    "order": {
-    "all": 175
+    "all": 181
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -88854,11 +88854,11 @@
     "all"
    ],
    "order": {
-    "all": 177
+    "all": 183
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89067,11 +89067,11 @@
     "all"
    ],
    "order": {
-    "all": 288
+    "all": 294
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89249,11 +89249,11 @@
     "all"
    ],
    "order": {
-    "all": 178
+    "all": 184
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89386,11 +89386,11 @@
     "all"
    ],
    "order": {
-    "all": 527
+    "all": 533
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89587,11 +89587,11 @@
     "all"
    ],
    "order": {
-    "all": 179
+    "all": 185
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90063,11 +90063,11 @@
     "all"
    ],
    "order": {
-    "all": 180
+    "all": 186
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90368,11 +90368,11 @@
     "all"
    ],
    "order": {
-    "all": 181
+    "all": 187
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90939,11 +90939,11 @@
     "all"
    ],
    "order": {
-    "all": 290
+    "all": 296
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91150,11 +91150,11 @@
     "all"
    ],
    "order": {
-    "all": 291
+    "all": 297
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91309,11 +91309,11 @@
     "all"
    ],
    "order": {
-    "all": 292
+    "all": 298
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92125,11 +92125,11 @@
     "all"
    ],
    "order": {
-    "all": 182
+    "all": 188
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92314,11 +92314,11 @@
     "all"
    ],
    "order": {
-    "all": 183
+    "all": 189
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93211,11 +93211,11 @@
     "all"
    ],
    "order": {
-    "all": 267
+    "all": 273
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97147,11 +97147,11 @@
     "all"
    ],
    "order": {
-    "all": 200
+    "all": 206
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101476,11 +101476,11 @@
     "all"
    ],
    "order": {
-    "all": 205
+    "all": 211
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 95,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101761,11 +101761,11 @@
     "all"
    ],
    "order": {
-    "all": 208
+    "all": 214
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104114,11 +104114,11 @@
     "all"
    ],
    "order": {
-    "all": 213
+    "all": 219
    },
    "kind": "build",
    "planRef": "ui-registry-shortcuts",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104776,11 +104776,11 @@
     "all"
    ],
    "order": {
-    "all": 215
+    "all": 221
    },
    "kind": "build",
    "planRef": "settings-sections-everywhere",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -105456,11 +105456,11 @@
     "all"
    ],
    "order": {
-    "all": 217
+    "all": 223
    },
    "kind": "build",
    "planRef": "plan-studio-backfill-12h",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107677,11 +107677,11 @@
     "all"
    ],
    "order": {
-    "all": 223
+    "all": 229
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108332,11 +108332,11 @@
     "all"
    ],
    "order": {
-    "all": 206
+    "all": 212
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109488,11 +109488,11 @@
     "all"
    ],
    "order": {
-    "all": 225
+    "all": 231
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112919,11 +112919,11 @@
     "all"
    ],
    "order": {
-    "all": 536
+    "all": 542
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114157,11 +114157,11 @@
     "all"
    ],
    "order": {
-    "all": 540
+    "all": 546
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114517,11 +114517,11 @@
     "all"
    ],
    "order": {
-    "all": 541
+    "all": 547
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116593,11 +116593,11 @@
     "all"
    ],
    "order": {
-    "all": 556
+    "all": 562
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117412,11 +117412,11 @@
     "all"
    ],
    "order": {
-    "all": 560
+    "all": 566
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117599,11 +117599,11 @@
     "all"
    ],
    "order": {
-    "all": 561
+    "all": 567
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118204,11 +118204,11 @@
     "all"
    ],
    "order": {
-    "all": 563
+    "all": 569
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119402,11 +119402,11 @@
     "all"
    ],
    "order": {
-    "all": 568
+    "all": 574
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119908,11 +119908,11 @@
     "all"
    ],
    "order": {
-    "all": 571
+    "all": 577
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120091,11 +120091,11 @@
     "all"
    ],
    "order": {
-    "all": 572
+    "all": 578
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123690,11 +123690,11 @@
     "all"
    ],
    "order": {
-    "all": 584
+    "all": 590
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125647,11 +125647,11 @@
     "all"
    ],
    "order": {
-    "all": 598
+    "all": 604
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125805,11 +125805,11 @@
     "all"
    ],
    "order": {
-    "all": 597
+    "all": 603
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125982,11 +125982,11 @@
     "all"
    ],
    "order": {
-    "all": 599
+    "all": 605
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129525,11 +129525,11 @@
     "all"
    ],
    "order": {
-    "all": 615
+    "all": 621
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129858,11 +129858,11 @@
     "all"
    ],
    "order": {
-    "all": 616
+    "all": 622
    },
    "kind": "build",
    "planRef": "",
-   "rev": 132,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130175,11 +130175,11 @@
     "all"
    ],
    "order": {
-    "all": 618
+    "all": 624
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130331,11 +130331,11 @@
     "all"
    ],
    "order": {
-    "all": 619
+    "all": 625
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130491,11 +130491,11 @@
     "all"
    ],
    "order": {
-    "all": 620
+    "all": 626
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130651,11 +130651,11 @@
     "all"
    ],
    "order": {
-    "all": 621
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130883,11 +130883,11 @@
     "all"
    ],
    "order": {
-    "all": 622
+    "all": 628
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131151,11 +131151,11 @@
     "all"
    ],
    "order": {
-    "all": 623
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131934,11 +131934,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132433,11 +132433,11 @@
     "all"
    ],
    "order": {
-    "all": 627
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132641,11 +132641,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 634
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -132849,11 +132849,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 635
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133073,11 +133073,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 636
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133374,11 +133374,11 @@
     "all"
    ],
    "order": {
-    "all": 631
+    "all": 637
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 128,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133587,11 +133587,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 638
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133758,11 +133758,11 @@
     "all"
    ],
    "order": {
-    "all": 633
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -133996,11 +133996,11 @@
     "all"
    ],
    "order": {
-    "all": 634
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134156,11 +134156,11 @@
     "all"
    ],
    "order": {
-    "all": 635
+    "all": 641
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134320,11 +134320,11 @@
     "all"
    ],
    "order": {
-    "all": 636
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134480,11 +134480,11 @@
     "all"
    ],
    "order": {
-    "all": 637
+    "all": 643
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134939,11 +134939,11 @@
     "all"
    ],
    "order": {
-    "all": 639
+    "all": 645
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135177,11 +135177,11 @@
     "all"
    ],
    "order": {
-    "all": 640
+    "all": 646
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135527,11 +135527,11 @@
     "all"
    ],
    "order": {
-    "all": 642
+    "all": 648
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135687,11 +135687,11 @@
     "all"
    ],
    "order": {
-    "all": 643
+    "all": 649
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136085,11 +136085,11 @@
     "all"
    ],
    "order": {
-    "all": 645
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137505,11 +137505,11 @@
     "all"
    ],
    "order": {
-    "all": 651
+    "all": 657
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137665,11 +137665,11 @@
     "all"
    ],
    "order": {
-    "all": 652
+    "all": 658
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137829,11 +137829,11 @@
     "all"
    ],
    "order": {
-    "all": 653
+    "all": 659
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137993,11 +137993,11 @@
     "all"
    ],
    "order": {
-    "all": 654
+    "all": 660
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138348,11 +138348,11 @@
     "all"
    ],
    "order": {
-    "all": 656
+    "all": 662
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138512,11 +138512,11 @@
     "all"
    ],
    "order": {
-    "all": 657
+    "all": 663
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139898,11 +139898,11 @@
     "all"
    ],
    "order": {
-    "all": 662
+    "all": 668
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140054,11 +140054,11 @@
     "all"
    ],
    "order": {
-    "all": 663
+    "all": 669
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140727,11 +140727,11 @@
     "all"
    ],
    "order": {
-    "all": 666
+    "all": 672
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144585,11 +144585,11 @@
     "all"
    ],
    "order": {
-    "all": 677
+    "all": 683
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145161,11 +145161,11 @@
     "all"
    ],
    "order": {
-    "all": 679
+    "all": 685
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146126,11 +146126,11 @@
     "all"
    ],
    "order": {
-    "all": 683
+    "all": 689
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146282,11 +146282,11 @@
     "all"
    ],
    "order": {
-    "all": 684
+    "all": 690
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146438,11 +146438,11 @@
     "all"
    ],
    "order": {
-    "all": 685
+    "all": 691
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146598,11 +146598,11 @@
     "all"
    ],
    "order": {
-    "all": 686
+    "all": 692
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146758,11 +146758,11 @@
     "all"
    ],
    "order": {
-    "all": 687
+    "all": 693
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146914,11 +146914,11 @@
     "all"
    ],
    "order": {
-    "all": 689
+    "all": 695
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148179,11 +148179,11 @@
     "all"
    ],
    "order": {
-    "all": 691
+    "all": 697
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,11 +149452,11 @@
     "all"
    ],
    "order": {
-    "all": 694
+    "all": 700
    },
    "kind": "build",
    "planRef": "",
-   "rev": 115,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151356,11 +151356,11 @@
     "all"
    ],
    "order": {
-    "all": 706
+    "all": 712
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151553,11 +151553,11 @@
     "all"
    ],
    "order": {
-    "all": 708
+    "all": 714
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151947,11 +151947,11 @@
     "all"
    ],
    "order": {
-    "all": 709
+    "all": 715
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152107,11 +152107,11 @@
     "all"
    ],
    "order": {
-    "all": 710
+    "all": 716
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153213,11 +153213,11 @@
     "all"
    ],
    "order": {
-    "all": 715
+    "all": 721
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153441,11 +153441,11 @@
     "all"
    ],
    "order": {
-    "all": 716
+    "all": 722
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153673,11 +153673,11 @@
     "all"
    ],
    "order": {
-    "all": 717
+    "all": 723
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154148,11 +154148,11 @@
     "all"
    ],
    "order": {
-    "all": 719
+    "all": 725
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155306,11 +155306,11 @@
     "all"
    ],
    "order": {
-    "all": 728
+    "all": 734
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157055,11 +157055,11 @@
     "all"
    ],
    "order": {
-    "all": 734
+    "all": 740
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157261,11 +157261,11 @@
     "all"
    ],
    "order": {
-    "all": 735
+    "all": 741
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157745,11 +157745,11 @@
     "all"
    ],
    "order": {
-    "all": 737
+    "all": 743
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171005,11 +171005,11 @@
     "all"
    ],
    "order": {
-    "all": 766
+    "all": 772
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174440,11 +174440,11 @@
     "all"
    ],
    "order": {
-    "all": 785
+    "all": 791
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177171,11 +177171,11 @@
     "all"
    ],
    "order": {
-    "all": 798
+    "all": 804
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194628,11 +194628,11 @@
     "all"
    ],
    "order": {
-    "all": 771
+    "all": 777
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200779,11 +200779,11 @@
     "all"
    ],
    "order": {
-    "all": 824
+    "all": 830
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201213,11 +201213,11 @@
     "all"
    ],
    "order": {
-    "all": 825
+    "all": 831
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204327,7 +204327,7 @@
    "pr": "896",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-23T22:16:02.077Z",
+   "updatedAt": "2026-11-24T03:58:13.940Z",
    "builtAt": "",
    "notes": [
     {
@@ -205497,6 +205497,10 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at running-ci. Alerted Brett.",
      "at": "2026-11-23T22:16:02.077Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 6: PR #896 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry orchestrator-settings-collapsible-split) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry orchestrator-settings-collapsible-split",
+     "at": "2026-11-24T03:58:13.940Z"
     }
    ],
    "approvals": [
@@ -205599,30 +205603,21 @@
     }
    },
    "failure": {
-    "kind": "ci-red",
+    "kind": "pr-closed",
     "status": "running-ci",
-    "why": "CI is red on cfcc15e95 (Build engine sweep (Node))",
-    "head": "cfcc15e9559b1bbc78fb669a11ca289c2dc4cc6f",
+    "why": "PR #896 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry orchestrator-settings-collapsible-split) and a new PR is opened.",
+    "head": "",
     "pr": 896,
-    "at": "2026-11-23T22:15:06.021Z",
-    "attempt": 5,
+    "at": "2026-11-24T03:58:08.898Z",
+    "attempt": 6,
     "retry": "hold",
     "notBefore": "",
     "needsBrett": true,
-    "stopped": "attempt 5 of 5",
-    "resume": "rerun",
-    "failing": [
-     "Build engine sweep (Node)"
-    ],
-    "jobIds": [
-     138045247211
-    ],
-    "runIds": [
-     45273255739
-    ]
+    "stopped": "the PR was closed without merging",
+    "resume": "same"
    },
    "landing": {
-    "attempt": 5,
+    "attempt": 6,
     "split": true,
     "rules": {
      "head": "9888b9101e432d8e061f0cacb5d85b1d970bb65f",
@@ -206832,11 +206827,11 @@
     "all"
    ],
    "order": {
-    "all": 834
+    "all": 840
    },
    "kind": "build",
    "planRef": "",
-   "rev": 355,
+   "rev": 358,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -209976,11 +209971,11 @@
     "all"
    ],
    "order": {
-    "all": 842
+    "all": 848
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211525,11 +211520,11 @@
     "all"
    ],
    "order": {
-    "all": 848
+    "all": 854
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212683,11 +212678,11 @@
     "all"
    ],
    "order": {
-    "all": 852
+    "all": 858
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214389,11 +214384,11 @@
     "all"
    ],
    "order": {
-    "all": 857
+    "all": 863
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224432,11 +224427,11 @@
     "all"
    ],
    "order": {
-    "all": 881
+    "all": 887
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -225290,7 +225285,7 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
@@ -225298,7 +225293,7 @@
    "pr": "#780",
    "mergedAt": "2026-11-17T18:59:35Z",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-24T01:06:23.209Z",
+   "updatedAt": "2026-11-24T01:06:55.048Z",
    "builtAt": "",
    "notes": [
     {
@@ -225492,6 +225487,10 @@
     {
      "text": "Watchdog: merged, and main is green at 88eb36b4c0 with e5452d2cad in it (CI on the merge commit itself: red, fixed on main since): landed.",
      "at": "2026-11-24T01:06:23.209Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-24T01:06:55.048Z"
     }
    ],
    "approvals": [
@@ -225573,9 +225572,9 @@
     "ci": "success",
     "ciAt": "2026-11-24T01:06:23.209Z",
     "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-24T01:06:55.048Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-orchestrator-stale-row-watchdog-vps",
@@ -226165,7 +226164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 166,
+   "rev": 167,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227090,11 +227089,11 @@
     "all"
    ],
    "order": {
-    "all": 888
+    "all": 894
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232488,11 +232487,11 @@
     "all"
    ],
    "order": {
-    "all": 895
+    "all": 901
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -232856,11 +232855,11 @@
     "all"
    ],
    "order": {
-    "all": 896
+    "all": 902
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233193,11 +233192,11 @@
     "all"
    ],
    "order": {
-    "all": 897
+    "all": 903
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259281,11 +259280,11 @@
     "all"
    ],
    "order": {
-    "all": 944
+    "all": 950
    },
    "kind": "build",
    "planRef": "",
-   "rev": 156,
+   "rev": 158,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263550,11 +263549,11 @@
     "all"
    ],
    "order": {
-    "all": 945
+    "all": 951
    },
    "kind": "build",
    "planRef": "",
-   "rev": 127,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264424,11 +264423,11 @@
     "all"
    ],
    "order": {
-    "all": 946
+    "all": 952
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267172,11 +267171,11 @@
     "all"
    ],
    "order": {
-    "all": 950
+    "all": 956
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267931,11 +267930,11 @@
     "all"
    ],
    "order": {
-    "all": 951
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269405,11 +269404,11 @@
     "all"
    ],
    "order": {
-    "all": 953
+    "all": 959
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270087,11 +270086,11 @@
     "all"
    ],
    "order": {
-    "all": 954
+    "all": 960
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271823,11 +271822,11 @@
     "all"
    ],
    "order": {
-    "all": 957
+    "all": 963
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272749,11 +272748,11 @@
     "all"
    ],
    "order": {
-    "all": 958
+    "all": 964
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273542,11 +273541,11 @@
     "all"
    ],
    "order": {
-    "all": 959
+    "all": 965
    },
    "kind": "build",
    "planRef": "",
-   "rev": 133,
+   "rev": 135,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274237,11 +274236,11 @@
     "all"
    ],
    "order": {
-    "all": 960
+    "all": 966
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275057,11 +275056,11 @@
     "all"
    ],
    "order": {
-    "all": 961
+    "all": 967
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275177,7 +275176,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275186,7 +275185,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-24T01:06:35.810Z",
+   "updatedAt": "2026-11-24T01:07:15.417Z",
    "builtAt": "",
    "notes": [
     {
@@ -275796,6 +275795,10 @@
     {
      "text": "Watchdog: merged, and main is green at 88eb36b4c0 with f24310605d in it (CI on the merge commit itself: red, fixed on main since): landed.",
      "at": "2026-11-24T01:06:35.810Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-24T01:07:15.417Z"
     }
    ],
    "approvals": [
@@ -275876,9 +275879,9 @@
     "ci": "success",
     "ciAt": "2026-11-24T01:06:35.810Z",
     "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-24T01:07:15.417Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-rebuild-fresh-main-phone-connect-small",
@@ -276589,7 +276592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 246,
+   "rev": 247,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279638,11 +279641,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 974
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280458,11 +280461,11 @@
     "all"
    ],
    "order": {
-    "all": 969
+    "all": 975
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281189,11 +281192,11 @@
     "all"
    ],
    "order": {
-    "all": 970
+    "all": 976
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281948,11 +281951,11 @@
     "all"
    ],
    "order": {
-    "all": 971
+    "all": 977
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282622,11 +282625,11 @@
     "all"
    ],
    "order": {
-    "all": 972
+    "all": 978
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282942,11 +282945,11 @@
     "all"
    ],
    "order": {
-    "all": 973
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283578,11 +283581,11 @@
     "all"
    ],
    "order": {
-    "all": 974
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284388,11 +284391,11 @@
     "all"
    ],
    "order": {
-    "all": 975
+    "all": 981
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285284,11 +285287,11 @@
     "all"
    ],
    "order": {
-    "all": 976
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287070,11 +287073,11 @@
     "all"
    ],
    "order": {
-    "all": 978
+    "all": 984
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287428,11 +287431,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288348,11 +288351,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 986
    },
    "kind": "build",
    "planRef": "",
-   "rev": 133,
+   "rev": 135,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288470,7 +288473,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288479,7 +288482,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-24T01:06:47.329Z",
+   "updatedAt": "2026-11-24T01:07:29.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -288913,6 +288916,10 @@
     {
      "text": "Watchdog: merged, and main is green at 88eb36b4c0 with d3ac5e93ec in it (CI on the merge commit itself: red, fixed on main since): landed.",
      "at": "2026-11-24T01:06:47.329Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-24T01:07:29.412Z"
     }
    ],
    "approvals": [
@@ -288993,9 +289000,9 @@
     "ci": "success",
     "ciAt": "2026-11-24T01:06:47.329Z",
     "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-24T01:07:29.412Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-guided-live-demo-test-watch-orchestrator",
@@ -289607,7 +289614,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 216,
+   "rev": 217,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290278,11 +290285,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 988
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290917,11 +290924,11 @@
     "all"
    ],
    "order": {
-    "all": 983
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291601,11 +291608,11 @@
     "all"
    ],
    "order": {
-    "all": 984
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296230,11 +296237,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296660,11 +296667,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 992
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297046,11 +297053,11 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297437,11 +297444,11 @@
     "all"
    ],
    "order": {
-    "all": 987
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297828,11 +297835,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 995
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298218,11 +298225,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298609,11 +298616,11 @@
     "all"
    ],
    "order": {
-    "all": 991
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299270,11 +299277,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 998
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299923,11 +299930,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -300374,11 +300381,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301440,11 +301447,11 @@
     "all"
    ],
    "order": {
-    "all": 995
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -302665,11 +302672,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -303438,11 +303445,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 1003
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -304556,11 +304563,11 @@
     "all"
    ],
    "order": {
-    "all": 999
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -306935,11 +306942,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 1006
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -307922,11 +307929,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 127,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -311981,11 +311988,11 @@
     "all"
    ],
    "order": {
-    "all": 1002
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -326953,11 +326960,11 @@
     "all"
    ],
    "order": {
-    "all": 1003
+    "all": 1009
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -327583,11 +327590,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -328304,11 +328311,11 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 1011
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329535,11 +329542,11 @@
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 1013
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330067,11 +330074,11 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 1014
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -330625,11 +330632,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 1015
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331331,11 +331338,11 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1016
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -331913,11 +331920,11 @@
     "all"
    ],
    "order": {
-    "all": 1011
+    "all": 1017
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -332506,11 +332513,11 @@
     "all"
    ],
    "order": {
-    "all": 1012
+    "all": 1018
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333133,11 +333140,11 @@
     "all"
    ],
    "order": {
-    "all": 1013
+    "all": 1019
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333992,11 +333999,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -334670,11 +334677,11 @@
     "all"
    ],
    "order": {
-    "all": 1015
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -334759,14 +334766,14 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-22T03:15:25.307Z",
+   "updatedAt": "2026-11-24T04:01:11.204Z",
    "builtAt": "",
    "notes": [
     {
@@ -334832,6 +334839,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s16 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T03:15:25.307Z"
+    },
+    {
+     "text": "Watchdog: Queued build plan-studio-2-open-button-working-deep → Remove: Its PR was closed without a merge (PR #843 closed; not on main; build plan-studio-2-open-button-working-deep: queued) (queued → archived)",
+     "at": "2026-11-24T04:01:11.204Z"
     }
    ],
    "approvals": [],
@@ -335314,11 +335325,11 @@
     "all"
    ],
    "order": {
-    "all": 1016
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335587,11 +335598,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1023
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336434,14 +336445,14 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "#844",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-22T03:25:30.093Z",
+   "updatedAt": "2026-11-24T04:01:11.204Z",
    "builtAt": "",
    "notes": [
     {
@@ -336499,6 +336510,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s8 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T03:25:30.093Z"
+    },
+    {
+     "text": "Watchdog: Queued build every-plugin-gets-own-default-toolbar → Remove: Its PR was closed without a merge (PR #844 closed; not on main; build every-plugin-gets-own-default-toolbar: queued) (queued → archived)",
+     "at": "2026-11-24T04:01:11.204Z"
     }
    ],
    "approvals": [],
@@ -336761,11 +336776,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337079,11 +337094,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1027
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337556,11 +337571,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1028
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339035,11 +339050,11 @@
     "all"
    ],
    "order": {
-    "all": 1023
+    "all": 1029
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339332,11 +339347,11 @@
     "all"
    ],
    "order": {
-    "all": 1024
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -339421,14 +339436,14 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-22T09:05:42.844Z",
+   "updatedAt": "2026-11-24T04:01:11.204Z",
    "builtAt": "",
    "notes": [
     {
@@ -339538,6 +339553,10 @@
     {
      "text": "Self-check: stop-push-storm-builds-live-pushes-build was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T09:05:42.844Z"
+    },
+    {
+     "text": "Watchdog: Queued build stop-push-storm-builds-live-pushes-build → Remove: Its PR was closed without a merge (PR #850 closed; not on main; build stop-push-storm-builds-live-pushes-build: queued) (queued → archived)",
+     "at": "2026-11-24T04:01:11.204Z"
     }
    ],
    "approvals": [],
@@ -339668,11 +339687,11 @@
     "all"
    ],
    "order": {
-    "all": 1025
+    "all": 1029
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -339730,7 +339749,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -339738,7 +339757,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-24T01:05:51.073Z",
+   "updatedAt": "2026-11-24T01:07:39.973Z",
    "builtAt": "",
    "notes": [
     {
@@ -340388,6 +340407,10 @@
     {
      "text": "Watchdog: merged, and main is green at 88eb36b4c0 with 9c20047d4c in it (CI on the merge commit itself: red, fixed on main since): landed.",
      "at": "2026-11-24T01:05:51.073Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-24T01:07:39.973Z"
     }
    ],
    "approvals": [
@@ -340474,9 +340497,9 @@
     "ci": "success",
     "ciAt": "2026-11-24T01:05:51.073Z",
     "ciRun": "main@88eb36b4c04260b5f00d37f77118707f708b505c",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-24T01:07:39.973Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-urgent-all-data-to-postgres-builds-store",
@@ -340604,7 +340627,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 186,
+   "rev": 187,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -341022,11 +341045,11 @@
     "all"
    ],
    "order": {
-    "all": 1027
+    "all": 1033
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341329,11 +341352,11 @@
     "all"
    ],
    "order": {
-    "all": 1028
+    "all": 1034
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341715,11 +341738,11 @@
     "all"
    ],
    "order": {
-    "all": 1029
+    "all": 1035
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342083,11 +342106,11 @@
     "all"
    ],
    "order": {
-    "all": 1030
+    "all": 1036
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343078,11 +343101,11 @@
     "all"
    ],
    "order": {
-    "all": 1033
+    "all": 1039
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343553,11 +343576,11 @@
     "all"
    ],
    "order": {
-    "all": 1034
+    "all": 1040
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344053,11 +344076,11 @@
     "all"
    ],
    "order": {
-    "all": 1035
+    "all": 1041
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356192,11 +356215,11 @@
     "all"
    ],
    "order": {
-    "all": 16
+    "all": 22
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -356886,11 +356909,11 @@
     "all"
    ],
    "order": {
-    "all": 15
+    "all": 21
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -358659,11 +358682,11 @@
     "all"
    ],
    "order": {
-    "all": 13
+    "all": 19
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -359511,11 +359534,11 @@
     "all"
    ],
    "order": {
-    "all": 12
+    "all": 18
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -362724,11 +362747,11 @@
     "all"
    ],
    "order": {
-    "all": 1044
+    "all": 1050
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363213,7 +363236,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-23T23:58:06.241Z",
-   "updatedAt": "2026-11-24T01:04:47.143Z",
+   "updatedAt": "2026-11-24T01:41:33.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -363267,6 +363290,14 @@
     {
      "text": "Brett (voice, Nov 24): open a PR as soon as a build starts, \"because I want that in the build store, so the orchestrator and Plan Studio knows what PRs ... are going on.\" Required: when a build (or step) starts, open a draft PR right away (CI held until it's marked ready), write the PR number and link to the build record in the builds store, and show it in both Plan Studio 2.0 and the orchestrator from the start.",
      "at": "2026-11-24T01:04:47.143Z"
+    },
+    {
+     "text": "psync-b-server-lander (s3 + s4 + the lander notes) is pushed on claude/psync-b-server-lander, not landed. Needs from the other parts: psync-a's store contract for landing.mergeLine / landing.state (checked against its worktree: kept), and one line in .github/workflows/android.yml to run apps/console-web/server/test_builds_events.py. Report: _claude/builds/reports/psync-b-server-lander.md.",
+     "at": "2026-11-24T01:34:03.256Z"
+    },
+    {
+     "text": "Part A (psync-a-core-2, steps s1 + s2) check: who split pipeline-watch-test. The dispatcher log on the VPS host shows the split is a Fable call made by the VPS splitting stage (pipeline2.mjs designSteps, model policy key fable; log event design by fable, 2 steps, 23:22:32Z), not an orchestrator-only Opus call. Nothing to fix there. The 'refused a write by orchestrator ... step replaced' note after each split had another cause: two passes found the build at pending while Fable was still answering, both asked Fable, and the second answer was written over the first 5 to 20 seconds later (pipeline-watch-test 23:22:38 then 23:22:43; this build 23:59:57 then 00:00:21). Fixed on branch claude/psync-a-core-2: one splitter per build (a claim written with the move to splitting; a late answer is dropped, never written). Built on that branch, not started by the dispatcher. Report: _claude/builds/reports/psync-a-core.md.",
+     "at": "2026-11-24T01:41:33.485Z"
     }
    ],
    "approvals": [],
@@ -363726,12 +363757,12 @@
     "all"
    ],
    "order": {
-    "all": 7
+    "all": 13
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
-   "rev": 15,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363888,11 +363919,11 @@
     "all"
    ],
    "order": {
-    "all": 4
+    "all": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363929,19 +363960,23 @@
    "title": "Hand build: pipeline-sync-hand-2 (URGENT, Brett: run it by hand, from fresh main)",
    "category": "",
    "detail": "# Hand build: pipeline-sync-hand-2 (URGENT, Brett: run it by hand, from fresh main)\n\nRestart of `pipeline-sync-hand`, which was paused so it could start from main after PR 899 (console-open-no-reload) and PR 900 (console-idle-load-fix) merged. Both are on main now. Ignore the old folder /root/axf-builds/pipeline-sync-hand.\n\nHand build because the pipeline is what's broken. Register it as a hand build (framework/cli/hand-build.mjs). The same work sits in the orchestrator as build `pipeline-sync-live-badges` (status split, 8 steps designed by Fable) from Plan Studio 2.0 plan `pipeline-sync-vps-fable-split-fe-rvjv`. Read that build record FIRST (`node framework/cli/builds-store.mjs` / orchestrator CLI): its detail, its 8 steps AND EVERY NOTE ON IT are the requirements (Brett added many by voice: conflict-free splits, rejecting clashing builds with defer options, unique build and step IDs in their own column, merge-line order and 'waiting for' on screen, a Merge together option, and the lander rule). Where notes conflict, the later note wins. Tick its steps as you finish, and when you land, mark that build landed so the dispatcher never runs it again. Do NOT let the dispatcher start it while you work.\n\n## Brett's flow (must be exactly this)\nPlan Studio 2.0 sends the plan to the orchestrator -> orchestrator lists steps and passes the build to the VPS -> the VPS uses Fable to split it into as many steps as possible that never share files (each must merge cleanly on its own, first time), none over 10 minutes -> the VPS writes the split to the builds store (one true source) -> the VPS sends one update to BOTH the orchestrator and Plan Studio 2.0 at the same time -> both read from the store and show it live. Each step: badge 'split by Fable on the VPS', the triage gate's model, its own unique ID in its own column.\n\n## Lander rule (latest, Brett Nov 24)\nWhen a build's PR is green, ALWAYS try to merge it as is first. No approval, no veto, no second PR, no CI rerun up front. Only if that merge actually fails does the lander pull in main and rerun CI, on its own. (Today it opened PR 901 and reran full CI after PR 900 was green, when main had only moved by a [skip ci] status sync. Fix that.)\n\n## Seen live\n- `pipeline-watch-test` reached `split` with 2 Fable steps in the store, but Plan Studio 2.0 still showed parked, 0 steps, no badges.\n- Store note right after each split: \"refused a write by orchestrator ... step s1 was replaced by another (split: its steps are fixed)\". Find and fix.\n- Builds sat at `split` (only one active build allowed) with nothing on screen saying which build held the place.\n\n## Status badges in both screens (plus a plain status line saying what it's doing now)\npending, splitting, split (waiting: name the build holding the active place), pulling main, assigning models, ready, sending, building, build complete, failed (attempt N), waiting to merge (place in line + which build it waits for), merging, running CI, landed.\n\n## Required test (Brett: follow from Plan Studio all the way, very small, at least five steps)\nAfter landing and the console redeploy: write a new plan in Plan Studio 2.0 with 5 trivial steps (five one-line docs edits in five separate files), send it, and follow it through every state to landed. Confirm each state shows live in both screens with IDs and badges; fix any gap.\n\n## Done means\nTests green; commit and push as you go (an account limit must never lose work). PR, land it, run the 5-step test, short report in _claude/builds/reports/pipeline-sync-hand-2.md.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/pipeline-sync-hand-2",
    "pr": "",
    "createdAt": "2026-11-24T01:03:14.032Z",
-   "updatedAt": "2026-11-24T01:03:41.440Z",
+   "updatedAt": "2026-11-24T01:07:38.100Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-pipeline-sync-hand-2--gina on Fable, in /root/axf-builds/pipeline-sync-hand-2 on claude/pipeline-sync-hand-2. It runs beside the active build; when its session ends cleanly the lander lands it.",
      "at": "2026-11-24T01:03:14.032Z"
+    },
+    {
+     "text": "Hand build failed: its session ended with exit 1. Nothing relaunches a hand build: start it again under the same name to carry on in /root/axf-builds/pipeline-sync-hand-2.",
+     "at": "2026-11-24T01:07:21.205Z"
     }
    ],
    "approvals": [],
@@ -364006,12 +364041,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T01:03:14.032Z",
-     "updatedAt": "2026-11-24T01:03:14.032Z",
-     "statusAt": "2026-11-24T01:03:14.032Z",
-     "statusBy": "Greenlight Gina",
+     "updatedAt": "2026-11-24T01:07:27.326Z",
+     "statusAt": "2026-11-24T01:07:27.227Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "building",
@@ -364019,9 +364055,16 @@
        "by": "Greenlight Gina",
        "attempt": 1,
        "why": "hand launch: axf-pipeline-sync-hand-2--gina"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T01:07:27.227Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "worktree": "/root/axf-builds/pipeline-sync-hand-2",
      "branch": "claude/pipeline-sync-hand-2",
      "tmux": "axf-pipeline-sync-hand-2--gina"
@@ -364031,11 +364074,11 @@
     "all"
    ],
    "order": {
-    "all": 1
+    "all": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364046,9 +364089,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:03:14.032Z",
-   "statusBy": "Greenlight Gina",
+   "statusAt": "2026-11-24T01:07:38.100Z",
+   "statusBy": "orchestrator",
    "attempt": 1,
+   "failedFrom": "building",
    "statusLog": [
     {
      "status": "building",
@@ -364056,6 +364100,13 @@
      "by": "Greenlight Gina",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T01:07:38.100Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "session exit 1"
     }
    ]
   },
@@ -364064,23 +364115,64 @@
    "title": "Hand build psync-a-core (part A of 4, parallel; Brett: split the pipeline repair into 4)",
    "category": "",
    "detail": "# Hand build psync-a-core (part A of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Three sibling hand builds run in parallel: psync-b-server-lander, psync-c-planstudio, psync-d-orch-ui. Touch ONLY your files below so all four merge cleanly on their own.\n\n## Your part: store contract + pipeline (its steps s1 and s2)\nFiles: framework/core/pipeline-status.mjs, framework/schemas/pipeline-status.json, framework/spec/fixtures/pipeline-status.json, framework/spec/check-pipeline-status.mjs, framework/cli/builds-store.mjs, apps/console-web/plugins/build-orchestrator/pipeline2.mjs, pipeline.mjs, and new framework/core/build-clash.mjs if needed.\n- s1: pipeline-status@1 states + pipelineView computed on read (see step text). Add `number` (short unique build number, e.g. B-0123, assigned once in the store) and keep each step's unique `uid`; expose both in the read so the UIs can show them in their own columns.\n- s2: confirm the split runs on Fable on the VPS; record split provenance; fix the 'refused a write by orchestrator ... step replaced' error right after each split; send POST /api/builds/updated after each state change.\n- Conflict rules (notes): Fable split must give steps that never share files so each merges cleanly alone. On intake, check a new build against every build not yet on main (building or waiting to merge); on a clash reject the whole build with a plain reason and offer options: run all, or run clean steps now and defer the clashing steps, each naming the build it waits for and starting by itself when that lands.\n\nShared contract for siblings: build read carries { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine}, split{by,model,at,stepCount} }, steps carry { uid, splitBy, model, modelBy }. Commit and push as you go. Tests green, PR, land it (lander rule: try merging the green PR first). Report: _claude/builds/reports/psync-a-core.md.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/psync-a-core",
    "pr": "",
    "createdAt": "2026-11-24T01:04:03.592Z",
-   "updatedAt": "2026-11-24T01:04:03.592Z",
+   "updatedAt": "2026-11-24T01:08:08.434Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-psync-a-core--rhonda on Fable, in /root/axf-builds/psync-a-core on claude/psync-a-core. It runs beside the active build; when its session ends cleanly the lander lands it.",
      "at": "2026-11-24T01:04:03.592Z"
+    },
+    {
+     "text": "Hand build failed: its session ended with exit 1. Nothing relaunches a hand build: start it again under the same name to carry on in /root/axf-builds/psync-a-core.",
+     "at": "2026-11-24T01:07:56.749Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:05:45.915Z",
+     "exit": 129,
+     "signal": "HUP",
+     "kind": "crash",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-psync-d-orch-ui--sully",
+     "phase": ""
+    }
+   },
    "hand": {
     "at": "2026-11-24T01:04:03.592Z",
     "by": "Reel Rhonda"
@@ -364104,12 +364196,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T01:04:03.592Z",
-     "updatedAt": "2026-11-24T01:04:03.592Z",
-     "statusAt": "2026-11-24T01:04:03.592Z",
-     "statusBy": "Reel Rhonda",
+     "updatedAt": "2026-11-24T01:07:59.360Z",
+     "statusAt": "2026-11-24T01:07:59.284Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "building",
@@ -364117,9 +364210,16 @@
        "by": "Reel Rhonda",
        "attempt": 1,
        "why": "hand launch: axf-psync-a-core--rhonda"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-24T01:07:59.284Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "worktree": "/root/axf-builds/psync-a-core",
      "branch": "claude/psync-a-core",
      "tmux": "axf-psync-a-core--rhonda"
@@ -364129,11 +364229,11 @@
     "all"
    ],
    "order": {
-    "all": 2
+    "all": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364144,9 +364244,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:04:03.592Z",
-   "statusBy": "Reel Rhonda",
+   "statusAt": "2026-11-24T01:08:08.434Z",
+   "statusBy": "orchestrator",
    "attempt": 1,
+   "failedFrom": "building",
    "statusLog": [
     {
      "status": "building",
@@ -364154,6 +364255,13 @@
      "by": "Reel Rhonda",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T01:08:08.434Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "session exit 1"
     }
    ]
   },
@@ -364162,23 +364270,147 @@
    "title": "Hand build psync-b-server-lander (part B of 4, parallel; Brett: split the pipeline repair into 4)",
    "category": "",
    "detail": "# Hand build psync-b-server-lander (part B of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-c-planstudio, psync-d-orch-ui. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: live channel + lander (its steps s3 and s4)\nFiles: apps/console-web/server/builds_events.py (new), apps/console-web/server/main.py (one include line), apps/console-web/server/test_builds_events.py, deploy/lander/**.\n- s3: POST /api/builds/updated + GET /api/builds/events SSE to every screen, fallback store-rev watcher (see step text).\n- s4: lander writes waiting-to-merge / merging / running-ci / landed / failed(attempt N) to the store and sends the update command.\n- Merge line (notes): write each waiting build's place in line and the build it waits for into the store (field `mergeLine: { position, waitingFor }`), so both screens show 'Nth to merge, waiting for <build number>'.\n- 'Merge together' (notes): an action that combines all waiting builds into one branch, runs CI once, merges them in one go; a clashing one falls back to one at a time.\n- LANDER RULE (latest, Brett Nov 24): when a PR is green, ALWAYS try to merge it as is first. No approval, no second PR, no CI rerun up front. Only if that merge actually fails does it pull main and rerun CI, by itself. Today it opened PR 901 and reran CI after PR 900 was green with only a [skip ci] status sync on main: fix that.\n\nCode against psync-a-core's contract (build `number`, `pipelineView`, steps `uid`); fall back gracefully when absent.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files (check-landing-line.mjs, test_builds_events.py), commit and push branch claude/psync-b-server-lander. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Write a short report: _claude/builds/reports/psync-b-server-lander.md.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/psync-b-server-lander",
-   "pr": "",
+   "pr": "905",
    "createdAt": "2026-11-24T01:04:27.905Z",
-   "updatedAt": "2026-11-24T01:04:27.905Z",
+   "updatedAt": "2026-11-24T03:30:58.264Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-psync-b-server-lander--joey on Fable, in /root/axf-builds/psync-b-server-lander on claude/psync-b-server-lander. It runs beside the active build; when its session ends cleanly the lander lands it.",
      "at": "2026-11-24T01:04:27.905Z"
+    },
+    {
+     "text": "Part B done and pushed (claude/psync-b-server-lander, df20360c9): live channel + lander. No PR, not landed, CI not run: the voice session combines the four branches. Report: _claude/builds/reports/psync-b-server-lander.md. Heads-up: when this session ends the hand-build hook sets build-complete and the live lander lands this part by itself (psync-d-orch-ui is already in a lander PR). To combine first: node deploy/lander/run.mjs pause --by <who> --why 'combining psync a-d', resume after.",
+     "at": "2026-11-24T01:33:29.566Z"
+    },
+    {
+     "text": "Headless run axf-psync-b-server-lander--joey: brief only · start 11.4K tokens ($0.05) · cost $10.32 · 63 turns · 6 tools, MCP none",
+     "at": "2026-11-24T01:34:59.849Z"
+    },
+    {
+     "text": "Hand build finished (3 commits on claude/psync-b-server-lander). Over to the lander.",
+     "at": "2026-11-24T01:34:50.003Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $10.32",
+     "at": "2026-11-24T01:35:21.001Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T01:46:09.409Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T01:46:01.991Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 1: build rules fail at the gate (feature-status-tracker)",
+     "at": "2026-11-24T02:21:08.137Z"
+    },
+    {
+     "text": "Lander: attempt 1: fix session 1 of 2 on lander/psync-b-server-lander (fable, axf-lander-fix-pr905-1--lenny)",
+     "at": "2026-11-24T02:25:48.921Z"
+    },
+    {
+     "text": "Lander: the fix pushed 87dc21705; CI runs on it",
+     "at": "2026-11-24T02:43:06.394Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 2: CI is red on 87dc21705 (Build engine sweep (Node))",
+     "at": "2026-11-24T02:56:26.650Z"
+    },
+    {
+     "text": "Lander: attempt 2: re-running the failed CI jobs on 87dc21705 (flaky check)",
+     "at": "2026-11-24T03:00:37.937Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 3: CI is red on 87dc21705 (Build engine sweep (Node))",
+     "at": "2026-11-24T03:22:24.162Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: PR #905 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-b-server-lander) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry psync-b-server-lander",
+     "at": "2026-11-24T03:30:58.264Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:34:36.963Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-psync-b-server-lander--joey",
+     "phase": ""
+    }
+   },
+   "failure": {
+    "kind": "pr-closed",
+    "status": "running-ci",
+    "why": "PR #905 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-b-server-lander) and a new PR is opened.",
+    "head": "",
+    "pr": 905,
+    "at": "2026-11-24T03:30:49.332Z",
+    "attempt": 4,
+    "retry": "hold",
+    "notBefore": "",
+    "needsBrett": true,
+    "stopped": "the PR was closed without merging",
+    "resume": "same"
+   },
+   "landing": {
+    "attempt": 4,
+    "reruns": {
+     "head": "87dc21705bc4f2da2ab8ccdfe84d1464bdc11d48",
+     "n": 1
+    },
+    "rules": {
+     "head": "df20360c95b49a436071a8ea2c2dc60517204e93",
+     "ok": false,
+     "failing": [
+      "feature-status-tracker"
+     ],
+     "fixed": [],
+     "detail": "feature-status-tracker: node framework/cli/tracker.mjs --check: exit 1\nfoundations  built  71  partial   3  placeholder   1  planned   0   95% built\nkernel       built  84  partial  11  placeholder  91  planned   0   45% built\nconsole      built  19  partial   1  placeholder   3  planned   1   79% built\nmodules      built  15  partial   3  placeholder   4  planned  10   47% built\ndemos        built  11  partial   5  placeholder   4  planned  63   13% built\n1 item(s) without a status in status.json",
+     "at": "2026-11-24T02:20:25.867Z"
+    },
+    "fixes": {
+     "pr": 905,
+     "n": 1
+    }
+   },
    "hand": {
     "at": "2026-11-24T01:04:27.905Z",
     "by": "Janitor Joey"
@@ -364199,14 +364431,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T01:34:18.658Z",
      "note": "",
-     "rev": 1,
+     "rev": 4,
      "createdAt": "2026-11-24T01:04:27.905Z",
-     "updatedAt": "2026-11-24T01:04:27.905Z",
-     "statusAt": "2026-11-24T01:04:27.905Z",
-     "statusBy": "Janitor Joey",
+     "updatedAt": "2026-11-24T01:46:22.082Z",
+     "statusAt": "2026-11-24T01:46:22.004Z",
+     "statusBy": "lander",
      "attempt": 1,
      "statusLog": [
       {
@@ -364215,23 +364447,37 @@
        "by": "Janitor Joey",
        "attempt": 1,
        "why": "hand launch: axf-psync-b-server-lander--joey"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T01:34:53.709Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T01:46:22.004Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "building",
+     "status": "in-pr",
      "worktree": "/root/axf-builds/psync-b-server-lander",
      "branch": "claude/psync-b-server-lander",
-     "tmux": "axf-psync-b-server-lander--joey"
+     "tmux": "axf-psync-b-server-lander--joey",
+     "prNumber": 905
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 3
+    "all": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364242,9 +364488,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:04:27.905Z",
-   "statusBy": "Janitor Joey",
-   "attempt": 1,
+   "statusAt": "2026-11-24T03:22:24.162Z",
+   "statusBy": "lander",
+   "attempt": 4,
+   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "building",
@@ -364252,6 +364499,67 @@
      "by": "Janitor Joey",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T01:35:11.668Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T01:46:09.409Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T01:46:27.198Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T01:46:32.905Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:21:08.137Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: failed in running-ci, attempt 1: build rules fail at the gate (feature-status-tracker)"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:43:06.394Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: the fix pushed 87dc21705; CI runs on it"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:56:26.650Z",
+     "by": "lander",
+     "attempt": 2,
+     "why": "Lander: failed in running-ci, attempt 2: CI is red on 87dc21705 (Build engine sweep (Node))"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T03:00:37.937Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 2: re-running the failed CI jobs on 87dc21705 (flaky check)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T03:22:24.162Z",
+     "by": "lander",
+     "attempt": 3,
+     "why": "Lander: failed in running-ci, attempt 3: CI is red on 87dc21705 (Build engine sweep (Node))"
     }
    ]
   },
@@ -364260,24 +364568,137 @@
    "title": "Hand build psync-c-planstudio (part C of 4, parallel; Brett: split the pipeline repair into 4)",
    "category": "",
    "detail": "# Hand build psync-c-planstudio (part C of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-d-orch-ui. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: Plan Studio 2.0 (its steps s5 and s6)\nFiles: apps/console-web/plugins/plan-studio-2/** only.\n- s5: GET /api/plugins/plan-studio-2/plans/<planId>/build read live from the builds store; fix the stale plan status (a sent plan no longer shows parked, 0 steps). Never copy steps into the plan tree.\n- s6: under each sent plan show the build number, the state badge and plain status line, the waiting reason, 'Split by Fable on the VPS' badge, the merge line ('Nth to merge, waiting for <build number>'), and the steps in a table with the step's unique ID in ITS OWN COLUMN, split badge, triage model, step status. Live via EventSource /api/builds/events + refetch on focus. Show the clash options when a build was rejected (run all / defer steps, naming what they wait for).\n\nContract from siblings (code against it, mock in tests, fall back when absent): build { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine{position,waitingFor}}, split{by,model,at,stepCount} }, steps { uid, splitBy, model, modelBy, status }. Framework controls and tokens only.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files, commit and push branch claude/psync-c-planstudio. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Short report: _claude/builds/reports/psync-c-planstudio.md.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/psync-c-planstudio",
-   "pr": "",
+   "pr": "904",
    "createdAt": "2026-11-24T01:05:00.966Z",
-   "updatedAt": "2026-11-24T01:05:00.966Z",
+   "updatedAt": "2026-11-24T03:31:14.872Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-psync-c-planstudio--paulie on Fable, in /root/axf-builds/psync-c-planstudio on claude/psync-c-planstudio. It runs beside the active build; when its session ends cleanly the lander lands it.",
-     "at": "2026-11-24T01:05:00.966Z",
-     "by": "Ping Paulie"
+     "at": "2026-11-24T01:05:00.966Z"
+    },
+    {
+     "text": "Part C done and pushed on claude/psync-c-planstudio (no PR, by design). Plugin tests green. UI Review NOT submitted: this session has no console token; the command with the 6 shots is in _claude/builds/reports/psync-c-planstudio.md. Clash shape and the run-all / defer actions are assumptions to align when combining.",
+     "at": "2026-11-24T01:32:27.932Z"
+    },
+    {
+     "text": "Headless run axf-psync-c-planstudio--paulie: brief only · start 11.7K tokens ($0.05) · cost $6.96 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-24T01:33:30.696Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $6.96",
+     "at": "2026-11-24T01:33:37.152Z"
+    },
+    {
+     "text": "Hand build finished (3 commits on claude/psync-c-planstudio). Over to the lander.",
+     "at": "2026-11-24T01:33:27.717Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T01:44:09.450Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T01:44:02.402Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 1: CI is red on 550628883 (Web Dev Console (React/TS) + Python API)",
+     "at": "2026-11-24T02:13:20.282Z"
+    },
+    {
+     "text": "Lander: attempt 1: re-running the failed CI jobs on 550628883 (flaky check)",
+     "at": "2026-11-24T02:24:37.012Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 2: CI is red on 550628883 (Web Dev Console (React/TS) + Python API)",
+     "at": "2026-11-24T02:42:06.647Z"
+    },
+    {
+     "text": "Lander: attempt 2: fix session 1 of 2 on lander/psync-c-planstudio (fable, axf-lander-fix-pr904-1--lenny)",
+     "at": "2026-11-24T02:46:28.691Z"
+    },
+    {
+     "text": "Lander: the fix pushed 228e7599d; CI runs on it",
+     "at": "2026-11-24T02:59:32.554Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 3: CI is red on 228e7599d (Web Dev Console (React/TS) + Python API)",
+     "at": "2026-11-24T03:21:16.377Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: PR #904 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-c-planstudio) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry psync-c-planstudio",
+     "at": "2026-11-24T03:31:14.872Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:33:06.962Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-psync-c-planstudio--paulie",
+     "phase": ""
+    }
+   },
+   "failure": {
+    "kind": "pr-closed",
+    "status": "running-ci",
+    "why": "PR #904 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-c-planstudio) and a new PR is opened.",
+    "head": "",
+    "pr": 904,
+    "at": "2026-11-24T03:30:49.332Z",
+    "attempt": 4,
+    "retry": "hold",
+    "notBefore": "",
+    "needsBrett": true,
+    "stopped": "the PR was closed without merging",
+    "resume": "same"
+   },
+   "landing": {
+    "attempt": 4,
+    "reruns": {
+     "head": "550628883489eeff55c06e29db8b3bc1fa604c02",
+     "n": 1
+    },
+    "fixes": {
+     "pr": 904,
+     "n": 1
+    }
+   },
    "hand": {
     "at": "2026-11-24T01:05:00.966Z",
     "by": "Ping Paulie"
@@ -364298,14 +364719,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T01:32:46.630Z",
      "note": "",
-     "rev": 1,
+     "rev": 4,
      "createdAt": "2026-11-24T01:05:00.966Z",
-     "updatedAt": "2026-11-24T01:05:00.966Z",
-     "statusAt": "2026-11-24T01:05:00.966Z",
-     "statusBy": "Ping Paulie",
+     "updatedAt": "2026-11-24T01:44:24.057Z",
+     "statusAt": "2026-11-24T01:44:23.980Z",
+     "statusBy": "lander",
      "attempt": 1,
      "statusLog": [
       {
@@ -364314,23 +364735,37 @@
        "by": "Ping Paulie",
        "attempt": 1,
        "why": "hand launch: axf-psync-c-planstudio--paulie"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T01:33:44.919Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T01:44:23.980Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "building",
+     "status": "in-pr",
      "worktree": "/root/axf-builds/psync-c-planstudio",
      "branch": "claude/psync-c-planstudio",
-     "tmux": "axf-psync-c-planstudio--paulie"
+     "tmux": "axf-psync-c-planstudio--paulie",
+     "prNumber": 904
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 0
+    "all": 3
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364341,9 +364776,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:05:00.966Z",
-   "statusBy": "Ping Paulie",
-   "attempt": 1,
+   "statusAt": "2026-11-24T03:21:16.377Z",
+   "statusBy": "lander",
+   "attempt": 4,
+   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "building",
@@ -364351,6 +364787,67 @@
      "by": "Ping Paulie",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T01:33:50.971Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T01:44:09.450Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T01:44:30.250Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T01:44:36.248Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:13:20.282Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: failed in running-ci, attempt 1: CI is red on 550628883 (Web Dev Console (React/TS) + Python API)"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:24:37.012Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 1: re-running the failed CI jobs on 550628883 (flaky check)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:42:06.647Z",
+     "by": "lander",
+     "attempt": 2,
+     "why": "Lander: failed in running-ci, attempt 2: CI is red on 550628883 (Web Dev Console (React/TS) + Python API)"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:59:32.554Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: the fix pushed 228e7599d; CI runs on it"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T03:21:16.377Z",
+     "by": "lander",
+     "attempt": 3,
+     "why": "Lander: failed in running-ci, attempt 3: CI is red on 228e7599d (Web Dev Console (React/TS) + Python API)"
     }
    ]
   },
@@ -364359,24 +364856,133 @@
    "title": "Hand build psync-d-orch-ui (part D of 4, parallel; Brett: split the pipeline repair into 4)",
    "category": "",
    "detail": "# Hand build psync-d-orch-ui (part D of 4, parallel; Brett: split the pipeline repair into 4)\n\nRegister as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-a-core, psync-b-server-lander, psync-c-planstudio. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: Build orchestrator screen + end-to-end test (its steps s7 and s8)\nFiles: apps/console-web/plugins/build-orchestrator/web/**, apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs, _claude/builds/reports/psync-d-orch-ui.md.\n- s7: every build row and detail shows the build number in its own column, the state badge for all states, the plain status line, the waiting reason with a link to the build holding the active place, the merge line ('Nth to merge, waiting for <build number>') and a 'Merge together' button (calls the lander action from psync-b), 'Split by Fable on the VPS' badge, and the steps with each step's unique ID in ITS OWN COLUMN plus the triage model. Live via EventSource /api/builds/events + refetch on focus.\n- s8: test-pipeline-sync.mjs end to end against the contract (skips cleanly any part not on this branch).\n\nContract (code against it, fall back when absent): build { number, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine{position,waitingFor}}, split{by,model,at,stepCount} }, steps { uid, splitBy, model, modelBy, status }. Framework controls and tokens only.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files, commit and push branch claude/psync-d-orch-ui. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Report as above.",
-   "status": "building",
+   "status": "failed",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/psync-d-orch-ui",
-   "pr": "",
+   "pr": "903",
    "createdAt": "2026-11-24T01:05:24.101Z",
-   "updatedAt": "2026-11-24T01:05:24.101Z",
+   "updatedAt": "2026-11-24T03:32:32.631Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-psync-d-orch-ui--sully on Fable, in /root/axf-builds/psync-d-orch-ui on claude/psync-d-orch-ui. It runs beside the active build; when its session ends cleanly the lander lands it.",
-     "at": "2026-11-24T01:05:24.101Z",
-     "by": "Snap Sully"
+     "at": "2026-11-24T01:05:24.101Z"
+    },
+    {
+     "text": "Part D pushed to claude/psync-d-orch-ui (1fa921de5), no PR: to be combined with parts A, B, C. test-pipeline-sync.mjs: 79 passed, 10 skipped (the other three parts). UI Review not submitted: this session has no AXF_CONSOLE_URL / AXF_TOKEN; the command and the seams to check are in _claude/builds/reports/psync-d-orch-ui.md.",
+     "at": "2026-11-24T01:29:33.906Z"
+    },
+    {
+     "text": "Hand build finished (1 commit on claude/psync-d-orch-ui). Over to the lander.",
+     "at": "2026-11-24T01:30:29.214Z"
+    },
+    {
+     "text": "Headless run axf-psync-d-orch-ui--sully: brief only · start 11.4K tokens ($0.05) · cost $6.95 · 59 turns · 6 tools, MCP none",
+     "at": "2026-11-24T01:30:54.559Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $6.95",
+     "at": "2026-11-24T01:31:07.600Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T01:31:16.473Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 1: CI is red on 1fa921de5 (Web Dev Console (React/TS) + Python API, Build engine sweep (Node))",
+     "at": "2026-11-24T02:02:02.752Z"
+    },
+    {
+     "text": "Lander: attempt 1: re-running the failed CI jobs on 1fa921de5 (flaky check)",
+     "at": "2026-11-24T02:23:35.377Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 2: CI is red on 1fa921de5 (Web Dev Console (React/TS) + Python API, Build engine sweep (Node))",
+     "at": "2026-11-24T02:41:03.273Z"
+    },
+    {
+     "text": "Lander: attempt 2: fix session 1 of 2 on lander/psync-d-orch-ui (fable, axf-lander-fix-pr903-1--lenny)",
+     "at": "2026-11-24T02:45:30.875Z"
+    },
+    {
+     "text": "Lander: the fix pushed d0f02af8c; CI runs on it",
+     "at": "2026-11-24T02:58:31.851Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 3: CI is red on d0f02af8c (Build engine sweep (Node))",
+     "at": "2026-11-24T03:15:02.053Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: PR #903 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-d-orch-ui) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry psync-d-orch-ui",
+     "at": "2026-11-24T03:32:32.631Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:29:55.383Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-psync-d-orch-ui--sully",
+     "phase": ""
+    }
+   },
+   "failure": {
+    "kind": "pr-closed",
+    "status": "running-ci",
+    "why": "PR #903 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-d-orch-ui) and a new PR is opened.",
+    "head": "",
+    "pr": 903,
+    "at": "2026-11-24T03:32:27.296Z",
+    "attempt": 4,
+    "retry": "hold",
+    "notBefore": "",
+    "needsBrett": true,
+    "stopped": "the PR was closed without merging",
+    "resume": "same"
+   },
+   "landing": {
+    "attempt": 4,
+    "reruns": {
+     "head": "1fa921de54c303147d4da4f870ab17eaac0f4c24",
+     "n": 1
+    },
+    "fixes": {
+     "pr": 903,
+     "n": 1
+    }
+   },
    "hand": {
     "at": "2026-11-24T01:05:24.101Z",
     "by": "Snap Sully"
@@ -364397,14 +365003,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T01:29:19.982Z",
      "note": "",
-     "rev": 1,
+     "rev": 4,
      "createdAt": "2026-11-24T01:05:24.101Z",
-     "updatedAt": "2026-11-24T01:05:24.101Z",
-     "statusAt": "2026-11-24T01:05:24.101Z",
-     "statusBy": "Snap Sully",
+     "updatedAt": "2026-11-24T01:31:37.382Z",
+     "statusAt": "2026-11-24T01:31:37.303Z",
+     "statusBy": "lander",
      "attempt": 1,
      "statusLog": [
       {
@@ -364413,23 +365019,37 @@
        "by": "Snap Sully",
        "attempt": 1,
        "why": "hand launch: axf-psync-d-orch-ui--sully"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T01:30:35.534Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T01:31:37.303Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "building",
+     "status": "in-pr",
      "worktree": "/root/axf-builds/psync-d-orch-ui",
      "branch": "claude/psync-d-orch-ui",
-     "tmux": "axf-psync-d-orch-ui--sully"
+     "tmux": "axf-psync-d-orch-ui--sully",
+     "prNumber": 903
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 0
+    "all": 4
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364440,9 +365060,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:05:24.101Z",
-   "statusBy": "Snap Sully",
-   "attempt": 1,
+   "statusAt": "2026-11-24T03:15:02.053Z",
+   "statusBy": "lander",
+   "attempt": 4,
+   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "building",
@@ -364450,6 +365071,67 @@
      "by": "Snap Sully",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T01:30:44.000Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T01:31:16.473Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T01:31:46.824Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T01:31:57.411Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:02:02.752Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: failed in running-ci, attempt 1: CI is red on 1fa921de5 (Web Dev Console (React/TS) + Python API, Build engine sweep (Node))"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:23:35.377Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 1: re-running the failed CI jobs on 1fa921de5 (flaky check)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:41:03.273Z",
+     "by": "lander",
+     "attempt": 2,
+     "why": "Lander: failed in running-ci, attempt 2: CI is red on 1fa921de5 (Web Dev Console (React/TS) + Python API, Build engine sweep (Node))"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:58:31.851Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: the fix pushed d0f02af8c; CI runs on it"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T03:15:02.053Z",
+     "by": "lander",
+     "attempt": 3,
+     "why": "Lander: failed in running-ci, attempt 3: CI is red on d0f02af8c (Build engine sweep (Node))"
     }
    ]
   },
@@ -364458,24 +365140,69 @@
    "title": "Hand build apk-stable-signing (small, urgent)",
    "category": "",
    "detail": "# Hand build apk-stable-signing (small, urgent)\n\nBrett: every new console app APK fails to install over the old one (\"App not installed\"), so he has to uninstall and reinstall every time. Make every CI build of the console app (apps/console-droid, artifact console-app-debug.apk) installable as an update over the previous one.\n\n1. Find why: almost certainly each CI run signs with a fresh debug keystore, and/or versionCode doesn't go up. Check apps/console-droid/app/build.gradle(.kts) and .github/workflows/android.yml.\n2. Fix: one fixed signing key for every CI build (a committed debug keystore for the debug variant is fine, or a keystore from a GitHub secret if one exists), wired into signingConfigs for the build CI ships; versionCode always increasing (e.g. from GITHUB_RUN_NUMBER, falling back to a fixed base locally), versionName showing it.\n3. Apply the same to any other APK CI ships (console-debug.apk) if it has the same problem.\n4. Note in the report: Brett must uninstall ONE last time, then every later APK updates in place.\n\nTouch only the console-droid Gradle files, the workflow's signing/version lines and the keystore file. Local checks, commit, push, open a PR and land it (lander rule: try merging the green PR as is first). Short report: _claude/builds/reports/apk-stable-signing.md.",
-   "status": "building",
+   "status": "archived",
    "hidden": false,
    "source": "hand",
    "pendingId": "",
    "branch": "claude/apk-stable-signing",
-   "pr": "",
+   "pr": "#902",
    "createdAt": "2026-11-24T01:06:37.386Z",
-   "updatedAt": "2026-11-24T01:06:37.386Z",
+   "updatedAt": "2026-11-24T02:45:10.073Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Hand build: started outside the orchestrator as axf-apk-stable-signing--earl on Fable, in /root/axf-builds/apk-stable-signing on claude/apk-stable-signing. It runs beside the active build; when its session ends cleanly the lander lands it.",
-     "at": "2026-11-24T01:06:37.386Z",
-     "by": "Earl the Ear"
+     "at": "2026-11-24T01:06:37.386Z"
+    },
+    {
+     "text": "Headless run axf-apk-stable-signing--earl: brief only · start 10.6K tokens ($0.04) · cost $8.32 · 37 turns · 6 tools, MCP none",
+     "at": "2026-11-24T02:45:03.967Z"
+    },
+    {
+     "text": "Hand build ended cleanly with no commit on claude/apk-stable-signing that main lacks: archived, nothing to land.",
+     "at": "2026-11-24T02:45:01.115Z",
+     "by": "headless"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T02:44:52.812Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-apk-stable-signing--earl",
+     "phase": ""
+    }
+   },
    "hand": {
     "at": "2026-11-24T01:06:37.386Z",
     "by": "Earl the Ear"
@@ -364496,12 +365223,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-24T02:44:40.356Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-24T01:06:37.386Z",
-     "updatedAt": "2026-11-24T01:06:37.386Z",
+     "updatedAt": "2026-11-24T02:44:40.765Z",
      "statusAt": "2026-11-24T01:06:37.386Z",
      "statusBy": "Earl the Ear",
      "attempt": 1,
@@ -364524,11 +365251,11 @@
     "all"
    ],
    "order": {
-    "all": 0
+    "all": 3
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -364539,9 +365266,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T01:06:37.386Z",
-   "statusBy": "Earl the Ear",
+   "statusAt": "2026-11-24T02:45:10.073Z",
+   "statusBy": "headless",
    "attempt": 1,
+   "archivedFrom": "building",
    "statusLog": [
     {
      "status": "building",
@@ -364549,6 +365277,690 @@
      "by": "Earl the Ear",
      "attempt": 1,
      "why": "hand launch"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-24T02:45:10.073Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "ended with nothing to land"
+    }
+   ]
+  },
+  {
+   "id": "psync-a-core-2",
+   "title": "Hand build psync-a-core-2 (part A of 4, parallel; Brett: split the pipeline repair into 4)",
+   "category": "",
+   "detail": "# Hand build psync-a-core-2 (part A of 4, parallel; Brett: split the pipeline repair into 4)\n\nRestart of psync-a-core (stopped only to change how it finishes; ignore that folder). Register as a hand build (framework/cli/hand-build.mjs). Requirements live on orchestrator build `pipeline-sync-live-badges` (read its detail, steps AND every note; later notes win). Do NOT let the dispatcher start that build. Siblings in parallel: psync-b-server-lander, psync-c-planstudio, psync-d-orch-ui. Touch ONLY your files so all four merge cleanly alone.\n\n## Your part: store contract + pipeline (its steps s1 and s2)\nFiles: framework/core/pipeline-status.mjs, framework/schemas/pipeline-status.json, framework/spec/fixtures/pipeline-status.json, framework/spec/check-pipeline-status.mjs, framework/cli/builds-store.mjs, apps/console-web/plugins/build-orchestrator/pipeline2.mjs, pipeline.mjs, and new framework/core/build-clash.mjs if needed.\n- s1: pipeline-status@1 states + pipelineView computed on read (see step text). Add `number` (short unique build number, e.g. B-0123, assigned once in the store) and keep each step's unique `uid`; expose both in the read. Also store `pr` (number + url) on the build as soon as it starts.\n- s2: confirm the split runs on Fable on the VPS; record split provenance; fix the 'refused a write by orchestrator ... step replaced' error right after each split; send POST /api/builds/updated after each state change; open a draft PR the moment a build starts and write its number to the store.\n- Conflict rules (notes): Fable split must give steps that never share files so each merges cleanly alone. On intake, check a new build against every build not yet on main (building or waiting to merge); on a clash reject the whole build with a plain reason and offer options: run all, or run clean steps now and defer the clashing steps, each naming the build it waits for and starting by itself when that lands.\n\nShared contract: build { number, pr, pipelineView{state,label,tone,icon,line,attempt,waitingOn,mergeLine{position,waitingFor}}, split{by,model,at,stepCount} }, steps { uid, splitBy, model, modelBy, status }.\n\n## FINISH (Brett: merge all four into one before running CI)\nRun the local tests for your files (check-pipeline-status.mjs, builds-store verify, pipeline tests), commit and push branch claude/psync-a-core-2. Do NOT open a PR, do NOT land, do NOT wait for CI. The voice session combines all four branches into one, runs CI once and merges. Short report: _claude/builds/reports/psync-a-core.md.",
+   "status": "failed",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/psync-a-core-2",
+   "pr": "906",
+   "createdAt": "2026-11-24T01:07:00.982Z",
+   "updatedAt": "2026-11-24T03:31:35.660Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-psync-a-core-2--gina on Fable, in /root/axf-builds/psync-a-core-2 on claude/psync-a-core-2. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T01:07:00.982Z"
+    },
+    {
+     "text": "Headless run axf-psync-a-core-2--gina: brief only · start 11.7K tokens ($0.05) · cost $12.14 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-24T01:42:52.329Z"
+    },
+    {
+     "text": "Hand build finished (1 commit on claude/psync-a-core-2). Over to the lander.",
+     "at": "2026-11-24T01:42:50.652Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $12.14",
+     "at": "2026-11-24T01:43:13.376Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1)",
+     "at": "2026-11-24T01:54:07.750Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T01:54:01.383Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 1: CI is red on 9e5eb108c (Build engine sweep (Node))",
+     "at": "2026-11-24T02:22:33.787Z"
+    },
+    {
+     "text": "Lander: attempt 1: re-running the failed CI jobs on 9e5eb108c (flaky check)",
+     "at": "2026-11-24T02:26:40.006Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 2: CI is red on 9e5eb108c (Build engine sweep (Node))",
+     "at": "2026-11-24T02:44:08.764Z"
+    },
+    {
+     "text": "Lander: attempt 2: fix session 1 of 2 on lander/psync-a-core-2 (fable, axf-lander-fix-pr906-1--lenny)",
+     "at": "2026-11-24T02:57:40.197Z"
+    },
+    {
+     "text": "Lander: the fix pushed af94c429f; CI runs on it",
+     "at": "2026-11-24T03:01:39.128Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 3: CI is red on af94c429f (Build engine sweep (Node))",
+     "at": "2026-11-24T03:30:36.885Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: PR #906 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-a-core-2) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry psync-a-core-2",
+     "at": "2026-11-24T03:31:35.660Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T01:42:38.565Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-psync-a-core-2--gina",
+     "phase": ""
+    }
+   },
+   "failure": {
+    "kind": "pr-closed",
+    "status": "running-ci",
+    "why": "PR #906 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry psync-a-core-2) and a new PR is opened.",
+    "head": "",
+    "pr": 906,
+    "at": "2026-11-24T03:30:49.332Z",
+    "attempt": 4,
+    "retry": "hold",
+    "notBefore": "",
+    "needsBrett": true,
+    "stopped": "the PR was closed without merging",
+    "resume": "same"
+   },
+   "landing": {
+    "attempt": 4,
+    "reruns": {
+     "head": "9e5eb108cc5106b021f3ee33aadf56791a1d437c",
+     "n": 1
+    },
+    "fixes": {
+     "pr": 906,
+     "n": 1
+    }
+   },
+   "hand": {
+    "at": "2026-11-24T01:07:00.982Z",
+    "by": "Greenlight Gina"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwtzvpkv1lg4y6",
+     "title": "",
+     "text": "Hand build psync-a-core-2 (part A of 4, parallel; Brett: split the pipeline repair into 4)",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-24T01:42:57.717Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-24T01:07:00.982Z",
+     "updatedAt": "2026-11-24T01:54:18.913Z",
+     "statusAt": "2026-11-24T01:54:18.835Z",
+     "statusBy": "lander",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T01:07:00.982Z",
+       "by": "Greenlight Gina",
+       "attempt": 1,
+       "why": "hand launch: axf-psync-a-core-2--gina"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T01:42:57.717Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T01:54:18.835Z",
+       "by": "lander",
+       "attempt": 1
+      }
+     ],
+     "status": "in-pr",
+     "worktree": "/root/axf-builds/psync-a-core-2",
+     "branch": "claude/psync-a-core-2",
+     "tmux": "axf-psync-a-core-2--gina",
+     "prNumber": 906
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 6
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 22,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T01:07:00.982Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T03:30:36.885Z",
+   "statusBy": "lander",
+   "attempt": 4,
+   "failedFrom": "running-ci",
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T01:07:00.982Z",
+     "by": "Greenlight Gina",
+     "attempt": 1,
+     "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T01:43:05.982Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T01:54:07.750Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 1 of 1 (s1)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T01:54:23.978Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T01:54:29.997Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:22:33.787Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: failed in running-ci, attempt 1: CI is red on 9e5eb108c (Build engine sweep (Node))"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T02:26:40.006Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 1: re-running the failed CI jobs on 9e5eb108c (flaky check)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T02:44:08.764Z",
+     "by": "lander",
+     "attempt": 2,
+     "why": "Lander: failed in running-ci, attempt 2: CI is red on 9e5eb108c (Build engine sweep (Node))"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T03:01:39.128Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: the fix pushed af94c429f; CI runs on it"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T03:30:36.885Z",
+     "by": "lander",
+     "attempt": 3,
+     "why": "Lander: failed in running-ci, attempt 3: CI is red on af94c429f (Build engine sweep (Node))"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-test-3-docs",
+   "title": "Pipeline test: 3 tiny docs edits",
+   "category": "",
+   "detail": "Test plan for the repaired pipeline: three one-line docs edits, each in its own file, so the VPS split makes 3 steps that never share files.\n\n## Steps\n1. Add one line \"Pipeline test step 1\" to the end of docs/pipeline-test/step-1.md (create the file).\n2. Add one line \"Pipeline test step 2\" to the end of docs/pipeline-test/step-2.md (create the file).\n3. Add one line \"Pipeline test step 3\" to the end of docs/pipeline-test/step-3.md (create the file).\n\n## What we're watching\nIn the orchestrator and Plan Studio at the same time: build number, step IDs, Fable split badge plus model badge on each step, every state from pending to landed, the draft PR number at start, and the merge line.",
+   "status": "split",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T03:27:38.472Z",
+   "updatedAt": "2026-11-24T03:28:34.803Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: pipeline-test-3-tiny-docs-edits-5hxf (Pipeline test: 3 tiny docs edits). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-24T03:27:38.472Z"
+    },
+    {
+     "text": "Split by Fable into 3 steps (10 min). The triage gate assigns the models.",
+     "at": "2026-11-24T03:28:32.773Z"
+    },
+    {
+     "text": "Store: refused a write by orchestrator, nothing of it was kept: s1 step s1 was replaced by another (pipeline-test-3-docs is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (pipeline-test-3-docs is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (pipeline-test-3-docs is split (Pending): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T03:28:39.859Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwu4xkhf1l83cg",
+     "title": "",
+     "text": "Create docs/pipeline-test/step-1.md (new file, create the docs/pipeline-test/ folder if missing) with the single line \"Pipeline test step 1\" at the end of the file. Touch no other file. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "2 min",
+     "files": [
+      "docs/pipeline-test/step-1.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T03:28:32.773Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 2,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T03:28:34.803Z",
+     "updatedAt": "2026-11-24T03:28:34.803Z",
+     "statusAt": "2026-11-24T03:28:32.773Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T03:28:32.773Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwu4xkhf1mp3f8",
+     "title": "",
+     "text": "Create docs/pipeline-test/step-2.md (new file, create the docs/pipeline-test/ folder if missing) with the single line \"Pipeline test step 2\" at the end of the file. Touch no other file. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "2 min",
+     "files": [
+      "docs/pipeline-test/step-2.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T03:28:32.773Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 2,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T03:28:34.803Z",
+     "updatedAt": "2026-11-24T03:28:34.803Z",
+     "statusAt": "2026-11-24T03:28:32.773Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T03:28:32.773Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwu4xkhf1n2obe",
+     "title": "",
+     "text": "Create docs/pipeline-test/step-3.md (new file, create the docs/pipeline-test/ folder if missing) with the single line \"Pipeline test step 3\" at the end of the file. Then cover tests and the report: check that the file exists and ends with exactly that line, run `node framework/cli/builds-store.mjs verify`, and write _claude/builds/reports/pipeline-test-3-docs.md saying what the build is (a pipeline test of three one-line docs edits, one file per step: docs/pipeline-test/step-1.md, step-2.md, step-3.md, with steps 1 and 2 built in their own worktrees), the check results, and what to watch in the orchestrator and Plan Studio (build number, step IDs, split and model badges, every state from pending to landed, the draft PR number, the merge line). Do not create or edit step-1.md or step-2.md. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "docs/pipeline-test/step-3.md",
+      "_claude/builds/reports/pipeline-test-3-docs.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Opus",
+      "rule": "designer",
+      "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+      "lane": "orchestrator",
+      "at": "2026-11-24T03:28:32.773Z",
+      "suggested": "Opus",
+      "suggestedBy": "splitter",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 6,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T03:28:34.803Z",
+     "updatedAt": "2026-11-24T03:28:34.803Z",
+     "statusAt": "2026-11-24T03:28:32.773Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-24T03:28:32.773Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1
+   },
+   "fromProfile": "main-framework",
+   "kind": "build",
+   "planRef": "pipeline-test-3-tiny-docs-edits-5hxf",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T03:28:34.870Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T03:28:34.803Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-24T03:27:38.472Z",
+     "by": "mcp",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-24T03:28:19.093Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-24T03:28:34.803Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "3 steps for 6 slots"
+    }
+   ]
+  },
+  {
+   "id": "fix907-ci",
+   "title": "Get PR 907 green",
+   "category": "",
+   "detail": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
+   "status": "build-complete",
+   "hidden": false,
+   "source": "hand",
+   "pendingId": "",
+   "branch": "claude/fix907-ci",
+   "pr": "",
+   "createdAt": "2026-11-24T10:39:59.498Z",
+   "updatedAt": "2026-11-24T12:03:48.051Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Hand build: started outside the orchestrator as axf-fix907-ci--rhonda on Fable, in /root/axf-builds/fix907-ci on claude/fix907-ci. It runs beside the active build; when its session ends cleanly the lander lands it.",
+     "at": "2026-11-24T10:39:59.498Z"
+    },
+    {
+     "text": "Hand build finished (16 commits on claude/fix907-ci). Over to the lander.",
+     "at": "2026-11-24T12:03:32.363Z"
+    },
+    {
+     "text": "Headless run axf-fix907-ci--rhonda: brief only · start 10.8K tokens ($0.07) · cost $8.45 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-24T12:03:48.051Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-24T12:03:24.031Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-fix907-ci--rhonda",
+     "phase": ""
+    }
+   },
+   "hand": {
+    "at": "2026-11-24T10:39:59.498Z",
+    "by": "Reel Rhonda"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwukcge01lvl7d",
+     "title": "",
+     "text": "Get PR 907 green",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-24T12:03:35.763Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-24T10:39:59.498Z",
+     "updatedAt": "2026-11-24T12:03:35.831Z",
+     "statusAt": "2026-11-24T12:03:35.763Z",
+     "statusBy": "headless",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "building",
+       "at": "2026-11-24T10:39:59.498Z",
+       "by": "Reel Rhonda",
+       "attempt": 1,
+       "why": "hand launch: axf-fix907-ci--rhonda"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-24T12:03:35.763Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
+      }
+     ],
+     "status": "completed",
+     "worktree": "/root/axf-builds/fix907-ci",
+     "branch": "claude/fix907-ci",
+     "tmux": "axf-fix907-ci--rhonda"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 2
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-24T10:39:59.498Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-24T12:03:40.298Z",
+   "statusBy": "headless",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "building",
+     "at": "2026-11-24T10:39:59.498Z",
+     "by": "Reel Rhonda",
+     "attempt": 1,
+     "why": "hand launch"
+    },
+    {
+     "status": "build-complete",
+     "at": "2026-11-24T12:03:40.298Z",
+     "by": "headless",
+     "attempt": 1,
+     "why": "the hand session ended cleanly"
     }
    ]
   }

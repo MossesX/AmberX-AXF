@@ -843,88 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 01:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 01:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 01:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 01:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 01:48 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-23 01:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
-- 2026-11-23 01:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:53 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 01:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:08 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 02:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:12 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:14 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:16 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:17 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:18 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 02:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:20 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:25 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:27 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:28 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 02:29 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:30 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 02:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 02:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-23 02:33 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
@@ -1243,6 +1161,88 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 01:06 UTC · `rebuild-fresh-main-phone-connect-small` → landed, note (all) · watchdog
 - 2026-11-24 01:06 UTC · `apk-stable-signing` added (1 steps) (all) · Earl the Ear
 - 2026-11-24 01:06 UTC · `guided-live-demo-test-watch-orchestrator` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `psync-a-core-2` added (1 steps) (all) · Greenlight Gina
+- 2026-11-24 01:07 UTC · `rebuild-fresh-main-phone-connect-small` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `guided-live-demo-test-watch-orchestrator` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `pipeline-sync-hand-2` → failed, note (all) · orchestrator
+- 2026-11-24 01:07 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · verify
+- 2026-11-24 01:08 UTC · `psync-a-core` → failed, note (all) · orchestrator
+- 2026-11-24 01:30 UTC · `psync-d-orch-ui` → build-complete, note (all) · headless
+- 2026-11-24 01:30 UTC · `psync-d-orch-ui` note (all) · orchestrator
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` note (all) · orchestrator
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → merging-pr, note (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` PR 903 (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → pr-pulling-main (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → running-ci (all) · lander
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` → build-complete, note (all) · headless
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` → build-complete, note (all) · headless
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
+- 2026-11-24 01:41 UTC · `pipeline-sync-live-badges` note (all) · psync-a-core-2
+- 2026-11-24 01:42 UTC · `psync-a-core-2` note (all) · orchestrator
+- 2026-11-24 01:42 UTC · `psync-a-core-2` s1 done (all) · headless
+- 2026-11-24 01:43 UTC · `psync-a-core-2` → build-complete, note (all) · headless
+- 2026-11-24 01:43 UTC · `psync-a-core-2` note (all) · orchestrator
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → merging-pr, note (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` PR 904 (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → pr-pulling-main (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → running-ci (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` note (all) · watchdog
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → merging-pr, note (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` PR 905 (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → pr-pulling-main (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → running-ci (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` note (all) · watchdog
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → merging-pr, note (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` PR 906 (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → pr-pulling-main (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → running-ci (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` note (all) · watchdog
+- 2026-11-24 02:02 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 02:13 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 02:21 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 02:22 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 02:23 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
+- 2026-11-24 02:24 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
+- 2026-11-24 02:25 UTC · `psync-b-server-lander` note (all) · lander
+- 2026-11-24 02:26 UTC · `psync-a-core-2` → running-ci, note (all) · lander
+- 2026-11-24 02:41 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 02:42 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 02:43 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
+- 2026-11-24 02:44 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 02:45 UTC · `apk-stable-signing` note (all) · orchestrator
+- 2026-11-24 02:45 UTC · `apk-stable-signing` → archived, note (all) · headless
+- 2026-11-24 02:45 UTC · `psync-d-orch-ui` note (all) · lander
+- 2026-11-24 02:46 UTC · `psync-c-planstudio` note (all) · lander
+- 2026-11-24 02:56 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 02:57 UTC · `psync-a-core-2` note (all) · lander
+- 2026-11-24 02:58 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
+- 2026-11-24 02:59 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
+- 2026-11-24 03:00 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
+- 2026-11-24 03:01 UTC · `psync-a-core-2` → running-ci, note (all) · lander
+- 2026-11-24 03:15 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 03:21 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 03:22 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 03:27 UTC · `pipeline-test-3-docs` added (0 steps) (all) · mcp
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → splitting (all) · orchestrator
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → split, note (all) · orchestrator
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` note (all) · orchestrator
+- 2026-11-24 03:30 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 03:30 UTC · `psync-b-server-lander` note (all) · lander
+- 2026-11-24 03:31 UTC · `psync-c-planstudio` note (all) · lander
+- 2026-11-24 03:31 UTC · `psync-a-core-2` note (all) · lander
+- 2026-11-24 03:32 UTC · `psync-d-orch-ui` note (all) · lander
+- 2026-11-24 03:58 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-24 04:01 UTC · `plan-studio-2-open-button-working-deep` → archived, note (all) · cron
+- 2026-11-24 04:01 UTC · `every-plugin-gets-own-default-toolbar` → archived, note (all) · cron
+- 2026-11-24 04:01 UTC · `stop-push-storm-builds-live-pushes-build` → archived, note (all) · cron
+- 2026-11-24 10:40 UTC · `fix907-ci` added (1 steps) (all) · Reel Rhonda
+- 2026-11-24 12:03 UTC · `fix907-ci` s1 done (all) · headless
+- 2026-11-24 12:03 UTC · `fix907-ci` → build-complete, note (all) · headless
+- 2026-11-24 12:03 UTC · `fix907-ci` note (all) · orchestrator
 
 ## Token passes (log)
 
