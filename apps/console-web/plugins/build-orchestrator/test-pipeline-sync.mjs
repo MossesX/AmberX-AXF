@@ -109,7 +109,7 @@ if (PS?.api) {
 } else {
   skip('Plan Studio 2.0', 'the plan-studio-2 plugin is not on this checkout: the build is seeded straight into the store');
   build = 'sync-walk';
-  BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id: build, title: 'Sync walk', flow: P2.FLOW, source: 'plan-studio-2', planRef: 'sync-walk-plan', steps: [] }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
+  BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id: build, title: 'Sync walk', flow: P2.FLOW, source: 'plan-studio-2', planRef: 'sync-walk-plan', steps: [] }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' }); // the build's `source` value, not a path into that plugin (axf-not-plugin:plan-studio-2)
   ok(get(build)?.status === 'pending', 'the build is in the scratch store at pending');
 }
 
@@ -228,7 +228,7 @@ if (PS?.api && planId) {
     eq(read.build.status, get(build).status, 'the plan\'s build read gives the store\'s status');
     if (get(build).pipelineView) eq(read.build.pipelineView?.state, get(build).pipelineView.state, 'both screens get the same pipelineView');
   } else {
-    skip('Plan Studio 2.0', 'the plan\'s build read (GET /api/plugins/plan-studio-2/plans/<planId>/build) is not on this checkout: the plan\'s live rows were compared with the orchestrator instead');
+    skip('Plan Studio 2.0', 'the plan\'s build read (the plan provider's `plan-build` op) is not on this checkout: the plan\'s live rows were compared with the orchestrator instead');
     const live = api({ op: 'state' }).items.filter((i) => String(i.id).startsWith(`orch--${build}--`));
     eq(live.map((i) => i.title), orch.map((s) => s.title), 'Plan Studio lists the orchestrator\'s five steps from the store');
   }
