@@ -10,6 +10,7 @@
 """
 from __future__ import annotations
 
+import time
 import threading
 from typing import Any
 
@@ -35,8 +36,28 @@ def _pd() -> data_store.PluginData:
     return data_store.plugin(FOLDER)
 
 
+_listed: dict[str, tuple[int, list[str]]] = {}  # folder → (its mtime, the ids in it), while the files are the store
+
+
 def _list(kind: str) -> list[str]:
-    return [f[: -len(".json")] for f in data_store.list_files(_pd().path(kind)) if f.endswith(".json") and "/" not in f]
+    """The ids in one of the plugin's folders. While the files are the store (local / shadow) the listing is kept until
+    the folder changes (its mtime moves when a file is added or removed); on axf-data it is asked for every time."""
+    d = _pd().path(kind)
+    stamp = None
+    try:
+        key = data_store.key_for(d)
+        if not key or data_store.mode_of(key) in ("local", "shadow"):
+            stamp = d.stat().st_mtime_ns
+            hit = _listed.get(str(d))
+            # a folder touched in the last 2 s is listed again: two changes inside one mtime tick must both show
+            if hit and hit[0] == stamp and time.time_ns() - stamp > 2_000_000_000:
+                return list(hit[1])
+    except OSError:
+        stamp = None
+    out = [f[: -len(".json")] for f in data_store.list_files(d) if f.endswith(".json") and "/" not in f]
+    if stamp is not None:
+        _listed[str(d)] = (stamp, out)
+    return list(out)
 
 
 # ---- devices
@@ -103,19 +124,50 @@ def command(cid: str) -> dict | None:
     return c if isinstance(c, dict) else None
 
 
-def commands(device_id: str = "", limit: int = 100) -> list[dict]:
-    out = [c for c in (command(i) for i in _list("commands")) if c and (not device_id or c.get("deviceId") == device_id)]
-    return sorted(out, key=lambda c: c.get("at") or "", reverse=True)[:limit]
+# A finished command (done / failed) never changes again, so its file is read once per process and then served from
+# memory: the phone's long poll lists the commands every second, and reading every finished file each time kept a
+# core busy. Open commands are always read fresh; the folder listing still decides what exists.
+FINAL = ("done", "failed")
+_final: dict[str, dict[str, dict]] = {}  # data folder → id → finished command
+
+
+def _finals() -> dict[str, dict]:
+    return _final.setdefault(str(_pd().dir), {})
+
+
+def commands(device_id: str = "", limit: int = 100, open_only: bool = False) -> list[dict]:
+    """The commands, newest first. `open_only`: only those not finished (what the phone's poll looks through)."""
+    import copy
+    kept = _finals()
+    ids = _list("commands")
+    out = []
+    for i in ids:
+        c = kept.get(i)
+        if c is not None and open_only:
+            continue
+        if c is None:
+            c = command(i)
+            if c and c.get("status") in FINAL:
+                kept[i] = c
+        if c and (not device_id or c.get("deviceId") == device_id) and not (open_only and c.get("status") in FINAL):
+            out.append(c)
+    if len(kept) > len(ids):
+        have = set(ids)
+        for i in [k for k in kept if k not in have]:
+            kept.pop(i, None)
+    return [copy.deepcopy(c) for c in sorted(out, key=lambda c: c.get("at") or "", reverse=True)[:limit]]
 
 
 def save_command(c: dict) -> dict:
     with LOCK:
+        _finals().pop(c["id"], None)
         _pd().write_json(f"commands/{c['id']}.json", c)
     return c
 
 
 def drop_command(cid: str) -> bool:
     with LOCK:
+        _finals().pop(cid, None)
         return data_store.remove(_pd().path(f"commands/{cid}.json"))
 
 

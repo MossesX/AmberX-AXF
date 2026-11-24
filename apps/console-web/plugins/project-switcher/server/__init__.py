@@ -87,6 +87,11 @@ def list_projects() -> dict[str, Any]:
     return _read("state")
 
 
+# The same list without the trailing slash: a plugin command route "GET /" is asked as /api/plugins/<folder>, which
+# answered 404 (the Home card and the `list` read on every console load).
+router.add_api_route("", list_projects, methods=["GET"], include_in_schema=False)
+
+
 @router.get("/current")
 def current() -> dict[str, Any]:
     res = _read("current")

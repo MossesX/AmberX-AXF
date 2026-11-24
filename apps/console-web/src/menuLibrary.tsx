@@ -29,7 +29,6 @@ import type { ConsoleStore } from './store';
 import { bundledPlugins, fetchPluginStatus } from './plugins';
 import { CONSOLE_MENU_ID, CONSOLE_PROVIDERS as P, PENDING_BADGE, consoleMenuContributions } from './menu';
 
-const REFRESH_MS = 3 * 60_000;
 const SEARCH_DIALOG = 'console-search';
 // app-menus@1: the app menu needs no move any more; the runtime refuses any app menu not built for the console and
 // falls back to default-console-web-appmenu, so an older saved pick lands on the console's own menu by itself.
@@ -253,10 +252,10 @@ function start(rt: AxfRuntime) {
   if (started) return;
   started = true;
   void loadHub();
+  // The pending count is a badge inside the Builds menu: it is read when that list is drawn (the provider above) and
+  // when a pending build changes here, not at start or on a timer.
   const badge = () => void pendingOpen().then((l) => rt.setBadge(PENDING_BADGE, l.length), () => { /* offline: keep */ });
-  badge();
   globalThis.addEventListener('axf:pending-changed', badge);
-  setInterval(badge, REFRESH_MS);
   // Ctrl/Cmd+K must always search, even with every search bar hidden.
   globalThis.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'k' || e.altKey || e.shiftKey) return;

@@ -305,13 +305,21 @@ def _age_min(iso: str, now: float) -> float:
         return 1e9
 
 
+_LIVE_CACHE: tuple | None = None
+
+
 def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | None = None, now: float | None = None) -> dict[str, Any]:
     """Red: changes stuck before main. Amber: orphans, or the reconciler hasn't run. Green otherwise."""
     now = now if now is not None else time.time()
     if live is None:
         try:
-            p = subprocess.run(["node", str(LIVE_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=20)
-            live = json.loads(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else {}
+            global _LIVE_CACHE
+            if _LIVE_CACHE and now - _LIVE_CACHE[0] < 15:
+                live = _LIVE_CACHE[1]
+            else:
+                p = subprocess.run(["node", str(LIVE_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=20)
+                live = json.loads(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else {}
+                _LIVE_CACHE = (now, live)
         except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, IndexError):
             live = {}
     if report is None:
@@ -605,7 +613,7 @@ PIPELINE_CLI = CLI.parent / "pipeline.mjs"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
-def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+def _pipeline_run(*args: str, who: str = "") -> dict[str, Any]:
     """Run the pipeline CLI (reads the store, the slots store, the accounts and the dispatcher's state file; writes go
     through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it."""
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
@@ -622,6 +630,28 @@ def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
         err = str(res.get("error") or "pipeline failed")
         raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err[:400])
     return res
+
+
+import threading as _thr
+_PIPE_CACHE: dict = {}
+_PIPE_LOCK = _thr.Lock()
+_PIPE_READ_ONLY = {("status",), ("launch-crashed",)}
+_PIPE_TTL = 10.0
+
+
+def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+    """Read-only calls (status, launch-crashed) share one Node run per 10 s; any write clears the cache."""
+    key = tuple(args)
+    if key in _PIPE_READ_ONLY and not who:
+        with _PIPE_LOCK:
+            hit = _PIPE_CACHE.get(key)
+            if hit and time.time() - hit[0] < _PIPE_TTL:
+                return hit[1]
+            res = _pipeline_run(*args)
+            _PIPE_CACHE[key] = (time.time(), res)
+            return res
+    _PIPE_CACHE.clear()
+    return _pipeline_run(*args, who=who)
 
 
 def _build_id(v: Any) -> str:

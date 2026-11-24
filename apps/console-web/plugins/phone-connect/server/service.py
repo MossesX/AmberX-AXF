@@ -5,6 +5,7 @@ browser through the wall) may claim a pairing, revoke or forget a phone. Errors 
 """
 from __future__ import annotations
 
+import time
 import os
 import secrets
 import uuid
@@ -262,7 +263,7 @@ def sweep(at: str = "") -> int:
     """Time out what the phone never took or never answered: no ack in HUB.ackSeconds, no result within the ttl."""
     at = at or now()
     n = 0
-    for c in S.commands(limit=500):
+    for c in S.commands(limit=100000):  # every command: the oldest are the ones to drop
         t = E.ms(at)
         if c.get("status") not in OPEN:
             if t - E.ms(c.get("updatedAt") or c["at"]) > KEEP_DAYS * 86400_000:
@@ -404,13 +405,27 @@ def hello(d: dict, body: dict, at: str = "") -> dict[str, Any]:
             "rotate": bool(nd.get("rotateRequested")), "hub": E.HUB, "link": E.LINK}
 
 
+# The phone's long poll asks for its next call every second. Marking the phone seen (a file write) and sweeping every
+# command for timeouts are paced: lastSeenAt only has to stay inside HUB.onlineSeconds, a timeout is seconds-coarse.
+SEEN_EVERY_S = 10
+SWEEP_EVERY_S = 5
+_paced: dict[str, dict[str, float]] = {}
+
+
 def next_call(d: dict, at: str = "") -> dict[str, Any] | None:
     """The oldest queued command for this phone as an AXPP call (status → sent), or None. Touches lastSeenAt."""
+    timed = bool(at)  # a caller that names the time (tests, replays) gets every step; the live poll is paced
     at = at or now()
     with S.LOCK:
-        S.save_device(E.seen(S.device(d["deviceId"]) or d, at))
-        sweep(at)
-        for c in sorted(S.commands(d["deviceId"], limit=200), key=lambda c: c["at"]):
+        tick = time.monotonic()
+        last = _paced.setdefault(d["deviceId"], {"seen": 0.0, "sweep": 0.0})
+        if timed or tick - last["seen"] >= SEEN_EVERY_S:
+            last["seen"] = tick
+            S.save_device(E.seen(S.device(d["deviceId"]) or d, at))
+        if timed or tick - last["sweep"] >= SWEEP_EVERY_S:
+            last["sweep"] = tick
+            sweep(at)
+        for c in sorted(S.commands(d["deviceId"], limit=200, open_only=True), key=lambda c: c["at"]):
             if c.get("status") == "queued":
                 S.save_command({**c, "status": "sent", "sentAt": at, "updatedAt": at})
                 return E.to_wire(c)

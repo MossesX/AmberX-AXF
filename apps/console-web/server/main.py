@@ -80,6 +80,7 @@ if not DIST.exists() and os.environ.get("AXF_CONSOLE_DIST"):
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    console_context.server_loop = asyncio.get_running_loop()  # plugins run each other's routes on it, in-process
     async with _mcp.session_manager.run():  # the MCP endpoint's session manager (defined below)
         hub = globals().get("ALERTS")  # developer alerts (defined below): sources + phone delivery threads
         if hub:

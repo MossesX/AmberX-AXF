@@ -31,7 +31,8 @@ import './wake-listener.css';
 const ID = 'ai.amberx.axf.console.wake-listener';
 const ASSET_ID = 'wake-listener';
 const COUNTER = 'wake-listener.live';
-const SETTINGS_POLL_MS = 6_000;
+const SETTINGS_POLL_MS = 15_000; // another surface changing the settings shows here within this (and at once when the tab comes back)
+let wired = false;
 /** Claude mode settings (console-wide keys; the plugin server's copy is the one every console, REST, MCP and the CLI share). */
 export const USE_CLAUDE_KEY = 'axf.voice.useClaude';
 export const CLAUDE_TIMEOUT_KEY = 'axf.voice.claudeTimeoutSec';
@@ -354,8 +355,13 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Open the wake listener at: claude, mode or history[:claude|scripted]', params: true, effect: 'navigate' });
     rt.actions.register('wake-listener.open', () => rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt }), { label: 'Wake listener settings', effect: 'navigate' });
     void loadSettings().then(() => { void loadClaude(); return syncEngine(); });
-    L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) { void loadSettings(); void loadClaude(); } }, SETTINGS_POLL_MS);
-    if (typeof document !== 'undefined') {
+    // One timer however often the plugin is installed (the lazy loader re-registers it): each extra one used to poll too.
+    if (L.poll) clearInterval(L.poll);
+    const shown = () => typeof document === 'undefined' || document.visibilityState === 'visible';
+    L.poll = setInterval(() => { if (shown() || (L.settings.on && !L.settings.pauseHidden)) { void loadSettings(); void loadClaude(); } }, SETTINGS_POLL_MS);
+    if (typeof document !== 'undefined' && !wired) {
+      wired = true;
+      document.addEventListener('visibilitychange', () => { if (shown()) { void loadSettings(); void loadClaude(); } });
       document.addEventListener('visibilitychange', () => { if (!L.settings.pauseHidden || !L.engine) return; if (document.visibilityState === 'hidden') L.engine.pause(); else L.engine.resume(); });
       window.addEventListener('axf-native-ready', () => { void syncEngine(); });
     }

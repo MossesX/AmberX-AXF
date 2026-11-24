@@ -168,6 +168,10 @@ def run_sync() -> dict[str, Any]:
         rep["took"] = round(time.time() - t, 2)
         store().add_run(rep)
         _state["last"] = rep
+        try:
+            store().flush()  # one copy to axf-data per run at most, never one per session (Store.flush)
+        except Exception as e:  # noqa: BLE001 — the local file is the working copy; the next run sends it
+            rep.setdefault("errors", []).append(f"data store copy failed: {e}")
         return rep
     finally:
         _state["syncing"], _state["step"] = False, ""
