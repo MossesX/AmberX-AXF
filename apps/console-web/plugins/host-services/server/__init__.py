@@ -35,10 +35,14 @@ def _endpoint(path: str, method: str) -> Any:
     raise RuntimeError(f"host_services_routes has no {method} {path}")
 
 
-@router.get("")  # the list read (plugin command `list`, the Home card) asks without the trailing slash
 @router.get("/")
 def list_services(fresh: bool = False) -> dict[str, Any]:
     return _endpoint("/", "GET")(fresh=fresh)
+
+
+# The same list without the trailing slash: a plugin command route "GET /" is asked as /api/plugins/<folder>, which
+# answered 404 (the Home card and the `list` read on every console load).
+router.add_api_route("", list_services, methods=["GET"], include_in_schema=False)
 
 
 @router.get("/mode")
