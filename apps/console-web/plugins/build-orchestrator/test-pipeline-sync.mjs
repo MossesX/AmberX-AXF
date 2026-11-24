@@ -228,7 +228,7 @@ if (PS?.api && planId) {
     eq(read.build.status, get(build).status, 'the plan\'s build read gives the store\'s status');
     if (get(build).pipelineView) eq(read.build.pipelineView?.state, get(build).pipelineView.state, 'both screens get the same pipelineView');
   } else {
-    skip('Plan Studio 2.0', 'the plan\'s build read (the plan provider's `plan-build` op) is not on this checkout: the plan\'s live rows were compared with the orchestrator instead');
+    skip('Plan Studio 2.0', 'the plan\'s build read (the `plan-build` op of the plan provider) is not on this checkout: the plan\'s live rows were compared with the orchestrator instead');
     const live = api({ op: 'state' }).items.filter((i) => String(i.id).startsWith(`orch--${build}--`));
     eq(live.map((i) => i.title), orch.map((s) => s.title), 'Plan Studio lists the orchestrator\'s five steps from the store');
   }
