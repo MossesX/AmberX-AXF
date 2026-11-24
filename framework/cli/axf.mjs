@@ -58,7 +58,8 @@
  *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
  *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
- *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
+ *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1);
+ *                               refresh reloads it (--hard clears its caches first) and it comes back on the same screen, tabs and scroll
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
  *   axf console chrome get|set|reset|open <type> <id> [key] [value]   one chrome instance's Interface settings
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
