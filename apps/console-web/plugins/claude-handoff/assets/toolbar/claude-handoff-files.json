@@ -1,0 +1,41 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "claude-handoff-files",
+  "name": "Files",
+  "version": "1.0.0",
+  "description": "The Claude handoff Files toolbar: read the list of files the plugin makes or edits again. The find box rides on the same bar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "claude-handoff",
+    "files"
+  ],
+  "data": {
+    "scope": "view:claude-handoff-files",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "files",
+        "label": "Files",
+        "items": [
+          {
+            "id": "refresh",
+            "icon": "refresh",
+            "label": "Refresh",
+            "action": "handler:claude-handoff.files-refresh",
+            "priority": 300,
+            "overflow": "never"
+          }
+        ]
+      }
+    ]
+  }
+}

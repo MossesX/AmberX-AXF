@@ -3,14 +3,22 @@
  * `axp-plan-studio-2-item`, payload = item id), an editor for the selected item, a Trash tab (undo), a command box and a
  * mic that both go through the server's `say`. Framework controls and tokens only; phone first (the editor drops under
  * the tree on a narrow screen).
+ *
+ * Sent plans (live.tsx): a plan sent to the orchestrator is locked (a lock where the grip sits, no edit or drag) and
+ * lists the steps the orchestrator filed, marked "From orchestrator", each with its state badge; they check off in
+ * place while the page keeps reading the state (useLiveProgress). All of it comes from the server.
  */
-import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Fragment, useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
+import { Button, Checkbox, Chip, Icon, IconButton, Note, PageToolbar, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, VIEW, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useLiveProgress, useTree, POLL_SECONDS, type BuildPreview, type OpResult } from './api';
+import * as live from './live-core.mjs';
+import type { LiveState, Look } from './live-core.mjs';
+import { LiveBadge, LiveMark, LockMark, OrchBadge, SentEditor, readLooks, readOrchMark, type OrchMark } from './live';
+import { BuildPanel } from './build-panel';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -30,6 +38,9 @@ export function PlanStudio2Page() {
   const [q, setQ] = useState('');
   const showDone = flag(rt, KEYS.showDone, true);
   const listRef = useRef<HTMLUListElement>(null);
+  const looks = readLooks(rt);
+  const orchMark = readOrchMark(rt);
+  useLiveProgress(Number(setting(rt, KEYS.livePoll, String(POLL_SECONDS))) || 0);
 
   // a deep link (plan-studio-2.focus:<id or words>): select it, open its ancestors, scroll to it
   useEffect(() => {
@@ -45,7 +56,7 @@ export function PlanStudio2Page() {
 
   // drops: before / after a row (same parent as the row), inside a row (its last child), or onto the top-level strip
   useEffect(() => registerZone(DND_ZONE, {
-    accepts: (d, target) => { const s = state; if (!s || d.kind !== `${DND_ZONE}:item` || d.id === target) return false; return target === TOP || !tc.ancestors(s, target).some((a) => a.id === d.id); },
+    accepts: (d, target) => { const s = state; if (!s || d.kind !== `${DND_ZONE}:item` || d.id === target) return false; if (target !== TOP && tc.byId(s, target)?.locked) return false; return target === TOP || !tc.ancestors(s, target).some((a) => a.id === d.id); },
     positions: (_d, target) => (target === TOP ? ['inside'] : ['before', 'inside', 'after']),
     drop: (d, target, pos: DropPos) => {
       const s = state; if (!s) return;
@@ -61,15 +72,29 @@ export function PlanStudio2Page() {
   const rows = useMemo(() => {
     if (!state) return [];
     if (q.trim()) { const ids = new Set(tc.find(state, q, { limit: 500 }).map((h) => h.id)); return state.items.filter((i) => ids.has(i.id)).map((item) => ({ item, depth: 0, kids: tc.children(state, item.id).length, path: tc.pathOf(state, item.id) })); }
-    return tc.flatten(state).filter((r) => showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done)).map((r) => ({ ...r, path: '' }));
+    // a sent plan's build steps are listed in the build panel under the plan (a table), not as rows of their own
+    return tc.flatten(state).filter((r) => r.item.origin !== live.ORIGIN && (showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done))).map((r) => ({ ...r, path: '' }));
   }, [state, q, showDone]);
+  /** The step rows the tree carries for a sent plan (they open a step in the editor and stand in until its build is read). */
+  const stepRows = (id: string) => (state ? tc.children(state, id).filter((c) => c.origin === live.ORIGIN) : []);
+  const isSentPlan = (i: Item) => !!i.live && !i.origin && i.live.split !== undefined;
   const total = state ? tc.progress(state, null) : { done: 0, total: 0, minutes: 0 };
   const current = state && selected ? tc.byId(state, selected) : null;
   const newPlan = () => rt.openDialog(DIALOGS.item, { parent: null, kind: 'plan' });
+  // the shared framework toolbars (page-toolbar@1, assets/toolbar/plan-studio-2.json and plan-studio-2-item.json)
+  usePublishPageState(VIEW, { loaded: !!state, items: state?.items.length ?? 0, trash: state?.trash.length ?? 0, undoable: !!state?.trash.length && !busy, selection: current ? { id: current.id, title: current.title } : null });
+  useToolbarHandlers(VIEW, {
+    'plan-studio-2.new-plan': () => { newPlan(); return { kind: 'plan' }; },
+    'plan-studio-2.undo': async () => { const r = await undoDelete(); rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'); return r; },
+    'plan-studio-2.expand': () => { setCollapsed(null, false); return { expanded: true }; },
+    'plan-studio-2.collapse': () => { setCollapsed(null, true); return { collapsed: true }; },
+    'plan-studio-2.export': async () => { const t = await exportText(null, 'md'); download('plan-studio-2.md', t); return { bytes: t.length }; },
+    'plan-studio-2.reload': async () => { await reload(); return { reloaded: true }; },
+  });
 
   const treeNode = (
     <div className={`${B}__main fx-stack`}>
-      <div className={`${B}__tools`} role="toolbar" aria-label="Tree tools">
+      <div className={`${B}__tools`} role="search" aria-label="Tree tools" data-axf-not-toolbar="search fields only: the tree's buttons are on the page toolbar">
         <TextField label="Find" value={q} onChange={setQ} type="search" placeholder="Find a plan, step or note…" className={`${B}__find`} />
         <Switch label="Show done" checked={showDone} onChange={(v) => rt.settings.set(KEYS.showDone, v)} />
       </div>
@@ -77,7 +102,12 @@ export function PlanStudio2Page() {
         <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
       ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
         <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
-          {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} />)}
+          {rows.map((r) => (
+            <Fragment key={r.item.id}>
+              <Row item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} looks={looks} orchMark={orchMark} />
+              {!q.trim() && isSentPlan(r.item) && <BuildPanel item={r.item} rows={stepRows(r.item.id)} open={!r.item.collapsed} depth={r.depth} selected={selected} looks={looks} />}
+            </Fragment>
+          ))}
         </ul>
       )}
       {state && state.items.length > 0 && !q && <div className={`${B}__topdrop`} data-axf-drop={DND_ZONE} data-axf-drop-id={TOP}><Icon name="move" size={14} /> Drop here for the top level</div>}
@@ -86,7 +116,7 @@ export function PlanStudio2Page() {
   );
   const node: Record<string, ReactNode> = {
     tree: treeNode,
-    editor: current && state ? <Editor item={current} state={state} /> : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>,
+    editor: current && state ? (current.locked ? <SentEditor item={current} state={state} /> : <Editor item={current} state={state} />) : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>,
     say: <CommandBox />,
     trash: <TrashTab state={state} />,
   };
@@ -101,16 +131,10 @@ export function PlanStudio2Page() {
           <h1>Plan Studio 2.0</h1>
           <p className="fx-muted">Plans, sections, steps, notes and lists nested as deep as you like. Right-click or long-press any row for everything you can do to it, drag the grip to move it, or just say it.</p>
         </div>
-        <div className={`${B}__actions`} role="toolbar" aria-label="Plan Studio 2.0 actions">
-          <Button tone="primary" icon="plus" onClick={newPlan}>New plan</Button>
-          <IconButton icon="undo" label="Undo delete" disabled={!state?.trash.length || busy} onClick={() => void undoDelete().then((r) => rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'))} />
-          <IconButton icon="chevron-down" label="Expand all" data-axf-target="action:plan-studio-2.expand-all" disabled={!state} onClick={() => setCollapsed(null, false)} />
-          <IconButton icon="chevron-up" label="Collapse all" data-axf-target="action:plan-studio-2.collapse-all" disabled={!state} onClick={() => setCollapsed(null, true)} />
-          <IconButton icon="download" label="Export all as Markdown" disabled={!state?.items.length} onClick={() => void exportText(null, 'md').then((t) => download('plan-studio-2.md', t))} />
-          <IconButton icon="refresh" label="Reload" onClick={() => void reload()} />
-          <LayoutSwitcher />
-        </div>
       </header>
+      <PageToolbar view="plan-studio-2" label="Plan Studio 2.0 actions" className={`${B}__actions`}>
+        <LayoutSwitcher />
+      </PageToolbar>
       {error && <Note tone="danger">{error}</Note>}
       <SectionLayout sections={sections} />
       <DragLayer />
@@ -120,31 +144,43 @@ export function PlanStudio2Page() {
 
 /* ---------------------------------------------------------------- rows */
 
-function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: number; kids: number; path: string; state: State; selected: boolean }) {
+function Row({ item, depth, kids, path, state, selected, looks, orchMark }: { item: Item; depth: number; kids: number; path: string; state: State; selected: boolean; looks: Record<LiveState, Look>; orchMark: OrchMark }) {
   const rt = useRuntime();
   const prog = kids ? tc.progress(state, item.id) : null;
   const open = () => select(item.id);
   const ctx = (e: { clientX: number; clientY: number; currentTarget: Element }) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(e.clientX || r.left, e.clientY || r.bottom, CTX_TARGET, item.id); };
   const done = tc.CHECKABLE.has(item.kind) && item.done;
+  // a sent row: its state and its look (the server's state, the look picked in settings); a locked row has no grip, no add and no edit
+  const lv = item.live ?? null;
+  const look = lv ? looks[lv.state as LiveState] : null;
+  const orch = item.origin === live.ORIGIN;
+  const locked = !!item.locked;
+  const cls = [`${B}__row`, selected && 'is-selected', done && !look && 'is-done', locked && 'is-locked', orch && 'is-orch', orch && orchMark !== 'badge' && 'is-orch-tint', look && `is-live ${live.lookClasses(look)}`].filter(Boolean).join(' ');
   return (
-    <li className={`${B}__row${selected ? ' is-selected' : ''}${done ? ' is-done' : ''}`} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
+    <li className={cls} data-ps2-state={lv?.state} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
       data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id} data-axf-drop={DND_ZONE} data-axf-drop-id={item.id}>
-      <span className={`${B}__grip axf-dnd-grip`} title="Drag to move" onPointerDown={(e: RPointerEvent) => startDrag(e, { kind: `${DND_ZONE}:item`, id: item.id, label: item.title, icon: tc.KIND_ICON[item.kind], trashable: true, onTrash: () => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0')) })}><Icon name="grip" size={14} /></span>
+      {locked ? <LockMark orch={orch} /> : <span className={`${B}__grip axf-dnd-grip`} title="Drag to move" onPointerDown={(e: RPointerEvent) => startDrag(e, { kind: `${DND_ZONE}:item`, id: item.id, label: item.title, icon: tc.KIND_ICON[item.kind], trashable: true, onTrash: () => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0')) })}><Icon name="grip" size={14} /></span>}
       {kids ? <IconButton icon={item.collapsed ? 'chevron-right' : 'chevron-down'} label={item.collapsed ? `Expand ${item.title}` : `Collapse ${item.title}`} className={`${B}__fold`} onClick={() => setCollapsed([item.id], !item.collapsed)} /> : <span className={`${B}__fold is-leaf`} />}
-      {tc.CHECKABLE.has(item.kind) ? <Checkbox label="" title={item.done ? 'Done' : 'Not done'} checked={item.done} onChange={(v) => void editItem(item.id, { done: v })} /> : <Icon name={tc.KIND_ICON[item.kind]} size={14} className={`${B}__kind`} />}
-      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`button:item.${item.id}`} onClick={open} onDoubleClick={() => rt.openDialog(DIALOGS.item, { id: item.id })} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
+      {tc.CHECKABLE.has(item.kind) ? (look ? <LiveMark item={item} look={look} /> : <Checkbox label="" title={locked ? 'Locked: sent to the orchestrator' : item.done ? 'Done' : 'Not done'} checked={item.done} disabled={locked} onChange={(v) => void editItem(item.id, { done: v })} />) : <Icon name={tc.KIND_ICON[item.kind]} size={14} className={`${B}__kind`} />}
+      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`button:item.${item.id}`} onClick={open} onDoubleClick={() => { if (!locked) rt.openDialog(DIALOGS.item, { id: item.id }); }} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
         <span className={`${B}__text`}>{item.title}</span>
         {path && <span className={`${B}__path fx-muted`}>{path}</span>}
       </button>
+      {(lv || orch) && (
+        <span className={`${B}__live`}>
+          {orch && orchMark !== 'tint' && <OrchBadge />}
+          {lv && look?.badge && <LiveBadge l={lv} look={look} />}
+        </span>
+      )}
       <span className={`${B}__meta`}>
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
-        {item.status && item.status !== 'draft' && <Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip>}
+        {item.status && item.status !== 'draft' && !lv && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
         {item.links.length > 0 && <span className={`${B}__n`} title={item.links.map((l) => `${LINK_LABEL[l.type]}: ${l.label || l.ref}`).join('\n')}><Icon name="external" size={12} /> {item.links.length}</span>}
       </span>
-      <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />
+      {!locked && <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />}
       <IconButton icon="more" label={`More for ${item.title}`} className={`${B}__act`} onClick={ctx} />
     </li>
   );
@@ -155,10 +191,18 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
 function Editor({ item, state }: { item: Item; state: State }) {
   const rt = useRuntime();
   const [draft, setDraft] = useState(item);
-  useEffect(() => setDraft(item), [item]);
+  // the draft follows the item only when the item itself changed (a live reload of the tree hands over new objects)
+  useEffect(() => setDraft(item), [item.id, item.updatedAt]); // eslint-disable-line react-hooks/exhaustive-deps
   const dirty = JSON.stringify({ ...draft, updatedAt: '' }) !== JSON.stringify({ ...item, updatedAt: '' });
   const save = () => void editItem(item.id, { title: draft.title, body: draft.body, status: draft.status, priority: draft.priority, model: draft.model, minutes: draft.minutes, kind: draft.kind, tags: draft.tags }).then((r) => rt.toast(r.say ?? 'Saved.', 'success', 'Plan Studio 2.0'));
   const path = tc.ancestors(state, item.id);
+  useToolbarHandlers(VIEW, {
+    'plan-studio-2.item-new': () => { rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] }); return { parent: item.id }; },
+    'plan-studio-2.item-move': () => { rt.openDialog(DIALOGS.move, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-link': () => { rt.openDialog(DIALOGS.link, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-build': () => { rt.openDialog(DIALOGS.build, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-delete': async () => { const r = await deleteItem(item.id); rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'); return r; },
+  });
   const openLink = (l: Link) => {
     if (l.type === 'url') { window.open(l.ref, '_blank', 'noopener'); return; }
     const spec = linkAction(l);
@@ -167,13 +211,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
   return (
     <section className={`${B}__editor fx-card`} data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id}>
       <p className="fx-eyebrow">{path.length ? path.map((a) => a.title).join(' › ') : 'Top level'} · {tc.KIND_LABEL[item.kind]}</p>
-      <div className={`${B}__editrow`} role="toolbar" aria-label="Item actions">
-        <Button size="sm" icon="plus" onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })}>New inside</Button>
-        <Button size="sm" icon="move" onClick={() => rt.openDialog(DIALOGS.move, { id: item.id })}>Move to…</Button>
-        <Button size="sm" icon="external" onClick={() => rt.openDialog(DIALOGS.link, { id: item.id })}>Link…</Button>
-        <Button size="sm" icon="rocket" onClick={() => rt.openDialog(DIALOGS.build, { id: item.id })}>Send to build…</Button>
-        <Button size="sm" icon="trash" tone="danger" undoable onClick={() => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'))}>Delete</Button>
-      </div>
+      <PageToolbar view="plan-studio-2" slot="item" label="Item actions" className={`${B}__editrow`} />
       <TextField label="Title" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v })} />
       <TextField label="Notes" value={draft.body} onChange={(v) => setDraft({ ...draft, body: v })} rows={5} placeholder="What it is, why, how far it got…" />
       <div className={`${B}__fields`}>
@@ -264,7 +302,7 @@ function CommandBox() {
   };
   return (
     <div className={`${B}__cmd`}>
-      <div className={`${B}__cmdrow`} role="toolbar" aria-label="Say a command">
+      <div className={`${B}__cmdrow`} role="group" aria-label="Say a command">
         <TextField label="Say it" value={text} onChange={setText} placeholder="new plan Launch · add a step Deploy to Launch · rename Deploy to Ship · move Ship into Launch · delete Ship · undo" className={`${B}__cmdin`} />
         <Button icon="play" onClick={() => { void run(text, false); setText(''); }} disabled={!text.trim()}>Run</Button>
         {canListen() && <Button icon={listening ? 'pause' : 'mic'} tone={listening ? 'danger' : 'neutral'} onClick={() => void talk()}>{listening ? 'Stop' : 'Talk'}</Button>}
@@ -374,6 +412,7 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
   const [preview, setPreview] = useState<BuildPreview | null>(null);
   const [err, setErr] = useState('');
   const [buildId, setBuildId] = useState('');
+  const [armed, setArmed] = useState(false);
   useEffect(() => { if (it) void sendToBuild(it.id, { preview: true }).then((r) => { if ('preview' in r && r.preview) setPreview(r as BuildPreview); else setErr((r as OpResult).error || 'no preview'); }, (e: Error) => setErr(e.message)); }, [it?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!state || !it) return <Note tone="warning">That item is gone.</Note>;
   const send = () => void sendToBuild(it.id, { buildId: buildId.trim() || undefined }).then((r) => {
@@ -382,19 +421,33 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
     rt.toast(o.say ?? 'Sent.', 'success', 'Plan Studio 2.0'); close();
     if (o.build) rt.dispatch(`build-orchestrator.open:${o.build.id}`);
   }, (e: Error) => setErr(e.message));
+  // Send to emergency: never a registered action, and the button's words sit in a <span> so it is no console-control
+  // target either (only buttons with plain-text words are): nothing outside the page (MCP, voice, a remote press) can
+  // press it for Brett. Two clicks: the first arms it, the second sends. The server takes it from his own signed-in
+  // console session only.
+  const sendEmergency = () => {
+    if (!armed) { setArmed(true); return; }
+    void sendToEmergency(it.id, { buildId: buildId.trim() || undefined }).then((r) => {
+      if (!r.ok) { setErr(r.error || 'not sent'); setArmed(false); return; }
+      rt.toast(r.say ?? 'Sent to emergency.', 'success', 'Plan Studio 2.0'); close();
+      if (r.build) rt.dispatch(`build-orchestrator.open:${r.build.id}`);
+    }, (e: Error) => { setErr(e.message); setArmed(false); });
+  };
   return (
     <div className={`${B}__dialog fx-stack`}>
-      <p className="fx-muted">“{it.title}” becomes a pending build in the Build orchestrator. Its open steps (any depth) become the build's steps; the item gets a link back to the build.</p>
+      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: the orchestrator decides the real build steps, each with its minutes and model. Once it has filed them, they replace these steps here (marked From orchestrator, yours are kept in the item's history) and check off as each one completes. The plan is locked until the build lands or is cancelled. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
       {err && <Note tone="danger">{err}</Note>}
       {preview && (
         <>
-          <p className={`${B}__n`}>{preview.change.steps.length} steps · {preview.minutes} min · profile {preview.build.profile}</p>
-          <ol className={`${B}__steps`}>{preview.change.steps.map((s, i) => <li key={i}>{s.text} <span className="fx-muted">{s.model}{s.estimate ? `, ${s.estimate}` : ''}</span></li>)}</ol>
+          <p className={`${B}__n`}>{preview.planning} planning step{preview.planning === 1 ? '' : 's'} · profile {preview.build.profile}</p>
+          {preview.errors?.length ? <Note tone="warning">{preview.errors.map((e) => e.why).join('; ')}</Note> : null}
+          <ol className={`${B}__steps`}>{preview.change.steps.map((s, i) => <li key={i}>{s.text}{s.model || s.estimate ? <span className="fx-muted"> {[s.model, s.estimate].filter(Boolean).join(', ')}</span> : null}</li>)}</ol>
           <TextField label="Build id" value={buildId} onChange={setBuildId} placeholder={preview.build.id} mono hint="Lower-case letters, digits and dashes; made from the title when empty." />
         </>
       )}
       <div className={`${B}__editrow`}>
         <Button tone="primary" icon="rocket" disabled={!preview} onClick={send}>Send to the orchestrator</Button>
+        <Button tone={armed ? 'danger' : undefined} icon="zap" disabled={!preview || !!preview.errors?.length} onClick={sendEmergency}><span>{armed ? 'Confirm: send to emergency' : 'Send to emergency'}</span></Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
     </div>

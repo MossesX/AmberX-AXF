@@ -50,7 +50,7 @@ final class NativeBridge {
     @JavascriptInterface public String info() {
         if (!allowed()) return DENIED;
         return ok("\"shell\":\"console-droid\",\"version\":" + JSONObject.quote(BuildConfigInfo.version(app))
-            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\"]"
+            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\",\"" + DialogRules.FEATURE + "\"]"
             + ",\"device\":" + DeviceLink.stateJson());
     }
 
@@ -163,7 +163,7 @@ final class NativeBridge {
                 OverlayRules.Item it = o == null ? null : OverlayRules.item(map(o));
                 if (it != null) list.add(it);
             }
-            ui.post(() -> OverlayService.items(list));
+            ui.post(() -> OverlayService.pageItems(list));
             return ok("\"items\":" + list.size());
         } catch (Exception e) { return fail("bad overlay items: " + e.getMessage()); }
     }

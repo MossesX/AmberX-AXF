@@ -5,7 +5,7 @@
  * Framework controls only (they follow the app's button, style theme and spacing); plugin CSS lays things out.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Field, Icon, IconButton, Note, PageToolbar, Section, Segmented, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import {
   CORE_PARTS, DEFAULT_VIEW, FIELD_TYPES, KINDS, TONES, checklistText, childLists, dateInput, fromDateInput, groupEntries, listPaths, progress, readView, sortEntries, visible, words,
   type CorePart, type CoreRule, type Entry, type EntryKind, type FieldDef, type GroupBy, type ListView, type SortBy, type TodoList, type Tone, type TypeDef, type TypeSchema,
@@ -18,6 +18,9 @@ export const ENTRY_DIALOG = 'todo-manager.entry';
 const VIEW_KEY = 'todo-manager.view';
 
 const toneChip = (t: Tone | ''): 'accent' | 'success' | 'warning' | 'danger' | undefined => (t === 'accent' || t === 'success' || t === 'warning' || t === 'danger' ? t : t === 'info' ? 'accent' : undefined);
+
+/** The view the Todos toolbars belong to (page-toolbar@1 assets under assets/toolbar). */
+const TOOLBAR_VIEW = 'todo-manager';
 
 function useView(): [ListView, (p: Partial<ListView>) => void] {
   const rt = useRuntime();
@@ -115,6 +118,14 @@ function OpenList() {
   const filtersOn = v.groupBy !== DEFAULT_VIEW.groupBy || v.sort !== DEFAULT_VIEW.sort || !!v.kind || v.showDone !== DEFAULT_VIEW.showDone;
   const newEntry = (kind: EntryKind, listId = open.list.id, parentId: number | null = null) => rt.openDialog(ENTRY_DIALOG, { kind, listId, parentId });
   const toggle = (id: number) => setSel((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
+  const newGroup = () => { const t = window.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); return { asked: 'group' }; };
+  // the shared framework toolbars (page-toolbar@1, assets/toolbar/todo-manager.json and todo-manager-selection.json)
+  usePublishPageState(TOOLBAR_VIEW, { showFilters, filtersOn: filtersOn ? 'on' : '', selected: sel.length });
+  useToolbarHandlers(TOOLBAR_VIEW, {
+    'todo-manager.new-task': () => { newEntry('task'); return { kind: 'task' }; },
+    'todo-manager.new-group': newGroup,
+    'todo-manager.filters': () => { setShowFilters(!showFilters); return { showFilters: !showFilters }; },
+  });
   return (
     <div className="fx-stack">
       <div className="axp-todo__head">
@@ -122,16 +133,11 @@ function OpenList() {
         <span className="axp-todo__progress">{p.total ? `${p.done} of ${p.total} done` : `${open.entries.length} entr${open.entries.length === 1 ? 'y' : 'ies'}`}</span>
       </div>
       {/* one bar: add (first kind up front, the rest behind ⋯), search, tree / grid, and the filters behind one toggle (compact pages, Oct 30 2026) */}
-      <div className="axp-todo__bar" role="toolbar" aria-label="To-do">
-        <Button size="sm" tone="primary" icon={types.task.icon} onClick={() => newEntry('task')}>{types.task.label}</Button>
-        <MoreMenu label="Add something else" items={[
-          ...KINDS.filter((k) => k !== 'task').map((k) => ({ id: k, label: `New ${types[k].label.toLowerCase()}`, icon: types[k].icon, onSelect: () => newEntry(k) })),
-          { id: 'group', label: 'New group…', icon: 'folder', onSelect: () => { const t = window.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); } },
-        ]} />
+      <PageToolbar view="todo-manager" label="To-do" className="axp-todo__bar">
+        <MoreMenu label="Add something else" items={KINDS.filter((k) => k !== 'task').map((k) => ({ id: k, label: `New ${types[k].label.toLowerCase()}`, icon: types[k].icon, onSelect: () => newEntry(k) }))} />
         <input className="fx-input axp-todo__search" type="search" aria-label="Search" value={v.q} onChange={(e) => setView({ q: e.target.value })} placeholder="Search title, text or tag" />
         <Segmented size="sm" label="View" value={v.mode} onChange={(mode) => setView({ mode })} options={[{ value: 'tree', label: '', icon: 'list', title: 'Tree' }, { value: 'grid', label: '', icon: 'grid', title: 'Grid' }]} />
-        <IconButton icon="sliders" label={showFilters ? 'Hide filters' : 'Filters'} aria-pressed={showFilters} className={filtersOn ? 'is-on' : ''} onClick={() => setShowFilters(!showFilters)} />
-      </div>
+      </PageToolbar>
       {showFilters && (
         <div className="axp-todo__filters">
           {v.mode === 'tree' && <SelectField label="Group by" value={v.groupBy} onChange={(g) => setView({ groupBy: g as GroupBy })} options={(['structure', 'kind', 'status', 'priority', 'tag', 'due'] as const).map((g) => ({ value: g, label: g === 'structure' ? 'Lists and groups' : g === 'due' ? 'Due date' : words(g) }))} />}
@@ -307,10 +313,18 @@ function SelectionBar({ ids, clear }: { ids: number[]; clear: () => void }) {
     setNote(r.errors?.length ? `${r.count} ${what}; not changed: ${r.errors.join('; ')}` : `${r.count} ${what}`);
     clear();
   };
+  useToolbarHandlers(TOOLBAR_VIEW, {
+    'todo-manager.sel-done': async () => { after(await bulk(ids, { action: 'patch', patch: { status: 'done' } }), 'marked done'); return { entries: ids.length }; },
+    'todo-manager.sel-duplicate': async () => { after(await bulk(ids, { action: 'duplicate' }), 'duplicated'); return { entries: ids.length }; },
+    'todo-manager.sel-delete': async () => {
+      if (!window.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) return { deleted: 0 };
+      after(await bulk(ids, { action: 'delete' }), 'deleted'); return { deleted: ids.length };
+    },
+    'todo-manager.sel-clear': () => { clear(); return { cleared: ids.length }; },
+  });
   return (
-    <div className="axp-todo__selbar" role="toolbar" aria-label="Selected entries">
+    <PageToolbar view="todo-manager" slot="selection" label="Selected entries" className="axp-todo__selbar">
       <strong>{ids.length} selected</strong>
-      <Button size="sm" icon="check" onClick={async () => after(await bulk(ids, { action: 'patch', patch: { status: 'done' } }), 'marked done')}>Done</Button>
       <select className="fx-input" aria-label="Set status" value="" onChange={async (e) => { if (e.target.value) after(await bulk(ids, { action: 'patch', patch: { status: e.target.value } }), 'changed'); }}>
         <option value="">Status…</option>
         {statuses.map((x) => <option key={x} value={x}>{words(x)}</option>)}
@@ -319,13 +333,8 @@ function SelectionBar({ ids, clear }: { ids: number[]; clear: () => void }) {
         <option value="">Move to…</option>
         {listPaths(s.lists).map((p) => <option key={p.id} value={p.id}>{p.path}</option>)}
       </select>
-      <MoreMenu label="More for the selection" items={[
-        { id: 'dup', label: 'Duplicate', icon: 'copy', onSelect: async () => after(await bulk(ids, { action: 'duplicate' }), 'duplicated') },
-        { id: 'delete', label: 'Delete…', icon: 'trash', onSelect: async () => { if (window.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) after(await bulk(ids, { action: 'delete' }), 'deleted'); } },
-      ]} />
-      <IconButton icon="x" label="Clear the selection" onClick={clear} />
       {note && <span className="fx-muted">{note}</span>}
-    </div>
+    </PageToolbar>
   );
 }
 

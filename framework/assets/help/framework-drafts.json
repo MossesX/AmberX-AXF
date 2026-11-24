@@ -402,16 +402,14 @@
       {
         "target": "reset-this",
         "title": "Reset this chrome",
-        "text": "Drops every change made on this Interface tab for this tab row, toolbar, banner, nav or menu, so it goes back to its asset's look. The number is how many settings are changed.",
-        "kind": "button",
-        "draft": true
+        "text": "Puts this toolbar, menu, nav, tab group or banner back to its default settings. The number is how many of its settings you changed; those changes go.",
+        "kind": "button"
       },
       {
         "target": "this-settings-window-every",
         "title": "This settings window",
-        "text": "Opens the picker for the settings window itself: which settings interface every dialog of this kind uses and its layout. It changes the window, never the chrome.",
-        "kind": "button",
-        "draft": true
+        "text": "Opens the choice of which settings interface every settings window of this kind uses, the shared default or a custom copy. It changes the settings window, not the chrome.",
+        "kind": "button"
       }
     ],
     "intros": []

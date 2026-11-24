@@ -19,7 +19,7 @@ MCP instructions and the memory docs. A session reads them all and then does the
 the same work again (the home card was the case that prompted this). build-rules@1 makes the rule set **one document the
 VPS owns**: every rule says who does it (`doer`), whether a machine can do or verify it (`kind`), when the VPS acts on it
 (`phase`), how it is checked (`check`) and fixed (`autofix`), and which brief block it rides in when the session is the
-doer. The Gate & rules plugin's **Build rules** tab edits it; the dispatcher renders the session's share into the brief;
+doer. The VPS Configuration plugin's **Build rules** tab edits it; the dispatcher renders the session's share into the brief;
 the VPS runs its own share before, around and after the session, and the gate holds the PR on the rest. A rule is done by
 one side, never both.
 

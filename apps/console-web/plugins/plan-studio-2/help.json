@@ -13,6 +13,144 @@
     "scope": "plugin:plan-studio-2",
     "entries": [
       {
+        "target": "action:plan-studio-2.orch:queue",
+        "title": "Queue",
+        "text": "Sent plans only. Asks the orchestrator to move the build on now: split it if it is not split yet, and start it when it is next in line. The answer says where it stands.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:hold",
+        "title": "Hold",
+        "text": "Sent plans only. A build still waiting its turn keeps its place and is skipped until you release it. A build that is already being built cannot be held: cancel it instead.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:release",
+        "title": "Release",
+        "text": "Takes a held build off hold. It takes its turn again, at once when nothing else is being built.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:retry",
+        "title": "Retry",
+        "text": "Sent plans only. A failed build and its failed steps start again from where they failed. The attempt counts start over.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:rebuild",
+        "title": "Rebuild",
+        "text": "On a failed step: builds that step again. On a plan whose build failed while landing: pulls main into its pull request again and recompiles it. Refused when nothing has failed.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:run-ci",
+        "title": "Run CI",
+        "text": "Sends a build that failed at CI back to Running CI, or has CI checked now when it is already there. Refused before the steps are merged into one pull request.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:land",
+        "title": "Land",
+        "text": "Asks the lander to take a built build now instead of waiting for its next round. A build that failed while landing is retried first. Refused while steps are still being built.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch:cancel",
+        "title": "Cancel the build",
+        "text": "Takes the build out of the orchestrator (archived). The plan unlocks and the planning steps you sent come back. A session still running ends on its own and nothing of it lands.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.orch-open",
+        "title": "Open in orchestrator",
+        "text": "Opens this plan's build in the Build orchestrator.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:plan-studio-2.history",
+        "title": "Replaced planning steps",
+        "text": "Shows the planning steps that left this item when the orchestrator filed its own steps. You can bring them back once the plan is no longer locked.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "open-in-orchestrator",
+        "title": "Open in orchestrator",
+        "text": "Opens this plan's build in the Build orchestrator.",
+        "kind": "button"
+      },
+      {
+        "target": "bring-these-steps-back",
+        "title": "Bring these steps back",
+        "text": "Puts these planning steps back into the item where they were. Refused while the plan is locked by a sent build.",
+        "kind": "button"
+      },
+      {
+        "target": "mark-steps-from-the-orchestrator-with",
+        "title": "Mark steps from the orchestrator with",
+        "text": "How steps the orchestrator filed are told apart from your own: a From orchestrator badge, a tinted row, or both.",
+        "kind": "field"
+      },
+      {
+        "target": "live-progress-of-sent-plans",
+        "title": "Live progress of sent plans",
+        "text": "How often the page reads the builds store again while a sent plan is still moving, so steps check off in place. Off means you reload by hand.",
+        "kind": "field"
+      },
+      {
+        "target": "done-mark",
+        "title": "Done mark",
+        "text": "What shows a step in this state as done or not: a check box, a check mark, or nothing.",
+        "kind": "field"
+      },
+      {
+        "target": "text-colour",
+        "title": "Text colour",
+        "text": "The colour of a step's title in this state, taken from the theme.",
+        "kind": "field"
+      },
+      {
+        "target": "background",
+        "title": "Background",
+        "text": "A soft tint behind a row in this state, taken from the theme.",
+        "kind": "field"
+      },
+      {
+        "target": "font",
+        "title": "Font",
+        "text": "The font of a step's title in this state: the normal, the monospace or the display font of the theme.",
+        "kind": "field"
+      },
+      {
+        "target": "weight",
+        "title": "Weight",
+        "text": "How heavy a step's title is in this state.",
+        "kind": "field"
+      },
+      {
+        "target": "style",
+        "title": "Style",
+        "text": "Normal or italic for a step's title in this state.",
+        "kind": "field"
+      },
+      {
+        "target": "state-badge",
+        "title": "State badge",
+        "text": "Shows the state as a badge on the row. The badge carries the orchestrator's status, so status styles and badge packs apply to it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "strike-through",
+        "title": "Strike-through",
+        "text": "Crosses out the title of a step in this state.",
+        "kind": "toggle"
+      },
+      {
+        "target": "reset-every-state",
+        "title": "Reset every state",
+        "text": "Puts the look of every state back to the defaults.",
+        "kind": "button"
+      },
+      {
         "target": "reset-the-panes-to-the-pane-layout",
         "title": "Reset the panes",
         "text": "Puts the IDE panes back to the picked pane layout (a dock-layout asset): every section returns, splits and sizes start over. Also plan-studio-2.dock:reset.",
@@ -129,7 +267,7 @@
       {
         "target": "send-to-build",
         "title": "Send to build…",
-        "text": "Turns this item's open steps into a pending build in the Build orchestrator.",
+        "text": "Sends this item to the Build orchestrator as one pending build; its open steps go along as planning notes and Fable designs the build steps.",
         "kind": "button"
       },
       {
@@ -369,7 +507,7 @@
       {
         "target": "action:plan-studio-2.build",
         "title": "Send to build orchestrator",
-        "text": "Its open steps become a pending build.",
+        "text": "It becomes one pending build; Fable designs its build steps.",
         "kind": "menu-item"
       },
       {
@@ -390,6 +528,12 @@
         "text": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "plan-studio",
+        "title": "Plan Studio 2.0",
+        "text": "Opens Plan Studio 2.0, the planning tree.",
+        "kind": "button"
       }
     ],
     "intros": [

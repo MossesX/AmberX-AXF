@@ -4,12 +4,17 @@
  * notification panel").
  *
  * - `?axf-open=<target>` (every browser): the shell's deep links `axf-console://open/<target>` land here; a
- *   console-control@1 address opens through the control executor, an action id runs (never a person-only one).
+ *   console-control@1 address opens through the control executor, an action id runs (never a person-only one). A
+ *   screen that is already registered shows at once (never the home screen first); one a plugin still has to bring is
+ *   waited for. A shell that finds the console already loaded hands the link to the page (`axfNative.open(url)`): the
+ *   target opens with no reload.
  * - When the shell's `window.axfNativeHost` is there:
  *   - `window.axfNative`: the host with parsed answers, plus `on(type, fn)` for its events (devtools, e2e, plugins);
  *   - safe area: once the framework CSS declares the --fx-safe-* tokens the page says it pads itself, and the shell
  *     sets the real status bar / cutout / navigation bar / keyboard sizes on <html>;
  *   - look: the native floating toolbar gets the live --fx-* tokens on load and on every skin change;
+ *   - questions: a shell without the `dialogs` feature can't draw confirm() in the overlay; the console says so
+ *     instead of doing nothing;
  *   - overlay: the console's `approvals-banner.overlay.*` settings and the `approvals.waiting` count go to the
  *     floating toolbar; dragging the toolbar saves its new edge / height back into those settings.
  * - `native.*` console actions (nativeRules.mjs NATIVE_ACTIONS) run every native feature, so REST
@@ -22,9 +27,10 @@ import type { AxfRuntime } from '../axf/core';
 import { executeControl, describeAnswer } from '../control/executor';
 import { controlRegistry } from '../axf/react';
 import { loader } from '../pluginLoader';
+import { consoleAlertsTransport } from '../alertsTransport';
 import {
-  APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
-  PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  APPROVALS_TARGET, approvalsOpenSpec, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
+  DEEP_LINK_EVENT, DEEP_LINK_RETRY_MS, DEEP_LINK_WAIT_MS, DIALOG_ALERT_KEY, DIALOG_UNSEEN, PHONE_APP_ADDRESS, inPageLink, startView, dialogAlert, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -48,6 +54,8 @@ export interface AxfNative {
   call(method: string, ...args: unknown[]): NativeAnswer;
   state(): NativeAnswer;
   on(type: string, fn: Listener): () => void;
+  /** A console link opened in this page without a reload; false when the shell has to load it. */
+  open(url: string): boolean;
 }
 
 declare global {
@@ -72,23 +80,59 @@ export function nativeState(): NativeAnswer {
   return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets, update: update.update };
 }
 
+/**
+ * Opens a deep-link target in this page: a console-control@1 address through the control executor, an action id
+ * through its action. A plugin's screen or action may not be there yet right after a load (plugins arrive one by one),
+ * so a target the console doesn't know is tried again for DEEP_LINK_WAIT_MS before it says so.
+ */
+function openDeepTarget(rt: AxfRuntime, t: { target: string; kind: string }, delayMs: number): void {
+  const started = Date.now();
+  const again = (attempt: () => void): boolean => {
+    if (Date.now() - started >= DEEP_LINK_WAIT_MS) return false;
+    setTimeout(attempt, DEEP_LINK_RETRY_MS);
+    return true;
+  };
+  const attempt = () => {
+    if (t.kind === 'address') {
+      void executeControl(rt, { verb: 'open', address: t.target, by: 'deep-link' }).then((a) => {
+        if (a.ok || (a.code === 'not_found' && again(attempt))) return;
+        rt.toast(describeAnswer(a), 'warning', 'Open');
+      });
+      return;
+    }
+    const id = t.target.split(':')[0]!;
+    const known = rt.actions.list().find((a) => a.id === id);
+    if (!known) { if (!again(attempt)) rt.toast(`Nothing called "${t.target}" to open here`, 'warning', 'Open'); return; }
+    if (known.meta.personOnly) { rt.toast(`${known.meta.label} needs your own tap`, 'warning', 'Open'); return; }
+    rt.dispatch(t.target);
+  };
+  setTimeout(attempt, delayMs);
+}
+
 /** Runs `?axf-open=` once on load (any browser). */
 function runDeepLink(rt: AxfRuntime): void {
   const t = openTarget(window.location.href);
   if (!t) return;
   window.history.replaceState(window.history.state, '', t.rest);
   if (t.kind === 'none') return;
-  setTimeout(() => {
-    if (t.kind === 'address') {
-      void executeControl(rt, { verb: 'open', address: t.target, by: 'deep-link' }).then((a) => { if (!a.ok) rt.toast(describeAnswer(a), 'warning', 'Open'); });
-      return;
-    }
-    const id = t.target.split(':')[0]!;
-    const known = rt.actions.list().find((a) => a.id === id);
-    if (!known) { rt.toast(`Nothing called "${t.target}" to open here`, 'warning', 'Open'); return; }
-    if (known.meta.personOnly) { rt.toast(`${known.meta.label} needs your own tap`, 'warning', 'Open'); return; }
-    rt.dispatch(t.target);
-  }, 300);
+  // a screen that is already there shows at once, so the page never draws its home screen first
+  const view = startView(t);
+  if (view && rt.search.entries().some((e) => e.kind === 'view' && (e.focus as { view?: string }).view === view)) rt.navigate(view);
+  openDeepTarget(rt, t, 300);
+}
+
+/**
+ * A link the shell hands to the running page instead of loading it (`window.axfNative.open(url)`; the shell loads the
+ * link itself when this answers false): a console link opens its `axf-open` target here and is announced as an
+ * `axf-deep-link` event, so whoever owns another of its parameters (a queued console command) acts on it. No reload.
+ */
+function openLink(rt: AxfRuntime, url: string): boolean {
+  const link = inPageLink(url, window.location.href);
+  if (!link) return false;
+  const t = openTarget(link);
+  if (t && t.kind !== 'none') openDeepTarget(rt, t, 0);
+  window.dispatchEvent(new CustomEvent(DEEP_LINK_EVENT, { detail: { url: link } }));
+  return true;
 }
 
 /** Wires the page to the phone app. Returns a remover. */
@@ -130,8 +174,27 @@ export function installNative(rt: AxfRuntime): () => void {
     listeners.get(type)!.add(fn);
     return () => { listeners.get(type)?.delete(fn); };
   };
-  window.axfNative = { available: true, call: callNative, state: nativeState, on };
+  window.axfNative = { available: true, call: callNative, state: nativeState, on, open: (url: string) => openLink(rt, url) };
   offs.push(() => { delete window.axfNative; });
+
+  // a shell that can't draw the page's questions in the overlay: an unseen "no" is said out loud, never silent
+  const shell = callNative('info');
+  if (hasDialogs(shell)) void consoleAlertsTransport.resolve([DIALOG_ALERT_KEY]).catch(() => { /* offline: the next load resolves it */ });
+  else {
+    // said once where Brett sees it (the bell and a phone push; one alert per key), gone once the app is updated
+    void consoleAlertsTransport.raise(dialogAlert(shell.version)).catch(() => { /* offline: the next load raises it */ });
+    const guard = <A extends unknown[], R>(ask: ((...a: A) => R) | undefined) => (ask ? (...a: A): R => {
+      const t = performance.now();
+      const answer = ask.apply(window, a);
+      if (dialogUnseen(answer, performance.now() - t)) rt.toast(DIALOG_UNSEEN, 'danger', 'Phone');
+      return answer;
+    } : undefined);
+    const own = { confirm: window.confirm, prompt: window.prompt };
+    const c = guard(own.confirm), p = guard(own.prompt);
+    if (c) window.confirm = c;
+    if (p) window.prompt = p;
+    offs.push(() => { window.confirm = own.confirm; window.prompt = own.prompt; });
+  }
 
   const css = () => getComputedStyle(document.documentElement);
   // safe area: the page pads itself once its CSS has the tokens (an older console never claims it, the shell pads it)
@@ -161,8 +224,8 @@ export function installNative(rt: AxfRuntime): () => void {
   // a newer console is live while this page is on screen: the console's own "Reload for the new version" bar
   // (off screen the shell reloads by itself)
   offs.push(on('shell.update', () => loader.markStale()));
-  // the approval bar's link and the overlay's "approvals" verb: the approvals list opens in this page (no reload)
-  offs.push(on('approvals.open', () => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(APPROVALS_TARGET); }));
+  // a card the overlay popped for one call (`id`): that approval opens in this page (no reload)
+  offs.push(on('approvals.open', (d) => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(approvalsOpenSpec(d)); }));
   return () => offs.forEach((f) => f());
 }
 

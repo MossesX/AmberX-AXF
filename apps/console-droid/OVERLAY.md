@@ -13,7 +13,8 @@ the window over other apps, the permission, the foreground service. What the bar
 every setting are the web console's.
 
 Code: `OverlayContract.java` (the names, pure Java, JUnit `OverlayContractTest`), `OverlayRules.java` (the pure
-rules, `OverlayRulesTest`), `OverlayService.java` (the Android side), the overlay methods of `NativeBridge.java`.
+rules, `OverlayRulesTest`), `OverlayService.java` (the Android side), the overlay methods of `NativeBridge.java`,
+`ApprovalFeedRules.java` / `ApprovalFeed.java` (the shell's own reading of axHub's list, `ApprovalFeedRulesTest`).
 Console side: `apps/console-web/src/native/nativeRules.mjs` and `axfNative.ts` (part 1), whose lists are the twins
 of the ones here.
 
@@ -25,12 +26,49 @@ of the ones here.
 | `approvals` | The toolbar with the approval bar opened out of it: what waits ("Run deploy — 2 more"), an "Open approvals" link, a dismiss button. |
 | `expanded` | The full-screen console (the app's one WebView) in the overlay window, in front of whatever app was showing, the toolbar docked top-left inside the safe area. |
 
+## What waits is axHub's live list
+
+Nov 23 2026 (Brett: two held calls, nothing popped, then a badge that stayed at 2). The toolbar used to show whatever
+the console page last told it, and the page reads axHub only while it is on screen. So with another app in front
+nothing arrived, and once the WebView showed another page the last count stayed.
+
+The shell now reads the list itself (`ApprovalFeed`: `GET /auth/admin/approvals.json` on the hub with the WebView's
+hub session, read-only, redirects refused, reply capped) and the badge, the label and the bar are derived from that
+list on every reading; no count is kept apart from it.
+
+- **When it reads**: every 2 s while something waits, every 4 s otherwise, every 30 s with the screen off
+  (`ApprovalFeedRules.pollMs`), and at once when the overlay folds or expands, the app comes to the front, the screen
+  comes on or the phone unlocks, the page reports a change, or a countdown ends (`ApprovalFeed.syncNow`).
+- **A new item pops its card** (`OverlayRules.cardFor` / `afterFeed`): over another app the overlay expands by itself
+  onto the console's own approval card for that call (Approve / Deny, the countdown; event `approvals.open` with the
+  call's `id`), without a tap on the toolbar. With the app in front the page shows the card and the toolbar opens its
+  bar. An item already shown or dismissed does not pop again; the `expand` setting still decides what may pop.
+- **The badge clears** the moment the list no longer has the item: approved, denied, expired or run after its veto,
+  wherever that happened. An overlay that expanded by itself folds back 3 s after the last item goes
+  (`foldsWhenClear`); one Brett opened himself stays.
+- **Without the hub** (signed out, unreachable) the last list stays, minus held commands whose countdown ended 5 s ago
+  (`OverlayRules.unexpired`); nothing new pops. The page's `overlayItems` / `overlayApprovals` are shown only until the
+  hub has answered the shell, and are otherwise a reason to read the list now.
+- **Sound**: the overlay makes none. The push for a held call is axHub's own; the card and the badge are silent.
+
 ## Verbs
 
-`expand`, `collapse`, `toggle`, `approvals` (open the console on the approvals list), `dismiss` (hide the bar
-until a new approval arrives; the expanded console stays). `OverlayRules.verb(state, verb)` is the transition table.
-With the overlay off or not allowed, `expand`, `toggle` and `approvals` open the app itself (it is the full-screen
-console then); `collapse` and `dismiss` do nothing.
+`expand`, `collapse`, `toggle`, `approvals` (open axHub's approvals page, `OverlayContract.APPROVALS_URL`, in the
+expanded overlay), `dismiss` (hide the bar until a new approval arrives; the expanded console stays).
+`OverlayRules.verb(state, verb)` is the transition table. With the overlay off or not allowed, `expand`, `toggle` and
+`approvals` open the app itself (it is the full-screen console then, on the approvals page for `approvals`);
+`collapse` and `dismiss` do nothing.
+
+## A tap on the toolbar
+
+Brett, Nov 23 2026: "When there's notifications on the overlay and I click it, it should bring me to the approvals,
+not to the console." `OverlayRules.tapVerb(state, waiting)` (JUnit `OverlayTapTest`):
+
+| The toolbar shows | A tap on its button, badge or label |
+| --- | --- |
+| A pending count | `approvals`: axHub's approvals page (`https://axhub.amberxai.com/auth/admin/approvals`) in the expanded overlay; a page already there keeps its place |
+| Nothing waiting | `expand`: the console, as before; the approvals page an earlier tap left showing gives way to the console (`OverlayRules.consolePage`) |
+| The expanded overlay | `collapse`: back to the toolbar |
 
 ## The four ways in, all the same
 
@@ -44,6 +82,24 @@ console then); `collapse` and `dismiss` do nothing.
 | Deep links | `axf-console://open/approvals.view` (the approvals list in the app); a console URL with `?axf-overlay=expand\|collapse` (axHub's `amberx.open_url`) is a verb, not a page |
 
 Outside the app (a desktop browser) the actions answer that the Android console app is not running this page.
+
+## A link for a console that is already loaded (no reload)
+
+Brett, Nov 23 2026: "Every time you try to load a screen, it refreshes and loads the main console first." Every open
+that reached the phone as a link (the console's wake `…/?axf-cmd=<id>&axf-open=<address>`, Follow Amber's
+`…/?axf-open=<address>`, an `axf-console://open/…` deep link) was loaded into the WebView whatever it was showing, so
+the page started again at its home screen.
+
+`WebHost.open` now asks first (`ShellRules.inPage`, JUnit `ShellRulesTest`): when the console already shows and the
+link is the console's own root carrying only hints, the link goes to the page (`window.axfNative.open(url)`) and the
+overlay expands on it. The page opens the target through its control executor and picks its queued command; nothing
+is loaded. The shell loads the link as before when no console shows (the offline page, axHub's approvals page), for
+any other path or site, for the search palette's link, and when the page doesn't take it within 1.5 s (a console
+from before this change, a page still starting, a renderer that is gone).
+
+The page also stays reachable while the overlay is folded: it beats on its command stream, which is not throttled
+the way its timers are, and after it ran a command it asks the shell to expand (`overlay('expand')`), so an open
+normally never needs the link at all.
 
 ## State (every API reads the same JSON)
 
@@ -78,9 +134,10 @@ The approvals banner hands the shell every waiting item whenever the list change
 `[{"id":"held:abc","kind":"held","title":"Deploy","runsAt":1763400000000,"shelved":false}, {"id":"approval:x","kind":"approval","title":"Restart nginx","runsAt":0,"shelved":false}]`
 (`runsAt` epoch ms, 0 for approvals and shelved commands). The shell sorts them (running countdowns soonest first, then
 shelved, then approvals), shows the toolbar label (`show`), the bar's line with the first item's title and countdown
-("Deploy — 1 more · Runs in 1:05 unless you stop it", re-rendered once a second while a countdown runs), and pops the
-bar only for an id it hasn't shown yet: one Brett dismissed or already saw keeps the toolbar small. Once items arrive
-they replace `overlayApprovals`' counts. Rules: `OverlayRules.order / toolbarLabel / countdown / afterItems / forget`
+("Deploy — 1 more · Runs in 1:05 unless you stop it", re-rendered once a second while a countdown runs), and pops
+only for an id it hasn't shown yet: one Brett dismissed or already saw keeps the toolbar small. Once items arrive
+they replace `overlayApprovals`' counts. Since Nov 23 2026 the same items come from the shell's own reading of the
+hub (above), with the same ids; the page's are the fallback until the hub answers. Rules: `OverlayRules.order / toolbarLabel / countdown / afterItems / forget`
 (JUnit `OverlayItemsTest`); console side `overlayItems()` in `plugins/approvals-banner/web/overlay.ts`.
 
 ## Permission flow: "Display over other apps"
@@ -109,6 +166,32 @@ bar and cutout, navigation bar, keyboard, on whichever side Android puts them.
 - **The expanded console**: the docked toolbar sits in the safe top-left corner (`dock`); the shell owns the top strip
   (status bar + toolbar) and the page gets the other three sides as `--fx-safe-*` (`rootPadding` / `pageInsets`), so no
   side is padded twice or not at all. Before the page pads itself, the shell pads all four sides.
+
+## With Phone Connect (`console-overlay@1`)
+
+Phone Connect (`apps/phone-connect`, phone-connect@1) runs the console's `open_url` command (`browser.open`). When the
+command asks for the overlay (`where: overlay`, the default) and this app is installed, Phone Connect hands the page to
+this app first: one synchronous `ContentResolver.call` on `content://ai.amberx.consoleapp.overlay`, method `open`, the
+url as the argument, `where` in the extras. The page loads in the one console WebView and the toolbar expands over
+whatever is on screen: the same path as axHub's `amberx.open_url` (`DeviceLink.open`), so `?axf-overlay=expand|collapse`
+urls run the verb. The answer is `{ok: true, json}` (`json` = the open answer: `url`, `verb`, `where`, `overlay`), and
+Phone Connect reports `how: "console-overlay"` in its phone-result@1.
+
+With the toolbar switched off but "Display over other apps" granted, the app itself comes to the front on the page
+(`how: "console-app"`): the permission is Android's exemption from the background-start block, so there is no
+tap-to-open notification. Android drops a blocked start without raising anything, so the provider answers `ok` only
+once the page is on screen (the overlay took it, or the activity resumed within 2 s); otherwise `unavailable`.
+
+This app declines, and Phone Connect opens the page itself, when: `where` is `browser` (code `browser`), "Display
+over other apps" isn't granted (`no_overlay`; Phone Connect then starts this app's activity itself when it holds the
+permission), the url isn't on Brett's sites (`validation`), or the page did not come up (`unavailable`).
+Only Phone Connect's package (`ai.amberx.axf.phoneconnect`) and this app may call (`denied` otherwise); Android vouches
+for the calling package. `call("state")` answers `{overlay, canDraw, on, visible}` (`visible`: the app is on screen).
+
+Code: `PhoneConnectRules.java` (pure, JUnit `PhoneConnectRulesTest`, which also checks the Kotlin twin
+`apps/phone-connect/.../watch/ConsoleOverlay.kt`, Phone Connect's `<queries>` entry and its application id),
+`PhoneConnectProvider.java` (the Android side). Phone Connect side: `ConsoleOverlay.kt`, `LinkRules.wantsOverlay`,
+the `browser.open` handler in `Commands.kt`.
 
 ## What part 1 built and what part 2 adds
 

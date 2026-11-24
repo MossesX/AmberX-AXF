@@ -135,6 +135,41 @@ def delivery_targets(alert: dict[str, Any], event: str, rules: dict[str, Any] = 
     return out
 
 
+# Alerts raised within this window reach a push channel together (one poll pass raises its alerts within a second).
+BURST_WINDOW_S = 2.0
+DIGEST_LINES = 12
+
+
+def digest_alert(alerts: list[dict[str, Any]]) -> dict[str, Any]:
+    """Several alerts as one push: the worst one's severity and type, a line per alert. The bell keeps each alert."""
+    worst = max(alerts, key=lambda a: rank(a.get("severity", "info")))
+    sources = {a.get("source") for a in alerts}
+    links = {a.get("link") or "" for a in alerts}
+    lines = [f"- {a.get('title') or a['key']}"[:200] for a in alerts[:DIGEST_LINES]]
+    if len(alerts) > DIGEST_LINES:
+        lines.append(f"… and {len(alerts) - DIGEST_LINES} more")
+    out = {"id": f"digest:{worst['key']}"[:KEY_MAX], "key": f"digest:{worst['key']}"[:KEY_MAX],
+           "source": sources.pop() if len(sources) == 1 else "console", "severity": worst.get("severity", "info"),
+           "title": f"{len(alerts)} new console alerts"[:TITLE_MAX], "body": "\n".join(lines)[:BODY_MAX],
+           "link": links.pop() if len(links) == 1 else "", "meta": {"digest": [a["key"] for a in alerts]}}
+    if worst.get("notifyType"):
+        out["notifyType"] = worst["notifyType"]
+    return out
+
+
+def plan_deliveries(batch: list[tuple[dict[str, Any], list[str]]]) -> list[tuple[dict[str, Any], list[str]]]:
+    """What a burst of raised alerts sends: per push channel, the alert itself when it is the only one, else one digest.
+
+    Nov 23 2026: one systems check pass raised eight alerts and the phone rang eight times, a second apart. An alert
+    raised again inside the burst counts once."""
+    per: dict[str, list[dict[str, Any]]] = {}
+    for alert, channels in batch:
+        for ch in channels:
+            rows = per.setdefault(ch, [])
+            rows[:] = [a for a in rows if a["key"] != alert["key"]] + [alert]
+    return [(rows[0] if len(rows) == 1 else digest_alert(rows), [ch]) for ch, rows in per.items()]
+
+
 def ntfy_priority(severity: str) -> int:
     return {"info": 2, "success": 2, "warning": 3, "error": 4, "critical": 5}.get(severity, 3)
 
@@ -701,11 +736,25 @@ class AlertHub:
             _write_private(self.f_run, {**run, "clean": True, "stoppedAt": _now()})
 
     def _worker(self) -> None:
+        """Delivers what was raised, a burst at a time: alerts raised within BURST_WINDOW_S go out as one push per channel."""
         while not self._stop.is_set():
             item = self._outbox.get()
             if item is None:
                 break
-            self._deliver(*item)
+            batch, until, last = [item], time.monotonic() + BURST_WINDOW_S, False
+            while not last and (left := until - time.monotonic()) > 0:
+                try:
+                    more = self._outbox.get(timeout=left)
+                except queue.Empty:
+                    break
+                if more is None:
+                    last = True
+                else:
+                    batch.append(more)
+            for alert, channels in plan_deliveries(batch):
+                self._deliver(alert, channels)
+            if last:
+                break
 
     def _poller(self) -> None:
         if self._stop.wait(5):  # let the API come up first

@@ -22,6 +22,7 @@ from typing import Any, Callable
 
 from fastapi import HTTPException  # noqa: E402 — raised by fixes and run_one (was used without an import)
 from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core module (server/credentials.py)
+import host_mode  # noqa: E402 — core module (server/host_mode.py): where a moved part runs
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, http as axf_http
 
@@ -371,6 +372,12 @@ class SysCheck:
         root = self.persist_root()
         if not root:
             raise HTTPException(400, "no shared data folder is mounted here; run deploy/install-console.sh on the VPS")
+        hub = "hub-sync"  # the host service id (axf-not-plugin:hub-sync)
+        if not host_mode.container_runs(hub):
+            # host-service hub-sync (HOST-SERVICES.md): the host owns the push; ask it instead of running a second copy
+            import host_services  # noqa: PLC0415 — the console server's host client (s17), loaded only in host mode
+            r = host_services.client().action(hub, "persist-push", {}, by="systems-check", reason={"title": "Seed the shared data folder", "description": "Shared data fix: copy the repo snapshot to the hub for files it does not have."})
+            return f"the host copied the repo's snapshot to the hub: {r.get('result', {}).get('output', '')[-200:]}"
         r = subprocess.run(["node", str(self.root / "framework/cli/persist.mjs"), "push"], cwd=self.root, capture_output=True, text=True, timeout=120)
         if r.returncode != 0:
             raise HTTPException(500, (r.stderr or r.stdout).strip()[-300:])
@@ -424,5 +431,11 @@ HOST_CHECKS: dict[str, dict[str, Any]] = {
     "host-session-checkin": {"service": "claude", "title": "Session check-in on the VPS", "order": 25, "instructions": ["Nothing to do: sessions start without check-in questions (Oct 26 2026).", "To bring the questions back, set \"ask\": true in the check-in config (Settings → Plugins → Session check-in)."], "links": [{"label": "Claude Code hooks", "url": DOCS["claude_hooks"]}]},
     "host-anthropic-keyfile": {"service": "claude", "title": "API key file (~/.anthropic-key)", "order": 26, "instructions": ["claude-pick --set-key (stores it owner-only)", "chmod 600 ~/.anthropic-key"]},
     "host-git-auth": {"service": "github", "title": "GitHub access from the VPS", "order": 12, "instructions": ["git -C /opt/axf fetch   (should work without a password prompt)", "If it fails: gh auth login, or store a token with git's credential helper."]},
+    "host-axhub-web-retired": {"service": "axhub", "title": "axHub web app retired (VPS clean-up)", "order": 62, "instructions": [
+        "The axHub web app's pages are console plugins now (nav → axHub: Approvals, Passes, Apps, Users, Handoff, Account). Open each once in the console first.",
+        "Then on the VPS: bash /opt/axf/deploy/console-doctor.sh --fix host-axhub-web-retired   (asks, then removes the axhub-web container, /usr/local/bin/axhub-web-update and /etc/cron.d/axhub-web).",
+        "By hand instead: docker rm -f axhub-web && rm -f /etc/cron.d/axhub-web /usr/local/bin/axhub-web-update",
+        "On axHub: point the hub's old page redirects (decision #96: /auth/admin/approvals/<id>, /auth/account, /handoff/<id> …) at the console (https://<console>/#/approvals/<id> …); the console opens the same page from those addresses.",
+        "Rollback: bash /opt/axf/apps/axhub-web/deploy/install.sh brings the old app back (its source stays in the repo, archived)."]},
     "host-axhub-volume": {"service": "axhub", "title": "axhub-projects volume", "order": 61, "instructions": ["Coolify → axHub → Persistent Storage: add a volume named axhub-projects mounted at /projects (axHub repo deploy/coolify.md §5b), then redeploy axHub.", "Then on the VPS: bash /opt/axf/deploy/install-console.sh"]},
 }

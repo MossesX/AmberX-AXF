@@ -8,6 +8,8 @@ import android.content.MutableContextWrapper;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -47,6 +49,8 @@ final class WebHost {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
         s.setUserAgentString(s.getUserAgentString() + " AXFConsoleApp/" + BuildConfigInfo.version(c));
+        // the page keeps working while nothing shows it (it opens the approval card the moment the overlay pops)
+        web.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, false);
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new Chrome());
         NativeBridge.install(web);
@@ -76,9 +80,24 @@ final class WebHost {
         ctx.setBaseContext(ctx.getApplicationContext());
     }
 
-    /** Loads a deep link or console URL (see {@link ShellRules#deepLink}). */
+    /**
+     * Opens a deep link or console URL (see {@link ShellRules#deepLink}). A console that is already loaded opens it
+     * itself, with no reload ({@link ShellRules#inPage}): the page keeps its state and goes straight to the screen.
+     * Anything else, and a page that doesn't take the link within {@link ShellRules#HAND_OFF_MS}, is loaded.
+     * Main thread only.
+     */
     static void open(Context c, String link) {
-        get(c, ShellRules.deepLink(link)).loadUrl(ShellRules.deepLink(link));
+        String url = ShellRules.deepLink(link);
+        if (web == null) { get(c, url); return; } // a fresh page starts at the link
+        if (!ShellRules.inPage(NativeBridge.currentUrl, url)) { web.loadUrl(url); return; }
+        WebView w = web;
+        boolean[] settled = { false };
+        Runnable load = () -> { if (!settled[0]) { settled[0] = true; w.loadUrl(url); } };
+        w.postDelayed(load, ShellRules.HAND_OFF_MS); // a page that never answers (its renderer is gone) is loaded
+        w.evaluateJavascript(ShellRules.handOffScript(url), took -> {
+            if (settled[0]) return;
+            if ("true".equals(took)) { settled[0] = true; w.removeCallbacks(load); } else { w.removeCallbacks(load); load.run(); }
+        });
     }
 
     /** Runs JavaScript in the page (events to window.axfNative listeners). */
@@ -126,6 +145,22 @@ final class WebHost {
     }
 
     private static final class Chrome extends WebChromeClient {
+        // The page's own questions: the WebView draws them only in an activity; in the overlay the shell does (JsDialogs).
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            return JsDialogs.ask(view, JsDialogs.ALERT, url, message, null, result);
+        }
+
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            return JsDialogs.ask(view, JsDialogs.CONFIRM, url, message, null, result);
+        }
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            return JsDialogs.ask(view, JsDialogs.PROMPT, url, message, defaultValue, result);
+        }
+
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> cb, FileChooserParams params) {
             if (activity == null) return false;

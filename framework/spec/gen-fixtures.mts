@@ -25,7 +25,7 @@ import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUser
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -639,6 +639,11 @@ write('spacing.json', {
     avatar: AVATAR_SIZE,
     progressWidth: PROGRESS_WIDTH,
     themeSwitch: [['arctic-daylight', 'arctic-daylight', 'amber-ember'], ['amber-ember', 'arctic-daylight', 'amber-ember'], ['neon-tide', 'arctic-daylight', 'amber-ember'], [undefined, 'a', 'b']].map(([active, light, dark]) => ({ active, light, dark, next: themeSwitchNext(active, light, dark) })),
+    // A switch stays inside the light / dark pair of the look in force (skin pass, Nov 2026).
+    themeSwitchPair: ([['arctic-daylight', { light: 'arctic-daylight', dark: 'amber-ember' }], ['saffron-day', { light: 'arctic-daylight', dark: 'amber-ember' }], ['carbon-amber', { light: 'arctic-daylight', dark: 'amber-ember' }], ['neon-tide', { light: 'arctic-daylight', dark: 'amber-ember' }], [undefined, { light: 'a', dark: 'b' }], ['x', { light: 'a', dark: 'b' }]] as Array<[string | undefined, { light: string; dark: string }]>).map(([active, own]) => {
+      const others = [{ light: 'fresh-light', dark: 'fresh-dark' }, { light: 'saffron-day', dark: 'carbon-amber' }, { light: 'x', dark: 'x' }];
+      return { active, own, others, pair: themeSwitchPair(active, own, others) };
+    }),
   };
   // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
   const searchBars: Record<string, unknown> = {

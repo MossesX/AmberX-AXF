@@ -230,9 +230,9 @@ ok(!existsSync(join(root, '..', 'apps', 'console-web', 'src', 'interfaceTabs.tsx
   ok(hub.doc?.slots && !('appearance-package' in hub.doc.slots), 'the next write by any app drops it from the hub');
 }
 
-/* ---- the three real apps (GizmoX AI Studio, axHub web, AmberX) on one hub: one default look, every change reaches all ---- */
+/* ---- the real apps (GizmoX AI Studio, axHub web) on one hub: one default look, every change reaches all ---- */
 {
-  const APPS = ['console-web', 'axhub-web', 'amberx-droid'];
+  const APPS = ['console-web', 'axhub-web'];
   const appsRoot = join(root, '..', 'apps');
   const loadDir = (dir: string): unknown[] => {
     if (!existsSync(dir)) return [];
@@ -266,25 +266,25 @@ ok(!existsSync(join(root, '..', 'apps', 'console-web', 'src', 'interfaceTabs.tsx
     rt.attachAppearanceSource(new HubLink(hub3, app));
   }
   await settle(); await settle();
-  const [console_, axhub, amberx] = apps.map((x) => x.rt);
-  // the console loads a package: axHub web and AmberX show exactly that look
+  const [console_, axhub] = apps.map((x) => x.rt);
+  // the console loads a package: axHub web shows exactly that look
   ok(console_.applyDesignPackage('fresh-night'), 'the console loads Fresh Night');
   await settle(); await settle();
   for (const { app, rt } of apps.slice(1)) { eq(sharedLook(rt), sharedLook(console_), `${app} has the console's look`); eq(rt.appearanceSkipped(), [], `${app} skipped nothing (ships every shared asset)`); }
-  // axHub web picks a colour: only the colour changes, in all three
+  // axHub web picks a colour: only the colour changes, in both
   ok(axhub.swap('color-theme', 'hub-night'), 'axHub web picks Hub Night');
   await settle(); await settle();
   for (const { app, rt } of apps) eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme'), rt.designOverrides()], ['fresh-night', 'fresh', 'hub-night', { 'color-theme': 'hub-night' }], `${app}: colour overridden, style still the package's`);
-  // AmberX picks a style: both overrides, everywhere
-  ok(amberx.swap('style-theme', 'hub'), 'AmberX picks the Hub style');
+  // axHub web picks a style: both overrides, everywhere
+  ok(axhub.swap('style-theme', 'hub'), 'axHub web picks the Hub style');
   await settle(); await settle();
   for (const { app, rt } of apps) eq(rt.designOverrides(), { 'style-theme': 'hub', 'color-theme': 'hub-night' }, `${app}: both parts overridden`);
   // the banner's day / night switch is a colour pick too
   ok(console_.swap('color-theme', 'fresh-light'), 'the console flips to a day colour (the banner switch does this)');
   await settle(); await settle();
   for (const { app, rt } of apps) eq(st(rt, 'color-theme'), 'fresh-light', `${app}: day colour`);
-  // AmberX loads Hub Default again: every override gone, every app on the default look
-  ok(amberx.applyDesignPackage('hub-default'), 'AmberX loads Hub Default');
+  // axHub web loads Hub Default again: every override gone, every app on the default look
+  ok(axhub.applyDesignPackage('hub-default'), 'axHub web loads Hub Default');
   await settle(); await settle();
   for (const { app, rt } of apps) eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme'), rt.designOverrides(), rt.spacing(), rt.slotHidden('toolbar')], ['hub-default', 'hub', 'hub-night', {}, 'tight', true], `${app}: Hub Default in full, no override`);
   for (const { app, rt } of apps) eq(st(rt, 'banner'), 'amberx-thin', `${app}: Hub Default's banner (the compact thin bar) in every app`);

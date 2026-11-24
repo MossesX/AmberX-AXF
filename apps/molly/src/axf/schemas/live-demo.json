@@ -1,0 +1,570 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/live-demo.json",
+  "title": "demo-run@1: a guided live demo of the Build orchestrator (acts demo-act@1, results act-result@1)",
+  "description": "A scripted tour played on the live console against demo- builds: an overlay first, then per act focus → caption → run → result (pass / fail / skipped with evidence) → wait for Next when pause is on → a gap of at least 30 s → the next act. Reference core framework/core/live-demo.mjs; spec framework/spec/LIVE-DEMO.md.",
+  "type": "object",
+  "$ref": "#/$defs/run",
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,59}$"
+    },
+    "iso": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "isoOrEmpty": {
+      "type": "string",
+      "description": "ISO date-time, or \"\" for none"
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "cli",
+            "rest",
+            "mcp",
+            "console",
+            "noop",
+            "custom"
+          ]
+        },
+        "cmd": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "maxItems": 40
+        },
+        "method": {
+          "enum": [
+            "",
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "body": {},
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "default": 60000
+        }
+      }
+    },
+    "expect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "status",
+            "step-done",
+            "step-skipped",
+            "row",
+            "row-gone",
+            "banner",
+            "note",
+            "alert",
+            "log",
+            "none",
+            "custom"
+          ]
+        },
+        "build": {
+          "type": "string",
+          "pattern": "^$|^demo-[a-z0-9][a-z0-9-]{0,74}$"
+        },
+        "step": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "within": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fails": {
+          "type": "boolean",
+          "default": false,
+          "description": "The act is meant to die: the pass is seeing the failure and what failed; a clean exit is the fail."
+        }
+      }
+    },
+    "focus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "app"
+      ],
+      "properties": {
+        "app": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "route": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "selector": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "address": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "console-control@1 address of the element to look at (e.g. row:demo-crash/step:s2)"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "act": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "caption",
+        "focus",
+        "run",
+        "expect"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "focus": {
+          "$ref": "#/$defs/focus"
+        },
+        "run": {
+          "$ref": "#/$defs/action"
+        },
+        "expect": {
+          "$ref": "#/$defs/expect"
+        },
+        "cleanup": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "builds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^demo-[a-z0-9][a-z0-9-]{0,74}$"
+          },
+          "maxItems": 20,
+          "description": "Every build the act touches; each must be a demo build (id prefix demo-, tag demo: true)."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slug"
+          },
+          "maxItems": 20
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "text"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "status",
+            "step",
+            "banner",
+            "note",
+            "alert",
+            "log",
+            "shot",
+            "error",
+            "custom"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "ref": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "at": {
+          "$ref": "#/$defs/isoOrEmpty"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actId",
+        "result",
+        "startedAt",
+        "endedAt",
+        "durationMs",
+        "observed",
+        "evidence",
+        "error"
+      ],
+      "properties": {
+        "actId": {
+          "$ref": "#/$defs/slug"
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "skipped"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "endedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "maxItems": 50
+        },
+        "error": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "stopped": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "by",
+        "why"
+      ],
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/iso"
+        },
+        "by": {
+          "enum": [
+            "brett",
+            "driver",
+            "error"
+          ]
+        },
+        "why": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "$axf",
+        "id",
+        "title",
+        "state",
+        "pause",
+        "minGapMs",
+        "acts",
+        "cursor",
+        "results",
+        "enteredAt",
+        "nextAt",
+        "startedAt",
+        "endedAt",
+        "stopped",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "demo-run@1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "state": {
+          "enum": [
+            "idle",
+            "overlay",
+            "focusing",
+            "captioned",
+            "running",
+            "waiting-next",
+            "cooldown",
+            "done",
+            "stopped"
+          ]
+        },
+        "pause": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pause between steps: wait for Next after every act, then the gap."
+        },
+        "minGapMs": {
+          "type": "integer",
+          "minimum": 30000,
+          "default": 30000,
+          "description": "The gap between acts. Never lower than 30 000: a smaller value reads as 30 000."
+        },
+        "acts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/act"
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "cursor": {
+          "type": "integer",
+          "minimum": -1
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/result"
+          },
+          "maxItems": 200
+        },
+        "enteredAt": {
+          "$ref": "#/$defs/iso"
+        },
+        "nextAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "startedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "endedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "stopped": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stopped"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/iso"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/iso"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "type",
+        "at"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "begin",
+            "continue",
+            "toggle-pause",
+            "focused",
+            "start",
+            "finish",
+            "next",
+            "skip",
+            "stop",
+            "tick"
+          ]
+        },
+        "at": {
+          "$ref": "#/$defs/iso"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "by": {
+          "enum": [
+            "brett",
+            "driver",
+            "error"
+          ]
+        },
+        "why": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "pause": {
+          "type": "boolean"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "total",
+        "done",
+        "pass",
+        "fail",
+        "skipped",
+        "remaining",
+        "current",
+        "failed",
+        "startedAt",
+        "endedAt",
+        "durationMs",
+        "pause",
+        "minGapMs"
+      ],
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "done": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pass": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fail": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "remaining": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current": {
+          "type": "string"
+        },
+        "failed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "actId",
+              "title",
+              "observed",
+              "error"
+            ],
+            "properties": {
+              "actId": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "observed": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "startedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "endedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pause": {
+          "type": "boolean"
+        },
+        "minGapMs": {
+          "type": "integer",
+          "minimum": 30000
+        }
+      }
+    }
+  }
+}

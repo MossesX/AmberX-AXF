@@ -1,15 +1,20 @@
 /**
- * Plan Studio 2.0 console plugin (ai.amberx.axf.console.plan-studio-2): a brand-new planning tree beside the original
- * Plan Studio, which is left as it is. Starts empty, nothing synced in. Every row has the full context menu (target
+ * Plan Studio 2.0 console plugin (ai.amberx.axf.console.plan-studio-2): the planning tree, the console's one Plan
+ * Studio. Starts empty, nothing synced in. Every row has the full context menu (target
  * `axp-plan-studio-2-item`); every menu item is an action, so it also runs from REST, MCP, the CLI and voice. Deep link:
  * `plan-studio-2.focus:<id or words>` (console_show / console_open plan-studio-2 with input.focus).
+ * A sent plan and the steps the orchestrator filed for it carry the orchestrator's actions (Orchestrator ▸ in the
+ * menu): each is one tap sent to the server (`plan-studio-2.orch:<action>`), which asks the orchestrator.
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
 import { appMenu } from './menu';
 import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
-import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
+import { HistoryDialog, ORCH_MARKS, StateLooksPanel, openInOrchestrator, runOrchAction, sentOf } from './live';
+import * as live from './live-core.mjs';
+import type { OrchAction } from './live-core.mjs';
+import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, POLL_SECONDS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
 import * as lc from './layout-core.mjs';
 import { readDock, setLayout, showSection, writeDock } from './layout';
@@ -55,6 +60,13 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plan-studio-2.link', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.link, { id }); }, { label: 'Link the item to a to-do, build, note or Shipped feature', searchable: false });
     rt.actions.register('plan-studio-2.export', (args, ctx) => { const id = target(args, ctx); void exportText(id, 'md').then((t) => download(`${id ? tc.slug(tc.byId(treeState()!, id)?.title ?? id) : 'plan-studio-2'}.md`, t), (e: Error) => rt.toast(e.message, 'danger', T)); }, { label: 'Export as Markdown (one item, or everything)', params: true });
     rt.actions.register('plan-studio-2.build', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.build, { id }); }, { label: 'Send the item to the build orchestrator…', searchable: false });
+    // the orchestrator's actions on a sent plan or step: `plan-studio-2.orch:<action>[:<item>]`. The server decides.
+    rt.actions.register('plan-studio-2.orch', ([action = '', ...rest], ctx) => {
+      if (!(live.ACTIONS as readonly string[]).includes(action)) throw new Error(`Orchestrator actions: ${live.ACTIONS.join(', ')}.`);
+      const id = need(rest, ctx); if (id) runOrchAction(rt, id, action as OrchAction);
+    }, { label: 'Orchestrator action on a sent plan or step (queue, hold, release, retry, rebuild, run-ci, land, cancel)', params: true });
+    rt.actions.register('plan-studio-2.orch-open', (args, ctx) => { const id = need(args, ctx); const s = treeState(); const it = id && s ? tc.byId(s, id) : null; if (it && s) openInOrchestrator(rt, sentOf(s, it)?.build ?? ''); }, { label: 'Open the sent plan in the build orchestrator', searchable: false });
+    rt.actions.register('plan-studio-2.history', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.history, { id }); }, { label: 'Planning steps a send replaced (history)', searchable: false });
     rt.actions.register('plan-studio-2.delete', (args, ctx) => { const id = need(args, ctx); if (id) void say(deleteItem(id), 'info'); }, { label: 'Delete the item (undo brings it back)', searchable: false });
     rt.actions.register('plan-studio-2.undo', () => void say(undoDelete()), { label: 'Undo the last delete in Plan Studio 2.0' });
     rt.actions.register('plan-studio-2.select', (args, ctx) => { const id = target(args, ctx); select(id); }, { label: 'Select an item', searchable: false });
@@ -96,7 +108,20 @@ export const plugin: AxfWebLibrary = {
         { id: 'plan-studio-2.sep2', separator: true },
         { id: 'plan-studio-2.link', label: 'Link to…', icon: 'external', action: 'plan-studio-2.link' },
         { id: 'plan-studio-2.export', label: 'Export as Markdown', icon: 'download', action: 'plan-studio-2.export' },
-        { id: 'plan-studio-2.build', label: 'Send to build orchestrator…', icon: 'rocket', action: 'plan-studio-2.build' },
+        { id: 'plan-studio-2.orch', label: 'Orchestrator', icon: 'layers', items: [
+          { id: 'plan-studio-2.build', label: 'Send to build orchestrator…', icon: 'rocket', action: 'plan-studio-2.build' },
+          { id: 'plan-studio-2.orch.queue', label: 'Queue', icon: 'list', action: 'plan-studio-2.orch:queue' },
+          { id: 'plan-studio-2.orch.hold', label: 'Hold', icon: 'pause', action: 'plan-studio-2.orch:hold' },
+          { id: 'plan-studio-2.orch.release', label: 'Release', icon: 'play', action: 'plan-studio-2.orch:release' },
+          { id: 'plan-studio-2.orch.retry', label: 'Retry', icon: 'refresh', action: 'plan-studio-2.orch:retry' },
+          { id: 'plan-studio-2.orch.rebuild', label: 'Rebuild', icon: 'hammer', action: 'plan-studio-2.orch:rebuild' },
+          { id: 'plan-studio-2.orch.run-ci', label: 'Run CI', icon: 'shield', action: 'plan-studio-2.orch:run-ci' },
+          { id: 'plan-studio-2.orch.land', label: 'Land', icon: 'check', action: 'plan-studio-2.orch:land' },
+          { id: 'plan-studio-2.orch.cancel', label: 'Cancel the build', icon: 'x', action: 'plan-studio-2.orch:cancel' },
+          { id: 'plan-studio-2.orch.sep', separator: true },
+          { id: 'plan-studio-2.orch.open', label: 'Open in orchestrator', icon: 'external', action: 'plan-studio-2.orch-open' },
+          { id: 'plan-studio-2.orch.history', label: 'Replaced planning steps…', icon: 'clock', action: 'plan-studio-2.history' },
+        ] },
         { id: 'plan-studio-2.sep3', separator: true },
         { id: 'plan-studio-2.delete', label: 'Delete (undo on the toolbar)', icon: 'trash', action: 'plan-studio-2.delete' },
       ],
@@ -109,9 +134,10 @@ export const plugin: AxfWebLibrary = {
     [DIALOGS.move]: { title: 'Move to', icon: 'move', searchable: false, render: (props, close) => <MoveDialog props={props} close={close} /> },
     [DIALOGS.link]: { title: 'Link to', icon: 'external', searchable: false, render: (props, close) => <LinkDialog props={props} close={close} /> },
     [DIALOGS.build]: { title: 'Send to the build orchestrator', icon: 'rocket', searchable: false, render: (props, close) => <BuildDialog props={props} close={close} /> },
+    [DIALOGS.history]: { title: 'Replaced planning steps', icon: 'clock', searchable: false, render: (props, close) => <HistoryDialog props={props} close={close} /> },
   },
-  views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline', 'roadmap', 'plan studio 2'], render: () => <PlanStudio2Page /> } },
-  nav: { label: 'Builds', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
+  views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan studio', 'plan studio 2', 'plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline'], render: () => <PlanStudio2Page /> } },
+  nav: { label: 'Plan', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
   settingsTabs: [{ id: FOLDER, label: 'Plan Studio 2.0', icon: 'branch', parent: 'plugins', order: 43, description: 'The planning tree, its voice and defaults.' }],
   settings: [{
     id: 'plan-studio-2.prefs', label: 'Plan Studio 2.0', icon: 'branch', tab: FOLDER, order: 10,
@@ -119,9 +145,11 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.pageLayout, label: 'Page layout', kind: 'choice', default: lc.DEFAULT_LAYOUT, options: lc.layouts().map((l) => ({ value: l.id, label: l.label })) },
       { key: KEYS.showDone, label: 'Show done steps and list items', kind: 'toggle', default: true },
       { key: KEYS.defaultModel, label: 'Model for new steps', kind: 'choice', default: '', options: [{ value: '', label: 'Any' }, { value: 'Fable', label: 'Fable' }, { value: 'Opus', label: 'Opus' }, { value: 'Sonnet', label: 'Sonnet' }] },
+      { key: KEYS.orchMark, label: 'Mark steps from the orchestrator with', kind: 'choice', default: 'both', options: ORCH_MARKS },
+      { key: KEYS.livePoll, label: 'Live progress of sent plans', kind: 'choice', default: String(POLL_SECONDS), options: [{ value: '3', label: 'Every 3 seconds' }, { value: '5', label: 'Every 5 seconds' }, { value: '10', label: 'Every 10 seconds' }, { value: '30', label: 'Every 30 seconds' }, { value: '0', label: 'Off (reload by hand)' }] },
       { key: KEYS.voiceOut, label: 'Spoken replies', kind: 'choice', default: 'auto', options: [{ value: 'auto', label: 'Agent voice when installed, else the device' }, { value: 'device', label: 'The device voice' }] },
       { key: KEYS.voiceLang, label: 'Voice language', kind: 'choice', default: 'en-US', options: [{ value: 'en-US', label: 'English (US)' }, { value: 'en-GB', label: 'English (UK)' }, { value: 'en-CA', label: 'English (Canada)' }] },
     ],
   }],
-  settingsPanels: [{ id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'plan-studio-2.state-looks', tab: FOLDER, title: 'Sent plans: how each state looks', icon: 'check', order: 20, render: () => <StateLooksPanel /> }, { id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

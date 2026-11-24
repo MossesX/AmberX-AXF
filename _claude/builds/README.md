@@ -121,16 +121,26 @@ session on code from before build-origin@1 can't drop it: the next read heals th
 the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
 `axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
 
-## Live on main (since Nov 3 2026)
+## Live on main (since Nov 3 2026; one snapshot per landing since Nov 21 2026)
 
-Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".
-Every store write that changes a build (step ticked, status, note, branch, PR) is published to **main** at once as its
-own status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on (`framework/cli/builds-live.mjs`):
-fetched main + this checkout's changed builds, merged per build and per step **newer wins**
-(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
-log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
-come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
-through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
+The store is the live copy: the console, the banners and every session read it, and a write shows there at once. Main
+only holds a **projection** of it for history. Until Nov 21 2026 every store write was pushed to main as its own
+status-only commit; that put 896 `Builds live: … [skip ci]` commits on main in 24 hours (audit finding B4-06), so main
+moved about every 90 seconds and every PR was always behind it. Now (`framework/cli/builds-live.mjs`):
+
+- every store write that changes a build is **queued** in the outbox next to the store: no commit, no push. With a file
+  store the console's checkout (`/opt/axf`) takes the changed builds at once as a file copy; on the tables it has them;
+- the outbox goes to main as **one** status-only commit (`Builds live: … [skip ci]`) when a build in it reaches
+  `landed`, when it has held changes for a day (the daily snapshot, `AXF_BUILDS_LIVE_SNAPSHOT_HOURS`, default 24) or
+  when it has grown past `AXF_BUILDS_LIVE_OUTBOX_MAX_MB` (default 16); `builds-live.mjs flush` or `sync --now` publish
+  on demand. `sync` without `--now` (session start, the reconciler) only takes main's newer builds;
+- a publish is what it was: fetched main + this checkout's changed builds, merged per build and per step **newer wins**
+  (`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
+  log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+  come back into the checkout and into the console's checkout;
+- `AXF_BUILDS_LIVE_PUSH=every` restores a push per write (the checks use it; not for production).
+
+Code still goes through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
 
 - **Status:** `built` = every step done, the build's PR not merged yet ("Built · awaiting merge"); `complete` once the
   PR merged (`mergedAt`) or when the build has no PR.
@@ -140,11 +150,11 @@ through the branch and its PR. The console's auto-update skips the rebuild when 
   start (`.claude/settings.json` hook), every 10 min on the VPS (cron `axf-builds-reconcile`), and by hand.
 - **Merging a branch:** the builds files merge newer-wins through the `axf-builds` git driver (`.gitattributes`,
   registered per clone by `builds-live.mjs install`); a PR that conflicts only there: `builds-live.mjs heal <branch>`.
-- **Broken:** changes that can't reach main stay queued (`builds-live.mjs status`); the systems check item
-  **Builds reach main live** turns red after 15 min, amber for orphan PRs/branches or a reconciler that hasn't run.
+- **Broken:** a publish that can't reach main keeps the outbox and says why (`builds-live.mjs status`: `stuck`, last
+  error). Changes waiting for the next landing are normal (`queued`, `due` empty), not a fault.
 
 ```bash
-node framework/cli/builds-live.mjs sync                 # session start: send what is newer here, take main's newer builds
+node framework/cli/builds-live.mjs sync [--now]         # session start: take main's newer builds (--now: publish first)
 node framework/cli/builds-live.mjs status | flush       # outbox, last publish, last error / publish now
 node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
@@ -174,6 +184,62 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
   MCP / voice `pipeline-requeue-stuck`). Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
+
+## Step dependencies and claims: fill every slot (since Nov 13 2026)
+
+Brett: "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them,
+and auto-queue pending builds." Two optional fields on a step (builds@1, `framework/schemas/builds.json`; contract
+`framework/core/build-pipeline.mjs`; spec `framework/spec/BUILD-PARALLEL.md`):
+
+- **`after: [stepId]`** — the steps of the same build that must be done (or skipped) first. A step **without** the
+  field is implicitly sequential: it waits for the step before it, so every older build runs exactly as before.
+  `after: []` means independent. Ids name steps of the same build; a step never names itself; cycles and ids that
+  point at no step are refused by the store check.
+- **`claim: { runId, slot, account, branch, at, model, expiresAt }`** — the session working the step right now.
+  Model-aware (`model` = the step's pinned model, never higher); a claim expires after a TTL (45 min) so a dead session
+  frees its step; ticking a step done releases it. `branch` is the step's worktree branch for a parallel step
+  (`<build-branch>--s<n>`) or the build branch.
+- **`dependsOn: [stepId]`** is the same list under the splitter's and the API's name: accepted on input, stored as `after`.
+- **`parallel: never`** keeps a step in the build's own session even when its dependencies are done (absent = auto).
+- **`files`** (the existing step field) also gates parallel runs: two steps that share a file never run at once, and
+  auto-queue skips a Pending build while a running build is on one of its files.
+
+The dispatcher's fill planner (`planFill`) uses them to put a ready step of a running build in every free slot before it
+takes the next Queue build, and Pending builds last when auto-queue is on. Per build, `pipeline.maxParallel` caps its
+parallel sessions and `pipeline.budgetUsd` / `spentUsd` cap what its API runs may cost.
+
+## Pipeline: fill every slot (since Nov 13 2026)
+
+<!-- axf-plugin:build-orchestrator -->
+The dispatcher (`pipeline.mjs tick`, every minute) runs a **fill round** after its build launches: `planFill` puts a
+ready step of a running build in every free agent slot, then the next Queue build, then (auto-queue on) Pending builds.
+
+- **Parallel step session**: a step with a `dependsOn` list whose dependencies are done is claimed on the build
+  (builds-live carries the claim to main), gets its own worktree `/root/axf-builds/<build>--<step>` on branch
+  `<build-branch>--<step>`, and starts with `claude-headless.sh --step <step>`: a step-scoped brief (only that step, what
+  its dependencies produced, its files), its own agent slot and a per-step model gate. When it ticks the step, the
+  dispatcher merges the branch back (`git merge --no-ff` in the build's worktree, under the store lock); a conflict
+  sends the step back `blocked` to re-run after the steps it clashed with, in the build's own session (branch kept). A
+  step session that ends without ticking goes back to ready, at most 3 runs.
+- **Reconciler**: a step session that is no longer alive is reset to ready (worktree kept); a build counts as built only
+  when every done parallel step's branch has merged back.
+- **Settings** (Claude settings, Settings → Plugins → Build orchestrator → Fill every slot): `builds.fillSlots` (on;
+  anyone switches it off, only Brett on), `builds.maxParallelPerBuild` (3; only Brett raises it), `builds.autoQueuePending`
+  (off; owner-only).
+- **Splitter**: the Opus split asks for `dependsOn` (default: the previous step) and `files` per step; an unknown id, a
+  later step or a cycle refuses the split. Hand-written steps are left as they are.
+- **Migration**: `builds-store.mjs migrate-deps [--dry]` (run by the dispatcher's first tick) leaves older builds without
+  a list and stamps `meta.versions.stepDeps` in the journal; `verify` names missing dependencies and cycles.
+
+| Reach it | Read the slots and the plan | One round now | Set a step's dependsOn | Fill settings |
+|---|---|---|---|---|
+| REST (`/api/plugins/build-orchestrator`) | `GET /pipeline/fill[?build=]` | `POST /pipeline/fill/run` | `POST /builds/:id/steps/:step/deps` `{dependsOn}` | `POST /pipeline/fill/settings` (also `POST /pipeline/settings`) |
+| MCP (plugin commands) | `pipeline-fill-status` | `pipeline-fill-run` | `pipeline-step-deps` | `pipeline-fill-settings` |
+| CLI | `pipeline.mjs fill status [build]`, `agent-slots.mjs fill` | `pipeline.mjs fill run` | `pipeline.mjs fill deps <build> <step> <s1,s2\|none\|sequential>` | `pipeline.mjs fill set k=v…` |
+| Voice / console actions | `build-orchestrator.pipeline-fill-status[:build]` | `build-orchestrator.pipeline-fill-run` | `build-orchestrator.pipeline-step-deps:<build>/<step>/<deps>` | `build-orchestrator.pipeline-fill-settings:<k=v,…>` |
+| Deep link (`console_show`) | `build-orchestrator/pipeline/slots` | | `build-orchestrator/<id>/steps` | `settings/plugins/build-orchestrator#fill` |
+
+Auto-queue pending builds is refused on every path unless the request is Brett's own console session.
 
 ## When a build gets stuck: the watchdog recovers it (since Nov 17 2026)
 

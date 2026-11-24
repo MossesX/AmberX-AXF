@@ -342,7 +342,7 @@ export const plugin: AxfWebLibrary = {
     setInterval(tick, POLL_MS);
   },
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
+  nav: { label: 'AI & agents', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Claude account', icon: 'key', searchable: false, render: () => <div className="fx-stack"><OneAccount /><Accounts /></div> } },
   settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; usage per account.' }],
   settingsPanels: [

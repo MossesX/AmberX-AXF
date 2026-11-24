@@ -6,7 +6,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, Markdown, Note, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Note, PageToolbar, TextField, useAxfState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { lookDocText } from './look';
 import { api } from './store';
 
@@ -62,16 +62,17 @@ export function FilesDialog() {
   const [q, setQ] = useState('');
   const load = () => api.call<{ files: PluginFile[] }>('files').then((r) => { setFiles(r.files); setErr(''); }, (e: Error) => setErr(e.message));
   useEffect(() => { void load(); }, []);
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/claude-handoff-files.json)
+  useToolbarHandlers('claude-handoff-files', { 'claude-handoff.files-refresh': async () => { await load(); return { refreshed: true }; } });
   const openIds = useMemo(() => new Set(Object.values(rt.windows.state.groups).flatMap((g) => g.tabs.filter((t) => t.kind === FILE_TAB_KIND).map((t) => t.id))), [rt.windows.state]);
   if (err) return <Note tone="danger">{err}</Note>;
   if (!files) return <p className="axp-claude-handoff__meta">Loading…</p>;
   const shown = files.filter((f) => !q || `${f.label} ${f.path} ${f.by}`.toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="axp-claude-handoff-files">
-      <div className="axp-claude-handoff-files__bar" role="toolbar" aria-label="Files">
+      <PageToolbar view="claude-handoff-files" label="Files" className="axp-claude-handoff-files__bar">
         <TextField label="" placeholder="Find a file" value={q} onChange={setQ} />
-        <Button tone="ghost" icon="refresh" size="sm" onClick={() => void load()}>Refresh</Button>
-      </div>
+      </PageToolbar>
       <p className="axp-claude-handoff__meta">{files.length} files this plugin makes or edits. Tap one to open it in a tab of the file window; a file already open there just comes to the front.</p>
       {SECTIONS.map((sec) => {
         const list = shown.filter((f) => f.section === sec.id);

@@ -1,0 +1,367 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-move-server-side-console-parts-onto-vps",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-22T03:48:17Z",
+ "build": {
+  "id": "move-server-side-console-parts-onto-vps",
+  "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
+  "verbatim": true,
+  "at": "2026-11-17T12:26:40.644Z",
+  "source": "",
+  "by": "move-server-side-console-parts-onto-vps",
+  "addenda": []
+ },
+ "brief": "# Build: move-server-side-console-parts-onto-vps\n\n## Brett said (verbatim)\nAt: 2026-11-17T12:26:40.644Z\n> So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.\n\n## What to build\nContinue build \"Move server-side console parts onto the VPS host as services, UI stays in console\" (move-server-side-console-parts-onto-vps) — Phase 3, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 12:26):\n\"So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/move-server-side-console-parts-onto-vps · PR #828\nSteps in this phase (1 left, ~10 min):\n[x] s6 (~10 min) Host runner deploy/host-services/axf-hostd.mjs: a small Node daemon that loads a service manifest, runs its worker module, serves the host-service@1 API on /run/axf-host/<id>.sock plus loopback, writes a heartbeat, and logs to journald.\n[x] s7 (~10 min) Limited user and sudo whitelist: deploy/host-services/sudoers.d/axf-host is built from the manifests' declared commands only (docker system df/prune, systemctl restart of named units, git in /opt/axf). deploy/host-services/gen-sudoers.mjs generates it and checks it with visudo -c. Never write a general root rule.\n[x] s8 (~8 min) systemd template deploy/host-services/axf-host@.service: User=axf-host, Restart=always, WantedBy=multi-user.target, hardening (ProtectSystem, ReadWritePaths for /opt/axf and the data dir, NoNewPrivileges except where sudo is whitelisted), RuntimeDirectory for the socket.\n[x] s9 (~10 min) Install script deploy/install-host-services.sh (sources framework/deploy/axf-deploy.sh): create the user and groups, install the units and sudoers, mount or share the socket dir into the axf-console container (compose/Coolify volume), enable and start the units, and support --dry-run, --only <id> and --uninstall. Add a dryrun test to deploy/dryrun/.\n[x] s10 (~10 min) Move the builds-live publisher: host-service manifest plus a worker that wraps framework/cli/builds-live.mjs (publish loop, outbox). The console's copy obeys the mode file (it stops when the mode is host).\n[x] s11 (~8 min) Move the shipped-features watcher the same way: manifest, worker, and a mode guard in the console plugin's loop.\n[x] s12 (~8 min) Move axHub sync (claude-sync and the persist push/pull loop) to a host service, with a mode guard in the container.\n[x] s13 (~10 min) Move the agent-swarm job runner (CI-fix jobs, agent-job launches through deploy/claude-headless.sh and agent-slots): host-service manifest and worker. The console keeps the UI and sends jobs over the socket.\n[x] s14 (~10 min) Move the Systems check runner and its Auto fixes (the health@1 checks that touch Docker, disk or git) to a host service. Checks that only read console state stay in the container. Declare the fix commands in the manifest's sudo list.\n[x] s15 (~10 min) Move the Maintenance actions (Docker cache clear, disk cleanup) to a host service, reusing the commands from maintenance-plugin-clear-docker-cache rather than writing them twice. Whitelist only those commands.\n[x] s16 (~6 min) Register the orchestrator, lander and watchdog units from server-auto-lander-fixes-lands as host-service@1 entries (manifests only, no new workers), so one list, health check and UI covers them all.\n[x] s17 (~10 min) Console server client apps/console-web/server/host_services.py: talks to the socket (with a loopback fallback), caches status, maps errors to host_service_down, and exposes it to plugins as capability axf.host-services@1.\n[x] s18 (~10 min) REST routes /api/host-services: list, get/<id> (state, since, last heartbeat, logs tail), actions (restart, start, stop, run-action, set-mode container|shadow|host, rollback) and settings get/set. Destructive presses need confirm.\n[x] s19 (~10 min) Systems check health: add a health@1 check for each host service (unit active, socket answering, heartbeat fresh). The auto-fix restarts the unit through the whitelisted sudo. If the host daemon itself is unreachable, a banner item says what broke, what that breaks and since when.\n[x] s20 (~10 min) Console UI: a Host services view (Settings → Plugins → Host services sub-tab plus a Systems check panel) built from the framework DataGrid, Chip and Button with tokens only. It has a toolbar with role=toolbar and a settings id, one row per service with its state and actions, and a mode/rollback control. Each moved plugin's own UI shows a clear 'Host service down' state through a shared HostServiceGate component.\n[x] s21 (~10 min) API parity for the UI: console-control targets (view:settings/tab:plugins=host-services, row:<service>, the action buttons) with data-axf-target, console_show deep links, MCP tools host_services_list/get/action/set_mode through plugin commands, and AmberX voice actions host.status / host.restart / host.rollback.\n[x] s22 (~8 min) CLI node framework/cli/host-services.mjs: list | status <id> | restart <id> | mode <id> <mode> | rollback <id> | logs <id>. It speaks to the socket on the host and falls back to the console REST. Add `axf host …` in axf.mjs.\n[x] s23 (~8 min) Plugin lifecycle and registration for host-services: install.mjs, uninstall.mjs (--all leaves nothing behind), dataDir, a help entry, plugin.json description and builtWith, notify.json for the down alerts, and glossary descriptions.\n[x] s24 (~10 min) Migration script deploy/host-services/migrate.mjs: per service, move container → shadow (both run, the host does a dry run and the outputs are compared) → host, with a verify step and `rollback <id>` that puts the container back. Write a drill in deploy/dryrun/host-services-rollback.sh.\n[x] s25 (~10 min) Tests: check-host-services.mjs fixtures, pytest for host_services.py and the routes (down state, confirm on destructive actions), and the sudoers generator test (only declared commands). Run check-theme, check-controls, check-toolbars, check-console-control, the plugin-lifecycle check and the tracker check.\n[ ] s26 (~10 min) UI Review: shots of the Host services view and the 'Host service down' state, desktop and phone, with 3 options as assets, submitted with review.mjs submit --choices. Then finish the report: audit table, what moved, the install and rollback runbook, how each feature is reached by UI, REST, MCP, CLI and voice, and known gaps. Update STATUS.md and the THREADS row, open the PR with the API reach list, and link it with builds-live.mjs link.\nRead first: _claude/builds/reports/move-server-side-console-parts-onto-vps.md, _claude/THREADS.md, _claude/memory/STATUS.md, apps/console-web/plugins/host-services/assets/\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step move-server-side-console-parts-onto-vps <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step move-server-side-console-parts-onto-vps <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note move-server-side-console-parts-onto-vps \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- The axHub badge is red unless settings come live from axHub (Oct 24 2026, Brett): any axHub status badge or indicator starts red and turns green only while the app is reading its settings live from axHub right now (a fresh read of the hub's settings document succeeded, and a developer app's own hub source is ready). Repo copies, cached copies, local settings, a signed-out session or a read older than two check periods are red. Library: `framework/libs/hubstatus` (`hubLive` in `core.ts`).\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins cover every asset type, at any scope (Nov 7 2026, Brett: \"Upgrade the skins system so it styles EVERY asset type now in the registry … Skins apply at any scope: global/app/UI/plugin, with child-overrides-parent inheritance … A skin is a design pack; it MAY reference an icon pack … no hardcoded list; add a CI check that fails if a registered asset type has no skin coverage.\"; build `skins-asset-types`, Fable): how a skin reaches each asset type is worked out from `framework/schemas/asset-types.json` itself (skin-coverage@1, `framework/core/engines/skin-coverage.mjs`): every type is a slot unless excluded; widgets and attachables are styled through their style target in `schemas/customize.json` (`parts` on the skin: box / text / icon / items); the few types with no look or that are bundles declare `\"skin\": { \"by\": slot | parts | reference | bundle | none, via?, why? }` on their registry entry. A new type with none of these fails CI (`node framework/spec/check-skin-coverage.mjs`), so a build that adds an asset type gives it a style target or a declaration. A skin MAY name an icon pack (`iconPack`). Scopes follow the icon-map model: hub-wide (`skin` on the",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-move-server-side-console-parts-onto-vps--sully",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T12:29:25.446Z",
+   "endedAt": "2026-11-17T12:33:41.818Z",
+   "exit": 0,
+   "costUsd": 0.8161
+  },
+  {
+   "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-17T23:04:29.378Z",
+   "endedAt": "2026-11-18T06:31:49.831Z",
+   "exit": 0,
+   "costUsd": 36.6349
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Audit every console plugin (apps/console-web/plugins/*, server/ routes, cron jobs in the console image). For each one record: does it need to keep running when the console is down, does it touch Docker, disk or git, and what it calls. Classify each as move-to-host, stay-in-container or already moving (orchestrator, lander and watchdog in server-auto-lander-fixes-lands). Write the audit table first into _claude/builds/reports/move-server-side-console-parts-onto-vps.md.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T12:29:25.446Z",
+   "doneAt": "2026-11-17T12:32:23.126Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Read what server-auto-lander-fixes-lands already built or planned for host services (units, user, socket, install). Read the steps of maintenance-plugin-clear-docker-cache. Note in the report what this build reuses and where they overlap, and add a clash note on both builds with build-origin/orchestrator notes.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T12:32:23.126Z",
+   "doneAt": "2026-11-17T12:33:27.337Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Design the host-service@1 contract: service manifest (id, unit name, owning plugin, sudo commands it needs, health endpoint, socket path), the local API over a unix socket and loopback (status, health, actions, settings, logs), the wire error codes including host_service_down, and how the console finds services. Write framework/spec/HOST-SERVICES.md and add host-service to framework/schemas (registry entry + generated JSON Schema).",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T12:33:27.337Z",
+   "doneAt": "2026-11-17T23:14:19.219Z",
+   "actualMin": 641,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Reference core framework/core/host-services.mjs: validate manifests, resolve socket and fallback URLs, build the state model the UI reads (up, degraded, down, since), and turn the console's call results into host_service_down. Add fixtures in framework/spec/fixtures/host-services.json and a check script. Record the Kotlin twin as a deferred gap in PORTING.md.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:14:19.219Z",
+   "doneAt": "2026-11-17T23:19:34.957Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Design the migration with rollback: a per-service mode (container, shadow, host) like data-mode, the order to cut over, and how rollback re-enables the in-container copy and stops the unit. Put the design in HOST-SERVICES.md → Migration and the mode file schema in framework/schemas/host-service-mode.json.",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:19:34.957Z",
+   "doneAt": "2026-11-17T23:25:51.572Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Host runner deploy/host-services/axf-hostd.mjs: a small Node daemon that loads a service manifest, runs its worker module, serves the host-service@1 API on /run/axf-host/<id>.sock plus loopback, writes a heartbeat, and logs to journald.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:25:51.572Z",
+   "doneAt": "2026-11-17T23:40:54.073Z",
+   "actualMin": 15,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Limited user and sudo whitelist: deploy/host-services/sudoers.d/axf-host is built from the manifests' declared commands only (docker system df/prune, systemctl restart of named units, git in /opt/axf). deploy/host-services/gen-sudoers.mjs generates it and checks it with visudo -c. Never write a general root rule.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:40:54.073Z",
+   "doneAt": "2026-11-17T23:42:37.838Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "systemd template deploy/host-services/axf-host@.service: User=axf-host, Restart=always, WantedBy=multi-user.target, hardening (ProtectSystem, ReadWritePaths for /opt/axf and the data dir, NoNewPrivileges except where sudo is whitelisted), RuntimeDirectory for the socket.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:42:37.838Z",
+   "doneAt": "2026-11-17T23:43:26.590Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Install script deploy/install-host-services.sh (sources framework/deploy/axf-deploy.sh): create the user and groups, install the units and sudoers, mount or share the socket dir into the axf-console container (compose/Coolify volume), enable and start the units, and support --dry-run, --only <id> and --uninstall. Add a dryrun test to deploy/dryrun/.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:43:26.590Z",
+   "doneAt": "2026-11-17T23:45:41.737Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Move the builds-live publisher: host-service manifest plus a worker that wraps framework/cli/builds-live.mjs (publish loop, outbox). The console's copy obeys the mode file (it stops when the mode is host).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:45:41.737Z",
+   "doneAt": "2026-11-17T23:48:22.729Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Move the shipped-features watcher the same way: manifest, worker, and a mode guard in the console plugin's loop.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:48:22.729Z",
+   "doneAt": "2026-11-17T23:49:10.580Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Move axHub sync (claude-sync and the persist push/pull loop) to a host service, with a mode guard in the container.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T23:49:10.580Z",
+   "doneAt": "2026-11-17T23:50:13.970Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Move the agent-swarm job runner (CI-fix jobs, agent-job launches through deploy/claude-headless.sh and agent-slots): host-service manifest and worker. The console keeps the UI and sends jobs over the socket.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:50:13.970Z",
+   "doneAt": "2026-11-17T23:51:51.408Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Move the Systems check runner and its Auto fixes (the health@1 checks that touch Docker, disk or git) to a host service. Checks that only read console state stay in the container. Declare the fix commands in the manifest's sudo list.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:51:51.408Z",
+   "doneAt": "2026-11-17T23:53:12.082Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Move the Maintenance actions (Docker cache clear, disk cleanup) to a host service, reusing the commands from maintenance-plugin-clear-docker-cache rather than writing them twice. Whitelist only those commands.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:53:12.082Z",
+   "doneAt": "2026-11-17T23:55:00.899Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Register the orchestrator, lander and watchdog units from server-auto-lander-fixes-lands as host-service@1 entries (manifests only, no new workers), so one list, health check and UI covers them all.",
+   "model": "Opus",
+   "estimate": "6 min",
+   "estimateMin": 6,
+   "startedAt": "2026-11-17T23:55:00.899Z",
+   "doneAt": "2026-11-17T23:56:43.939Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Console server client apps/console-web/server/host_services.py: talks to the socket (with a loopback fallback), caches status, maps errors to host_service_down, and exposes it to plugins as capability axf.host-services@1.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:56:43.939Z",
+   "doneAt": "2026-11-17T23:58:07.796Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "REST routes /api/host-services: list, get/<id> (state, since, last heartbeat, logs tail), actions (restart, start, stop, run-action, set-mode container|shadow|host, rollback) and settings get/set. Destructive presses need confirm.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:58:07.796Z",
+   "doneAt": "2026-11-17T23:59:21.047Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Systems check health: add a health@1 check for each host service (unit active, socket answering, heartbeat fresh). The auto-fix restarts the unit through the whitelisted sudo. If the host daemon itself is unreachable, a banner item says what broke, what that breaks and since when.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T23:59:21.047Z",
+   "doneAt": "2026-11-18T00:00:58.604Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Console UI: a Host services view (Settings → Plugins → Host services sub-tab plus a Systems check panel) built from the framework DataGrid, Chip and Button with tokens only. It has a toolbar with role=toolbar and a settings id, one row per service with its state and actions, and a mode/rollback control. Each moved plugin's own UI shows a clear 'Host service down' state through a shared HostServiceGate component.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:00:58.604Z",
+   "doneAt": "2026-11-18T00:10:30.927Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "API parity for the UI: console-control targets (view:settings/tab:plugins=host-services, row:<service>, the action buttons) with data-axf-target, console_show deep links, MCP tools host_services_list/get/action/set_mode through plugin commands, and AmberX voice actions host.status / host.restart / host.rollback.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:10:30.927Z",
+   "doneAt": "2026-11-18T00:15:01.660Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "CLI node framework/cli/host-services.mjs: list | status <id> | restart <id> | mode <id> <mode> | rollback <id> | logs <id>. It speaks to the socket on the host and falls back to the console REST. Add `axf host …` in axf.mjs.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-18T00:15:01.660Z",
+   "doneAt": "2026-11-18T00:16:30.985Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Plugin lifecycle and registration for host-services: install.mjs, uninstall.mjs (--all leaves nothing behind), dataDir, a help entry, plugin.json description and builtWith, notify.json for the down alerts, and glossary descriptions.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-18T00:16:30.985Z",
+   "doneAt": "2026-11-18T00:18:33.506Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "Migration script deploy/host-services/migrate.mjs: per service, move container → shadow (both run, the host does a dry run and the outputs are compared) → host, with a verify step and `rollback <id>` that puts the container back. Write a drill in deploy/dryrun/host-services-rollback.sh.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:18:33.506Z",
+   "doneAt": "2026-11-18T00:21:00.763Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "Tests: check-host-services.mjs fixtures, pytest for host_services.py and the routes (down state, confirm on destructive actions), and the sudoers generator test (only declared commands). Run check-theme, check-controls, check-toolbars, check-console-control, the plugin-lifecycle check and the tracker check.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:21:00.763Z",
+   "doneAt": "2026-11-18T00:27:03.211Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s26",
+   "text": "UI Review: shots of the Host services view and the 'Host service down' state, desktop and phone, with 3 options as assets, submitted with review.mjs submit --choices. Then finish the report: audit table, what moved, the install and rollback runbook, how each feature is reached by UI, REST, MCP, CLI and voice, and known gaps. Update STATUS.md and the THREADS row, open the PR with the API reach list, and link it with builds-live.mjs link.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-18T00:27:03.211Z",
+   "doneAt": "2026-11-18T06:29:08.928Z",
+   "actualMin": 362,
+   "done": true
+  }
+ ],
+ "branch": "claude/move-server-side-console-parts-onto-vps",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 828,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/828"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 37.451,
+  "estimated": false,
+  "tokens": {
+   "input": 2178,
+   "output": 6596,
+   "cacheRead": 117254589,
+   "cacheWrite": 903108
+  }
+ },
+ "report": "",
+ "open": []
+}

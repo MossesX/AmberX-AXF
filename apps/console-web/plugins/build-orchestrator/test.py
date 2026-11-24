@@ -55,6 +55,76 @@ try:
 except srv.HTTPException as e:
     check(e.status_code == 404, "an unknown build is a 404")
 check("map" in srv.priority_list(), "the tag list answers through the real CLI")
+# ---- the one status table (status-table@1, Pipeline 2.0): a test store, compact rows, the merge queue, since=<rev>
+import os  # noqa: E402
+check(srv.TABLE_CLI.is_file(), "status-table.mjs is where the server looks for it")
+with tempfile.TemporaryDirectory() as d:
+    store = Path(d) / "store.json"
+    b = lambda i, st, **kw: {"id": i, "title": i.upper(), "status": st, "profiles": ["all"], "createdAt": iso(now - 600), "updatedAt": iso(now - 60), **kw}  # noqa: E731
+    store.write_text(json.dumps({"$axf": "builds@1", "rev": 7, "updatedAt": iso(now), "builds": [
+        b("t-build", "building", steps=[{"id": "s1", "text": "one", "done": True}, {"id": "s2", "text": "two"}]),
+        b("t-ci", "landing", pr="https://github.com/o/r/pull/12"), b("t-landed", "landed"), b("t-old", "archived")]}))
+    keep = {k: os.environ.get(k) for k in ("AXF_BUILDS_STORE", "AXF_BUILDS_EXPORT", "AXF_BUILDS_LIVE")}
+    os.environ.update(AXF_BUILDS_STORE=str(store), AXF_BUILDS_EXPORT="0", AXF_BUILDS_LIVE="0")
+    try:
+        srv.readcache.invalidate("build-orchestrator:table:")
+        t = srv.status_table()
+        rows = {r["id"]: r for r in t.get("rows", [])}
+        check(t["ok"] and set(rows) == {"t-build", "t-ci"}, f"GET /table: open builds only, landed and archived left out ({sorted(rows)})")
+        check(rows["t-build"]["done"] == 1 and rows["t-build"]["total"] == 2 and rows["t-ci"]["prNumber"] == 12 and rows["t-ci"]["status"] == "merging-pr", "a row carries steps done/total, its PR number and the contract status (landing reads as merging-pr)")
+        check([r["id"] for r in srv.status_table(queue=True)["rows"]] == ["t-ci"], "GET /table?queue=1: the merge queue only")
+        check("t-landed" in [r["id"] for r in srv.status_table(landed=True)["rows"]], "GET /table?landed=1: landed builds too")
+        check(srv.status_table(since=7) == {"ok": True, "unchanged": True, "rev": 7}, "since=<rev> at the same rev: nothing new")
+    finally:
+        srv.readcache.invalidate("build-orchestrator:table:")
+        for k, v in keep.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+# ---- a node CLI that hangs (audit F2): one process for every concurrent reader, a 503 with the reason, never a 500
+import subprocess  # noqa: E402
+import threading  # noqa: E402
+real_run, calls = srv.subprocess.run, []
+
+
+def slow_timeout(cmd, **kw):  # noqa: ANN001, ANN003, ANN201
+    calls.append(cmd)
+    time.sleep(0.3)
+    raise subprocess.TimeoutExpired(cmd, kw.get("timeout"))
+
+
+srv.subprocess.run = slow_timeout
+try:
+    srv.readcache.invalidate("build-orchestrator:")
+    codes: list[int] = []
+
+    def read() -> None:
+        try:
+            srv.status_table()
+            codes.append(200)
+        except srv.HTTPException as e:
+            codes.append(e.status_code)
+
+    ts = [threading.Thread(target=read) for _ in range(6)]
+    for x in ts:
+        x.start()
+    for x in ts:
+        x.join()
+    check(len(calls) == 1, f"six concurrent table reads on a cache miss start one node process ({len(calls)})")
+    check(codes == [503] * 6, f"a CLI timeout answers 503 with the reason, not a 500 ({codes})")
+    srv.readcache.invalidate("build-orchestrator:")
+    try:
+        srv.priority_list()
+        check(False, "a priority list timeout is a 503")
+    except srv.HTTPException as e:
+        check(e.status_code == 503 and "longer than" in e.detail, "a priority list timeout is a 503 that says why")
+    check(srv._run("state").get("timeout") is True, "an orchestrator CLI timeout is an answer, not an exception")
+finally:
+    srv.subprocess.run = real_run
+    srv.readcache.invalidate("build-orchestrator:")
+
 # ---- the build pipeline routes (Nov 8 2026): the CLI is where the server looks, ids are checked, errors map to codes
 check(srv.PIPELINE_CLI.is_file(), "pipeline.mjs is where the server looks for it")
 for bad in ("", "../x", "A B", "x" * 90):
@@ -147,6 +217,66 @@ try:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    # ---- fill every slot (Nov 13 2026): GET /pipeline/fill, POST /pipeline/fill/run, steps/:step/deps, fill settings
+    srv.pipeline_fill()
+    check(_calls[-1][2:4] == ["fill", "status"] and _calls[-1][-1] == "--json", "GET /pipeline/fill runs pipeline.mjs fill status")
+    srv.pipeline_fill("dag")
+    check(_calls[-1][2:5] == ["fill", "status", "dag"], "?build=<id> adds the build")
+    try:
+        srv.pipeline_fill("../x")
+        check(False, "a bad build id is a 400")
+    except srv.HTTPException as e:
+        check(e.status_code == 400, "a bad build id is a 400")
+    asyncio.run(srv.pipeline_fill_run(_Req({}, True)))
+    check(_calls[-1][2:4] == ["fill", "run"] and _calls[-1][_calls[-1].index("--by") + 1] == "Brett", "POST /pipeline/fill/run: one round, by Brett")
+    asyncio.run(srv.step_deps("dag", "s4", _Req({"dependsOn": ["s1", "s2"]})))
+    check(_calls[-1][2:6] == ["fill", "deps", "dag", "s4"] and json.loads(_calls[-1][6]) == ["s1", "s2"], "deps: the list reaches the CLI as JSON")
+    asyncio.run(srv.step_deps("dag", "s4", _Req({"dependsOn": None})))
+    check(_calls[-1][6] == "sequential", "deps: null = sequential")
+    for step, body in (("S4!", {"dependsOn": []}), ("s4", {"dependsOn": "s1"}), ("s4", {"dependsOn": ["../x"]})):
+        try:
+            asyncio.run(srv.step_deps("dag", step, _Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"deps {step} {body}: 400")
+
+    class _FakeSettings:
+        """axf.claude-settings@1 stand-in: owner from the request, owner-only refused for anyone else."""
+        def __init__(self) -> None:
+            self.sets: list[tuple[bool, dict]] = []
+
+        def set_for(self, request, values):  # noqa: ANN001
+            owner = srv.brett_click(request) != ""
+            self.sets.append((owner, values))
+            if not owner and (values.get("builds.fillSlots") is True or "builds.autoQueuePending" in values):
+                return {"ok": False, "code": "denied", "message": "owner-only"}
+            return {"ok": True, "changed": [{"key": k, "from": None, "to": v} for k, v in values.items()]}
+
+    fake = _FakeSettings()
+    _real_get = plugin_services.get
+    plugin_services.get = lambda cap: fake if cap == "axf.claude-settings@1" else _real_get(cap)  # type: ignore[assignment]
+    try:
+        for body, brett, want in (({"autoQueuePending": True}, False, 403), ({"autoQueuePending": False}, False, 403), ({"autoQueuePending": True}, True, 200),
+                                  ({"fillSlots": False}, False, 200), ({"fillSlots": True}, False, 403), ({"maxParallelPerBuild": 2}, False, 200),
+                                  ({"maxParallelPerBuild": 40}, True, 400), ({"fillSlots": "yes"}, True, 400), ({}, True, 400)):
+            try:
+                asyncio.run(srv.pipeline_fill_settings(_Req(body, brett)))
+                code = 200
+            except srv.HTTPException as e:
+                code = e.status_code
+            check(code == want, f"fill settings {body} by {'Brett' if brett else 'a session'}: {want}")
+        check(fake.sets[-1] == (False, {"builds.maxParallelPerBuild": 2}), "fill settings go to axf.claude-settings@1 under their Claude keys")
+        try:
+            asyncio.run(srv.pipeline_settings_set(_Req({"autoQueuePending": True})))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 403, "POST /pipeline/settings refuses autoQueuePending unless Brett's own session sends it")
+        r = asyncio.run(srv.pipeline_settings_set(_Req({"fillSlots": False, "maxRuns": 3})))
+        check("changed" in r and _calls[-1][2:4] == ["set", "maxRuns=3"], "POST /pipeline/settings: fill keys and pipeline keys in one call")
+    finally:
+        plugin_services.get = _real_get  # type: ignore[assignment]
     # done-means-merged@1: GET attempts/<id>, POST retry/<id> {strategy?, why?}
     srv.build_attempts("alpha")
     check(_calls[-1][2:4] == ["attempts", "alpha"] and _calls[-1][-1] == "--json", "attempts: pipeline.mjs attempts <id> --json")

@@ -5,8 +5,8 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { addLoadedSource, type LoadedItem } from '@console/control/search';
 import { registerActions } from './actions';
-import { phone, type Device } from './client';
 import { appMenu } from './menu';
+import { phone, type Device } from './client';
 import { panels, showInPanel } from './settings';
 
 export const TAB = 'phone-connect';
@@ -14,8 +14,8 @@ export const TAB = 'phone-connect';
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.phone-connect',
   label: 'Phone Connect',
-  appMenu,
   version: '0.1.0',
+  appMenu,
   register(rt) {
     const open = () => rt.dispatch(`plugin.settings.open:${TAB}`);
     registerActions(rt, open);

@@ -52,6 +52,9 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
+import { PARALLEL_MODES, dependsOn, explicitAfter, normAfter, normClaim, normParallel } from '../core/build-pipeline.mjs';
+import * as P2 from '../core/pipeline-status.mjs';
+import { normDecision } from '../core/model-triage.mjs';
 import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
@@ -79,10 +82,12 @@ export const MODELS = ['Fable', 'Opus'];
  * the merge commit), `complete` (landed + the feature verify passed), `escalated` (the retry ladder ran out: banner +
  * push). `built` stays as a legacy word read as landed; the pipeline never writes it again.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const LEGACY_STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+/** pipeline-2@1 (framework/spec/PIPELINE-2.md, Nov 19 2026): a `flow: 'pipeline-2'` build uses P2.BUILD_STATUSES, forward-only (enforceFlow). */
+export const STATUSES = [...LEGACY_STATUSES, ...P2.P2_ONLY];
 /** Statuses that count as finished work (progress, Pending list): every step done, whatever the PR is doing. */
 export const FINISHED = ['built', 'landing', 'landed', 'complete'];
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: P2.STEP_MAX_MINUTES }; // the one step cap (pipeline-2@1 STEP_MAX_MINUTES)
 /**
  * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
  * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
@@ -106,8 +111,11 @@ const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 /** A new build's id from a title (build-id@1: at most 40 characters). `slug` stays for profile names and old lookups. */
 export const newBuildId = (t) => shortBuildId(str(t, 300));
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+// flow: read-only in the projection (pipeline-2@1 builds keep their own statuses; orchestrator-core derivedStatus reads it)
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'flow', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+/** Optional step fields (Nov 13 2026, step dependencies): carried only when set, so an old step never gains them. */
+const ORCH_STEP_OPTIONAL = ['after', 'parallel', 'claim'];
 
 // ------------------------------------------------------------------ records
 
@@ -123,12 +131,20 @@ function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 export function normStep(s, i = 0, ctx = {}) {
   const o = s && typeof s === 'object' ? s : {};
   const at = ctx.now || nowIso();
+  const id = str(o.id, 40) || `s${i + 1}`;
+  const model = MODELS.includes(o.model) ? o.model : 'Opus';
+  // step dependencies (build-pipeline@1, Nov 13 2026): `after` only when the step carries a list (absent = sequential,
+  // the migration for every older step); `dependsOn` is the same list under its input name and is stored as `after`;
+  // `parallel` only when it says 'never'; a claim never outlives a done or skipped step
+  const after = normAfter(explicitAfter(o), { self: id });
+  const parallel = normParallel(o.parallel);
+  const claim = o.done === true || o.skip === true ? null : normClaim(o.claim, { model });
   return {
-    id: str(o.id, 40) || `s${i + 1}`,
+    id,
     uid: str(o.uid, 60) || newUid(ctx.seed ? `${ctx.seed}/${str(o.id, 40) || i}/${i}` : ''),
     title: str(o.title, 200),
     text: str(o.text, 2000),
-    model: MODELS.includes(o.model) ? o.model : 'Opus',
+    model,
     why: str(o.why, 300),
     phase: str(o.phase, 80),
     group: str(o.group, 80),
@@ -142,18 +158,83 @@ export function normStep(s, i = 0, ctx = {}) {
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
+    ...(after ? { after } : {}),
+    ...(parallel ? { parallel } : {}),
+    ...(claim ? { claim } : {}),
+    // model-triage@1: an explicit model override on the step, and the gate's last decision for it (model, rule, why)
+    ...(MODELS.includes(o.pin) ? { pin: o.pin, ...(str(o.pinBy).trim() ? { pinBy: str(o.pinBy, 80).trim() } : {}) } : {}),
+    ...(normDecision(o.triage) ? { triage: normDecision(o.triage) } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     ...(o.origin && typeof o.origin === 'object' ? { origin: { build: str(o.origin.build, 80), step: str(o.origin.step, 60), how: str(o.origin.how, 20) } } : {}),
+    ...P2.normFields(o, 'step'), // pipeline-2@1: status, statusAt, statusBy, attempt, account, slot, prNumber, worktree… (only when set)
   };
+}
+
+/**
+ * The key two steps are compared by (step-dedupe): the model prefix dropped, case and whitespace folded. Steps with the
+ * same key in one build are the same step.
+ */
+export const stepKey = (t) => plain(t).toLowerCase().replace(/\s+/g, ' ');
+
+/**
+ * Steps with repeats collapsed (step-dedupe). Two copies of one store that gave the same step different uids used to
+ * merge into both copies, doubling the list on every publish / pull / absorb (Nov 17 2026: 16 steps grew to 2,682). A
+ * step keeps its place of first appearance; a done copy wins over a pending one (its id, uid and doneAt come along);
+ * a step with no text is never collapsed. Pure: returns { steps, dropped }.
+ */
+export function dedupeSteps(steps) {
+  const out = []; const at = new Map(); let dropped = 0;
+  for (const s of Array.isArray(steps) ? steps : []) {
+    const k = stepKey(s?.text);
+    if (!k) { out.push(s); continue; }
+    const i = at.get(k);
+    if (i === undefined) { at.set(k, out.length); out.push(s); continue; }
+    dropped += 1;
+    if (s?.done && !out[i]?.done) out[i] = s;
+  }
+  return { steps: out, dropped };
+}
+
+/**
+ * The store with repeated steps collapsed (step-dedupe). `ids` limits it to those builds (the save guard passes the
+ * builds a write changed); undefined = every build (the one-shot cleanup). Mutates and returns
+ * { store, report: [{ id, before, after }] } for the builds that had repeats.
+ */
+export function dedupeStoreSteps(store, { ids } = {}) {
+  const want = ids ? new Set(ids) : null; const report = [];
+  for (const b of store?.builds ?? []) {
+    if (want && !want.has(b.id)) continue;
+    const d = dedupeSteps(b.steps);
+    const dd = dedupeSteps(b.defaultSteps);
+    if (!d.dropped && !dd.dropped) continue;
+    report.push({ id: b.id, before: (b.steps ?? []).length, after: d.steps.length });
+    b.steps = d.steps; if (Array.isArray(b.defaultSteps)) b.defaultSteps = dd.steps;
+  }
+  return { store, report };
+}
+
+/**
+ * Step ids left by the old collision fix-up (`s65-64`) put back to plain `s<n>` where that id is free in the build, so
+ * nothing a session or a link holds by id breaks (ids in use are never moved). Mutates; returns how many it renamed.
+ */
+export function tidyStepIds(b) {
+  const taken = new Set((b.steps ?? []).map((s) => s.id)); let n = 0;
+  (b.steps ?? []).forEach((s, i) => {
+    if (!/^s\d+-\d+$/.test(s.id)) return;
+    const want = `s${i + 1}`; if (taken.has(want)) return;
+    taken.delete(s.id); s.id = want; taken.add(want); n += 1;
+  });
+  return n;
 }
 
 export function normBuild(b, ctx = {}) {
   const o = b && typeof b === 'object' ? b : {};
   const at = ctx.now || nowIso();
   const id = str(o.id, 80) || newBuildId(o.title);
-  const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
+  // every write and every merge goes through here, so no writer can store a step twice (step-dedupe)
+  const steps = dedupeSteps(Array.isArray(o.steps) ? o.steps : []).steps.map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
   const named = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];
@@ -186,14 +267,21 @@ export function normBuild(b, ctx = {}) {
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
-    notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
+    notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40), ...(str(n?.by) ? { by: str(n.by, 80) } : {}) })).filter((n) => n.text), // by: who wrote it (watchdog, lander…), when set
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     // done-means-merged@1 (framework/core/build-pipeline.mjs): every try at a failure, the open failure, the merge + verify evidence, why it stopped
     ...(Array.isArray(o.attempts) && o.attempts.length ? { attempts: normAttempts(o.attempts) } : {}),
-    ...(normFailure(o.failure) ? { failure: normFailure(o.failure) } : {}),
+    // the failure record: a Pipeline 2.0 build carries the lander's (lander@1), any other build done-means-merged's
+    ...(P2.isP2(o) ? (P2.normLandFailure(o.failure) ? { failure: P2.normLandFailure(o.failure) } : {}) : (normFailure(o.failure) ? { failure: normFailure(o.failure) } : {})),
+    ...(P2.isP2(o) && P2.normLanding(o.landing) ? { landing: P2.normLanding(o.landing) } : {}), // lander@1: the PR groups, merged / closed PRs, CI re-runs, rules per head
+    ...(P2.isP2(o) && str(o.landedAt) ? { landedAt: str(o.landedAt, 40) } : {}),
+    ...(P2.isP2(o) && P2.normEmergency(o.emergency) ? { emergency: P2.normEmergency(o.emergency) } : {}), // pipeline-2@1: sent to emergency by Brett (skips the line, emergency slot pool, front of the merge line)
+    ...(P2.isP2(o) && P2.normHand(o.hand) ? { hand: P2.normHand(o.hand) } : {}), // pipeline-2@1: started by hand (beside the line, landed by the lander)
+    ...(P2.normBudgetStop(o.budgetStop) ? { budgetStop: P2.normBudgetStop(o.budgetStop) } : {}), // build-budget@1: stopped at its cap, or at the day's
+    ...(P2.isP2(o) && P2.normPlanning(o.planning).length ? { planning: P2.normPlanning(o.planning) } : {}), // pipeline-2@1: Plan Studio's steps, planning context for the split (never build steps)
     ...(normLanded(o.landed) ? { landed: normLanded(o.landed) } : {}),
     ...(normEscalation(o.escalation) ? { escalation: normEscalation(o.escalation) } : {}),
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
@@ -209,12 +297,13 @@ export function normBuild(b, ctx = {}) {
     deletedAt: o.deleted === true ? str(o.deletedAt, 40) : '',
     pending: o.pending && typeof o.pending === 'object' ? clone(o.pending) : null,
     queue: o.queue && typeof o.queue === 'object' ? clone(o.queue) : null,
-    defaultSteps: Array.isArray(o.defaultSteps) ? o.defaultSteps.map((s, i) => normStep(s, i, ctx)) : steps.map((s) => ({ ...s })),
+    defaultSteps: Array.isArray(o.defaultSteps) ? dedupeSteps(o.defaultSteps).steps.map((s, i) => normStep(s, i, ctx)) : steps.map((s) => ({ ...s })),
     defaultAt: str(o.defaultAt, 40) || (steps.length ? at : ''),
     rearranged: o.rearranged === true,
     removedSteps: Array.isArray(o.removedSteps) ? o.removedSteps.map((r) => ({ step: normStep(r?.step, 0, ctx), at: str(r?.at, 40), why: str(r?.why, 300), by: str(r?.by, 80) })) : [],
     legacy: Array.isArray(o.legacy) ? o.legacy.map((l) => ({ file: str(l?.file, 300), profile: str(l?.profile, 40), id: str(l?.id, 80) })) : [],
     copies: Array.isArray(o.copies) ? clone(o.copies) : [],
+    ...P2.normFields(o, 'build'), // pipeline-2@1: flow, statusAt, statusBy, attempt, failedFrom, statusLog (only when set)
   };
 }
 
@@ -229,7 +318,7 @@ export function normalizeStore(s) {
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
     rules: foldRetired(o.rules && typeof o.rules === 'object' ? clone(o.rules) : {}),
-    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})), ...(o.meta?.doneMeansMerged && typeof o.meta.doneMeansMerged === 'object' ? { doneMeansMerged: clone(o.meta.doneMeansMerged) } : {}) }, // doneMeansMerged: the one-off migration's record (build-pipeline.mjs migrateDoneStore)
+    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})), ...normVersions(o.meta?.versions), ...(o.meta?.doneMeansMerged && typeof o.meta.doneMeansMerged === 'object' ? { doneMeansMerged: clone(o.meta.doneMeansMerged) } : {}) }, // doneMeansMerged: the one-off migration's record (build-pipeline.mjs migrateDoneStore)
     drafts: foldRetired(o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {}, (a, b) => ({ ...a, ops: [...(a.ops ?? []), ...(b.ops ?? [])] })),
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
@@ -355,9 +444,89 @@ export function validateStore(store) {
       if (!MODELS.includes(s.model)) err(`${sa}.model`, `"${s.model}" is not one of ${MODELS.join(', ')} (model policy: Opus or Fable, never Sonnet)`);
       if (typeof s.text !== 'string' || !s.text.trim()) err(`${sa}.text`, 'is missing');
       if (!Number.isInteger(s.rev) || s.rev < 1) err(`${sa}.rev`, 'must be a whole number from 1');
+      if (s.after !== undefined) {
+        if (!Array.isArray(s.after) || s.after.some((x) => typeof x !== 'string' || !x)) err(`${sa}.after`, 'must be a list of step ids');
+        else for (const x of s.after) { if (x === s.id) err(`${sa}.after`, 'a step never waits on itself'); else if (!b.steps.some((o) => o?.id === x)) err(`${sa}.after`, `"${x}" is not a step of this build`); }
+      }
+      if (s.dependsOn !== undefined) err(`${sa}.dependsOn`, 'is an input alias: the store keeps the list as `after`');
+      if (s.parallel !== undefined && !PARALLEL_MODES.includes(s.parallel)) err(`${sa}.parallel`, `"${s.parallel}" is not one of ${PARALLEL_MODES.join(', ')}`);
+      if (s.claim !== undefined && s.claim !== null) {
+        if (typeof s.claim !== 'object' || typeof s.claim.runId !== 'string' || !s.claim.runId) err(`${sa}.claim`, 'must be { runId, slot, account, branch, at, model, expiresAt } or absent');
+        else if (s.done === true || s.skip === true) err(`${sa}.claim`, 'a done or skipped step carries no claim');
+        else if (s.claim.model && s.claim.model !== s.model) err(`${sa}.claim.model`, `"${s.claim.model}" is not the step's pinned model ${s.model}`);
+      }
     });
+    for (const cyc of dependencyCycles(b)) err(`${at}.steps`, `dependency cycle: ${cyc.join(' → ')}`);
   });
   return { ok: !errors.length, errors };
+}
+
+/**
+ * Cycles in a build's step dependencies (the resolved graph: `after` lists plus the implicit "previous step" of steps
+ * without one, so `s2.after = [s3]` with a plain `s3` is a cycle). [] = none. Each cycle once, as the ids on it.
+ */
+export function dependencyCycles(b) {
+  const steps = Array.isArray(b?.steps) ? b.steps.filter((s) => s && typeof s === 'object') : [];
+  const deps = new Map(steps.map((s) => [s.id, dependsOn({ steps }, s)]));
+  const state = new Map(); const out = []; const seen = new Set();
+  const walk = (id, path) => {
+    if (state.get(id) === 'done') return;
+    if (state.get(id) === 'open') { const cyc = [...path.slice(path.indexOf(id)), id]; const key = [...cyc].sort().join(','); if (!seen.has(key)) { seen.add(key); out.push(cyc); } return; }
+    state.set(id, 'open');
+    for (const d of deps.get(id) ?? []) walk(d, [...path, id]);
+    state.set(id, 'done');
+  };
+  for (const s of steps) walk(s.id, []);
+  return out;
+}
+
+/**
+ * Store-level data versions (`meta.versions`): { <change>: { version, at, by } }, written once by the migration that
+ * introduces the change, so the journal line of that write records it. Absent = no versioned change applied yet.
+ */
+function normVersions(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return {};
+  const out = {};
+  for (const [k, x] of Object.entries(v)) if (/^[a-zA-Z][\w-]{0,40}$/.test(k) && Number.isInteger(x?.version) && x.version > 0) out[k] = { version: x.version, at: str(x.at, 40), by: str(x.by, 60) };
+  return Object.keys(out).length ? { versions: out } : {};
+}
+
+/** Step dependencies (build-pipeline@1): the data version the step-deps migration stamps. */
+export const STEP_DEPS_VERSION = 1;
+
+/**
+ * The step-dependency migration (Nov 13 2026). Existing builds get NO dependency list: a step without `after` stays
+ * implicitly sequential, so every older build keeps running one step at a time. The only rewrite is a stray stored
+ * `dependsOn` (an input alias) moved to `after` by normBuild. Stamps meta.versions.stepDeps once, which makes the write
+ * a journalled change. Returns { store, report: { builds, steps, withDeps, aliasMoved, stamped, version } }.
+ */
+export function migrateStepDeps(store, { now = nowIso(), by = 'migration' } = {}) {
+  const raw = store && typeof store === 'object' ? store : {};
+  let aliasMoved = 0;
+  for (const b of Array.isArray(raw.builds) ? raw.builds : []) for (const st of Array.isArray(b?.steps) ? b.steps : []) if (st && st.dependsOn !== undefined) aliasMoved++;
+  const s = normalizeStore(raw);
+  const prev = s.meta.versions?.stepDeps?.version ?? 0;
+  const stamped = prev < STEP_DEPS_VERSION;
+  if (stamped) s.meta.versions = { ...(s.meta.versions ?? {}), stepDeps: { version: STEP_DEPS_VERSION, at: now, by: str(by, 60) } };
+  const r = stepDepsReport(s);
+  return { store: s, report: { builds: s.builds.length, steps: r.steps, withDeps: r.withDeps, aliasMoved, stamped, version: STEP_DEPS_VERSION } };
+}
+
+/**
+ * What `verify` says about step dependencies: how many builds / steps carry a list, every `after` id that names no step
+ * of its build ({ build, step, missing }) and every dependency cycle ({ build, cycle }).
+ */
+export function stepDepsReport(store) {
+  const out = { steps: 0, withDeps: 0, missing: [], cycles: [] };
+  for (const b of Array.isArray(store?.builds) ? store.builds : []) {
+    const steps = Array.isArray(b?.steps) ? b.steps.filter((x) => x && typeof x === 'object') : [];
+    out.steps += steps.length;
+    const ids = new Set(steps.map((x) => x.id));
+    if (steps.some((x) => explicitAfter(x) !== undefined)) out.withDeps++;
+    for (const st of steps) for (const d of explicitAfter(st) ?? []) if (!ids.has(d)) out.missing.push({ build: b.id, step: st.id, missing: d });
+    for (const cycle of dependencyCycles(b)) out.cycles.push({ build: b.id, cycle });
+  }
+  return out;
 }
 
 /** The form written to disk: the default breakdown is left out while it equals the steps (not rearranged). */
@@ -408,6 +577,15 @@ export function diffStores(before, after, now = nowIso()) {
 }
 
 // ------------------------------------------------------------------ status helpers
+
+/**
+ * Does the builds@1 store derive this build's status (from its steps, the Pending list, the plan)? Never for a
+ * Pipeline 2.0 build: its flow owns the status (pipeline-2@1), and a derived `running` / `landing` / `landed` there was
+ * only ever refused by the guard. Every derivation site in this file asks here first.
+ */
+export const ownsStatus = (b) => !!b && !P2.isP2(b);
+/** Refuse a step edit (divide, harvest, restore default) on a Pipeline 2.0 build whose steps are fixed, with the reason. */
+function stepsEditable(b) { const why = P2.stepsEditRefusal(b); if (why) throw Object.assign(new Error(why), { code: 'steps-locked' }); }
 
 /** Pending status for a build. */
 export function pendingStatusOf(b) {
@@ -470,7 +648,7 @@ export function storeSummary(store, profile) {
 
 // ------------------------------------------------------------------ orchestrator@1 projection
 
-const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; return o; };
+const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; for (const k of ORCH_STEP_OPTIONAL) if (s[k] !== undefined && s[k] !== null) o[k] = clone(s[k]); return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {
@@ -514,7 +692,7 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     }
     if (rec.deleted) { rec.deleted = false; rec.deletedAt = ''; }
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
-    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && k !== 'demo' && ob[k] !== undefined) rec[k] = clone(ob[k]); // demo: read-only, from the id
+    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && k !== 'demo' && k !== 'flow' && ob[k] !== undefined) rec[k] = clone(ob[k]); // demo, flow: read-only
     { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
@@ -629,7 +807,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     b.title = str(it.title, 300) || b.title;
     b.detail = str(it.detail, 8000);
     { const og = mergeOrigin(it.origin, b.origin); if (og) b.origin = og; }
-    if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
+    if (it.status !== shownItem.status && ownsStatus(b)) { // only a real status change on the Pending side moves the build
       const st = orchStatusOfPending(it.status);
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
       else if (['built', 'landing', 'landed', 'complete', 'failed', 'escalated', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
@@ -649,7 +827,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = str(b.mergedAt) ? 'landed' : 'landing'; b.builtAt = b.builtAt || now; } // done-means-merged@1
+    if (ownsStatus(b) && ['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = str(b.mergedAt) ? 'landed' : 'landing'; b.builtAt = b.builtAt || now; } // done-means-merged@1
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }
@@ -714,7 +892,7 @@ export function absorbQueue(store, profile, q, features = [], { now = nowIso() }
     const incoming = (small ?? []).map((x, k) => ({ ...(b.steps[k] ?? {}), id: b.steps[k]?.id ?? `s${k + 1}`, text: str(x.text), estimate: str(x.estimate), done: x.done === true, doneAt: x.done ? x.doneAt || now : '', skip: x.skip === true, fm: x.fm }));
     if (JSON.stringify(incoming.map((x) => [x.text, x.estimate, x.done, x.skip])) !== JSON.stringify(b.steps.map((x) => [x.text, x.estimate, x.done, x.skip]))) { mergeSteps(b, incoming, now, 'build-queue', 'removed in the build queue'); followDefault(b, now); }
     const f = fById.get(key);
-    if (f && b.kind === 'epic' && b.status !== 'archived') { const st = statusOfPlan(f.status); if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? (r.completedAt && !r.completedAt.startsWith('1970') ? r.completedAt : now) : ''; } }
+    if (f && b.kind === 'epic' && b.status !== 'archived' && ownsStatus(b)) { const st = statusOfPlan(f.status); if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? (r.completedAt && !r.completedAt.startsWith('1970') ? r.completedAt : now) : ''; } }
   }
   renumber(s, profile);
   s.updatedAt = now;
@@ -976,7 +1154,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'step-done': {
         const b = get(op.build); const st = b.steps.find((x) => x.uid === op.uid); if (!st) throw new Error(`no step ${op.uid} in ${b.id}`);
         st.done = op.done !== false; st.doneAt = st.done ? now : ''; st.updatedAt = now; touched.add(b.id);
-        if (b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
+        if (ownsStatus(b) && b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
         log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break;
       }
       case 'reorder-steps': {
@@ -1003,6 +1181,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'rename-profile': profileName = { id: str(op.id, 40), name: str(op.name, 80).trim() }; log.push(`profile ${op.id}: renamed "${profileName.name}"`); break;
       case 'divide-step': {
         const b = get(op.build); const k = b.steps.findIndex((x) => x.uid === op.uid); if (k < 0) throw new Error(`no step ${op.uid} in ${b.id}`);
+        stepsEditable(b);
         const st = b.steps[k];
         const parts = op.parts.map((p, i) => normStep({ id: i === 0 ? st.id : stepIdIn({ steps: [...b.steps, ...op.parts.slice(0, i).map((_, j) => ({ id: j === 0 ? st.id : `${st.id}.${j + 1}` }))] }, `${st.id}.${i + 1}`), text: str(p.text, 2000).trim(), estimate: str(p.estimate, 20), model: MODELS.includes(p.model) ? p.model : st.model, phase: st.phase, group: st.group, files: st.files, checks: st.checks, session: st.session, agent: st.agent, origin: { build: b.id, step: st.uid, how: 'divided' }, createdAt: now }, i, { now }));
         b.steps.splice(k, 1, ...parts);
@@ -1011,7 +1190,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
         log.push(`${b.id} ${st.id}: divided into ${parts.length}`); break;
       }
       case 'harvest': {
-        const picked = op.from.map((f) => { const b = get(f.build); const st = b.steps.find((x) => x.uid === f.uid); if (!st) throw new Error(`no step ${f.uid} in ${f.build}`); return { b, st }; });
+        const picked = op.from.map((f) => { const b = get(f.build); const st = b.steps.find((x) => x.uid === f.uid); if (!st) throw new Error(`no step ${f.uid} in ${f.build}`); stepsEditable(b); return { b, st }; });
         const made = [];
         for (const t of op.into) {
           const id = uniqueBuildId(t.id || t.title, new Set(s.builds.flatMap(namesOf)));
@@ -1035,6 +1214,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'restore-default': {
         const b = get(op.id);
         if (!b.defaultSteps.length) throw new Error(`${b.id} has no default breakdown`);
+        stepsEditable(b);
         const live = new Map(); // where each default step is now
         for (const x of s.builds) for (const st of x.steps) live.set(st.uid, { b: x, st });
         const restored = b.defaultSteps.map((d) => {
@@ -1054,7 +1234,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
     }
   }
   // done-means-merged@1: every step done = landing (landed when merged; complete stays complete only while merged), never complete from the steps alone
-  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (!['archived', 'blocked', 'failed', 'fixing', 'escalated'].includes(b.status) && b.steps.length) { const d = b.steps.filter((x) => !x.skip); const allDone = d.length && d.every((x) => x.done); b.status = allDone ? (str(b.mergedAt) ? (b.status === 'complete' ? 'complete' : 'landed') : 'landing') : d.some((x) => x.done) ? 'running' : FINISHED.includes(b.status) ? 'running' : b.status; } }
+  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (ownsStatus(b) && !['archived', 'blocked', 'failed', 'fixing', 'escalated'].includes(b.status) && b.steps.length) { const d = b.steps.filter((x) => !x.skip); const allDone = d.length && d.every((x) => x.done); b.status = allDone ? (str(b.mergedAt) ? (b.status === 'complete' ? 'complete' : 'landed') : 'landing') : d.some((x) => x.done) ? 'running' : FINISHED.includes(b.status) ? 'running' : b.status; } }
   renumber(s, profile);
   return { store: s, log, profileName };
 }

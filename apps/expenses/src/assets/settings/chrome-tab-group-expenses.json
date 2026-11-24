@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-tab-group"
+    "extends": "chrome-tab-group",
+    "builtFor": "chrome:tab-group"
   }
 }

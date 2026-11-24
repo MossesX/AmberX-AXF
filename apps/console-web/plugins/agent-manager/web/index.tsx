@@ -36,7 +36,7 @@ export const plugin: AxfWebLibrary = {
       render: (props, close) => <WizardDialog kind={String(props.kind ?? 'builder')} agentId={props.agentId ? String(props.agentId) : undefined} close={close} />,
     },
   },
-  nav: { label: 'Plugins', items: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', view: 'agent-manager' }] },
+  nav: { label: 'AI & agents', items: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', view: 'agent-manager' }] },
   settingsTabs: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', order: 32, description: 'Wizards, add-on agents, models, training (Firecrawl), safety and memory defaults for the agent manager (agent-definition@1).' }],
   settingsPanels: [
     { id: 'agent-manager.wizards', tab: 'agent-manager', title: 'Wizards', icon: 'rocket', order: 10, render: () => <WizardsPanel /> },

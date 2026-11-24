@@ -7,6 +7,10 @@
  * (so it goes live to main as one status commit, builds-live.mjs): blank branch / PR fields filled, steps a PR names
  * ticked (with the PR in the step note), merged PRs recorded (built → complete). What it can't place goes in the
  * report: orphan PRs and branches, and suggestions. The systems check shows the report as a banner item.
+ * Parallel steps (fill every slot, BUILD-PARALLEL): a step claimed by a step session that is no longer alive (no tmux
+ * session axf-<build>--<step>, no agent slot holding it) is reset to ready, its worktree and branch kept for the retry;
+ * step branches (`<build-branch>--<step>`) are never matched as builds or orphans; and a build counts as built only when
+ * every step branch has merged back (a merged one is deleted), else it stays running with a note.
  *
  *   node framework/cli/builds-reconcile.mjs              dry run: what it would change (nothing written)
  *   … --apply                                           write the changes (live to main) and the report; Pending builds
@@ -17,7 +21,13 @@
  *
  * Runs at every session start (the project's SessionStart hook) and every 10 minutes on the VPS (cron
  * axf-builds-reconcile, installed by deploy/install-console.sh), at most every AXF_RECONCILE_EVERY_MIN min (5; --force). Report: <hub data>/builds/reconcile.json (else
- * .axf-console/builds-reconcile.json in the checkout). GitHub: framework/cli/github.mjs (GitHub App token first).
+ * .axf-console/builds-reconcile.json in the checkout). GitHub: the token broker's token (framework/cli/github-token.mjs
+ * token, as the lander takes it), never a `gh` login left on the host. Git always runs in the checkout (git -C), wherever
+ * cron starts it. A run that fails still writes its report (`error`), so the systems check shows it, not only the log.
+ *
+ * Pipeline 2.0 builds that are landing: a PR merged or closed by hand is recorded by the lander's own rule
+ * (deploy/lander/run.mjs syncPrs: merged = the merge is recorded and the build goes on; closed = it stops once), so a
+ * hand merge never leaves a build "failed" with a note only. Skipped where the lander is not installed.
  */
 import { spawnSync } from 'node:child_process';
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -26,10 +36,11 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
+import { claimLive, isParallelStep, releaseStep, stepBranch } from '../core/build-pipeline.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
-import { createGitHub, parseRepo } from './github.mjs';
+import { createGitHub, githubToken, parseRepo } from './github.mjs';
 import { loadState as slotState, tmuxSessions } from './agent-slots.mjs';
 
 export const reportFile = () => {
@@ -42,7 +53,23 @@ const repoName = () => {
   const m = /github\.com[/:]([^/]+\/[^/.]+?)(?:\.git)?$/.exec(url);
   return m ? m[1] : 'MossesX/AmberX-AXF';
 };
-const git = (args) => { const r = spawnSync('git', args, { cwd: REPO_ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000 }); return r.status === 0 ? r.stdout.trim() : ''; };
+/** git in the checkout, wherever the process was started (`-C`). → { ok, out, err } */
+export function gitIn(root, args) {
+  const r = spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000 });
+  return { ok: r.status === 0, out: r.status === 0 ? r.stdout.trim() : '', err: r.status === 0 ? '' : String(r.stderr || r.error?.message || `git exit ${r.status}`).trim().slice(-300) };
+}
+const git = (args) => gitIn(REPO_ROOT, args).out;
+
+/**
+ * The reconciler's GitHub token: the token broker's (github-token.mjs token: the app's installation token, else the
+ * saved one), the same source the lander uses. Only when the broker has none does the old order apply (environment,
+ * `gh auth token`): a stale `gh` login on the host answered 401 on every cron run.
+ */
+export function reconcileToken({ root = REPO_ROOT, env = process.env } = {}) {
+  const r = spawnSync(process.execPath, [join(root, 'framework', 'cli', 'github-token.mjs'), 'token'], { encoding: 'utf8', timeout: 30000, env, stdio: ['ignore', 'pipe', 'ignore'] });
+  const t = r.status === 0 ? String(r.stdout || '').trim() : '';
+  return t || githubToken();
+}
 
 const PR_FIELDS = 'number headRefName title body state mergedAt updatedAt';
 const QUERY = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) {
@@ -53,7 +80,7 @@ const QUERY = `query($owner: String!, $name: String!) { repository(owner: $owner
  * GitHub's side in one GraphQL query (its own rate budget, so the REST-heavy console can't starve it): open PRs with
  * their commit subjects, the last 100 merged or closed PRs, and the claude/* branches (local git).
  */
-export async function gather({ gh = createGitHub({ userAgent: 'axf-builds-reconcile' }), repo = repoName(), branches = true } = {}) {
+export async function gather({ gh = createGitHub({ token: reconcileToken, userAgent: 'axf-builds-reconcile' }), repo = repoName(), branches = true, root = REPO_ROOT } = {}) {
   const r = parseRepo(repo); if (!r) throw new Error(`not a repo: ${repo}`);
   const [owner, name] = r.split('/');
   const d = await gh.json('POST', '/graphql', { query: QUERY, variables: { owner, name } });
@@ -64,10 +91,12 @@ export async function gather({ gh = createGitHub({ userAgent: 'axf-builds-reconc
     state: p.mergedAt ? 'merged' : p.state === 'OPEN' ? 'open' : 'closed', mergedAt: p.mergedAt ?? '', updatedAt: p.updatedAt ?? '',
     commits: (p.commits?.nodes ?? []).map((c) => c?.commit?.messageHeadline ?? ''),
   }));
-  const out = { prs, branches: [] };
+  const out = { prs, branches: [], gitError: '' };
   if (!branches) return out;
   // claude/* branches: fetch their heads, count commits ahead of main (local git, no API calls per branch)
-  git(['fetch', '-q', 'origin', '+refs/heads/main:refs/remotes/origin/main', '+refs/heads/claude/*:refs/remotes/origin/claude/*']);
+  const git = (args) => gitIn(root, args).out;
+  const fetched = gitIn(root, ['fetch', '-q', 'origin', '+refs/heads/main:refs/remotes/origin/main', '+refs/heads/claude/*:refs/remotes/origin/claude/*']);
+  if (!fetched.ok) out.gitError = `git fetch in ${root}: ${fetched.err}`;
   const prBy = new Map(prs.filter((p) => p.state === 'open').map((p) => [p.branch, p.number]));
   for (const line of git(['for-each-ref', '--format=%(refname:strip=3) %(committerdate:iso-strict)', 'refs/remotes/origin/claude/']).split('\n').filter(Boolean)) {
     const [name, at] = line.split(' ');
@@ -101,9 +130,56 @@ export function liveBuilds({ now = new Date() } = {}) {
   return aliveIds({ sessions: [...tmux.keys()], slots, changes: recentChanges(now), now: now.toISOString() });
 }
 
+// ------------------------------------------------------------------ parallel steps (BUILD-PARALLEL)
+
+/**
+ * Step branches of done parallel steps still on the remote, per build: Map(buildId → [{ step, branch }]). A merged step
+ * branch is deleted; the branch of a step re-run in the build's own session after a conflict (parallel: never) is kept
+ * on purpose and does not count.
+ */
+export function stepBranchesOf(builds, branches) {
+  const names = new Set((branches ?? []).map((b) => b.name ?? b));
+  const out = new Map();
+  for (const b of builds) for (const st of (b.steps ?? []).filter((x) => x.done && isParallelStep(x))) {
+    const br = stepBranch(b, st, { parallel: true });
+    if (names.has(br)) { if (!out.has(b.id)) out.set(b.id, []); out.get(b.id).push({ step: st.id, branch: br }); }
+  }
+  return out;
+}
+/** Branch names that are some build's step branch (kept out of the build / orphan matching). */
+export const isStepBranch = (builds, name) => builds.some((b) => String(name).startsWith(`${stepBranch(b, null)}--`) && (b.steps ?? []).some((st) => `${stepBranch(b, null)}--${st.id}` === name));
+
+const GRACE_MS = 10 * 60e3;
+/**
+ * Step claims whose session is gone: [{ id, step, runId, why }]. `alive(b, step)` answers true / false, or null when it
+ * can't tell (then nothing is reset). The build's own in-memory claim (main:…) is never stored, so never seen here.
+ */
+export function stepResetPlan(builds, alive, { now = Date.now(), graceMs = GRACE_MS } = {}) {
+  const out = [];
+  for (const b of builds) for (const st of b.steps ?? []) {
+    const c = st.claim;
+    if (!c?.runId || st.done || st.skip || String(c.runId).startsWith('main:')) continue;
+    if (claimLive(c, now) && now - Date.parse(c.at || 0) < graceMs) continue;
+    const a = alive(b, st);
+    if (a === null || a === true) continue;
+    out.push({ id: b.id, step: st.id, runId: c.runId, why: `${st.id}: step session ${c.runId} is not alive: back to ready (worktree and branch kept)` });
+  }
+  return out;
+}
+/** Is a step's session alive here? tmux axf-<slug>--<step>[--agent] or an agent slot holding build + step; null = can't tell. */
+export function stepAlive(sessions, slots) {
+  if (!sessions) return () => null;
+  const names = [...sessions];
+  return (b, st) => {
+    const slug = String(b.id).replace(/[^A-Za-z0-9._-]/g, '-').slice(0, Math.max(1, 46 - st.id.length));
+    if (names.some((n) => n === `axf-${slug}--${st.id}` || n.startsWith(`axf-${slug}--${st.id}--`) || n.startsWith(`axf-${slug}--${st.id}-`))) return true;
+    return (slots ?? []).some((r) => r.build === b.id && r.step === st.id && (r.state === 'running' || r.state === 'starting'));
+  };
+}
+
 /** Apply a plan in one store write (live to main). Returns the changes the store saw. */
 export function applyPlan(p, by = 'reconciler') {
-  if (!p.changes.length) return { changes: [] };
+  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [] };
   const r = withStore((s) => {
     const now = new Date().toISOString();
     for (const c of p.changes) {
@@ -112,14 +188,22 @@ export function applyPlan(p, by = 'reconciler') {
       if (c.set.pr && c.set.pr !== b.pr) b.mergedAt = '';
       for (const [k, v] of Object.entries(c.set)) b[k] = v;
       for (const id of c.steps) { const st = b.steps.find((x) => x.id === id); if (st && !st.done) { st.done = true; st.doneAt = now; if (!st.note) st.note = c.stepNotes[id] ?? ''; } }
-      b.notes.push({ text: `Reconciler: ${c.why.join('; ')}`.slice(0, 2000), at: now });
+      { const text = `Reconciler: ${c.why.join('; ')}`.slice(0, 2000); if (b.notes.at(-1)?.text !== text) b.notes.push({ text, at: now }); } // the same finding twice in a row is one note
       b.updatedAt = now;
       merge.settleStatus(b, now);
       if (c.steps.length && (b.status === 'pending' || b.status === 'queued')) b.status = 'running';
+      // built only once every step branch is merged back
+      const open = p.stepBranches?.get?.(b.id) ?? [];
+      if ((b.status === 'complete' || b.status === 'built') && open.length) { b.status = 'running'; b.notes.push({ text: `Reconciler: every step is done but ${open.map((x) => x.branch).join(', ')} not merged back yet: stays running until the dispatcher merges ${open.length === 1 ? 'it' : 'them'}.`, at: now }); }
       if ((b.status === 'complete' || b.status === 'built') && !b.builtAt) b.builtAt = now;
     }
+    for (const r of p.stepResets ?? []) {
+      const b = s.builds.find((x) => x.id === r.id); if (!b) continue;
+      const rel = releaseStep(b, r.step, { runId: r.runId, now, note: `Reconciler: ${r.why}` });
+      if (rel.ok && rel.released) { Object.assign(b, rel.build); b.notes.push({ text: `Reconciler: ${r.why}`, at: now }); b.updatedAt = now; }
+    }
     return s;
-  }, { by, action: 'reconcile', note: p.changes.map((c) => c.id).join(', ') });
+  }, { by, action: 'reconcile', note: [...p.changes.map((c) => c.id), ...(p.stepResets ?? []).map((r) => `${r.id}/${r.step}`)].join(', ') });
   return { changes: r.changes };
 }
 
@@ -134,6 +218,24 @@ async function requeueParked(apply) {
   catch (e) { return { found: [], moved: [], error: String(e.message ?? e).slice(0, 300) }; }
 }
 
+/**
+ * Landing Pipeline 2.0 builds whose PR GitHub shows merged or closed: the lander's rule records it (deploy/lander
+ * syncPrs). Only asked when the gathered PRs say there is something to record. → { asked: [build], actions, error,
+ * skipped } | null (nothing to do, or no lander here).
+ */
+export async function syncLanding(builds, prs, { apply = false, root = REPO_ROOT, lander } = {}) {
+  const state = new Map((prs || []).map((p) => [Number(p.number), p.state]));
+  const stuck = (builds || []).filter((b) => b.flow === 'pipeline-2' && !['landed', 'complete'].includes(b.status))
+    .filter((b) => { const merged = new Set(b.landing?.merged || []); const closed = new Set(b.landing?.closed || []); return (b.steps || []).some((s) => s.status === 'in-pr' && s.prNumber && !merged.has(s.prNumber) && !closed.has(s.prNumber) && ['merged', 'closed'].includes(state.get(Number(s.prNumber)))); })
+    .map((b) => b.id);
+  if (!stuck.length) return null;
+  if (!apply) return { asked: stuck, actions: [], error: '', skipped: 'dry run' };
+  const f = join(root, 'deploy', 'lander', 'run.mjs');
+  if (!lander && !existsSync(f)) return null;
+  try { const m = lander || await import(f); const r = await m.syncPrs(); return { asked: stuck, actions: r.actions || [], error: r.error || '', skipped: r.skipped || '' }; }
+  catch (e) { return { asked: stuck, actions: [], error: String(e.message ?? e).slice(0, 300), skipped: '' }; }
+}
+
 export async function reconcile({ apply = false, gh, repo } = {}) {
   const at = new Date().toISOString();
   install(); // the merge driver for builds files, once per clone
@@ -142,32 +244,59 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   const builds = store.builds.filter((b) => !b.deleted);
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
-  const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  // step branches belong to their build's steps, never to the build / orphan matching
+  const stepBr = stepBranchesOf(builds, gathered.branches);
+  const plainBranches = gathered.branches.filter((b) => !isStepBranch(builds, b.name));
+  const plainPrs = gathered.prs.filter((x) => !isStepBranch(builds, x.branch));
+  const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, plainPrs, plainBranches, { now: at });
+  p.stepBranches = error ? new Map() : stepBr;
+  for (const [id, list] of p.stepBranches) {
+    const b = builds.find((x) => x.id === id);
+    if (!b || !['built', 'complete'].includes(b.status) || p.changes.some((c) => c.id === id)) continue;
+    p.changes.push({ id, set: { status: 'running' }, steps: [], stepNotes: {}, why: [`step branch${list.length === 1 ? '' : 'es'} ${list.map((x) => x.branch).join(', ')} not merged back: not built yet`] });
+  }
   // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
   const alive = liveBuilds();
+  // parallel step sessions that died: their steps go back to ready
+  let tmuxNow = null; try { tmuxNow = process.env.AXF_RECONCILE_IDLE === 'off' ? null : tmuxSessions(); } catch { tmuxNow = null; }
+  p.stepResets = stepResetPlan(builds, stepAlive(tmuxNow ? [...tmuxNow.keys()] : null, (() => { try { return slotState().running; } catch { return []; } })()));
   const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
   for (const c of idle) {
     const same = p.changes.find((x) => x.id === c.id);
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
   }
-  const applied = apply && p.changes.length ? applyPlan(p) : { changes: [] };
+  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [] };
   const requeued = await requeueParked(apply);
+  const landing = error ? null : await syncLanding(builds, gathered.prs, { apply });
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
   const report = {
-    $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error, pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
+    $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error: [error, gathered.gitError, landing?.error ? `lander: ${landing.error}` : ''].filter(Boolean).join('; '), pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
     changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
-    requeued,
+    stepResets: p.stepResets, stepBranches: [...p.stepBranches.entries()].map(([id, list]) => ({ id, steps: list })),
+    requeued, landing,
     running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,
   };
-  if (apply) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
+  if (apply) writeReport(report);
   return report;
+}
+function writeReport(report) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
+
+/**
+ * The report of a run that crashed: the same shape with `error`, so the systems check (which reads the report) shows
+ * the failure instead of the last good run. Pure.
+ */
+export function failedReport(e, { at = new Date().toISOString(), apply = true, repo = '' } = {}) {
+  return { $axf: 'builds-reconcile@1', at, repo, apply, error: `the reconcile run failed: ${String(e?.message ?? e).slice(0, 300)}`, pulled: [], profiles: [], prs: 0, branches: 0, changes: [], suggestions: [], orphans: { prs: [], branches: [] }, live: { queued: 0 }, written: 0, requeued: null, landing: null, running: null, failed: true };
 }
 
 function text(r, brief) {
   const L = [];
-  if (r.error) L.push(`GitHub not read: ${r.error}`);
+  if (r.error) L.push(r.failed ? r.error : `Not read: ${r.error}`);
+  for (const a of r.landing?.actions ?? []) L.push(`lander: ${a}`);
+  if (r.landing?.skipped && r.landing.asked?.length) L.push(`lander: ${r.landing.asked.join(', ')} has a PR GitHub shows merged or closed (${r.landing.skipped})`);
   for (const c of r.changes) L.push(`${r.apply ? 'fixed' : 'would fix'} ${c.id}: ${c.why.join('; ')}`);
+  for (const x of r.stepResets ?? []) L.push(`${r.apply ? 'reset' : 'would reset'} ${x.id}/${x.step}: ${x.why}`);
   if (!brief) for (const s of r.suggestions) L.push(`check ${s.build ?? s.builds?.join('/') ?? ''}: ${s.why}`);
   if (r.orphans.prs.length) L.push(`orphan PRs (no build): ${r.orphans.prs.map((p) => `#${p.number}`).join(' ')}`);
   if (r.orphans.branches.length) L.push(`orphan branches (no PR, no build): ${r.orphans.branches.map((b) => b.branch).join(' ')}`);
@@ -210,5 +339,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     else console.log(r ? `${text(r, argv.includes('--brief'))}\n(skipped: ${why})` : `skipped: ${why}`);
   } else reconcile({ apply }).finally(release).then((r) => {
     console.log(argv.includes('--json') ? JSON.stringify(r) : text(r, argv.includes('--brief')));
-  }).catch((e) => { console.error(e.message); process.exitCode = 1; });
+  }).catch((e) => {
+    if (apply) writeReport(failedReport(e, { repo: (() => { try { return repoName(); } catch { return ''; } })() }));
+    console.error(e.message); process.exitCode = 1;
+  });
 }

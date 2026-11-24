@@ -1,6 +1,6 @@
 {
   "$axf": "gate-settings-schema@1",
-  "description": "The gate plugin's own settings (Settings → Plugins → Gate). Stored in the data folder (settings.json there); read and written through GET/PUT /api/plugins/gate/settings, MCP gate_settings / gate_settings_set, axf gate settings, voice gate.setting:<key>:<value>. Generated from gate.mjs SETTINGS.",
+  "description": "The gate plugin's own settings (Settings \u2192 Plugins \u2192 VPS Configuration). Stored in the data folder (settings.json there); read and written through GET/PUT /api/plugins/gate/settings, MCP gate_settings / gate_settings_set, axf gate settings, voice gate.setting:<key>:<value>. Generated from gate.mjs SETTINGS.",
   "settings": {
     "refreshSec": {
       "type": "integer",
@@ -20,7 +20,12 @@
       "type": "enum",
       "values": [
         "rules",
+        "build-rules",
         "auto-lander",
+        "build-cap",
+        "model-triage",
+        "approvals",
+        "passes",
         "history"
       ],
       "default": "rules",

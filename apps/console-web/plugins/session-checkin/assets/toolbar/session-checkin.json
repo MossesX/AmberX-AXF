@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "session-checkin",
+  "name": "Sessions",
+  "version": "1.0.0",
+  "description": "The Sessions toolbar: read the check-in archive and the baseline prices again, show only the flagged sessions (its badge counts them) and open the check-in's settings (install, targets, prices). The counts and the filter pick ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "session-checkin", "sessions"],
+  "data": {
+    "scope": "view:session-checkin",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "archive",
+        "label": "Archive",
+        "items": [
+          { "id": "refresh", "icon": "refresh", "label": "Refresh", "action": "handler:session-checkin.refresh", "priority": 300, "overflow": "never" },
+          { "id": "flagged", "icon": "alert", "label": "Flagged only", "action": "handler:session-checkin.flagged", "checked": "state:flaggedOnly", "badge": "state:flagged", "priority": 260 },
+          { "id": "settings", "icon": "settings", "label": "Settings", "action": "handler:session-checkin.settings", "priority": 100 }
+        ]
+      }
+    ]
+  }
+}

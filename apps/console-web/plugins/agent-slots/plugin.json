@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs). Extras wait in a queue (FIFO within boss / urgent / normal / low) and start by themselves when a slot frees and memory allows; finished sessions don't count and close by themselves (logs kept). Settings (hot-reloaded): max running agents, max heavy test/build steps at once, memory guard, close-after, priority rules; shown in Settings → Plugins → Agent cap and in the Breakroom (Agent swarm) settings. Slots used / cap in the activity banner's summary, the queue (position, waiting since, Move up, Cancel) on the Builds page, 'waiting for a desk' on swarm agents past the cap, and a systems-check item when the memory guard trips often or swap stays in use. VPS hard build limit (build-limit@1): the host refuses the N+1st headless build whatever the queue thinks (default 8, one config file), runs every build in axf-builds.slice (CPUQuota, MemoryMax) and caps docker test containers; live usage on the settings tab, banner chip and queue title; only Brett's signed-in console changes it.",
+  "description": "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs). Extras wait in a queue (FIFO within boss / urgent / normal / low) and start by themselves when a slot frees and memory allows; finished sessions don't count and close by themselves (logs kept). Builds at once is one setting (build-limit.json maxBuilds, settings-sources@1; Brett only). Settings (hot-reloaded): max heavy test/build steps at once, memory guard, close-after, priority rules; shown in Settings → Plugins → Agent cap and in the Breakroom (Agent swarm) settings. Slots used / cap in the activity banner's summary, the queue (position, waiting since, Move up, Cancel) on the Builds page, 'waiting for a desk' on swarm agents past the cap, and a systems-check item when the memory guard trips often or swap stays in use. Builds at once (build-limit@1): the host refuses the N+1st headless build whatever the queue thinks (default 8, one config file, the same number the queue books against), runs every build in axf-builds.slice (CPUQuota, MemoryMax) and caps docker test containers; live usage on the settings tab, banner chip and queue title; only Brett's signed-in console changes it.",
   "targets": [
     "axf-console"
   ],
@@ -46,16 +46,16 @@
       {
         "id": "hard-limit",
         "route": "GET /hard-limit",
-        "title": "VPS hard build limit",
-        "description": "The VPS's hard limit on headless builds running at once, live usage (what really runs on the host: claude -p trees, sessions starting up, launches just admitted), what counts, and the axf-builds.slice CPU / memory caps and docker test-run limits. canEdit says whether this caller may change it (only Brett's own signed-in console).",
+        "title": "Builds at once and the VPS build limits",
+        "description": "Builds at once (max: the one cap on headless builds running at once), live usage (what really runs on the host: claude -p trees, sessions starting up, launches just admitted), what counts, and the axf-builds.slice CPU / memory caps and docker test-run limits. canEdit says whether this caller may change it (only Brett's own signed-in console).",
         "output": "build-limit-status@1 plus canEdit",
         "readOnly": true
       },
       {
         "id": "set-hard-limit",
         "route": "PUT /hard-limit",
-        "title": "Set the VPS hard build limit (Brett only)",
-        "description": "Brett only, from his own signed-in console: change maxBuilds (default 8), cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages. Sessions, MCP and voice (the console token) get 403.",
+        "title": "Set Builds at once and the VPS build limits (Brett only)",
+        "description": "Brett only, from his own signed-in console: change maxBuilds (Builds at once, default 8; the one key: the queue's old maxAgents is a read alias of it), emergencySlots (the separate emergency pool, default 2), cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages. Sessions, MCP and voice (the console token) get 403.",
         "input": {
           "type": "object",
           "properties": {
@@ -63,6 +63,11 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 64
+            },
+            "emergencySlots": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
             },
             "cpuQuotaPct": {
               "type": "integer"

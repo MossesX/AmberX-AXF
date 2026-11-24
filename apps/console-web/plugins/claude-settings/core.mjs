@@ -10,7 +10,8 @@
  *
  * Who may change what: `owner: true` settings change only with an owner approval, which the transport derives from
  * Brett's signed-in console session (never from a request body, an MCP call, a CLI flag or the environment);
- * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner; `locked` settings change for nobody.
+ * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner (a toggle: anyone switches it off, only
+ * the owner switches it on); `locked` settings change for nobody.
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
  */
@@ -71,6 +72,7 @@ function normEntry(e) {
   };
   if (e.kind === 'choice') out.options = (Array.isArray(e.options) ? e.options : []).filter((o) => isObj(o) && typeof o.value === 'string').map((o) => ({ value: o.value, label: String(o.label || o.value) }));
   if (e.kind === 'number') for (const k of ['min', 'max', 'step']) if (typeof e[k] === 'number') out[k] = e[k];
+  if (e.kind === 'number' && e.zeroIsNoCap === true) out.zeroIsNoCap = true; // a cap where 0 means none: 0 is the highest value, so only the owner sets it
   if (typeof e.shared === 'string') out.shared = e.shared;
   if (typeof e.effect === 'string') out.effect = e.effect;
   return valid(out, out.default) ? out : null;
@@ -143,7 +145,7 @@ export function valueOf(spec, doc) {
 export function whoSentence(spec) {
   if (spec.locked) return 'Locked: nobody changes it.';
   if (spec.owner === true) return "Owner-only: changes only with Brett's own click in the console.";
-  if (spec.owner === 'raise') return 'Anyone may lower it; only Brett raises it.';
+  if (spec.owner === 'raise') return spec.kind === 'toggle' ? 'Anyone may switch it off; only Brett switches it on.' : 'Anyone may lower it; only Brett raises it.';
   return 'Any Claude session may change it (axHub veto).';
 }
 
@@ -184,7 +186,9 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     const before = valueOf(spec, doc);
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
-    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
+    const height = (n) => (spec.zeroIsNoCap && n === 0 ? Infinity : n);
+    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && height(v) > height(before)) throw new SettingsError('denied', `${key} can only be raised${spec.zeroIsNoCap ? ' or removed (0 = no cap)' : ''} by Brett (console); lowering it is fine`);
+    if (spec.owner === 'raise' && !isOwner && spec.kind === 'toggle' && v === true && before !== true) throw new SettingsError('denied', `${key} can only be switched on by Brett (console); switching it off is fine`);
     if (v !== before) { next[key] = v; changed.push({ key, from: before, to: v }); }
   }
   if (!changed.length) return { changed: [], view: view({ doc, registry }) };

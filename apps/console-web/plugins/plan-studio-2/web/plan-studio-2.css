@@ -35,6 +35,83 @@
 .axp-plan-studio-2__act { flex: 0 0 auto; }
 .axp-plan-studio-2__topdrop { display: flex; align-items: center; justify-content: center; gap: var(--fx-dens-gap-sm); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-md); color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
 
+/* sent plans: the lock, the state badge, the "From orchestrator" mark, and the look of each state (settings → classes → tokens) */
+.axp-plan-studio-2__grip.is-locked { cursor: default; touch-action: auto; }
+.axp-plan-studio-2__mark { display: inline-flex; align-items: center; justify-content: center; width: var(--fx-size-icon-button-size); color: var(--fx-muted); flex: 0 0 auto; }
+.axp-plan-studio-2__mark.is-on { color: var(--fx-success); }
+.axp-plan-studio-2__live { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: 0 0 auto; min-width: 0; }
+/* a step the orchestrator filed carries two badges: they sit on their own line under the title, so the title keeps the row's width */
+.axp-plan-studio-2__row.is-orch { flex-wrap: wrap; }
+.axp-plan-studio-2__row.is-orch .axp-plan-studio-2__title { flex-basis: 0; }
+.axp-plan-studio-2__row.is-orch .axp-plan-studio-2__live { order: 1; flex: 1 0 100%; flex-wrap: wrap; padding-inline-start: calc(var(--fx-size-icon-button-size) * 2 + var(--fx-dens-gap-2xl)); padding-block-end: var(--fx-dens-gap-xs); }
+.axp-plan-studio-2__state, .axp-plan-studio-2__from { display: inline-flex; flex: 0 0 auto; }
+.axp-plan-studio-2__row.is-orch-tint { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-info); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-orch-tint.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-strike .axp-plan-studio-2__text { text-decoration: line-through; }
+.axp-plan-studio-2__row.is-tone-accent .axp-plan-studio-2__text { color: var(--fx-accent); }
+.axp-plan-studio-2__row.is-tone-success .axp-plan-studio-2__text { color: var(--fx-success); }
+.axp-plan-studio-2__row.is-tone-warning .axp-plan-studio-2__text { color: var(--fx-warning); }
+.axp-plan-studio-2__row.is-tone-danger .axp-plan-studio-2__text { color: var(--fx-danger); }
+.axp-plan-studio-2__row.is-tone-info .axp-plan-studio-2__text { color: var(--fx-info); }
+.axp-plan-studio-2__row.is-tone-muted .axp-plan-studio-2__text { color: var(--fx-muted); }
+.axp-plan-studio-2__row.is-fill-accent { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-info { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-fill-muted { background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-plan-studio-2__row.is-font-mono .axp-plan-studio-2__text { font-family: var(--fx-font-mono); }
+.axp-plan-studio-2__row.is-font-display .axp-plan-studio-2__text { font-family: var(--fx-font-display); }
+.axp-plan-studio-2__row.is-weight-medium .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-medium); }
+.axp-plan-studio-2__row.is-weight-strong .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-strong); }
+.axp-plan-studio-2__row.is-style-italic .axp-plan-studio-2__text { font-style: italic; }
+/* the build under a sent plan: number, state badge, status / waiting / merge lines, clash options, the steps table */
+.axp-plan-studio-2__buildrow { list-style: none; min-width: 0; border-bottom: var(--axp-ps2-hair); padding-inline-start: calc(var(--axp-ps2-depth, 0) * var(--fx-dens-gap-2xl)); padding-block: var(--fx-dens-gap-sm); }
+.axp-plan-studio-2__build { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; padding-inline-start: var(--fx-dens-gap-md); box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-info); }
+.axp-plan-studio-2__buildhead { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); min-width: 0; }
+.axp-plan-studio-2__buildno { background: none; border: 0; padding: 0; color: inherit; font: inherit; font-weight: var(--fx-type-weights-strong); font-variant-numeric: tabular-nums; cursor: pointer; overflow-wrap: anywhere; text-align: start; }
+.axp-plan-studio-2__buildno:hover { color: var(--fx-accent); }
+.axp-plan-studio-2__buildline { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; min-width: 0; }
+.axp-plan-studio-2__buildline.is-waiting { color: var(--fx-warning); }
+.axp-plan-studio-2__buildline.is-merge { color: var(--fx-info); }
+.axp-plan-studio-2__buildline svg { flex: 0 0 auto; }
+.axp-plan-studio-2__splitmark { display: inline-flex; flex: 0 0 auto; }
+.axp-plan-studio-2__clashbox { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-plan-studio-2__clash { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-plan-studio-2__deferred { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; }
+.axp-plan-studio-2__uid { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); white-space: nowrap; }
+.axp-plan-studio-2__stepstable td { vertical-align: middle; }
+.axp-plan-studio-2__stepstable td[data-ps2-col='split'], .axp-plan-studio-2__stepstable td[data-ps2-col='model'], .axp-plan-studio-2__stepstable td[data-ps2-col='status'] { white-space: nowrap; }
+.axp-plan-studio-2__stepstable td[data-ps2-col='step'] { min-width: calc(var(--fx-font-size) * 12); }
+.axp-plan-studio-2__steplink { display: inline-flex; align-items: baseline; gap: var(--fx-dens-gap-sm); max-width: 100%; min-width: 0; background: none; border: 0; padding: 0; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.axp-plan-studio-2__steplink:disabled { cursor: default; }
+.axp-plan-studio-2__steplink:hover:not(:disabled) { color: var(--fx-accent); }
+.axp-plan-studio-2__steplink .axp-plan-studio-2__text { white-space: normal; overflow-wrap: anywhere; }
+.axp-plan-studio-2__stepstable tr.is-strike .axp-plan-studio-2__text { text-decoration: line-through; }
+.axp-plan-studio-2__stepstable tr.is-font-mono .axp-plan-studio-2__text { font-family: var(--fx-font-mono); }
+.axp-plan-studio-2__stepstable tr.is-font-display .axp-plan-studio-2__text { font-family: var(--fx-font-display); }
+.axp-plan-studio-2__stepstable tr.is-weight-medium .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-medium); }
+.axp-plan-studio-2__stepstable tr.is-weight-strong .axp-plan-studio-2__text { font-weight: var(--fx-type-weights-strong); }
+.axp-plan-studio-2__stepstable tr.is-style-italic .axp-plan-studio-2__text { font-style: italic; }
+/* a narrow page (a phone): each step is a block, every column on its own line under its name, so nothing is cut off */
+@container axp-ps2 (max-width: 560px) {
+  .axp-plan-studio-2__stepstable, .axp-plan-studio-2__stepstable tbody, .axp-plan-studio-2__stepstable tr, .axp-plan-studio-2__stepstable td { display: block; }
+  .axp-plan-studio-2__stepstable thead { position: absolute; width: var(--fx-border-w); height: var(--fx-border-w); overflow: hidden; clip-path: inset(50%); }
+  .axp-plan-studio-2__stepstable tr { border-bottom: var(--axp-ps2-hair); padding-block: var(--fx-dens-gap-sm); }
+  .axp-plan-studio-2__stepstable tr:last-child { border-bottom: 0; }
+  .axp-plan-studio-2 .axp-plan-studio-2__stepstable td { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); border-bottom: 0; padding-block: var(--fx-dens-gap-xs); white-space: normal; min-width: 0; }
+  .axp-plan-studio-2__stepstable td::before { content: attr(data-label); flex: 0 0 calc(var(--fx-font-size) * 4.5); font-family: var(--fx-font); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+}
+.axp-plan-studio-2__senttitle { margin: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere; }
+.axp-plan-studio-2__sentbody { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fx-type-scale-sm); }
+.axp-plan-studio-2__sentmeta { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-plan-studio-2__history { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-plan-studio-2__history > li { display: flex; flex-direction: column; align-items: start; gap: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid var(--fx-border); padding-bottom: var(--fx-dens-gap-md); }
+.axp-plan-studio-2__history p { margin: 0; white-space: normal; }
+.axp-plan-studio-2__looks { --axp-ps2-hair: var(--fx-border-w) solid var(--fx-border); container: axp-ps2 / inline-size; min-width: 0; }
+.axp-plan-studio-2__looks > p { margin: 0; }
+.axp-plan-studio-2__lookdemo { margin-bottom: var(--fx-dens-gap-md); }
+
 /* the editor */
 .axp-plan-studio-2__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
 .axp-plan-studio-2__editor .fx-eyebrow { margin: 0; overflow-wrap: anywhere; }

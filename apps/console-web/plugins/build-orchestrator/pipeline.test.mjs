@@ -98,7 +98,7 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.deepEqual(r.queue, ['q1', 'q2', 'q3', 'q4']);
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable'], ['q2', 'w-pro', 'Opus']], 'Opus work keeps the Fable account free');
   assert.deepEqual(r.waits.map((w) => w.id), ['q3', 'q4']);
-  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
+  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /Builds at once reached \(1\/3 booked\)/);
   assert.equal(r.idle, null);
 });
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
@@ -176,30 +176,65 @@ t('endOutcome: a phase done with steps left goes back to the Queue whatever the 
 const raw = build('raw', 'pending', [], { title: 'Icon browser', detail: 'Add an icon browser plugin.\nList every icon pack.\nSearch by name.', origin: { said: 'I want an icon browser, dude.', addenda: [] } });
 t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   const p = P.splitPrompt(raw);
-  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /10 minutes or less/); assert.match(p, /checkpoints inside ONE session/); assert.match(p, /no step gets its own prompt or relaunch/); assert.match(p, /Fable ONLY for/);
-  assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 10 minutes or less/, 'a stored 30 reads as the 10-minute ceiling');
+  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /15 minutes or less/); assert.match(p, /checkpoints inside ONE session/); assert.match(p, /no step gets its own prompt or relaunch/); assert.match(p, /Fable ONLY for/);
+  assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 15 minutes or less/, 'a stored 30 reads as the 15-minute ceiling (the one step cap, pipeline-2@1 STEP_MAX_MINUTES)');
   assert.match(P.splitPrompt(raw, { maxStepMinutes: 5 }), /every step 5 minutes or less/, 'the rule can lower it');
+});
+t('splitPrompt asks for dependsOn (default: the previous step) and files', () => {
+  const p = P.splitPrompt(raw);
+  assert.match(p, /"dependsOn":\["s1"\]/); assert.match(p, /by default that is the step right before it/); assert.match(p, /"files"/);
+});
+t('parseSplit: dependsOn by id or number, self dropped; unknown, later and cyclic dependencies refused', () => {
+  const st = (x) => ({ text: `Step text ${JSON.stringify(x)}`, model: 'Opus', estimate: '5 min', ...x });
+  const ok = P.parseSplit(JSON.stringify({ steps: [st({ dependsOn: [] }), st({ dependsOn: ['s1', 2] }), st({ dependsOn: [1, 's1'], files: ['a.mjs'] }), st({})] }));
+  assert.equal(ok.error, '');
+  assert.deepEqual(ok.steps.map((s) => s.dependsOn), [[], ['s1'], ['s1'], undefined], 'self and duplicates dropped; absent stays absent');
+  assert.deepEqual(ok.steps[2].files, ['a.mjs']);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({}), st({ dependsOn: ['s9'] })] })).error, /"s9", which is not a step of the split/);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({ dependsOn: ['s2'] }), st({})] })).error, /depends on a later step \(s2\)/);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({}), st({ dependsOn: 's1' })] })).error, /not a list/);
+  assert.deepEqual(P.splitCycle([{ id: 's1', dependsOn: ['s3'] }, { id: 's2' }, { id: 's3', dependsOn: ['s2'] }]), ['s1', 's3', 's2', 's1']);
+  assert.equal(P.splitCycle(ok.steps), null);
+  assert.equal(P.rulesSplit(raw).some((s) => 'dependsOn' in s), false, 'rules splits stay sequential');
+});
+t('stepStates: done, running in a slot, ready, waiting on, own session; fillIdle fires on free slots with ready steps', () => {
+  const now = Date.parse('2026-11-13T12:00:00Z');
+  const claim = { runId: 'step-x-s2-1', slot: 'hl-1', account: 'w', branch: 'claude/x--s2', at: '2026-11-13T11:50:00Z', model: 'Opus', expiresAt: '2026-11-13T12:35:00Z' };
+  const b = { id: 'x', pipeline: { session: 'axf-x' }, steps: [
+    { id: 's1', text: 'a', model: 'Opus', done: true }, { id: 's2', text: 'b', model: 'Opus', after: ['s1'], claim }, { id: 's3', text: 'c', model: 'Opus', after: ['s1'] },
+    { id: 's4', text: 'd', model: 'Opus', after: ['s2', 's3'] }, { id: 's5', text: 'e', model: 'Opus' }] };
+  const st = P.stepStates(P.withMainClaim(b, now), { now, slotOf: (ri) => (ri.slot === 'hl-1' ? 4 : 0) });
+  assert.deepEqual(st.map((x) => x.state), ['done', 'running', 'running', 'waiting', 'waiting']);
+  assert.equal(st[1].why, 'in slot 4'); assert.equal(st[1].runningIn.worktree, '/root/axf-builds/x--s2');
+  assert.equal(st[2].runningIn.main, true, "the build's own session holds the first ready step"); assert.equal(st[2].why, "in the build's own session");
+  assert.deepEqual(st[3].waitingOn, ['s2', 's3']); assert.deepEqual(st[4].dependsOn, ['s4']); assert.equal(st[4].explicit, null);
+  assert.equal(P.stepStates(b, { now })[2].state, 'ready', 'without the own-session claim s3 is ready');
+  assert.match(P.fillIdle({ free: 2, waits: [{ id: 'x', step: 's3', why: 'every account is full' }] }, 0).reason, /2 agent slots free while 1 ready step wait/);
+  assert.equal(P.fillIdle({ free: 2, waits: [{ id: 'x', step: 's3', why: 'w' }] }, 1), null, 'something launched: not idle');
+  assert.equal(P.fillIdle({ free: 0, waits: [{ id: 'x', step: 's3', why: 'w' }] }, 0), null);
+  assert.equal(P.alertFor('idle', { kind: 'slots', reason: 'r' }).title, 'Agent slots free while ready steps wait');
+  assert.match(P.alertFor('autoqueue', { ids: ['a', 'b'] }).key, /^pipeline:autoqueue:a,b$/);
 });
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
   const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
   assert.equal(ok.error, ''); assert.equal(ok.steps.length, 3); ok.steps.splice(1, 1); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '9 min'); assert.equal(ok.steps[0].id, 's1');
   assert.match(P.parseSplit('nothing here').error, /no JSON/);
   assert.match(P.parseSplit('{"steps":[]}').error, /no steps/);
-  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 10\)/);
-  assert.match(P.parseSplit('{"steps":[{"text":"Was fine before","model":"Opus","estimate":"25 min"}]}').error, /25 min \(limit 10\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 15\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Was fine before","model":"Opus","estimate":"25 min"}]}').error, /25 min \(limit 15\)/);
   assert.match(P.parseSplit('{"steps":[{"text":"No estimate","model":"Opus"}]}').error, /no estimate/);
   assert.equal(P.parseSplit('{"steps":[{"text":"Sonnet is never allowed","model":"Sonnet","estimate":"5 min"}]}').steps[0].model, 'Opus');
 });
 t('rulesSplit: one step per line, Fable for foundation words first, a closing test + PR step', () => {
-  const s = P.rulesSplit(build('r', 'pending', [], { title: 'Thing', detail: 'Add the plugin UI.\nDesign the asset type schema for packs.\nWire the API route.' }));
+  const s = P.rulesSplit(build('r', 'pending', [], { title: 'Thing', detail: 'Rename the plugin tab.\nDesign the asset type schema for packs.\nWire the API route.' }));
   assert.equal(s.length, 4); assert.equal(s[0].model, 'Fable'); assert.match(s[0].text, /schema/); assert.equal(s[3].model, 'Opus'); assert.match(s[3].text, /report _claude\/builds\/reports\/r\.md/);
-  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false))); assert.ok(s.every((x) => x.estimate === '10 min'));
+  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false))); assert.ok(s.every((x) => x.estimate === '15 min'));
   const bare = P.rulesSplit(build('b', 'pending', [], { title: 'Just a title' })); assert.equal(bare.length, 2); assert.equal(bare[0].text, 'Just a title');
 });
 t('needsSplit: no steps, a step over the limit or without an estimate; never a finished build', () => {
   assert.equal(P.needsSplit(raw), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '10 min' }])), false);
-  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), true, '25 min is over the 10-minute limit');
+  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), true, '25 min is over the 15-minute limit');
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), createdAt: '2026-11-01T00:00:00.000Z' }])), false, 'a step written before the change keeps the 30-minute limit');
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '40 min', createdAt: '2026-11-01T00:00:00.000Z' }])), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '2 h' }])), true);
@@ -268,7 +303,7 @@ t('authRecovered: a health answer newer than the failure that signs in; once', (
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
-  assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
+  assert.equal(s.parallelPerAccount, 20); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
 });
 
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
@@ -501,6 +536,7 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
     assert.equal(P.classifyFailure(b, { now: T0 + (min + 60) * 60e3, land }), null, 'an escalated build is not classified again (no second push)');
     const a = P.alertFor('escalated', { id: 'sim', title: 'Sim', at: b.escalation.at, why: b.escalation.why, tried: b.escalation.tried });
     assert.equal(a.key, `pipeline:escalated:sim:${b.escalation.at}`); assert.equal(a.severity, 'error'); assert.match(a.body, /Tried: /);
+    assert.match(a.title, /^Build failed, every option used up: Sim/);
   });
 
   t('done-means-merged sim: the merged + green + verified path is the only way to complete', () => {
@@ -590,7 +626,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]).sort(), [['alpha', 'w-max', 'Fable'], ['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
     const log = readFileSync(join(tmp, 'launches.log'), 'utf8');
-    assert.match(log, /--name alpha .*--account w-max/); assert.match(log, /--model claude-fable-5-1/); assert.match(log, /--name beta .*--account w-pro/); assert.match(log, /--model claude-opus-5-5/);
+    assert.match(log, /--name alpha .*--account w-max/); assert.match(log, /--model claude-fable-5-2/); assert.match(log, /--name beta .*--account w-pro/); assert.match(log, /--model claude-opus-5-5/);
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
@@ -947,6 +983,37 @@ t('alertFor: an alert about a demo build is marked from its id alone', () => {
   const b = P.alertFor('launched', { id: 'q2', title: 'Real', account: 'w-pro', model: 'Opus', phase: '', session: 's' });
   assert.equal('demo' in b.meta, false); assert.match(b.title, /^Building: Real/);
   assert.equal(P.alertFor('failed', { id: 'demo-crash', title: 'Demo crash', note: 'exit 143' }).meta.demo, true);
+});
+
+// ---------------- vps-never-gives-up: the ladder is walked until every option is used up
+t('exhaustPolicy: the caps never cut the ladder short; untilExhausted off keeps them', () => {
+  const base = RL.normPolicy({});
+  const p = P.exhaustPolicy(base, {});
+  assert.equal(p.maxAttempts, 10); assert.equal(p.maxTotal, 30); assert.equal(p.untilExhausted, true);
+  assert.equal(P.exhaustPolicy(base, { untilExhausted: false }), base);
+  assert.equal(P.exhaustPolicy(RL.normPolicy({ maxAttempts: 10, maxTotal: 30 }), {}).maxAttempts, 10);
+  const ctx = { pinnedModel: 'Fable', model: 'Fable', account: 'a1', accounts: ['a1', 'a2', 'a3', 'a4', 'a5'] };
+  for (const kind of RL.REGISTRY.kinds ?? ['crash', 'ci-red', 'clash', 'push-fail', 'stalled', 'fell-to-pending']) {
+    const capped = RL.walk(kind, base, ctx); const full = RL.walk(kind, RL.normPolicy(p), ctx);
+    const last = full[full.length - 1];
+    assert.equal(last.strategy, 'escalate', kind);
+    assert.match(last.reason, /every rung of the ladder was tried/, `${kind}: gives up only when no rung is left`);
+    assert.ok(full.length >= capped.length, kind);
+  }
+  // ci-red: merge main / fix / regenerate / fresh session / another model / every other account, all before giving up
+  const ci = RL.walk('ci-red', RL.normPolicy(p), ctx).map((d) => d.strategy);
+  for (const s of ['fix', 'fresh-session', 'switch-model', 'switch-account']) assert.ok(ci.includes(s), s);
+  assert.equal(ci.filter((s) => s === 'switch-account').length, 4);
+  assert.ok(RL.walk('clash', RL.normPolicy(p), ctx).some((d) => d.strategy === 'merge-main'));
+});
+
+t('alertFor attempt: an FYI per attempt, one key per attempt, a registered notify type', () => {
+  const a = P.alertFor('attempt', { id: 'b1', title: 'B one', n: 3, kind: 'ci-red', why: 'check-theme red', step: 's2', strategy: 'fix', fixStrategy: 'regenerate', account: 'a2', model: 'Opus', left: ['fresh-session', 'switch-model'] });
+  assert.equal(a.key, 'pipeline:attempt:b1:3'); assert.equal(a.severity, 'info'); assert.match(a.title, /^FYI attempt 3: B one/);
+  assert.match(a.body, /Now trying: fix \(regenerate\) on a2 \(Opus\)/); assert.match(a.body, /Left after this: fresh-session, switch-model/);
+  assert.match(P.alertFor('attempt', { id: 'b1', n: 9, left: [] }).body, /last option before it is marked Failed/);
+  const types = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'notify.json'), 'utf8')).types;
+  assert.ok(types.some((x) => x.id === 'pipeline.attempt' && a.key.startsWith(x.match.keyPrefix) && x.push === true));
 });
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

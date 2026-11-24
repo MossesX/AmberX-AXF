@@ -269,7 +269,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
 
   return (
     <Ctx.Provider value={ctx}>
-      <div className="fx-stack axp-ui-review">
+      <div className="fx-stack fx-stack--lg axp-ui-review">
         <header className="fx-pagehead">
           <div>
             <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>

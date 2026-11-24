@@ -20,12 +20,12 @@ w(join(data, 'framework/catalog/status.json'), {});
 const core = await import('../../../../../framework/plan/builds-store-core.mjs');
 const st = (id, done) => ({ id, title: id, done });
 const B = (o) => core.normBuild({ status: 'pending', createdAt: '2026-10-01T00:00:00Z', ...o }, { now: '2026-10-01T00:00:00Z' });
-// done-means-merged@1: a build only completes with its landing proof (merge commit, CI green on it, the verify run)
-const landed = (pr) => ({ pr, sha: 'a1b2c3d', mergedAt: '2026-10-02T00:00:00Z', ci: 'success', verifiedAt: '2026-10-02T01:00:00Z', verifyHow: 'check' });
 const store = core.emptyStore('2026-10-01T00:00:00Z');
 store.builds = [
-  B({ id: 'merged-pr', title: 'Merged PR build', pr: '#90001', mergedAt: '2026-10-02T00:00:00Z', landed: landed(90001) }),
-  B({ id: 'all-ticked', title: 'All ticked', pr: '#90002', mergedAt: '2026-10-02T00:00:00Z', landed: landed(90002), steps: [st('s1', true), st('s2', true)] }),
+  B({ id: 'merged-pr', title: 'Merged PR build', pr: '#90001' }),
+  // landed with the full done-means-merged@1 proof (merged PR, merge commit, green CI, verify): the clean-up may complete it
+  B({ id: 'all-ticked', title: 'All ticked', steps: [st('s1', true), st('s2', true)], pr: '#90002', branch: 'claude/all-ticked', mergedAt: '2026-10-02T00:00:00Z',
+    landed: { pr: 90002, sha: 'abc1234', mergedAt: '2026-10-02T00:00:00Z', ci: 'success', verifiedAt: '2026-10-02T01:00:00Z', verifyHow: 'check' } }),
   B({ id: 'patches-web', title: 'Patches web tabs' }),
   B({ id: 'x-done', title: 'Thing X', status: 'complete' }),
   B({ id: 'x-again', title: 'Thing X!', steps: [st('s1', false)] }),
@@ -62,7 +62,8 @@ check(plan.empty.includes('side'), 'empty profiles listed');
 
 const r = P.apply(plan.run, { skip: ['build:patches-web'], by: 'test' });
 const after = new Map(readStoreNow().builds.map((b) => [b.id, b]));
-check(after.get('merged-pr').status === 'complete' && /done already.*PR #90001/.test(after.get('merged-pr').notes.at(-1).text), 'done → complete with the date and proof in a note');
+check(after.get('all-ticked').status === 'complete' && /done already/.test(after.get('all-ticked').notes.at(-1).text), 'done → complete with the date and proof in a note');
+check(after.get('merged-pr').status === 'pending' && !after.get('merged-pr').notes.some((n) => /done already/.test(n.text)) && r.skipped.some((s) => s.key === 'build:merged-pr' && /^not completed: .*merge/.test(s.why)), 'done without the done-means-merged proof is left as it is and reported');
 check(after.get('patches-web').status === 'pending', 'an unticked item is left alone');
 check(after.get('x-again').status === 'archived' && !after.get('x-again').deleted, 'duplicate → archived, never deleted');
 check(after.get('y-new').status === 'archived' && after.get('y-old').steps.length === 3, 'merge folds the open steps into the target');

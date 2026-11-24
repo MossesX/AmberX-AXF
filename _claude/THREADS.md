@@ -33,13 +33,24 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| One true source: get the redundant settings out (`one-true-source-get-redundant-settings`, Fable; Brett Nov 21): every console setting audited (`node framework/cli/settings-audit.mjs`); four duplicate groups merged to one stored key each with the old keys as read aliases and a logged migration: Builds at once (`build-limit.json maxBuilds` ⟵ agent-slots `maxAgents`), Sessions per account (claude-workers `limits.building` ⟵ pipeline `parallelPerAccount`, account `parallel`, Claude `builds.maxParallel`), Launch builds without asking and Max launch brief size (the Claude settings ⟵ the pipeline file's copies, which had shadowed them); one wording on Agent cap, VPS Configuration → Build cap, Job routing and Pipeline accounts; the "0 of 6" live count fixed (the console container counted its own processes); registry `framework/schemas/settings-sources.json` + plugin parts, CI check `framework/cli/check-settings-sources.mjs`, spec `framework/spec/SETTINGS-SOURCES.md`; report `_claude/builds/reports/one-true-source-get-redundant-settings.md` | in-pr | `claude/one-true-source-get-redundant-settings` | #888 | merged once CI is green | 2026-11-21 |
+| Fill every slot: parallel steps, merge back, auto-queue (`always-fill-every-slot-when-slots-are`, Fable → Opus; Brett Nov 13: "Always fill every slot…") <!-- axf-plugin:build-orchestrator -->: dispatcher fill round launches ready dependsOn steps in their own worktrees (`claude-headless.sh --step`), merges them back, conflict → blocked retry, auto-queue Pending (owner setting); REST / MCP / CLI / voice / deep links; Slots strip, step deps editor, settings panel | in-pr; main merged in (Pipeline 2.0 status table: Slots strip above it, step deps in each expanded build) | claude/always-fill-every-slot-when-slots-are | #582 | merged once CI is green | 2026-11-22 |
+| Rip out Plan Studio 1, keep only Plan Studio 2.0 (`rip-out-plan-studio-1-keep-only-plan`, Fable; plan Removals, Brett Nov 20): the original `plan-studio` plugin is archived (git tag `archive/plan-studio-1`, hub data left as a read-only archive) and uninstalled; its 8 remaining plans moved into the 2.0 tree under "From Plan Studio 1" (counts checked); Plan Studio 2.0 now provides plans@1 (`plans.mjs`), so control@1 `planner.plans`, MCP `plan_park`, the voice plan phrases, the orchestrator's priority rows and the project seed CLI work on the tree; "plan studio" opens the 2.0 screen (screen aliases in `consoleResolve`); report `_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md` | in-pr | `claude/rip-out-plan-studio-1-keep-only-plan` | #882 | merged once CI is green | 2026-11-21 |
+| Land audit steps s3 to s18 (`land-audit-s3-s18`, hand build, Fable; Brett Nov 21): the fourteen steps of `fable-full-audit-ui-overhaul-conso` that never reached main (s3, s4, s5, s6, s8 to s15, s17, s18) land as one PR in step order, from the tested integration branch merged onto main; nine clashes settled (main's pipeline repair work wins, s13's not-counted list re-applied on the emergency pools); two UI Review items waiting, s9, s11 and s17 still need shots; report `_claude/builds/reports/land-audit-s3-s18.md` | in-pr | `claude/land-audit-s3-s18` | #880 | merged by the hand build once CI is green; then #863 closed, audit steps marked in the store | 2026-11-21 |
+| Fix main CI, red after the s16 + s7 hand lands (`fix-main-ci-red-after-s16-s7-hand-`, Fable; Brett Nov 20, run 44801650701 on `7f12868`): the axhub-web fold left check-plugin-catalog crashing (axhub kind has no `into`) and axhub-approvals without a token-registry block; underneath, settings-iface defaults for the six axhub-* plugins, help for eight hub-page controls, hub-pages relay log through data_store, request page description, decision numbers in hubPages/test.mjs. s1–s4 fixed it in parallel, s5 merged them (three clashes, s4 side kept), every CI check that covers the changed files passes; report `_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md` | ready to land | `claude/fix-main-ci-red-after-s16-s7-hand---s5` |  | lander opens the one PR; its CI run is the green that counts | 2026-11-20 |
+| VPS reaper: the VPS kills its own ghosts (`vps-reaper-ghosts`): `framework/cli/reaper.mjs` (vps-reaper@1) every 2 min by cron (`deploy/cron/axf-reaper`) and before every dispatcher tick, launch, auto-land, auto-lander and merge-queue pass; kills finished `claude -p` still running (wrapper records a clean finish, run handed to the lander), dead tmux axf-*, ghost agent slots (host gone / pid reused / settled build), ownerless heavy locks, leftover test servers on ports, stale /tmp/axf-limit-* and leaked state tmp files; never a working build (log/meter within 20 min, background tasks up to 90 min); every kill in reaper.jsonl + AmberX Automatic fixes note + phone FYI (pipeline.reaper); first live pass cleared 27 ghosts + 326 temp files | review | `claude/vps-reaper-ghosts` | #840 | landing: CI on the PR, then the merge queue; the cron goes live with the next console deploy (install-console.sh) | 2026-11-18 |
+| Fix launcher crash: duplicate steps + brief too big (`fix-launcher-crash-duplicate-steps-brief`): steps merged by text + dedupe guard on every write (16 steps had grown to 2,682); live store cleaned (29 builds, 8,139 → 340 steps); launcher feeds the brief on stdin (no E2BIG); brief cap `builds.briefMaxBytes`; launch-crash auto-retry with backoff + systems check item; land-clash bounce (Phone Connect #787 requeued with a merge-main step); report `_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md` | review | `claude/fix-launcher-crash-duplicate-steps-brief` | #827 | landing: CI on the PR, then merge; until it lands, writers on the old merge can re-add repeats (the guard here heals them) | 2026-11-18 |
+| VPS never gives up (`vps-never-gives-up-fix-land-every-build`, Opus): the retry ladder walks until every rung is tried (attempt caps lifted to the contract ceilings, `untilExhausted`), then the build is marked Failed in the same tick; FYI push on every attempt (`pipeline.attempt`) | in-pr | `claude/vps-never-gives-up-fix-land-every-build` | (VPS opens it) | landing: CI on the PR, then merge. Report `_claude/builds/reports/vps-never-gives-up-fix-land-every-build.md` | 2026-11-18 |
 | Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
 | Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX) (`rebuild-fresh-main-phone-connect-small`) | in-pr | `claude/rebuild-fresh-main-phone-connect-small` |  |  | 2026-11-17 |
+| Land the APK CI fix (`ci-apk-clash-land`, Opus): `claude/fix-main-ci-apk` (#835) clashed with main in 25 files after #827. Merged origin/main taking main's version of every clash (plugin-lifecycle checker, systems-check actor markers, orchestrator-demo, phone-connect menu, maintenance clean-up: main skips a done build without done-means-merged proof, ours archived it — main's kept, CI template settings default via `settings-iface.mjs defaults --write`); help drafts are main's baked copies (all six identical). Kept from #835: axf-data last.json atomic write + backup status read guard + no None headers, test_data_store mirror-body race, plan-studio-2 command descriptions (glossary ratchet 388 → 384). New: main's red Android run 44272764276 was the agent-manager hub-runs check missing a run logged in the same millisecond; it now tells new runs apart by id. Supersedes #835 | review | `claude/ci-apk-clash-land` | #838 | Merge queue lands it; then APKs build on main | 2026-11-18 |
+| Fable rebuild 1/2: VPS host services (`fable-rebuild-1-2-vps-host-services-move`), a fresh redo on main of `move-server-side-console-parts-onto-vps` (PR #828, superseded): host-service@1, runner axf-hostd, axf-host user + generated sudo whitelist, installer (run by the console installer), 7 services + 12 adopted schedules (lander, orchestrator tick, watchdogs, reaper…), migrate/rollback, REST/MCP/CLI/voice, Host services view with the Host service down note; report `_claude/builds/reports/fable-rebuild-1-2-vps-host-services-move.md` | in-pr | `claude/fable-rebuild-1-2-vps-host-services-move` | (opened by the VPS) | Everything installs in container mode; cut-over per service with `deploy/host-services/migrate.mjs`. | 2026-11-21 |
 | Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause (`guided-live-demo-test-watch-orchestrator`): plugin Orchestrator demo, 21 acts on throwaway demo-* builds, ≥30 s gaps, Next/Pause, stop cleanup; dry run 21/21 in both modes; report `_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md` | review | `claude/guided-live-demo-test-watch-orchestrator` | #816 | UI Review hold (item saved in the worktree: post with --console); Start refuses until `live-build-status-real-time-grids-15` lands; Fable follow-up: demo-build@1 should require the tag, not the demo- prefix | 2026-11-17 |
 | Rebuild every toolbar with page-specific buttons (Fable) (`rebuild-every-toolbar-page-specific`) | in-progress | `claude/rebuild-every-toolbar-page-specific` |  | s27: option pictures + UI Review submit (headless capture needs an axHub session), then s28 PR | 2026-11-17 |
 | Fix: banner settings Interface tab changes the banner, not the settings window (`fix-banner-settings-interface-tab`, Opus; Brett Nov 17: "why does the settings interface tab of the banner change just the interface of the settings itself? what's the point of that") | review | `claude/fix-banner-settings-interface-tab` |  | s13: PR into the merge queue; UI Review r-20261117-c12zx01 (3 Interface tab layouts) waits on Brett | 2026-11-17 |
 | Server watchdog: the orchestrator auto-recovers stuck or killed builds (`server-watchdog-orchestrator-auto-recovers-stuck`, Fable → Opus; Brett Nov 13: "Never wait for Brett to notice."): run ends recorded on the build, `agent-slots alive`, `watchdog.mjs` (cron `axf-watchdog`) resets / requeues / retries (other account on a limit, cap → Pending + banner), fills idle slots, phone FYI per fix; Watchdog tab + settings, systems check items, REST / MCP / `axf watchdog` / voice / deep link | in-pr | `claude/server-watchdog-orchestrator-auto-recovers-stuck` | (see build) | UI Review: pick the Watchdog layout; merge queue; the cron goes live with the next console deploy. Report `_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md` | 2026-11-17 |
 | Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
+| Console app overlay rebuild, fresh off main (`overlay-rebuild-2`, Opus): the overlay itself was already on main via #813, which matches `claude/console-app-part-2-native-floating`'s code; this adds the Phone Connect hand-off (console-overlay@1): Phone Connect's `open_url` with `where: overlay` opens the page in the console app's floating overlay (`PhoneConnectProvider` + `PhoneConnectRules`, JUnit incl. Kotlin twin parity; `ConsoleOverlay.kt`, `LinkRules.wantsOverlay`), and it falls back to the browser or full-screen notification. Parts 3/4 not ported (separate features) | PR open, CI running | `claude/overlay-rebuild-2` | [#839](https://github.com/MossesX/AmberX-AXF/pull/839) | Merge queue lands it; then a new APK for both apps, and test on a phone with both installed. No build record named `overlay-rebuild-2`, so the step ticks and link were skipped | 2026-11-18 |
 | Console app part 2: floating toolbar and approvals bar (`console-app-part-2-native-floating`, Fable s1 + Opus; Brett Nov 13: "split the console wrapper so it runs on four slots at the same time"): overlay-toolbar-v2 port (per-item countdowns, toolbar label, seen items, `overlayItems`), "Display over other apps" flow with explanation and return check, safe areas on every edge (`SafeArea`), help, main merged, four-part split map | PR open (s1–s7 done) | `claude/console-app-part-2-native-floating` | (see build) | New APK, then phone shots. Parts 3 (#791) and 4 (#792) land on their own. Report `_claude/builds/reports/console-app-part-2-native-floating.md` | 2026-11-17 |
 | Stop the auto-lander committing tracking files into builds (`stop-auto-lander-committing-tracking`) | in-pr | `claude/stop-auto-lander-committing-tracking` |  |  | 2026-11-17 |
 | Get main green, unblock the lander, land axf-data and Postgres (`get-main-green-unblock-lander-land-axf`, Opus; Brett Nov 16: "We gotta migrate to Postgres to get this going … Is the auto-lander fixed?"): main green since 11-16 21:01 (#724: 10 CI fixes; 33 h red before); the lander lands again (#724, #685, #723, #704, #713 on their own) with 5 lander fixes and 2 new health items (lander-idle, GitHub auto-merge bypass); axf-data (#704) and Postgres (#713) landed through the queue; axf-data runs on Postgres, console data copied and verified, 43/47 namespaces in shadow (builds/console/activity local: disk, hot files); #769 (axf-data image + data-migrate live-data fixes) queued. Disk 99%: Docker build cache + build worktrees, red disk item. Report `_claude/builds/reports/get-main-green-unblock-lander-land-axf.md` | phase 1 done | `claude/get-main-green-unblock-lander-land-axf` | #723 (merged), #724, #704, #713, #769 | cutover per namespace after the shadow window; builds → shadow once disk allows; host writers → axf-data | 2026-11-17 |
@@ -70,11 +81,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Orchestrator custom groups and custom tabs (`orchestrator-custom-groups-custom-tabs`, Opus, phase 1): user-made and smart groups on the builds board, sorted partial → pending → queued → running → failed → done → landed with counts, pinned as custom tabs next to Pending and the other stages, drag / select / voice / API assign, group actions (queue, land, archive, priority), saved per project; REST `/groups`, plugin commands `groups-*`, console actions `build-orchestrator.groups` / `group-add` / `group-remove` / `group-action` <!-- axf-plugin:build-orchestrator --> | phase 1 done; PR draft until UI Review shots | `claude/orchestrator-custom-groups-custom-tabs` | (see build) | Desktop + phone shots of the Groups board and a custom Pending tab to UI Review (scratch console didn't load the orchestrator's web part). Report `_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md` | 2026-11-13 |
 | Skin from axHub: Override switch + greyed-out editors (`skin-axhub-override-switch-greyed-out`, Opus; Brett Nov 13: "an override switch … you only have one or the other; every screen where you'd change properties is greyed out with a note"): Override axHub (`axf.lock.hubskin.override`) under Get my skin only from axHub, mutually exclusive; skin/asset editors disabled under HubSkinLockNote with "Click here to override" (one confirm); edits marked Overridden; action `appearance.hubskin.override`, settings.set, voice | phase 1 done, PR open; builds on #618 | `claude/skin-axhub-override-switch-greyed-out` | #641 | land #618 first; UI Review item local only (no console token): re-send. Report `_claude/builds/reports/skin-axhub-override-switch-greyed-out.md` | 2026-11-13 |
 | Per-instance settings interface picker (`per-instance-settings-window-picker`, Opus, phase 1; Brett Nov 13: "every tab group and toolbar has its own settings interface, and within it you can select our settings interface"): every tab group / toolbar / banner / nav / menu bar picks its own settings interface inside its own dialog (`axf.chrome.<type>.<instance>.interface`, shared default preselected), action `chrome.instance-interface` (REST, MCP, CLI, voice); workspace toolbars + All toolbars list open each toolbar's own dialog | phase 1 done (s1–s3); PR draft until UI Review shots | `claude/per-instance-settings-window-picker` | [#622](https://github.com/MossesX/AmberX-AXF/pull/622) | Desktop + phone shots of a toolbar and a tab-group dialog to UI Review (Playwright not installed on the VPS). Report `_claude/builds/reports/per-instance-settings-window-picker.md` | 2026-11-13 |
+| Locked default settings interface for every asset and plugin (`settings-iface-default-all`, Opus; Brett Nov 18): settings-iface@1, required `builtFor` on every settings asset (backfilled), `default-<name>` per asset type (55) and console plugin (75), locked greyed row + checkbox + picker dialog filtered on builtFor on every plugin tab and Settings → Appearance → Asset types; actions `settings.iface` / `settings.iface.choose` | done; PR ready, waiting in UI Review (r-20261118-67d6cc51) | `claude/settings-iface-default-all-2` | [#834](https://github.com/MossesX/AmberX-AXF/pull/834) | Android twin deferred (PORTING.md). Report `_claude/builds/reports/settings-iface-default-all.md` | 2026-11-18 |
+| Every app gets its own locked default nav + app menu (`every-app-gets-own-locked-default`, Opus): app-menus@1, `default-<app>-nav` / `default-<app>-appmenu` per web app (`data.builtFor: app:<app>`, manifests point at them, old per-app menus folded in), runtime refuses shared / other apps' menus everywhere a slot is set, Settings → Appearance locked rows + checkbox + picker listing only the app's menus; actions `menus.pick` / `menus.choose` / `menus.state` | phase 1 done, PR opened by the VPS | `claude/every-app-gets-own-locked-default` | — | Android twin deferred (PORTING.md); demo needs a rebake to enforce. Report `_claude/builds/reports/every-app-gets-own-locked-default.md` | 2026-11-18 |
 | Per-instance settings picker: merge main and land (`per-instance-settings-picker-merge-main`, Opus, phase 1; Brett Nov 13: "every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency"): #622 merged onto main (Overlays imports from both sides, console copy re-baked, lock rehashed for the branch's files only); coverage check done | phase 1 done (s1–s3); PR open | `claude/per-instance-settings-picker-merge-main` | [#642](https://github.com/MossesX/AmberX-AXF/pull/642) | Follow-up (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind. Report `_claude/builds/reports/per-instance-settings-picker-merge-main.md` | 2026-11-13 |
 | Per-toolbar settings: fix failing chrome-settings check and land (`per-toolbar-settings-fix-failing-chrome`, Fable s1; Brett Nov 13: "land the per-toolbar, tab group and menu settings"): #642 plus latest main; `gen-fixtures.mts` now writes the per-instance fixture sections (`keys.instanceInterface`, `instancePicks`, `instanceInterfaces`, `prefixTargets`, `instanceSlugs`) that the hand-edited fixture lost on regeneration; `check-chrome-settings` green (304) next to main's tab rows | landed: #650 merged Nov 13 20:44 UTC (also lands #642); s2–s3 done (Opus) | `claude/per-toolbar-settings-fix-failing-chrome` | [#650](https://github.com/MossesX/AmberX-AXF/pull/650) | Report `_claude/builds/reports/per-toolbar-settings-fix-failing-chrome.md`. On main: `check-chrome-settings` 304 green, `check-toolbars`, `check-chrome-assets` green. Still open (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind | 2026-11-14 |
 | HOTFIX desktop console draws app menu, banners and nav twice (`hotfix-desktop-console-draws-app-menu`, Opus; Brett Nov 13: "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings"): not a code defect, a stale cached bundle (Brett: fine after hard refresh); per-toolbar settings kept, nothing reverted. Added `apps/console-web/scripts/chrome-once.e2e.mjs` (counts menubar / banner / app nav, desktop + phone, standalone + embedded): 29 checks pass on the console redeployed Nov 14 22:38, which carries the per-instance settings | s1-s3 done; PR open (test + report only) | `claude/hotfix-desktop-console-draws-app-menu` | [#658](https://github.com/MossesX/AmberX-AXF/pull/658) | Toolbar settings not applying: build `hotfix-toolbar-settings-still-change` | 2026-11-14 |
 | Per-toolbar settings: fix failing chrome-settings check and land (`per-toolbar-settings-fix-failing-chrome`, Fable s1; Brett Nov 13: "land the per-toolbar, tab group and menu settings"): #642 plus latest main; `gen-fixtures.mts` now writes the per-instance fixture sections (`keys.instanceInterface`, `instancePicks`, `instanceInterfaces`, `prefixTargets`, `instanceSlugs`) that the hand-edited fixture lost on regeneration; `check-chrome-settings` green (304) next to main's tab rows | s1 done; PR open, supersedes #642 | `claude/per-toolbar-settings-fix-failing-chrome` | [#650](https://github.com/MossesX/AmberX-AXF/pull/650) | Still open (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind. Pre-existing on main: `check-help` gizmo-guide tab, baked `framework-drafts.json` drift, stale bake lock | 2026-11-13 |
-| Full voice and AI control of everything in the console (`full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`, Opus, phase 1): every single setting is a console `field` (open / read value / `settings.set:<key>:<value>`) through control@1 `console.settings` + `console.actions` (REST, MCP, CLI, voice); Plan Studio find by content down to the item ("the plan about X, the step that mentions Y": `plan-studio/find`, `plan-studio.focus:<plan>/<item>`, `console_open "plan-studio <words>"`) <!-- axf-plugin:plan-studio --> | phase 1 done; PR draft until UI Review shots | `claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` | (see build) | Shots of Plan Studio with a found step marked (desktop + phone) to UI Review; next: find inside builds. Report `_claude/builds/reports/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app.md` | 2026-11-13 |
+| Full voice and AI control of everything in the console (`full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`, Opus, phase 1): every single setting is a console `field` (open / read value / `settings.set:<key>:<value>`) through control@1 `console.settings` + `console.actions` (REST, MCP, CLI, voice); Plan Studio find by content down to the item ("the plan about X, the step that mentions Y": `plan-studio/find`, `plan-studio.focus:<plan>/<item>`, `console_open "plan-studio <words>"`) | phase 1 done; PR draft until UI Review shots | `claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` | (see build) | Shots of Plan Studio with a found step marked (desktop + phone) to UI Review; next: find inside builds. Report `_claude/builds/reports/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app.md` | 2026-11-13 |
 | Phase done goes back to the Queue (`fix-build-whose-session-finishes-phase-e`, Fable → Opus): a session that finishes its phase with steps left returns to the Queue at its place and the next phase launches at once (`claude-headless.sh` → `pipeline.mjs exit`, one in-process tick under the cron lock); Pending only when Brett is needed; `requeue-stuck` repairs parked builds (REST, MCP/voice `pipeline-requeue-stuck`, CLI, reconcile); Pipeline tab shows the next phase and Back to Queue <!-- axf-plugin:build-orchestrator --> | PR open; 4 stuck builds requeued Nov 16 | `claude/fix-build-whose-session-finishes-phase-e` | [#685](https://github.com/MossesX/AmberX-AXF/pull/685) | Pipeline tab shots after merge. Report `_claude/builds/reports/fix-build-whose-session-finishes-phase-e.md` | 2026-11-16 |
 | Notes & tasks: one item type, nested to any depth (`change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to`, Opus; Brett Nov 13: notes, tasks and to-dos are ONE item type, any item holds any other to any depth): notes-tasks@1 design + schema revised (looks instead of kinds, `parent` = any item, legacy rows still read); supersedes #527 | PR open | `claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` | #545 | next: engine step (Fable) per DESIGN.md | 2026-11-13 |
 | Android approval overlay (`android-approval-overlay-a-small-always-on-float`, Opus; Brett Nov 13: "A little overlay, like a little toolbar, but it expands when I need an approval."): AmberX floating toolbar over every app (Java `ApprovalOverlay`) opens into the full card (what, why, countdown, Approve / Deny / Shelve) when an approval or held call arrives, shrinks back after; settings `approvals-banner.overlay.*` (on, opens for, shows, size, side, height, idle, opacity, shrink) in Settings → Plugins → Approvals banner, action `approvals.overlay:<what>:<value>` / `expand` / `collapse` (REST, MCP, CLI, voice) <!-- axf-plugin:approvals-banner --> | phase 1 done, PR open; phone shots after the new APK | `claude/android-approval-overlay-a-small-always-on-float` | (see build) | New AmberX APK, then phone shots to UI Review. Report `_claude/builds/reports/android-approval-overlay-a-small-always-on-float.md` | 2026-11-13 |
@@ -85,7 +98,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Skins plugin: removable plugin and screen for changing skins (`skins-plugin-own-removable-console`, Fable + Opus): skin-switch@1 engine + check; plugin `skin-gallery` (Skins): gallery with coverage, desktop + phone previews, Use / Back / Restore / Undo with snackbar, scope picker (hub, app, screen, plugin) with Inherit / Follow hub, banner chip, context menu, settings sub-tab, AppearancePanel through skin-switch@1 (capability); REST, MCP commands, CLI, voice actions skin.*, deep links skin/ scope/ preview/; test.py 37/37 | phase 2 done; UI Review waiting (gallery layout, banner chip: 3 options each) | `claude/skins-plugin-own-removable-console` | [#553](https://github.com/MossesX/AmberX-AXF/pull/553) | Brett picks the layout and chip in UI Review. Report `_claude/builds/reports/skins-plugin-own-removable-console.md` | 2026-11-13 |
 | Everything on tokens before skins (`everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the`, Opus): conform-baseline 1,209 → 286, apps/expenses fully on --fx-* tokens (MUI-aware adopt, vendored token sheet `framework/cli/vendor-tokens.mjs`), check-theme `theme-ok-begin/-end` blocks; 286 Kotlin findings deferred (PORTING.md) | PR open | `claude/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` | [#538](https://github.com/MossesX/AmberX-AXF/pull/538) | Report `_claude/builds/reports/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the.md`. Kotlin burn-down when Android resumes | 2026-11-13 |
 | An employee for every section, all in the group chat (`employee-for-every-section`, Opus; Brett Nov 11 voice: "Every everything has to have an employee so she can communicate in the group chat."): 11 sections that act on their own (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one crew owner each in `agents/sections.json` (crew-sections@1), Settings → Agent swarm → Section owners; start/done/failed/blocked/waiting posted as the owner through `framework/cli/crew-say.mjs` (chat switch respected, deduped); CI `crew-say.mjs check` fails a section that posts without an owner <!-- axf-plugin:agent-swarm --> | built, committed on the branch, not pushed | `claude/employee-for-every-section` | – | Brett approves the merge; UI Review shots of the Section owners panel. Not in the builds store: file it to track. Report `_claude/builds/reports/employee-for-every-section.md` | 2026-11-12 |
-| Enforce the merge queue, batched (`enforce-the-merge-queue-every-finished-build-goe`, Opus; Brett Nov 10: "What happened to the merge queue? … Everything needs to go into the merge queue so we can make one build out of it before we send it to CI."): queue was empty since Nov 7 because main's own light checks were red (retired `breakroom` profile folder came back → builds-store verify + check-profiles failed). Fixed in #455 (no UI). Batch mode: finished builds get a PR and join; up to 8 ready PRs → one commit on `queue/batch`, one CI run, lands on main as that commit; red batch split in half until the culprit is kicked; Merge on AmberX-AXF queues; REST/MCP/CLI `mergequeue-settings` <!-- axf-plugin:push-banner --> | built; #455 in the queue; batch PR draft until UI Review shots | `claude/enforce-the-merge-queue-every-finished-build-goe` (+ `claude/enforce-the-merge-queue-main-green`) | #455 + (see build) | Shots of Settings → Push banner (Batch switch, batch size) and the queue's batch line to UI Review, then mark ready. Report `_claude/builds/reports/enforce-the-merge-queue-every-finished-build-goe.md` | 2026-11-10 |
 | Orchestrator Hold status, Archive and Deleted tabs (`orchestrator-hold-status-archive-tab-deleted-tab`, Opus; Brett Nov 10: "Make a hold status … A deleted tab where all deleted builds stay saved forever."): On hold (stays in the Queue, dispatcher skips it), Back to Pending / Hold / Release / Archive / Unarchive / Delete (soft, kept forever) / Restore on any build, bulk select, Archive tab (complete + archived), Deleted tab; REST `pipeline/action`, MCP `pipeline-build-action`, console actions, CLI | PR open; screenshots + UI Review still to do (scratch console blocked on axHub) | `claude/orchestrator-hold-status-archive-tab-deleted-tab` | [#463](https://github.com/MossesX/AmberX-AXF/pull/463) | Report `_claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md` | Nov 10 2026 |
 | Land all built PRs, skins first (`land-all-97-built-but-unmerged-builds-skins-firs`, Opus; Brett Nov 10: "Merge them all. Start with the skins"): main is red (stray breakroom profile, menu-reach, Kotlin appearance twin), which kept the merge queue empty since Nov 7. #455 fixed up (main merged, Kotlin NEVER list) and put first in the queue. Skins #409 #429 #355 #376 merged with main, conflicts kept both sides, pushed. #432 #440 #269 closed (superseded by #450). Drafts #430 #472 #469 #377 wait for their builds; #446 #466 wait for Brett in UI Review | phase 1 done, s1/s2 continue | `claude/land-all-97-built-but-unmerged-builds-skins-firs` | (report PR) | after #455 lands: one fresh check run on every open PR, then the kicked-out conflicts. Report `_claude/builds/reports/land-all-97-built-but-unmerged-builds-skins-firs.md` | 2026-11-10 |
 | Headless sessions get the brief only (brief-only-headless) | built, waiting on UI Review (r-20261108-66e8c903) | claude/brief-only-headless | #388 | merge queue; then PR #360 / #362 rebase onto it (report → Reused) | Nov 8 2026 |
@@ -117,6 +129,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
 | Fix: refreshing the console jumps back instead of staying put (`fix-refreshing-console-jumps-back`, Opus; Brett Nov 17: "when are we fixing the refresh bug"): every reload (browser, pull-down, `axf console refresh`, new version) now comes back to the same view, tabs, grid selection and scroll (`apps/console-web/src/place`, sessionStorage, control addresses; deep links win); leftover scroll locks and the stale dialog history entry are cleared; API: `panel:console-place` / `console.place.restore` over REST, MCP, `axf console place`, voice "put me back" | review | `claude/fix-refreshing-console-jumps-back` | opened by the VPS | merge, nightly deploy. Report `_claude/builds/reports/fix-refreshing-console-jumps-back.md` | 2026-11-17 |
+| Approval rules in VPS Configuration: veto countdown only on VPS writes (`approval-rules-vps-configuration-veto`, Fable): axHub policy API landed and deployed with match-pattern rules (axHub PR #43, decisions 119 + 121); Builds → VPS Configuration → Approval rules lists, adds, edits, reorders and removes rules as a draft (REST, MCP `vps_approval_rules*`, `axf gate approvals`, voice `vps.approvals.*`); Save and Apply the default take Brett's own click; systems check item `vps-approval-default` until he applies it. Built on PR #881. Needs Brett: press Apply the default; rotate the Coolify API token (see report). Report `_claude/builds/reports/approval-rules-vps-configuration-veto.md` | in-pr | `claude/approval-rules-vps-configuration-veto` | #885 | Brett applies the default | 2026-11-21 |
+| Rename Gate & rules to VPS Configuration: build cap + veto passes live there (`rename-gate-rules-to-vps-configuration`, Fable): Builds → VPS Configuration (old addresses kept, `view:vps-configuration` + `vps.open` added); Build cap tab (hard cap, emergency slots, steps in parallel side by side, owner-only edits; REST, MCP, CLI, voice); Passes tab (veto passes moved from Token control, the axHub passes pages folded in with their addresses kept). Report `_claude/builds/reports/rename-gate-rules-to-vps-configuration.md` | in-pr | `claude/rename-gate-rules-to-vps-configuration` |  |  | 2026-11-21 |
 | Server rule: done means merged and working (`server-rule-done-means-merged-working`, Fable → Opus): store refuses built / complete without merge + green CI + verify; dispatcher classifies every failure (fixing) and retries on the ladder (different strategy each time); auto-lander shares the attempts log; verify after merge sets complete; escalation = one systems check item + one push with Retry; status chip + Attempts tab; REST / MCP / CLI / voice | review | `claude/server-rule-done-means-merged-working` | pending | UI Review item r-20261117-yj8u501 (3 options), then the merge queue. Report `_claude/builds/reports/server-rule-done-means-merged-working.md` | 2026-11-17 |
 | Orchestrator self-check (`orchestrator-self-check-when-stuck-verify-each-a`, Opus): console saw no accounts (container has no ~/.claude-accounts) → host account snapshot; tmux "no server" counted every old run as running → fixed; self-check per account + stale reaper + AmberX alert + `POST /pipeline/selfcheck` + Pipeline tab card | review | `claude/orch-self-check-stuck` | pending | UI Review, then the merge queue. Report `_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md` | 2026-11-09 |
 | Fix owner check bug + dead start button (`fix-owner-check-bug-dead-start-button`, bug fix, P0, Opus): the console page sends its token, so Brett's signed-in admin session was labelled the shared token caller and every owner-only setting refused him; the server now treats token + signed admin session from the console's origin as the admin's session. Build Manager Queue on a pending build filed a duplicate and left the build Pending; it now queues that same build and logs a line | PR open | `claude/fix-owner-check-bug-dead-start-button` | [#416](https://github.com/MossesX/AmberX-AXF/pull/416) | Report `_claude/builds/reports/fix-owner-check-bug-dead-start-button.md`. Covers `owner-only-settings-brett-s-admin-console-login-counts-as-owner` | 2026-11-09 |
@@ -318,8 +332,6 @@ All 8 steps done on the branch. Waits on Brett's UI Review, then the merge queue
 
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
-- **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
-- **Left:** s6 (PR open, live dry run of `node apps/console-web/plugins/push-banner/land/merge-queue.mjs run --dry-run` once the shared GitHub token has calls again). Brett approves UI Review r-20261104-d7a77e5c. After merge + console redeploy: `node <console plugins>/push-banner/land/land.mjs queue list`, `tail /var/log/axf-auto-land.log`; the first queue round sets repo variable `AXF_MERGE_QUEUE=on`. <!-- axf-plugin:push-banner -->
 - **First message:** "Carry on merge-queue (Current): read its To carry on block and `_claude/builds/reports/merge-queue.md`, finish s6."
 ### Console slow to load (`urgent-console-perf`, Urgent, Opus) — branch `claude/urgent-console-perf`
 - **Asked (Brett, Nov 4 2026, voice):** "How come console is taking forever to load? I thought lazy loader was in." … "Can we dig into it?" … "Yes."
@@ -557,7 +569,6 @@ Done (PR open). If a later session must carry on: read `_claude/builds/reports/o
 ### Every change through a PR (push banner 0.5.0)
 
 - **Asked (Oct 30 2026, Brett, voice):** "I want everything to need a PR and to pull against main before it's merged." Push banner 0.5.0: autoPr (a PR for every branch ahead of main, setting on), merge-branch refused (Open PR instead), auto-merge oldest first, pull main into a PR behind it and merge only when 0 behind + CI green on the new pinned head, one merge per round, conflicting pulls → Pull failed; branch protection on main where the token may (systems check item with Auto fix otherwise, never loosened).
-- **Done:** branch `claude/pr-only-merge` (on `claude/veto-everywhere`): `apps/console-web/plugins/push-banner/` server + web + test.py (132 checks), `systems-check/server/derive.py` reads `axf.syscheck.items@1:<name>` items, `boilerplate-shots.yml` pushes to `bot/boilerplate-shots` instead of main, shared rule "Automatic merge" widened, plugins README. Checks: test.py, console tsc, check-theme, check-controls, plugin-lifecycle check push-banner pass; systems-check test.py fails at "bad proposals rejected" on the base commit too (not this build). <!-- axf-plugin:push-banner -->
 - **Left:** CI on the PR → auto-merge (after #176). After deploy: watch the systems check for "Branch protection" rows (AmberX-AXF is private: protection may need GitHub Pro or a token with Administration write).
 - **First message to carry on:** "Check the push banner 0.5.0 PR (branch claude/pr-only-merge): CI state, fix any failure, report."
 ### Plan Studio (`plan-studio`, Angel, Opus)
@@ -566,7 +577,6 @@ Done (PR open). If a later session must carry on: read `_claude/builds/reports/o
 categorized; every plugin and app listed with its features checked off as have or planned (full brief: the orchestrator
 build `plan-studio` in the Angel profile and `_claude/memory/docs/plan-studio/README.md`). + plain-English AI (14:20) +
 AmberX voice planning (14:22).
-**Branch `claude/plans`:** all 12 steps built and committed (plugin `apps/console-web/plugins/plan-studio`, seeds, tests, <!-- axf-plugin:plan-studio -->
 docs, screenshots, shared rule "put it in a plan for later"). The build sandbox had no GitHub credentials, so the push
 was sent as one veto call (vps.run: `git push` from `/root/axf-builds/claude-plans`, `gh pr create`, `gh pr close 159`).
 **Left:** (1) if the veto call failed or was denied: from the VPS shell, `cd /root/axf-builds/claude-plans && git push -u
@@ -575,7 +585,6 @@ voice planning"), close draft PR #159 with the comment "Moved to Plan Studio as 
 branch). (2) CI green → merge approval (shared rule). (3) After merge: submit the screenshots to UI Review; `claude-sync
 sync` (shared RULES.md changed). (4) The console seeds the three plans into the hub's `_data/plan-studio/` on install
 (amberx-selling-it.json is already there).
-**Checks:** `python3 apps/console-web/plugins/plan-studio/test.py`, console `npx tsc --noEmit && npx vite build`, <!-- axf-plugin:plan-studio -->
 `npx -y tsx apps/amberx-droid/test.mjs`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`,
 `check-plugin-pages.mjs`, `plugin-lifecycle.mjs check plan-studio`, `npx -y tsx apps/console-web/scripts/menu-reach.mts`.
 **First message:** `Carry on Plan Studio (Angel, orchestrator plan-studio) in AmberX-AXF on branch claude/plans: read
@@ -835,406 +844,406 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:11 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
-- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
-- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
-- 2026-11-18 01:13 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
-- 2026-11-18 01:13 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `molly-ri-court-records` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `new-app-wizard` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `banner-widget-shapes-plus-change-icon` s18 done, s19 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `icon-picker-every-banner-settings-widget` s11 done, s12 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `settings-fix-part-2-blank-toolbars` s2 done, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done (all) · foreign-write
-- 2026-11-18 01:13 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s13 done, note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
-- 2026-11-18 01:13 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
-- 2026-11-18 01:13 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
-- 2026-11-18 01:13 UTC · `active-tab-stop-button-grid-alignment` added (96 steps) (all) · foreign-write
-- 2026-11-18 01:13 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
-- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
-- 2026-11-18 01:14 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:14 UTC · `move-everything-axhub-web-console` s13 done (all) · orchestrator
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s14 done (all) · orchestrator
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s13 done, s14 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s13 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s15 done (all) · orchestrator
-- 2026-11-18 01:10 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · orchestrator
-- 2026-11-18 01:10 UTC · `auto-lander-never-wait-missing-ui-review` s14 done (all) · orchestrator
-- 2026-11-18 01:15 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:15 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s12 done, s13 done (all) · foreign-write
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s16 done (all) · orchestrator
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s15 done, s16 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `auto-lander-never-wait-missing-ui-review` s11 done (all) · orchestrator
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s17 done (all) · orchestrator
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s18 done (all) · orchestrator
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s19 done (all) · orchestrator
-- 2026-11-18 01:17 UTC · `move-everything-axhub-web-console` s17 done, s18 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s14 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · orchestrator
-- 2026-11-18 01:17 UTC · `move-everything-axhub-web-console` s17 done, s18 done, s19 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s11 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done (all) · foreign-write
-- 2026-11-18 01:18 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:18 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · foreign-write
-- 2026-11-18 01:18 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:18 UTC · `move-everything-axhub-web-console` s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
-- 2026-11-18 01:18 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s14 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s14 done, s15 done (all) · foreign-write
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s16 done, s17 done, s18 done (all) · foreign-write
-- 2026-11-18 01:18 UTC · `move-everything-axhub-web-console` s19 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s14 done (all) · foreign-write
-- 2026-11-18 01:15 UTC · `move-everything-axhub-web-console` s15 done (all) · foreign-write
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s15 done (all) · foreign-write
-- 2026-11-18 01:16 UTC · `move-everything-axhub-web-console` s16 done (all) · foreign-write
-- 2026-11-18 01:16 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s14 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `move-everything-axhub-web-console` s16 done, s17 done, s18 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `one-true-source-for-every-setting` → running, note (all) · pipeline
-- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · foreign-write
-- 2026-11-18 01:17 UTC · `one-true-source-for-every-setting` branch claude/one-true-source-for-every-setting (all) · pipeline
-- 2026-11-18 01:18 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · watchdog
-- 2026-11-18 01:19 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
-- 2026-11-18 01:20 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · foreign-write
-- 2026-11-18 01:20 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-18 01:20 UTC · `move-everything-axhub-web-console` s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
-- 2026-11-18 01:20 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s13 done, s14 done (all) · foreign-write
-- 2026-11-18 01:20 UTC · `move-everything-axhub-web-console` s20 done (all) · orchestrator
-- 2026-11-18 01:20 UTC · `move-everything-axhub-web-console` s21 done (all) · orchestrator
-- 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s22 done (all) · orchestrator
-- 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s21 done (all) · foreign-write
-- 2026-11-18 01:20 UTC · `move-everything-axhub-web-console` s20 done (all) · foreign-write
-- 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s23 done (all) · orchestrator
-- 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s20 done, s21 done, s23 done (all) · foreign-write
-- 2026-11-18 01:21 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
-- 2026-11-18 01:22 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s23 done (all) · foreign-write
-- 2026-11-18 01:22 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:22 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:22 UTC · `move-everything-axhub-web-console` s20 done, s21 done, s23 done (all) · foreign-write
-- 2026-11-18 01:24 UTC · `one-true-source-for-every-setting` s1 done, → running (all) · orchestrator
-- 2026-11-18 01:25 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:25 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:25 UTC · `one-true-source-for-every-setting` s1 done (all) · foreign-write
-- 2026-11-18 01:25 UTC · `move-everything-axhub-web-console` s24 done (all) · orchestrator
-- 2026-11-18 01:25 UTC · `move-everything-axhub-web-console` s25 done (all) · orchestrator
-- 2026-11-18 01:26 UTC · `one-true-source-for-every-setting` s1 done (all) · foreign-write
-- 2026-11-18 01:26 UTC · `move-everything-axhub-web-console` s24 done, s25 done (all) · foreign-write
-- 2026-11-18 01:27 UTC · `move-everything-axhub-web-console` s24 done, s25 done (all) · foreign-write
-- 2026-11-18 01:28 UTC · `move-everything-axhub-web-console` s26 done (all) · orchestrator
-- 2026-11-18 01:28 UTC · `move-everything-axhub-web-console` s26 done (all) · foreign-write
-- 2026-11-18 01:29 UTC · `move-everything-axhub-web-console` s26 done (all) · foreign-write
-- 2026-11-18 01:29 UTC · `one-true-source-for-every-setting` s2 done (all) · orchestrator
-- 2026-11-18 01:30 UTC · `one-true-source-for-every-setting` s2 done (all) · foreign-write
-- 2026-11-18 01:30 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:30 UTC · `move-everything-axhub-web-console` s24 done, s25 done, s26 done (all) · foreign-write
-- 2026-11-18 01:30 UTC · `one-true-source-for-every-setting` s1 done, s2 done (all) · foreign-write
-- 2026-11-18 01:31 UTC · `one-true-source-for-every-setting` s2 done (all) · foreign-write
-- 2026-11-18 01:31 UTC · `move-everything-axhub-web-console` s27 done (all) · orchestrator
-- 2026-11-18 01:31 UTC · `auto-lander-never-wait-missing-ui-review` s15 done (all) · foreign-write
-- 2026-11-18 01:31 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:31 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:31 UTC · `move-everything-axhub-web-console` s20 done, s21 done, s23 done, s24 done, s25 done, s26 done (all) · foreign-write
-- 2026-11-18 01:31 UTC · `one-true-source-for-every-setting` s1 done, s2 done (all) · foreign-write
-- 2026-11-18 01:31 UTC · `auto-lander-never-wait-missing-ui-review` s15 done (all) · orchestrator
-- 2026-11-18 01:31 UTC · `auto-lander-never-wait-missing-ui-review` s16 done (all) · orchestrator
-- 2026-11-18 01:31 UTC · `move-everything-axhub-web-console` s27 done (all) · foreign-write
-- 2026-11-18 01:32 UTC · `move-everything-axhub-web-console` s27 done (all) · foreign-write
-- 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s15 done (all) · foreign-write
-- 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s16 done (all) · foreign-write
-- 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done (all) · foreign-write
-- 2026-11-18 01:33 UTC · `one-true-source-for-every-setting` s3 done (all) · orchestrator
-- 2026-11-18 01:33 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
-- 2026-11-18 01:33 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:34 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
-- 2026-11-18 01:34 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:33 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done (all) · foreign-write
-- 2026-11-18 01:33 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · orchestrator
-- 2026-11-18 01:33 UTC · `move-everything-axhub-web-console` s28 done (all) · orchestrator
-- 2026-11-18 01:35 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:35 UTC · `move-everything-axhub-web-console` s28 done (all) · foreign-write
-- 2026-11-18 01:35 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
-- 2026-11-18 01:35 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete (all) · foreign-write
-- 2026-11-18 01:35 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
-- 2026-11-18 01:35 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → landing (all) · orchestrator
-- 2026-11-18 01:35 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
-- 2026-11-18 01:36 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:36 UTC · `move-everything-axhub-web-console` s28 done (all) · foreign-write
-- 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete (all) · foreign-write
-- 2026-11-18 01:36 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
-- 2026-11-18 01:35 UTC · `axhub-routes-for-console-hub` note (all) · orchestrator
-- 2026-11-18 01:35 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
-- 2026-11-18 01:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
-- 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · pipeline
-- 2026-11-18 01:36 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · console
-- 2026-11-18 01:37 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:37 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:37 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
-- 2026-11-18 01:36 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
-- 2026-11-18 01:36 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-18 01:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-18 01:37 UTC · `one-true-source-for-every-setting` s4 done (all) · orchestrator
-- 2026-11-18 01:37 UTC · `one-true-source-for-every-setting` s4 done (all) · foreign-write
-- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · console
-- 2026-11-18 01:38 UTC · `one-true-source-for-every-setting` s4 done (all) · foreign-write
-- 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:38 UTC · `rebuild-fresh-main-phone-connect-small` → pending (all) · builds-live
-- 2026-11-18 01:39 UTC · `auto-lander-never-wait-missing-ui-review` PR #831, note (all) · reconciler
-- 2026-11-18 01:39 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · console
-- 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:40 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` → queued, note (all) · console
-- 2026-11-18 01:40 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · orchestrator
-- 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · console
-- 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · foreign-write
-- 2026-11-18 01:41 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-2` added (15 steps) (all) · foreign-write
-- 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` → queued, note (all) · console
-- 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-2` note (all) · orchestrator
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-2` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s5 done (all) · orchestrator
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s6 done (all) · orchestrator
-- 2026-11-18 01:43 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · builds-live
-- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · builds-live
-- 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · orchestrator
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · foreign-write
-- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · orchestrator
-- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s6 done (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
-- 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `one-true-source-for-every-setting` s4 done, s5 done, s6 done (all) · foreign-write
-- 2026-11-18 01:45 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-minute` added (56 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-2` added (75 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` added (30 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:46 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
-- 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:47 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
-- 2026-11-18 01:47 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:47 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:46 UTC · `move-everything-axhub-web-console` s29 done (all) · orchestrator
-- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s14 done, s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s1 done, s2 done, s3 done, s4 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `axhub-routes-for-console-hub` added (180 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-minute` added (42 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-2` added (15 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:47 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:47 UTC · `one-true-source-for-every-setting` s5 done, s6 done (all) · foreign-write
-- 2026-11-18 01:47 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
-- 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:48 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · console
-- 2026-11-18 01:49 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:49 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
-- 2026-11-18 01:50 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:51 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
-- 2026-11-18 01:51 UTC · `fix-ci-red-main-watchdog-test-vs-done` PR #830, note (all) · reconciler
-- 2026-11-18 01:51 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` note (all) · orchestrator
-- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:52 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
-- 2026-11-18 01:52 UTC · `one-true-source-for-every-setting` s7 done (all) · orchestrator
-- 2026-11-18 01:53 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 01:53 UTC · `one-landing-line-pull-main-merge-one` note (all) · foreign-write
-- 2026-11-18 01:54 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 01:55 UTC · `approval-pass-covers-every-call` note (all) · pipeline
-- 2026-11-18 02:02 UTC · `one-true-source-for-every-setting` s8 done (all) · orchestrator
-- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:03 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 02:03 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s1 undone, s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `one-landing-line-pull-main-merge-one` added (40 steps) (all) · foreign-write
-- 2026-11-18 02:03 UTC · `fix-refreshing-console-jumps-back` → landing (all) · builds-live
-- 2026-11-18 02:05 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:04 UTC · `rebuild-fresh-main-phone-connect-small` merged, note (all) · reconciler
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:07 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 02:21 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-18 02:34 UTC · `move-everything-axhub-web-console` → pending, note (all) · reconciler
-- 2026-11-18 02:34 UTC · `one-true-source-for-every-setting` → pending, note (all) · reconciler
-- 2026-11-18 04:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 04:23 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 04:23 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 04:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `approval-pass-covers-every-call` note (all) · pipeline
-- 2026-11-18 04:28 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 04:34 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 04:34 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 04:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
-- 2026-11-18 04:58 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:00 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` branch claude/approval-pass-covers-every-call, note (all) · reconciler
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` s1 done, → running (all) · orchestrator
-- 2026-11-18 05:15 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:18 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, → running, note (all) · foreign-write
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:29 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:27 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:30 UTC · `approval-pass-covers-every-call` → running, PR #836, note (all) · reconciler
-- 2026-11-18 05:31 UTC · `approval-pass-covers-every-call` PR #836, note (all) · builds-live
-- 2026-11-18 05:37 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 05:37 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 05:37 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:35 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:40 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:43 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:44 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:52 UTC · `approval-pass-covers-every-call` → running, note (all) · pipeline
-- 2026-11-18 05:53 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 06:00 UTC · `approval-pass-covers-every-call` s2 done (all) · orchestrator
-- 2026-11-18 06:01 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
-- 2026-11-18 06:02 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
-- 2026-11-18 06:03 UTC · `approval-pass-covers-every-call` s2 done, note (all) · foreign-write
-- 2026-11-18 06:20 UTC · `approval-pass-covers-every-call` s3 done (all) · orchestrator
-- 2026-11-18 06:25 UTC · `approval-pass-covers-every-call` s4 done (all) · orchestrator
-- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s27 done, s28 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s3 done, s4 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s2 done, s3 done, s4 done, s5 done, s6 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
-- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → landing (all) · orchestrator
-- 2026-11-18 06:32 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:32 UTC · `approval-pass-covers-every-call` s3 done, s4 done (all) · foreign-write
-- 2026-11-18 06:30 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:34 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · builds-live
-- 2026-11-18 06:35 UTC · `approval-pass-covers-every-call` s5 done (all) · orchestrator
-- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:36 UTC · `move-server-side-console-parts-onto-vps` → complete (all) · foreign-write
-- 2026-11-18 06:38 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 06:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · pipeline
-- 2026-11-18 06:43 UTC · `approval-pass-covers-every-call` s6 done (all) · orchestrator
-- 2026-11-18 06:45 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:45 UTC · `approval-pass-covers-every-call` s2 done, s3 done, s4 done, note (all) · foreign-write
-- 2026-11-18 06:43 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:44 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 06:49 UTC · `approval-pass-covers-every-call` s7 done (all) · orchestrator
-- 2026-11-18 06:50 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `approval-pass-covers-every-call` s1 done, s2 done, s3 done, s4 done, note (all) · foreign-write
-- 2026-11-18 06:48 UTC · `approval-pass-covers-every-call` s6 done, → running (all) · foreign-write
-- 2026-11-18 06:52 UTC · `approval-pass-covers-every-call` s7 done, → running (all) · foreign-write
-- 2026-11-18 06:53 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:53 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
-- 2026-11-18 06:58 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:58 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
-- 2026-11-18 07:00 UTC · `approval-pass-covers-every-call` s8 done (all) · orchestrator
-- 2026-11-18 07:02 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:06 UTC · `approval-pass-covers-every-call` s9 done (all) · orchestrator
-- 2026-11-18 07:03 UTC · `approval-pass-covers-every-call` s8 done (all) · foreign-write
-- 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s10 done (all) · orchestrator
-- 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s9 done, → running (all) · foreign-write
-- 2026-11-18 07:11 UTC · `approval-pass-covers-every-call` s11 done (all) · orchestrator
-- 2026-11-18 07:12 UTC · `approval-pass-covers-every-call` s10 done (all) · foreign-write
-- 2026-11-18 07:15 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:13 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 07:20 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s10 undone, → pending, note (all) · foreign-write
-- 2026-11-18 07:17 UTC · `approval-pass-covers-every-call` s11 done, note (all) · foreign-write
-- 2026-11-18 07:23 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:24 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-23 07:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 07:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 08:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 08:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 09:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 09:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 09:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-23 09:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
+- 2026-11-23 09:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 10:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 10:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 11:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 11:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:00 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 12:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 12:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:01 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:04 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 13:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 13:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 14:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 14:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:28 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 15:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 15:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 16:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 16:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
+- 2026-11-23 16:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` added (0 steps) (all) · Amber (voice)
+- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` → archived (all) · Amber (voice)
+- 2026-11-23 16:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
+- 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
+- 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
+- 2026-11-23 16:29 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · watchdog
+- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → split (all) · orchestrator
+- 2026-11-23 18:37 UTC · `fix-refreshing-console-jumps-back` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, note (all) · foreign-write
+- 2026-11-23 20:22 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · pipeline-bring-up
+- 2026-11-23 20:23 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:24 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-23 20:30 UTC · `orchestrator-settings-collapsible-split` s7 undone, note (all) · watchdog
+- 2026-11-23 20:31 UTC · `orchestrator-settings-collapsible-split` s1 done (all) · headless
+- 2026-11-23 20:34 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 20:38 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · pipeline-bring-up
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → build-complete (all) · orchestrator
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:44 UTC · `urgent-pipeline-proof-nov23` added (0 steps) (all) · plan-studio-2
+- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → splitting (all) · orchestrator
+- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → split, note (all) · orchestrator
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` PR 896 (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → pr-pulling-main (all) · lander
+- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 20:53 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-23 21:00 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
+- 2026-11-23 21:01 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:05 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:09 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:13 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:19 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:20 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:22 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:24 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:26 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:27 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:29 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 21:45 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-23 21:48 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
+- 2026-11-23 21:49 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:53 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 21:56 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:00 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:04 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
+- 2026-11-23 22:05 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
+- 2026-11-23 22:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
+- 2026-11-23 22:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-23 22:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-23 22:35 UTC · `pipeline-bring-up-from-main` PR #897 (all) · builds-live
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → merging-pr, note (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` PR 898 (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → pr-pulling-main (all) · lander
+- 2026-11-23 22:36 UTC · `pipeline-bring-up-from-main` → running-ci (all) · lander
+- 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `server-rule-done-means-merged-working` → landed, note (all) · watchdog
+- 2026-11-23 22:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → complete, note (all) · verify
+- 2026-11-23 22:45 UTC · `axf-data-postgres-real-tables-own` → complete, note (all) · verify
+- 2026-11-23 22:46 UTC · `server-rule-done-means-merged-working` → complete, note (all) · verify
+- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → merging-main (all) · lander
+- 2026-11-23 23:05 UTC · `pipeline-bring-up-from-main` → landed, merged, note (all) · lander
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · verify
+- 2026-11-23 23:06 UTC · `pipeline-bring-up-from-main` note (all) · orchestrator
+- 2026-11-23 23:08 UTC · `account-failover-gate-pinned-build` added (2 steps) (all) · voice-claude
+- 2026-11-23 23:14 UTC · `console-idle-load-fix` added (1 steps) (all) · Snap Sully
+- 2026-11-23 23:19 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
+- 2026-11-23 23:21 UTC · `pipeline-watch-test` added (0 steps) (all) · voice-claude
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` → splitting (all) · orchestrator
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` → split, note (all) · orchestrator
+- 2026-11-23 23:22 UTC · `pipeline-watch-test` note (all) · orchestrator
+- 2026-11-23 23:23 UTC · `account-failover-gate-pinned-build` note (all) · watchdog
+- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → failed, note (all) · watchdog
+- 2026-11-23 23:24 UTC · `account-failover-gate-pinned-build` → split (all) · orchestrator
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` added (0 steps) (all) · voice-claude
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` → splitting (all) · orchestrator
+- 2026-11-23 23:58 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-23 23:59 UTC · `pipeline-sync-live-badges` → split, note (all) · orchestrator
+- 2026-11-24 00:00 UTC · `pipeline-sync-live-badges` note (all) · orchestrator
+- 2026-11-24 00:01 UTC · `urgent-pipeline-proof-nov23` → archived (all) · voice-claude
+- 2026-11-24 00:01 UTC · `pipeline-watch-test` → archived (all) · voice-claude
+- 2026-11-24 00:02 UTC · `pipeline-sync-hand` added (1 steps) (all) · Earl the Ear
+- 2026-11-24 00:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:05 UTC · `pipeline-sync-hand` → failed, note (all) · orchestrator
+- 2026-11-24 00:05 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:06 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 00:30 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 00:30 UTC · `console-idle-load-fix` → build-complete, note (all) · headless
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` PR 901 (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → pr-pulling-main (all) · lander
+- 2026-11-24 00:31 UTC · `console-idle-load-fix` → running-ci (all) · lander
+- 2026-11-24 01:00 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:02 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
+- 2026-11-24 01:03 UTC · `console-idle-load-fix` → landed, merged, note (all) · lander
+- 2026-11-24 01:03 UTC · `pipeline-sync-hand-2` added (1 steps) (all) · Greenlight Gina
+- 2026-11-24 01:03 UTC · `console-idle-load-fix` note (all) · orchestrator
+- 2026-11-24 01:04 UTC · `psync-a-core` added (1 steps) (all) · Reel Rhonda
+- 2026-11-24 01:04 UTC · `psync-b-server-lander` added (1 steps) (all) · Janitor Joey
+- 2026-11-24 01:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
+- 2026-11-24 01:05 UTC · `psync-c-planstudio` added (1 steps) (all) · Ping Paulie
+- 2026-11-24 01:05 UTC · `psync-d-orch-ui` added (1 steps) (all) · Snap Sully
+- 2026-11-24 01:05 UTC · `urgent-all-data-to-postgres-builds-store` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `rebuild-fresh-main-phone-connect-small` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `apk-stable-signing` added (1 steps) (all) · Earl the Ear
+- 2026-11-24 01:06 UTC · `guided-live-demo-test-watch-orchestrator` → landed, note (all) · watchdog
+- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `psync-a-core-2` added (1 steps) (all) · Greenlight Gina
+- 2026-11-24 01:07 UTC · `rebuild-fresh-main-phone-connect-small` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `guided-live-demo-test-watch-orchestrator` → complete, note (all) · verify
+- 2026-11-24 01:07 UTC · `pipeline-sync-hand-2` → failed, note (all) · orchestrator
+- 2026-11-24 01:07 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · verify
+- 2026-11-24 01:08 UTC · `psync-a-core` → failed, note (all) · orchestrator
+- 2026-11-24 01:30 UTC · `psync-d-orch-ui` → build-complete, note (all) · headless
+- 2026-11-24 01:30 UTC · `psync-d-orch-ui` note (all) · orchestrator
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` note (all) · orchestrator
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → merging-pr, note (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` PR 903 (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → pr-pulling-main (all) · lander
+- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → running-ci (all) · lander
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
+- 2026-11-24 01:33 UTC · `psync-c-planstudio` → build-complete, note (all) · headless
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` → build-complete, note (all) · headless
+- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
+- 2026-11-24 01:41 UTC · `pipeline-sync-live-badges` note (all) · psync-a-core-2
+- 2026-11-24 01:42 UTC · `psync-a-core-2` note (all) · orchestrator
+- 2026-11-24 01:42 UTC · `psync-a-core-2` s1 done (all) · headless
+- 2026-11-24 01:43 UTC · `psync-a-core-2` → build-complete, note (all) · headless
+- 2026-11-24 01:43 UTC · `psync-a-core-2` note (all) · orchestrator
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → merging-pr, note (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` PR 904 (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → pr-pulling-main (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` → running-ci (all) · lander
+- 2026-11-24 01:44 UTC · `psync-c-planstudio` note (all) · watchdog
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → merging-pr, note (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` PR 905 (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → pr-pulling-main (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` → running-ci (all) · lander
+- 2026-11-24 01:46 UTC · `psync-b-server-lander` note (all) · watchdog
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → merging-pr, note (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` PR 906 (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → pr-pulling-main (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` → running-ci (all) · lander
+- 2026-11-24 01:54 UTC · `psync-a-core-2` note (all) · watchdog
+- 2026-11-24 02:02 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 02:13 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 02:21 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 02:22 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 02:23 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
+- 2026-11-24 02:24 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
+- 2026-11-24 02:25 UTC · `psync-b-server-lander` note (all) · lander
+- 2026-11-24 02:26 UTC · `psync-a-core-2` → running-ci, note (all) · lander
+- 2026-11-24 02:41 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 02:42 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 02:43 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
+- 2026-11-24 02:44 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 02:45 UTC · `apk-stable-signing` note (all) · orchestrator
+- 2026-11-24 02:45 UTC · `apk-stable-signing` → archived, note (all) · headless
+- 2026-11-24 02:45 UTC · `psync-d-orch-ui` note (all) · lander
+- 2026-11-24 02:46 UTC · `psync-c-planstudio` note (all) · lander
+- 2026-11-24 02:56 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 02:57 UTC · `psync-a-core-2` note (all) · lander
+- 2026-11-24 02:58 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
+- 2026-11-24 02:59 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
+- 2026-11-24 03:00 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
+- 2026-11-24 03:01 UTC · `psync-a-core-2` → running-ci, note (all) · lander
+- 2026-11-24 03:15 UTC · `psync-d-orch-ui` → failed, note (all) · lander
+- 2026-11-24 03:21 UTC · `psync-c-planstudio` → failed, note (all) · lander
+- 2026-11-24 03:22 UTC · `psync-b-server-lander` → failed, note (all) · lander
+- 2026-11-24 03:27 UTC · `pipeline-test-3-docs` added (0 steps) (all) · mcp
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → splitting (all) · orchestrator
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → split, note (all) · orchestrator
+- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` note (all) · orchestrator
+- 2026-11-24 03:30 UTC · `psync-a-core-2` → failed, note (all) · lander
+- 2026-11-24 03:30 UTC · `psync-b-server-lander` note (all) · lander
+- 2026-11-24 03:31 UTC · `psync-c-planstudio` note (all) · lander
+- 2026-11-24 03:31 UTC · `psync-a-core-2` note (all) · lander
+- 2026-11-24 03:32 UTC · `psync-d-orch-ui` note (all) · lander
+- 2026-11-24 03:58 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
+- 2026-11-24 04:01 UTC · `plan-studio-2-open-button-working-deep` → archived, note (all) · cron
+- 2026-11-24 04:01 UTC · `every-plugin-gets-own-default-toolbar` → archived, note (all) · cron
+- 2026-11-24 04:01 UTC · `stop-push-storm-builds-live-pushes-build` → archived, note (all) · cron
+- 2026-11-24 10:40 UTC · `fix907-ci` added (1 steps) (all) · Reel Rhonda
+- 2026-11-24 12:03 UTC · `fix907-ci` s1 done (all) · headless
+- 2026-11-24 12:03 UTC · `fix907-ci` → build-complete, note (all) · headless
+- 2026-11-24 12:03 UTC · `fix907-ci` note (all) · orchestrator
+- 2026-11-24 12:04 UTC · `fix907-ci` note (all) · orchestrator
+- 2026-11-24 12:04 UTC · `fix907-ci` → merging-pr, note (all) · lander
+- 2026-11-24 12:04 UTC · `fix907-ci` PR 908 (all) · lander
+- 2026-11-24 12:04 UTC · `fix907-ci` → pr-pulling-main (all) · lander
+- 2026-11-24 12:04 UTC · `fix907-ci` → running-ci (all) · lander
+- 2026-11-24 12:10 UTC · `fix907-ci` → merging-pr, note (all) · lander
+- 2026-11-24 12:10 UTC · `fix907-ci` merged, note (all) · reconciler
+- 2026-11-24 12:11 UTC · `fix907-ci` note (all) · orchestrator
+- 2026-11-24 12:19 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · cli
+- 2026-11-24 12:30 UTC · `pipeline-test-5-four-docs-edits-planted` added (5 steps) (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5-four-docs-edits-planted` → archived (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5` added (0 steps) (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5` → splitting (all) · orchestrator
+- 2026-11-24 12:31 UTC · `pipeline-test-5` → split, note (all) · orchestrator
+- 2026-11-24 12:32 UTC · `fix907-ci` → landed, note (all) · lander
+- 2026-11-24 12:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-24 12:32 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-24 12:34 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
+- 2026-11-24 12:35 UTC · `banner-widget-shapes-plus-change-icon` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `terminal-main-tab-streaming-console-s` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `icon-picker-every-banner-settings-widget` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `flagship-professional-skin-covering-2` → failed, note (all) · watchdog
+- 2026-11-24 12:35 UTC · `auto-lander-never-wait-missing-ui-review` → failed, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · watchdog
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → split, note (all) · orchestrator
+- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → split (all) · orchestrator
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → splitting (all) · orchestrator
+- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → split, note (all) · orchestrator
+- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → splitting (all) · orchestrator
+- 2026-11-24 12:37 UTC · `flagship-professional-skin-covering-2` → split (all) · orchestrator
+- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → splitting (all) · orchestrator
+- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → split (all) · orchestrator
+- 2026-11-24 12:38 UTC · `banner-widget-shapes-plus-change-icon` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
+- 2026-11-24 12:38 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · builds-live
+- 2026-11-24 12:40 UTC · `banner-widget-shapes-plus-change-icon` s1 done, s2 done, s3 done, s4 done, s5 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `terminal-main-tab-streaming-console-s` s1 done, s2 done, s3 done, s14 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `icon-picker-every-banner-settings-widget` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · reconciler
+- 2026-11-24 12:40 UTC · `flagship-professional-skin-covering-2` s5 done, note (all) · reconciler
+- 2026-11-24 12:41 UTC · `pipeline-controls-plugin` added (0 steps) (all) · claude
+- 2026-11-24 12:42 UTC · `pipeline-controls-plugin` → splitting (all) · orchestrator
+- 2026-11-24 12:43 UTC · `pipeline-controls-plugin` → split, note (all) · orchestrator
+- 2026-11-24 12:47 UTC · `plan-autoqueue-manifest` added (0 steps) (all) · claude
+- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → splitting (all) · orchestrator
+- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → split, note (all) · orchestrator
+- 2026-11-24 12:50 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
+- 2026-11-24 12:50 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
+- 2026-11-24 13:20 UTC · `orchestrator-settings-collapsible-split` → archived (all) · claude
+- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` → pulling-main (all) · orchestrator
+- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` PR 909, note (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → assigning-models (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → ready, note (all) · orchestrator
+- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:27 UTC · `fix-refreshing-console-jumps-back` → sending (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` → building (all) · orchestrator
+- 2026-11-24 13:29 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:30 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:34 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:35 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` s1 undone (all) · orchestrator
+- 2026-11-24 13:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:39 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:40 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 13:41 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:41 UTC · `pipeline-controls-plugin` → archived (all) · claude
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:42 UTC · `settings-consolidation` added (0 steps) (all) · claude
+- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` s6 undone, note (all) · watchdog
+- 2026-11-24 13:43 UTC · `settings-consolidation` → archived (all) · claude
+- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 13:44 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 
 ## Token passes (log)
 
@@ -1840,3 +1849,5 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - 2026-11-17 05:00 UTC · `server-auto-lander-fixes-lands` phase 2 (Opus): the VPS auto-lander runner (systemd timer, attempt log, clash resolver, red-CI reader, fix sessions through the pipeline, reconcile/backoff, escalation to systems check + one push), Gate → Auto-lander → Server tab + settings, REST/MCP/CLI/voice; absorbed fix-red-ci-blocked-builds-they-land + get-main-green-unblock-lander-land-axf · claude
 - 2026-11-17 00:55 UTC · `stop-auto-lander-committing-tracking` s2–s14: tracking files never committed by the lander (reset to main's base copy, take-main on conflict), build worktrees keep the store on the hub, worktree guard, journal moved to the hub (916 MB untracked, pointer + sha256), CI guard check-tracking-files, API land-tracking (REST/MCP/CLI/voice), tests (all) · claude
 - 2026-11-17 UTC · `rebuild-every-toolbar-page-specific` phase 2 (Opus) s8–s26: re-bake; 19 page toolbar assets on 18 console plugins (97 buttons bound to plugin commands, actions or page handlers), check-page-toolbars + voice inventory (97 phrases) + per-plugin toolbar tests in CI, check-toolbars page-asset ratchet (21 plugins left); s27 option assets (57) committed, pictures blocked (no hub session for headless capture); report `_claude/builds/reports/rebuild-every-toolbar-page-specific.md` (all) · claude
+- 2026-11-21 UTC · `phone-connect-open-straight-phone-no-tap` s1–s3 (Fable), PR #886: the console opens straight on the phone (wake asks for the console app first; either app's Display over other apps is enough; the console app answers only once on screen; notification only as the fallback, with why), a held approval floats on screen with Approve / Deny, open / wake results say opened vs notified honestly, app 0.3.0; report `_claude/builds/reports/phone-connect-open-straight-phone-no-tap.md` · claude
+- 2026-11-21 UTC · `fable-rebuild-2-2-both-watchdogs-one` s1–s4 (Fable): one build watchdog (`watchdog.mjs`, build-watchdogs@1) hosting the session watch (#772), the row cleaner (#780) and a new stale-status watch (landing / fixing / merging pushed along the done-means-merged line); one cron `axf-build-watchdog`, one caught log, one settings map, one Watchdog panel, REST/MCP/CLI/voice `watchdogs`, systems check item; session watch still off on the VPS by a saved setting (all) · claude

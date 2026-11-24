@@ -24,6 +24,15 @@ export const PHONE_APP_ADDRESS = 'panel:phone-app';
 /** What the approval bar's "Open approvals" link runs. */
 export const APPROVALS_TARGET = 'approvals.view';
 
+/**
+ * The action an `approvals.open` event runs. With the hub id of one call (a card the overlay popped for it) that
+ * call opens; without one, or with anything that isn't an approval id, the first one waiting.
+ */
+export function approvalsOpenSpec(data) {
+  const id = data && typeof data === 'object' ? data.id : undefined;
+  return typeof id === 'string' && /^[0-9a-f-]{36}$/.test(id) ? `${APPROVALS_TARGET}:${id}` : APPROVALS_TARGET;
+}
+
 /** The --fx-* tokens the native toolbar takes its look from (= Java ShellTheme.TOKENS). */
 export const THEME_TOKENS = ['--fx-surface', '--fx-text', '--fx-accent', '--fx-accent-text', '--fx-muted', '--fx-radius-md', '--fx-space', '--fx-font-size'];
 
@@ -50,6 +59,33 @@ export function openTarget(href) {
   const target = raw.trim().slice(0, 500);
   if (!target) return { target: '', kind: 'none', rest: u.toString() };
   return { target, kind: isAddress(target) ? 'address' : 'action', rest: u.toString() };
+}
+
+/** The event a link handed to the running page is announced with (`detail.url`); plugins that own a parameter listen. */
+export const DEEP_LINK_EVENT = 'axf-deep-link';
+/** How long a deep-link target the console doesn't know yet is tried again (a plugin's screen arrives after the load). */
+export const DEEP_LINK_WAIT_MS = 10_000;
+export const DEEP_LINK_RETRY_MS = 400;
+
+/** The screen a deep-link target starts on (`view:<id>` or `view:<id>/…`), or '' when it names no screen first. */
+export function startView(t) {
+  if (!t || t.kind !== 'address') return '';
+  const first = String(t.target).split('/')[0];
+  if (!first.startsWith('view:')) return '';
+  try { return decodeURIComponent(first.slice(5)); } catch { return ''; }
+}
+
+/**
+ * A link the page can open without being loaded again: the console's own root on this origin, carrying only hints
+ * (`axf-open`, `axf-cmd=<queued command>`). → the absolute link, or '' when the shell must load it (another origin,
+ * another path, the search palette's `axf-cmd=search`, a hard refresh).
+ */
+export function inPageLink(url, here) {
+  let u, h;
+  try { h = new URL(String(here)); u = new URL(String(url), h); } catch { return ''; }
+  if (u.origin !== h.origin || u.pathname !== '/') return '';
+  if (u.searchParams.get('axf-cmd') === 'search' || u.searchParams.has('axf-refresh')) return '';
+  return u.toString();
 }
 
 /** `kind:id` segments joined by `/`, the first kind a word (an action id has no `:` before its first `.`). */
@@ -138,3 +174,27 @@ export const NATIVE_ACTIONS = [
   { id: 'native.update', label: 'Phone app web content: check for a new console, reload into it, or state (native.update:<verb>)', params: true },
   { id: 'native.state', label: 'Phone app state: shell version, permissions, overlay, insets', params: false },
 ];
+
+/**
+ * The page's own questions (confirm, prompt). A console app before 0.2.0 has no `dialogs` feature: in the expanded
+ * overlay its WebView cancels the dialog without drawing it, so confirm() answers false in the same tick and the
+ * press ends in silence. No person answers that fast: a "no" inside UNSEEN_MS was never seen, and the console says so.
+ */
+export const DIALOG_FEATURE = 'dialogs';
+export const UNSEEN_MS = 40;
+export const DIALOG_UNSEEN = "The question for that press couldn't be shown in the floating console, so nothing was done. Open the console app itself and press again, or update the console app.";
+export const dialogUnseen = (answer, ms) => (answer === false || answer === null) && ms < UNSEEN_MS;
+export const hasDialogs = (info) => Array.isArray(info?.features) && info.features.includes(DIALOG_FEATURE);
+
+/**
+ * The alert the console raises from inside a shell without `dialogs` (one per key, so it is pushed once), and resolves
+ * from a shell that has it. `version` is the shell's own.
+ */
+export const DIALOG_ALERT_KEY = 'console-app.dialogs';
+export const DIALOG_MIN_APP = '0.2.0';
+export const dialogAlert = (version) => ({
+  source: 'console-app', severity: 'warning', key: DIALOG_ALERT_KEY,
+  title: `Update the AXF Console app to ${DIALOG_MIN_APP}`,
+  body: `This phone runs AXF Console ${version || '?'}. In the floating console it cannot show a "Sure?" question, so buttons that ask one (delete, remove, uninstall) do nothing there. Approval rules is not affected. Install the new app over the old one: axHub → Apps → AXF Console → Download.`,
+  link: 'https://axhub.amberxai.com/apps',
+});

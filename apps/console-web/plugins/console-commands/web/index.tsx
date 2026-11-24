@@ -18,8 +18,22 @@
  * after it was sent (the tab was asleep and the server moved on) is skipped, not run twice. A screen command can carry
  * `focus` (a tab or an item); the screen's own `<screen>.focus:<focus>` action brings it forward.
  *
- * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
- * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
+ * Straight to the screen (console-open-no-reload, Nov 23 2026): inside the Android console app the page keeps running
+ * while the overlay is folded, but its timers are throttled there, so the 15 s beat stopped, the server took the console
+ * for closed and woke the phone, and the wake reloaded the page to its home screen. Now the beat also rides on the
+ * stream (every chunk the server sends, its keep-alive included, is a reason to beat, and network events are not
+ * throttled); a page the app hides brings itself to the front after it ran a command (no reload); every page load has
+ * an id (`page`), so the server tells a reloaded page from the one before it; a wake link the app hands to the running
+ * page (`axf-deep-link`) picks its queued command without a reload; and the catalog goes up as soon as it changes (a
+ * plugin's screens arrive after the first hello) or the server asks for it.
+ *
+ * Screenshots (op `screenshot`): the tab captures what it shows (the whole viewport, or the element a console-control@1
+ * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
+ * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees. It tells the server it is working
+ * on it first (a capture takes seconds), works in a background tab too, and always answers within CAPTURE_TIMEOUT_MS.
+ *
+ * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through the phone, how long
+ * a command waits, the browser the phone opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
 import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
@@ -27,11 +41,13 @@ import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { executeControl, describeAnswer } from '@console/control/executor';
+import { executeControl, describeAnswer, controlState } from '@console/control/executor';
+import { controlRegistry } from '@console/axf/react';
+import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
 import { savePlaceNow } from '@console/place';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleShotState, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -41,6 +57,12 @@ const HEARTBEAT_MS = CONSOLE_HEARTBEAT_MS;
 const STREAM_IDLE_MS = 45_000;
 /** On a wake, a stream quiet for longer than this is reopened at once rather than trusted. */
 const WAKE_REOPEN_MS = 20_000;
+/** While the page settles, how soon after a change its catalog is looked at again (and sent when it differs). */
+const CATALOG_RECHECK_MS = 1_000;
+/** How long a page counts as settling: its plugins arrive one by one after the first paint. */
+const CATALOG_SETTLE_MS = 60_000;
+/** The commands after which a console its app hides comes to the front. */
+const SURFACING: readonly string[] = ['open', 'home', 'back'];
 
 /** This tab's id (one per browser tab, kept across reloads of the tab). */
 function clientId(): string {
@@ -52,6 +74,58 @@ function clientId(): string {
     sessionStorage.setItem(k, n);
     return n;
   } catch { return `cc-${Math.random().toString(36).slice(2, 12)}`; }
+}
+
+/** This page load: a reload of the tab keeps the client id and gets a new one of these. */
+const PAGE_ID = `pg-${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
+
+/** The Android console app around this page (apps/console-droid), read loosely: the plugin also runs where the console's typing isn't. */
+interface ShellHost { overlay?: (verb: string) => string; overlayState?: () => string }
+const shellHost = (): ShellHost | undefined => (typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: ShellHost }).axfNativeHost : undefined);
+const SHELL = 'console-droid';
+
+/** What the app last said about its own screen (`app` event: `{ visible }`); null until it has said anything. */
+let appVisible: boolean | null = null;
+if (typeof window !== 'undefined') {
+  window.addEventListener('axf-native', (e) => {
+    const d = (e as CustomEvent<{ type?: string; data?: { visible?: unknown } }>).detail;
+    if (d?.type === 'app' && typeof d.data?.visible === 'boolean') appVisible = d.data.visible;
+  });
+}
+
+/**
+ * Is nothing showing this page? The page says so itself (`visibilityState`); the app's word counts too, in case a
+ * WebView outside any window still reports itself visible: its screen is not in front and its overlay is not expanded.
+ */
+function shellHidden(host: ShellHost): boolean {
+  if (document.visibilityState !== 'visible') return true;
+  if (appVisible !== false) return false;
+  try { return (JSON.parse(host.overlayState?.() ?? '{}') as { overlay?: { state?: string } }).overlay?.state !== 'expanded'; } catch { return false; }
+}
+
+/**
+ * Inside the console app with nothing showing the page (the overlay is folded, another app is in front): ask the app to
+ * show it, so a command that moved the console is seen. The page stays as it is: no reload. → asked.
+ */
+function surface(): boolean {
+  const host = shellHost();
+  if (!host?.overlay || !shellHidden(host)) return false;
+  try { host.overlay('expand'); return true; } catch { return false; }
+}
+
+/** Calls `onChunk` for every chunk of a streamed response (the server's keep-alive comments too). */
+function tapped(r: Response, onChunk: () => void): Response {
+  if (!r.ok || !r.body || typeof TransformStream !== 'function') return r;
+  const body = r.body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({ transform(chunk, c) { onChunk(); c.enqueue(chunk); } }));
+  return new Response(body, { status: r.status, statusText: r.statusText, headers: r.headers });
+}
+
+/** The queued command a link names (`?axf-cmd=<id>`; `search` is the palette's deep link, not a command). */
+function commandOf(href: string): string {
+  try {
+    const id = new URL(href).searchParams.get('axf-cmd') ?? '';
+    return id !== 'search' && /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
+  } catch { return ''; }
 }
 
 /** Commands this tab already ran (id → its ack), so one that arrives again after a reconnect isn't run twice. */
@@ -77,7 +151,7 @@ function pickedCommand(): string {
     if (!id || id === 'search') return ''; // ?axf-cmd=search&q= is the console's search palette deep link, not a queued command
     u.searchParams.delete('axf-cmd');
     window.history.replaceState(window.history.state, '', u.toString());
-    return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
+    return commandOf(`${u.origin}/?axf-cmd=${encodeURIComponent(id)}`);
   } catch { return ''; }
 }
 
@@ -89,10 +163,16 @@ const ongoing = (msg: string) => msg.replace(/^opened /, 'opening ').replace(/^r
 const device = () => (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 'phone' : 'desktop');
 const post = (path: string, body: unknown, keepalive = false) => pluginFetch(FOLDER, path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive });
 
-/** Where this console is now. */
+/** Where this console is now: screen, dialog, settings tab, the open tab of each tab row and the selection. */
 function hereOf(rt: AxfRuntime): ConsoleHere {
   const s = rt.getState();
   const here: ConsoleHere = { screen: s.view };
+  try {
+    const live = controlState(rt);
+    if (Object.keys(live.tabs).length) here.tabs = live.tabs;
+    const selection = live.focusedRow ?? live.focused;
+    if (selection) here.selection = selection;
+  } catch { /* the control registry is not installed yet */ }
   const label = rt.search.entries().find((e) => e.kind === 'view' && (e.focus as { view?: string }).view === s.view)?.label;
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
@@ -152,6 +232,27 @@ async function reloadPage(hard: boolean): Promise<void> {
     return;
   }
   location.reload();
+}
+
+/**
+ * Capture what this console shows for a screenshot command and upload it. → [ok, what happened, the ack's result]. The
+ * image goes up first, so the server holds it when the ack arrives.
+ */
+async function runScreenshot(rt: AxfRuntime, m: ConsoleMessage, client: string): Promise<[boolean, string, Record<string, unknown>]> {
+  const errors = consoleMessageErrors(m);
+  if (errors.length) return [false, errors.join('; '), {}];
+  let el: Element | null = null;
+  const what = m.address || m.selector || '';
+  if (m.address) el = await controlRegistry(rt).elementFor(m.address);
+  else if (m.selector) { try { el = document.querySelector(m.selector); } catch { return [false, `"${m.selector}" is not a CSS selector`, {}]; } }
+  if (what && !el) return [false, `${what} is not on the screen`, { state: consoleShotState(controlState(rt), hereOf(rt)) }];
+  // so a screen or dialog opened just before is painted (a background tab runs no frames: a short timer then)
+  await painted();
+  const shot = await capturePage(el, what || 'page');
+  const up = await pluginFetch(FOLDER, `shot?client=${encodeURIComponent(client)}&id=${encodeURIComponent(m.id)}`, { method: 'POST', headers: { 'content-type': 'image/png' }, body: shot.blob });
+  if (!up.ok) return [false, `the screenshot could not be uploaded (${up.status})`, {}];
+  const state = consoleShotState(controlState(rt), hereOf(rt), { capture: shot.capture, width: shot.width, height: shot.height, scale: shot.scale });
+  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state }];
 }
 
 /** Run one message; → [ok, what happened]. */
@@ -227,22 +328,50 @@ function ConsoleCommandsClient() {
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();
+    /** When this console last proved it is alive (a beat or a hello left). */
+    let lastBeat = 0;
     /** A beat; the server answers `hello: true` when it holds no catalog for this tab (it restarted): say hello now. */
-    const seen = (body: Record<string, unknown>): Promise<unknown> => post('seen', { client: id, ...body }).then(async (r) => {
-      const j = (await r.json().catch(() => ({}))) as { hello?: boolean };
-      if (j.hello) { catalogKey = ''; await announce(document.visibilityState === 'visible' && rt.inFront()); }
-    }).catch(() => undefined);
-    const announce = (used = false): Promise<unknown> => {
+    const seen = (body: Record<string, unknown>): Promise<unknown> => {
+      lastBeat = Date.now();
+      return post('seen', { client: id, ...body }).then(async (r) => {
+        const j = (await r.json().catch(() => ({}))) as { hello?: boolean };
+        if (j.hello) { catalogKey = ''; await announce(document.visibilityState === 'visible' && rt.inFront()); }
+      }).catch(() => undefined);
+    };
+    /** Say hello with the catalog when it changed (or `used`), else beat; `onlyNew`: nothing at all when it is the same. */
+    const announce = (used = false, onlyNew = false): Promise<unknown> => {
       const catalog = catalogOf(rt);
       // values count: a changed setting re-sends the catalog so `get` reads what the screen shows
       const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}:${hashText(JSON.stringify(catalog.items.filter((i) => i.kind === 'field').map((i) => i.value)))}`;
-      if (key === catalogKey && !used) return seen({ here: catalog.here, ...where() });
+      if (key === catalogKey && !used && !pick) return onlyNew ? Promise.resolve() : seen({ here: catalog.here, ...where() });
       catalogKey = key;
-      const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
+      const body = { client: id, page: PAGE_ID, app, title: document.title, device: device(), ...(shellHost() ? { shell: SHELL } : {}), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
       pick = '';
+      lastBeat = Date.now();
       return post('hello', body).catch(() => undefined);
     };
     void announce(document.hasFocus());
+    // The stream is the beat's second clock: a page nothing shows has its timers throttled (the console app's folded
+    // overlay), but every chunk the server sends still arrives, so the console stays on the server's list.
+    const onChunk = () => { if (Date.now() - lastBeat >= HEARTBEAT_MS - 2_000) void announce(false); };
+    // A plugin's screens join the catalog after the first hello: send it as soon as it changes, not with the next beat.
+    // Only while the page settles: later changes (a plugin switched on) go with the next beat, or when the server asks.
+    let recheck: ReturnType<typeof setTimeout> | undefined;
+    const mounted = Date.now();
+    const offCatalog = rt.subscribe(() => {
+      if (recheck || Date.now() - mounted > CATALOG_SETTLE_MS) return;
+      recheck = setTimeout(() => { recheck = undefined; void announce(false, true); }, CATALOG_RECHECK_MS);
+    });
+    // The app handed a link to this page instead of loading it (a wake while the console is already up): its queued
+    // command is asked for now.
+    const onLink = (e: Event) => {
+      const cmd = commandOf(String((e as CustomEvent<{ url?: string }>).detail?.url ?? ''));
+      if (!cmd) return;
+      pick = cmd;
+      wake();
+      void announce(true);
+    };
+    window.addEventListener('axf-deep-link', onLink);
     let lastView = rt.getState().view;
     const offState = rt.subscribe(() => {
       const v = rt.getState().view;
@@ -270,10 +399,10 @@ function ConsoleCommandsClient() {
     const offSettings = rt.settings.onAnyChange(() => { clearTimeout(soon); soon = setTimeout(() => void announce(false), 800); });
     // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
     // server stop sending here at once.
-    const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
+    const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id, page: PAGE_ID }, true).catch(() => undefined); };
     window.addEventListener('pagehide', bye);
     stream = followSse(
-      (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}`, { signal }),
+      (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}&page=${PAGE_ID}`, { signal }).then((r) => tapped(r, onChunk)),
       (f) => {
         const m = sseJson<ConsoleMessage | { $axf: 'console-hello@1' }>(f);
         // the server restarted and lost this console's catalog: say hello again so commands resolve here
@@ -291,7 +420,18 @@ function ConsoleCommandsClient() {
             const line = describeAnswer(answer);
             markDone(m.id, [answer.ok, line]);
             if (answer.ok && answer.verb !== 'state' && answer.verb !== 'search' && answer.verb !== 'list' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console control');
-            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where() }).catch(() => undefined);
+            const surfaced = answer.ok && (answer.verb === 'open' || answer.verb === 'focus') && surface();
+            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where(), ...(surfaced ? { surfaced } : {}) }).catch(() => undefined);
+          });
+          return;
+        }
+        // a screenshot: capture, upload, then ack with the screen state (no toast: it changes nothing on screen)
+        if (m.op === 'screenshot') {
+          // say at once that this tab is on it: a capture takes seconds, and the server would try the next console
+          void post('seen', { client: id, working: m.id }).catch(() => undefined);
+          void within(runScreenshot(rt, m, id), CAPTURE_TIMEOUT_MS, 'the capture').catch((e: unknown) => [false, String((e as Error)?.message ?? e), {}] as [boolean, string, Record<string, unknown>]).then(([ok, line, result]) => {
+            markDone(m.id, [ok, line]);
+            void post('ack', { client: id, id: m.id, ok, message: line, result, here: hereOf(rt), ...where() }).catch(() => undefined);
           });
           return;
         }
@@ -299,14 +439,16 @@ function ConsoleCommandsClient() {
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        // a console the app hides comes to the front on what was opened (no reload)
+        const surfaced = res[0] && SURFACING.includes(m.op) && surface();
+        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where(), ...(surfaced ? { surfaced } : {}) }).catch(() => undefined);
         if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
       // a deploy restarts the server: come back within seconds, not after a minute of back-off
       { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },
     );
     const stop = stream;
-    return () => { stop(); offState(); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    return () => { stop(); offState(); offCatalog(); clearTimeout(recheck); window.removeEventListener('axf-deep-link', onLink); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }
@@ -333,11 +475,11 @@ function WakePanel() {
   return (
     <div className="fx-stack">
       {err && <Note tone="warning">{err}</Note>}
-      <Switch label="Wake the console through AmberX when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
-        hint="A command that finds no open console waits here; after a few seconds AmberX on your phone opens the console so it runs. Needs the AmberX app with console wake." />
+      <Switch label="Wake the console through your phone when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
+        hint="A command that finds no open console waits here; after a few seconds your paired phone (Phone Connect) opens the console so it runs." />
       <SelectField label="How long a command waits for a console" value={String(cfg.ttlS)} options={TTL_CHOICES}
         hint="After this it's dropped and never runs late." onChange={(v) => void save({ ttlS: Number(v) })} />
-      <SelectField label="Browser AmberX opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}
+      <SelectField label="Browser the phone opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}
         onChange={(v) => void save({ browser: v as WakeSettings['browser'] })} />
       {!owner && <Note tone="info">Only the console's owner changes these.</Note>}
     </div>
@@ -399,7 +541,7 @@ function ConsolesPanel() {
         )}
       </Container>
       <Note tone="info">
-        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code> and <code>console_clients</code> (the console's MCP, also through axHub). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
+        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code>, <code>console_clients</code> and <code>console_screenshot</code> (the console's MCP, also through axHub). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
       </Note>
     </div>
   );

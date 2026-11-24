@@ -87,13 +87,6 @@
         "text": "Replays the last walkthrough. Part of Gizmo guide.",
         "kind": "menu-item",
         "draft": true
-      },
-      {
-        "target": "re-record-the-amberx-walkthrough",
-        "title": "Re-record the AmberX walkthrough",
-        "text": "Shows “Re-record the AmberX walkthrough”. Part of Gizmo guide.",
-        "kind": "button",
-        "draft": true
       }
     ],
     "intros": []

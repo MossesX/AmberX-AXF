@@ -1,0 +1,237 @@
+{
+  "$comment": "app-menus@1 golden outputs (framework/spec/check-app-menus.mjs --write). The Kotlin twin replays these when it lands (spec/PORTING.md).",
+  "expected": {
+    "contract": "app-menus@1",
+    "kinds": {
+      "nav": "nav-menu",
+      "appmenu": "app-menu"
+    },
+    "kindOf": {
+      "nav-menu": "nav",
+      "app-menu": "appmenu",
+      "toolbar": null,
+      "(empty)": null
+    },
+    "typeOf": {
+      "nav": "nav-menu",
+      "appmenu": "app-menu",
+      "nav-menu": "nav-menu",
+      "menu": null,
+      "(empty)": null
+    },
+    "builtFor": {
+      "app:molly": "molly",
+      "app:": null,
+      "app:Bad Name": null,
+      "plugin:molly": null,
+      "molly": null,
+      "(empty)": null
+    },
+    "defaultIds": {
+      "molly/nav": "default-molly-nav",
+      "molly/appmenu": "default-molly-appmenu",
+      "molly/toolbar": null,
+      "console-web/nav": "default-console-web-nav",
+      "console-web/appmenu": "default-console-web-appmenu",
+      "console-web/toolbar": null,
+      "Bad/nav": null,
+      "Bad/appmenu": null,
+      "Bad/toolbar": null
+    },
+    "parseDefault": {
+      "default-molly-nav": {
+        "app": "molly",
+        "kind": "nav",
+        "type": "nav-menu"
+      },
+      "default-console-web-appmenu": {
+        "app": "console-web",
+        "kind": "appmenu",
+        "type": "app-menu"
+      },
+      "default-molly-toolbar": null,
+      "molly": null,
+      "default--nav": null
+    },
+    "appOfDefaults": {
+      "own": "molly",
+      "appOnly": "molly",
+      "swapped": null,
+      "shared": null,
+      "none": null
+    },
+    "allowed": {
+      "nav-menu/default-molly-nav": true,
+      "nav-menu/molly-rail": true,
+      "nav-menu/molly-big": true,
+      "nav-menu/default-axhub-web-nav": false,
+      "nav-menu/sidebar-list": false,
+      "app-menu/default-molly-appmenu": true,
+      "app-menu/standard-desktop": false,
+      "toolbar/standard-icons": true
+    },
+    "choices": {
+      "mollyNav": [
+        {
+          "id": "default-molly-nav",
+          "name": "Molly navigation (default)",
+          "description": "",
+          "isDefault": true
+        },
+        {
+          "id": "molly-big",
+          "name": "Big",
+          "description": "",
+          "isDefault": false
+        },
+        {
+          "id": "molly-rail",
+          "name": "Molly rail",
+          "description": "",
+          "isDefault": false
+        }
+      ],
+      "mollyApp": [
+        {
+          "id": "default-molly-appmenu",
+          "name": "Molly app menu (default)",
+          "description": "",
+          "isDefault": true
+        }
+      ],
+      "axhubNav": [
+        {
+          "id": "default-axhub-web-nav",
+          "name": "axHub navigation (default)",
+          "description": "",
+          "isDefault": true
+        }
+      ],
+      "unknown": []
+    },
+    "picks": {
+      "none": {
+        "id": "default-molly-nav",
+        "defaultId": "default-molly-nav",
+        "locked": true,
+        "source": "default"
+      },
+      "picked": {
+        "id": "molly-big",
+        "defaultId": "default-molly-nav",
+        "locked": false,
+        "source": "pick"
+      },
+      "shared": {
+        "id": "default-molly-nav",
+        "defaultId": "default-molly-nav",
+        "locked": true,
+        "source": "migrated"
+      },
+      "otherApp": {
+        "id": "default-molly-nav",
+        "defaultId": "default-molly-nav",
+        "locked": true,
+        "source": "migrated"
+      },
+      "theDefault": {
+        "id": "default-molly-nav",
+        "defaultId": "default-molly-nav",
+        "locked": true,
+        "source": "default"
+      }
+    },
+    "sets": {
+      "default": {
+        "id": "default-molly-nav"
+      },
+      "empty": {
+        "id": "default-molly-nav"
+      },
+      "pick": {
+        "id": "molly-rail"
+      },
+      "shared": {
+        "error": "\"sidebar-list\" is not a navigation menu built for molly."
+      },
+      "otherApp": {
+        "error": "\"default-axhub-web-nav\" is not a navigation menu built for molly."
+      },
+      "badKind": {
+        "error": "No menu kind \"toolbar\" (nav | appmenu)."
+      }
+    },
+    "args": {
+      "nav": {
+        "kind": "nav",
+        "type": "nav-menu",
+        "which": "molly-rail"
+      },
+      "type": {
+        "kind": "appmenu",
+        "type": "app-menu",
+        "which": "default"
+      },
+      "colon": {
+        "kind": "nav",
+        "type": "nav-menu",
+        "which": "a:b"
+      },
+      "bad": null,
+      "none": null
+    },
+    "state": [
+      {
+        "kind": "nav",
+        "type": "nav-menu",
+        "id": "molly-big",
+        "defaultId": "default-molly-nav",
+        "locked": false,
+        "choices": [
+          "default-molly-nav",
+          "molly-big",
+          "molly-rail"
+        ]
+      },
+      {
+        "kind": "appmenu",
+        "type": "app-menu",
+        "id": "default-molly-appmenu",
+        "defaultId": "default-molly-appmenu",
+        "locked": true,
+        "choices": [
+          "default-molly-appmenu"
+        ]
+      }
+    ],
+    "audit": {
+      "ok": {
+        "app": "molly",
+        "errors": []
+      },
+      "sharedDefault": {
+        "app": "molly",
+        "errors": [
+          "manifest defaults[\"nav-menu\"] is \"sidebar-list\", must be \"default-molly-nav\" (no shared menu)"
+        ]
+      },
+      "foreign": {
+        "app": "molly",
+        "errors": [
+          "nav-menu \"default-axhub-web-nav\" is built for axhub-web, not molly",
+          "nav-menu \"default-axhub-web-nav\" is another app's default",
+          "app-menu \"standard-desktop\" has no data.builtFor (every app menu is built for one app)"
+        ]
+      },
+      "missing": {
+        "app": "molly",
+        "errors": [
+          "manifest defaults[\"nav-menu\"] is null, must be \"default-molly-nav\" (no shared menu)",
+          "missing nav-menu asset \"default-molly-nav\" in the app's own assets",
+          "manifest defaults[\"app-menu\"] is null, must be \"default-molly-appmenu\" (no shared menu)",
+          "missing app-menu asset \"default-molly-appmenu\" in the app's own assets"
+        ]
+      }
+    }
+  }
+}

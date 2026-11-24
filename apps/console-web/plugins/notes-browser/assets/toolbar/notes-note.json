@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "notes-note",
+  "name": "Note",
+  "version": "1.0.0",
+  "description": "The open note's toolbar: switch editing on or off, save the edit, rename the note and delete it (the hub keeps its history). The Move to folder pick rides on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "notes-browser", "notes", "note"],
+  "data": {
+    "scope": "view:notes",
+    "slot": "note",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "edit",
+        "label": "Edit",
+        "items": [
+          { "id": "edit", "icon": "edit", "label": "Edit", "action": "handler:notes.edit", "checked": "state:note.editing", "enabledWhen": "note.path", "priority": 300, "overflow": "never" },
+          { "id": "save", "icon": "save", "label": "Save", "action": "handler:notes.save", "visibleWhen": "note.editing", "enabledWhen": "note.dirty", "priority": 290, "overflow": "never" },
+          { "id": "rename", "icon": "type", "label": "Rename", "action": "handler:notes.rename", "enabledWhen": "note.idle", "priority": 220 }
+        ]
+      },
+      {
+        "id": "danger",
+        "label": "Delete",
+        "items": [
+          { "id": "delete", "icon": "trash", "label": "Delete", "action": "handler:notes.delete", "destructive": true, "enabledWhen": "note.idle", "priority": 100 }
+        ]
+      }
+    ]
+  }
+}

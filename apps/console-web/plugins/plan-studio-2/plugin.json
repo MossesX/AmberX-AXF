@@ -6,10 +6,9 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). The original Plan Studio is untouched.",
+  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). A sent plan reads its steps and their statuses from the builds store (never a copy): the orchestrator's steps replace the planning steps, marked From orchestrator, and check off live; the plan is locked until its build lands or is cancelled, and its context menu carries the orchestrator's actions. It is the one Plan Studio: it provides plans@1 (plans.mjs), so control@1 planner.plans, \"put it in a plan for later\" and the orchestrator read and write this tree.",
   "targets": [
-    "axf-console",
-    "amberx-droid"
+    "axf-console"
   ],
   "provides": [
     "view:plan-studio-2",
@@ -18,14 +17,17 @@
     "dialog:plan-studio-2.move",
     "dialog:plan-studio-2.link",
     "dialog:plan-studio-2.build",
-    "service:plan-tree@1"
+    "dialog:plan-studio-2.history",
+    "service:plan-tree@1",
+    "service:plans@1"
   ],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
   "optional": [
-    "axf.agent-voice@1"
+    "axf.agent-voice@1",
+    "axf.build-dispatch@1"
   ],
   "banner": false,
   "tabable": {
@@ -42,6 +44,9 @@
     "mentions": [
       "apps/console-web/plugins/README.md",
       "apps/console-web/plugins/wake-listener/catalog.mjs",
+      "framework/cli/project-seed.mjs",
+      "framework/spec/CONTROL.md",
+      "_claude/shared/rules/RULES.md",
       ".github/workflows/android.yml",
       "_claude/memory/docs/rebuilds/fable-rebuild-plan-studio-cleared-out.md"
     ]
@@ -50,28 +55,185 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /state", "id": "state", "title": "The whole tree", "description": "Every item of Plan Studio 2.0 with the trash, progress and the allowed kinds, statuses, priorities, models and link types.", "readOnly": true },
-      { "route": "GET /tree", "id": "tree", "title": "The tree, nested", "description": "Items as nested rows (children inside their parent); `id` limits it to one branch.", "readOnly": true },
-      { "route": "GET /item/{id}", "id": "item", "title": "One item", "description": "An item by id or by words in its title, with its path, children and ancestors.", "readOnly": true },
-      { "route": "GET /find", "id": "find", "title": "Find items", "description": "Words → matching items, best first; each hit's `focus` opens it in the console (plan-studio-2.focus).", "readOnly": true },
-      { "route": "GET /export", "id": "export", "title": "Export as Markdown or JSON", "description": "The whole tree or one branch as Markdown (`format=md`) or a plan-tree-export@1 JSON (`format=json`).", "readOnly": true },
-      { "route": "POST /add", "id": "add", "title": "Add an item", "description": "A new plan, section, step, note, list or list item, inside `parent` (an id or words; empty = top level) at `index`." },
-      { "route": "POST /rename", "id": "rename", "title": "Rename an item" },
-      { "route": "POST /edit", "id": "edit", "title": "Edit an item", "description": "Change title, body, status, done, priority, tags, model, minutes, kind or collapsed." },
-      { "route": "POST /move", "id": "move", "title": "Move an item", "description": "Into another item (`parent`, empty = top level) at `index`; everything under it moves along." },
-      { "route": "POST /nudge", "id": "nudge", "title": "Move an item up or down", "description": "One place among its siblings: delta -1 (up) or 1 (down)." },
-      { "route": "POST /indent", "id": "indent", "title": "Indent an item", "description": "Into the sibling above it." },
-      { "route": "POST /outdent", "id": "outdent", "title": "Outdent an item", "description": "Out to after its parent." },
-      { "route": "POST /duplicate", "id": "duplicate", "title": "Duplicate an item", "description": "A copy of it and everything under it, right after it." },
-      { "route": "DELETE /item/{id}", "id": "delete", "title": "Delete an item (to the trash, undo brings it back)", "destructive": true, "confirm": true },
-      { "route": "POST /undo", "id": "undo", "title": "Undo a delete", "description": "Brings the newest deleted item (or `trashId`) back where it was." },
-      { "route": "POST /link", "id": "link", "title": "Link an item", "description": "An explicit link to a to-do, build, note, Shipped feature, another plan item or a URL. Never a sync." },
-      { "route": "POST /unlink", "id": "unlink", "title": "Remove a link" },
-      { "route": "POST /collapse", "id": "collapse", "title": "Collapse or expand", "description": "One item (`id`) or everything (`all: true`); `collapsed: false` expands." },
-      { "route": "POST /import", "id": "import", "title": "Import items", "description": "A plan-tree-export@1 (or a list of items) under `parent`; ids are made new." },
-      { "route": "POST /build", "id": "build", "title": "Send to the build orchestrator", "description": "The item's open steps become a pending build's steps; `preview: true` shows the build without writing it." },
-      { "route": "POST /say", "id": "say", "title": "Say a plan command", "description": "One spoken sentence (new plan X, add a step Y to X, rename X to Y, delete X, undo, move X into Y, mark X done, send X to the build orchestrator, find X, open X) → the matching change, with what to say back." },
-      { "route": "DELETE /all", "id": "clear", "title": "Clear everything (the trash too)", "destructive": true, "confirm": true }
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "The whole tree",
+        "description": "Every item of Plan Studio 2.0 with the trash, progress and the allowed kinds, statuses, priorities, models and link types. A sent plan carries `live` (its build's state) and `locked`; the steps the orchestrator filed for it are listed under it with `origin: orchestrator`, read from the builds store.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /tree",
+        "id": "tree",
+        "title": "The tree, nested",
+        "description": "Items as nested rows (children inside their parent); `id` limits it to one branch.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /item/{id}",
+        "id": "item",
+        "title": "One item",
+        "description": "An item by id or by words in its title, with its path, children and ancestors.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /find",
+        "id": "find",
+        "title": "Find items",
+        "description": "Words → matching items, best first; each hit's `focus` opens it in the console (plan-studio-2.focus).",
+        "readOnly": true
+      },
+      {
+        "route": "GET /export",
+        "id": "export",
+        "title": "Export as Markdown or JSON",
+        "description": "The whole tree or one branch as Markdown (`format=md`) or a plan-tree-export@1 JSON (`format=json`).",
+        "readOnly": true
+      },
+      {
+        "route": "POST /add",
+        "id": "add",
+        "title": "Add an item",
+        "description": "A new plan, section, step, note, list or list item, inside `parent` (an id or words; empty = top level) at `index`."
+      },
+      {
+        "route": "POST /rename",
+        "id": "rename",
+        "title": "Rename an item",
+        "description": "Gives an item (by id or by words in its title) a new title. Its children, links and place in the tree stay as they are."
+      },
+      {
+        "route": "POST /edit",
+        "id": "edit",
+        "title": "Edit an item",
+        "description": "Change title, body, status, done, priority, tags, model, minutes, kind or collapsed."
+      },
+      {
+        "route": "POST /move",
+        "id": "move",
+        "title": "Move an item",
+        "description": "Into another item (`parent`, empty = top level) at `index`; everything under it moves along."
+      },
+      {
+        "route": "POST /nudge",
+        "id": "nudge",
+        "title": "Move an item up or down",
+        "description": "One place among its siblings: delta -1 (up) or 1 (down)."
+      },
+      {
+        "route": "POST /indent",
+        "id": "indent",
+        "title": "Indent an item",
+        "description": "Into the sibling above it."
+      },
+      {
+        "route": "POST /outdent",
+        "id": "outdent",
+        "title": "Outdent an item",
+        "description": "Out to after its parent."
+      },
+      {
+        "route": "POST /duplicate",
+        "id": "duplicate",
+        "title": "Duplicate an item",
+        "description": "A copy of it and everything under it, right after it."
+      },
+      {
+        "route": "DELETE /item/{id}",
+        "id": "delete",
+        "title": "Delete an item (to the trash, undo brings it back)",
+        "description": "Moves an item and everything under it to the trash; undo brings it back where it was.",
+        "destructive": true,
+        "confirm": true
+      },
+      {
+        "route": "POST /undo",
+        "id": "undo",
+        "title": "Undo a delete",
+        "description": "Brings the newest deleted item (or `trashId`) back where it was."
+      },
+      {
+        "route": "POST /link",
+        "id": "link",
+        "title": "Link an item",
+        "description": "An explicit link to a to-do, build, note, Shipped feature, another plan item or a URL. Never a sync."
+      },
+      {
+        "route": "POST /unlink",
+        "id": "unlink",
+        "title": "Remove a link",
+        "description": "Removes one link from an item. The linked to-do, build, note or page itself is not changed."
+      },
+      {
+        "route": "POST /collapse",
+        "id": "collapse",
+        "title": "Collapse or expand",
+        "description": "One item (`id`) or everything (`all: true`); `collapsed: false` expands."
+      },
+      {
+        "route": "POST /import",
+        "id": "import",
+        "title": "Import items",
+        "description": "A plan-tree-export@1 (or a list of items) under `parent`; ids are made new."
+      },
+      {
+        "route": "POST /build",
+        "id": "build",
+        "title": "Send to the build orchestrator",
+        "description": "The item becomes one pending Pipeline 2.0 build (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps); `preview: true` shows it without writing it."
+      },
+      {
+        "route": "POST /emergency",
+        "id": "emergency",
+        "title": "Send as an emergency build",
+        "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Like Send to the build orchestrator, and the build is tagged emergency: it skips the line, builds in the 2 emergency slots and lands first."
+      },
+      {
+        "route": "POST /orchestrate",
+        "id": "orchestrate",
+        "title": "Orchestrator action on a sent plan or step",
+        "description": "One action on a plan that was sent to the orchestrator, or on one of the steps the orchestrator filed for it: `action` is queue, hold, release, retry, rebuild, run-ci, land or cancel, or an answer to a clash (run-all, defer); `id` is the plan, anything inside it, or an orchestrator step row. The orchestrator decides whether it fits where the build is and answers with what happened, or with why not."
+      },
+      {
+        "route": "GET /plans/{plan_id}/build",
+        "id": "plan-build",
+        "title": "The build a plan was sent as",
+        "description": "Read live from the builds store on every call, never from the plan tree: the build's number, its state with the plain status line, the waiting reason, the merge line (2nd to merge, waiting for build #41), who split it, a clash with its options, and every step with its unique id, split mark, triage model and status. `build` is null for a plan that was not sent.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /history/{id}",
+        "id": "history",
+        "title": "Planning steps a send replaced",
+        "description": "The planning steps that left an item when the orchestrator filed its own steps, kept on the item: one entry per build.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /restore-steps",
+        "id": "restore-steps",
+        "title": "Bring replaced planning steps back",
+        "description": "Puts the planning steps of a history entry (`entry`, the newest when empty) back into the item where they were. Refused while the item is locked by a sent build."
+      },
+      {
+        "route": "POST /sync",
+        "id": "sync",
+        "title": "Sync sent plans with the builds store",
+        "description": "Brings the tree in line with the builds store now: planning steps of a build that has been split move to the item's history; a build cancelled before it landed gives them back. Every read does this by itself."
+      },
+      {
+        "route": "POST /say",
+        "id": "say",
+        "title": "Say a plan command",
+        "description": "One spoken sentence (new plan X, add a step Y to X, rename X to Y, delete X, undo, move X into Y, mark X done, send X to the build orchestrator, find X, open X) → the matching change, with what to say back."
+      },
+      {
+        "route": "DELETE /all",
+        "id": "clear",
+        "title": "Clear everything (the trash too)",
+        "description": "Deletes every item and empties the trash. This cannot be undone.",
+        "destructive": true,
+        "confirm": true
+      }
     ]
   },
   "tokens": {
@@ -87,14 +249,22 @@
       "--fx-dens-gap-sm",
       "--fx-dens-gap-xl",
       "--fx-dens-gap-xs",
+      "--fx-font",
+      "--fx-font-display",
+      "--fx-font-mono",
       "--fx-font-size",
+      "--fx-info",
       "--fx-muted",
       "--fx-opacity-tint",
       "--fx-radius-sm",
       "--fx-size-icon-button-size",
+      "--fx-success",
       "--fx-surface",
       "--fx-type-scale-sm",
-      "--fx-type-scale-xs"
+      "--fx-type-scale-xs",
+      "--fx-type-weights-medium",
+      "--fx-type-weights-strong",
+      "--fx-warning"
     ],
     "defines": []
   },
@@ -102,29 +272,7 @@
     "model": "fable",
     "builtAt": "2026-11-16"
   },
+  "buildHooks": "build-hook.mjs",
   "help": "help.json",
-  "opens": "main",
-  "tokens": {
-    "$axf": "token-registry@1",
-    "uses": [
-      "--fx-accent",
-      "--fx-border",
-      "--fx-border-w",
-      "--fx-danger",
-      "--fx-dens-gap-2xl",
-      "--fx-dens-gap-lg",
-      "--fx-dens-gap-md",
-      "--fx-dens-gap-sm",
-      "--fx-dens-gap-xl",
-      "--fx-dens-gap-xs",
-      "--fx-font-size",
-      "--fx-muted",
-      "--fx-opacity-tint",
-      "--fx-radius-sm",
-      "--fx-size-icon-button-size",
-      "--fx-surface",
-      "--fx-type-scale-sm",
-      "--fx-type-scale-xs"
-    ]
-  }
+  "opens": "main"
 }

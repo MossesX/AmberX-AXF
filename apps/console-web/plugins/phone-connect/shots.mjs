@@ -6,6 +6,8 @@
  *
  *   node apps/console-web/plugins/phone-connect/shots.mjs <out-dir>   (build the console first: npm run build)
  *   PC_SHOTS_PORT=7098 · PW_CHROMIUM=<chromium path> · PC_SHOTS_ONLY=tabs,stacked,split
+ *   PC_SHOTS_STATE=disconnected   the phone's key was refused: the "Disconnected … Re-pair" state (files `state-disconnected--…`)
+ *   PC_SHOTS_TAB=Features         which tab the shot shows (default Phones)
  */
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -38,17 +40,29 @@ const CATALOG = {
   approval: { label: 'Approval prompts', description: 'Approvals and veto countdowns show on the phone; only your tap there decides.' },
   recorder: { label: 'Audio recorder', description: 'Start, stop and read the phone\'s audio-output recorder (a start always asks you first).' },
   voice: { label: 'Voice line', description: 'The console assistant may say a line or listen once through the phone.' },
+  follow: { label: 'Follow Amber on the phone', description: 'When Follow Amber is on and Amber shows a screen, the console also comes to the front on the phone at that screen.' },
 };
-const FEATURES = { open_url: true, notify: true, approval: true, recorder: true, voice: false };
+const FEATURES = { open_url: true, notify: true, approval: true, recorder: true, voice: false, follow: true };
 const cmd = (id, command, status, min, from, error) => ({ id, command, status, at: at(min), from, result: status === 'done' ? { ok: true } : status === 'failed' ? { ok: false, error } : null });
 const COMMANDS = [
   cmd('c1', 'notify', 'done', 2, { kind: 'service', who: 'alerts', via: 'console' }),
   cmd('c2', 'open_url', 'done', 9, { kind: 'session', who: 'axf-build-gate', via: 'mcp' }),
-  cmd('c3', 'recorder.start', 'done', 25, { kind: 'session', who: 'claude-session', via: 'hub' }),  // axf-not-plugin:claude-session: a sample caller
-  cmd('c4', 'voice', 'failed', 40, { kind: 'session', who: 'ai-assistant', via: 'console' }, { code: 'denied', message: 'Voice line is switched off in Settings → Plugins → Phone Connect' }),  // axf-not-plugin:ai-assistant: a sample caller
+  cmd('c3', 'recorder.start', 'done', 25, { kind: 'session', who: 'claude-session', via: 'hub' }), // axf-not-plugin:claude-session (who sent it)
+  cmd('c4', 'voice', 'failed', 40, { kind: 'session', who: 'ai-assistant', via: 'console' }, { code: 'denied', message: 'Voice line is switched off in Settings → Plugins → Phone Connect' }), // axf-not-plugin:ai-assistant (who sent it)
 ];
 const STATUS = { ok: true, $axf: 'phone-connect-status@1', at: at(0), paired: true, device: DEVICE, presence: 'online', online: true, devices: 2,
   pairing: { code: 'R6HUG9C9', expiresAt: at(-8), secondsLeft: 480, state: 'pending', claimUrl: '', pairPage: '' }, features: FEATURES, recorder: DEVICE.capabilityState['recorder@1'], origin: 'https://console.amberxai.com' };
+const STATE = process.env.PC_SHOTS_STATE === 'disconnected' ? 'disconnected' : 'connected';
+const TAB = process.env.PC_SHOTS_TAB || 'Phones';
+if (STATE === 'disconnected') {
+  // the console refused the phone's key 3 minutes ago; the phone was last seen 40 minutes ago
+  Object.assign(DEVICE, { lastSeenAt: at(40), online: false, presence: 'offline: last seen 40 min ago' });
+  Object.assign(STATUS, { presence: DEVICE.presence, online: false, pairing: null,
+    link: { state: 'disconnected', message: 'Disconnected: samsung SM-S948U used a key the console no longer accepts. Tap to re-pair.', repair: '', rejected: { at: at(3), first: at(38), count: 12, code: 'denied', prefix: 'tok_Q7xk' } },
+    approvals: { ok: true, watching: false, message: 'No phone is online, so approvals wait in the console and on axHub.', at: at(0) } });
+} else {
+  Object.assign(STATUS, { link: { state: 'connected', message: 'samsung SM-S948U is connected.', repair: '', rejected: null }, approvals: { ok: true, watching: true, waiting: 0, pushed: [], message: '0 waiting on axHub, 0 new on the phone.', at: at(0) } });
+}
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
 const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: process.env.PC_SHOTS_DEBUG ? 'inherit' : 'ignore' });
@@ -94,9 +108,9 @@ try {
         await page.getByText('Phone Connect', { exact: true }).first().click({ timeout: 5000 }).catch((e) => say(`sub-tab: ${e.message.split('\n')[0]}`));
       }
       await page.waitForSelector('.axp-phone', { timeout: 15_000 }).catch(async (e) => { await page.screenshot({ path: join(OUT, `debug-${layout}-${device}.png`) }); say(await page.evaluate(() => document.querySelector('main, #root')?.innerText?.slice(0, 600) ?? '')); throw e; });
-      await page.locator('.axp-phone [role="tab"]', { hasText: /^Phones/ }).first().click({ timeout: 3000 }).catch(() => undefined);
+      await page.locator('.axp-phone [role="tab"]', { hasText: new RegExp(`^${TAB}`) }).first().click({ timeout: 3000 }).catch(() => undefined);
       await sleep(900);
-      const file = join(OUT, `opt-${layout}--phone-connect-settings-${device}.png`);
+      const file = join(OUT, STATE === 'connected' && TAB === 'Phones' ? `opt-${layout}--phone-connect-settings-${device}.png` : `state-${STATE}-${TAB.toLowerCase()}--phone-connect-settings-${device}.png`);
       await page.locator('.axp-phone').first().scrollIntoViewIfNeeded().catch(() => undefined);
       await page.screenshot({ path: file, fullPage: !mobile });
       shots.push(file);

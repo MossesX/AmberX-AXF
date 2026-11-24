@@ -34,7 +34,6 @@ const FRAME = 'toolbar-inventory@1';
 const ROOTS = [
   { app: 'console-web', dir: 'apps/console-web/src' }, { app: 'console-web', dir: 'apps/console-web/plugins' },
   { app: 'molly', dir: 'apps/molly/src' }, { app: 'molly', dir: 'apps/molly/plugins' },
-  { app: 'amberx-droid', dir: 'apps/amberx-droid/src' },
   { app: 'expenses', dir: 'apps/expenses/src' }, { app: 'expenses', dir: 'apps/expenses/plugins' },
   { app: 'framework', dir: 'framework/react' }, { app: 'framework', dir: 'framework/libs' },
 ];
@@ -146,7 +145,7 @@ function controlsOf(inner) {
 
 /* ------------------------------------------------------------------ owners: plugins, views, functions */
 
-const PLUGIN_ROOTS = ['apps/console-web/plugins', 'apps/molly/plugins', 'apps/amberx-droid/src/plugins', 'apps/expenses/plugins'];
+const PLUGIN_ROOTS = ['apps/console-web/plugins', 'apps/molly/plugins', 'apps/expenses/plugins'];
 
 function pluginAt(file) {
   for (const root of PLUGIN_ROOTS) {

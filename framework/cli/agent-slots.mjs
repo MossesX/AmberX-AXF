@@ -16,7 +16,7 @@
  * only judged on the host that started an entry, so the console never drops the VPS's sessions.
  *
  *   node framework/cli/agent-slots.mjs status [--json]           slots used / cap, the queue, heavy lock, memory
- *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--pid N] [--cwd d] [--agent id] [--json|--sh]
+ *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--step sN] [--pid N] [--cwd d] [--agent id] [--json|--sh]
  *   … wait <id> [--pid N]          block until the entry starts (exit 0) or is cancelled (exit 4)
  *   … claim <id>                   one try: exit 0 started, 3 still waiting, 4 gone
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
@@ -27,26 +27,38 @@
  *                                  heartbeat (newest of its log, its meter, its build lock), the exit recorded since --since
  *   … reap [--json]                free orphan slots: entries whose process is gone (no pid, no tmux, or a pane with no claude)
  *   … cancel <id> · up <id>        queue actions (the console's Builds page)
+ *   … data status|cutover|local [--apply] [--json]   the state on axf-data's agent_slots table (data-store@1 key mode)
  *   … reprioritise <build> <level> a build's priority changed: its waiting entries follow it (Move up still wins)
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *   … fill [--json]                free slots and what the dispatcher's fill round would launch next (dry run): the
+ *                                  build pipeline's fill status when its plugin is installed, else free slots only
  *
  * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
- * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
- * as maxAgentsSet), status carries `hard` { max, live, free } and `free` is the smaller of the two. Heavy steps run in
+ * the N+1st build whatever this queue thinks. Builds at once is that limit's one stored key (`maxBuilds`); `maxAgents`
+ * here is its read alias (see RETIRED_KEYS). Status carries `hard` { max, live, free } and `free` is the smaller of the
+ * booked and the really running count. Heavy steps run in
  * axf-builds.slice (systemd-run --scope) with the docker shim first on PATH (--cpus / --memory on test containers).
  * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
  * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
+
+/*
+ * Emergency slots (Brett, Nov 20 2026): a second pool beside the cap. An entry of a build that holds an emergency grant
+ * (build-limit.mjs grantEmergency: Brett's signed-in console only) queues and starts in the emergency pool
+ * (`emergencySlots` places, default 2): it never waits behind the ordinary line and never takes one of its slots, and
+ * ordinary entries never take an emergency place. Status carries `emergency` { used, cap, free, queued }.
+ */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { emergencyIds, journal as limitJournal, loadLimit, poolOf, rawLimit, saveLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
 import { buildMayTakeSlot } from './dispatch-gate.mjs';
 import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './build-lock.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
@@ -110,18 +122,38 @@ export function ordered(queue) {
     .sort((a, b) => LEVELS.indexOf(a.priority) - LEVELS.indexOf(b.priority) || a.seq - b.seq);
 }
 
-/** Sessions holding a slot (finished ones only wait to close and don't count). */
-export const holding = (state) => state.running.filter((r) => r.state === 'running' || r.state === 'starting');
+/**
+ * The pool an entry (waiting or running) belongs to: `emergency` when its build holds an emergency grant
+ * (settings.emergencyBuilds, from build-limit.mjs), else `builds`. Worked out from the grants on every call, never
+ * trusted from the entry, so a grant that is taken back moves the entry to the ordinary pool at once.
+ */
+export function poolOfEntry(e, settings = DEFAULTS) {
+  const ids = settings?.emergencyBuilds ?? [];
+  if (!ids.length || !e) return 'builds';
+  return (e.build && ids.includes(e.build)) || poolOf(e.session || e.name, ids) === 'emergency' ? 'emergency' : 'builds';
+}
+/** The cap of a pool: maxAgents, or emergencySlots for the emergency pool. */
+const poolCap = (settings, pool) => (pool === 'emergency' ? Math.max(0, Number(settings.emergencySlots) || 0) : settings.maxAgents);
 
 /**
- * May queue entry <id> start now? { go, position (1-based), reason: '' | 'cap' | 'memory' | 'gone', free }.
- * The first `free` entries in line may start; the memory guard holds everyone while available memory is under the floor.
+ * Sessions holding a slot (finished ones only wait to close and don't count). With `settings`: the ones of one pool
+ * (`builds` unless `pool` says emergency); without: every pool together.
+ */
+export const holding = (state, settings = null, pool = 'builds') => state.running.filter((r) => (r.state === 'running' || r.state === 'starting') && (!settings || poolOfEntry(r, settings) === pool));
+
+/**
+ * May queue entry <id> start now? { go, position (1-based), reason: '' | 'cap' | 'memory' | 'gone', free, pool }.
+ * Each pool has its own line and its own cap: the first `free` entries of the entry's pool may start. The memory
+ * guard holds everyone, emergency entries too, while available memory is under the floor (it protects the host).
  */
 export function decide(state, settings, id, memAvailBytes = null) {
-  const line = ordered(state.queue);
+  const all = ordered(state.queue);
+  const me = all.find((q) => q.id === id);
+  if (!me) return { go: false, position: 0, reason: 'gone', free: 0 };
+  const pool = poolOfEntry(me, settings);
+  const line = all.filter((q) => poolOfEntry(q, settings) === pool);
   const i = line.findIndex((q) => q.id === id);
-  if (i < 0) return { go: false, position: 0, reason: 'gone', free: 0 };
-  const free = Math.max(0, settings.maxAgents - holding(state).length);
+  const free = Math.max(0, poolCap(settings, pool) - holding(state, settings, pool).length);
   if (i >= free) return { go: false, position: i + 1, reason: 'cap', free };
   if (memAvailBytes != null && settings.minFreeGb > 0 && memAvailBytes < settings.minFreeGb * GIB) return { go: false, position: i + 1, reason: 'memory', free };
   return { go: true, position: i + 1, reason: '', free };
@@ -152,15 +184,21 @@ export function applyPriority(state, build, level) {
 }
 
 export function summary(state, settings, mem = {}, now = Date.now()) {
-  const line = ordered(state.queue);
-  const used = holding(state).length;
+  const all = ordered(state.queue);
+  const line = all.filter((q) => poolOfEntry(q, settings) === 'builds');
+  const used = holding(state, settings).length;
+  const eUsed = holding(state, settings, 'emergency').length; const eCap = poolCap(settings, 'emergency');
+  const tag = (e) => (poolOfEntry(e, settings) === 'emergency' ? { ...e, pool: 'emergency' } : e);
+  const eLine = all.filter((q) => poolOfEntry(q, settings) === 'emergency');
   return {
     $axf: 'agent-slots-status@1',
     used, cap: settings.maxAgents, free: Math.max(0, settings.maxAgents - used),
     queued: line.length,
+    /** The emergency pool, counted apart: never part of used / cap / free above. */
+    emergency: { used: eUsed, cap: eCap, free: Math.max(0, eCap - eUsed), queued: eLine.length },
     heavy: { used: state.heavy.length, cap: settings.maxHeavy, items: state.heavy },
-    running: state.running,
-    queue: line.map((q, n) => ({ ...q, position: n + 1 })),
+    running: state.running.map(tag),
+    queue: [...eLine.map((q, n) => ({ ...q, pool: 'emergency', position: n + 1 })), ...line.map((q, n) => ({ ...q, position: n + 1 }))],
     done: state.done.slice(-20),
     memory: { availGb: mem.avail != null ? Math.round((mem.avail / GIB) * 10) / 10 : null, swapMb: mem.swapMb ?? null, floorGb: settings.minFreeGb },
     guard: { tripsLastHour: state.guard.trips.filter((t) => now - t < 3600_000).length, lastTripAt: state.guard.trips.at(-1) ?? null },
@@ -181,11 +219,58 @@ const files = () => { const d = slotsDir(); return { dir: d, settings: join(d, '
 const readJson = (f, dflt) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return dflt; } };
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 
+/**
+ * Builds at once is one stored key: build-limit.json `maxBuilds` (settings-sources@1 `builds.atOnce`). The cap this
+ * queue used to keep for the same job, settings.json `maxAgents`, is a read alias: settings always carry `maxAgents`
+ * (= the one value) so every reader keeps working, but it is never written again. A store that only has the old key
+ * (no build-limit.json value) is still read from it, under the limit's default as before.
+ */
+export const RETIRED_KEYS = Object.freeze({ maxAgents: 'build-limit.json maxBuilds (Builds at once)' });
+const mtimeMs = (f) => { try { return statSync(f).mtimeMs; } catch { return 0; } };
+
+/**
+ * One-time move of settings.json `maxAgents` into build-limit.json `maxBuilds` (runs by itself on the first read that
+ * finds both). When the two disagree the one saved last is kept, except that a later `maxAgents` above the limit never
+ * raises it (only Brett raises the VPS's limit); what was kept and dropped is one `settings-migrated` line in the limit's
+ * journal (build-limit.log.jsonl).
+ * Returns the log line, or null when there was nothing to move.
+ */
+export function migrateBuildsAtOnce() {
+  const f = files();
+  const raw = readJson(f.settings, null);
+  const lim = rawLimit();
+  if (!raw || raw.maxAgents === undefined || lim?.maxBuilds === undefined) return null;
+  const old = normSettings({ maxAgents: raw.maxAgents }).maxAgents;
+  const cur = loadLimit().maxBuilds;
+  const oldAt = mtimeMs(f.settings); const curAt = Date.parse(lim.setAt || '') || mtimeMs(join(f.dir, 'build-limit.json'));
+  const iso = (ms) => (ms ? new Date(ms).toISOString() : '');
+  let kept = cur; let why = old === cur ? 'same value' : 'build-limit.json maxBuilds was saved last';
+  if (old !== cur && oldAt > curAt) {
+    if (old < cur) { kept = old; why = 'settings.json maxAgents was saved last'; }
+    else why = 'settings.json maxAgents was saved last but is above the limit, which only Brett raises';
+  }
+  try {
+    if (kept !== cur) saveLimit({ maxBuilds: kept }, { by: 'settings migration (maxAgents, saved last)', owner: true });
+    const { maxAgents: _dropped, ...rest } = raw;
+    writeJson(f.settings, rest);
+  } catch { return null; } // a read-only store: the alias read below still gives the one value
+  const line = { group: 'builds.atOnce', kept: { key: 'build-limit.json maxBuilds', value: kept }, dropped: { key: 'agent-slots settings.json maxAgents', value: old, savedAt: iso(oldAt) }, was: { maxBuilds: cur, savedAt: iso(curAt) }, disagreed: old !== cur, why };
+  limitJournal({ at: new Date().toISOString(), event: 'settings-migrated', ...line });
+  return line;
+}
+
 /** Read fresh on every call: a change in the console applies to the next check, nothing to restart. */
 export function loadSettings() {
-  const s = normSettings(readJson(files().settings, {}));
-  let hard = null; try { hard = loadLimit().maxBuilds; } catch { /* no limit file: defaults */ }
-  if (hard != null) { s.hardMax = hard; if (s.maxAgents > hard) { s.maxAgentsSet = s.maxAgents; s.maxAgents = hard; } }
+  try { migrateBuildsAtOnce(); } catch { /* never in the way of a read */ }
+  const raw = readJson(files().settings, {}) ?? {};
+  const s = normSettings(raw);
+  let limit = null; try { limit = loadLimit(); s.emergencySlots = limit.emergencySlots; s.emergencyBuilds = emergencyIds(); } catch { /* no limit engine: the old key alone */ }
+  if (limit) {
+    // the one value; a store with only the old key is read from it, never above the limit
+    s.maxAgents = raw.maxAgents === undefined || rawLimit()?.maxBuilds !== undefined ? limit.maxBuilds : Math.min(s.maxAgents, limit.maxBuilds);
+    s.hardMax = limit.maxBuilds;
+  }
+  s.emergencySlots ??= 0; s.emergencyBuilds ??= [];
   return s;
 }
 
@@ -196,20 +281,56 @@ export function withHard(sum, facts = {}) {
     const h = facts.hard ?? hardUsage();
     sum.hard = { max: h.max, live: h.live, free: h.free, source: h.source, at: h.at, items: h.items ?? [] };
     if (h.free != null) sum.free = Math.min(sum.free, h.free);
+    if (h.emergency) { sum.hard.emergency = h.emergency; if (h.emergency.free != null && sum.emergency) sum.emergency.free = Math.min(sum.emergency.free, h.emergency.free); }
   } catch (e) { sum.hard = { error: String(e.message).slice(0, 200) }; }
   return sum;
 }
 export function saveSettings(patch) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
-  const next = normSettings({ ...readJson(f.settings, {}), ...patch });
+  const merged = { ...readJson(f.settings, {}), ...patch };
+  for (const k of Object.keys(RETIRED_KEYS)) delete merged[k]; // read aliases are never stored again
+  const { maxAgents: _alias, ...next } = normSettings(merged);
   writeJson(f.settings, next);
-  return next;
+  return loadSettings();
 }
-export const loadState = () => normState(readJson(files().state, null));
+/**
+ * data-store@1 (s4.1 of urgent-all-data-to-postgres-builds-store): the state is the key `console/agent-slots/state.json`
+ * and follows its mode. local = the file under the mkdir lock, as before; shadow = the file, then the same document on
+ * axf-data (a failure is a drift line); cutover = axf-data's `agent_slots` table only: read with its etag, change, put
+ * if it is still that etag, else read again (the rev check replaces the mkdir lock; up to 8 tries); rollback = writes
+ * refused. The cut: `agent-slots.mjs data cutover --apply` (copy and verify under the lock, then flip the key).
+ */
+const stateKey = () => dataFiles.keyFor(files().state);
+export const stateMode = () => { const k = stateKey(); return k ? dataFiles.modeOf(k) : 'local'; };
+const remoteState = () => ['cutover', 'rollback'].includes(stateMode());
+function readRemoteState() { const r = dataFiles.callSync({ op: 'get', key: stateKey() }); return r ? { data: r.data, etag: r.etag } : { data: null, etag: '' }; }
+export const loadState = () => normState(remoteState() ? readRemoteState().data : readJson(files().state, null));
+export class SlotsConflict extends Error {}
+function withRemoteState(fn) {
+  if (stateMode() === 'rollback') { const e = new Error('agent-slots: the slots state is rolling back: writes wait until it is local again'); e.code = 'read_only'; throw e; }
+  for (let i = 0; ; i += 1) {
+    const cur = readRemoteState();
+    const st = normState(cur.data);
+    const out = fn(st);
+    st.updatedAt = new Date().toISOString();
+    try { dataFiles.callSync({ op: 'put', key: stateKey(), data: st, ...(cur.etag ? { ifMatch: cur.etag } : { create: true }) }); return out; }
+    catch (e) { if (!['conflict', 'exists'].includes(e.code) || i >= 7) throw e; sleepSync(20 + Math.floor(Math.random() * 80)); }
+  }
+}
+function shadowState(st) {
+  const key = stateKey(); if (!key || stateMode() !== 'shadow') return;
+  try { const cur = dataFiles.callSync({ op: 'get', key }); dataFiles.callSync({ op: 'put', key, data: st, ...(cur ? { ifMatch: cur.etag } : { create: true }) }); }
+  catch (e) { dataFiles.logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); }
+}
 
 const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 /** One writer at a time across the host and the container (mkdir is atomic on the shared folder); stale after 15 s. */
 export function withState(fn) {
+  if (remoteState()) return withRemoteState(fn);
+  return withStateLock((st) => fn(st));
+}
+/** The local path: the mkdir lock, the file (and the shadow copy). Also what the cut holds while it copies and flips. */
+function withStateLock(fn, { write = true } = {}) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
   const until = Date.now() + 15_000;
   for (;;) {
@@ -220,12 +341,60 @@ export function withState(fn) {
     }
   }
   try {
-    const st = loadState();
+    const st = normState(readJson(f.state, null));
     const out = fn(st);
+    if (!write) return out;
     st.updatedAt = new Date().toISOString();
     writeJson(f.state, st);
+    shadowState(st);
     return out;
   } finally { rmSync(f.lock, { recursive: true, force: true }); }
+}
+
+/**
+ * The cut (`data status | cutover [--apply] | local [--apply]`): under the mkdir lock (no local writer meanwhile) the
+ * file is put on axf-data, read back and compared (canonical document, entries per list), then the key flips to cutover.
+ * `local --apply` writes axf-data's document back to the file and flips the key to local. Both publish the mode
+ * document. Safe to flip only once every writer of the slots (host CLI, console container, cron) runs this code.
+ */
+export async function dataCut(cmd, { apply = false, by = 'svc:cli' } = {}) {
+  const key = stateKey(); if (!key) throw new Error(`the slots folder ${files().dir} is not a data-store@1 path (AXF_SLOTS_DIR?)`);
+  const { canonical } = await import('../core/data-store.mjs');
+  const MODE = await import('../core/data-store-mode.mjs');
+  const dm = await import('./data-mode.mjs');
+  const ns = dataFiles.nsIdOf(key); const path = key.slice(ns.length + 1);
+  const counts = (d) => Object.fromEntries(['running', 'queue', 'heavy', 'done'].map((k) => [k, normState(d)[k].length]));
+  const report = { $axf: 'agent-slots-cut@1', cmd, apply, key, mode: stateMode(), ok: false, local: null, remote: null, flipped: [], problems: [] };
+  let changes = []; let state = null;
+  withStateLock((localSt) => {
+    const remote = (() => { try { return dataFiles.callSync({ op: 'get', key }); } catch (e) { report.problems.push(`axf-data: ${e.code || 'error'}: ${e.message}`); return undefined; } })();
+    if (remote === undefined) return;
+    report.local = counts(localSt); report.remote = remote ? counts(remote.data) : null;
+    if (cmd === 'status') { report.equal = !!remote && canonical(remote.data) === canonical(localSt); report.ok = true; return; }
+    if (cmd === 'cutover') {
+      if (apply) dataFiles.callSync({ op: 'put', key, data: localSt, ...(remote ? { ifMatch: remote.etag } : { create: true }) });
+      const back = apply ? dataFiles.callSync({ op: 'get', key }) : remote;
+      report.equal = !!back && canonical(back.data) === canonical(localSt);
+      if (apply && !report.equal) report.problems.push('the document read back from axf-data differs from the file');
+      report.ok = !report.problems.length;
+      if (!apply || !report.ok) return;
+      state = dm.readState();
+      const r = MODE.transitionKey(state, { ns, path, to: 'cutover', at: new Date().toISOString(), by, verified: { at: new Date().toISOString(), how: 'agent-slots data cutover: document equal, entries per list equal', counts: report.local } });
+      state = r.state; changes = r.changes; dm.writeState(state);
+    } else if (cmd === 'local') {
+      if (!remote) { report.problems.push('no slots state on axf-data'); return; }
+      if (apply) writeJson(files().state, normState(remote.data));
+      report.ok = true;
+      if (!apply) return;
+      state = dm.readState();
+      const r = MODE.transitionKey(state, { ns, path, to: 'local', at: new Date().toISOString(), by });
+      state = r.state; changes = r.changes; dm.writeState(state);
+    }
+  }, { write: false });
+  report.flipped = changes.map((c) => `${c.ns}/${c.key}: ${c.from} → ${c.to}`);
+  if (changes.length) { try { await dm.publish(dataFiles.remoteStore(), state, changes, by); report.published = true; } catch (e) { report.publishError = `${e.code || 'error'}: ${e.message}`; } }
+  report.mode = stateMode();
+  return report;
 }
 
 /* ---------------- host facts ---------------- */
@@ -319,7 +488,7 @@ export function enqueue(opts = {}, facts = {}) {
     const mem = prune(st, settings, facts);
     const id = newId(st, opts.kind);
     const nowIso = new Date(facts.now ?? Date.now()).toISOString();
-    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}),
+    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}), ...(opts.build && /^[a-z0-9][a-z0-9-]{0,39}$/.test(String(opts.step ?? '')) ? { step: String(opts.step) } : {}),
       seq: st.seq, state: 'waiting', enqueuedAt: nowIso, pid: Number(opts.pid) || process.ppid, host: HOST(), cwd: clip(opts.cwd ?? process.cwd(), 300), agent: clip(opts.agent, 60), by: clip(opts.by || process.env.AXF_SURFACE || '', 40) });
     return { id, ...tryStart(st, settings, id, mem.avail, facts) };
   });
@@ -333,16 +502,17 @@ function tryStart(st, settings, id, avail, facts = {}) {
   if (q0?.build && !mayTake(q0.build)) {
     st.queue = st.queue.filter((x) => x.id !== id);
     st.done = [...st.done, { ...q0, state: 'cancelled', cancelledBy: 'not-queued', closedAt: new Date(now).toISOString() }].slice(-KEEP_DONE);
-    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st).length, cap: settings.maxAgents };
+    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st, settings).length, cap: settings.maxAgents };
   }
   const d = decide(st, settings, id, avail);
+  const pool = poolOfEntry(q0, settings); const cap = poolCap(settings, pool);
   if (d.reason === 'memory' && now - (st.guard.trips.at(-1) ?? 0) > 60_000) st.guard.trips.push(now);
-  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
+  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st, settings, pool).length, cap };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(q.step ? { step: q.step } : {}), ...(pool === 'emergency' ? { pool } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
-  return { started: true, position: 0, reason: '', used: holding(st).length, cap: settings.maxAgents };
+  return { started: true, position: 0, reason: '', used: holding(st, settings, pool).length, cap };
 }
 
 /** One try for a waiting entry: { started } | { started:false, position, reason } | { gone:true }. */
@@ -573,17 +743,42 @@ async function cli(argv) {
   const f = flags(rest);
   const json = (v) => console.log(JSON.stringify(v, null, f.json ? 2 : 0));
   switch (cmd) {
+    case 'fill': {
+      // the build pipeline answers (planFill dry run) when it is installed; without it, the slots alone
+      const pipe = resolve(dirname(fileURLToPath(import.meta.url)), '../../apps/console-web/plugins/build-orchestrator/pipeline.mjs'); // axf-plugin:build-orchestrator
+      if (existsSync(pipe)) {
+        const r = spawnSync(process.execPath, [pipe, 'fill', 'status', ...(f.json ? ['--json'] : [])], { encoding: 'utf8', timeout: 60000 });
+        if (r.status === 0) return process.stdout.write(r.stdout);
+      }
+      const s = status();
+      if (f.json) return json({ ok: true, slots: { cap: s.cap, used: s.used, free: Math.max(0, s.cap - s.used) }, plan: null });
+      return console.log(`slots ${s.used}/${s.cap} · ${Math.max(0, s.cap - s.used)} free · no build pipeline installed: no fill plan`);
+    }
+    case 'data': {
+      const sub = ['status', 'cutover', 'local'].includes(rest[0]) ? rest[0] : 'status';
+      const r = await dataCut(sub, { apply: !!f.apply, by: typeof f.by === 'string' ? f.by : 'svc:cli' });
+      if (f.json) json(r);
+      else {
+        console.log(`agent-slots data ${sub}: ${r.ok ? (r.apply ? 'done' : 'ready') : 'NOT ok'} · key ${r.key} · mode ${r.mode}${r.equal !== undefined ? ` · ${r.equal ? 'equal' : 'differs'}` : ''}`);
+        console.log(`  local ${JSON.stringify(r.local)}  remote ${JSON.stringify(r.remote)}`);
+        for (const x of r.problems) console.log(`  ✗ ${x}`);
+        for (const x of r.flipped) console.log(`  → ${x}`);
+        if (r.publishError) console.log(`  (mode document not published to axf-data: ${r.publishError}; the local mode file is what every client reads)`);
+      }
+      if (!r.ok) process.exitCode = 1;
+      return;
+    }
     case 'status': {
       if (!f['no-sweep']) sweep();
       const s = status();
       if (f.json) return json(s);
-      console.log(`slots ${s.used}/${s.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
-      for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
-      for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
+      console.log(`slots ${s.used}/${s.cap} · emergency ${s.emergency.used}/${s.emergency.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
+      for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.pool === 'emergency' ? 'emergency' : r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
+      for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.pool === 'emergency' ? 'emergency' : q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
       return;
     }
     case 'enqueue': {
-      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, step: f.step, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }

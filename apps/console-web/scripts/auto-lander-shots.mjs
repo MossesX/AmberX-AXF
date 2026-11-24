@@ -1,7 +1,7 @@
 /**
- * Screenshots of Gate → Auto-lander → Server (build server-auto-lander-fixes-lands) for UI Review: desktop and phone,
- * one pair per list layout (grid, cards, compact: the gate.view choice), against `vite preview` of dist/ with the
- * gate's auto-lander routes answered from a fixed fixture (no VPS, no GitHub). Each shot opens the tab through
+ * Screenshots of Gate → Auto-lander → Server (the lander, lander@1, Pipeline 2.0) and of the read-only Merge queue view
+ * for UI Review: desktop and phone, one pair per list layout (grid, cards, compact: the gate.view choice) plus one pair of
+ * the merge queue, against `vite preview` of dist/ with the routes answered from a fixed fixture (no VPS, no GitHub). Each shot opens the tab through
  * console-control (`view:gate/tab:gate.tabs=auto-lander`) and selects a build row, like the deep link does.
  *
  *   node scripts/auto-lander-shots.mjs <out-dir>        (build first: npm run build)
@@ -23,26 +23,28 @@ let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
 if (!playwright) { console.error('playwright not found'); process.exit(2); }
 
-const at = (min) => new Date(Date.parse('2026-11-17T09:00:00Z') - min * 60000).toISOString();
-const att = (build, kind, n, result, min, log, extra = {}) => ({ build, kind, n, result, at: at(min), endedAt: result === 'started' ? '' : at(min - 3), account: kind === 'red-ci' ? 'hulu0241' : kind === 'land' ? 'merge-queue' : 'server', session: kind === 'red-ci' ? `axf-${build}--fix` : '', branch: `claude/${build}`, head: 'a1b2c3d4e5f6', pr: 0, log, ...extra });
-const count = (list) => { const c = { total: list.length }; for (const k of ['clash', 'red-ci', 'land']) { const l = list.filter((a) => a.kind === k); c[k] = { attempts: l.length, ok: l.filter((a) => a.result === 'ok').length, failed: l.filter((a) => a.result === 'failed').length, timeout: 0, skipped: 0, started: l.filter((a) => a.result === 'started').length, failures: l.filter((a) => a.result === 'failed').length }; } return c; };
-const row = (build, pr, state, reason, attempts, extra = {}) => ({ build, pr, branch: `claude/${build}`, head: 'a1b2c3d4e5f6', state, since: at(20), reason, escalation: null, last: { action: state === 'fixing' ? 'fix-session' : 'wait', waitReason: state === 'ci-running' ? 'ci-running' : '', notBefore: '', at: at(1) }, count: count(attempts), attempts, ...extra });
-const stuck = [att('console-look-axhub-skin', 'red-ci', 1, 'failed', 140, 'the fix pushed 9f3e2a1 and CI is still red\nWeb Dev Console › Python route tests\n    apps/console-web/server/tests/test_look.py:41: AssertionError'), att('console-look-axhub-skin', 'red-ci', 2, 'failed', 90, 'the fix pushed 4c1d0b2 and CI is still red'), att('console-look-axhub-skin', 'red-ci', 3, 'failed', 30, 'the fix pushed 7e6a5f9 and CI is still red\nWeb Dev Console › theme-swap\n    a colour does not follow the theme in GateList')];
+const at = (min) => new Date(Date.parse('2026-11-19T13:00:00Z') - min * 60000).toISOString();
+const step = (id, status, prNumber, model = 'Opus', slot = null) => ({ id, status, prNumber, model, slot });
+const ROWS = [
+  { build: 'console-look-axhub-skin', title: 'Console look: axHub skin', status: 'failed', attempt: 4, statusAt: at(12), waiting: [],
+    failure: { kind: 'ci-red', status: 'running-ci', why: 'CI is red on 7e6a5f9 (Web Dev Console › theme-swap)', head: '7e6a5f9a1b2c', pr: 733, at: at(12), retry: 'fix', notBefore: at(-4) },
+    prs: [{ pr: 731, steps: ['s1', 's2', 's3'], state: 'closed' }, { pr: 732, steps: ['s1'], state: 'merged' }, { pr: 733, steps: ['s2'], state: 'open' }],
+    steps: [step('s1', 'in-pr', 732, 'Opus', 1), step('s2', 'in-pr', 733, 'Fable', 2), step('s3', 'completed', null, 'Opus', 3)] },
+  { build: 'p2-status-core', title: 'Pipeline 2.0, part 1: status core', status: 'running-ci', attempt: 0, statusAt: at(6), waiting: [], failure: null,
+    prs: [{ pr: 741, steps: ['s1', 's2', 's3', 's4'], state: 'open' }],
+    steps: [step('s1', 'in-pr', 741, 'Fable', 1), step('s2', 'in-pr', 741, 'Opus', 2), step('s3', 'in-pr', 741, 'Opus', 3), step('s4', 'in-pr', 741, 'Opus', 4)] },
+  { build: 'phone-connect-small-android-companion', title: 'Phone Connect: small Android companion', status: 'building', attempt: 0, statusAt: at(25), waiting: ['s1', 's2'], failure: null, prs: [],
+    steps: [step('s1', 'building', null, 'Opus', 5), step('s2', 'building', null, 'Opus', 6)] },
+];
 const STATUS = {
-  ok: true, $axf: 'auto-lander-status@1', at: at(0),
-  service: { up: true, lastTick: at(0.5), minutesSinceTick: 0.5, mode: 'tick', paused: false, pausedBy: '', pausedAt: '' },
-  current: 'pending-tab-one-collapsed-row', queue: ['pending-tab-one-collapsed-row', 'phone-connect-small-android-companion', 'console-look-axhub-skin', 'shipped-features-open-button-views'],
-  settings: { enabled: true, maxAttempts: 3, backoffBaseMin: 5, backoffFactor: 3, backoffMaxMin: 60, attemptTimeoutMin: 45, pushOnEscalation: true },
-  builds: [
-    row('console-look-axhub-skin', 731, 'escalated', 'CI is red (Web Dev Console); fixing red CI failed 3 times (the limit is 3). Needs a hand.', stuck, { escalation: { at: at(28), kind: 'red-ci', attempts: 3, why: 'CI is red; fixing red CI failed 3 times.' } }),
-    row('pending-tab-one-collapsed-row', 729, 'fixing', 'CI is red: fix attempt 1 runs on hulu0241 (axf-pending-tab-one-collapsed-row--fix).', [att('pending-tab-one-collapsed-row', 'clash', 1, 'ok', 50, 'merged main in (regenerated: tracker, fixtures)'), att('pending-tab-one-collapsed-row', 'red-ci', 1, 'started', 8, '')]),
-    row('phone-connect-small-android-companion', 712, 'ci-running', 'Merged main in (5be1c07d2); CI runs on the new head.', [att('phone-connect-small-android-companion', 'clash', 1, 'ok', 12, 'merged main into claude/phone-connect-small-android-companion and pushed 5be1c07d2')]),
-    row('shipped-features-open-button-views', 735, 'landing', 'CI is green: PR #735 is in the merge queue.', [att('shipped-features-open-button-views', 'land', 1, 'started', 4, '')]),
-    row('orchestrator-settings-collapsible-split', 720, 'landed', 'It has landed.', [att('orchestrator-settings-collapsible-split', 'red-ci', 1, 'ok', 200, 'fixed: CI is green on 1d2e3f4a5'), att('orchestrator-settings-collapsible-split', 'land', 1, 'ok', 160, 'PR #720 merged.')]),
-  ],
-  escalated: ['console-look-axhub-skin'],
-  escalations: [{ build: 'console-look-axhub-skin', pr: 731, kind: 'red-ci', attempts: 3, why: 'CI is red; fixing red CI failed 3 times.', since: at(140), log: stuck[2].log }],
+  ok: true, $axf: 'lander-status@1',
+  service: { lastTick: new Date(Date.now() - 30000).toISOString(), result: 'worked', build: 'p2-status-core', error: '', paused: false, pausedBy: '', pausedAt: '' },
+  current: 'p2-status-core', queue: ROWS.map((r) => r.build), builds: ROWS,
+  failing: [{ build: 'console-look-axhub-skin', attempt: 4, kind: 'ci-red', why: ROWS[0].failure.why, since: at(12), pr: 733 }],
+  escalations: [],
+  settings: { enabled: true, sizeCapLines: 4000, flakyReruns: 1, backoffBaseMin: 2, backoffFactor: 2, backoffMaxMin: 30, ciNoneKickMin: 10, ciTimeoutMin: 120, fixTimeoutMin: 60, notifyAfterAttempts: 3, workflow: 'android.yml', mergeMethod: 'merge' },
 };
+const QUEUE = { ok: true, $axf: 'merge-queue@2', at: at(0), landing: 'p2-status-core', rows: ROWS };
 const GATE_SETTINGS = { ok: true, settings: { refreshSec: 600, historySize: 2000, defaultTab: 'auto-lander' } };
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
@@ -65,8 +67,9 @@ try {
         const u = new URL(r.request().url());
         const json = (body) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
         if (u.pathname === '/api/me') return json(ME);
-        if (u.pathname === '/api/plugins/gate/auto-lander') return json(STATUS);  // axf-plugin:gate
-        if (u.pathname === '/api/plugins/gate/settings') return json(GATE_SETTINGS);  // axf-plugin:gate
+        if (u.pathname === '/api/plugins/gate/auto-lander') return json(STATUS); // axf-plugin:gate
+        if (u.pathname === '/api/plugins/gate/settings') return json(GATE_SETTINGS); // axf-plugin:gate
+        if (u.pathname === '/api/plugins/merge-queue-view/queue') return json(QUEUE); // axf-plugin:merge-queue-view
         if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
         return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'offline (shots)' }) });
       });
@@ -85,6 +88,28 @@ try {
       shots.push(file);
       await ctx.close();
     }
+  }
+  for (const [device, viewport, mobile] of [['desktop', { width: 1440, height: 1000 }, false], ['phone', { width: 412, height: 915 }, true]]) {
+    const ctx = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: mobile ? 2 : 1 });
+    const page = await ctx.newPage();
+    await page.route('**/api/**', (r) => {
+      const u = new URL(r.request().url());
+      const json = (body) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+      if (u.pathname === '/api/me') return json(ME);
+      if (u.pathname === '/api/plugins/merge-queue-view/queue') return json(QUEUE); // axf-plugin:merge-queue-view
+      if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
+      return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'offline (shots)' }) });
+    });
+    await page.goto(`http://127.0.0.1:${PORT}/`);
+    await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
+    await page.evaluate((c) => window.axfConsoleControl(c), { verb: 'open', address: 'view:merge-queue' });
+    await page.waitForSelector('text=Waiting to land', { timeout: 15_000 }).catch((e) => say(`merge queue: ${e.message.split('\n')[0]}`));
+    await page.locator('strong', { hasText: /^console-look-axhub-skin$/ }).first().click({ timeout: 5000 }).catch((e) => say(`row click: ${e.message.split('\n')[0]}`));
+    await sleep(900);
+    const file = join(OUT, `merge-queue-${device}.png`);
+    await page.screenshot({ path: file, fullPage: !mobile });
+    shots.push(file);
+    await ctx.close();
   }
   console.log(shots.join('\n'));
   await browser.close(); browser = null;

@@ -6,6 +6,13 @@ export interface Link { type: LinkType; ref: string; label: string }
 export interface Item {
   id: string; parent: string | null; order: number; kind: Kind; title: string; body: string; status: Status; done: boolean;
   priority: string; tags: string[]; model: string; minutes: number; links: Link[]; collapsed: boolean; createdAt: string; updatedAt: string; by: string;
+  /** View fields the server lays on from the builds store (never stored): see live-core.mjs. */
+  origin?: 'orchestrator'; locked?: boolean; live?: Live;
+}
+/** A sent plan's (or one orchestrator step's) state, read from the builds store (plan-live@1). */
+export interface Live {
+  $axf: 'plan-live@1'; build: string; number?: string; profile: string; step?: string; status: string; label: string; state: string; stateLabel: string; attempt: number; at: string;
+  locked?: boolean; split?: boolean; held?: boolean; emergency?: boolean; pr?: number; skipped?: boolean; steps?: { done: number; total: number };
 }
 export interface TrashEntry { id: string; at: string; by: string; title: string; root: string; parent: string | null; index: number; items: Item[] }
 export interface State { $axf: 'plan-tree@1'; rev: number; items: Item[]; trash: TrashEntry[] }
@@ -14,7 +21,7 @@ export interface TreeRow extends Item { children: TreeRow[] }
 export interface FlatRow { item: Item; depth: number; kids: number }
 export interface Progress { done: number; total: number; minutes: number }
 export type Change<T = object> = { state: State } & T;
-export interface BuildChange { action: 'add'; title: string; detail: string; source: string; said?: string; steps: { text: string; model: string; estimate: string }[] }
+export interface BuildChange { action: 'add'; title: string; detail: string; source: string; said?: string; steps: { text: string; model: string; estimate: string }[] } // planning steps: model and estimate are '' when not set
 export type VoiceCommand =
   | { op: 'undo' } | { op: 'collapse'; all?: boolean; id?: string; collapsed: boolean }
   | { op: 'add'; kind: Kind | null; title: string; parent: string | null } | { op: 'rename'; id: string; title: string }
@@ -41,6 +48,7 @@ export function emptyState(): State;
 export function normLink(l: unknown): Link | null;
 export function normItem(raw: unknown, at?: string): Item;
 export function normalize(raw: unknown): State;
+export function stored(s: State): State;
 export function byId(s: State, id: string): Item | null;
 export function children(s: State, parent: string | null): Item[];
 export function roots(s: State): Item[];

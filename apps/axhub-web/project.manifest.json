@@ -2,9 +2,9 @@
   "$manifest": "project-manifest@1",
   "name": "axhub-web",
   "displayName": "AXHub",
-  "description": "AXHub — web app to approve and manage axHub",
+  "description": "AXHub — web app to approve and manage axHub (archived Nov 20 2026: its pages are console plugins, module axHub; see ARCHIVED.md)",
   "kind": "app",
-  "status": "active",
+  "status": "archived",
   "version": "0.1.0",
   "platforms": [
     "web"

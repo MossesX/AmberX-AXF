@@ -3,7 +3,7 @@
   "type": "help",
   "id": "phone-connect-help",
   "name": "Phone Connect help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries (help@1) for the Phone Connect plugin.",
   "author": "Brett",
   "tags": [
@@ -50,13 +50,13 @@
       {
         "target": "pages-it-may-open",
         "title": "Pages it may open",
-        "text": "Which pages the console and agents may open on this phone: only the console, the console plus listed sites, or any https site.",
+        "text": "Which pages the console and agents may open on this phone: only your own sites (amberxai.com: the console, axHub, the apps), your own sites plus listed ones, or any https site.",
         "kind": "field"
       },
       {
         "target": "sites-comma-separated",
         "title": "Sites (comma separated)",
-        "text": "The extra sites this phone may open when the policy is \"The console + these sites\": host names like github.com.",
+        "text": "The extra sites this phone may open when the policy is \"My own sites + these\": host names like github.com.",
         "kind": "field"
       },
       {
@@ -70,6 +70,12 @@
         "title": "Layout of this tab",
         "text": "How this tab is laid out: four tabs, one page with every section, or the paired phone on top with Features and Activity as tabs below.",
         "kind": "field"
+      },
+      {
+        "target": "re-pair",
+        "title": "Re-pair",
+        "text": "Shown when the console refused the phone's key (revoked, forgotten or replaced), so the phone can't connect any more. Makes a new pairing code and opens the Pair tab; type the code in the Phone Connect app, which says \"Disconnected: tap to re-pair\" too.",
+        "kind": "button"
       }
     ],
     "intros": []

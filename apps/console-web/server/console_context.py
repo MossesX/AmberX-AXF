@@ -3,7 +3,7 @@
     import console_context as cx
     cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.project(), cx.project_dir(path), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
     cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys]),
-    cx.asgi_app (the console's ASGI app), cx.mcp_server (its MCP server: plugins may add and remove tools)
+    cx.asgi_app (the console's ASGI app), cx.server_loop (its event loop, once it runs), cx.mcp_server (its MCP server: plugins may add and remove tools)
 
 Read-only by convention. Plugins never import main.py.
 """
@@ -42,6 +42,7 @@ alerts_changed: Callable[[], None] = lambda: None  # noqa: E731 — what readers
 # The console's ASGI app (a plugin calls another plugin's route in-process) and its MCP server (the Plugin commands
 # plugin adds <plugin>_<command> tools as plugins come and go). None until main.py sets them.
 asgi_app: Any = None
+server_loop: Any = None  # the event loop the server runs on (set at startup): in-process route calls run on it
 mcp_server: Any = None
 
 

@@ -15,5 +15,11 @@
   "tabable": false,
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/project-wizard",
+    "env": ["AXF_WIZARD_STORE", "AXF_WIZARD_WORKSPACE", "AXF_WIZARD_ROOTS"],
+    "mentions": [".github/workflows/android.yml", "_claude/memory/STATUS.md"]
+  },
   "opens": "main"
 }

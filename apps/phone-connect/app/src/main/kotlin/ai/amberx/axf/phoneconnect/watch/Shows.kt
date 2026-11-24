@@ -7,9 +7,14 @@ import ai.amberx.axf.phoneconnect.link.PhoneStore
 import org.json.JSONObject
 
 /**
- * notify.show and approval.show. Push without FCM: the watch service's link carries them. An approval is only ever
- * *shown* here: Approve and Deny open the hub's own approval page (rebuilt from the id, Brett's hub session there, the
- * hub's Origin + CSRF checks). The app never sends a decision over its device token.
+ * notify.show and approval.show. Push without FCM: the watch service's link carries them.
+ *
+ * An approval is a floating card over whatever is on screen ([ApprovalOverlay], with "display over other apps") and a
+ * high-priority notification, both with Approve and Deny (and Shelve on a countdown that offers it) on them.
+ * A tap on an action is Brett's decision: it goes to the console over the device token as `by.kind: person` with a
+ * fresh tap id (personOnly; the engine drops anything else), and the console passes it to the hub. The actions need
+ * the phone unlocked, and the lock screen says only "Approval waiting". A tap on the body opens that approval in the
+ * console. The app never decides by itself.
  */
 object Shows {
     fun register() {
@@ -36,10 +41,13 @@ object Shows {
 
     private fun approval(ctx: Context, id: String, a: JSONObject): Outcome {
         val aid = a.optString("approvalId")
-        val page = LinkRules.approvalPage(PhoneStore(ctx).hub, aid) ?: return Outcome.Failed("validation", "An approval prompt needs its approval id.")
+        val page = LinkRules.consoleApproval(PhoneStore(ctx).origin, aid) ?: return Outcome.Failed("validation", "An approval prompt needs its approval id.")
         val veto = a.optString("kind") == "veto"
-        val open = Notifier.viewIntent(ctx, page, Notifier.idOf(id))
-        val title = if (veto) "Veto countdown: ${a.optString("tool").ifBlank { "a held call" }}" else "Approval waiting: ${a.optString("tool").ifBlank { "a request" }}"
+        // one notification per approval: a prompt sent again replaces the first instead of stacking
+        val nid = Notifier.idOf(aid)
+        val open = Notifier.viewIntent(ctx, page, nid, chrome = true)
+        val what = a.optString("title").ifBlank { a.optString("tool") }
+        val title = if (veto) "Veto countdown: ${what.ifBlank { "a held call" }}" else "Approval waiting: ${what.ifBlank { "a request" }}"
         val left = a.optInt("secondsLeft", 0)
         val text = a.optString("summary").take(600) + if (left > 0) " (runs in ${left / 60} min ${left % 60} s unless you stop it)" else ""
         // the lock screen says only "Approval waiting"; the detail shows once unlocked
@@ -49,13 +57,24 @@ object Shows {
             .setContentTitle(title).setContentText(text).setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE).setPublicVersion(public)
-            .setContentIntent(open).setAutoCancel(true)
+            .setContentIntent(open).setAutoCancel(false)
         val actions = a.optJSONArray("actions")?.let { arr -> (0 until arr.length()).map { arr.optString(it) } } ?: listOf("approve", "deny")
-        // every action opens the hub page: the decision is made there, by Brett, never by this app
-        if ("approve" in actions) b.addAction(0, "Approve", Notifier.viewIntent(ctx, page, Notifier.idOf("$id:approve")))
-        if ("deny" in actions) b.addAction(0, "Deny", Notifier.viewIntent(ctx, page, Notifier.idOf("$id:deny")))
-        if (veto) b.setFullScreenIntent(open, true)
-        return if (Notifier.post(ctx, Notifier.idOf(id), b.build())) Outcome.Done(JSONObject().put("shown", true).put("page", "hub"))
-        else Outcome.Failed("consent_required", "Notifications are off for Phone Connect on this phone.")
+        for (decision in LinkRules.DECISIONS) {
+            if (decision !in actions) continue
+            b.addAction(NotificationCompat.Action.Builder(0, LinkRules.decisionLabel(decision), Notifier.decideIntent(ctx, id, aid, decision))
+                .setAuthenticationRequired(true).build())
+        }
+        if (veto) {
+            b.setFullScreenIntent(open, true)
+            // once the countdown is over the hub has run it: the prompt goes by itself
+            if (left > 0) b.setTimeoutAfter(left * 1000L)
+        }
+        // the floating card with the same buttons, over whatever is on screen (needs "display over other apps");
+        // the notification is always posted too: it is the lock screen's "Approval waiting" and the fallback
+        val card = ApprovalOverlay.show(ctx, id, aid, title, text, actions, if (veto) left else 0)
+        val posted = Notifier.post(ctx, nid, b.build())
+        // shown, not answered: the result is Brett's tap (WatchService.ACTION_DECIDE), or none at all
+        return if (LinkRules.approvalShown(card, posted) != null) Outcome.Pending("shown")
+        else Outcome.Failed("consent_required", "Phone Connect may neither post notifications nor display over other apps on this phone, so the approval can't be shown.")
     }
 }

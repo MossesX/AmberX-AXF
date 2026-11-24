@@ -2,9 +2,9 @@
   "$axf": "asset@1",
   "type": "job-type",
   "id": "land-build",
-  "name": "Land a finished build",
-  "version": "1.0.0",
-  "description": "Land a finished build the way vps build_land does: merge main into its branch, rerun its checks, push to main, settle bookkeeping clashes (THREADS, STATUS, builds store, trackers) and report code clashes without guessing.",
+  "name": "Fix a pull request so it can land",
+  "version": "2.0.0",
+  "description": "Fix a build's pull request so the lander can land it: resolve a code conflict with main, fix red CI or failing build rules, on the PR's own branch. Push to that branch only; never push to main and never merge. The lander (deploy/lander) runs CI on the push and does the merge.",
   "author": "AmberX AXF",
   "tags": [
     "agent-job",
@@ -12,20 +12,19 @@
   ],
   "data": {
     "specialty": "landing",
-    "model": "opus",
+    "model": "fable",
     "budget": {
       "tokens": 400000,
       "maxTurns": 50,
       "usd": 6
     },
     "trigger": {
-      "kind": "event",
-      "event": "build.finished"
+      "kind": "on-demand"
     },
     "inputs": [
       {
         "id": "branch",
-        "label": "Branch",
+        "label": "PR branch",
         "required": true
       },
       {
@@ -35,11 +34,11 @@
       },
       {
         "id": "checks",
-        "label": "Checks to rerun",
-        "default": "the build's own tests + node framework/cli/tracker.mjs --check"
+        "label": "What failed",
+        "default": "the failing checks on the pull request"
       }
     ],
-    "brief": "Land branch {{branch}} (build {{build}}).\n1. git fetch origin; merge origin/main into {{branch}} (never rebase, never force).\n2. Bookkeeping clashes (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs).\n3. Code clashes: do NOT resolve by guessing. Abort, list the files and both sides' intent in the report, status blocked.\n4. Rerun {{checks}}. All green: git push origin HEAD:main. Red: report, do not push.\nReport what landed (commit), what clashed and what still needs a person.",
+    "brief": "Fix branch {{branch}} (build {{build}}) so its pull request can land. What failed: {{checks}}.\n1. git fetch origin; work on {{branch}} only.\n2. A conflict with main: git merge origin/main (never rebase, never force), resolve every conflict keeping both sides' intent. Bookkeeping files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs).\n3. Red CI or failing build rules: reproduce the failing check, fix the code, rerun it until it passes.\n4. Commit and push to the PR branch only: git push origin HEAD:{{branch}}. Never push to main. Never open, merge or close a pull request: the lander runs CI on your push and merges.\n5. If it cannot be fixed, push nothing and say why.\nReport what you changed (commit), what failed and what still needs a person.",
     "outputs": {
       "report": "_claude/builds/reports/jobs/land-build/{{stamp}}.md"
     }

@@ -15,7 +15,7 @@
  *                validated against the Standards rules in force) and the _claude skeleton claude-project writes;
  *   builds       two sample builds in the project's build profile (one complete = shipped, one pending whose steps
  *                carry no estimate, so the pipeline never splits or auto-queues it);
- *   plans        two Plan Studio plans in the project's copy of the plan-studio folder;
+ *   plans        two Plan Studio 2.0 plans (with their steps) in the project's own planning tree;
  *   to-dos       two to-do manager lists with groups four levels deep and ten to-dos (open, in progress, blocked,
  *                done; two due today, two overdue; tagged) in the project's todo-store@1;
  *   notes        five notes in the hub's _shared/_claude/project-notes/test-sandbox/ (notes browser).
@@ -55,10 +55,10 @@ TODO_DATA = join(REPO_ROOT, '.axf-console/plugins/todo-manager'); // axf-plugin:
 export const todoFile = () => join(process.env.AXF_TODO_DIR || TODO_DATA || fail('the to-do manager plugin is not installed (set AXF_TODO_DIR)'), 'projects', SANDBOX.id, 'store.json');
 export const notesFolder = () => `project-notes/${SANDBOX.id}`;
 export const notesDir = () => join(hubProjectsDir(), '_shared', '_claude', ...notesFolder().split('/'));
-let PLANS = null; // Plan Studio: its data folder name and its plans store module; null once that plugin is uninstalled
-PLANS = { folder: 'plan-studio', module: '../../apps/console-web/plugins/plan-studio/plans.mjs' }; // axf-plugin:plan-studio
+let PLANS = null; // Plan Studio 2.0: its data folder name and its plans@1 module; null once that plugin is uninstalled
+PLANS = { folder: 'plan-studio-2', module: '../../apps/console-web/plugins/plan-studio-2/plans.mjs' }; // axf-plugin:plan-studio-2
 export function plansDir() {
-  if (!PLANS) fail('the Plan Studio plugin is not installed');
+  if (!PLANS) fail('the Plan Studio 2.0 plugin is not installed');
   const root = persistRoot();
   return join(root ? join(root, PLANS.folder) : join(REPO_ROOT, '.axf-console', 'plugins', PLANS.folder), 'projects', SANDBOX.id);
 }
@@ -286,10 +286,11 @@ function ensureBuilds(log) {
 async function ensurePlans(log) {
   process.env.AXF_BUILD_PROFILE = SANDBOX.id; // the plans store follows the active project
   try {
-    if (!PLANS) fail('the Plan Studio plugin is not installed');
+    if (!PLANS) fail('the Plan Studio 2.0 plugin is not installed');
     const ps = await import(PLANS.module);
+    const have = new Set(ps.loadPlans().map((x) => x.title));
     for (const p of plans()) {
-      if (ps.getPlan(p.id)) { log.push(`plan ${p.id}: already there`); continue; }
+      if (have.has(p.title)) { log.push(`plan ${p.id}: already there`); continue; }
       const r = ps.savePlan(p, { by: BY, kind: 'import', note: 'Test data', force: true });
       if (!r.ok) fail(`plan ${p.id} refused`);
       log.push(`plan ${p.id}: added`);
@@ -343,6 +344,12 @@ export async function seed() {
   return { log };
 }
 
+/** The seed plans the project's planning tree holds (found by title: the tree gives items its own ids). */
+function seededPlans() {
+  const titles = new Set((readJson(join(plansDir(), 'tree.json'))?.items ?? []).filter((i) => i.kind === 'plan').map((i) => i.title));
+  return plans().filter((p) => titles.has(p.title)).map((p) => p.id);
+}
+
 export async function status() {
   const projects = await projectsApi();
   const reg = projects.readProjects();
@@ -354,7 +361,7 @@ export async function status() {
     project: p, active: projects.activeProject(reg).id,
     hubFolder: existsSync(join(hubFolder(), '_data', 'project.manifest.json')) ? hubFolder() : null,
     builds: Object.values(BUILD_IDS).filter((id) => have.has(id)),
-    plans: PLAN_IDS.filter((id) => existsSync(join(plansDir(), 'plans', `${id}.json`))),
+    plans: seededPlans(),
     todo: todo ? { file: todoFile(), lists: todo.lists?.length ?? 0, entries: todo.entries?.length ?? 0 } : null,
     notes,
   };

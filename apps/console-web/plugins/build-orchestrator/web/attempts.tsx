@@ -29,7 +29,7 @@ export const STATUS_CHIP: Record<string, { label: string; tone: Tone }> = {
   running: { label: 'building', tone: 'accent' }, waiting: { label: 'needs you', tone: 'warning' },
   fixing: { label: 'fixing', tone: 'warning' }, landing: { label: 'landing', tone: 'accent' },
   landed: { label: 'landed', tone: 'success' }, built: { label: 'landed', tone: 'success' }, complete: { label: 'complete', tone: 'success' },
-  escalated: { label: 'escalated', tone: 'danger' }, failed: { label: 'failed', tone: 'danger' }, blocked: { label: 'blocked', tone: 'warning' }, archived: { label: 'archived', tone: undefined },
+  escalated: { label: 'failed', tone: 'danger' }, failed: { label: 'failed', tone: 'danger' }, blocked: { label: 'blocked', tone: 'warning' }, archived: { label: 'archived', tone: undefined },
 };
 const KIND: Record<string, string> = { crash: 'crashed', 'ci-red': 'CI red', clash: 'clash with main', 'push-fail': 'push failed', stalled: 'stalled', 'fell-to-pending': 'fell to Pending', land: 'landing try' };
 const RESULT_TONE: Record<string, Tone> = { ok: 'success', failed: 'danger', timeout: 'danger', started: 'accent', skipped: undefined };
@@ -39,7 +39,7 @@ const rung = (s: string, f: string) => (s === 'fix' && f ? `fix: ${f}` : s);
 /** Why the build is in its status, one line (the chip's title). */
 export function statusWhy(status: string, d: AttemptsData): string {
   if (status === 'fixing' && d.failure) return `Fixing: ${KIND[d.failure.kind] ?? d.failure.kind}${d.failure.step ? ` on ${d.failure.step}` : ''} (${d.failure.why}) since ${ago(d.failure.at)}`;
-  if (status === 'escalated' && d.escalation) return `Escalated ${ago(d.escalation.at)}: ${d.escalation.why}`;
+  if (status === 'escalated' && d.escalation) return `Failed ${ago(d.escalation.at)}, every option used up: ${d.escalation.why}`;
   if (status === 'landing') return 'Every step done: the auto-lander merges main in, waits for CI and lands it';
   if ((status === 'landed' || status === 'built') && d.landed) return `Merged ${ago(d.landed.mergedAt)}; CI on main ${d.landed.ci}${d.landed.verifiedAt ? '' : '; waiting for its verify'}`;
   if (status === 'complete' && d.landed) return `Merged, CI green on main and verified (${d.landed.verifyHow}) ${ago(d.landed.verifiedAt)}`;
@@ -91,7 +91,7 @@ export function AttemptsPanel({ id, data, onRetry, busy }: { id: string; data: A
   ];
   return (
     <div className="fx-stack" data-axf-attempts={id}>
-      {e && <Note tone="danger">Escalated {ago(e.at)} after {e.attempts} attempt{e.attempts === 1 ? '' : 's'}: {e.why}{e.tried.length ? ` Tried: ${e.tried.join(', ')}.` : ''} It is on the systems check banner{e.pushedAt ? ' and went to your phone once' : ''}.</Note>}
+      {e && <Note tone="danger">Failed {ago(e.at)}, every option used up after {e.attempts} attempt{e.attempts === 1 ? '' : 's'}: {e.why}{e.tried.length ? ` Tried: ${e.tried.join(', ')}.` : ''} It is on the systems check banner{e.pushedAt ? ' and went to your phone once' : ''}.</Note>}
       {f && !e && <Note tone="warning" icon="refresh">Fixing: {KIND[f.kind] ?? f.kind}{f.step ? ` on ${f.step}` : ''} ({f.why}) since {ago(f.at)}.{nx ? ` Next: ${rung(nx.strategy, nx.fixStrategy)}${nx.model ? ` on ${nx.model}` : ''}${nx.account ? ` (${nx.account})` : ''}${nx.inFlight ? ', running now' : nx.notBefore ? `, not before ${nx.notBefore.slice(11, 16)}` : ''}.` : ''}</Note>}
       {l && <p className="fx-small"><Icon name="branch" size={13} /> {l.mergedAt ? `Merged ${ago(l.mergedAt)}` : 'Not merged yet'}{l.sha ? ` at ${l.sha.slice(0, 10)}` : ''} · CI on main: {l.ci}{l.ciRun ? <> (<a href={l.ciRun} target="_blank" rel="noreferrer">run</a>)</> : null} · verify: {l.verifiedAt ? `${l.verifyHow}, ${ago(l.verifiedAt)}` : 'not yet'}{l.verifyLog ? ` · ${l.verifyLog}` : ''}</p>}
       {(data.ladder?.length ?? 0) > 0 && <p className="fx-small fx-muted">Ladder for {KIND[f?.kind ?? ''] ?? f?.kind}: {data.ladder!.join(' → ')}</p>}

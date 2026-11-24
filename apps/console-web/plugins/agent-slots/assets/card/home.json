@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "agent-slots-home",
+  "name": "Agent cap",
+  "version": "1.0.0",
+  "description": "Agent cap on Home: Builds at once and the VPS build limits.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Agent cap",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "agent-slots",
+      "command": "hard-limit"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

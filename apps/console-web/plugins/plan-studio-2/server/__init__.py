@@ -9,14 +9,29 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
   GET    find             q, kind, under, limit → hits (each with the focus that opens it)
   GET    export           format=md|json, id = one branch
   POST   add | rename | edit | move | nudge | indent | outdent | duplicate | undo | link | unlink | collapse | import | build | say
+  POST   emergency        send an item as an EMERGENCY build: Brett's own signed-in console only (403 for the console
+                          token, MCP, voice and sessions)
+  POST   orchestrate      one orchestrator action on a sent plan or one of its steps: {id, action}. The build is found
+                          here and the tap goes to the orchestrator (capability axf.build-dispatch@1), which decides
+  GET    plans/{id}/build the build a plan was sent as, read live from the builds store on every call: the build's
+                          number, pipeline view (state, label, status line, waiting reason, merge line), who split it,
+                          a clash and its options, and the steps (unique id, split mark, triage model, status)
+  GET    history/{id}     the planning steps a send replaced (kept on the item)
+  POST   restore-steps | sync
   DELETE item/{id}        to the trash (undo brings it back)
   DELETE all              everything gone, the trash too (confirm)
 
+Sent plans: `state`, `tree`, `item` and `find` lay the builds store over the tree on every read (tree.mjs, web/live-core.mjs):
+a sent plan is locked (a change answers 409) and lists the steps the orchestrator filed, each with its live state.
+
 Capability plan-tree@1: other plugins' server parts read and add items through plugin_services.get("plan-tree@1").
+Capability plans@1 (list / get / park): the tree's `plan` items as plans, for plugins that only need "the plans"
+(the orchestrator's priority rows, "put it in a plan for later"); control@1 planner.plans uses plans.mjs directly.
 """
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -32,9 +47,28 @@ ROOT = CLI.parents[4]
 MAX_BODY = 1024 * 1024
 
 
-def run(req: dict[str, Any], timeout: int = 60) -> dict[str, Any]:
+APPROVER_KEYS = ("AXF_APPROVER", "AXF_APPROVER_VIA")
+AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
+
+
+def brett_click(request: Request) -> str:
+    """The signed-in hub admin's name when this request is Brett's own click in the console, else ''."""
+    c = getattr(request.state, "axf_user", None)
+    if c is None or getattr(c, "via", "token") != "session" or not getattr(c, "admin", False):
+        return ""
+    for h in AGENT_HEADERS:
+        v = (request.headers.get(h) or "").strip()
+        if v and v != "console":
+            return ""
+    return str(getattr(c, "name", "") or "")[:120]
+
+
+def run(req: dict[str, Any], timeout: int = 60, approver: str = "") -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}  # never inherited: only Brett's click sets them
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
     try:
-        proc = subprocess.run(["node", str(CLI), "api"], input=json.dumps(req), cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+        proc = subprocess.run(["node", str(CLI), "api"], input=json.dumps(req), cwd=ROOT, capture_output=True, text=True, timeout=timeout, env=env)
     except (OSError, subprocess.TimeoutExpired) as e:
         return {"ok": False, "error": f"Plan Studio 2.0 could not run: {str(e)[:200]}"}
     lines = proc.stdout.strip().splitlines()
@@ -66,7 +100,7 @@ def _answer(r: dict[str, Any]) -> dict[str, Any]:
     if r.get("ok") or r.get("understood") is False:
         return r
     code = str(r.get("code") or "")
-    raise HTTPException(404 if code == "not_found" else 409 if code == "confirm" else 400, str(r.get("error") or "Plan Studio 2.0 refused"))
+    raise HTTPException(404 if code == "not_found" else 409 if code in ("confirm", "locked") else 403 if code == "forbidden" else 400, str(r.get("error") or "Plan Studio 2.0 refused"))
 
 
 def _write(op: str, request: Request, body: dict[str, Any]) -> dict[str, Any]:
@@ -190,7 +224,75 @@ async def import_items(request: Request) -> dict[str, Any]:
 @router.post("/build")
 async def build(request: Request) -> dict[str, Any]:
     """Send an item to the build orchestrator: {id, profile, buildId, preview, said}. Its open steps become the build's."""
-    return _write("build", request, await _body(request))
+    body = await _body(request)
+    body.pop("emergency", None)  # an emergency build goes through POST /emergency (Brett's signed-in console only)
+    return _write("build", request, body)
+
+
+@router.post("/emergency")
+async def emergency(request: Request) -> dict[str, Any]:
+    """Send an item as an EMERGENCY build: {id, profile, buildId, said}. Brett only, from his own signed-in console
+    session (403 for the console token, MCP, voice and sessions). Like Send to the orchestrator, and the build is tagged
+    emergency: it skips the line, builds in the 2 emergency slots and lands first."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, "Only Brett sends a build to emergency, from his own signed-in console. The console token, MCP, voice and sessions cannot.")
+    body = await _body(request)
+    body.pop("preview", None)
+    return _answer(run({**body, "op": "build", "emergency": True, "by": who}, approver=who))
+
+
+ORCH_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+CLASH_ACTIONS = ("run-all", "defer")  # the answers to a build rejected for a clash; the orchestrator decides each
+DISPATCH_CAP = "axf.build-dispatch@1"
+
+
+@router.post("/orchestrate")
+async def orchestrate(request: Request) -> dict[str, Any]:
+    """One orchestrator action on a sent plan or on one of its steps: {id, action, why}. `id` is a row of the tree (the
+    sent plan, anything inside it, or a step the orchestrator filed); action is queue, hold, release, retry, rebuild,
+    run-ci, land or cancel, or an answer to a clash (run-all, defer). The build is looked up here and the action is handed to the orchestrator, which decides
+    whether it fits where the build is; a refusal comes back with its reason. Nothing is decided in the console."""
+    body = await _body(request)
+    action = str(body.get("action") or "")
+    if action not in ORCH_ACTIONS + CLASH_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(ORCH_ACTIONS + CLASH_ACTIONS)}")
+    target = _answer(run({"op": "target", "id": str(body.get("id") or "")}))
+    svc = plugin_services.get(DISPATCH_CAP)
+    if svc is None or not hasattr(svc, "act"):
+        raise HTTPException(503, "The build orchestrator is switched off or not installed: its actions are not available.")
+    res = svc.act(str(target.get("build") or ""), action, by=_by(request), why=str(body.get("why") or "")[:300], step=str(target.get("step") or ""))
+    run({"op": "sync", "fresh": True, "by": _by(request)})  # read the build again: a cancel gives the planning steps back at once
+    return {"ok": True, "build": target.get("build"), "step": target.get("step"), "action": action, "status": res.get("status"),
+            "label": res.get("label"), "held": res.get("held"), "say": res.get("say") or "Done."}
+
+
+@router.get("/plans/{plan_id}/build")
+def plan_build(plan_id: str) -> dict[str, Any]:
+    """The build a plan was sent as, read live from the builds store on every call (nothing of it is kept in the plan
+    tree): {plan, build: {id, number, title, status, pipelineView, split, clash, pr}, steps: [{id, uid, title, model,
+    modelBy, splitBy, status, label, minutes}]}. `pipelineView` is null while the store works none out (the raw status
+    is the state then); `build` is null for a plan that was not sent."""
+    return _answer(run({"op": "plan-build", "id": plan_id}))
+
+
+@router.get("/history/{id}")
+def history(id: str) -> dict[str, Any]:
+    """The planning steps a send replaced, kept on the item: one entry per build, with the steps as they were."""
+    return _answer(run({"op": "history", "id": id}))
+
+
+@router.post("/restore-steps")
+async def restore_steps(request: Request) -> dict[str, Any]:
+    """Bring replaced planning steps back into an item: {id, entry} (the newest entry when none is given). Refused
+    while the item is locked by a sent build."""
+    return _write("restore-steps", request, await _body(request))
+
+
+@router.post("/sync")
+async def sync(request: Request) -> dict[str, Any]:
+    """Bring the tree in line with the builds store now (every read does this by itself)."""
+    return _write("sync", request, await _body(request))
 
 
 @router.post("/say")
@@ -227,3 +329,34 @@ class PlanTreeService:
 
 
 plugin_services.provide("plan-tree@1", PlanTreeService(), FOLDER)
+
+
+def _as_plan(item: dict[str, Any]) -> dict[str, Any]:
+    build = next((link for link in item.get("links") or [] if link.get("type") == "build"), None)
+    out = {k: item.get(k) for k in ("id", "title", "status", "priority", "tags", "body", "updatedAt")}
+    if build:
+        out["build"] = {"id": str(build.get("ref") or "").split(":", 1)[-1]}
+    live = item.get("live") or {}
+    if live.get("build"):  # a sent plan: the state view already carries its build's status (never the plan's old one)
+        out["build"] = {"id": live["build"], "number": live.get("number") or "", "status": live.get("status") or "", "label": live.get("label") or ""}
+        out["steps"] = live.get("steps") or {}
+    return out
+
+
+class PlansService:
+    """plans@1: the tree's plans (items of kind `plan`), without naming this folder."""
+
+    contract = "plans@1"
+
+    def list(self) -> list[dict[str, Any]]:
+        return [_as_plan(i) for i in run({"op": "state"}).get("items", []) if i.get("kind") == "plan"]
+
+    def get(self, plan_id: str) -> dict[str, Any] | None:
+        return next((p for p in self.list() if p["id"] == plan_id), None)
+
+    def park(self, title: str, summary: str = "", category: str = "", by: str = "") -> dict[str, Any]:
+        """"Put it in a plan for later": a parked top-level plan (or inside the item `category` names), never a build."""
+        return run({"op": "add", "kind": "plan", "title": title, "body": summary, "status": "parked", "parent": category or None, "by": by})
+
+
+plugin_services.provide("plans@1", PlansService(), FOLDER)

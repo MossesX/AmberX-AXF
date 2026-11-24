@@ -17,11 +17,6 @@
       "label": "axHub web plugin",
       "manifest": "axhub-plugin@1",
       "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
-    },
-    "amberx": {
-      "label": "AmberX plugin",
-      "manifest": "amberx-plugin@1",
-      "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
     }
   },
   "pathProblems": [
@@ -974,7 +969,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"desktop\" (known: console, axhub, amberx)"
+        "error": "unknown plugin kind \"desktop\" (known: console, axhub)"
       }
     },
     {
@@ -991,7 +986,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"undefined\" (known: console, axhub, amberx)"
+        "error": "unknown plugin kind \"undefined\" (known: console, axhub)"
       }
     },
     {
