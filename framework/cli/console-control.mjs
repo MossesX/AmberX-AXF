@@ -18,6 +18,10 @@
  *                                                       keys its Settings → Interface tab writes, axf.chrome.<type>.<id>):
  *                                                       get [key] · set <key> <value> (asset = the asset it uses; reset or
  *                                                       '' drops it) · reset [key] (all of them: --confirm) · open [tab]
+ *   axf console place [get|restore] [--from loaded|saved]
+ *                                                       the place the console keeps for a reload (screen, tabs, selection,
+ *                                                       scroll): read it (default), or put it back (= voice "put me back";
+ *                                                       loaded = where it was before the last reload, saved = kept since)
  *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
@@ -26,14 +30,16 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome', 'place']);
+/** The sources a place restore can put back (apps/console-web/src/place/placeApi.ts). */
+const PLACE_SOURCES = ['loaded', 'saved'];
 /** The chrome kinds with a settings dialog (chrome-settings@1 CHROME_TYPES). */
 const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
 /** One chrome instance setting's address: the same key its Settings → Interface tab writes. */
 export const chromeSettingAddress = (type, id, key) => `setting:chrome.${type}.${id}.${key}`;
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
-const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set']);
+const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set', 'from']);
 
 /** argv → { words, flags }. */
 export function parseArgs(argv) {
@@ -130,6 +136,14 @@ export function toRequest(argv) {
       if (op === 'press' && id && button) return { method: 'POST', path: `/toolbars/${encodeURIComponent(id)}/press`, body: { button, ...(flags.value !== undefined ? { value: flags.value } : {}), ...(flags.confirm ? { confirm: true } : {}) } };
       throw new Error('usage: axf console toolbar list [--view <view>] | get <toolbar id> | press <toolbar id> <button> [--value v] [--confirm]');
     }
+    case 'place': {
+      // the saved place: read it, or put it back in the open console
+      const [op = 'get'] = args;
+      const usage = `usage: axf console place [get|restore] [--from ${PLACE_SOURCES.join('|')}]`;
+      if (op === 'get') return { method: 'GET', path: `/place${typeof flags.to === 'string' ? `?to=${encodeURIComponent(flags.to)}` : ''}` };
+      if (op !== 'restore' || (flags.from !== undefined && !PLACE_SOURCES.includes(flags.from))) throw new Error(usage);
+      return { method: 'POST', path: '/place/restore', body: { ...(flags.from ? { from: flags.from } : {}), ...extra } };
+    }
     case 'voice': {
       const text = args.join(' ').trim();
       if (!text) throw new Error('usage: axf console voice "<phrase>"');
@@ -161,6 +175,21 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
   }
 }
 
+const placeLine = (name, p) => (p?.view
+  ? `  ${name}: ${p.view} · ${Object.keys(p.tabs ?? {}).length} tab row(s) · ${Object.keys(p.selection ?? {}).length} selection(s) · ${Object.keys(p.scroll ?? {}).length} scroll offset(s)`
+  : `  ${name}: none`);
+
+/** The lines of a place answer: what is saved (state of panel:console-place), or what a restore put back. */
+export function describePlace(r) {
+  const st = r.state?.target ?? r.state;
+  if (st && typeof st === 'object' && st.$axf === 'console-place@1') {
+    return [placeLine('saved', st.saved), placeLine('loaded', st.loaded), `  now: ${st.now?.view ?? '?'}`, ...(st.restoring ? [`  restoring ${st.restoring.view} (${st.restoring.pending?.length ?? 0} waiting)`] : [])];
+  }
+  const done = r.result;
+  if (done && typeof done === 'object' && done.view && done.from) return [`  put back ${done.view} (${done.from}) · ${done.tabs} tab row(s) · ${done.selection} selection(s) · ${done.scroll} scroll offset(s)`];
+  return [];
+}
+
 /** A few readable lines for an answer. */
 export function describe(r) {
   if (!r.ok) return [`✗ ${r.code}: ${r.message}`, ...(r.openUrl ? [`  open the console: ${r.openUrl}`] : []), ...(r.nearest?.length ? [`  nearest: ${r.nearest.join(', ')}`] : [])];
@@ -174,6 +203,7 @@ export function describe(r) {
     out.push(`  ${r.label}: ${r.enabled ? 'on' : 'off'} · sub-tab ${r.tab?.address ?? '(none)'}${r.gear ? ` · gear ${r.gear}` : ''}`);
     for (const x of r.settings ?? []) out.push(`  ${x.key} = ${x.value === undefined ? '(read live: axf console state ' + x.address + ')' : JSON.stringify(x.value)}  · ${x.label}`);
   }
+  for (const line of describePlace(r)) out.push(line);
   if (r.effects?.stopsWorking?.length) out.push(`  stops working: ${r.effects.stopsWorking.map((d) => d.name).join(', ')}`);
   if (r.say) out.unshift(`🗣 ${r.say}`);
   if (r.source && !Array.isArray(r.targets)) out.push(`  (${r.source}${r.console === false ? ', no console open' : ''})`);

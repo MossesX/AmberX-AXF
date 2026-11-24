@@ -59,6 +59,9 @@ def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
     """The axHub policy tag of a command (CONTROL.md → Recommended axHub policy): reads and navigation `allow` (never a
     veto countdown), writes `veto`, destructive presses `confirm`, deciding presses `person` (never by command)."""
     effect, requires = VERB_RULES.get(cmd.get("verb", ""), ("write", "control.console.write"))
+    if cmd.get("verb") == "press" and cmd.get("address") == cc.PLACE_ADDRESS:
+        # putting the saved place back only moves the screen (view, tabs, scroll): navigation, not a write
+        effect, requires = VERB_RULES["open"]
     tag = "allow" if effect in ("read", "navigate") else "veto"
     destructive = False
     if cmd.get("verb") == "press":
@@ -431,6 +434,23 @@ def router_for(auth: Any) -> APIRouter:
         except cc.ControlError as e:
             return fail(e)
         return await from_body(request, {**{k: v for k, v in b.items() if k not in ("button",)}, "verb": "press", "address": address})
+
+    @r.get("/place")
+    async def place_get(request: Request, to: str = "recent") -> JSONResponse:
+        """The open console's place (read only): `state.saved` (view, tabs, selection, scroll kept for a reload),
+        `state.loaded` (what this page load found saved), `state.now` (what is on screen) and `state.restoring`."""
+        return await go(request, {"$axf": cc.FRAME, **cc.place_command()}, to)
+
+    @r.post("/place/restore")
+    async def place_restore(request: Request) -> JSONResponse:
+        """{from?: loaded|saved, reason?, to?}: put the place back in the open console (view, tabs, selection, scroll).
+        Default: the place the page loaded with, else the saved one. `unavailable` when there is none."""
+        b = await _body(request)
+        try:
+            cmd = cc.place_command(True, b.get("from"))
+        except cc.ControlError as e:
+            return fail(e)
+        return await from_body(request, {**{k: v for k, v in b.items() if k in ("reason", "to", "by")}, **cmd})
 
     @r.get("/plugins/{ref}/settings")
     async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:
