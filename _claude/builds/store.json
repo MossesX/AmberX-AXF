@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10391,
- "updatedAt": "2026-11-24T17:32:59.148Z",
+ "rev": 10392,
+ "updatedAt": "2026-11-24T19:13:41.479Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -101476,14 +101476,41 @@
     "all"
    ],
    "order": {
-    "all": 217
+    "all": 218
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "headless-session-efficiency-shared-chain-control",
+    "createdAt": "2026-11-06T14:24:50.756Z",
+    "builtAt": "2026-11-06T19:07:36.652Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw52nz5g2x3dou": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g2yt5vq": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g2zqtum": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g30nlit": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g3130q5": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g32gn2l": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g33jhjc": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g34u2v3": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g354ncj": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g36yatb": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g370l5t": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g384ny1": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g39t00c": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g3aptdc": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5g3bo1wq": "2026-11-06T14:24:50.757Z",
+     "st-mw52nz5h3chirk": "2026-11-06T14:24:50.757Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-06T14:24:50.757Z",
    "rearranged": false,
@@ -224434,11 +224461,11 @@
     "all"
    ],
    "order": {
-    "all": 893
+    "all": 894
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224451,11 +224478,11 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwfwdp4y04a733": "2026-11-14T04:20:23.888Z",
-     "st-mwfwdp4y056wfy": "2026-11-14T04:20:23.888Z",
-     "st-mwfwdp4y066i5r": "2026-11-14T04:20:23.888Z",
-     "st-mwja99ke019f5e": "2026-11-16T13:12:10.444Z",
-     "st-mwlauggv09732a": "2026-11-17T23:04:11.462Z"
+     "st-mwr5x8mn1vgef3": "2026-11-14T04:20:23.888Z",
+     "st-mwr5x8mo1wjz4r": "2026-11-14T04:20:23.888Z",
+     "st-mwr5x8mo1xlhe9": "2026-11-14T04:20:23.888Z",
+     "st-mwr5x8mo1ygpjg": "2026-11-18T08:58:49.324Z",
+     "st-mwr5x8mo1zbc4d": "2026-11-21T23:35:38.134Z"
     }
    },
    "queue": null,
@@ -259287,11 +259314,11 @@
     "all"
    ],
    "order": {
-    "all": 956
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 164,
+   "rev": 166,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259304,25 +259331,25 @@
     "source": "console",
     "status": "pending",
     "stepAt": {
-     "st-mwjuvk4n0y6u0k": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n0zdtvr": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n10ylf7": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n115dc7": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n12ozzj": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1314im": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n14kqem": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n155jo7": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n16tlbz": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1717jn": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n18xlck": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n192t5b": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1adhuw": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1budif": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1c6w3g": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1d321u": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1elbp9": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1fy34j": "2026-11-16T22:49:23.111Z",
-     "st-mwjuvk4n1gtk36": "2026-11-16T22:49:23.111Z"
+     "st-mwre2x8l1lmcgg": "2026-11-22T05:21:22.629Z",
+     "st-mwre2x8l1mocvl": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1nnhv4": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1oxmya": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1p3oen": "2026-11-22T05:21:22.629Z",
+     "st-mwre2x8l1qn5tc": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1r0nuy": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1sli69": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1tjat3": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1uvuw0": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1vz327": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1wjjj6": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1xo8ln": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1ym59q": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l1zx6hh": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l20k1at": "2026-11-16T22:49:23.111Z",
+     "st-mwre2x8l21tan5": "2026-11-16T22:49:23.111Z",
+     "st-mwrfn5o81ln39k": "2026-11-22T06:05:05.869Z",
+     "st-mwrfn5o81m2jr3": "2026-11-22T06:05:05.869Z"
     }
    },
    "queue": null,
@@ -264242,15 +264269,15 @@
     "all"
    ],
    "order": {
-    "all": 958
+    "all": 959
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T23:03:16.256Z",
+    "builtAt": "",
     "createdAt": "2026-11-16T22:59:51.546Z",
     "estimate": "",
     "model": "Opus",
@@ -264259,25 +264286,11 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwjveb4r0wu6j1": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r0xnxaa": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r0ytkrn": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r0zdiqb": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r10iyal": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r116ou2": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r12i5ml": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r13tt0f": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r149qj9": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r151out": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r168nur": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r17krqg": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r18mbmx": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r19l0vh": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r1a856f": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r1by5mc": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r1cq83v": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r1dbma0": "2026-11-16T23:03:57.915Z",
-     "st-mwjveb4r1eyq3h": "2026-11-16T23:03:57.915Z"
+     "st-mwuoiay61lk1qb": "2026-11-24T12:36:34.925Z",
+     "st-mwuoiay61m6vxd": "2026-11-16T23:03:57.915Z",
+     "st-mwuoiay61n8hd4": "2026-11-16T23:03:57.915Z",
+     "st-mwuoiay61o2nhd": "2026-11-16T23:03:57.915Z",
+     "st-mwuoiay61p6m4q": "2026-11-22T01:45:32.586Z"
     }
    },
    "queue": null,
@@ -272601,15 +272614,15 @@
     "all"
    ],
    "order": {
-    "all": 970
+    "all": 971
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T22:10:18.088Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T14:50:33.375Z",
     "estimate": "",
     "model": "Opus",
@@ -272618,22 +272631,22 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwkt948601b3h4": "2026-11-17T14:51:42.630Z",
-     "st-mwkt9486020kba": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948603x2qa": "2026-11-17T14:51:42.630Z",
-     "st-mwkt9486046sj8": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948605bvhg": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948606t1rz": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948607le5m": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948608zxlg": "2026-11-17T14:51:42.630Z",
-     "st-mwkt948609ml1a": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860arknk": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860bhoc9": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860cduo9": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860dzofs": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860ejwmq": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860fgyre": "2026-11-17T14:51:42.630Z",
-     "st-mwkt94860g81z7": "2026-11-17T14:51:42.630Z"
+     "st-mwr9h9km1lxuy6": "2026-11-22T03:12:33.718Z",
+     "st-mwr9h9km1mfksc": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9km1njq2a": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9km1ou21p": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9km1p5bjw": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9km1ql7yt": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9km1rwx4s": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1s5dty": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1tx171": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1udxww": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1vpg3v": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1wtuu8": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1xz2c1": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1yyqz0": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn1zlur6": "2026-11-17T14:51:42.630Z",
+     "st-mwr9h9kn20bv6d": "2026-11-22T01:25:27.959Z"
     }
    },
    "queue": null,
@@ -285140,15 +285153,15 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T18:56:36.706Z",
     "estimate": "",
     "model": "Opus",
@@ -291736,15 +291749,15 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 997
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-18T00:17:10.973Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T19:34:48.701Z",
     "estimate": "",
     "model": "Opus",
@@ -291753,21 +291766,21 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwlaugimcko7go": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcl0qf7": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcm84zz": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcnjt81": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcorptv": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcpif27": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcq5se5": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcrcqpi": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcsctx4": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimctz3aj": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcunnnl": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcv3zl2": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcw8bb5": "2026-11-17T19:44:46.822Z",
-     "st-mwlaugimcxbfwp": "2026-11-17T19:44:46.822Z",
-     "st-mwlcjduu01rxkf": "2026-11-17T23:51:33.646Z"
+     "st-mwuoifwf21zava": "2026-11-24T12:36:41.343Z",
+     "st-mwuoifwf22f6rq": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf23k8e4": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf24zl95": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf252t70": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf26wahl": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf27d058": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf28tkf8": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf29zehk": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf2a6he5": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf2bzpia": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf2cdul5": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf2dnyoc": "2026-11-17T22:28:27.285Z",
+     "st-mwuoifwf2e7z8r": "2026-11-18T01:13:29.208Z",
+     "st-mwuoifwf2f9780": "2026-11-22T02:25:21.835Z"
     }
    },
    "queue": null,
@@ -299671,15 +299684,15 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T23:31:47.269Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T21:20:30.021Z",
     "estimate": "",
     "model": "Opus",
@@ -299688,18 +299701,16 @@
     "source": "console",
     "status": "complete",
     "stepAt": {
-     "st-mwl76ubk01w860": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl02wc67": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl03howi": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl041zog": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl05tdcz": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl06ref4": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl07moc4": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl08bwhj": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl098bzd": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0afwg6": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0bya65": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0cmdsf": "2026-11-17T21:21:51.104Z"
+     "st-mwuoio2u1llk8p": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1m2dyf": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1n4ipg": "2026-11-24T12:36:51.942Z",
+     "st-mwuoio2u1o7z8x": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1pfxgr": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1qgl9x": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1rf4jm": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1skit7": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1tsvpg": "2026-11-17T21:21:51.104Z",
+     "st-mwuoio2u1u1qjx": "2026-11-22T01:55:28.766Z"
     }
    },
    "queue": null,
@@ -300358,15 +300369,15 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 1006
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T22:07:59.785Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T21:23:34.872Z",
     "estimate": "",
     "model": "Opus",
@@ -300809,15 +300820,15 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T21:26:38.676Z",
     "estimate": "",
     "model": "Opus",
@@ -302808,15 +302819,15 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 1009
    },
    "kind": "build",
    "planRef": "",
-   "rev": 138,
+   "rev": 140,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-18T01:10:42.989Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T21:30:30.893Z",
     "estimate": "",
     "model": "Opus",
@@ -302825,34 +302836,15 @@
     "source": "console",
     "status": "pending",
     "stepAt": {
-     "st-mwl7mosm01los3": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm02xva7": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm03sff3": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm046apb": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm05zbm4": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm06y9n1": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm07k5t8": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm08bkka": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm09gbh2": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0akoul": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0burfx": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0ck2sl": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0d5cu4": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0eli57": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0f1kum": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0g3jzd": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0ht4mm": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0i97kc": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0j6nqp": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0kovn1": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0lh4ci": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0mgs04": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0nyoh7": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0o1rov": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0pieu6": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0qdm0j": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0rgpd6": "2026-11-17T21:34:10.438Z",
-     "st-mwl7mosm0st0wh": "2026-11-17T21:34:10.438Z"
+     "st-mwuoizsq2gu8rq": "2026-11-24T12:37:07.130Z",
+     "st-mwuoizsq2hbmr1": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2iy54b": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2jp07u": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2kpd1s": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2l8ziz": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2mhuh8": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2ng59h": "2026-11-17T21:34:10.438Z",
+     "st-mwuoizsq2odjmm": "2026-11-22T02:35:26.247Z"
     }
    },
    "queue": null,
@@ -302906,10 +302898,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-refreshing-console-jumps-back",
-   "pr": "910",
+   "pr": "912",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T17:20:41.074Z",
+   "updatedAt": "2026-11-24T19:13:28.030Z",
    "builtAt": "",
    "notes": [
     {
@@ -304121,6 +304113,1186 @@
      "text": "Watchdog: step s12 stuck at completed (145 min past budget): re-ran the transition (13).",
      "at": "2026-11-24T17:32:01.767Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:33:24.563Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (196 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (184 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (175 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (194 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (173 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (187 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (18 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (178 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (148 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T17:35:03.615Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (200 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (188 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (179 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (198 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (177 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (191 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (22 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (182 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (152 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T17:39:02.503Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:40:30.509Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (204 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (192 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (183 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (202 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (181 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (195 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (26 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (186 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (156 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T17:43:01.715Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (207 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (195 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (186 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (205 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (184 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (198 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (29 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (189 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (159 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T17:46:01.770Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (211 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (199 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (190 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (209 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (188 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (202 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (33 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (193 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (163 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T17:50:01.391Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:50:21.470Z",
+     "by": "store"
+    },
+    {
+     "text": "Lander: PR 3 of 11 (s4, split after a failure)",
+     "at": "2026-11-24T17:51:29.745Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (202 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (193 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (212 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (191 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (205 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (36 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (196 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (166 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T17:53:01.477Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (205 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (196 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (215 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (194 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (208 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (39 min past budget): re-ran the transition (12).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (199 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (169 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T17:56:01.724Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:00:35.698Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (209 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (200 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (219 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (198 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (212 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (43 min past budget): re-ran the transition (13).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (203 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (173 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:00:02.683Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (213 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (204 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (223 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (202 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (216 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (47 min past budget): re-ran the transition (14).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (207 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (177 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:04:02.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (217 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (208 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (227 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (206 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (220 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (51 min past budget): re-ran the transition (15).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (211 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (181 min past budget): re-ran the transition (23).",
+     "at": "2026-11-24T18:08:02.643Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:10:17.796Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (221 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (212 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (231 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (210 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (224 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (55 min past budget): re-ran the transition (16).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (215 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (185 min past budget): re-ran the transition (24).",
+     "at": "2026-11-24T18:12:02.478Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (225 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (216 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (235 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (214 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (228 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (59 min past budget): re-ran the transition (17).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (219 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (189 min past budget): re-ran the transition (25).",
+     "at": "2026-11-24T18:16:01.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (228 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (219 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (238 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (217 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (231 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (62 min past budget): re-ran the transition (18).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (222 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (192 min past budget): re-ran the transition (26).",
+     "at": "2026-11-24T18:19:01.852Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:20:19.080Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (231 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (222 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (241 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (220 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (234 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (65 min past budget): re-ran the transition (19).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (225 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (195 min past budget): re-ran the transition (27).",
+     "at": "2026-11-24T18:22:01.977Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (234 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (225 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (244 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (223 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (237 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (68 min past budget): re-ran the transition (20).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (228 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (198 min past budget): re-ran the transition (28).",
+     "at": "2026-11-24T18:25:02.059Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (237 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (228 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (247 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (226 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (240 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (71 min past budget): re-ran the transition (21).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (231 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (201 min past budget): re-ran the transition (29).",
+     "at": "2026-11-24T18:28:02.182Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:30:27.264Z",
+     "by": "store"
+    },
+    {
+     "text": "Lander: failed in merging-main, attempt 2: merging PR #911 as it is was refused (GitHub 405: Pull Request has merge conflicts): main is pulled into the PR and CI runs again",
+     "at": "2026-11-24T18:33:04.881Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (241 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (232 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (251 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (230 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (244 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (75 min past budget): re-ran the transition (22).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (235 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (205 min past budget): re-ran the transition (30).",
+     "at": "2026-11-24T18:32:01.504Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Lander: attempt 2: retrying pr-pulling-main",
+     "at": "2026-11-24T18:36:42.388Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (246 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (237 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (256 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (235 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (249 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (80 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (240 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (210 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T18:37:01.611Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by claude, nothing of it was kept: \"fixing\" is not a build status of pipeline-2@1 (pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed, failed)",
+     "at": "2026-11-24T18:37:31.939Z",
+     "by": "store"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:40:27.761Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (250 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (241 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (260 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (239 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (253 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (84 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (244 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (214 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T18:41:01.793Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Lander: PR #911 was merged by hand by MossesX (655b4c649, CI running): recorded, the build goes on.",
+     "at": "2026-11-24T18:43:54.863Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (245 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (264 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (243 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (257 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (88 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (248 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (218 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T18:45:02.029Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (248 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (267 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (246 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (260 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (91 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (251 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (221 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T18:48:02.644Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T18:50:17.970Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (252 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (271 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (250 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (264 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (95 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (255 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (225 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T18:52:01.887Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (255 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (274 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (253 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (267 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (98 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (258 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (228 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T18:55:02.185Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (259 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (278 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (257 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (271 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (102 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (262 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (232 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T18:59:01.660Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T19:00:27.121Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (263 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (282 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (261 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (275 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (106 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (266 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (236 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T19:03:01.923Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (266 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (285 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (264 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (278 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (109 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (269 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (239 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T19:06:02.154Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T19:10:19.454Z",
+     "by": "store"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (270 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (289 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (268 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (282 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (113 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (273 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (243 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T19:10:01.421Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (273 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (292 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (271 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (285 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (116 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (276 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (246 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T19:13:02.439Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -304198,16 +305370,32 @@
     }
    },
    "landing": {
-    "attempt": 1,
+    "attempt": 2,
     "split": true,
     "merged": [
-     909
+     909,
+     910,
+     911
     ],
+    "rules": {
+     "head": "e9711909e0c80171cf8a7052606ca2746a19607a",
+     "ok": true,
+     "failing": [],
+     "fixed": [],
+     "at": "2026-11-24T19:12:29.897Z"
+    },
+    "green": {
+     "head": "e9711909e0c80171cf8a7052606ca2746a19607a",
+     "at": "2026-11-24T19:12:29.897Z"
+    },
     "lastMerge": {
-     "pr": 909,
-     "sha": "d1d11a8a716477f4988a88e8bb9a6547e4eb1317",
-     "head": "587bb9bda241562c6ec42be3a078b69f0c54b543",
-     "at": "2026-11-24T17:18:05.896Z"
+     "pr": 911,
+     "sha": "655b4c64934531fd764702efe24656cb73a3dd52",
+     "head": "c32b120d006b83074ecd2ca69183f2490bf99353",
+     "at": "2026-11-24T18:43:27Z",
+     "byHand": true,
+     "ci": "running",
+     "by": "MossesX"
     },
     "state": "running-ci",
     "mergeLine": {
@@ -304606,11 +305794,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 10,
+     "rev": 11,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T13:49:17.259Z",
-     "statusAt": "2026-11-24T13:49:17.113Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-24T17:51:42.443Z",
+     "statusAt": "2026-11-24T17:51:42.371Z",
+     "statusBy": "lander",
      "attempt": 2,
      "statusLog": [
       {
@@ -304661,13 +305849,20 @@
        "by": "headless",
        "attempt": 2,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T17:51:42.371Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s4",
      "branch": "claude/fix-refreshing-console-jumps-back--s4",
      "tmux": "axf-fix-refreshing-console-jumps-back--s4--earl",
+     "prNumber": 911,
      "tried": [
       "mossesx-max-"
      ]
@@ -304708,11 +305903,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 17,
+     "rev": 18,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-24T14:01:16.030Z",
-     "statusAt": "2026-11-24T14:01:15.925Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-24T18:44:12.878Z",
+     "statusAt": "2026-11-24T18:44:12.801Z",
+     "statusBy": "lander",
      "attempt": 3,
      "statusLog": [
       {
@@ -304798,13 +305993,20 @@
        "by": "headless",
        "attempt": 3,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-24T18:44:12.801Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/fix-refreshing-console-jumps-back--s5",
      "branch": "claude/fix-refreshing-console-jumps-back--s5",
      "tmux": "axf-fix-refreshing-console-jumps-back--s5--earl",
+     "prNumber": 912,
      "tried": [
       "mossesx-max-"
      ]
@@ -305584,7 +306786,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 332,
+   "rev": 393,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -305618,9 +306820,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T17:20:41.074Z",
+   "statusAt": "2026-11-24T18:44:32.099Z",
    "statusBy": "lander",
-   "attempt": 1,
+   "attempt": 2,
    "statusLog": [
     {
      "status": "failed",
@@ -305739,6 +306941,76 @@
     {
      "status": "running-ci",
      "at": "2026-11-24T17:20:41.074Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-main",
+     "at": "2026-11-24T17:51:13.939Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T17:51:29.745Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 3 of 11 (s4, split after a failure)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T17:51:47.670Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T17:52:06.434Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-main",
+     "at": "2026-11-24T18:32:56.824Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-24T18:33:04.881Z",
+     "by": "lander",
+     "attempt": 2,
+     "why": "Lander: failed in merging-main, attempt 2: merging PR #911 as it is was refused (GitHub 405: Pull Request has merge conflicts): main is pulled into the PR and CI runs again"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T18:36:42.388Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 2: retrying pr-pulling-main"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T18:36:53.808Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-24T18:43:54.863Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR #911 was merged by hand by MossesX (655b4c649, CI running): recorded, the build goes on."
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-24T18:44:20.092Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-24T18:44:32.099Z",
      "by": "lander",
      "attempt": 1
     }
@@ -314460,15 +315732,15 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 1015
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "builtAt": "2026-11-18T01:35:30.472Z",
+    "builtAt": "",
     "createdAt": "2026-11-17T22:35:36.950Z",
     "estimate": "",
     "model": "Opus",
@@ -314477,23 +315749,22 @@
     "source": "mcp",
     "status": "complete",
     "stepAt": {
-     "st-mwlaizmt014x75": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt029i4t": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt036pw1": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt04g1xa": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt05eu03": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt06fdt1": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt07opko": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt08iakx": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt09sqe5": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0ayy3p": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0bxveu": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0cg8a3": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0d31gu": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0emoxf": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0f2w1x": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0g2iw5": "2026-11-17T22:55:15.780Z",
-     "st-mwlaizmt0hn576": "2026-11-17T22:55:15.780Z"
+     "st-mwuoj9gi1venq0": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi1wbrew": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi1xoprj": "2026-11-24T12:37:19.650Z",
+     "st-mwuoj9gi1y5v45": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi1z2g0n": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi2055yb": "2026-11-24T12:37:19.650Z",
+     "st-mwuoj9gi21wrd2": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi22t01d": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi23xo4t": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi24yzg9": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi25eohh": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi26prsr": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi274bpb": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi28tare": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi29qpbk": "2026-11-17T22:55:15.780Z",
+     "st-mwuoj9gi2ab5bj": "2026-11-22T02:45:23.902Z"
     }
    },
    "queue": null,
@@ -330096,11 +331367,11 @@
     "all"
    ],
    "order": {
-    "all": 1016
+    "all": 1017
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -330113,36 +331384,21 @@
     "source": "mcp",
     "status": "pending",
     "stepAt": {
-     "st-mwla7w3e2tbh6l": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2ucral": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2ve3pp": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2w13ps": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2x816g": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2yzd9c": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e2zzsrr": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e30amq2": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e312w6x": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e32ejj0": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e33mqxr": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e34hj4l": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e35dagl": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e36bzrc": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e37xhyx": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e38iy1o": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e397dvi": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3aoqth": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3byx37": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3chyhq": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3d3h15": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3e4qev": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3fpode": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3gek9v": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3h2vtz": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3ihgpa": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3jf2qu": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3ko3kl": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3lnon7": "2026-11-17T22:45:13.312Z",
-     "st-mwla7w3e3mhup9": "2026-11-17T22:45:13.312Z"
+     "st-mwlaugjp8mvg5t": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8n165m": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8obbzt": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8ptrak": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8qy7hw": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8rs4rv": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8sp85t": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8tvjx9": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8u9iz0": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8vnzu0": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8wtg6a": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8xwmzw": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8yfpbh": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp8zlmb6": "2026-11-17T22:48:38.095Z",
+     "st-mwlaugjp90wc2p": "2026-11-17T22:48:38.095Z"
     }
    },
    "queue": null,
@@ -330817,14 +332073,43 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1018
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T22:53:07.696Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlbqpst02dmqx": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst037sdt": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst04uhsl": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst05x2tn": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst06ces6": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst07d550": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst08vbw3": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst09k906": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0ajb7m": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0bziil": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0c5chw": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0ds04t": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0e8c2a": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0f78ku": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0g1v7r": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0hefch": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0iwnrn": "2026-11-17T23:00:35.275Z",
+     "st-mwlbqpst0jz9en": "2026-11-17T23:00:35.275Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T22:55:59.492Z",
    "rearranged": false,
@@ -332048,14 +333333,38 @@
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1020
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T23:24:57.257Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlbpxjy01jvot": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy029pv8": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy03eseo": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy04jank": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy05fuht": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy06s6x1": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy07vijt": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy0852he": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy09x2yd": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy0akt3x": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy0b41dz": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy0c29ey": "2026-11-17T23:28:40.222Z",
+     "st-mwlbpxjy0dc9zl": "2026-11-17T23:28:40.222Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T23:28:40.222Z",
    "rearranged": false,
@@ -332580,14 +333889,37 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1021
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T23:25:30.509Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlw36paf6xo1p": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36paf7mrot": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36paf82rz1": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36paf929bt": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafaw6jr": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafbcudi": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafclk51": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafd5zwo": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafedpm1": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36paffkqjj": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafge86z": "2026-11-17T23:29:49.226Z",
+     "st-mwlw36pafhbdva": "2026-11-17T23:29:49.226Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T23:29:29.116Z",
    "rearranged": false,
@@ -333138,11 +334470,11 @@
     "all"
    ],
    "order": {
-    "all": 1021
+    "all": 1022
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333166,31 +334498,7 @@
      "st-mwlfgrl13u6l65": "2026-11-18T00:34:08.301Z",
      "st-mwlfgrl13vajjn": "2026-11-18T00:34:08.301Z",
      "st-mwlfgrl13w2nsm": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl13xyxab": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl13y1uiw": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl13zonpx": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl1406lcp": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl141fa1d": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl142asuz": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl143eyz3": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl144wah6": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14568ur": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl146a2ah": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl1478qrj": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl1482qdy": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl1499pux": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14ac4iq": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14bcvms": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14c5y86": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14dhwij": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14e0vgy": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14fivz4": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14glnyw": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14hn3cr": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14iqgj2": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14jgl4t": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14kbktw": "2026-11-18T00:34:08.301Z",
-     "st-mwlfgrl14l81xb": "2026-11-18T00:34:08.301Z"
+     "st-mwlfgrl13xyxab": "2026-11-18T00:34:08.301Z"
     }
    },
    "queue": null,
@@ -333844,11 +335152,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1023
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -333860,7 +335168,26 @@
     "prefixSteps": false,
     "source": "console",
     "status": "pending",
-    "stepAt": {}
+    "stepAt": {
+     "st-mwlw36pclip9qy": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pcljq46w": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclk04bf": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclljqyq": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclmpxbr": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclnak2g": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pcloe05x": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclprimt": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclqxvzt": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclr68uy": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pcls3sup": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pcltkuay": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclufc14": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclv24e1": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclwvwhi": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclxk7er": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pcly4jwx": "2026-11-18T01:37:11.234Z",
+     "st-mwlw36pclzscak": "2026-11-18T01:37:11.234Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-18T01:35:20.283Z",
@@ -334426,14 +335753,39 @@
     "all"
    ],
    "order": {
-    "all": 1023
+    "all": 1024
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T01:36:53.146Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlw36pl4i2l64": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4jbmtl": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4klozi": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4lniwz": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4m4208": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4nit7x": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4oef0q": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4ps3t9": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4q63gn": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4rim7m": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4s2sre": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4tnkau": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4uvscx": "2026-11-18T01:41:48.461Z",
+     "st-mwlw36pl4vmdj0": "2026-11-18T01:41:48.461Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T01:40:26.884Z",
    "rearranged": false,
@@ -335019,11 +336371,11 @@
     "all"
    ],
    "order": {
-    "all": 1024
+    "all": 1025
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -335035,7 +336387,23 @@
     "prefixSteps": false,
     "source": "console",
     "status": "pending",
-    "stepAt": {}
+    "stepAt": {
+     "st-mwlw36pm8sw8b7": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8tdydz": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8ufn1z": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8vey4s": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8w7m93": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8xoea2": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8y9lr0": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm8zsjba": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm90zoeh": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm91vjf3": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm923cuj": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm937tjc": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm94z3t0": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm95v83i": "2026-11-18T01:42:09.238Z",
+     "st-mwlw36pm96tgij": "2026-11-18T01:42:09.238Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-18T01:41:46.107Z",
@@ -335646,11 +337014,11 @@
     "all"
    ],
    "order": {
-    "all": 1025
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -335662,7 +337030,23 @@
     "prefixSteps": false,
     "source": "console",
     "status": "pending",
-    "stepAt": {}
+    "stepAt": {
+     "st-mwlw36pqcjqc7y": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pqck1v5g": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pqcltbqt": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucm7gn5": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucnasso": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucorul3": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucpfwun": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucq7xb6": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucrv3cv": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucs8eow": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36puctk3gm": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucuonxq": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucvjkak": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucw07kp": "2026-11-18T01:52:18.936Z",
+     "st-mwlw36pucxqncg": "2026-11-18T01:52:18.936Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-18T01:44:12.694Z",
@@ -336505,11 +337889,11 @@
     "all"
    ],
    "order": {
-    "all": 1026
+    "all": 1027
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -336522,18 +337906,18 @@
     "source": "console",
     "status": "pending",
     "stepAt": {
-     "st-mwlgr9vm01j4ye": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm021izx": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm032669": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm04ext1": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm05so2t": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm069d2n": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm07f2y1": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm08pip9": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm09f322": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm0aiolk": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm0bp70i": "2026-11-18T01:49:40.384Z",
-     "st-mwlgr9vm0cf0t7": "2026-11-18T01:49:40.384Z"
+     "st-mwranxoz1lst8e": "2026-11-18T01:49:40.384Z",
+     "st-mwranxoz1m369d": "2026-11-18T01:49:40.384Z",
+     "st-mwranxoz1n6s2a": "2026-11-18T01:49:40.384Z",
+     "st-mwranxoz1ozdue": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01psmza": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01qqtzm": "2026-11-22T03:45:44.532Z",
+     "st-mwranxp01rsunj": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01svxz9": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01tva97": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01umfvm": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01vubs9": "2026-11-18T01:49:40.384Z",
+     "st-mwranxp01w0x3t": "2026-11-22T02:55:17.897Z"
     }
    },
    "queue": null,
@@ -337183,14 +338567,45 @@
     "all"
    ],
    "order": {
-    "all": 1027
+    "all": 1028
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T01:48:59.706Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlw36sjjjwwcp": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjkzmqs": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjlufbn": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjmdg87": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjn4xov": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjojjib": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjp1kg9": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjq7h0b": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjrermv": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjs40m1": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjtuc3l": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjuhgb5": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjv69ag": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjwiea4": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjx45f2": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjyjtiw": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjjzod4k": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjk08d8j": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjk15qdo": "2026-11-18T01:53:22.816Z",
+     "st-mwlw36sjk2g0dl": "2026-11-18T01:53:22.816Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T01:52:04.656Z",
    "rearranged": false,
@@ -338104,14 +339519,29 @@
     "all"
    ],
    "order": {
-    "all": 1029
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "Brett",
+    "planId": "",
+    "createdAt": "2026-11-18T12:21:16.238Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwm3ddu2056ga4": "2026-11-18T12:22:44.042Z",
+     "st-mwm3ddu206jjts": "2026-11-18T12:22:44.042Z",
+     "st-mwm3ddu207xsfx": "2026-11-18T12:22:44.042Z",
+     "st-mwm3ddu2083jxd": "2026-11-18T12:22:44.042Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T12:22:44.042Z",
    "rearranged": false,
@@ -341556,11 +342986,11 @@
     "all"
    ],
    "order": {
-    "all": 1035
+    "all": 1036
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -341573,34 +343003,34 @@
     "source": "Brett",
     "status": "complete",
     "stepAt": {
-     "st-mwm47ohv01anqh": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv02ikii": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv03wof6": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv04c0c6": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv055rz4": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv065wz8": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv07kc1h": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv08pozq": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv09j2zv": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0arwvm": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0b7cya": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0cw2xp": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0desix": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0edrps": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0fyl45": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0gm5nr": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0hxwna": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0i0nlc": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0jh99k": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0kcgn5": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0lme4i": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0m3g2q": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0nxup9": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0o53mj": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0pbcxv": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0qb5bo": "2026-11-18T12:46:17.539Z",
-     "st-mwm47ohv0rmlwt": "2026-11-18T12:46:17.539Z",
-     "st-mwrandai1lek9d": "2026-11-22T03:45:18.089Z"
+     "st-mwrbd4aw1logsg": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1mjyiy": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1nln68": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1o21ta": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1pe4oc": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1q12xl": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1r2iav": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1srqsi": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1t1a0m": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1uggl6": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1vnoy5": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1wsmj4": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1xg3tr": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4aw1yk754": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax1z14y9": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax201zqr": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax21i2gg": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax22f71s": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax23b24e": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax24srp4": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax25yd8t": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax26eztl": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax27avah": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax28elql": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax29n66t": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax2alsno": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax2bvquq": "2026-11-18T12:46:17.539Z",
+     "st-mwrbd4ax2ctcyo": "2026-11-22T03:45:18.089Z"
     }
    },
    "queue": null,
@@ -341853,14 +343283,28 @@
     "all"
    ],
    "order": {
-    "all": 1036
+    "all": 1037
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T12:52:45.120Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmbfzs201jhoq": "2026-11-18T16:08:39.318Z",
+     "st-mwm5liml278gjc": "2026-11-18T12:52:45.122Z",
+     "st-mwm5liml28r625": "2026-11-18T12:52:45.122Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T12:52:45.122Z",
    "rearranged": false,
@@ -343551,14 +344995,27 @@
     "all"
    ],
    "order": {
-    "all": 1039
+    "all": 1040
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T16:04:23.517Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmbai9803e0sc": "2026-11-18T16:04:23.521Z",
+     "st-mwmbai98041knn": "2026-11-18T16:04:23.521Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T16:05:58.843Z",
    "rearranged": false,
@@ -343858,14 +345315,28 @@
     "all"
    ],
    "order": {
-    "all": 1040
+    "all": 1041
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T20:03:01.845Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmt2pxz0196s7": "2026-11-18T20:03:01.846Z",
+     "st-mwmt2pxz0286s2": "2026-11-18T20:03:01.846Z",
+     "st-mwmt2pxz0347nt": "2026-11-18T20:03:01.846Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T20:03:01.846Z",
    "rearranged": false,
@@ -344244,14 +345715,31 @@
     "all"
    ],
    "order": {
-    "all": 1041
+    "all": 1042
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T21:26:24.655Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmmukzd01t6zf": "2026-11-18T21:27:59.161Z",
+     "st-mwmmukzd02riia": "2026-11-18T21:27:59.161Z",
+     "st-mwmmukzd03yp01": "2026-11-18T21:27:59.161Z",
+     "st-mwmmukzd04vdba": "2026-11-18T21:27:59.161Z",
+     "st-mwmmukzd05wvr7": "2026-11-18T21:27:59.161Z",
+     "st-mwmmukzd064mcr": "2026-11-18T21:27:59.161Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T21:27:59.161Z",
    "rearranged": false,
@@ -344612,14 +346100,30 @@
     "all"
    ],
    "order": {
-    "all": 1042
+    "all": 1043
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T23:20:06.039Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmqygky01pwra": "2026-11-18T23:22:58.546Z",
+     "st-mwmqygky02ye5m": "2026-11-18T23:22:58.546Z",
+     "st-mwmqygky03bi8s": "2026-11-18T23:22:58.546Z",
+     "st-mwmqygky040217": "2026-11-18T23:22:58.546Z",
+     "st-mwmqygky055n92": "2026-11-18T23:22:58.546Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T23:22:58.546Z",
    "rearranged": false,
@@ -345607,14 +347111,35 @@
     "all"
    ],
    "order": {
-    "all": 1045
+    "all": 1046
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-19T00:16:59.516Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmszoae011qq0": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae026960": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae03zjlh": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae04u77o": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae052ijc": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae067mp0": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae07hc99": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae08leo3": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae09rr01": "2026-11-19T00:19:54.421Z",
+     "st-mwmszoae0a7m9e": "2026-11-19T00:19:54.421Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-19T00:19:54.421Z",
    "rearranged": false,
@@ -346082,14 +347607,35 @@
     "all"
    ],
    "order": {
-    "all": 1046
+    "all": 1047
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-19T00:22:02.009Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmtf3uu013ra1": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu02q9zu": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu03awmv": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu04v7yv": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu057d40": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu066pda": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu07tzwv": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu08oc56": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu09cgb0": "2026-11-19T00:31:53.233Z",
+     "st-mwmtf3uu0ayq7x": "2026-11-19T00:31:53.233Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-19T00:26:48.230Z",
    "rearranged": false,
@@ -346582,14 +348128,36 @@
     "all"
    ],
    "order": {
-    "all": 1047
+    "all": 1048
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "failed",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-19T00:42:04.028Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwmtu3ik01hdrd": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik02i3qr": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik03mdde": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik04ll5j": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik05dq2k": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik06a6e6": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik0739h0": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik08o4d4": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik09k5rt": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik0a05bm": "2026-11-19T00:43:33.836Z",
+     "st-mwmtu3ik0b6xfp": "2026-11-19T00:43:33.836Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-19T00:43:33.836Z",
    "rearranged": false,
@@ -358721,14 +360289,31 @@
     "all"
    ],
    "order": {
-    "all": 28
+    "all": 29
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "ci-speed-ci-failure-reports-lean-tn38",
+    "createdAt": "2026-11-20T12:07:17.619Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwoxry1e01sx7i": "2026-11-20T12:09:24.242Z",
+     "st-mwoxry1e021ko6": "2026-11-20T12:09:24.242Z",
+     "st-mwoxry1e03cjkj": "2026-11-20T12:09:24.242Z",
+     "st-mwoxry1e044hoj": "2026-11-20T12:09:24.242Z",
+     "st-mwoxry1e055zxo": "2026-11-20T12:09:24.242Z",
+     "st-mwoxry1e06eqnm": "2026-11-20T12:09:24.242Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-20T12:08:59.278Z",
    "rearranged": false,
@@ -359415,14 +361000,35 @@
     "all"
    ],
    "order": {
-    "all": 27
+    "all": 28
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 53,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "nov-20-fix-list-voice-console-co-em42",
+    "createdAt": "2026-11-20T19:35:44.492Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwpdtmpz01ry0y": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz02hk71": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz03zzzp": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz046xdm": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz0543kg": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz0685cq": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmpz07hdv5": "2026-11-20T19:38:36.743Z",
+     "st-mwpdtmq20832e5": "2026-11-20T19:38:36.746Z",
+     "st-mwpdtmq2094nb0": "2026-11-20T19:38:36.746Z",
+     "st-mwpdtmq20am9bi": "2026-11-20T19:38:36.746Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-20T19:38:07.926Z",
    "rearranged": false,
@@ -361188,14 +362794,37 @@
     "all"
    ],
    "order": {
-    "all": 25
+    "all": 26
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "plan-studio-live-progress-one-st-6z4z",
+    "createdAt": "2026-11-21T00:38:20.767Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwpomdac01i6s8": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac022kpj": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac03arbe": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac04xpdj": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac05gt98": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac06zx6m": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac07xgnk": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac08zkol": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdac09qu51": "2026-11-21T00:40:53.700Z",
+     "st-mwpomdad0abjf3": "2026-11-21T00:40:53.701Z",
+     "st-mwpomdad0brwnr": "2026-11-21T00:40:53.701Z",
+     "st-mwpomdad0ca5aq": "2026-11-21T00:40:53.701Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-21T00:40:33.400Z",
    "rearranged": false,
@@ -362040,14 +363669,39 @@
     "all"
    ],
    "order": {
-    "all": 24
+    "all": 25
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 49,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "console-tabs-plugins-open-in-tab-u6cs",
+    "createdAt": "2026-11-21T00:39:43.516Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwpoprwi01s70t": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi02pg8j": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi035hdy": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi04v02i": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi05kpsm": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi06lgw6": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi07bp1i": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi089p50": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi09992p": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi0axi6f": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwi0b0vm9": "2026-11-21T00:43:32.610Z",
+     "st-mwpoprwj0cjbve": "2026-11-21T00:43:32.611Z",
+     "st-mwpoprwj0d8rro": "2026-11-21T00:43:32.611Z",
+     "st-mwpoprwj0ecqmh": "2026-11-21T00:43:32.611Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-21T00:40:52.877Z",
    "rearranged": false,
@@ -365253,14 +366907,27 @@
     "all"
    ],
    "order": {
-    "all": 1056
+    "all": 1057
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-23T23:08:05.611Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtw7ijz1lomzt": "2026-11-23T23:08:05.612Z",
+     "st-mwtw7ijz1m0t90": "2026-11-23T23:08:05.612Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-23T23:08:05.612Z",
    "rearranged": false,
@@ -366263,15 +367930,34 @@
     "all"
    ],
    "order": {
-    "all": 19
+    "all": 20
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-sync-vps-fable-split-fe-rvjv",
-   "rev": 25,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "pipeline-sync-vps-fable-split-fe-rvjv",
+    "createdAt": "2026-11-23T23:58:06.241Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtxh8mf1l2k0a": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1mi60o": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1nqimn": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1o2w1x": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1pboms": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1q0weg": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1rddy0": "2026-11-23T23:59:55.623Z",
+     "st-mwtxh8mf1smso4": "2026-11-23T23:59:55.623Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-23T23:59:55.677Z",
    "rearranged": false,
@@ -366425,14 +368111,26 @@
     "all"
    ],
    "order": {
-    "all": 16
+    "all": 17
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T00:02:18.238Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtxkd5t1lad3a": "2026-11-24T00:02:18.238Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T00:02:18.238Z",
    "rearranged": false,
@@ -366580,14 +368278,26 @@
     "all"
    ],
    "order": {
-    "all": 13
+    "all": 14
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:03:14.032Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtzqrjg1ljv4v": "2026-11-24T01:03:14.032Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:03:14.032Z",
    "rearranged": false,
@@ -366735,14 +368445,26 @@
     "all"
    ],
    "order": {
-    "all": 14
+    "all": 15
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:04:03.592Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtzrt9z1l2le1": "2026-11-24T01:04:03.592Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:04:03.592Z",
    "rearranged": false,
@@ -366979,14 +368701,26 @@
     "all"
    ],
    "order": {
-    "all": 15
+    "all": 16
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:04:27.905Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtzsb3g1lzqjh": "2026-11-24T01:04:27.905Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:04:27.905Z",
    "rearranged": false,
@@ -367267,14 +369001,26 @@
     "all"
    ],
    "order": {
-    "all": 9
+    "all": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:05:00.966Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtzt3171lisd8": "2026-11-24T01:05:00.966Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:05:00.966Z",
    "rearranged": false,
@@ -367551,14 +369297,26 @@
     "all"
    ],
    "order": {
-    "all": 10
+    "all": 11
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:05:24.101Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtztjxr1lv4m4": "2026-11-24T01:05:24.101Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:05:24.101Z",
    "rearranged": false,
@@ -367987,14 +369745,26 @@
     "all"
    ],
    "order": {
-    "all": 12
+    "all": 13
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "failed",
+    "estimate": "",
+    "source": "hand",
+    "planId": "",
+    "createdAt": "2026-11-24T01:07:00.982Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwtzvpkv1lg4y6": "2026-11-24T01:07:00.982Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T01:07:00.982Z",
    "rearranged": false,
@@ -368270,15 +370040,29 @@
     "all"
    ],
    "order": {
-    "all": 7
+    "all": 8
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-3-tiny-docs-edits-5hxf",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "pipeline-test-3-tiny-docs-edits-5hxf",
+    "createdAt": "2026-11-24T03:27:38.472Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwu4xkhf1l83cg": "2026-11-24T03:28:34.803Z",
+     "st-mwu4xkhf1mp3f8": "2026-11-24T03:28:34.803Z",
+     "st-mwu4xkhf1n2obe": "2026-11-24T03:28:34.803Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T03:28:34.870Z",
    "rearranged": false,
@@ -369020,15 +370804,31 @@
     "all"
    ],
    "order": {
-    "all": 6
+    "all": 7
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-5-four-docs-edits--4i3u",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "pipeline-test-5-four-docs-edits--4i3u",
+    "createdAt": "2026-11-24T12:31:10.497Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwuoc3o21l311t": "2026-11-24T12:31:45.553Z",
+     "st-mwuoc3o21moyzn": "2026-11-24T12:31:45.554Z",
+     "st-mwuoc3o21nex5b": "2026-11-24T12:31:45.554Z",
+     "st-mwuoc3o21o8tf8": "2026-11-24T12:31:45.554Z",
+     "st-mwuoc3o21poybj": "2026-11-24T12:31:45.554Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T12:31:48.754Z",
    "rearranged": false,
@@ -369637,15 +371437,31 @@
     "all"
    ],
    "order": {
-    "all": 4
+    "all": 5
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "plan-studio-stamps-auto-queue-in-vpxx",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "plan-studio-stamps-auto-queue-in-vpxx",
+    "createdAt": "2026-11-24T12:47:30.101Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwuoxucu1l0b81": "2026-11-24T12:48:39.918Z",
+     "st-mwuoxucu1m0hgq": "2026-11-24T12:48:39.918Z",
+     "st-mwuoxucu1nt1c0": "2026-11-24T12:48:39.918Z",
+     "st-mwuoxucu1owi2m": "2026-11-24T12:48:39.918Z",
+     "st-mwuqgv0t1ldk6u": "2026-11-24T13:31:26.139Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T12:48:43.013Z",
    "rearranged": false,
@@ -370365,15 +372181,37 @@
     "all"
    ],
    "order": {
-    "all": 2
+    "all": 3
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "postgres-audit-find-everything-s-56pe",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "postgres-audit-find-everything-s-56pe",
+    "createdAt": "2026-11-24T14:23:41.717Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwusdzn11l9dn9": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11muvxb": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11naxpp": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11op1wi": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11psuo4": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11qf847": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11r52ab": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11skgih": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11tutvd": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11ussb8": "2026-11-24T14:25:12.109Z",
+     "st-mwusdzn11vfv84": "2026-11-24T14:25:12.109Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T14:25:20.319Z",
    "rearranged": false,
@@ -370497,13 +372335,11 @@
     },
     {
      "text": "Split by Fable into 8 steps (117 min). The triage gate assigns the models.",
-     "at": "2026-11-24T16:07:08.885Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T16:07:08.885Z"
     },
     {
      "text": "Rejected: 8 steps of 8 touch files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (apps/console-web/plugins/plan-studio-2/tree.mjs, apps/console-web/plugins/plan-studio-2/tree.test.mjs, apps/console-web/plugins/plan-studio-2/control.mjs, apps/console-web/plugins/plan-studio-2/server, +21 more). Answers: Run all now (run-all), or Defer all 8 steps (defer).",
-     "at": "2026-11-24T16:07:08.885Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T16:07:08.885Z"
     }
    ],
    "approvals": [],
@@ -370954,15 +372790,34 @@
     "all"
    ],
    "order": {
-    "all": 0
+    "all": 1
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "multi-select-in-the-plan-tree-svg3",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "plan-studio-2",
+    "planId": "multi-select-in-the-plan-tree-svg3",
+    "createdAt": "2026-11-24T16:04:12.449Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwuw13dq1lgksw": "2026-11-24T16:07:08.894Z",
+     "st-mwuw13dr1m1wec": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1nr34m": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1o4wb8": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1pm43p": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1q72ia": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1rbzt4": "2026-11-24T16:07:08.895Z",
+     "st-mwuw13dr1sacf4": "2026-11-24T16:07:08.895Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-24T16:07:13.023Z",
    "rearranged": false,
@@ -370996,6 +372851,588 @@
      "why": "8 steps for 6 slots"
     }
    ]
+  },
+  {
+   "id": "fable-fix-land-refresh-build-fix",
+   "title": "Fable fix: land the refresh build (fix-refreshing-console-jumps-back)",
+   "category": "",
+   "detail": "The refresh build failed at landing, 13:33 ET Nov 24. All steps built; the lander hit a clash between steps s7 and s8 in apps/console-web/src/main.tsx, split into one PR per step (11 PRs), then failed around PR 2. Find the actual failure, fix it (merge main, resolve the main.tsx clash), and land all remaining step PRs. Also submit the s8 UI review shots in /tmp/s8shots-wro0 with review.mjs submit --console. Do not fix CI by hand outside this session.",
+   "status": "queued",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "fable-fix-land-refresh-build-fix",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T18:38:54.732Z",
+   "updatedAt": "2026-11-24T18:41:12.634Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by Claude into 11 steps (11 Fable, 3 can run beside earlier steps).",
+     "at": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "text": "Brett: only two step PRs failed. Land the other nine right away first, then fix the two that failed. Also find why the lander stopped the whole build at PR 2 instead of skipping it and moving on to PR 3.",
+     "at": "2026-11-24T18:40:08.642Z"
+    },
+    {
+     "text": "Queued by auto-queue (slots free).",
+     "at": "2026-11-24T18:40:58.272Z"
+    },
+    {
+     "text": "auto-queued: slots free",
+     "at": "2026-11-24T18:41:12.634Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Just run the Fable fix.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-24T18:40:53.600Z",
+    "queuedBy": "auto-queue (slots free)",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-24T18:39:36.828Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 11,
+     "note": "Split by Claude into 11 steps (11 Fable, 3 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwv1h5z01lekzj",
+     "title": "",
+     "text": "Diagnose the landing failure: read the lander run log and state for build fix-refreshing-console-jumps-back (deploy/lander/run.mjs state, lander-state@1 rows, `gh pr list --search lander/fix-refreshing-console-jumps-back`, PR #909/#910 checks, the 'CI build errors' issue). Establish why the s7/s8 clash in apps/console-web/src/main.tsx made the lander split into 11 per-step PRs, which PR failed (PR 2 or near it), and whether that was a CI failure, a merge conflict or a lander bug. Write the findings to _claude/builds/reports/fable-fix-land-refresh-build-fix.md (Diagnosis section) and commit.",
+     "model": "Fable",
+     "why": "Lander split/landing logic is pipeline-engine internals; the root cause decides whether the engine or only the branch gets fixed",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/fable-fix-land-refresh-build-fix.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "ci-fix",
+      "why": "CI failures: it says \"ci failure\"",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwv1h5z01mg4cw",
+     "title": "",
+     "text": "If the diagnosis shows a lander bug (a clash between two steps of one build should be resolved in the combined PR, not trigger a split into one PR per step), fix it in deploy/lander/ with a regression case in framework/spec/check-landing-line.mjs (regenerate its fixture with --write). If no lander bug, record 'no engine change' in the report and commit that instead.",
+     "model": "Fable",
+     "why": "Changes landing-line@1 behaviour, a contract every build depends on",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/lander/",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/",
+      "_claude/builds/reports/fable-fix-land-refresh-build-fix.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-landing-line.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwv1h5z01nc6tn",
+     "title": "",
+     "text": "Run node framework/spec/check-landing-line.mjs and node framework/spec/check-gate-rules.mjs; fix any failure from s2. Commit.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/lander/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwv1h5z01o3vfp",
+     "title": "",
+     "text": "Inventory the remaining step PRs of fix-refreshing-console-jumps-back: list the 11 per-step PRs (merged, open, failed), their branches, heads and base. Record the table in the report (Remaining PRs section) and commit.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"merged\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fable-fix-land-refresh-build-fix.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"merged\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwv1h5z01pl4ip",
+     "title": "",
+     "text": "Check out the s7 and s8 step branches, merge current main into each, and resolve the apps/console-web/src/main.tsx clash so both changes survive (s7's refresh/route-restore logic and s8's change together). Keep the build's intent: refreshing the console must not jump back. Commit the merge on the failing step branch.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"merge\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/src/main.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"merge\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwv1h5z01qegz7",
+     "title": "",
+     "text": "Merge main into each other remaining open step branch; resolve any conflicts (builds store and THREADS.md newer-wins per the lander's rules, regenerated files regenerated, not hand-merged). Commit each merge.",
+     "model": "Fable",
+     "why": "Contracts: it says \"builds store\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/",
+      "_claude/THREADS.md",
+      "_claude/builds/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"builds store\"",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwv1h5z01r5seh",
+     "title": "",
+     "text": "Re-bake and verify the console on the fixed branch: rebake src/axf from framework (CI's rm -rf src/axf && cp loop in apps/console-web), npm run typecheck and npm run build (wrapped in agent-slots.mjs heavy), plus check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-console-control.mjs. Fix anything red caused by the merge. Commit.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"ci\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/src/axf/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"ci\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwv1h5z01s8dsh",
+     "title": "",
+     "text": "Reproduce the PR CI sweep locally that failed at landing (AXF_DATA_DIR=off, tracker --check, check-json-data-writes, check-builds-store, check-chrome-assets, plugin tests touched by the build). Fix any failure in the step branches. Commit.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"ci\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"ci\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwv1h5z01tomav",
+     "title": "",
+     "text": "Submit the s8 UI Review shots from /tmp/s8shots-wro0: node apps/console-web/plugins/ui-review/review.mjs submit --console with kind, name, app console-web, screen, branch and PR of s8, group 'fable-fix-land-refresh-build-fix - <Mon D h:mm AM/PM>' (headless naming), and --choices (3 options) or --single-option with the reason if the shots are one fix-only view. Record the review id in the report.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"headless\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fable-fix-land-refresh-build-fix.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"headless\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwv1h5z01u2d2i",
+     "title": "",
+     "text": "Push the fixed step branches, link them on the build (builds-live.mjs link), dispatch android.yml once on any branch whose push started no CI run, and hand the build back to the lander (mark it ready / re-arm landing) so the lander lands the remaining PRs; never merge by hand. Confirm the lander picked it up (one read of its state) and note it.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"dispatch\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s8",
+      "s9",
+      "s3"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"dispatch\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwv1h5z01v217d",
+     "title": "",
+     "text": "Finish: report _claude/builds/reports/fable-fix-land-refresh-build-fix.md (root cause, lander fix or none, clash resolution, checks before vs after, UI Review id, PRs handed to the lander), THREADS row in _claude/THREADS.md, open the PR for this build's own changes (lander fix + report), link it with builds-live.mjs link.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"root cause\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fable-fix-land-refresh-build-fix.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"root cause\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-24T18:39:34.715Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-24T18:39:36.828Z",
+     "updatedAt": "2026-11-24T18:39:36.828Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1059
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "builtAt": "",
+    "createdAt": "2026-11-24T18:38:54.732Z",
+    "estimate": "30 min",
+    "model": "Fable",
+    "planId": "",
+    "prefixSteps": false,
+    "source": "mcp",
+    "status": "pending",
+    "stepAt": {
+     "st-mwv1h5z01lekzj": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01mg4cw": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01nc6tn": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01o3vfp": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01pl4ip": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01qegz7": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01r5seh": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01s8dsh": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01tomav": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01u2d2i": "2026-11-24T18:39:36.828Z",
+     "st-mwv1h5z01v217d": "2026-11-24T18:39:36.828Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-24T18:39:36.828Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
   }
  ]
 }

@@ -843,53 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 16:23 UTC · `plan-studio-2-outline-kinds-notebooks` → archived (all) · Amber (voice)
-- 2026-11-23 16:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-22 01:55 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
-- 2026-11-23 20:25 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · builds-live
-- 2026-11-23 20:25 UTC · `fix-refreshing-console-jumps-back` → split, note (all) · builds-live
-- 2026-11-23 16:29 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · watchdog
-- 2026-11-23 16:30 UTC · `fix-refreshing-console-jumps-back` → split (all) · orchestrator
-- 2026-11-23 18:37 UTC · `fix-refreshing-console-jumps-back` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s10 undone, s11 undone, note (all) · foreign-write
-- 2026-11-23 20:22 UTC · `orchestrator-settings-collapsible-split` → building, note (all) · pipeline-bring-up
-- 2026-11-23 20:23 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:24 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-23 20:30 UTC · `orchestrator-settings-collapsible-split` s7 undone, note (all) · watchdog
-- 2026-11-23 20:31 UTC · `orchestrator-settings-collapsible-split` s1 done (all) · headless
-- 2026-11-23 20:34 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 20:38 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · pipeline-bring-up
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → build-complete (all) · orchestrator
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:39 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:41 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:44 UTC · `urgent-pipeline-proof-nov23` added (0 steps) (all) · plan-studio-2
-- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → splitting (all) · orchestrator
-- 2026-11-23 20:45 UTC · `urgent-pipeline-proof-nov23` → split, note (all) · orchestrator
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → merging-pr, note (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` PR 896 (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → pr-pulling-main (all) · lander
-- 2026-11-23 20:45 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
-- 2026-11-23 20:53 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
-- 2026-11-23 21:00 UTC · `orchestrator-settings-collapsible-split` → running-ci, note (all) · lander
-- 2026-11-23 21:01 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:05 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:08 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:09 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:11 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:13 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:15 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:16 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:19 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:20 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:22 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:24 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
-- 2026-11-23 21:26 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-23 21:27 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
 - 2026-11-23 21:29 UTC · `orchestrator-settings-collapsible-split` → failed, note (all) · lander
 - 2026-11-23 21:45 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
@@ -1243,6 +1196,53 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 17:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 17:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 17:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:35 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:39 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:43 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:46 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` PR 911 (all) · lander
+- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 17:52 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 17:53 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 17:56 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:04 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:08 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:12 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:16 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:19 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:22 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:32 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
+- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · lander
+- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main, note (all) · lander
+- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · claude
+- 2026-11-24 18:38 UTC · `fable-fix-land-refresh-build-fix` added (0 steps) (all) · pending
+- 2026-11-24 18:39 UTC · `fable-fix-land-refresh-build-fix` note (all) · orchestrator
+- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` note (all) · pending
+- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` → queued, note (all) · auto-queue (slots free)
+- 2026-11-24 18:41 UTC · `fable-fix-land-refresh-build-fix` note (all) · dispatcher
+- 2026-11-24 18:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:43 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` PR 912 (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
+- 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
+- 2026-11-24 18:45 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:48 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:52 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:55 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 18:59 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:03 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:06 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:10 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 19:13 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 
 ## Token passes (log)
 
