@@ -14,7 +14,9 @@ android {
         // CI stamps the run number (AXF_BUILD_NUMBER), which only goes up, so every build installs over the last one.
         // Local builds fall back to the fixed base 1.
         versionCode buildNumber
-        versionName "0.2.${buildNumber}"
+        // The build number is shown next to it in the app ("0.2.0+<build>", BuildConfigInfo); the console's dialog
+        // rules pin this exact line (nativeRules.test.mjs), so the name itself stays a plain release version.
+        versionName "0.2.0"
     }
     // One fixed key for every build (CI and local): Android only installs an update over an app signed with the same key.
     // debug.keystore is a committed debug key with the standard debug credentials; it protects nothing.
