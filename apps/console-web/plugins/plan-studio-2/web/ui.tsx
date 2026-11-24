@@ -8,7 +8,7 @@
  * lists the steps the orchestrator filed, marked "From orchestrator", each with its state badge; they check off in
  * place while the page keeps reading the state (useLiveProgress). All of it comes from the server.
  */
-import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { Button, Checkbox, Chip, Icon, IconButton, Note, PageToolbar, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -18,6 +18,7 @@ import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, VIEW, 
 import * as live from './live-core.mjs';
 import type { LiveState, Look } from './live-core.mjs';
 import { LiveBadge, LiveMark, LockMark, OrchBadge, SentEditor, readLooks, readOrchMark, type OrchMark } from './live';
+import { BuildPanel } from './build-panel';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -71,8 +72,12 @@ export function PlanStudio2Page() {
   const rows = useMemo(() => {
     if (!state) return [];
     if (q.trim()) { const ids = new Set(tc.find(state, q, { limit: 500 }).map((h) => h.id)); return state.items.filter((i) => ids.has(i.id)).map((item) => ({ item, depth: 0, kids: tc.children(state, item.id).length, path: tc.pathOf(state, item.id) })); }
-    return tc.flatten(state).filter((r) => showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done)).map((r) => ({ ...r, path: '' }));
+    // a sent plan's build steps are listed in the build panel under the plan (a table), not as rows of their own
+    return tc.flatten(state).filter((r) => r.item.origin !== live.ORIGIN && (showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done))).map((r) => ({ ...r, path: '' }));
   }, [state, q, showDone]);
+  /** The step rows the tree carries for a sent plan (they open a step in the editor and stand in until its build is read). */
+  const stepRows = (id: string) => (state ? tc.children(state, id).filter((c) => c.origin === live.ORIGIN) : []);
+  const isSentPlan = (i: Item) => !!i.live && !i.origin && i.live.split !== undefined;
   const total = state ? tc.progress(state, null) : { done: 0, total: 0, minutes: 0 };
   const current = state && selected ? tc.byId(state, selected) : null;
   const newPlan = () => rt.openDialog(DIALOGS.item, { parent: null, kind: 'plan' });
@@ -97,7 +102,12 @@ export function PlanStudio2Page() {
         <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
       ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
         <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
-          {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} looks={looks} orchMark={orchMark} />)}
+          {rows.map((r) => (
+            <Fragment key={r.item.id}>
+              <Row item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} looks={looks} orchMark={orchMark} />
+              {!q.trim() && isSentPlan(r.item) && <BuildPanel item={r.item} rows={stepRows(r.item.id)} open={!r.item.collapsed} depth={r.depth} selected={selected} looks={looks} />}
+            </Fragment>
+          ))}
         </ul>
       )}
       {state && state.items.length > 0 && !q && <div className={`${B}__topdrop`} data-axf-drop={DND_ZONE} data-axf-drop-id={TOP}><Icon name="move" size={14} /> Drop here for the top level</div>}
@@ -164,7 +174,7 @@ function Row({ item, depth, kids, path, state, selected, looks, orchMark }: { it
       )}
       <span className={`${B}__meta`}>
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
-        {item.status && item.status !== 'draft' && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
+        {item.status && item.status !== 'draft' && !lv && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}

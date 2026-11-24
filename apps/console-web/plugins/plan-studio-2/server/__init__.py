@@ -13,6 +13,9 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
                           token, MCP, voice and sessions)
   POST   orchestrate      one orchestrator action on a sent plan or one of its steps: {id, action}. The build is found
                           here and the tap goes to the orchestrator (capability axf.build-dispatch@1), which decides
+  GET    plans/{id}/build the build a plan was sent as, read live from the builds store on every call: the build's
+                          number, pipeline view (state, label, status line, waiting reason, merge line), who split it,
+                          a clash and its options, and the steps (unique id, split mark, triage model, status)
   GET    history/{id}     the planning steps a send replaced (kept on the item)
   POST   restore-steps | sync
   DELETE item/{id}        to the trash (undo brings it back)
@@ -240,6 +243,7 @@ async def emergency(request: Request) -> dict[str, Any]:
 
 
 ORCH_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+CLASH_ACTIONS = ("run-all", "defer")  # the answers to a build rejected for a clash; the orchestrator decides each
 DISPATCH_CAP = "axf.build-dispatch@1"
 
 
@@ -247,12 +251,12 @@ DISPATCH_CAP = "axf.build-dispatch@1"
 async def orchestrate(request: Request) -> dict[str, Any]:
     """One orchestrator action on a sent plan or on one of its steps: {id, action, why}. `id` is a row of the tree (the
     sent plan, anything inside it, or a step the orchestrator filed); action is queue, hold, release, retry, rebuild,
-    run-ci, land or cancel. The build is looked up here and the action is handed to the orchestrator, which decides
+    run-ci, land or cancel, or an answer to a clash (run-all, defer). The build is looked up here and the action is handed to the orchestrator, which decides
     whether it fits where the build is; a refusal comes back with its reason. Nothing is decided in the console."""
     body = await _body(request)
     action = str(body.get("action") or "")
-    if action not in ORCH_ACTIONS:
-        raise HTTPException(400, f"action is one of {', '.join(ORCH_ACTIONS)}")
+    if action not in ORCH_ACTIONS + CLASH_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(ORCH_ACTIONS + CLASH_ACTIONS)}")
     target = _answer(run({"op": "target", "id": str(body.get("id") or "")}))
     svc = plugin_services.get(DISPATCH_CAP)
     if svc is None or not hasattr(svc, "act"):
@@ -261,6 +265,15 @@ async def orchestrate(request: Request) -> dict[str, Any]:
     run({"op": "sync", "fresh": True, "by": _by(request)})  # read the build again: a cancel gives the planning steps back at once
     return {"ok": True, "build": target.get("build"), "step": target.get("step"), "action": action, "status": res.get("status"),
             "label": res.get("label"), "held": res.get("held"), "say": res.get("say") or "Done."}
+
+
+@router.get("/plans/{plan_id}/build")
+def plan_build(plan_id: str) -> dict[str, Any]:
+    """The build a plan was sent as, read live from the builds store on every call (nothing of it is kept in the plan
+    tree): {plan, build: {id, number, title, status, pipelineView, split, clash, pr}, steps: [{id, uid, title, model,
+    modelBy, splitBy, status, label, minutes}]}. `pipelineView` is null while the store works none out (the raw status
+    is the state then); `build` is null for a plan that was not sent."""
+    return _answer(run({"op": "plan-build", "id": plan_id}))
 
 
 @router.get("/history/{id}")
@@ -323,6 +336,10 @@ def _as_plan(item: dict[str, Any]) -> dict[str, Any]:
     out = {k: item.get(k) for k in ("id", "title", "status", "priority", "tags", "body", "updatedAt")}
     if build:
         out["build"] = {"id": str(build.get("ref") or "").split(":", 1)[-1]}
+    live = item.get("live") or {}
+    if live.get("build"):  # a sent plan: the state view already carries its build's status (never the plan's old one)
+        out["build"] = {"id": live["build"], "number": live.get("number") or "", "status": live.get("status") or "", "label": live.get("label") or ""}
+        out["steps"] = live.get("steps") or {}
     return out
 
 

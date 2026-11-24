@@ -11,7 +11,7 @@ export interface Item {
 }
 /** A sent plan's (or one orchestrator step's) state, read from the builds store (plan-live@1). */
 export interface Live {
-  $axf: 'plan-live@1'; build: string; profile: string; step?: string; status: string; label: string; state: string; stateLabel: string; attempt: number; at: string;
+  $axf: 'plan-live@1'; build: string; number?: string; profile: string; step?: string; status: string; label: string; state: string; stateLabel: string; attempt: number; at: string;
   locked?: boolean; split?: boolean; held?: boolean; emergency?: boolean; pr?: number; skipped?: boolean; steps?: { done: number; total: number };
 }
 export interface TrashEntry { id: string; at: string; by: string; title: string; root: string; parent: string | null; index: number; items: Item[] }
