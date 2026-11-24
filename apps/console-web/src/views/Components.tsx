@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { usePlaceTab } from './placeRestore';
 import { Container } from '../axf/react';
 import { CATEGORIES, ELEMENTS, ElementPreview } from './Explorer';
 
 /** Component gallery: every element kind rendered with the active assets (hot-swap any slot and watch). */
 export function Components() {
-  const [cat, setCat] = useState(CATEGORIES[0]!);
+  const [cat, setCat] = usePlaceTab('view:components/tab:components.categories', CATEGORIES[0]!, CATEGORIES);
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">{ELEMENTS.length} element kinds</p><h1>Components</h1><p className="fx-muted">The abstract component vocabulary every kit implements, rendered with the web kit and the active assets.</p></div></header>
