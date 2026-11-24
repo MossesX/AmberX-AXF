@@ -98,6 +98,7 @@
       "--fx-dens-gap-sm",
       "--fx-dens-gap-xl",
       "--fx-dens-gap-xs",
+      "--fx-font",
       "--fx-font-display",
       "--fx-font-mono",
       "--fx-font-size",
