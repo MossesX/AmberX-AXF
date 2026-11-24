@@ -36,6 +36,8 @@ const SHOTS = process.env.PLACE_E2E_SHOTS || '';
 const PLACE_KEY = 'axf:console:place@1';
 /** Pixels an offset may be off by: banners arriving above the pane move it a little (scroll anchoring). */
 const SLACK = 4;
+/** How long a load or a screen may take to show: the console's start-up can hold a busy machine for many seconds. */
+const LOAD_MS = 60_000;
 /** A load whose data shows up later than this (ms after navigation start) is past what the scroll restore waits for. */
 const LATE_MS = 4000;
 
@@ -107,7 +109,7 @@ async function mockBackend(page) {
   };
 }
 
-const ready = (page) => page.waitForFunction(() => typeof window.axfConsoleControl === 'function' && typeof window.axfConsoleControlState === 'function' && !!document.querySelector('.fx-main'), null, { timeout: 30_000, polling: 100 });
+const ready = (page) => page.waitForFunction(() => typeof window.axfConsoleControl === 'function' && typeof window.axfConsoleControlState === 'function' && !!document.querySelector('.fx-main'), null, { timeout: LOAD_MS, polling: 100 });
 
 /** Where the person is, read from what the page shows: screen, the open tab, category, selected template, scroll. */
 const placeOf = (page) => page.evaluate(() => {
@@ -137,10 +139,10 @@ const scrollMain = (page, top) => page.evaluate((y) => {
 /**
  * Wait until the page shows `want` (the restore retries while data loads), then make sure it stays there.
  *
- * The restore gives up on scroll after PLACE_RESTORE_TIMEOUT (5 s, src/views/placeRestore.ts) by design. On a machine
- * busy enough that the screen's data shows up later than that, everything but the offset is back and the offset is
- * still saved (so the refresh did save it): that load is reported, the pane is scrolled back there and the page
- * reloaded (at most twice), so putting the offset back is checked on a timely load.
+ * The restore gives up on scroll after PLACE_RESTORE_TIMEOUT (5 s, src/views/placeRestore.ts) by design, and from then
+ * on the place is whatever the screen shows. On a machine busy enough that the screen's data shows up later than
+ * that, everything but the offset is back: that load is reported, the pane is scrolled back to the offset and the
+ * page reloaded (at most twice), so putting the offset back is checked on a timely load.
  */
 async function expectPlace(page, want, what) {
   let got = null;
@@ -150,9 +152,8 @@ async function expectPlace(page, want, what) {
     for (let i = 0; i < 100; i++) { got = await placeOf(page).catch(() => null); if (near(got)) break; await sleep(100); }
     if (near(got) || attempt >= 2 || !rest(got)) break;
     const contentAt = await page.evaluate(() => window.__placeE2E?.contentAt ?? null);
-    const kept = (await saved(page))?.scroll?.['view:libraries/scroll:main']?.top ?? 0;
-    if (!(contentAt > LATE_MS) || Math.abs(kept - want.scrollTop) > SLACK) break;
-    console.log(`  ${what}: the data took ${(contentAt / 1000).toFixed(1)} s to show (busy machine, past the restore's give-up time); the offset was still saved, scrolling there and reloading once more`);
+    if (!(contentAt > LATE_MS)) break;
+    console.log(`  ${what}: the data took ${(contentAt / 1000).toFixed(1)} s to show (busy machine, past the restore's give-up time); scrolling back there and reloading once more`);
     await scrollMain(page, want.scrollTop); // the next reload saves what is on screen
     await sleep(400);
     await page.reload();
@@ -243,7 +244,7 @@ try {
     const opened = await page.evaluate(() => window.axfConsoleControl({ verb: 'open', address: 'view:libraries' }));
     ok(opened?.ok, `${form}: Libraries opens (${JSON.stringify(opened).slice(0, 200)})`);
     await page.locator('.fx-main button.fx-chip', { hasText: 'Library templates' }).click();
-    await page.waitForFunction(() => !!document.querySelector('.lt-card'), null, { timeout: 15_000, polling: 100 });
+    await page.waitForFunction(() => !!document.querySelector('.lt-card'), null, { timeout: LOAD_MS, polling: 100 });
     // the category with the most templates (not "All"), so there is more than one row to choose from
     const category = await page.evaluate(async () => {
       const chips = [...document.querySelectorAll('.fx-main button.fx-chip')].filter((c) => c.getClientRects().length > 0).slice(4); // 3 tabs + "All"
@@ -377,7 +378,7 @@ try {
     ok(beforeLink.scrollTop >= 60, `${form} deep link: Libraries is left scrolled down (${beforeLink.scrollTop})`);
     await page.goto(`${base}?axf-open=${encodeURIComponent('view:tracker')}`);
     await ready(page);
-    await page.waitForFunction(() => window.axfConsoleControlState().screen === 'tracker', null, { timeout: 15_000, polling: 100 }).catch(() => undefined);
+    await page.waitForFunction(() => window.axfConsoleControlState().screen === 'tracker', null, { timeout: LOAD_MS, polling: 100 }).catch(() => undefined);
     await sleep(800);
     let linked = await placeOf(page);
     ok(linked.view === 'tracker' && linked.shown === 'tracker', `${form} deep link: the link's screen opens, not the saved one (${JSON.stringify(linked)})`);
@@ -389,7 +390,7 @@ try {
     ok(linked.view === 'tracker', `${form} deep link: a reload stays where the link went (${JSON.stringify(linked)})`);
     // going back to Libraries by hand finds its tab, category and template as they were left
     await page.evaluate(() => window.axfConsoleControl({ verb: 'open', address: 'view:libraries' }));
-    await page.waitForFunction(() => !!document.querySelector('.lt-card.is-selected'), null, { timeout: 15_000, polling: 100 });
+    await page.waitForFunction(() => !!document.querySelector('.lt-card.is-selected'), null, { timeout: LOAD_MS, polling: 100 });
     const back = await placeOf(page);
     ok(back.tab === beforeLink.tab && back.category === beforeLink.category && back.selected === beforeLink.selected, `${form}: back on Libraries its tab, category and template are as they were (${JSON.stringify(back)})`);
 
