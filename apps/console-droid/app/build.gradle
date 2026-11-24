@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+def buildNumber = (System.getenv("AXF_BUILD_NUMBER") ?: "1") as Integer
+
 android {
     namespace = "ai.amberx.consoleapp"
     compileSdk = 35
@@ -9,15 +11,27 @@ android {
         applicationId "ai.amberx.consoleapp"
         minSdkVersion 26
         targetSdkVersion 35
-        // CI stamps the run number (AXF_BUILD_NUMBER) so every build installs over the last one.
-        versionCode((System.getenv("AXF_BUILD_NUMBER") ?: "1") as Integer)
-        versionName "0.2.0"
+        // CI stamps the run number (AXF_BUILD_NUMBER), which only goes up, so every build installs over the last one.
+        // Local builds fall back to the fixed base 1.
+        versionCode buildNumber
+        versionName "0.2.${buildNumber}"
+    }
+    // One fixed key for every build (CI and local): Android only installs an update over an app signed with the same key.
+    // debug.keystore is a committed debug key with the standard debug credentials; it protects nothing.
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
     buildTypes {
+        debug { signingConfig signingConfigs.debug }
         release { minifyEnabled false }
     }
     testOptions { unitTests.returnDefaultValues = true }
