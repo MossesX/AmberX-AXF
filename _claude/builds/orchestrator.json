@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T12:04:52.777Z",
+ "updatedAt": "2026-11-24T12:32:17.272Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -53,6 +53,144 @@
     "addenda": []
    },
    "steps": []
+  },
+  {
+   "id": "pipeline-test-5",
+   "title": "Pipeline test 5: four docs edits + one planted failure",
+   "category": "",
+   "detail": "End-to-end pipeline test after PR 907: five steps run side by side in five slots; one step breaks a test on purpose so we see the lander catch it, run a fix session and land it by itself.\n\nRun through the orchestrator with 5 slots after PR 907 lands.\n\nSteps (each a separate step, no shared files, so all 5 run at once):\n1. Docs: add one line 'Pipeline test 5, step 1' to the end of framework/spec/README.md (create the section 'Pipeline tests' if missing).\n2. Docs: same, 'step 2', in apps/console-web/README.md.\n3. Docs: same, 'step 3', in deploy/README.md.\n4. Docs: same, 'step 4', in _claude/builds/README.md.\n5. PLANTED FAILURE: add a tiny test file framework/spec/check-pipeline-test5.mjs that asserts 1 === 2 and add it to CI's build engine sweep. This must turn CI red so the lander catches it, starts a fix session, the fix makes the assertion correct, and it lands with no human help.\n\nPass when: all 5 steps start together, the next starts the moment one finishes, the red CI is caught and fixed automatically, everything lands on main, and Plan Studio shows live status for each step.\n\nBrett: add a PLANTED MERGE CONFLICT to this test. After the build is split, push a commit straight to main that edits the same line one of the docs steps changes (e.g. the 'Pipeline tests' line in deploy/README.md), so that step's PR clashes with main. Pass only if the lander resolves the conflict b: Brett: add a PLANTED MERGE CONFLICT to this test. After the build is split, push a commit straight to main that edits the same line one of the docs steps changes (e.g. the 'Pipeline tests' line in deploy/README.md), so that step's PR clashes with main. Pass only if the lander resolves the conflict by itself (merges main, fixes the clash, reruns CI) and lands it with no human help.",
+   "status": "split",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T12:31:10.497Z",
+   "updatedAt": "2026-11-24T12:31:48.502Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: pipeline-test-5-four-docs-edits--4i3u (Pipeline test 5: four docs edits + one planted failure). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-24T12:31:10.497Z"
+    },
+    {
+     "text": "Split by Fable into 5 steps (32 min). The triage gate assigns the models.",
+     "at": "2026-11-24T12:31:45.548Z",
+     "by": "orchestrator"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Docs: add the line 'Pipeline test 5, step 1' at the end of framework/spec/README.md, under a 'Pipeline tests' section (create the section at the end of the file if it is missing). Touch no other file. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "framework/spec/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoc3o21l311t",
+     "createdAt": "2026-11-24T12:31:45.553Z"
+    },
+    {
+     "id": "s2",
+     "text": "Docs: add the line 'Pipeline test 5, step 2' at the end of apps/console-web/README.md, under a 'Pipeline tests' section (create the section at the end of the file if it is missing). Touch no other file. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoc3o21moyzn",
+     "createdAt": "2026-11-24T12:31:45.554Z"
+    },
+    {
+     "id": "s3",
+     "text": "Docs: add the line 'Pipeline test 5, step 3' at the end of deploy/README.md, under a 'Pipeline tests' section (create the section at the end of the file if it is missing). This is the file the planted merge conflict targets: a commit pushed straight to main after the split edits the same 'Pipeline tests' line, so write the section and line exactly as described and do not pull main in or resolve anything yourself; the lander must resolve the clash. Touch no other file. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "deploy/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoc3o21nex5b",
+     "createdAt": "2026-11-24T12:31:45.554Z"
+    },
+    {
+     "id": "s4",
+     "text": "Docs: add the line 'Pipeline test 5, step 4' at the end of _claude/builds/README.md, under a 'Pipeline tests' section (create the section at the end of the file if it is missing). Touch no other file. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoc3o21o8tf8",
+     "createdAt": "2026-11-24T12:31:45.554Z"
+    },
+    {
+     "id": "s5",
+     "text": "PLANTED FAILURE, tests and report: create framework/spec/check-pipeline-test5.mjs, a tiny Node check that asserts 1 === 2 (exits non-zero with a clear message 'pipeline-test-5 planted failure'), and add it to CI's build engine sweep in .github/workflows/android.yml next to the other `node framework/spec/check-*.mjs` lines. Leave the assertion wrong on purpose: CI must go red so the lander catches it and its fix session corrects the assertion; do not fix it in this step. Run the check locally once to confirm it fails, and confirm the other checks touched by nothing here still pass (`node framework/cli/tracker.mjs --check`). Write the report _claude/builds/reports/pipeline-test-5.md: what the test covers (five steps side by side in five slots, the planted red CI, the planted merge conflict on deploy/README.md pushed to main after the split), the pass criteria from the plan (all 5 start together, the next starts when one finishes, red CI caught and fixed automatically, the conflict resolved by the lander with no human help, everything lands on main, Plan Studio shows live status per step), and a results table left to be filled by the lander's outcome. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/spec/check-pipeline-test5.mjs",
+      ".github/workflows/android.yml",
+      "_claude/builds/reports/pipeline-test-5.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoc3o21poybj",
+     "createdAt": "2026-11-24T12:31:45.554Z"
+    }
+   ]
   },
   {
    "id": "plan-studio-2-outline-kinds-notebooks",
@@ -562,15 +700,16 @@
    "title": "Get PR 907 green",
    "category": "",
    "detail": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
-   "status": "running-ci",
+   "status": "landed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "hand",
    "pendingId": "",
    "branch": "claude/fix907-ci",
    "pr": "908",
+   "mergedAt": "2026-11-24T12:09:54Z",
    "createdAt": "2026-11-24T10:39:59.498Z",
-   "updatedAt": "2026-11-24T12:04:42.178Z",
+   "updatedAt": "2026-11-24T12:32:12.977Z",
    "builtAt": "",
    "notes": [
     {
@@ -591,7 +730,23 @@
     },
     {
      "text": "Lander: PR 1 of 1 (s1)",
-     "at": "2026-11-24T12:04:17.589Z",
+     "at": "2026-11-24T12:04:17.589Z"
+    },
+    {
+     "text": "Lander: PR #908 was merged by hand by MossesX (98e0474a3, CI running): recorded, the build goes on.",
+     "at": "2026-11-24T12:10:46.631Z"
+    },
+    {
+     "text": "Reconciler: PR #908 merged",
+     "at": "2026-11-24T12:10:52.687Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix907-ci rev 1 sent to Shipped features (orchestrator): landed 98e0474a3, 8 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-24T12:11:00Z"
+    },
+    {
+     "text": "Lander: landed (#908).",
+     "at": "2026-11-24T12:32:12.977Z",
      "by": "lander"
     }
    ],
@@ -179925,7 +180080,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179933,7 +180088,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-22T06:00:44.296Z",
+   "updatedAt": "2026-11-24T12:19:21.171Z",
    "builtAt": "",
    "notes": [
     {
@@ -180083,6 +180238,10 @@
     {
      "text": "Self-check: banner-widget-shapes-plus-change-icon was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T06:00:44.296Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-24T12:19:21.171Z"
     }
    ],
    "approvals": [
@@ -197230,7 +197389,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197238,7 +197397,7 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-22T02:25:21.835Z",
+   "updatedAt": "2026-11-24T12:19:31.646Z",
    "builtAt": "",
    "notes": [
     {
@@ -197332,6 +197491,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s16 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T02:25:21.835Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-24T12:19:31.646Z"
     }
    ],
    "approvals": [],
@@ -199906,7 +200069,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199914,7 +200077,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-22T06:00:48.674Z",
+   "updatedAt": "2026-11-24T12:19:26.512Z",
    "builtAt": "",
    "notes": [
     {
@@ -200056,6 +200219,10 @@
     {
      "text": "Self-check: icon-picker-every-banner-settings-widget was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-22T06:00:48.674Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-24T12:19:26.512Z"
     }
    ],
    "approvals": [
@@ -201943,7 +202110,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201951,7 +202118,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-22T02:35:26.247Z",
+   "updatedAt": "2026-11-24T12:19:36.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -202177,6 +202344,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s29 (Opus) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T02:35:26.247Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-24T12:19:36.896Z"
     }
    ],
    "approvals": [
@@ -205103,14 +205274,14 @@
    "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
    "category": "",
    "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
    "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "#831",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-22T02:45:23.902Z",
+   "updatedAt": "2026-11-24T12:19:42.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -205196,6 +205367,10 @@
     {
      "text": "Watchdog: fixing (stalled) with nothing tried for 3 h: fresh-session now, through the Queue. Added s18 (Fable) and moved it back to the Queue: attempt 1.",
      "at": "2026-11-22T02:45:23.902Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-24T12:19:42.596Z"
     }
    ],
    "approvals": [],
@@ -218518,6 +218693,121 @@
      "note": "",
      "uid": "st-mwtw7ijz1m0t90",
      "createdAt": "2026-11-23T23:08:05.612Z"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-test-5-four-docs-edits-planted",
+   "title": "Pipeline test 5: four docs edits + planted failure + planted conflict",
+   "category": "Pipeline tests",
+   "detail": "From Plan Studio plan pipeline-test-5-four-docs-edits--4i3u. Steps share no files so all run at once. Step 5 breaks CI on purpose (lander must start a Fable fix session and land it). A commit pushed straight to main after split will clash with step 3 (deploy/README.md); lander must merge main, fix the clash, rerun CI and land with no human help.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-24T12:30:35.609Z",
+   "updatedAt": "2026-11-24T12:31:05.186Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Docs: add the line 'Pipeline test 5, step 1' at the end of framework/spec/README.md under a 'Pipeline tests' section (create it if missing).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoam2m1qe27p",
+     "createdAt": "2026-11-24T12:30:35.610Z"
+    },
+    {
+     "id": "s2",
+     "text": "Docs: add the line 'Pipeline test 5, step 2' at the end of apps/console-web/README.md under a 'Pipeline tests' section (create it if missing).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoam2m1r8laq",
+     "createdAt": "2026-11-24T12:30:35.610Z"
+    },
+    {
+     "id": "s3",
+     "text": "Docs: add the line 'Pipeline test 5, step 3' at the end of deploy/README.md under a 'Pipeline tests' section (create it if missing).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoam2m1sqamr",
+     "createdAt": "2026-11-24T12:30:35.610Z"
+    },
+    {
+     "id": "s4",
+     "text": "Docs: add the line 'Pipeline test 5, step 4' at the end of _claude/builds/README.md under a 'Pipeline tests' section (create it if missing).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoam2m1t85xl",
+     "createdAt": "2026-11-24T12:30:35.610Z"
+    },
+    {
+     "id": "s5",
+     "text": "PLANTED FAILURE: add framework/spec/check-pipeline-test5.mjs asserting 1 === 2 and add it to CI's build engine sweep, so CI goes red on purpose. Do not fix it; the lander must catch it and hand it to a Fable fix session.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwuoam2m1udiu5",
+     "createdAt": "2026-11-24T12:30:35.610Z"
     }
    ]
   }

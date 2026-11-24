@@ -843,20 +843,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-23 02:36 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:38 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
-- 2026-11-23 02:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:45 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:46 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-23 02:48 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 02:58 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 03:08 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
 - 2026-11-23 03:18 UTC · `fix-refreshing-console-jumps-back` note (all) · reconciler
@@ -1243,6 +1229,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 12:04 UTC · `fix907-ci` PR 908 (all) · lander
 - 2026-11-24 12:04 UTC · `fix907-ci` → pr-pulling-main (all) · lander
 - 2026-11-24 12:04 UTC · `fix907-ci` → running-ci (all) · lander
+- 2026-11-24 12:10 UTC · `fix907-ci` → merging-pr, note (all) · lander
+- 2026-11-24 12:10 UTC · `fix907-ci` merged, note (all) · reconciler
+- 2026-11-24 12:11 UTC · `fix907-ci` note (all) · orchestrator
+- 2026-11-24 12:19 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · cli
+- 2026-11-24 12:19 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · cli
+- 2026-11-24 12:30 UTC · `pipeline-test-5-four-docs-edits-planted` added (5 steps) (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5-four-docs-edits-planted` → archived (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5` added (0 steps) (all) · claude
+- 2026-11-24 12:31 UTC · `pipeline-test-5` → splitting (all) · orchestrator
+- 2026-11-24 12:31 UTC · `pipeline-test-5` → split, note (all) · orchestrator
+- 2026-11-24 12:32 UTC · `fix907-ci` → landed, note (all) · lander
 
 ## Token passes (log)
 
