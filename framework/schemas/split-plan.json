@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axf.amberx.app/schemas/split-plan.json",
+  "title": "split-plan@1",
+  "description": "One build at a time, split into as many parallel parts as there are free slots (Brett, Nov 18 2026). The plan sits on the builds@1 record as `split`, its id as `splitId`. Parts never share a file; each has its own branch and slot and starts from the same main sha; all parts are combined into one branch, one CI run, one landing. framework/spec/BUILD-SPLIT.md is the contract, framework/core/build-split.mjs the reference engine. Rules a schema cannot say (no shared file, every step in exactly one part, the seal, slots a permutation of 1..N) are validatePlan's.",
+  "type": "object",
+  "required": ["$axf", "id", "build", "at", "seal", "baseSha", "combineBranch", "fill", "parts", "run"],
+  "additionalProperties": true,
+  "properties": {
+    "$axf": { "const": "split-plan@1" },
+    "id": { "$ref": "#/$defs/splitId" },
+    "build": { "$ref": "#/$defs/buildId" },
+    "at": { "type": "string", "format": "date-time", "description": "when the splitter finished; the time part of the id" },
+    "by": { "type": "string", "maxLength": 80, "description": "orchestrator, or resplit:<who>" },
+    "seal": { "$ref": "#/$defs/seal" },
+    "baseSha": { "$ref": "#/$defs/shaOrEmpty", "description": "main's sha the run is built from: empty until the run takes the main lock, then fixed" },
+    "combineBranch": { "type": "string", "pattern": "^claude/[a-z0-9][a-z0-9-]{0,39}$", "description": "claude/<build>: every part branch merges here; the one PR" },
+    "fill": { "$ref": "#/$defs/fill" },
+    "parts": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "$ref": "#/$defs/part" }, "description": "plan order, p1 first" },
+    "run": { "$ref": "#/$defs/run" },
+    "supersedes": { "$ref": "#/$defs/splitId", "description": "the plan this one replaced (re-split)" },
+    "note": { "type": "string", "maxLength": 600 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "run": { "properties": { "state": { "enum": ["building", "combining", "ci", "merging", "merged", "live", "finished"] } } } } },
+      "then": { "properties": { "baseSha": { "$ref": "#/$defs/sha" } } }
+    }
+  ],
+  "$defs": {
+    "splitId": {
+      "type": "string",
+      "pattern": "^sp-[0-9a-z]{8,9}-[0-9a-f]{8}$",
+      "description": "sp-<at in ms, base 36>-<seal>"
+    },
+    "seal": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}$",
+      "description": "FNV-1a 32-bit of the seal text (BUILD-SPLIT.md §3): the build id and each part's id, branch, steps and files"
+    },
+    "buildId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$", "description": "build-id@1" },
+    "partId": { "type": "string", "pattern": "^p([1-9]|1[0-2])$" },
+    "sha": { "type": "string", "pattern": "^[0-9a-f]{7,64}$" },
+    "shaOrEmpty": { "type": "string", "pattern": "^([0-9a-f]{7,64})?$" },
+    "model": { "type": "string", "enum": ["Fable", "Opus"] },
+    "partStatus": {
+      "type": "string",
+      "enum": ["waiting", "building", "testing", "rebuilding", "failed", "done"]
+    },
+    "partWorking": {
+      "type": "string",
+      "enum": ["waiting", "building", "testing", "rebuilding"],
+      "description": "the statuses whose badge is animated"
+    },
+    "partSettled": { "type": "string", "enum": ["failed", "done"] },
+    "partFailureKind": { "type": "string", "enum": ["session", "tests", "launch", "timeout", "cancelled"] },
+    "runState": {
+      "type": "string",
+      "enum": ["splitting", "queued", "building", "combining", "ci", "merging", "merged", "live", "finished", "failed"]
+    },
+    "runActive": {
+      "type": "string",
+      "enum": ["building", "combining", "ci", "merging", "merged", "live"],
+      "description": "the run holds the main lock; no other run starts"
+    },
+    "runWorking": {
+      "type": "string",
+      "enum": ["splitting", "combining", "ci", "merging"],
+      "description": "the main row's badge is animated in these states, and while any part is working"
+    },
+    "runFinal": { "type": "string", "enum": ["finished", "failed"] },
+    "runFailureKind": {
+      "type": "string",
+      "enum": ["split-failed", "part-failed", "combine-clash", "ci-red", "merge-rejected", "deploy-timeout", "cancelled", "infra"]
+    },
+    "startReason": {
+      "type": "string",
+      "enum": ["no-build-id", "unknown-build", "no-split-id", "bad-split-id", "not-split", "split-superseded", "split-mismatch", "seal-mismatch", "unknown-part", "run-not-startable", "main-locked", "part-not-startable", "files-claimed"],
+      "description": "why the gate refused a start, in checking order"
+    },
+    "fill": {
+      "type": "object",
+      "description": "What the splitter saw. parts = min(slots, groups, 12), at least 1.",
+      "required": ["slots", "groups", "parts"],
+      "additionalProperties": false,
+      "properties": {
+        "slots": { "type": "integer", "minimum": 0, "description": "free slots of the orchestrator pool when it split" },
+        "groups": { "type": "integer", "minimum": 0, "description": "independent groups of steps (joined by a shared file or a dependency)" },
+        "parts": { "type": "integer", "minimum": 1, "maximum": 12 }
+      }
+    },
+    "partSession": {
+      "type": "object",
+      "description": "The session building the part; kept after it ends as the last one.",
+      "additionalProperties": true,
+      "properties": {
+        "slotId": { "type": "string", "maxLength": 60, "description": "the agent-slots@1 entry holding the lane" },
+        "account": { "type": "string", "maxLength": 80 },
+        "tmux": { "type": "string", "maxLength": 120 },
+        "worktree": { "type": "string", "maxLength": 300 },
+        "startedAt": { "type": "string" },
+        "heartbeatAt": { "type": "string" }
+      }
+    },
+    "partLogLine": {
+      "type": "object",
+      "required": ["status", "at"],
+      "properties": {
+        "status": { "$ref": "#/$defs/partStatus" },
+        "at": { "type": "string" },
+        "by": { "type": "string", "maxLength": 80 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "why": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "part": {
+      "type": "object",
+      "title": "split-part@1",
+      "required": ["id", "steps", "files", "branch", "slot", "baseSha", "status", "attempt"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "$ref": "#/$defs/partId" },
+        "title": { "type": "string", "maxLength": 300 },
+        "steps": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 40 }, "description": "the build's steps this part builds, in build order" },
+        "files": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 300 }, "description": "every file the part may change, repo-relative, sorted; a path ending in / claims the directory. No path is in two parts." },
+        "branch": { "type": "string", "pattern": "^claude/[a-z0-9][a-z0-9-]{0,39}--p([1-9]|1[0-2])$" },
+        "slot": { "type": "integer", "minimum": 1, "maximum": 12, "description": "the part's lane in the run, unique in the plan" },
+        "baseSha": { "$ref": "#/$defs/shaOrEmpty", "description": "always the plan's baseSha" },
+        "model": { "$ref": "#/$defs/model" },
+        "minutes": { "type": "integer", "minimum": 0, "description": "its steps' estimates added up" },
+        "status": { "$ref": "#/$defs/partStatus" },
+        "statusAt": { "type": "string" },
+        "statusBy": { "type": "string", "maxLength": 80 },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "session": { "$ref": "#/$defs/partSession" },
+        "head": { "$ref": "#/$defs/shaOrEmpty", "description": "the part branch's head when it reported done" },
+        "failure": {
+          "type": "object",
+          "required": ["kind", "at"],
+          "properties": {
+            "kind": { "$ref": "#/$defs/partFailureKind" },
+            "text": { "type": "string", "maxLength": 600 },
+            "at": { "type": "string" }
+          }
+        },
+        "log": { "type": "array", "maxItems": 30, "items": { "$ref": "#/$defs/partLogLine" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "done" } } }, "then": { "required": ["head"], "properties": { "head": { "$ref": "#/$defs/sha" } } } },
+        { "if": { "properties": { "status": { "const": "failed" } } }, "then": { "required": ["failure"] } },
+        { "if": { "properties": { "status": { "const": "rebuilding" } } }, "then": { "properties": { "attempt": { "minimum": 2 } } } }
+      ]
+    },
+    "runLogLine": {
+      "type": "object",
+      "required": ["state", "at"],
+      "properties": {
+        "state": { "$ref": "#/$defs/runState" },
+        "at": { "type": "string" },
+        "by": { "type": "string", "maxLength": 80 },
+        "why": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "run": {
+      "type": "object",
+      "title": "split-run@1",
+      "description": "The overall state the queue's main row shows. Forward-only, one state at a time; failed and finished are final. A stored run starts at queued: splitting is the roll-up of a build that has no plan yet.",
+      "required": ["state", "stateAt"],
+      "additionalProperties": true,
+      "properties": {
+        "state": { "$ref": "#/$defs/runState", "not": { "const": "splitting" } },
+        "stateAt": { "type": "string" },
+        "stateBy": { "type": "string", "maxLength": 80 },
+        "startedAt": { "type": "string", "description": "entered building: the main lock was taken" },
+        "pr": { "type": "integer", "minimum": 0 },
+        "ciRunUrl": { "type": "string", "maxLength": 300 },
+        "combineHead": { "$ref": "#/$defs/shaOrEmpty" },
+        "mergedSha": { "$ref": "#/$defs/shaOrEmpty" },
+        "mergedAt": { "type": "string" },
+        "liveAt": { "type": "string" },
+        "finishedAt": { "type": "string" },
+        "failedFrom": { "type": "string", "enum": ["queued", "building", "combining", "ci", "merging", "merged"] },
+        "failure": {
+          "type": "object",
+          "required": ["kind", "at"],
+          "properties": {
+            "kind": { "$ref": "#/$defs/runFailureKind" },
+            "text": { "type": "string", "maxLength": 600 },
+            "at": { "type": "string" },
+            "part": { "$ref": "#/$defs/partId" }
+          }
+        },
+        "log": { "type": "array", "maxItems": 40, "items": { "$ref": "#/$defs/runLogLine" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "state": { "const": "failed" } } }, "then": { "required": ["failedFrom", "failure"] } },
+        { "if": { "properties": { "state": { "enum": ["merged", "live", "finished"] } } }, "then": { "required": ["mergedSha"], "properties": { "mergedSha": { "$ref": "#/$defs/sha" } } } }
+      ]
+    },
+    "rollUp": {
+      "type": "object",
+      "title": "split-roll-up@1",
+      "description": "rollUp(plan): what the queue's main row shows.",
+      "required": ["state", "parts", "waiting", "building", "testing", "rebuilding", "failed", "done", "working"],
+      "additionalProperties": false,
+      "properties": {
+        "state": { "$ref": "#/$defs/runState" },
+        "parts": { "type": "integer", "minimum": 0 },
+        "waiting": { "type": "integer", "minimum": 0 },
+        "building": { "type": "integer", "minimum": 0 },
+        "testing": { "type": "integer", "minimum": 0 },
+        "rebuilding": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "done": { "type": "integer", "minimum": 0 },
+        "working": { "type": "boolean" }
+      }
+    },
+    "mainLock": {
+      "type": "object",
+      "title": "main-lock@1",
+      "description": "Main belongs to the active run: taken in the write that moves the run to building, released at finished or failed.",
+      "required": ["$axf", "build", "splitId", "sha", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": { "const": "main-lock@1" },
+        "build": { "$ref": "#/$defs/buildId" },
+        "splitId": { "$ref": "#/$defs/splitId" },
+        "sha": { "$ref": "#/$defs/sha", "description": "main's head when taken: the run's baseSha" },
+        "at": { "type": "string" },
+        "by": { "type": "string", "maxLength": 80 }
+      }
+    },
+    "startCheck": {
+      "type": "object",
+      "description": "checkStart's answer for one build start.",
+      "required": ["ok"],
+      "properties": {
+        "ok": { "type": "boolean" },
+        "reason": { "$ref": "#/$defs/startReason" },
+        "missing": { "type": "array", "uniqueItems": true, "items": { "enum": ["buildId", "splitId", "partId"] } },
+        "text": { "type": "string", "maxLength": 300 }
+      },
+      "if": { "properties": { "ok": { "const": false } } },
+      "then": { "required": ["reason", "text"] }
+    },
+    "gateRejection": {
+      "type": "object",
+      "title": "gate-rejection@1",
+      "description": "A build start the require-split-id rule refused: shown on the orchestrator's Failed tab, journalled as gate-reject.",
+      "required": ["at", "rule", "reason", "text"],
+      "additionalProperties": true,
+      "properties": {
+        "$axf": { "const": "gate-rejection@1" },
+        "at": { "type": "string" },
+        "by": { "type": "string", "maxLength": 80 },
+        "rule": { "const": "require-split-id" },
+        "build": { "type": "string", "maxLength": 80, "description": "as presented; may be empty or not a valid id" },
+        "splitId": { "type": "string", "maxLength": 80, "description": "as presented" },
+        "part": { "type": "string", "maxLength": 40 },
+        "reason": { "$ref": "#/$defs/startReason" },
+        "missing": { "type": "array", "uniqueItems": true, "items": { "enum": ["buildId", "splitId", "partId"] } },
+        "text": { "type": "string", "maxLength": 300 },
+        "host": { "type": "string", "maxLength": 120 }
+      }
+    }
+  }
+}
