@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T05:50:26.323Z",
+ "updatedAt": "2026-11-25T05:50:58.400Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -217446,11 +217446,11 @@
    "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
-   "branch": "claude/approval-pass-covers-every-call--s10",
+   "branch": "claude/approval-pass-covers-every-call--s9",
    "pr": "#922",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-25T05:49:45.958Z",
+   "updatedAt": "2026-11-25T05:50:39.863Z",
    "builtAt": "",
    "notes": [
     {
@@ -218107,7 +218107,11 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-25T05:50:21.472Z",
+     "at": "2026-11-25T05:50:21.472Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T05:50:53.094Z",
      "by": "store"
     }
    ],
@@ -218301,9 +218305,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T07:06:21.617Z",
+     "doneAt": "2026-11-25T05:50:31.603Z",
      "note": "",
-     "uid": "st-mwlgr9vm09f322",
+     "uid": "st-mwranxp01tva97",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {

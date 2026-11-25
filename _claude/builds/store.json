@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10398,
- "updatedAt": "2026-11-25T05:50:26.323Z",
+ "rev": 10399,
+ "updatedAt": "2026-11-25T05:50:58.400Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338025,11 +338025,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/approval-pass-covers-every-call--s10",
+   "branch": "claude/approval-pass-covers-every-call--s9",
    "pr": "#922",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-25T05:49:45.958Z",
+   "updatedAt": "2026-11-25T05:50:39.863Z",
    "builtAt": "",
    "notes": [
     {
@@ -338686,7 +338686,11 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-25T05:50:21.472Z",
+     "at": "2026-11-25T05:50:21.472Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T05:50:53.094Z",
      "by": "store"
     }
    ],
@@ -339861,7 +339865,7 @@
     },
     {
      "id": "s9",
-     "uid": "st-mwlgr9vm09f322",
+     "uid": "st-mwranxp01tva97",
      "title": "",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Fable",
@@ -339875,11 +339879,25 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T07:06:21.617Z",
+     "doneAt": "2026-11-25T05:50:31.603Z",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:02:34.743Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 8,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T07:59:08.944Z",
+     "updatedAt": "2026-11-25T05:50:32.184Z",
      "statusAt": "2026-11-25T05:29:46.550Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -340185,7 +340203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 340,
+   "rev": 343,
    "deleted": false,
    "deletedAt": "",
    "pending": {
