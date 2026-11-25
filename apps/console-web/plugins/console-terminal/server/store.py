@@ -51,6 +51,8 @@ CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-d
                                       "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
                                       "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant"),
                                       "newSession": ("nothing", "quiet", "front")}
+# Claude link (terminal-main-tab-streaming-console-s): how many events the live log's ring keeps (claude_link.py)
+DEFAULTS.setdefault("claudeLinkBuffer", 2000)
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 
@@ -139,6 +141,14 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain", "sessionsNav"):
             if k in patch:
                 s[k] = bool(patch[k])
+        if "claudeLinkBuffer" in patch:
+            from . import claude_link
+            try:
+                size = int(patch["claudeLinkBuffer"])
+            except (TypeError, ValueError):
+                raise ValueError("claudeLinkBuffer is a number of events") from None
+            s["claudeLinkBuffer"] = claude_link.clamp_size(size)
+            claude_link.settings_saved(s["claudeLinkBuffer"])
         if "user" in patch:
             u = str(patch["user"]).strip()
             if u and not re.match(r"^[A-Za-z0-9_.-]{1,32}(:[A-Za-z0-9_.-]{1,32})?$", u):

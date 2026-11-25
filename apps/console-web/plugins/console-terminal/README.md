@@ -106,10 +106,23 @@ closes every terminal.
 
 xterm.js 5.3.0 + fit/search/web-links addons are vendored in `web/vendor/` (MIT) so uninstalling leaves nothing.
 
+## Claude link event bus (`server/claude_link.py`)
+The console's connection to Claude and axHub as one event log (`claude-link-event@1`: `id`, `ts`, `kind`, `source`,
+`session`, `account`, `model`, `summary`, `detail`, `level`; kinds `launch`, `exit`, `account`, `mcp`, `axhub`, `connect`,
+`disconnect`, `error`). `claude_link.append(event)` validates the event, masks secrets (every value under a key that
+looks like a token, key, password, cookie or credential, and token shapes, `Authorization` headers, `NAME_TOKEN=…`
+assignments, URL passwords and long random runs inside any text), numbers it and keeps it in a ring in memory. The ring
+holds `claudeLinkBuffer` events (setting, default 2000, 100 to 20000; a save resizes the live ring). A background writer
+appends each event to `claude-link/events.jsonl` in the data folder through `data_store` (data-store@1, key
+`plugins/console-terminal/claude-link/events.jsonl`); at 4 MB the file moves to `events.1.jsonl`. A restart refills the
+ring from the tail. `snapshot` (since, kinds, text, limit), `state` (connected, last event, counts per kind), `clear`
+(a view marker in `claude-link/view.json`; the log stays) and `subscribe` are what the routes and the tab read.
+
 ## Lifecycle (plugin-lifecycle@1)
-Data: `.axf-console/plugins/console-terminal/` (`settings.json`, `ssh/` key + known_hosts, `claude-token`, `sessions.jsonl`).
+Data: `.axf-console/plugins/console-terminal/` (`settings.json`, `ssh/` key + known_hosts, `claude-token`, `sessions.jsonl`, `claude-link/`).
 ```bash
 node apps/console-web/plugins/console-terminal/install.mjs
 node apps/console-web/plugins/console-terminal/uninstall.mjs --all
 python3 apps/console-web/plugins/console-terminal/test.py
+python3 apps/console-web/plugins/console-terminal/server/test_claude_link.py
 ```
