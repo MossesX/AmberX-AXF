@@ -5,7 +5,7 @@
  * only runs headless jobs: the console stays on the active account.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, PageToolbar, SelectField, TextField, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PageToolbar, TextField, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
@@ -33,12 +33,9 @@ interface Account {
   spend: { day: number; week: number; dayCap: number; weekCap: number; state: 'ok' | 'warn' | 'capped'; why: string } | null;
 }
 interface Pending { op: Op; name: string; by: string }
-interface OneOption { name: string; label: string; email: string; plan: string; active: boolean; limited: Account['limited'] }
-/** GET build-account: the one account the console and every build use ('' = off). */
-interface One { buildAccount: string; active: string; consoleMatches: boolean; known: boolean; pending: Pending | null; options: OneOption[] }
 interface View {
   ok: boolean; ready: boolean; why: string; accounts: Account[]; active: string; login: { email?: string; plan?: string };
-  loginChanged: boolean; pending: Pending | null; note: string; one?: One | null;
+  loginChanged: boolean; pending: Pending | null; note: string;
 }
 
 /* ---------------- data: one poll shared by the chip and the screens ---------------- */
@@ -47,24 +44,11 @@ let shared: View | null = null;
 const listeners = new Set<(v: View | null) => void>();
 function publish(v: View | null) { shared = v; for (const l of listeners) l(v); }
 
-async function loadOne(): Promise<One | null> {
-  const r = await pluginFetch(FOLDER, 'build-account');
-  return r.ok ? ((await r.json()) as One) : null;
-}
-
 async function load(): Promise<void> {
-  const [r, one] = await Promise.all([pluginFetch(FOLDER, 'accounts'), loadOne().catch(() => null)]);
+  const r = await pluginFetch(FOLDER, 'accounts');
   const j = (await r.json()) as View & { detail?: string };
   if (!r.ok || !j.ok) throw new Error(j.detail || `HTTP ${r.status}`);
-  publish({ ...j, one });
-}
-
-async function pickOne(name: string): Promise<string> {
-  const r = await pluginFetch(FOLDER, 'build-account', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
-  const j = (await r.json().catch(() => ({}))) as { ok?: boolean; message?: string; detail?: string };
-  await load().catch(() => undefined);
-  if (!r.ok || !j.ok) throw new Error(j.detail || j.message || `HTTP ${r.status}`);
-  return j.message ?? '';
+  publish(j);
 }
 
 async function ask(op: Op | 'role', name: string, role?: Role): Promise<string> {
@@ -88,33 +72,6 @@ function useAccounts() {
     return () => { listeners.delete(setView); clearInterval(t); window.removeEventListener('focus', onFocus); };
   }, [refresh]);
   return { view, error, refresh };
-}
-
-/* ---------------- one account: the dropdown (banner dialog, Settings, page) ---------------- */
-
-const optionLabel = (o: OneOption) => [o.label || o.name, o.label ? o.name : '', o.email, o.plan, o.active ? 'console now' : '', o.limited ? 'out now' : ''].filter(Boolean).join(' · ');
-
-function OneAccount() {
-  const { view, error } = useAccounts();
-  const [busy, setBusy] = useState(false);
-  const [said, setSaid] = useState<{ text: string; bad: boolean } | null>(null);
-  const one = view?.one;
-  if (error) return <Note tone="danger">Claude accounts unavailable: {error}</Note>;
-  if (!one) return <p className="axp-ca-help">Reading the accounts on the VPS…</p>;
-  const pick = (name: string) => {
-    setBusy(true); setSaid(null);
-    pickOne(name).then((text) => setSaid({ text, bad: false }), (e: Error) => setSaid({ text: e.message, bad: true })).finally(() => setBusy(false));
-  };
-  return (
-    <div className="fx-stack axp-ca-one" data-build-account={one.buildAccount || 'off'}>
-      <SelectField label="One Claude account" value={one.buildAccount} empty="Off: every worker takes builds" disabled={busy}
-        options={one.options.map((o) => ({ value: o.name, label: optionLabel(o) }))} onChange={pick}
-        hint="The console and every VPS build use this account; every other account is off for builds. Used from the next build on; running builds keep theirs." />
-      {one.buildAccount && !one.known && <Note tone="warning">{one.buildAccount} isn't saved on the VPS any more: builds wait until you pick another account.</Note>}
-      {one.buildAccount && !one.consoleMatches && <Note tone="warning">The console is still on {one.active}{one.pending?.op === 'use' && one.pending.name === one.buildAccount ? `: the switch to ${one.buildAccount} is waiting for your approval.` : `. Pick ${one.buildAccount} again to ask for the switch.`}</Note>}
-      {said && <Note tone={said.bad ? 'danger' : 'info'}>{said.text}</Note>}
-    </div>
-  );
 }
 
 /* ---------------- the list and the save form ---------------- */
@@ -299,7 +256,6 @@ function Page() {
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
       <PageToolbar view="claude-accounts" />
-      <Container title="One account" icon="check"><OneAccount /></Container>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>
       <Container title="Job routing" icon="shuffle" className="axp-claude-accounts__routing"><JobRouting /></Container>
       <Container title="Add a worker account" icon="user" className="axp-claude-accounts__workers"><Workers /></Container>
@@ -312,12 +268,11 @@ function Page() {
 /** The banner chip: a framework status widget naming the active account; tap = the switch dialog. */
 function paint(rt: AxfRuntime, v: View | null) {
   if (!v?.active) { rt.setBadge(COUNTER, 0); rt.detachFromBanner(`status:${ASSET_ID}`); return; }
-  const only = v.one?.buildAccount ?? '';
-  const label = `Claude: ${only || v.active}${only ? ' · only' : ''}${v.pending || (only && only !== v.active) ? ' · waiting' : ''}`;
+  const label = `Claude: ${v.active}${v.pending ? ' · waiting' : ''}`;
   rt.registry.register({
     $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Claude account', version: '0.1.0', author: 'Claude accounts plugin',
-    description: 'The Claude account on the VPS (· only: the one account the console and every build use). Tap to pick it.', tags: ['claude', 'status'],
-    data: { counter: COUNTER, onLabel: label, offLabel: label, onTone: v.pending || (only && only !== v.active) ? 'warning' : 'accent', offTone: 'muted', dot: true, link: 'claude-accounts.switch' },
+    description: 'The Claude account the console is on. Builds follow Job routing. Tap to switch it.', tags: ['claude', 'status'],
+    data: { counter: COUNTER, onLabel: label, offLabel: label, onTone: v.pending ? 'warning' : 'accent', offTone: 'muted', dot: true, link: 'claude-accounts.switch' },
   }, 'app', ID);
   rt.setBadge(COUNTER, 1);
   rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 21, origin: ID });
@@ -332,7 +287,6 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-accounts.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude accounts settings' });
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });
-    rt.actions.register('claude-accounts.one-account', () => rt.openDialog(DIALOG, {}), { label: 'Pick the one Claude account' });
     // the Job routing layouts are settings assets (the UI Review options): in the registry, so the asset library lists them
     for (const a of ROUTING_ASSETS) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
     void loadRouting().catch(() => undefined);
@@ -343,10 +297,9 @@ export const plugin: AxfWebLibrary = {
   },
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
   nav: { label: 'AI & agents', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
-  dialogs: { [DIALOG]: { title: 'Claude account', icon: 'key', searchable: false, render: () => <div className="fx-stack"><OneAccount /><Accounts /></div> } },
+  dialogs: { [DIALOG]: { title: 'Claude account', icon: 'key', searchable: false, render: () => <div className="fx-stack"><Accounts /></div> } },
   settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; usage per account.' }],
   settingsPanels: [
-    { id: 'claude-accounts.one-account', tab: VIEW, title: 'One account', icon: 'check', order: 0, render: () => <OneAccount /> },
     { id: 'claude-accounts.list', tab: VIEW, title: 'Accounts', icon: 'key', order: 1, render: () => <Accounts manage /> },
     { id: 'claude-accounts.routing', tab: VIEW, title: 'Job routing', icon: 'shuffle', order: 2, render: () => <JobRouting /> },
     { id: 'claude-accounts.workers', tab: VIEW, title: 'Add a worker account', icon: 'user', order: 3, render: () => <Workers /> },

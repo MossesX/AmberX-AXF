@@ -57,21 +57,20 @@ x = R.decide({ api: caps }, team({ w1: { limited: { until: 'later', reason: 'hit
 ok(x.account === 'w2', 'a limited account is skipped');
 ok(R.decide({ api: caps }, team(), { model: 'fable' }).kind === 'subscription', 'no rule = API accounts never get a job');
 
-console.log('one build account');
-ok(R.normConfig({ buildAccount: 'w2' }).buildAccount === 'w2' && R.normConfig({ buildAccount: 'Bad Name' }).buildAccount === '' && R.normConfig(null).buildAccount === '', 'buildAccount: a name or empty');
-const one = R.roster({ api: caps, buildAccount: 'w2', excluded: ['w2'] }, team());
-ok(one.find((r) => r.name === 'w2').takesJobs && one.find((r) => r.name === 'w2').buildAccount, 'the pick takes jobs, even a stopped login');
-ok(['console', 'w1', 'hulu-api', 'mx-api'].every((n) => !one.find((r) => r.name === n).takesJobs && /off for builds: w2/.test(one.find((r) => r.name === n).why)), 'every other account, the console and API ones too, is off');
-x = R.decide({ api: caps, buildAccount: 'w2', rules: [{ name: 'All to API', to: 'api' }] }, team(), { model: 'fable' });
-ok(x.state === 'run' && x.account === 'w2' && x.kind === 'subscription' && x.buildAccount === 'w2', 'every job goes to it; rules don\'t apply');
-x = R.decide({ api: caps, buildAccount: 'w2' }, team({ w2: { running: 3 } }), {});
-ok(x.state === 'queue' && x.account === 'w2' && x.position === 1, 'full = its own queue, never another account');
+console.log('no one build account (removed Nov 25 2026): Job routing only, a limit moves to the next account');
+ok(!('buildAccount' in R.normConfig({ buildAccount: 'w2' })) && !('buildAccount' in R.normConfig(null)), 'a stored pin is dropped on read');
+const noPin = R.roster({ api: caps, buildAccount: 'w2' }, team());
+ok(noPin.filter((r) => r.kind === 'subscription').every((r) => r.takesJobs && !/off for builds/.test(r.why)) && noPin.every((r) => !('buildAccount' in r)), 'every subscription login takes jobs: none is off for builds');
+x = R.decide({ api: caps, buildAccount: 'w2' }, team(), {});
+ok(x.state === 'run' && x.account === 'w1' && !('buildAccount' in x), 'a stored pin changes nothing: the least busy worker takes it');
 x = R.decide({ api: caps, buildAccount: 'w2' }, team({ w2: { limited: { until: 'later', reason: 'hit its limit' } } }), {});
-ok(x.state === 'none' && /one build account w2 is out until later/.test(x.why), 'out = none, with why');
-ok(R.decide({ buildAccount: 'ghost' }, team(), {}).state === 'none', 'a pick that is not saved = none');
-ok(R.decide({ buildAccount: 'console' }, team(), {}).account === 'console', 'the console\'s own account can be the one');
-ok(R.decide({ buildAccount: 'console', interactiveTakesJobs: false }, team(), {}).account === 'console', 'even with "console takes jobs" off');
-ok(R.decide({ api: caps, buildAccount: 'hulu-api' }, team(), {}).state === 'none', 'an API key is never the one account');
+ok(x.state === 'run' && x.account === 'w1', 'the once-pinned account is out: the job runs on the next account, never "none"');
+x = R.decide({ api: caps, buildAccount: 'w1' }, team({ w1: { limited: { until: 'later', reason: 'hit its limit' } } }), {});
+ok(x.state === 'run' && x.account === 'w2', 'a limit hit moves the job to the next account by itself');
+x = R.decide({ api: caps }, team({ w1: { limited: { until: 'later', reason: 'hit its limit' } }, w2: { limited: { until: 'later', reason: 'hit its limit' } } }), {});
+ok(x.state === 'run' && x.account === 'console', 'every worker out: the console\'s own account takes it');
+x = R.decide({ api: caps, buildAccount: 'w2', rules: [{ name: 'All to API', to: 'api' }] }, team(), { model: 'fable' });
+ok(x.kind === 'api', 'the Job routing rules decide, pin or no pin');
 
 console.log('rules');
 const rules = [

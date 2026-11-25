@@ -399,12 +399,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
-  # One build account (claude-workers build-account; build one-account-picker): every build runs on it, an explicit
-  # --account included; every other account is off for builds. Read once here, so a switch takes effect for the next run.
+  # No one build account (removed Nov 25 2026): the account comes from Job routing (claude-workers claim), and a login
+  # that hits its limit hands the run to the next one. build_pick stays empty, so the branches below never pin a run.
   build_pick="" pick_line=""
-  if [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
-    build_pick="$(node "$WORKERS_JS" build-account 2>/dev/null | grep -E '^[a-z0-9][a-z0-9-]{0,31}$' | grep -vx off | head -1)" || build_pick=""
-  fi
   if [[ -n "$build_pick" && -n "$account" && "$account" != "$build_pick" && "$account" != active && "$account" != live ]]; then
     pick_line="# $account is off for builds: this run uses the one build account, $build_pick"
     build_note "Asked for $account, ran on $build_pick (the one build account)"

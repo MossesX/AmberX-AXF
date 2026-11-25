@@ -102,20 +102,24 @@ ok(new Date(X.parseReset('Claude AI usage limit reached|1795503600', now)).getTi
 for (let i = 0; i < 5; i += 1) ok(!['w1', 'w2'].includes(X.claim(`never-${i}`, {}, {}, env, now).account), `claim ${i}: never an account marked out`);
 rmSync(join(W, 'worker-state.json'));
 
-console.log('one build account');
-writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'] }));
-ok(X.setBuildAccount('w3', env) === 'w3' && X.route({}, env, now) === 'w3', 'build-account w3: every job goes to w3');
+console.log('no one build account (removed Nov 25 2026)');
+writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'], buildAccount: 'w3' }));
+ok(X.route({}, env, now) === 'w1', 'a pin an older version stored is ignored: Job routing picks the account');
 const sOne = X.status(env, now);
-ok(sOne.buildAccount === 'w3' && sOne.accounts.every((a) => a.buildPick === 'w3') && sOne.accounts.find((a) => a.name === 'w3').buildAccount, 'status rows carry the pick (the dispatcher reads them)');
-ok(X.route({ exclude: ['w3'] }, env, now) === '', 'no other account takes over');
-let refused = ''; try { X.setBuildAccount('keyonly', env); } catch (e) { refused = e.message; }
-ok(/API key/.test(refused), 'an API key is refused');
-refused = ''; try { X.setBuildAccount('ghost', env); } catch (e) { refused = e.message; }
-ok(/no saved account/.test(refused), 'an unknown name is refused');
+ok(!('buildAccount' in sOne) && sOne.accounts.every((a) => !('buildPick' in a) && !('buildAccount' in a)), 'status carries no pick');
+let refused = ''; try { X.setBuildAccount('w3', env); } catch (e) { refused = e.message; }
+ok(/one build account was removed: builds follow Job routing/.test(refused), 'pinning an account is refused, with where routing is set');
 const oneCli = spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'build-account'], { env: { ...process.env }, encoding: 'utf8' });
-ok(oneCli.status === 0 && oneCli.stdout.trim() === 'w3', 'CLI: build-account prints the pick');
+ok(oneCli.status === 0 && oneCli.stdout.trim() === 'off', 'CLI: build-account always prints off (the launcher reads it)');
 const cliOff = spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'build-account', 'off'], { env: { ...process.env }, encoding: 'utf8' });
-ok(cliOff.status === 0 && X.loadConfig(env).buildAccount === '' && X.route({}, env, now) === 'w1', 'CLI: build-account off = the normal routing again');
+ok(cliOff.status === 0 && !('buildAccount' in JSON.parse(read(join(W, 'workers.json')))) && X.route({}, env, now) === 'w1', 'CLI: build-account off drops the stored pin');
+// a fake limited account: the job moves to the next account by itself, and back when the limit is over
+X.markLimit('w1', { kind: 'usage', text: "You've hit your weekly limit", until: now + 3600e3 }, env, now);
+ok(X.route({}, env, now) === 'w2', 'w1 hit its limit: the next job runs on w2');
+ok(X.claim('after-limit', {}, {}, env, now).account === 'w2', 'and a claim books w2');
+X.release('after-limit', env);
+ok(X.route({}, env, now + 2 * 3600e3) === 'w1', 'once the limit is over w1 takes jobs again');
+rmSync(join(W, 'worker-state.json'), { force: true });
 rmSync(join(W, 'workers.json'));
 
 console.log('claims: 3 building per account, then a queue of 5, oldest first');
@@ -231,16 +235,6 @@ echo finished
   ok(lines.filter((e) => e.event === 'session-login').map((e) => e.account).join() === 'w1,w2', 'each login is recorded');
   ok(lines.some((e) => e.event === 'session-part' && e.account === 'w1'), 'the move is recorded');
   ok(!/fake-w|fake-console/.test(read(join(HD, 'events.jsonl'))), 'no credential in the events or the log');
-  // one build account: an explicit --account for another login runs on the pick instead
-  X.setBuildAccount('w2', env);
-  const w2d = join(tmp, 'build2'); mkdirSync(w2d); writeFileSync(join(w2d, 'brief.md'), 'Do the other thing.\n');
-  const ends = () => read(join(HD, 'events.jsonl')).split('\n').filter((x) => /session-end/.test(x)).length;
-  const r2 = spawnSync('bash', [join(HERE, 'claude-headless.sh'), '--name', 'job2', '--account', 'w1', '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd: w2d, env: runEnv, encoding: 'utf8', timeout: 30_000 });
-  ok(/started/.test(r2.stdout), 'one build account: the launcher starts it');
-  ok(await until(() => ends() >= 2, 60_000), 'and the run ends');
-  ok(read(join(w2d, 'attempts')).trim() === 'fake-w2', '--account w1 ran on the one build account w2');
-  ok(/w1 is off for builds: this run uses the one build account, w2/.test(read(join(w2d, 'run.log'))), 'the log says why');
-  X.setBuildAccount('off', env);
   spawnSync('tmux', ['kill-server'], { env: runEnv });
 } else console.log('(tmux missing: skipped the end-to-end checks)');
 

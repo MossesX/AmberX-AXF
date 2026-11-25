@@ -18,9 +18,7 @@
     "action:claude-accounts.switch",
     "service:axf.claude-accounts@1",
     "settings-panel:claude-accounts.routing",
-    "action:claude-accounts.routing",
-    "action:claude-accounts.one-account",
-    "settings-panel:claude-accounts.one-account"
+    "action:claude-accounts.routing"
   ],
   "requires": [
     "service:axf.headless@1",
@@ -70,15 +68,15 @@
       {
         "route": "GET /build-account",
         "id": "build-account",
-        "title": "Show the one Claude account",
-        "description": "The single Claude account the console and every VPS build use (empty = off: builds go to every worker), whether the console is on it yet, and the subscription logins that can be picked.",
+        "title": "One Claude account (removed)",
+        "description": "Removed Nov 25 2026: builds follow Job routing only and move to the next account when one hits its limit. Always answers buildAccount \"\" with removed: true, plus the subscription logins.",
         "readOnly": true
       },
       {
         "route": "POST /build-account",
         "id": "set-build-account",
-        "title": "Pick the one Claude account",
-        "description": "Pick the single Claude account the console and every VPS build use (voice: 'use account 2 for everything'; 'off' goes back to every worker). Every other account, API keys too, is off for builds. Saved at once and used from the next build on; running builds keep theirs. When the console is on another account, the switch to it is one held axHub call Brett approves or denies.",
+        "title": "Drop a stored one-account pin",
+        "description": "Removed Nov 25 2026: there is no one build account. name '' or 'off' drops a pin an older version stored; any account name answers 410 and says to use Job routing.",
         "input": {
           "type": "object",
           "properties": {

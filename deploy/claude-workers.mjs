@@ -339,28 +339,24 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   // API worker slots set up before their key is saved still show (no key yet)
   for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, usage: null, usageLeft: 1, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
   const ro = roster(cfg, base);
-  // buildPick on every row: the dispatcher reads the rows (or the host's snapshot of them), never workers.json itself
   // buildingSet: the cap was saved (not the built-in default), so it is the one "sessions per account" value (settings-sources@1)
   const rawCfg = readJson(paths(env).config) ?? {};
   const buildingSet = (n) => rawCfg?.limits?.building !== undefined || rawCfg?.perAccount?.[n]?.building !== undefined;
-  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, buildingSet: buildingSet(a.name), queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
+  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, buildingSet: buildingSet(a.name), queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
-  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, buildAccount: cfg.buildAccount, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
+  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
 }
 
 /**
- * The one account every build runs on ('' / 'off' / 'auto' = none: the normal routing). Only a saved subscription login
- * can be it (an API key bills per token). Takes effect for the next job; running jobs keep their account.
+ * The one-account pin is gone (Nov 25 2026): builds follow the Job routing rules only, and a login that hits its limit
+ * hands over to the next one. Kept so an older caller still gets an answer: 'off' (or nothing) drops a stored pin and
+ * returns ''; a name is refused with where routing is set now.
  */
 export function setBuildAccount(name, env = process.env) {
   const n = ['', 'off', 'auto', 'none'].includes(String(name ?? '').trim()) ? '' : String(name).trim();
-  if (n) {
-    if (!NAME_RE.test(n)) throw Object.assign(new Error(`not an account name: ${n}`), { code: 2 });
-    const a = accounts(env).find((x) => x.name === n);
-    if (!a) throw Object.assign(new Error(`no saved account called ${n}`), { code: 2 });
-    if (a.kind === 'api') throw Object.assign(new Error(`${n} is an API key: the one build account is a subscription login`), { code: 2 });
-  }
-  return editConfig((x) => { x.buildAccount = n; }, env).buildAccount;
+  if (n) throw Object.assign(new Error(`one build account was removed: builds follow Job routing (Claude accounts → Job routing), and move to the next account when one hits its limit. ${n} was not pinned.`), { code: 2 });
+  editConfig(() => {}, env); // rewrites workers.json in its current shape, which has no buildAccount
+  return '';
 }
 
 /** Rows as the router sees them for one job: queued-ahead jobs count as running. */
@@ -548,8 +544,9 @@ const main = async () => {
       editConfig((x) => { x.excluded = on ? x.excluded.filter((y) => y !== n) : [...x.excluded, n]; if (on && !x.workers.includes(n)) x.workers.push(n); });
       out({ name: n, worker: on }, on ? `${n} takes headless jobs` : `${n} no longer takes headless jobs`);
     } else if (cmd === 'build-account' || cmd === 'only') {
-      const n = rest[0] === undefined ? loadConfig().buildAccount : setBuildAccount(rest[0]);
-      out({ buildAccount: n }, rest[0] === undefined ? (n || 'off') : n ? `${n} takes every build from the next one on; every other account is off for builds` : 'one build account off: builds go to every worker again');
+      // removed (Nov 25 2026): always off; `build-account off` also drops a pin an older version stored
+      if (rest[0] !== undefined) setBuildAccount(rest[0]);
+      out({ buildAccount: '', removed: true }, rest[0] === undefined ? 'off' : 'one build account is gone: builds follow Job routing and move to the next account on a limit');
     } else if (cmd === 'label') {
       const n = nameOk(rest[0]); const label = rest.slice(1).join(' ').trim();
       editConfig((x) => { if (x.api[n]) x.api[n].label = label; else { x.perAccount[n] = { ...(x.perAccount[n] ?? {}), label }; } });

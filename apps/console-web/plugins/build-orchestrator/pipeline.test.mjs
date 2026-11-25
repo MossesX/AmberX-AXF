@@ -392,22 +392,22 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'landed');
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
-t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
-  const pick = (r) => ({ ...r, buildPick: 'console' });
-  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick), { console: { use: false } }, { settings });
-  const by = Object.fromEntries(v.map((a) => [a.name, a]));
-  assert.equal(P.buildPick(v.length ? [...rows, apiRow('hulu-api')].map(pick) : []), 'console');
-  assert.equal(by.console.usable, true, 'the pick wins over the pipeline\'s own off and over workers existing');
-  assert.equal(by.console.buildAccount, true);
-  for (const n of ['w-pro', 'w-max']) { assert.equal(by[n].usable, false); assert.match(by[n].why, /off for builds: console takes every build/); }
-  assert.equal(by['hulu-api'].api.usable, false, 'API accounts are off too');
-  assert.equal(P.routeFor(build('x', 'queued', []), v, 'Opus', P.normSettings({ apiOverflow: true })).account, 'console');
-  const busy = P.accountViews([...rows, apiRow('hulu-api')].map((r) => pick(r.name === 'console' ? { ...r, running: ['a', 'b'] } : r)), {}, { settings });
-  const r = P.routeFor(build('x', 'queued', []), busy, 'Opus', P.normSettings({ apiOverflow: true }));
-  assert.equal(r.account, '', 'the pick full = the build waits, no overflow');
-  const gone = P.accountViews(rows.map((x) => ({ ...x, buildPick: 'ghost' })), {}, { settings });
-  assert.ok(gone.every((a) => !a.usable)); assert.match(P.noAccountWhy(gone, 'Opus'), /one build account ghost is not saved/);
-  assert.equal(P.buildPick(rows), '', 'no pick = the normal routing');
+t('no one build account (removed Nov 25 2026): a pick on the rows changes nothing; a limited account is skipped for the next', () => {
+  const pick = (r) => ({ ...r, buildPick: 'console', buildAccount: r.name === 'console' });
+  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick), {}, { settings });
+  const plain = P.accountViews([...rows, apiRow('hulu-api')], {}, { settings });
+  assert.deepEqual(v, plain, 'rows that still carry a pick read exactly like rows without one');
+  assert.equal(P.buildPick, undefined, 'the dispatcher has no pick to read');
+  assert.ok(v.every((a) => !('buildAccount' in a) && !/off for builds/.test(a.why || '')));
+  for (const n of ['w-pro', 'w-max']) assert.equal(v.find((a) => a.name === n).usable, true, `${n} takes builds`);
+  // the account a build ran on hits its limit: the next launch goes to the other worker, with no setting to change
+  const first = P.routeFor(build('x', 'queued', []), plain, 'Opus', P.normSettings({})).account;
+  assert.ok(first, 'some worker takes it');
+  const limited = P.accountViews(rows.map((r) => (r.name === first ? { ...r, limited: { kind: 'usage', reason: 'hit its limit', until: '2099-01-01T00:00:00Z' } } : r)), {}, { settings });
+  assert.equal(limited.find((a) => a.name === first).usable, false);
+  const next = P.routeFor(build('x', 'queued', []), limited, 'Opus', P.normSettings({})).account;
+  assert.ok(next && next !== first, `the build moves from ${first} to ${next}`);
+  assert.ok(!P.routeOptions(build('x', 'queued', []), limited, 'Opus', P.normSettings({})).some((o) => o.account === first), 'the limited account is not among the launch options');
 });
 t('routeOptions: every subscription in Brett\'s order, then every API account; route overrides respected', () => {
   const s = P.normSettings({});
@@ -590,7 +590,10 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
-    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
+    // the host's own Claude settings (builds.autoQueuePending on the VPS) and a build session's identity never leak in
+    AXF_CLAUDE_SETTINGS_FILE: join(tmp, 'claude-settings.json') };
+  for (const k of ['AXF_BUILD_ID', 'AXF_BUILD_STEP', 'AXF_STEP_ID', 'AXF_BUILD_PHASE', 'AXF_DISPATCH_TOKEN', 'AXF_SESSION', 'AXF_SURFACE', 'AXF_ACTOR']) delete env[k];
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0 && !args.includes('--expect-fail')) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -598,6 +601,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   const json = (r) => JSON.parse(r.stdout.trim().split('\n').pop());
   const store = () => JSON.parse(readFileSync(storeFile, 'utf8'));
   const find = (id) => store().builds.find((b) => b.id === id);
+  /** One Queued: the scenarios below each queue their own build, so whatever still waits in the Queue goes back to Pending first. */
+  const queueNow = (id, ...a) => { for (const b of store().builds.filter((x) => x.status === 'queued' && !x.deleted && x.id !== id)) pipe('unqueue', b.id, '--json'); return json(pipe('queue', id, ...a)); };
 
   orch('act', JSON.stringify({ action: 'add', id: 'alpha', title: 'Alpha feature', detail: 'Make the alpha thing.', said: 'build me alpha, kid' }));
   orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '10 min' }] }));
@@ -615,16 +620,25 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'workers exist: the console account stays out');
     assert.equal(s.accounts.find((a) => a.name === 'w-max').fable, true); assert.equal(s.accounts.find((a) => a.name === 'w-pro').fable, false);
   });
-  t('e2e queue: Brett moves both to the Queue; unqueue brings one back', () => {
-    json(pipe('queue', 'alpha', '--by', 'brett', '--json')); json(pipe('queue', 'beta', '--by', 'brett', '--json'));
+  t('e2e queue: one build waits in the Queue; a second is refused with the holder named; unqueue brings it back', () => {
+    json(pipe('queue', 'alpha', '--by', 'brett', '--json'));
     assert.equal(find('alpha').status, 'queued'); assert.equal(find('alpha').pipeline.queuedBy, 'brett'); assert.ok(find('alpha').pipeline.queuedAt);
-    json(pipe('unqueue', 'beta', '--json')); assert.equal(find('beta').status, 'pending'); assert.equal(find('beta').pipeline?.queuedAt ?? '', '');
-    json(pipe('queue', 'beta', '--json'));
+    const second = pipe('queue', 'beta', '--by', 'brett', '--json', '--expect-fail');
+    assert.notEqual(second.status, 0, 'a second queued build is refused');
+    assert.match(second.stdout, /alpha is already queued: one build waits in the Queue at a time\. beta stays in Pending and moves up by itself when alpha starts\./);
+    assert.equal(find('beta').status, 'pending');
+    json(pipe('unqueue', 'alpha', '--json')); assert.equal(find('alpha').status, 'pending'); assert.equal(find('alpha').pipeline?.queuedAt ?? '', '');
+    json(pipe('queue', 'alpha', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
+    assert.deepEqual(store().builds.filter((b) => b.status === 'queued').map((b) => b.id), ['alpha']);
   });
-  t('e2e tick: one slot per account cap; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
+  t('e2e tick: the queued build goes live and the next Pending build moves up; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
+    const r1 = json(pipe('tick', '--json'));
+    assert.deepEqual(r1.launched.map((l) => [l.id, l.account, l.model]), [['alpha', 'w-max', 'Fable']], JSON.stringify({ waits: r1.plan.waits, failed: r1.failed }));
+    assert.equal(r1.queueMoves.promoted, 'beta', 'alpha went live: beta moved up from Pending');
+    assert.equal(find('beta').status, 'queued'); assert.equal(find('beta').pipeline.queuedBy, 'dispatcher');
     const r = json(pipe('tick', '--json'));
-    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]).sort(), [['alpha', 'w-max', 'Fable'], ['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
+    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
     const log = readFileSync(join(tmp, 'launches.log'), 'utf8');
     assert.match(log, /--name alpha .*--account w-max/); assert.match(log, /--model claude-fable-5-2/); assert.match(log, /--name beta .*--account w-pro/); assert.match(log, /--model claude-opus-5-5/);
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
@@ -716,7 +730,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const runsBefore = runsBefore0;
     assert.deepEqual(r.ended.map((e) => [e.id, !!e.auth]), [['alpha', true]]);
     assert.equal(find('alpha').pipeline.runs, runsBefore - 1, 'a run the login cut off does not count towards maxRuns');
-    assert.equal(find('alpha').status, 'pending', 'held: a relaunch would hit the same login'); assert.equal(r.launched.length, 0);
+    assert.equal(find('alpha').status, 'pending', 'held: a relaunch would hit the same login'); assert.ok(!r.launched.some((l) => l.id === 'alpha'), 'not relaunched, and not moved up into the free Queue either');
+    assert.notEqual(r.queueMoves.promoted, 'alpha', 'a build held for its login does not move up');
     assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha'), 'phone alert sent'); assert.ok(!r.alertsSent.some((a) => a.key === 'pipeline:end:alpha'), 'one alert, the login one');
     assert.match(find('alpha').notes.at(-1).text, /Claude login failure on .*OAuth token has expired/);
     const waits = json(pipe('status', '--json')).state.authWaits; assert.equal(waits.alpha.account, acct); assert.equal(waits.alpha.requeued, false);
@@ -728,7 +743,9 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     writeFileSync(accFile, JSON.stringify(own));
     r = json(pipe('tick', '--json'));
     assert.deepEqual(r.authRequeued, ['alpha']); assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha' && /works again/.test(a.title)), 'the phone hears it is back');
-    assert.ok(['queued', 'running'].includes(find('alpha').status), find('alpha').status);
+    // one Queued: back in the Queue when it is free, else back in line in Pending behind the build that holds it
+    assert.ok(['queued', 'running', 'pending'].includes(find('alpha').status), find('alpha').status);
+    if (find('alpha').status === 'pending') assert.match(find('alpha').notes.at(-1).text, /back in line in Pending \(.* holds the Queue\); it moves up by itself/);
     assert.equal(json(pipe('status', '--json')).state.authWaits.alpha.requeued, true);
     // the fake launcher reuses the session name, so the old end event closes the new run on the same login error:
     // a second failure waits for a health answer newer than itself (no loop of re-queues on one sweep)
@@ -736,7 +753,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   });
   t('e2e a queued build that fails to start: the phone hears it at once with the exact reason', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'epsstart', title: 'Epsilon start', steps: [{ text: 'do epsstart', model: 'Opus', estimate: '10 min' }] }));
-    json(pipe('queue', 'epsstart', '--json'));
+    queueNow('epsstart', '--json');
     const bad = join(tmp, 'bad-launcher.sh');
     writeFileSync(bad, '#!/usr/bin/env bash\necho "claude-login: no Claude login to snapshot for the account (log in, or save the account first)" >&2\nexit 4\n'); chmodSync(bad, 0o755);
     const tk = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_LAUNCHER: bad }, encoding: 'utf8', timeout: 120000 });
@@ -775,7 +792,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   });
   t('e2e stale reaper: a build marked running on an account with no session and no slot goes back to the Queue', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'ghost', title: 'Ghost', steps: [{ text: 'never ran', model: 'Opus', estimate: '20 min' }] }));
-    json(pipe('queue', 'ghost', '--json'));
+    queueNow('ghost', '--json');
     const old = new Date(Date.now() - 3600e3).toISOString();
     const st = store(); const g = st.builds.find((b) => b.id === 'ghost');
     g.status = 'running'; g.pipeline = { ...g.pipeline, account: 'w-max', session: '', slot: 'hl-gone', launchedAt: old };
@@ -789,7 +806,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const pipeWith = (extra, ...a) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...env, ...extra }, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`pipeline ${a.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
     const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').split('\n').filter((l) => /--name dup /.test(l)).length;
     orch('act', JSON.stringify({ action: 'add', id: 'dup', title: 'Dup', steps: [{ text: 'one step', model: 'Opus', estimate: '10 min' }] }));
-    json(pipe('queue', 'dup', '--json'));
+    queueNow('dup', '--json');
     mkdirSync(join(wtRoot, 'dup'), { recursive: true });
     const old = new Date(Date.now() - 3600e3).toISOString();
     // (1) the self-check: marked running with no session on record, but tmux axf-dup--fake is alive → kept, session adopted
@@ -829,7 +846,10 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
   });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
-    for (const id of ['h1', 'h2', 'h3']) { orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] })); json(pipe('queue', id, '--json')); }
+    // three builds in the Queue at once: records from before the one-Queued rule (queue() itself now admits one)
+    for (const b of store().builds.filter((x) => x.status === 'queued' && !x.deleted)) pipe('unqueue', b.id, '--json');
+    for (const id of ['h1', 'h2', 'h3']) orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] }));
+    { const st = store(); for (const id of ['h1', 'h2', 'h3']) { const b = st.builds.find((x) => x.id === id); b.status = 'queued'; b.pipeline = { ...(b.pipeline ?? {}), queuedAt: new Date().toISOString(), queuedBy: 'cli' }; } writeFileSync(storeFile, JSON.stringify(st)); }
     let r = json(pipe('hold', 'h1', 'h2', '--why', 'waiting on Brett', '--by', 'brett', '--json'));
     assert.deepEqual(r.done.map((d) => [d.id, d.tab]), [['h1', 'queue'], ['h2', 'queue']]);
     assert.equal(find('h1').status, 'queued'); assert.equal(find('h1').pipeline.heldBy, 'brett'); assert.equal(find('h1').pipeline.heldWhy, 'waiting on Brett');
@@ -890,7 +910,8 @@ echo "started axf-$name--r$n in $(pwd)"
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
     AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: '/bin/false', AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0, maxRuns: 2, splitProvider: 'off' }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
-    AXF_PIPELINE_LOCK: join(tmp, 'pipeline.lock') };
+    AXF_PIPELINE_LOCK: join(tmp, 'pipeline.lock'), AXF_CLAUDE_SETTINGS_FILE: join(tmp, 'claude-settings.json') };
+  for (const k of ['AXF_BUILD_ID', 'AXF_BUILD_STEP', 'AXF_STEP_ID', 'AXF_BUILD_PHASE', 'AXF_DISPATCH_TOKEN', 'AXF_SESSION', 'AXF_SURFACE', 'AXF_ACTOR']) delete env[k];
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -899,11 +920,12 @@ echo "started axf-$name--r$n in $(pwd)"
   const store = () => JSON.parse(readFileSync(storeFile, 'utf8'));
   const find = (id) => store().builds.find((b) => b.id === id);
   const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').trim().split('\n');
+  const queueNow = (id, ...a) => { for (const b of store().builds.filter((x) => x.status === 'queued' && !x.deleted && x.id !== id)) pipe('unqueue', b.id, '--json'); return json(pipe('queue', id, ...a)); };
   const twoPhase = (id) => orch('act', JSON.stringify({ action: 'add', id, title: id, steps: [{ text: `${id} contract`, model: 'Fable', estimate: '10 min' }, { text: `${id} UI and tests`, model: 'Opus', estimate: '10 min' }] }));
 
   twoPhase('two');
   t('exit e2e: a two-phase build (Fable then Opus) launches phase 1 on the Fable account and records its phase', () => {
-    json(pipe('queue', 'two', '--json'));
+    queueNow('two', '--json');
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['two', 'w-max', 'Fable']]);
     const b = find('two'); assert.equal(b.status, 'running'); assert.ok(b.pipeline.phase, 'phase recorded at launch'); assert.equal(b.pipeline.session, 'axf-two--r1');
@@ -938,7 +960,7 @@ echo "started axf-$name--r$n in $(pwd)"
     assert.equal(json(pipe('requeue-stuck', '--json')).found.length, 0, 'a crash-limit build is not "stuck after a phase"');
   });
   t('exit e2e: a clean stop mid-phase (phase-done claimed, its steps open) goes to Pending as stopped', () => {
-    twoPhase('mid'); json(pipe('queue', 'mid', '--json')); json(pipe('tick', '--json'));
+    twoPhase('mid'); queueNow('mid', '--json'); json(pipe('tick', '--json'));
     assert.equal(find('mid').status, 'running');
     const r = json(pipe('exit', 'mid', '--session', find('mid').pipeline.session, '--exit', '0', '--kind', 'phase-done', '--json'));
     assert.equal(r.ended.status, 'pending'); assert.equal(r.ended.reason, 'stopped');

@@ -29,27 +29,16 @@ Saved logins stay in `/root/.claude-accounts/` on the host. The active one is co
   copy of the login (`deploy/claude-login.mjs`, `CLAUDE_CONFIG_DIR`), so a logout, switch or new login here never
   touches a running build. The launcher only reads the saved logins; it never runs save or use.
 
-## One account
+## One account (removed Nov 25 2026)
 
-Brett picks the single Claude account the console and every VPS build use (build one-account-picker, Nov 13 2026).
-While one is picked, every other account (workers, API keys) is off for builds, no routing rule applies and no
-account takes over when it hits its limit: the run stops and says so on the build.
+There is no one build account any more. It pinned every build to a single login, so a build stopped when that login
+hit its limit. Builds follow **Job routing** only, and a login that hits its limit hands the run to the next account.
 
-- **Where:** the dropdown *One Claude account* at the top of the banner chip's dialog (the chip reads
-  `Claude: <name> · only`), Settings → Plugins → Claude accounts → One account, and the Claude accounts page.
-  Deep link: action `claude-accounts.one-account` (opens the dialog) or `settings.open:claude-accounts`.
-- **REST:** `GET /api/plugins/claude-accounts/build-account` (the pick, whether the console is on it, the options),
-  `POST …/build-account {name}` (`off` or empty = the normal routing).
-- **MCP / voice:** `claude_accounts_build_account`, `claude_accounts_set_build_account` ("use account 2 for everything").
-- **CLI:** `axf claude-accounts build-account` · `axf claude-accounts set-build-account --name <n|off>`;
-  host: `node deploy/claude-workers.mjs build-account [<name>|off]`.
-- **Capability:** `axf.claude-accounts@1` `build_account()`, `set_build_account(name, by)`.
-- **How:** it is `buildAccount` in workers.json (claude-workers@1). The pick is saved at once and read for every new
-  job, so it takes effect for the next build; running builds keep theirs. `deploy/worker-routing.mjs` routes every
-  job to it, `deploy/claude-headless.sh` runs an explicit `--account` for another login on it, and the dispatcher
-  (`pipeline-core.mjs` `accountViews`) reads it from the claude-workers rows (`buildPick`). When the console is on
-  another account, picking asks the usual held switch; switching the console moves the pick with it.
-- **Only subscription logins** can be picked: an API key bills per token.
+- `GET /api/plugins/claude-accounts/build-account` always answers `buildAccount: ""` with `removed: true`.
+- `POST …/build-account {name}`: `off` or empty drops a pin an older version stored; an account name answers 410.
+- Host: `node deploy/claude-workers.mjs build-account` prints `off`; `build-account off` drops a stored pin.
+- The picker, its Settings panel and the `claude-accounts.one-account` action are gone; the banner chip names the
+  console's account.
 
 ## Worker accounts
 

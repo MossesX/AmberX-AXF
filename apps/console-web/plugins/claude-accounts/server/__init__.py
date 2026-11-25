@@ -13,12 +13,10 @@ Claude reports: the saved logins stay on the host and nothing here reads them.
   POST remove     { name }: asks to set a saved account aside; it is moved, never deleted (held)
   POST label      { name, label }: a display name (Hulu, Moses X…)
 
-One account (build one-account-picker, Nov 13 2026): Brett picks the single Claude account the console and every VPS
-build use. It is claude-workers@1 `buildAccount`; the launcher and the dispatcher read it for every new job, so a change
-takes effect for the next build (running ones keep theirs). Every other account, API ones too, is off for builds.
-  GET  build-account     { buildAccount, active, consoleMatches, pending, options: [{name, label, email, plan, active, limited}] }
-  POST build-account     { name }: '' = off (the normal routing). Saved at once; when the console is on another account
-                         the held switch to it is asked too (the console follows once Brett's approval clears it).
+One account is gone (Nov 25 2026): builds follow Job routing only, and a login that hits its limit hands over to the
+next one. The two routes stay for older callers:
+  GET  build-account     { buildAccount: "", removed: true, options: [...] }
+  POST build-account     { name }: '' / off drops a stored pin; a name answers 410 with where routing is set now.
 
 Job routing (build workers-api-routing, Nov 8 2026): every subscription login is a worker unless stopped, the console's
 account takes jobs after them (setting), 3 build and 5 wait per account, and API-key accounts take only the jobs a rule
@@ -332,9 +330,6 @@ def ask(op: str, name: str, by: str) -> dict[str, Any]:
             raise HTTPException(409, f"{name} is the console's account: switch to another one first.")
         if row["running"]:
             raise HTTPException(409, f"{name} is running {len(row['running'])} job(s): wait for them to finish.")
-    if op == "use" and name != v["active"] and _raw_config().get("buildAccount") and row and row["kind"] == "subscription":
-        # one account: switching the console moves the build account with it, so the two never part
-        _save_config({**_raw_config(), "buildAccount": name}, by, True)
     if op == "use" and name == v["active"]:
         return {"ok": True, "state": "done", "name": name, "message": f"{name} is already the active account.", "note": NOTE}
     if op == "use" and v["loginChanged"]:
@@ -425,35 +420,26 @@ async def role(request: Request) -> dict[str, Any]:
 
 
 def build_account_view() -> dict[str, Any]:
-    """The one build account and what can be picked: saved subscription logins (an API key bills per token)."""
+    """The one-account pin is gone (Nov 25 2026): builds follow Job routing only and move to the next account when one
+    hits its limit. Always `buildAccount: ""`; `removed` says so. The subscription logins are still listed."""
     v = view()
-    pick = str(config().get("buildAccount") or "")
     opts = [{"name": a["name"], "label": a.get("label") or "", "email": a.get("email") or "", "plan": a.get("plan") or "", "active": a["active"],
              "limited": a.get("limited")} for a in v["accounts"] if a["kind"] == "subscription"]
-    return {"ok": True, "ready": v["ready"], "buildAccount": pick, "active": v["active"], "consoleMatches": not pick or pick == v["active"],
-            "known": not pick or any(o["name"] == pick for o in opts) or not v["ready"], "pending": v["pending"], "options": opts}
+    return {"ok": True, "ready": v["ready"], "buildAccount": "", "removed": True, "active": v["active"], "consoleMatches": True, "known": True,
+            "pending": v["pending"], "options": opts, "message": ONE_ACCOUNT_GONE}
+
+
+ONE_ACCOUNT_GONE = "One build account was removed: builds follow Job routing, and move to the next account when one hits its limit."
 
 
 def set_build_account(name: str, by: str) -> dict[str, Any]:
-    """Pick the one account ('' = off). Saved now; the console's switch to it is the usual held call."""
-    v = view()
+    """'' / off: drops a pin an older version stored. A name is refused (410): there is no one build account any more."""
     if name:
-        row = next((a for a in v["accounts"] if a["name"] == name), None)
-        if v["ready"] and not row:
-            raise HTTPException(404, f"No saved account called {name}.")
-        if row and row["kind"] == "api":
-            raise HTTPException(409, f"{name} is an API key (billed per token): the one account is a subscription login.")
-    _save_config({**_raw_config(), "buildAccount": name}, by, True)
-    if not name:
-        return {"ok": True, "state": "done", "buildAccount": "", "message": "One account is off: builds go to every worker again, from the next one on."}
-    msg = f"{name} runs every build from the next one on; every other account is off for builds."
-    if name == v["active"]:
-        return {"ok": True, "state": "done", "buildAccount": name, "message": f"{msg} The console is on it already."}
-    try:
-        r = ask("use", name, by)
-    except HTTPException as e:
-        return {"ok": True, "state": "console-not-switched", "buildAccount": name, "message": f"{msg} The console is still on {v['active']}: {e.detail}"}
-    return {"ok": True, "state": r.get("state", "waiting"), "buildAccount": name, "message": f"{msg} Console: {r.get('message', '')}"}
+        raise HTTPException(410, f"{ONE_ACCOUNT_GONE} {name} was not pinned; set who takes which job under Job routing.")
+    raw = _raw_config()
+    if "buildAccount" in raw:
+        _save_config({k: v for k, v in raw.items() if k != "buildAccount"}, by, True)
+    return {"ok": True, "state": "done", "buildAccount": "", "removed": True, "message": ONE_ACCOUNT_GONE}
 
 
 @router.get("/build-account")

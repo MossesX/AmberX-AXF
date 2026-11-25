@@ -435,14 +435,17 @@ export function advanceQueue({ by = 'dispatcher', promote = true } = {}) {
   const q = BP.queuedBuilds(builds, queuePriority);
   out.kept = q.find((b) => !BP.isStopped(b))?.id ?? '';
   const settle = q.length > BP.QUEUE_MAX || q.some((b) => BP.isStopped(b));
-  if (!settle && !(promote && !q.length && BP.promotable(builds, queuePriority).length)) return out;
+  // a build held in Pending for a Claude login failure goes back by itself once the login works (authWaitsTick): it
+  // does not move up before that
+  const waits = loadAuthWaits(); const authHeld = (b) => b.status === 'pending' && !!waits[b.id] && !waits[b.id].requeued;
+  if (!settle && !(promote && !q.length && BP.promotable(builds.filter((b) => !authHeld(b)), queuePriority).length)) return out;
   withStore((s) => {
     const now = nowIso();
     const mine = runnable(s);
     const st = BP.settleQueue(mine, { at: now, by, priorityOf: queuePriority });
-    const pr = promote ? BP.promote(st.builds, { at: now, by, priorityOf: queuePriority }) : { builds: st.builds, promoted: '' };
+    const pr = promote ? BP.promote(st.builds.filter((b) => !authHeld(b)), { at: now, by, priorityOf: queuePriority }) : { builds: [], promoted: '' };
     out.kept = st.kept; out.demoted = st.demoted; out.promoted = pr.promoted;
-    const next = new Map(pr.builds.map((b) => [b.id, b]));
+    const next = new Map([...st.builds, ...pr.builds].map((b) => [b.id, b]));
     const was = new Map(mine.map((b) => [b.id, b]));
     s.builds = s.builds.map((b) => {
       const n = next.get(b.id); if (!n || n === was.get(b.id)) return b;
@@ -1799,11 +1802,15 @@ export function authWaitsTick({ alert = () => {}, by = 'dispatcher' } = {}) {
     if (w.requeued) { if (Date.now() - Date.parse(w.requeuedAt || 0) > 7 * 86400e3) { delete all[id]; changed = true; } continue; }
     if (!P.authRecovered(w, own[w.account]?.health)) continue;
     try {
-      queue(id, { by: `${by} (login works again on ${w.account})` });
+      // one Queued: while another build holds the Queue this one is back in line in Pending (no longer held for its
+      // login) and moves up by itself; it is queued at once when the Queue is free
+      let inLine = false;
+      try { queue(id, { by: `${by} (login works again on ${w.account})` }); }
+      catch (e) { if (!e.holder) throw e; inLine = true; setPipeline(id, { note: `login works again on ${w.account}: in line in Pending behind ${e.holder}` }, { note: `${w.account} signs in again: back in line in Pending (${e.holder} holds the Queue); it moves up by itself.`, by, action: 'pipeline:auth-ok' }); }
       all[id] = { ...w, requeued: true, requeuedAt: nowIso() }; changed = true;
       alert('oauth-ok', { id, title: b.title, account: w.account });
-      logLine({ event: 'auth-requeued', build: id, account: w.account });
-      crewSay('dispatcher', 'start', `${w.account} signs in again: ${id} is back in the Queue.`, { ref: id });
+      logLine({ event: 'auth-requeued', build: id, account: w.account, inLine });
+      crewSay('dispatcher', 'start', `${w.account} signs in again: ${id} is back in ${inLine ? 'line in Pending' : 'the Queue'}.`, { ref: id });
       done.push(id);
     } catch (e) { logLine({ event: 'auth-requeue-failed', build: id, error: str(e.message, 300) }); }
   }
