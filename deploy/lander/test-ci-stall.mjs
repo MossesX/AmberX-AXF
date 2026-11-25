@@ -9,10 +9,10 @@
 // #917 stopped the build for Brett with no re-run and no fix session.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { sh, repo, github, check, build, clock, base } from './test/helpers.mjs';
+import { repo, github, check, build, clock, base } from './test/helpers.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const L = await import('./lander-core.mjs');
@@ -134,7 +134,7 @@ for (const n of [916, 917]) {
     assert.match(f.lander.recorded, /Stopped \(attempt \d of 5\): needs Brett/);
   });
 
-  test(`#${n}: after the PR before it merged, its first red CI climbs the ladder instead of stopping the build`, { todo: 'known failing until the fix: the attempt count is not started again when a PR of the build merges' }, async () => {
+  test(`#${n}: after the PR before it merged, its first red CI climbs the ladder instead of stopping the build`, async () => {
     const f = fixture(n);
     // the build as the PR before this one left it, then that PR's merge recorded the way run.mjs records it
     const before = { id: 'b', landing: { attempt: f.lander.attemptBefore, merged: [n - 2], fixes: { pr: n - 1, n: 1 } } };
@@ -143,8 +143,11 @@ for (const n of [916, 917]) {
     const fr = ladder(f, d, landing, { fixes: 0 });
     assert.equal(fr.attempt, 1, 'a new PR: its own count');
     assert.notEqual(fr.failure.retry, 'hold');
-    assert.equal(fr.failure.retry, 'fix', 'the same checks are red on main under it: a re-run cannot turn them green, a fix session can');
-    assert.match(fr.failure.why, /also red on main/);
+    assert.equal(fr.failure.retry, 'rerun', 'the ladder from its first rung: one re-run at once, then a fix session');
+    assert.equal(fr.failure.notBefore, f.lander.verdictAt, 'no backoff before the first re-run');
+    assert.match(fr.failure.why, new RegExp(`also red on main \\(${f.base.sha}\\)`), 'and the failure says the red came in with main, for the fix brief');
+    const second = L.failure({ id: 'b', status: 'running-ci', landing: { ...landing, attempt: 1 } }, d.fail.kind, { at: f.lander.verdictAt, reruns: 1, fixes: 0, head: f.pr.head.sha, pr: n, ...d.fail.ctx }, cfg);
+    assert.equal(second.failure.retry, 'fix', 'still red after the re-run: a fix session on the PR');
   });
 }
 
@@ -169,7 +172,7 @@ test('a check that is not GitHub Actions (a review bot) and a skipped job never 
   assert.equal(d.state, 'failure', 'nothing is loosened: every Actions job on the head has to be green');
 });
 
-test('red checks are named apart: required ones first, the others marked as not required', { todo: 'known failing until the fix' }, async () => {
+test('red checks are named apart: required ones first, the others marked as not required', async () => {
   const f = fixture(916);
   const other = [...f.heads[f.pr.head.sha].check_runs, { id: 5, name: 'build-publish', app: { slug: 'github-actions' }, status: 'completed', conclusion: 'failure', started_at: '2026-11-24T21:30:00Z', details_url: 'https://github.com/o/r/actions/runs/9/job/5' }];
   const { d } = await decide(f, { runs: other });
@@ -181,7 +184,7 @@ test('red checks are named apart: required ones first, the others marked as not 
 
 const light = (at) => [{ id: 1, name: 'CI scope (what changed)', app: { slug: 'github-actions' }, status: 'completed', conclusion: 'success', started_at: at }, { id: 2, name: LIGHT, app: { slug: 'github-actions' }, status: 'completed', conclusion: 'success', started_at: at }];
 
-test('a light-only head under the real job names is seen as light-only: the full run is dispatched at once, once per head while its run can still show up', { todo: 'known failing until the fix: the scope job reports as "CI scope (what changed)", which the light-only match did not know' }, () => {
+test('a light-only head under the real job names is seen as light-only: the full run is dispatched at once, once per head while its run can still show up', () => {
   const t0 = '2026-11-24T21:00:00Z'; const head = 'a'.repeat(40);
   const first = C.ciDecision({ runs: light(t0), head, landing: {}, statusAt: t0, at: t0, cfg });
   assert.equal(first.state, 'light-only'); assert.equal(first.kick.marker, 'fullKick');
@@ -189,7 +192,7 @@ test('a light-only head under the real job names is seen as light-only: the full
   assert.equal(next.kick, null, 'five minutes on: the run may still be on its way');
 });
 
-test('a dispatch that produced no run on the head is sent again after a wait, a bounded number of times', { todo: 'known failing until the fix: the once-per-head marker blocks a second dispatch' }, () => {
+test('a dispatch that produced no run on the head is sent again after a wait, a bounded number of times', () => {
   const t0 = '2026-11-24T21:00:00Z'; const head = 'a'.repeat(40); let landing = {}; let sends = 0; let last = null;
   for (let m = 0; m <= 600; m++) {
     last = C.ciDecision({ runs: light(t0), head, landing, statusAt: t0, at: min(t0, m), cfg });
@@ -205,14 +208,14 @@ test('a dispatch that produced no run on the head is sent again after a wait, a 
   assert.equal(seen.state, 'running'); assert.equal(seen.kick, null);
 });
 
-test('a head no CI ever starts on is a failure after the timeout, never an endless wait', { todo: 'known failing until the fix: "CI has not started" had no timeout' }, () => {
+test('a head no CI ever starts on is a failure after the timeout, never an endless wait', () => {
   const t0 = '2026-11-24T21:00:00Z'; const head = 'b'.repeat(40);
   const d = C.ciDecision({ runs: [], head, landing: { ciKick: { head, at: min(t0, 10) } }, statusAt: t0, at: min(t0, cfg.ciTimeoutMin + 1), cfg });
   assert.equal(d.state, 'none'); assert.equal(d.fail?.kind, 'ci-timeout');
   assert.equal(L.failure({ id: 'b', status: 'running-ci', landing: {} }, d.fail.kind, { ...d.fail.ctx, at: t0 }, cfg).failure.retry, 'rerun', 'the existing retry: CI is started again, as attempt N');
 });
 
-test('a dispatch GitHub refuses is recorded with its error and tried again after the wait, not every minute', { todo: 'known failing until the fix: a refused dispatch was only logged' }, async () => {
+test('a dispatch GitHub refuses is recorded with its error and tried again after the wait, not every minute', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
   const gh0 = github(r, () => 'light'); let refused = 0;
   const gh = async (method, path, body) => { if (method === 'POST' && path.endsWith('/dispatches')) { refused++; const e = new Error('GitHub 422: Workflow does not have \'workflow_dispatch\' trigger'); e.status = 422; throw e; } return gh0(method, path, body); };
@@ -230,7 +233,7 @@ test('a dispatch GitHub refuses is recorded with its error and tried again after
 
 // ------------------------------------------------------------------ required names
 
-test('a required name no job of the workflow can report is a named failure at once, not a wait', { todo: 'known failing until the fix: it waited out the whole CI timeout' }, async () => {
+test('a required name no job of the workflow can report is a named failure at once, not a wait', async () => {
   const f = fixture(916); const runs = fixed(f.heads[f.pr.head.sha].check_runs);
   const odd = { ...cfg, requiredChecks: [...cfg.requiredChecks, 'Web console (renamed job)'] };
   const d = C.ciDecision({ runs, reportable: C.checkNames(workflow), head: f.pr.head.sha, landing: {}, statusAt: f.lander.runningCiAt, at: min(f.lander.runningCiAt, 1), cfg: odd });
@@ -240,7 +243,7 @@ test('a required name no job of the workflow can report is a named failure at on
   assert.deepEqual(d.fail.ctx.failing, ['Web console (renamed job)']);
 });
 
-test('a required name reported as a commit status counts like a check run; a skipped required job has reported; a neutral one is red', { todo: 'known failing until the fix: commit statuses were not read' }, async () => {
+test('a required name reported as a commit status counts like a check run; a skipped required job has reported; a neutral one is red', async () => {
   const f = fixture(916); const all = fixed(f.heads[f.pr.head.sha].check_runs);
   const name = 'Build engine sweep (Node)'; const without = all.filter((r) => r.name !== name);
   const call = (statuses, runs = without) => C.ciDecision({ runs, statuses, head: f.pr.head.sha, landing: {}, statusAt: f.lander.runningCiAt, at: f.lander.verdictAt, cfg });
@@ -257,7 +260,7 @@ test('a required name reported as a commit status counts like a check run; a ski
 
 // ------------------------------------------------------------------ the timeout clock
 
-test('the CI timeout counts from the run on the current head, not from an older status change', { todo: 'known failing until the fix: the clock started at the status change only' }, async () => {
+test('the CI timeout counts from the run on the current head, not from an older status change', async () => {
   const f = fixture(916); const head = f.pr.head.sha;
   const running = f.heads[head].check_runs.map((r) => (r.conclusion === 'failure' ? { ...r, status: 'in_progress', conclusion: null, completed_at: null } : r));
   const start = running.filter((r) => r.app.slug === 'github-actions').map((r) => r.started_at).sort()[0];
@@ -273,10 +276,9 @@ test('the CI timeout counts from the run on the current head, not from an older 
 
 // ------------------------------------------------------------------ end to end: the count is per PR
 
-test('end to end: a build split into one PR per step gives every PR its own attempts (the stall of #916 and #917)', { todo: 'known failing until the fix' }, async () => {
+test('end to end: a build split into one PR per step gives every PR its own attempts (the stall of #916 and #917)', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' }, 'claude/b-s2': { 'b.txt': 'b\n' } });
-  const red = new Set(); let redAll = true;
-  const gh = github(r, (sha) => (redAll || red.has(sha) ? [check('Build engine sweep (Node)', 'failure', { id: 7, details_url: 'https://github.com/o/r/actions/runs/42/job/7' })] : [check('Build engine sweep (Node)')]));
+  const gh = github(r, () => [check('Build engine sweep (Node)', 'failure', { id: 7, details_url: 'https://github.com/o/r/actions/runs/42/job/7' })]);
   const now = clock();
   // the landing run so far: split, four failures behind it (as the build was when #915 went red)
   const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2']], { landing: { split: true, attempt: 3 }, status: 'merging-pr' })], { now });
@@ -284,17 +286,11 @@ test('end to end: a build split into one PR per step gives every PR its own atte
   await tick(opts);
   let b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.landing.attempt, 4); assert.equal(b.failure.pr, 1);
-  // PR 1 is merged by hand, red (as #915 was)
-  gh.mergeByHand(1); redAll = false; red.add(sh(r.work, 'rev-parse', 'origin/main'));
-  writeFileSync(join(r.work, '.keep'), ''); // nothing staged: the tree stays clean
-  await tick(opts);
+  // PR 1 is merged by hand, red (as #915 was): main is red now, and PR 2 is red on its first CI run
+  gh.mergeByHand(1);
+  for (let i = 0; i < 4 && !(store.list[0].status === 'failed' && store.list[0].failure.pr === 2); i++) { now.add(1); await tick(opts); }
   b = store.list[0];
   assert.deepEqual(b.landing.merged, [1]);
-  assert.ok(!b.landing.attempt, 'the merge starts the count again for the next PR');
-  // PR 2 opens and is red on its first CI run
-  redAll = true;
-  for (let i = 0; i < 4 && store.list[0].status !== 'failed'; i++) { now.add(1); await tick(opts); }
-  b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failure.pr, 2);
   assert.equal(b.landing.attempt, 1);
   assert.notEqual(b.failure.retry, 'hold', 'not stopped for Brett on the first red CI');

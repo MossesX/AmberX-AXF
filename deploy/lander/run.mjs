@@ -12,7 +12,7 @@
  *   First thing in every tick, for every build with a PR in flight: what GitHub says about that PR. Merged by hand =
  *   the merge is recorded and the build goes on (to the next PR, or landed once CI is green on the merge). Closed
  *   without merging = the build stops once, until the PR is reopened or the build is re-sent.
- *   A failure is `failed` with the landing run's own attempt N; the next tick retries forward by itself (flaky re-run,
+ *   A failure is `failed` with the landing run's own attempt N (counted per PR: it starts again when a PR merges); the next tick retries forward by itself (flaky re-run,
  *   fix session, split, pull main again). The ladder has a top: after maxFixes fix sessions on a PR or maxAttempts
  *   failures the build stops and waits for Brett (the systems check shows it, with the exact failing check).
  *   CI is green only when every check run on the head (all pages) ended `success` and every required check reported.
@@ -60,7 +60,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from './lander-core.mjs';
 import * as G from './git.mjs';
-import { ciDecision, prMerged, NEW_HEAD } from './ci-state.mjs';
+import { ciDecision, checkNames, rekickMinutes, prMerged, NEW_HEAD } from './ci-state.mjs';
 import { makeStore, memoryStore } from './store.mjs';
 import { FIX_MODEL, defaultFixSession, fixWorktree } from './fix-session.mjs';
 import { crewSay } from '../../framework/cli/crew-say.mjs';
@@ -570,11 +570,32 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         if (!head) return fail('infra', { why: `${branch} is not on GitHub` });
         let runs = [];
         try { runs = await checksOf(head); } catch (e) { out.waiting = `CI can't be read (${e.message})`; return 'stop'; }
-        // the decision itself is pure (ci-state.mjs): what the check runs say, whether a run has to be started, whether
-        // the wait is over. Here it is only carried out
-        const d = ciDecision({ runs, head, landing: b.landing, statusAt: b.statusAt, at, cfg });
+        // the decision itself is pure (ci-state.mjs: the rules are written there): what the checks on this head say,
+        // whether a run has to be started, whether the wait is over. Here GitHub is read and the answer carried out.
+        // GitHub's mergeable_state is not part of it: `unstable` never blocks a head whose checks are green
+        const reportable = checkNames(git(['show', `${s.remote}/${branch}:.github/workflows/${cfg.workflow}`]).out);
+        let statuses = []; let baseRuns = null; let baseSha = '';
+        const decide = () => ciDecision({ runs, statuses, reportable, baseRuns, baseSha, head, landing: b.landing, statusAt: b.statusAt, at, cfg });
+        let d = decide();
+        // a required name with no check run may be reported as a commit status: read only then
+        if (d.state === 'missing' && d.ci?.missing?.length) {
+          try { const r = await gh('GET', `/repos/${s.slug}/commits/${head}/status?per_page=100`); statuses = Array.isArray(r?.statuses) ? r.statuses : []; } catch (e) { log(`commit statuses on ${head.slice(0, 9)}: ${e.message}`); }
+          if (statuses.length) d = decide();
+        }
+        // red: is the same check red on main too? Then the cause is on main and the failure says so (the fix brief reads it)
+        if (d.state === 'failure') {
+          baseSha = git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${s.base}`]).out;
+          if (baseSha && baseSha !== head) { try { baseRuns = await checksOf(baseSha); d = decide(); } catch (e) { log(`CI on main (${baseSha.slice(0, 9)}): ${e.message}`); } }
+        }
+        // a dispatch counts as done for this head once a run for it shows up (the decision reads that from the check
+        // runs). Until then the marker only says when it was last sent: one that produced no run, or that GitHub
+        // refused, is sent again after rekickMinutes(), and the CI timeout bounds how often
         if (d.kick && !dry) {
-          try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); write({ landing: { [d.kick.marker]: { head, at } } }); act(d.kick.said); } catch (e) { log(`dispatch: ${e.message}`); }
+          let refused = '';
+          try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); } catch (e) { refused = str(e.message, 300) || 'no reason given'; }
+          write({ landing: { [d.kick.marker]: { head, at } } });
+          if (refused) { out.dispatchError = refused; act(`${d.kick.why} on ${head.slice(0, 9)}: GitHub refused to start the CI run (${refused}); the next try is in ${rekickMinutes(cfg)} min`); }
+          else act(d.kick.said);
         }
         if (d.state === 'failure') {
           const ci = d.ci;
