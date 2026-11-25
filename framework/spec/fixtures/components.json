@@ -1021,6 +1021,17 @@
         "data-fx-dialog-header": "accent-bar"
       }
     },
+    "axf-hidden-assets": {
+      "vars": {
+        "--fx-dialog-w": "420px"
+      },
+      "attrs": {
+        "data-fx-dialog": "drawer",
+        "data-fx-backdrop": "none",
+        "data-fx-dialog-anim": "slide",
+        "data-fx-dialog-header": "plain"
+      }
+    },
     "boardroom": {
       "vars": {
         "--fx-dialog-w": "640px"
