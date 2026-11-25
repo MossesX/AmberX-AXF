@@ -69,7 +69,8 @@ class HubAppearanceSourceTest {
         src.subscribe { synchronized(events) { events += it } }
         src.start()
         await { src.state() == AppearanceSourceState.Ready(null) }
-        assertTrue(synchronized(events) { events.any { it is AppearanceEvent.Document && it.doc == null } })
+        // the state turns Ready before its event reaches the listener: wait for the event instead of reading it at once
+        await { synchronized(events) { events.any { it is AppearanceEvent.Document && it.doc == null } } }
         src.save(AppearanceChange(slots = mapOf("color-theme" to "neon-tide")))
         await { puts.size == 1 && src.state() is AppearanceSourceState.Ready && (src.state() as AppearanceSourceState.Ready).version != null }
         assertEquals("new", puts[0].getHeader("If-Match"))
