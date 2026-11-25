@@ -343,7 +343,7 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, alias: b.alias ?? '', title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', demo: b.demo === true, requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })),
+    tab: BP.tabOf(b), held: BP.isHeld(b) || BP.stopOf(b)?.kind === 'hold', stop: BP.stopOf(b), stopLabel: BP.stopOf(b) ? BP.STOP_LABEL[BP.stopOf(b).kind] : '', actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', demo: b.demo === true, requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })),
     ...attemptsView(b) };
 };
 /** done-means-merged@1 on a row: every attempt, the open failure, the merge + verify evidence, the escalation, what the ladder tries next. */
@@ -396,6 +396,9 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     // One Queued (build-pipeline@1): a build entering the Queue while another holds it rests in Pending instead and
     // moves up by itself (advanceQueue); a build Brett stopped is never queued by an automatic writer. Brett's own
     // second queue is refused with the holder named (queue() asks first; this is the same rule under the lock).
+    // a stopped build whose session ends rests in Pending whatever the exit says (stoppedExit); the store's own guard
+    // keeps the stop itself for every automatic writer
+    if (status && b.flow !== P2.FLOW && BP.isStopped(b) && !BP.speaksForBrett(by) && status !== 'queued') status = BP.stoppedExit(b, status);
     if (status === 'queued' && b.status !== 'queued' && b.flow !== P2.FLOW) {
       const holder = BP.queuedBuilds(legacyLive(s), queuePriority).find((x) => x.id !== b.id);
       const stopped = BP.isStopped(b) && !BP.speaksForBrett(by);
@@ -504,12 +507,47 @@ export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli
   return { apply, found, moved };
 }
 
+/**
+ * Who a stop or its release is from, at a surface. hold / cancel / unqueue / release are Brett's calls (build-pipeline@1
+ * speaksForBrett), and they arrive on his surfaces: the console and its REST API, MCP, this CLI, voice. The CLI (which
+ * the console's routes, the MCP commands and voice all run) names its caller through this: a name the contract does
+ * not list (his hub name, a tool's) is kept behind the surface it came through (`cli:<name>`). Code that calls
+ * stopNow / buildAction directly passes its own `by`, and one that does not speak for Brett is refused.
+ */
+export const stopActor = (by) => (BP.speaksForBrett(by) ? str(by, 80) : `cli:${str(by, 70) || 'unknown'}`);
+/**
+ * One of Brett's stops on a build (build-pipeline@1 stopBuild): hold (park it; a live session finishes its step, then
+ * the build rests in Pending), cancel (its session is to end and its slot be freed: `kill`), unqueue (back to Pending).
+ * The build rests in Pending with `pipeline.stop` and no automatic writer brings it back; release or queue lifts it.
+ * → { build, kill, already }
+ */
+export function stopNow(id, kind, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  const who = str(by, 80);
+  let res = null;
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    if (b.flow === P2.FLOW) throw Object.assign(new Error(`${b.id} is a Pipeline 2.0 build: use its own ${kind === 'unqueue' ? 'hold' : kind} (pipeline2.mjs act ${b.id} ${kind === 'unqueue' ? 'hold' : kind})`), { code: 2 });
+    const now = nowIso();
+    const r = BP.stopBuild(b, kind, { at: now, by: who, why });
+    if (!r.ok) throw Object.assign(new Error(r.why), { code: 2 });
+    res = { kill: r.kill, already: r.already === true, session: b.pipeline?.session ?? '', slot: b.pipeline?.slot ?? '', account: b.pipeline?.account ?? '' };
+    if (res.already) { res.build = b; return s; }
+    const next = r.build; const pl = BP.normPipeline(next.pipeline);
+    const text = kind === 'hold' ? `On hold (${who})${why ? `: ${str(why, 300)}` : ''}. ${BP.isLive(b) ? 'Its session finishes the step it is on, then the build rests in Pending' : 'It rests in Pending'}; nothing starts it until Brett releases it.`
+      : kind === 'cancel' ? `Cancelled (${who})${why ? `: ${str(why, 300)}` : ''}. ${r.kill ? 'Its session is stopped and its slot freed. ' : ''}It rests in Pending; nothing starts it until Brett releases or queues it.`
+        : `Back to Pending (${who})${why ? `: ${str(why, 300)}` : ''}. Nothing queues it again until Brett does.`;
+    Object.assign(b, next, { notes: [...(b.notes ?? []), { text, at: now }], updatedAt: now, builtAt: '' });
+    if (pl) b.pipeline = pl; else delete b.pipeline;
+    res.build = b;
+    return s;
+  }, { by: who, action: `pipeline:${kind}`, note: id });
+  if (!res.already) logLine({ event: kind === 'unqueue' ? 'unqueued' : kind, build: res.build.id, by: who, kill: res.kill });
+  return res;
+}
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
-  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', heldAt: '', heldBy: '', heldWhy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
-  logLine({ event: 'unqueued', build: b.id, by });
-  return r;
+  return stopNow(b.id, 'unqueue', { by }).build;
 }
 
 /**
@@ -532,6 +570,16 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
   for (const id of list) {
     try {
       if (action === 'unqueue') { const b = unqueue(id, { by }); done.push({ id: b.id, status: b.status, tab: BP.tabOf(b) }); continue; }
+      // hold and cancel are Brett's stops (build-pipeline@1): the build rests in Pending and no automatic writer brings it back
+      if (action === 'hold' || action === 'cancel') {
+        const have = storeCore.findBuild(loadStore(), id);
+        if (have && have.flow !== P2.FLOW) {
+          const r = stopNow(id, action, { by, why: reason });
+          if (r.already) throw new Error(`${r.build.id} is ${action === 'hold' ? 'on hold' : 'cancelled'} already`);
+          done.push({ id: r.build.id, status: r.build.status, tab: BP.tabOf(r.build), stop: action, kill: r.kill, session: r.session, slot: r.slot }); continue;
+        }
+        if (action === 'cancel') throw new Error(have ? `${have.id} is a Pipeline 2.0 build: cancel it with pipeline2.mjs act ${have.id} cancel` : `no build "${id}"`);
+      }
       let out = null;
       withStore((s) => {
         const b = storeCore.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
@@ -540,13 +588,18 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
         const unq = { queuedAt: '', queuedBy: '', heldAt: '', heldBy: '', heldWhy: '' };
         let note = '';
         if (action === 'hold') {
-          if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be put on hold`);
-          pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason }); note = `On hold (${by})${tail}. It keeps its place in the Queue; the dispatcher skips it until released.`;
+          // a builds@1 build never comes here (stopNow above); a Pipeline 2.0 build's hold is its own flow's
+          throw new Error(`${b.id} is a Pipeline 2.0 build: hold it with pipeline2.mjs act ${b.id} hold`);
         } else if (action === 'release') {
-          if (!BP.isHeld(b) && !BP.isStopped(b)) throw new Error(`${b.id} is not on hold`);
-          if (!BP.speaksForBrett(by)) throw new Error(`only Brett releases a build: "${by}" does not speak for him`);
+          if (!BP.isStopped(b) && !b.pipeline?.heldAt) throw new Error(`${b.id} is not on hold`);
           const was = BP.stopOf(b);
-          pipe({ stop: null, heldAt: '', heldBy: '', heldWhy: '' }); note = b.status === 'queued' ? `Released from hold (${by}): the dispatcher may start it.` : `Released (${by}; it was ${BP.STOP_LABEL[was?.kind ?? 'hold'].toLowerCase()}): it waits in Pending and moves up by itself.`;
+          if (was) {
+            const rel = BP.releaseStop(b, { by });
+            if (!rel.ok) throw new Error(rel.why);
+            const pl = BP.normPipeline(rel.build.pipeline);
+            b.status = rel.build.status; if (pl) b.pipeline = pl; else delete b.pipeline;
+            note = b.status === 'landing' ? `Released (${by}): every step was done while it was on hold, so it goes on to land.` : `Released (${by}; it was ${BP.STOP_LABEL[was.kind].toLowerCase()}): it waits in Pending and moves up by itself.`;
+          } else { pipe({ heldAt: '', heldBy: '', heldWhy: '' }); note = `Released from hold (${by}).`; }
         } else if (action === 'archive') {
           if (!BP.canArchive(b)) throw new Error(b.deleted ? `${b.id} is deleted: restore it first` : BP.isLive(b) ? `${b.id} is ${b.status}: a build with a live session is not archived under it` : `${b.id} is archived already`);
           const was = b.status; if (was === 'queued') pipe(unq); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
@@ -963,6 +1016,8 @@ export function stepBriefFor(b, stepId, rules, { account = '', model = '' } = {}
 
 /** Start one headless session for a queued build on an account. */
 export function launch(b, { account, model, kind = '', phase = '', retry = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  // Brett's stop (build-pipeline@1): no tick, retry or relaunch starts a held, cancelled or unqueued build
+  if (BP.isStopped(b)) throw Object.assign(new Error(`${b.id} is ${BP.STOP_LABEL[BP.stopOf(b).kind].toLowerCase()}: only Brett starts it again (release or queue it)`), { code: 'stopped' });
   // vps-reaper@1: ghosts (finished sessions still running, dead slots, leftover servers) go before anything starts
   reapFirstSync('launch', { env });
   const { dir } = ensureWorktree(b.id, env);
@@ -2268,13 +2323,14 @@ async function main(argv) {
     const w = loadAuthWaits();
     return out({ ok: true, authWaits: w }, Object.entries(w).map(([id, x]) => `${id} · ${x.account} · ${x.requeued ? `re-queued ${x.requeuedAt}` : `held since ${x.at}`} · ${x.error}`).join('\n') || 'no build is held on a login failure');
   }
-  if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline, ...(b.say ? { say: b.say } : {}) }, b.say || `${b.id} → Queue (by ${by})`); }
+  // the CLI is one of Brett's surfaces: his queue lifts a stop
+  if (cmd === 'queue') { const b = queue(rest[0], { by: stopActor(by) }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline, ...(b.say ? { say: b.say } : {}) }, b.say || `${b.id} → Queue (by ${by})`); }
   if (BP.BUILD_ACTIONS.includes(cmd)) {
     const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
-    const r = buildAction(cmd, ids, { by, why: flag('why') });
+    const r = buildAction(cmd, ids, { by: ['unqueue', 'hold', 'cancel', 'release'].includes(cmd) ? stopActor(by) : by, why: flag('why') });
     if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
-    return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+    return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : cmd === 'cancel' ? ' (cancelled)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
   }
   if (cmd === 'fill' && (rest[0] ?? 'status') === 'status') { const f = fillStatus({ build: rest[1] ?? '' }); return out(f, fillLines(f)); }
   if (cmd === 'fill' && rest[0] === 'run') { const r = fillRun({ by }); return out(r, r.ran ? `ran a round: ${r.launched.length} build(s), ${r.fill.launched.length} parallel step(s) started${r.fill.autoQueued.length ? `, auto-queued ${r.fill.autoQueued.join(', ')}` : ''}` : r.note); }

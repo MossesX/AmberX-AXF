@@ -47,42 +47,66 @@ t('the queued build goes live: the oldest Pending build moves up, one only', () 
   assert.equal(line(), 'a:queued b:running c:pending d:pending');
 });
 t('a Pipeline 2.0 build is never part of the Queue', () => { assert.equal(get('p2').status, 'pending'); assert.ok(!queued().includes('p2')); });
-t('unqueue by Brett: back in Pending; the dispatcher moves the next one up, not that one', () => {
-  PL.buildAction('unqueue', ['a'], { by: 'console' });
-  assert.equal(get('a').status, 'pending');
+t('unqueue by Brett: back in Pending with his stop; the line moves on with the next build, not that one', () => {
+  const r = PL.buildAction('unqueue', ['a'], { by: 'console' });
+  assert.equal(r.done.length, 1); assert.equal(get('a').status, 'pending'); assert.deepEqual([BP.stopOf(get('a')).kind, BP.stopOf(get('a')).by, BP.stopOf(get('a')).from], ['unqueue', 'console', 'queued']);
+  assert.equal(PL.advanceQueue().promoted, 'c', 'a (older) is skipped');
+  assert.equal(line(), 'a:pending:unqueue b:running c:queued d:pending');
 });
-t('a Queue from before the rule (three queued, one held) is settled: the first keeps the place, the held one keeps its hold', () => {
-  S.withStore((s) => { for (const [id, at, held] of [['a', '2026-11-20T00:00:00.000Z', true], ['c', '2026-11-21T00:00:00.000Z', false], ['d', '2026-11-22T00:00:00.000Z', false]]) { const b = core.findBuild(s, id); b.status = 'queued'; b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), queuedAt: at, queuedBy: 'console', ...(held ? { heldAt: at, heldBy: 'console', heldWhy: 'later' } : {}) }); } return s; }, { by: 'test', action: 'old-queue' });
-  assert.deepEqual(queued().sort(), ['a', 'c', 'd']);
-  const m = PL.advanceQueue();
-  assert.equal(m.kept, 'c'); assert.deepEqual([...m.demoted].sort(), ['a', 'd']); assert.deepEqual(queued(), ['c']);
-  assert.equal(line(), 'a:pending:hold b:running c:queued d:pending');
-  assert.match(get('d').notes.at(-1).text, /Back in Pending \(dispatcher\): one build waits in the Queue at a time \(c holds it\)/);
-});
-t('a held build is never promoted or queued by the dispatcher; the line moves on past it', () => {
-  goLive('c');
-  assert.equal(PL.advanceQueue().promoted, 'd', 'a (older, held) is skipped');
-  const r = PL.setPipeline('a', { queuedAt: new Date().toISOString(), queuedBy: 'dispatcher' }, { status: 'queued', note: 'Requeued.', by: 'dispatcher', action: 'pipeline:requeue' });
-  assert.equal(r.status, 'pending'); assert.equal(BP.stopOf(r).kind, 'hold'); assert.match(r.notes.at(-1).text, /On hold: only Brett queues it again/);
+t('the store keeps a stop for every automatic writer: a raw requeue, a reconcile-style write, a launch', () => {
+  const now = new Date().toISOString();
+  const r1 = S.withStore((s) => { const b = core.findBuild(s, 'a'); b.status = 'queued'; b.pipeline = { ...b.pipeline, queuedAt: now, queuedBy: 'dispatcher' }; delete b.pipeline.stop; return s; }, { by: 'dispatcher', action: 'requeue' });
+  assert.equal(get('a').status, 'pending'); assert.equal(BP.stopOf(get('a')).kind, 'unqueue'); assert.deepEqual(r1.stopsKept.map((x) => x.id), ['a']);
+  const r2 = S.withStore((s) => { const b = core.findBuild(s, 'a'); b.status = 'running'; b.steps[0].done = true; b.pr = '#5'; return s; }, { by: 'reconciler', action: 'reconcile' });
+  assert.equal(get('a').status, 'pending'); assert.equal(get('a').steps[0].done, true, 'what the write learned stays'); assert.equal(get('a').pr, '#5'); assert.match(r2.stopsKept[0].why, /reconciler may not move it to running/);
+  const r3 = PL.setPipeline('a', { queuedAt: now, queuedBy: 'dispatcher' }, { status: 'queued', note: 'Requeued.', by: 'dispatcher', action: 'pipeline:requeue' });
+  assert.equal(r3.status, 'pending'); assert.match(r3.notes.at(-1).text, /Back in Pending: only Brett queues it again/);
+  assert.throws(() => PL.launch(get('a'), { account: 'w', model: 'Opus' }, {}), (e) => e.code === 'stopped' && /only Brett starts it again/.test(e.message));
   assert.throws(() => PL.queue('a', { by: 'auto (Launch builds without asking)' }), /only Brett queues it again/);
+  assert.equal(line(), 'a:pending:unqueue b:running c:queued d:pending');
 });
-t('requeue-stuck leaves a parked build in Pending while another holds the Queue', () => {
-  S.withStore((s) => { const b = core.findBuild(s, 'b'); b.status = 'pending'; b.steps[0].done = true; b.pipeline = BP.normPipeline({ ...b.pipeline, session: '', lastRun: { at: new Date().toISOString(), outcome: 'returned', reason: 'phase-done', phase: 'Phase 1', next: 'Opus' } }); return s; }, { by: 'test', action: 'park' });
-  const r = PL.requeueStuck({ apply: true, by: 'reconciler' });
-  assert.deepEqual(r.moved, []); assert.equal(get('b').status, 'pending'); assert.deepEqual(queued(), ['d']);
+t('a Queue from before the rule (a second queued build, held the old way) is settled: the held one keeps its hold in Pending', () => {
+  S.withStore((s) => { const b = core.findBuild(s, 'd'); b.status = 'queued'; b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), queuedAt: '2026-11-20T00:00:00.000Z', queuedBy: 'console', heldAt: '2026-11-20T00:00:00.000Z', heldBy: 'console', heldWhy: 'later' }); return s; }, { by: 'console', action: 'old-queue' });
+  assert.deepEqual(queued().sort(), ['c', 'd']);
+  const m = PL.advanceQueue();
+  assert.equal(m.kept, 'c'); assert.deepEqual(m.demoted, ['d']); assert.deepEqual(queued(), ['c']);
+  assert.equal(line(), 'a:pending:unqueue b:running c:queued d:pending:hold');
+  assert.match(get('d').notes.at(-1).text, /On hold: rests in Pending until Brett releases it/);
 });
-t('release by Brett lifts the stop: the build is in line again and moves up when the Queue is free', () => {
-  assert.equal(PL.buildAction('release', ['a'], { by: 'dispatcher' }).refused.length, 1, 'an automatic writer cannot release');
-  const r = PL.buildAction('release', ['a'], { by: 'console' });
-  assert.equal(r.done.length, 1); assert.equal(BP.isStopped(get('a')), false); assert.equal(get('a').status, 'pending');
+t('hold: a queued build rests in Pending and the line moves on; a live build finishes its step, then rests', () => {
+  const r = PL.buildAction('hold', ['c'], { by: 'console', why: 'waiting on a design' });
+  assert.equal(r.done[0].stop, 'hold'); assert.equal(get('c').status, 'pending'); assert.equal(BP.stopOf(get('c')).why, 'waiting on a design');
+  assert.match(get('c').notes.at(-1).text, /On hold \(console\): waiting on a design\. It rests in Pending; nothing starts it until Brett releases it\./);
+  assert.equal(PL.buildAction('hold', ['c'], { by: 'console' }).refused.length, 1, 'holding a held build is refused');
+  PL.buildAction('hold', ['b'], { by: 'console' });
+  assert.equal(get('b').status, 'running', 'the session keeps running'); assert.equal(BP.stopOf(get('b')).kind, 'hold');
+  for (const exit of ['queued', 'built', 'running']) assert.equal(PL.setPipeline('b', { session: '' }, { status: exit, note: `Session ended (${exit}).`, by: 'pipeline', action: 'pipeline:end' }).status, 'pending', `the exit said ${exit}: a held build rests in Pending`);
+  assert.equal(BP.stopOf(get('b')).kind, 'hold');
+  assert.equal(PL.advanceQueue().promoted, '', 'every Pending build is stopped: nothing moves up');
+});
+t('release is Brett\'s: an automatic caller is refused; his release puts the build back in line', () => {
+  const no = PL.buildAction('release', ['d'], { by: 'dispatcher' });
+  assert.equal(no.refused.length, 1); assert.match(no.refused[0].error, /only Brett releases/);
+  assert.equal(PL.buildAction('hold', ['d'], { by: 'watchdog' }).refused.length, 1, 'nor can one stop a build in his name');
+  const r = PL.buildAction('release', ['d'], { by: 'console' });
+  assert.equal(r.done.length, 1); assert.equal(BP.isStopped(get('d')), false); assert.equal(get('d').status, 'pending'); assert.equal(get('d').pipeline?.heldAt ?? '', '');
+  assert.equal(PL.advanceQueue().promoted, 'd');
+});
+t('cancel: a live build is to be killed, rests in Pending, and no requeue or relaunch brings it back', () => {
   goLive('d');
-  assert.equal(PL.advanceQueue().promoted, 'a');
+  const r = PL.buildAction('cancel', ['d'], { by: 'console', why: 'wrong plan' });
+  assert.deepEqual([r.done[0].stop, r.done[0].kill, r.done[0].session], ['cancel', true, 'axf-d']);
+  assert.equal(get('d').status, 'pending'); assert.equal(BP.stopOf(get('d')).kind, 'cancel'); assert.equal(get('d').pipeline.session ?? '', '');
+  assert.equal(PL.setPipeline('d', {}, { status: 'queued', note: 'Launch crashed: back in the Queue.', by: 'pipeline', action: 'pipeline:launch-retry' }).status, 'pending');
+  assert.equal(PL.buildAction('cancel', ['d'], { by: 'console' }).refused.length, 1, 'cancelling it twice changes nothing');
+  assert.equal(PL.buildAction('cancel', ['c'], { by: 'console' }).refused.length, 1, 'a held build is released first, not cancelled over its hold');
+  assert.deepEqual(PL.requeueStuck({ apply: true, by: 'reconciler' }).moved, []);
 });
-t('Brett queueing a stopped build lifts its stop', () => {
-  S.withStore((s) => { const b = core.findBuild(s, 'a'); b.status = 'pending'; b.pipeline = BP.normPipeline({ ...b.pipeline, queuedAt: '', queuedBy: '', stop: { kind: 'unqueue', at: new Date().toISOString(), by: 'console', why: '', from: 'queued' } }); return s; }, { by: 'console', action: 'stop' });
-  assert.equal(PL.advanceQueue().promoted, '', 'an unqueued build does not move up by itself');
-  const q = PL.queue('a', { by: 'console' });
-  assert.equal(q.status, 'queued'); assert.equal(BP.isStopped(q), false);
+t('Brett queueing a stopped build lifts its stop; the CLI names a caller it does not know behind its surface', () => {
+  assert.equal(PL.stopActor('console'), 'console'); assert.equal(PL.stopActor('Brett Moss'), 'cli:Brett Moss'); assert.ok(BP.speaksForBrett(PL.stopActor('Brett Moss')));
+  const q = PL.queue('a', { by: PL.stopActor('Brett Moss') });
+  assert.equal(q.status, 'queued'); assert.equal(BP.isStopped(q), false); assert.equal(q.pipeline.queuedBy, 'cli:Brett Moss');
+  assert.equal(line(), 'a:queued b:pending:hold c:pending:hold d:pending:cancel');
 });
 t('at every point at most one build was queued', () => { assert.ok(queued().length <= BP.QUEUE_MAX); });
 console.log(`single-queue: ${n} checks passed`);

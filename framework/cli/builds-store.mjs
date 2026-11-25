@@ -83,7 +83,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
-import { keepStops, migrateDoneStore } from '../core/build-pipeline.mjs';
+import { isStopped, keepStops, migrateDoneStore } from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -775,6 +775,15 @@ function guardAndSave(start, r, meta, { foreign = [], row = false } = {}) {
   const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli', strict: meta.strict !== false });
   // S5-01: whatever fn, the guards or a merge rebuilt, a stored field this checkout does not know stays on its record
   const next = stripView(keepStore(start, flowed.store));
+  // build-pipeline@1 single Queued: Brett's hold / cancel / unqueue sticks for every writer. A write by anyone who does
+  // not speak for him (dispatcher, tick, watchdog, reconciler, lander, a session) keeps the stop and the status the
+  // build rests in; the rest of that write (ticked steps, notes, a PR) stays. Logged and returned as `stopsKept`.
+  let stopsKept = [];
+  if (start.builds.some((b) => isStopped(b))) {
+    const k = keepStops(start.builds, next.builds, { by: meta.by || 'cli', settle: false, soft: true });
+    stopsKept = k.kept; next.builds = k.builds;
+    if (stopsKept.length) { process.stderr.write(stopsKept.map((x) => `builds-store: stop kept on ${x.id}: ${x.why}\n`).join('')); meta = { ...meta, note: clip([meta.note, ...stopsKept.map((x) => `stop kept: ${x.why}`)].filter(Boolean).join(' · '), 2000) }; }
+  }
   // numbers come from the store's high-water mark and every other build's number: a whole-store write gives them
   if (!row) giveNumbers(start, next);
   if (flowed.refused.length) {
@@ -787,7 +796,7 @@ function guardAndSave(start, r, meta, { foreign = [], row = false } = {}) {
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn() && !row) exportAll(saved.store);
-  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused], flowRefused: flowed.refused };
+  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused], flowRefused: flowed.refused, stopsKept };
 }
 
 // ------------------------------------------------------------------ one build as one row (pipeline status, Nov 25 2026)

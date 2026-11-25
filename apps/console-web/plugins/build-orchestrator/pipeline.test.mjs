@@ -384,8 +384,11 @@ t('hold: a queued build On hold stays in the Queue tab, the dispatcher skips it,
 t('actions: Queue → back to Pending / hold / archive / delete; live builds are never archived or deleted; Deleted → restore', () => {
   const q = build('q', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: now } });
   assert.deepEqual(BP.actionsFor(q), ['unqueue', 'hold', 'archive', 'delete']);
-  assert.deepEqual(BP.actionsFor(build('h', 'queued', [], { pipeline: { queuedAt: now, heldAt: now } })), ['unqueue', 'release', 'archive', 'delete']);
-  assert.deepEqual(BP.actionsFor(build('r', 'running', [])), []); assert.deepEqual(BP.actionsFor(build('w', 'waiting', [])), []);
+  // Brett's stops (build-pipeline@1): a stopped build offers release; a live one can be held or cancelled, never archived or deleted
+  assert.deepEqual(BP.actionsFor(build('h', 'queued', [], { pipeline: { queuedAt: now, heldAt: now } })), ['release', 'archive', 'delete']);
+  assert.deepEqual(BP.actionsFor(build('r', 'running', [])), ['hold', 'cancel']); assert.deepEqual(BP.actionsFor(build('w', 'waiting', [])), ['hold', 'cancel']);
+  assert.deepEqual(BP.actionsFor(build('p', 'pending', [step('s1', 'Opus')])), ['hold', 'archive', 'delete']);
+  assert.deepEqual(BP.actionsFor(build('s', 'pending', [step('s1', 'Opus')], { pipeline: { stop: { kind: 'cancel', at: now, by: 'console', why: '', from: 'running' } } })), ['release', 'archive', 'delete']);
   assert.deepEqual(BP.actionsFor(build('a', 'archived', [])), ['unarchive', 'delete']);
   assert.deepEqual(BP.actionsFor(build('d', 'pending', [], { deleted: true })), ['restore']);
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'landing');
@@ -850,15 +853,22 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     for (const b of store().builds.filter((x) => x.status === 'queued' && !x.deleted)) pipe('unqueue', b.id, '--json');
     for (const id of ['h1', 'h2', 'h3']) orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] }));
     { const st = store(); for (const id of ['h1', 'h2', 'h3']) { const b = st.builds.find((x) => x.id === id); b.status = 'queued'; b.pipeline = { ...(b.pipeline ?? {}), queuedAt: new Date().toISOString(), queuedBy: 'cli' }; } writeFileSync(storeFile, JSON.stringify(st)); }
+    // hold is Brett's stop (build-pipeline@1): the build rests in Pending with it, out of the Queue, until he releases it
     let r = json(pipe('hold', 'h1', 'h2', '--why', 'waiting on Brett', '--by', 'brett', '--json'));
-    assert.deepEqual(r.done.map((d) => [d.id, d.tab]), [['h1', 'queue'], ['h2', 'queue']]);
-    assert.equal(find('h1').status, 'queued'); assert.equal(find('h1').pipeline.heldBy, 'brett'); assert.equal(find('h1').pipeline.heldWhy, 'waiting on Brett');
+    assert.deepEqual(r.done.map((d) => [d.id, d.status, d.stop]), [['h1', 'pending', 'hold'], ['h2', 'pending', 'hold']]);
+    assert.equal(find('h1').status, 'pending'); assert.deepEqual([find('h1').pipeline.stop.kind, find('h1').pipeline.stop.by, find('h1').pipeline.stop.why, find('h1').pipeline.stop.from], ['hold', 'brett', 'waiting on Brett', 'queued']);
+    assert.equal(find('h1').pipeline.heldBy, 'brett'); assert.equal(find('h1').pipeline.queuedAt ?? '', '');
     const s = json(pipe('status', '--json'));
-    assert.ok(s.tabs.queue.find((x) => x.id === 'h1').held); assert.deepEqual(s.tabs.queue.find((x) => x.id === 'h1').actions, ['unqueue', 'release', 'archive', 'delete']);
-    assert.ok(s.plan.held.includes('h1') && !s.plan.launches.some((l) => l.id === 'h1'));
+    const row = [...s.tabs.pending, ...s.tabs.incomplete].find((x) => x.id === 'h1');
+    assert.ok(row.held); assert.equal(row.stopLabel, 'On hold'); assert.deepEqual(row.actions, ['release', 'archive', 'delete']);
+    assert.ok(!s.plan.queue.includes('h1') && !s.plan.launches.some((l) => l.id === 'h1'));
     assert.notEqual(pipe('hold', 'h1', '--json', '--expect-fail').status, 0, 'holding a held build is refused');
-    r = json(pipe('release', 'h2', '--json')); assert.equal(find('h2').pipeline?.heldAt ?? '', '');
-    r = json(pipe('unqueue', 'h1', '--json')); assert.equal(find('h1').status, 'pending'); assert.equal(find('h1').pipeline?.heldAt ?? '', '', 'back to Pending drops the hold');
+    // a tick (settle, plan, promote) leaves both where Brett put them
+    json(pipe('tick', '--json')); assert.equal(find('h1').status, 'pending'); assert.equal(find('h2').status, 'pending'); assert.equal(find('h1').pipeline.stop.kind, 'hold');
+    r = json(pipe('release', 'h2', '--json')); assert.equal(find('h2').pipeline?.heldAt ?? '', ''); assert.equal(find('h2').pipeline?.stop, undefined); assert.equal(find('h2').status, 'pending');
+    r = json(pipe('release', 'h1', '--json')); assert.equal(find('h1').pipeline?.stop, undefined, 'released');
+    // h3 still holds the Queue; h2 joins it only as a record from before the rule (for the archive case below)
+    { const st = store(); const b = st.builds.find((x) => x.id === 'h2'); b.status = 'queued'; b.pipeline = { ...(b.pipeline ?? {}), queuedAt: new Date().toISOString(), queuedBy: 'cli' }; writeFileSync(storeFile, JSON.stringify(st)); }
     // archive: one queued, one pending; a running build is refused, the rest still go
     { const st = store(); st.builds.find((b) => b.id === 'ghost').status = 'running'; writeFileSync(storeFile, JSON.stringify(st)); }
     r = json(pipe('archive', 'h1', 'h2', 'ghost', '--json'));

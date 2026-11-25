@@ -87,9 +87,11 @@ export async function groupAction(ref, action, { priority = '', why = '', by = p
   }
   const pipe = await import('./pipeline.mjs');
   if (action === 'archive') { const r = pipe.buildAction('archive', ids, { by, why }); return { group: gv.id, action, done: r.done.map((d) => d.id), refused: r.refused, skipped }; }
-  const done = []; const refused = [];
-  for (const id of ids) { try { pipe.queue(id, { by }); done.push(id); } catch (e) { refused.push({ id, error: e.message }); } }
-  return { group: gv.id, action, done, refused, skipped };
+  // one Queued (build-pipeline@1): the first build takes the Queue; the others stay in Pending, in line, and move up by
+  // themselves as each one starts (`waiting`, not refused)
+  const done = []; const refused = []; const waiting = [];
+  for (const id of ids) { try { pipe.queue(id, { by }); done.push(id); } catch (e) { if (e.holder) waiting.push({ id, behind: e.holder }); else refused.push({ id, error: e.message }); } }
+  return { group: gv.id, action, done, waiting, refused, skipped };
 }
 
 // ------------------------------------------------------------------ CLI

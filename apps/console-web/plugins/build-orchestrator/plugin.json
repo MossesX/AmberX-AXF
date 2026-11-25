@@ -615,8 +615,8 @@
       {
         "id": "pipeline-build-action",
         "route": "POST /pipeline/action",
-        "title": "Hold, archive, delete or restore builds",
-        "description": "Act on one build or many at once (bulk): unqueue (Queue back to Pending), hold (stays in the Queue, the dispatcher skips it until released), release, archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) or restore. Builds with a live session are refused; the rest still go. Say 'hold the icon browser build', 'archive these builds' or 'restore the deleted toast build'.",
+        "title": "Hold, cancel, unqueue, release, archive, delete or restore builds",
+        "description": "Act on one build or many at once (bulk). unqueue, hold and cancel are Brett's stops: the build rests in Pending with the stop on its record and no tick, relaunch or reconcile brings it back (hold on a running build lets its session finish the step it is on; cancel ends its session and frees its slot). release lifts a stop; queueing the build again does too. Also archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) and restore. A build an action does not fit is refused; the rest still go. Say 'hold the icon browser build', 'cancel the toast build', 'archive these builds' or 'restore the deleted toast build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -625,6 +625,7 @@
               "enum": [
                 "unqueue",
                 "hold",
+                "cancel",
                 "release",
                 "archive",
                 "unarchive",

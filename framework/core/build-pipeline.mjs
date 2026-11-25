@@ -378,14 +378,14 @@ export function unarchivedStatus(b) {
   return 'pending';
 }
 /** The actions the Build orchestrator offers on a build (Queue: back to Pending, hold / release, archive, delete). */
-export const BUILD_ACTIONS = ['unqueue', 'hold', 'release', 'archive', 'unarchive', 'delete', 'restore'];
+export const BUILD_ACTIONS = ['unqueue', 'hold', 'cancel', 'release', 'archive', 'unarchive', 'delete', 'restore'];
 export function actionsFor(b) {
   if (!b) return [];
   if (b.deleted) return ['restore'];
   const out = [];
-  if (canUnqueue(b)) out.push('unqueue');
-  if (canHold(b)) out.push('hold');
-  if (isHeld(b)) out.push('release');
+  // Brett's stops (single Queued): what stopsFor() allows now, and release while one stands
+  for (const k of ['unqueue', 'hold', 'cancel']) if (stopsFor(b).includes(k)) out.push(k);
+  if (isStopped(b)) out.push('release');
   if (canArchive(b)) out.push('archive');
   if (b.status === 'archived') out.push('unarchive');
   if (canDelete(b)) out.push('delete');
@@ -428,12 +428,15 @@ export function normStop(s) {
   if (!s || typeof s !== 'object' || !STOP_KINDS.includes(s.kind) || !iso(s.at)) return null;
   return { kind: s.kind, at: iso(s.at), by: str(s.by, 80), why: str(s.why, 300), from: str(s.from, 40) };
 }
-/** The stop on a build, or null. A build held before this contract (queued with `heldAt`) reads as a hold. */
+/**
+ * The stop on a build, or null. A build held before this contract (queued with `heldAt`) reads as a hold; a `heldAt`
+ * left over on any other status is not a stop (and a Pipeline 2.0 build's own hold is its flow's, not this contract's).
+ */
 export function stopOf(b) {
   const s = normStop(b?.pipeline?.stop);
   if (s) return s;
-  const at = iso(b?.pipeline?.heldAt);
-  return at ? { kind: 'hold', at, by: str(b.pipeline.heldBy, 80), why: str(b.pipeline.heldWhy, 300), from: str(b.status, 40) } : null;
+  const at = b?.status === 'queued' ? iso(b?.pipeline?.heldAt) : '';
+  return at ? { kind: 'hold', at, by: str(b.pipeline.heldBy, 80), why: str(b.pipeline.heldWhy, 300), from: 'queued' } : null;
 }
 export const isStopped = (b) => !!stopOf(b);
 /** The builds in the Queue, start order (queueOrder). More than QUEUE_MAX is a breach settleQueue() repairs. */

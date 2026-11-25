@@ -78,7 +78,11 @@ try {
     const by = Object.fromEntries(r.fixes.map((f) => [f.buildId, f]));
     assert.equal(by.quiet.cause, 'stale-heartbeat'); assert.equal(by.quiet.action, 'retry');
     assert.equal(by.hung.cause, 'stale-heartbeat'); assert.equal(by.hung.action, 'kill-retry');
-    assert.equal(find('quiet').status, 'queued'); assert.equal(find('hung').status, 'queued');
+    // one Queued (build-pipeline@1): two builds reset at once, one takes the Queue and the other waits in Pending in line
+    assert.deepEqual([find('quiet').status, find('hung').status].sort(), ['pending', 'queued']);
+    const waits = [find('quiet'), find('hung')].find((b) => b.status === 'pending');
+    assert.match(waits.notes.map((x) => x.text).join('\n'), /Waits in Pending: (quiet|hung) holds the Queue \(one build waits there at a time\); it moves up by itself\./);
+    assert.equal(waits.pipeline.lastRun.outcome, 'requeued', 'still in line: it moves up when the Queue is free');
   });
 
   await t('a live build is never touched', () => {

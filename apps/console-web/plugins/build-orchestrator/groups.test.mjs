@@ -108,11 +108,13 @@ t('action targets: queue = Pending, land = Done, archive = not running, priority
       const r = spawnSync(process.execPath, [join(PLUGIN, 'groups.mjs'), 'apply', '--sources', '--json'], { cwd: ROOT, env, input: JSON.stringify({ behind: {}, op: { op: 'update', group: 'urgent', color: 'danger' } }), encoding: 'utf8' });
       assert.equal(r.status, 0, r.stdout); assert.equal(JSON.parse(r.stdout.trim().split('\n').pop()).group.color, 'danger');
     });
-    t('cli act queue: every Pending build of the group goes to the Queue', () => {
+    t('cli act queue: the first Pending build of the group takes the Queue, the rest wait in line (one Queued)', () => {
       const r = run('act', 'console app', 'queue');
-      assert.deepEqual(r.done.sort(), ['console-app-a', 'console-app-b']);
-      const st = JSON.parse(readFileSync(storeFile, 'utf8')).builds; assert.deepEqual(st.filter((x) => x.status === 'queued').map((x) => x.id).sort(), ['console-app-a', 'console-app-b']);
-      const g = run('show', 'console-app'); assert.equal(g.group.counts.queued, 2);
+      assert.equal(r.done.length, 1); assert.equal(r.waiting.length, 1); assert.deepEqual(r.refused, []);
+      assert.deepEqual([...r.done, ...r.waiting.map((w) => w.id)].sort(), ['console-app-a', 'console-app-b']); assert.equal(r.waiting[0].behind, r.done[0]);
+      const st = JSON.parse(readFileSync(storeFile, 'utf8')).builds; assert.deepEqual(st.filter((x) => x.status === 'queued').map((x) => x.id), r.done);
+      assert.equal(st.find((x) => x.id === r.waiting[0].id).status, 'pending');
+      const g = run('show', 'console-app'); assert.equal(g.group.counts.queued, 1);
     });
   } finally { rmSync(tmp, { recursive: true, force: true }); }
 }

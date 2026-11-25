@@ -818,15 +818,17 @@ async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
     return _emergency("clear", _build_id(body.get("id")))
 
 
-BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
+BUILD_ACTIONS = ("unqueue", "hold", "cancel", "release", "archive", "unarchive", "delete", "restore")
 
 
 @router.post("/pipeline/action")
 async def pipeline_action(request: Request) -> dict[str, Any]:
     """{action, ids: [id…] | id, why?}: the Queue / Archive / Deleted actions on one build or many (bulk select).
-    unqueue = back to Pending; hold / release = stays in the Queue, skipped by the dispatcher until released; archive /
-    unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. Builds with a live session
-    are refused, the others still go: { done: [{ id, status, tab }], refused: [{ id, error }] }."""
+    unqueue / hold / cancel are Brett's stops (build-pipeline@1): the build rests in Pending with the stop on its record
+    and no tick, relaunch or reconcile brings it back (hold on a live build lets its session finish the step; cancel ends
+    the session); release lifts a stop, as does queueing the build again. archive / unarchive; delete = soft delete (kept
+    in the builds store forever, Deleted tab) / restore. A build an action does not fit is refused, the others still go:
+    { done: [{ id, status, tab, stop? }], refused: [{ id, error }] }."""
     body = await _json_body(request)
     action = str(body.get("action") or "")
     if action not in BUILD_ACTIONS:
