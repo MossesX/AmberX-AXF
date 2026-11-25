@@ -161,6 +161,36 @@
             "action": "assets.reset"
           }
         ]
+      },
+      {
+        "id": "assets",
+        "label": "Assets",
+        "items": [
+          {
+            "id": "axf-assets-hidden",
+            "label": "Hidden items…",
+            "icon": "eye",
+            "action": "chrome.hidden",
+            "badge": "hidden-assets.count"
+          },
+          {
+            "id": "axf-assets-unhide-all",
+            "label": "Unhide all",
+            "icon": "refresh",
+            "action": "chrome.unhideAll",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "axf-assets-sep",
+            "separator": true
+          },
+          {
+            "id": "axf-assets-hide",
+            "label": "Hide",
+            "icon": "layers",
+            "provider": "axf.hideable"
+          }
+        ]
       }
     ]
   }
