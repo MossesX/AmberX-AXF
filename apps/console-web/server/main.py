@@ -1116,6 +1116,11 @@ class _McpEndpoint:
         if scope["type"] == "http" and tok:
             sent = dict(scope.get("headers") or []).get(b"authorization", b"").decode()
             if sent != f"Bearer {tok}":
+                link = plugin_services.get("axf.claude-link@1")  # the Terminal's Claude link tab: an auth failure line
+                if link is not None:
+                    ua = dict(scope.get("headers") or []).get(b"user-agent", b"").decode(errors="replace")[:80]
+                    link.append({"kind": "error", "source": "mcp-server", "summary": f"/mcp refused a call: {'no' if not sent else 'wrong'} bearer token",
+                                 "detail": {"userAgent": ua, "path": scope.get("path", "")}})
                 await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
                 return
         # who is calling: each tool call goes into that session's mirror feed (Terminal → sessions nav)

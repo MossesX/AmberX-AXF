@@ -43,14 +43,29 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import claude_link, health, nav, routes, sessions, store
+from . import claude_link, health, hub_watch, nav, routes, sessions, store
 
 router = APIRouter()
 health.ensure()
 plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
 # Claude link (terminal-main-tab-streaming-console-s): the console's connection to Claude as one live log, and its routes
 BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
+# capability axf.claude-link@1: other plugins and the console server report through it, never by importing this folder
+LINK = claude_link.ClaudeLinkService(BUS)
+plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
 router.include_router(routes.build(lambda: BUS))
+
+
+def _link_append(e: dict[str, Any]) -> None:
+    """Through the capability, so nothing is logged while the plugin is switched off."""
+    svc = plugin_services.get("axf.claude-link@1")
+    if svc is not None:
+        svc.append(e)
+
+
+# the console server's own axHub /mcp calls and Anthropic API health, from one observer on axf_server.http
+_CONSOLE_HOSTS = {"127.0.0.1", "localhost", "::1", "axf-console", (os.environ.get("AXF_CONSOLE_HOST") or "console.amberxai.com").lower()}
+hub_watch.install(_link_append, _CONSOLE_HOSTS)
 
 
 def _err(e: Exception) -> HTTPException:

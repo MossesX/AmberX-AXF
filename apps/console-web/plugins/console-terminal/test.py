@@ -506,6 +506,12 @@ check(c.post(L + "/clear").json()["clearedAt"] == 2 and c.get(L).json()["items"]
 import subprocess as _sp  # noqa: E402
 _rt = _sp.run([sys.executable, str(HERE / "server" / "test_claude_link_routes.py")], capture_output=True, text=True)
 check(_rt.returncode == 0, "claude-link route tests (server/test_claude_link_routes.py)" + ("" if _rt.returncode == 0 else "\n" + _rt.stderr[-3000:]))
+# capability axf.claude-link@1 and the axf_server.http observer behind it (the observer tests: server/test_hub_watch.py)
+_svc = plugin_services.get("axf.claude-link@1")
+check(_svc is mod.LINK and _svc.append({"kind": "axhub", "source": "test", "summary": "call vps.run"})["kind"] == "axhub", "axf.claude-link@1 is provided and appends to the bus")
+check(_svc.append({"kind": "nope"}) is None, "axf.claude-link@1 never raises on a bad event")
+_hw = _sp.run([sys.executable, str(HERE / "server" / "test_hub_watch.py")], capture_output=True, text=True)
+check(_hw.returncode == 0, "claude-link observer tests (server/test_hub_watch.py)" + ("" if _hw.returncode == 0 else "\n" + _hw.stderr[-3000:]))
 
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
