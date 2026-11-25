@@ -515,6 +515,19 @@
         "text": "Shows it again."
       },
       {
+        "target": "hide",
+        "title": "Hide",
+        "text": "Hides this piece in this app. The rest of the screen closes up around it.",
+        "more": "Nothing is deleted: it sits in the Hidden list (Assets ▸ Hidden items…, or Settings → Appearance → Hidden) until you bring it back. What is hidden is saved with this app's look, so it stays hidden after a reload.",
+        "tryIt": "Say \"hide the toolbar\", or run axf hidden hide toolbar app.",
+        "related": [
+          "action:chrome.hidden",
+          "unhide",
+          "unhide-all"
+        ],
+        "kind": "button"
+      },
+      {
         "target": "unhide",
         "title": "Unhide",
         "text": "Shows this hidden piece again, right where it was.",
