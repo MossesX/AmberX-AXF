@@ -1,0 +1,126 @@
+{
+  "$axf": "pass-voice@1",
+  "cases": [
+    {
+      "phrase": "give me a pass for 30 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"give me a pass for 30 minutes\""
+          }
+        }
+      }
+    },
+    {
+      "phrase": "Pass for an hour.",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 60,
+          "reason": {
+            "title": "Pass for 60 minutes (voice)",
+            "description": "Said: \"Pass for an hour.\""
+          }
+        }
+      }
+    },
+    {
+      "phrase": "pass for everything for 2 hours",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 120,
+          "reason": {
+            "title": "Pass for 120 minutes (voice)",
+            "description": "Said: \"pass for everything for 2 hours\""
+          }
+        }
+      }
+    },
+    {
+      "phrase": "pass for vps and github for 30 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "vps",
+            "github"
+          ],
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for vps and github for 30 minutes\""
+          }
+        }
+      }
+    },
+    {
+      "phrase": "pass for the console for half an hour quietly",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "axf-console"
+          ],
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for the console for half an hour quietly\""
+          },
+          "notify": "quiet"
+        }
+      }
+    },
+    {
+      "phrase": "make the pass cover everything",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "covers": "all"
+        },
+        "needsId": true
+      }
+    },
+    {
+      "phrase": "pass covers vps",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "covers": [
+            "vps"
+          ]
+        },
+        "needsId": true
+      }
+    },
+    {
+      "phrase": "end the pass",
+      "intent": {
+        "tool": "axhub.pass_revoke",
+        "arguments": {},
+        "needsId": true
+      }
+    },
+    {
+      "phrase": "what does the pass cover",
+      "intent": {
+        "tool": "axhub.pass_status",
+        "arguments": {}
+      }
+    },
+    {
+      "phrase": "turn off the theme plugin",
+      "intent": null
+    },
+    {
+      "phrase": "pass for 500 minutes",
+      "intent": null
+    }
+  ]
+}

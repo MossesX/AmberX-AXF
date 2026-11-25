@@ -235,6 +235,34 @@ await test('pass engine: scopes, coverage, minutes, narrow scopes never cover de
   assert.equal(pc.passCovering([p], { op: 'set', target: 'tokens.theme' }, 1e12 + 60000), null, 'expiry is the clock');
 });
 
+await test('pass coverage (decision 120): covers, migration of older records, ranUnder', async () => {
+  const { readAudit } = await import('./lib/common.mjs');
+  assert.equal(pc.passCoversOf({ scope: 'all' }), 'all', 'an all pass with no field reads as all');
+  assert.equal(pc.passCoversOf({ scope: 'all', covers: ['vps'] })[0], 'vps', 'a stored list is kept');
+  assert.deepEqual(pc.passCoversOf({ scope: 'tokens.theme' }), ['scope:tokens.theme'], 'a narrow pass never widens by migration');
+  assert.deepEqual(pc.passCoversOf({ scope: 'tokens.*' }), ['scope:tokens.theme', 'scope:tokens.style', 'scope:tokens.layout']);
+  assert.equal(pc.passCoversOf(undefined), 'all');
+  assert.deepEqual(pc.passCoversEntry('vps'), { kind: 'service', service: 'vps' });
+  assert.deepEqual(pc.passCoversEntry('axf-console.console_terminal_*'), { kind: 'tool', service: 'axf-console', tool: 'console_terminal_*' });
+  assert.deepEqual(pc.passCoversEntry('scope:tokens.theme'), { kind: 'scope', scope: 'tokens.theme' });
+  assert.equal(pc.passCoversEntry('rm -rf'), null); assert.equal(pc.passCoversEntry('scope:'), null);
+  assert.deepEqual(pc.passCoversErrors(undefined), []); assert.deepEqual(pc.passCoversErrors('all'), []); assert.deepEqual(pc.passCoversErrors(['vps', 'scope:tokens.theme']), []);
+  assert.equal(pc.passCoversErrors([]).length, 1); assert.equal(pc.passCoversErrors(['rm -rf']).length, 1); assert.equal(pc.passCoversErrors(Array.from({ length: 41 }, (_, i) => `s${i}`)).length, 1);
+  assert.ok(pc.passGrantErrors('all', { covers: ['bad entry'] }).length, 'a grant with a bad covers entry is refused');
+  assert.deepEqual(pc.passRanUnder({ id: 'p1' }, 'confirm'), { ranUnder: 'p1', pass: 'p1', skippedPolicy: 'confirm' });
+  const g = await grant('all', 5, { approver: BRETT });
+  assert.equal(g.item.covers, 'all', 'a new record carries covers');
+  const pub = passLib.publication().body;
+  assert.equal(pub.coversDefault, 'all'); assert.deepEqual(pub.skippedPolicies, ['veto', 'confirm', 'explicit']);
+  assert.equal(pub.active.find((p) => p.id === g.item.id)?.covers, 'all');
+  const a = await runControl({ op: 'add', target: 'amberx.items', value: { text: 'ran under a pass' } });
+  const ch = passLib.recordPassCommand(g.item.id, { op: 'add', target: 'amberx.items', by: 'claude' }, 'add amberx.items');
+  assert.equal(ch.ranUnder, g.item.id, 'every change logged on a pass says which pass it ran under');
+  assert.ok(readAudit(50).some((r) => r.ranUnder === g.item.id && r.action === 'change'), 'the audit row carries ranUnder');
+  await runControl({ op: 'remove', target: 'amberx.items', path: a.item.id, by: 'test' }).catch(() => {});
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'test' });
+});
+
 await test('pass: a grant is only a request until Brett approves it', async () => {
   const r = await grant('tokens.theme', 20);
   assert.equal(r.ok, true); assert.equal(r.item.state, 'pending'); assert.equal(r.approval.required, true);
@@ -387,6 +415,14 @@ await test('pass all: everything by default, ordinary deletes skip the confirm, 
   assert.equal((await runControl({ op: 'remove', target: 'planner.plans', path: 'nope' })).code, 'confirmation_required', 'after the pass deletes confirm again');
   await runControl({ op: 'reset', target: 'tokens.theme' });
 });
+
+// pass-voice@1 (build approval-pass-covers-every-call s9): the engine answers every fixture phrase the same way
+{
+  const { passVoiceIntent } = await import('../../../../framework/core/engines/pass-voice.mjs');
+  const fx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/pass-voice.json', import.meta.url), 'utf8'));
+  for (const c of fx.cases) assert.deepEqual(passVoiceIntent(c.phrase), c.intent, `voice: ${c.phrase}`);
+  n++;
+}
 
 rmSync(T, { recursive: true, force: true });
 console.log(`${process.exitCode ? '✗' : '✓'} token-control: ${n} tests passed`);
