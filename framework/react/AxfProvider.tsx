@@ -4,6 +4,7 @@ import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
+import { installHiddenChrome } from './hidden';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -109,6 +110,8 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   useEffect(() => installControlRegistry(runtime), [runtime]);
   // … and the scroll contract (scrollControl.ts): scroll up / down / page / top / bottom / to on the active or a named pane.
   useEffect(() => installScrollControl(runtime), [runtime]);
+  // hidden-assets@1 (hidden.tsx): a toolbar, tab row, nav, menu bar or widget hidden in this app takes no room.
+  useLayoutEffect(() => installHiddenChrome(runtime), [runtime]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

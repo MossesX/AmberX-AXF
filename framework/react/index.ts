@@ -47,6 +47,7 @@ export { BannerStripPage, useBannerStripFollower } from './components/BannerStri
 export { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, BANNER_STRIP_PAGE, BANNER_STRIP_VIEW, bannerStripUrl, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripEntry, type BannerStripMessage } from './bannerStrip';
 export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
+export { Hideable, useHidden, useHiddenList, installHiddenChrome, chromePieceOf, chromeTargetOf, widgetPieceOf, pieceOf, pieceHidden, hiddenPieces, hiddenPieceCount, CHROME_PIECE_SELECTOR, WIDGET_PIECE_SELECTOR, HIDDEN_PIECE_ATTR, HIDDEN_WIDGET_KIND, type HiddenPiece, type HiddenPieceTarget } from './hidden';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';

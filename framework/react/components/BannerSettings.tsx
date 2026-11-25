@@ -46,6 +46,7 @@ import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { useHidden } from '../hidden';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type BannerDensity = 'compact' | 'regular' | 'roomy';
@@ -353,7 +354,10 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   useBannerPrefsTick();
   const p = bannerPrefs(rt, id);
   const hide = useBannerHideTick();
-  const hiddenNow = bannerHidden(hide, id, Date.now());
+  // hidden-assets@1: hidden as a piece (right-click → Hide banner, the Hidden list): the frame draws nothing and leaves
+  // no note behind (the Hidden list is where it comes back from). Still mounted, so its plugin keeps working.
+  const hiddenPiece = useHidden('banner', id);
+  const hiddenNow = bannerHidden(hide, id, Date.now()) || hiddenPiece;
   const ref = useRef<HTMLDivElement>(null);
   const [asleep, setAsleep] = useState(false);
   // Hidden (Hide / Hide all): still mounted, so its plugin keeps working; what it would show is logged instead.
@@ -388,7 +392,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     obs.observe(el, { subtree: true, childList: true, characterData: true });
     return () => { clearTimeout(timer); obs.disconnect(); };
   }, [p.autoHide]);
-  const until = hiddenNow ? hide.banners[id]?.until : undefined;
+  const until = hiddenNow && !hiddenPiece ? hide.banners[id]?.until : undefined;
   const frame = (
     <div
       ref={ref}
@@ -396,6 +400,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
       onMouseOver={fullTextTip}
       hidden={asleep || hiddenNow}
       data-fx-banner-hidden={hiddenNow ? 'on' : undefined}
+      data-axf-hidden-piece={hiddenPiece ? `banner:${id}` : undefined}
       data-fx-ctx-target={BANNER_CTX_TARGET}
       data-fx-ctx-payload={id}
       data-fx-banner-id={id}

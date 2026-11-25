@@ -152,6 +152,20 @@ h4 { margin: 0; line-height: 1.2; } /* same reset as the larger headings: a layo
 
 /* ---------------- shell / layout engine ---------------- */
 
+/* hidden-assets@1 (react/hidden.tsx): a piece hidden in this app (a toolbar, a tab row, a nav, the menu bar, a banner, a
+   widget) takes no room, so its neighbours close up; framework components hidden this way are not rendered at all.
+   The layout region around the app's own hidden toolbar, nav or menu bar goes with it: the toolbar, top nav and menu
+   bar rows are `auto`, so they collapse; a side nav's column keeps its width token, so the main area takes that column
+   and the gap beside it (not past an inspector docked on the same side). */
+[data-axf-hidden-piece] { display: none !important; }
+.fx-region--toolbar:has([data-axf-hidden-piece='toolbar:app']), .fx-region--nav:has([data-axf-hidden-piece='nav-menu:app']), .fx-frame__menubar:has([data-axf-hidden-piece='app-menu:app']) { display: none; }
+.fx-shell:has(> .fx-region--nav[data-side='left'] [data-axf-hidden-piece='nav-menu:app']):not(:has(> .fx-region--inspector[data-side='left'])) > .fx-main { margin-left: calc((var(--fx-layout-nav-width) + var(--fx-layout-region-gap)) * -1); }
+.fx-shell:has(> .fx-region--nav[data-side='right'] [data-axf-hidden-piece='nav-menu:app']):not(:has(> .fx-region--inspector[data-side='right'])) > .fx-main { margin-right: calc((var(--fx-layout-nav-width) + var(--fx-layout-region-gap)) * -1); }
+/* the phone grid is one column (the nav is a bottom row there): nothing to take over */
+[data-fx-narrow] .fx-shell:has(> .fx-region--nav [data-axf-hidden-piece='nav-menu:app']) > .fx-main.fx-main { margin-inline: 0; }
+/* a tab frame whose row is hidden is its panel alone, whichever side the row sat on */
+.fx-tabframe[data-axf-hidden-row] { flex-direction: column; }
+
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 /* every top bar, banner, toolbar and side rail sits inside the safe area; the phone's bottom nav pads the bottom itself */
