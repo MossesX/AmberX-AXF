@@ -414,9 +414,10 @@ await (async () => {
 })();
 
 // builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
-// through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
+// through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed. The
+// child gets an empty data-store folder, so it is in local mode on a host whose builds store is cut over to axf-data too
 t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {
-  const env = { ...process.env, AXF_BUILDS_JOURNAL: fileURLToPath(new URL('./fixtures-journal', import.meta.url)), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: fileURLToPath(new URL('./fixtures-journal', import.meta.url)), AXF_DATA_STORE_DIR: mkdtempSync(join(tmpdir(), 'axf-journal-mode-')), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
   delete env.AXF_BUILDS_STORE;
   const code = `const io = await import(${JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href)}); console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), h: io.journalOf('journal-fixture').map((x) => x.rev) }));`;
   const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
