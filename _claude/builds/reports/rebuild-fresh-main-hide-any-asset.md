@@ -1,7 +1,8 @@
 # Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden
 
 Build `rebuild-fresh-main-hide-any-asset` (Pipeline 2.0, 16 steps, one branch per step, the lander merges them into one PR).
-This file is a draft: s1 wrote 'Prior attempts' and 'Help, glossary and status'; s15 finishes it.
+s1 wrote 'Prior attempts' and 'Help, glossary and status'; s15 wrote the rest (Nov 25 2026). State: s1 to s12 built and
+checked together; s13 (re-bake) and s14 (UI Review shots) were not on origin when s15 ran. Nobody has seen it in a browser yet.
 
 ## Brett said (verbatim)
 
@@ -129,3 +130,89 @@ It is 245 commits behind main and touches files main has since changed (`runtime
 - **Checks run:** `tracker.mjs --check` (repo files) green · glossary `catalog.mjs --check` complete, 4,136 entries, 381
   without their own description (ratchet 384) · `check-help.mts` 283 checks · `help-coverage --check` 100 / 100 / 100 ·
   `shared-assets check` green. `framework/cli/catalog.mjs` does not exist; "catalog.mjs --check" is the glossary plugin's.
+
+## What was built (s2 to s12)
+
+| Step | What | Where |
+| --- | --- | --- |
+| s2 | Contract: `own.hiddenAssets: [{ kind, id, assetRef?, hiddenAt, by }]` on app-look@1; no list = nothing hidden | `framework/schemas/asset-types.json`, `schemas/json/app-look.schema.json`, `spec/APPEARANCE-SOURCE.md` |
+| s3 | Engine: `hide`, `unhide`, `unhideAll`, `isHidden`, `listHidden`; kinds derived from chrome-settings@1 plus `widget` | `framework/core/engines/hidden-assets.ts` |
+| s4 | Fixture and check; Kotlin twin recorded as a deferred gap | `spec/fixtures/hidden-assets.json`, `spec/check-hidden-assets.mts`, `spec/PORTING.md` |
+| s5 | Runtime: `rt.hidden / isHidden / hide / unhide / unhideAll`, saved through the look writer, fresh on focus | `framework/core/runtime.ts`, `react/hubAppLook.ts`, `react/editorSync.ts` |
+| s6 | React: `useHidden`, `<Hideable>`, `useHiddenList`, the page pass that stamps any other piece | `framework/react/hidden.tsx`, TabGroup, Banner*, `ui/axf.css` |
+| s7 | Right-click / long-press **Hide ‹kind›** on the shared chrome context block, Undo toast | `framework/react/components/ChromeContext.tsx` |
+| s8 | Hidden list: grouped by kind, Unhide per row, Unhide all (asks once), empty state | `framework/libs/settings/HiddenAssetsPanel.tsx`, `AppearancePanel.tsx`, dialog `axf-hidden-assets.json` |
+| s9 | Assets menu: Hidden items… (count badge), Unhide all, Hide ▸ every visible piece; console-control targets | `framework/react/components/AssetsMenu.tsx`, `assets/app-menu/*.json`, `spec/CONSOLE-CONTROL.md` |
+| s10 | REST over the app look document | `apps/console-web/server/hidden_assets.py`, `server/tests/test_hidden_assets.py` |
+| s11 | MCP tools, console actions, deep links | `server/mcp_server.py`, `src/actions/hidden-assets.ts`, `src/control/executor.ts` |
+| s12 | CLI and voice | `framework/cli/hidden-assets.mjs`, `cli/axf.mjs`, `core/engines/console-control-voice.mjs`, `server/console_control.py` |
+
+## How each feature is reached
+
+A piece is `<kind>:<id>`; kinds: `tab-group`, `toolbar`, `banner`, `nav-menu`, `app-menu`, `widget`. `app` defaults to the
+console (`axf-console`; aliases `console`, `axhub`). Every path ends in the same four runtime calls or the same look document.
+
+| Feature | UI | REST | MCP | CLI | Voice |
+| --- | --- | --- | --- | --- | --- |
+| Hide one piece | right-click / long-press the piece → **Hide ‹kind›** (Undo toast); Assets ▸ Hide ▸ ‹piece›; the Assets panel's Hide button | `POST /api/hidden-assets/hide` `{ app?, kind, id }` | `hidden_assets_hide(kind, id, app?)`; `console_action chrome.hide:<kind>:<id>` | `axf hidden hide <kind> <id> [--app]` | "hide the toolbar" (also menu bar, banner, navigation: the once-per-app pieces) |
+| See what is hidden | Assets ▸ **Hidden items…** (badge = count); Settings → Appearance → **Hidden**; dialog `axf.hidden-assets` | `GET /api/hidden-assets?app=` | `hidden_assets_list(app?)`; open it on screen: `console_show view:settings/tab:appearance#hidden` or `dialog:axf.hidden-assets`; `console_action chrome.hidden` | `axf hidden list [--app] [--json]` | "show what's hidden" |
+| Unhide one | **Unhide** on its row in the Hidden list; Undo on the toast | `POST /api/hidden-assets/unhide` `{ app?, kind, id }` | `hidden_assets_unhide(kind, id, app?)`; `console_action chrome.unhide:<kind>:<id>` | `axf hidden unhide <kind> <id>` (or `<kind>:<id>`) | "unhide the toolbar", "bring the banner back" |
+| Unhide all | **Unhide all** in the Hidden list (tap twice) and under the Assets menu | `POST /api/hidden-assets/unhide-all` `{ app? }` | `hidden_assets_unhide_all(app?)`; `console_action chrome.unhideAll` | `axf hidden unhide-all [--app]` | "unhide everything" |
+| Which kinds can be hidden | the kinds that show a Hide item | in every REST answer's error text for an unknown kind | same | `axf hidden kinds` | none |
+
+console-control@1 addresses for every button and row (`panel:assets-menu`, `panel:hidden-assets`, `button:hidden.unhide-all`,
+`row:<kind>:<id>` …) are in `framework/spec/CONSOLE-CONTROL.md` → Hidden assets. Hide, Unhide and Unhide all need the
+`assets.swap` permission. Voice names only the pieces an app draws once (instance `app`); any other piece is hidden on screen
+or by id.
+
+**Apps.** The framework side (engine, runtime, React, menu, panel) is shared, so the console, axHub web and Molly get it with
+the re-bake (s13). REST, MCP and the console actions live in the console server and act on any app's look by `app`.
+AmberX: `apps/amberx-droid` is no longer on main, so there is nothing to bake there; its look document still exists on the
+hub and `--app amberx-droid` works over REST / MCP / CLI. The Android twin is a deferred row in `PORTING.md`.
+
+## Tests (s15, Nov 25 2026)
+
+Run on s1 to s12 merged onto main (the tree this branch carries); all merges were clean.
+
+| Check | Result |
+| --- | --- |
+| `npx tsx framework/spec/check-hidden-assets.mts` | pass, 289 checks |
+| `node framework/cli/check-theme.mjs` | pass (1,488 files) |
+| `node framework/cli/check-controls.mjs` | pass |
+| `node framework/cli/check-toolbars.mjs` | pass (574 files) |
+| `node framework/cli/check-chrome-assets.mjs` | pass (21 left over, inside the baseline) |
+| `node framework/cli/check-console-control.mjs` | pass |
+| `node framework/cli/tracker.mjs --check` | pass |
+| server: `tests/test_hidden_assets.py`, `tests/test_console_control.py`, `tests/test_host_services.py`, `test_mcp_tools.py` | pass (pytest: 31 passed; MCP: 254 checks, 73 tools) |
+| spec: `check-console-control.mts` (293), `check-chrome-settings.mts` (313), `check-app-menu.mts` (124), `check-app-menus-runtime.mts`, `check-banner-hide.mts`, `check-appearance.mts`, `check-chrome.mts`, `check-page-toolbar-voice.mts` | pass |
+| `gen-fixtures.mts` re-run on the merged tree | no drift |
+| `check-help.mts` / `help-coverage --check` | **failed on the merge, fixed here**: see below |
+| glossary `catalog.mjs --check` | pass (381 without own description, ratchet 384) |
+| `shared-assets.mjs check` | **fails until s13's re-bake is in**: Molly lacks `assets/dialog/axf-hidden-assets.json` and has the three old `app-menu` files |
+| CLI smoke on a copy of the console's look (`AXF_LOOKS_DIR`) | hide, list, unhide, unhide-all, unknown kind refused: all as expected |
+
+Fixed by s15:
+
+- **Help coverage.** s9's Hide button in the Assets panel had no help entry (framework 189/190, `check-help` red). Added the
+  `hide` entry to `framework/assets/help/framework.json`, copied it to the four app copies and updated the hash line in the
+  three `axf.lock.json` files. These are s1's files: this branch carries s1's commit so the edit does not clash. If s13 re-baked
+  without this entry, run `node framework/cli/help-coverage.mjs --sync` and re-bake once after the merge.
+- **CI.** Neither new test ran in CI. `.github/workflows/android.yml` now runs `check-hidden-assets.mts` and
+  `server/tests/test_hidden_assets.py` next to their neighbours. Outside this step's file list; done because a check nobody
+  runs protects nothing.
+
+Not run by s15: typecheck per app (s13's), Playwright / a browser pass (s14's). The feature is unseen in a browser in this run.
+
+## Old builds
+
+`assets-menu-hide-any-asset-visible` (PR #583, closed) and `assets-menu-hide-any-asset-hidden-list` (no PR) were already
+`archived` in the builds store; a note on each now says this build replaces them. The tombstone
+`assets-menu-hide-any-asset-visible-and-hidden-li` (#573) stays hidden. PR #824 (the Nov 17 run of this build, still open) is
+replaced by the lander's PR for this run and should be closed when that lands.
+
+## Left open
+
+- s13 re-bake and s14 UI Review were not on origin: `shared-assets check` stays red and UI Review has no shots until they are.
+- Carried from the Nov 17 run and not re-checked here (no browser): window tab groups keeping their frame when hidden, and
+  Unhide all sitting next to the count on a phone.
+- With no look document for an app, the CLI answers "open the app once" instead of hiding. Fine for the four apps on the hub.
