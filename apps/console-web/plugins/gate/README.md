@@ -157,6 +157,16 @@ uninstalling the plugin removes the tab, never the gate.
 - **axHub passes** and **Go pass** (`web/HubPasses.tsx`, `web/HubGoPass.tsx`): the two pages of the `axhub-passes`
   plugin, which was removed. This plugin provides `view:axhub-passes`, `view:axhub-go-pass`, the actions
   `axhub-passes.open` / `axhub-go-pass.open` and the Apps → axHub menu entries, so every old link still opens them.
+  **Coverage** (pass@2, `framework/spec/AXHUB-PASS.md`; rules in `web/pass-coverage.mjs`, checked by `test.mjs`): the
+  grant form and a pass's *Edit coverage* share one picker, **All tools** (the default) or *Pick services and tools*
+  (a service's tick box = every tool of it, its tools one by one, and typed entries: `vps.run`,
+  `axf-console.console_terminal_sessions_*`, `scope:tokens.theme`). Each active pass card lists what it covers and
+  the newest calls that ran under it (tool, what the pass skipped, when). Requests: `POST /auth/api/passes`
+  `{ covers, minutes, reason, quietNotice, include_irreversible? }` and `POST /auth/api/passes/<id>/update`
+  `{ covers, quietNotice, include_irreversible }`. The picker's services and tools come from `services` on the
+  page's own answer (`[{ namespace, displayName, tools: [{ name }] }]`) when the hub sends it, else the service
+  names the Approval rules tab reads; typed entries work either way. Driven end to end against a fixture hub by
+  `apps/console-web/scripts/pass-coverage-shots.mjs`.
 
 | Reach | Read | Change |
 | --- | --- | --- |
