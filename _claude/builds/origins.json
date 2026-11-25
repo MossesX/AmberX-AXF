@@ -3266,6 +3266,18 @@
    "from": "detail",
    "addenda": []
   },
+  "emergency-rip-out-the-7-mb-status-": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "emergency-rip-out-the-7-mb-status---s2",
+   "brief": "# EMERGENCY: rip out the 7 MB status file: step s2\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s2 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s2 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s2.\n\n## Your step\nRemove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.\n\nFiles: apps/console-web/server/data_store.py. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+   "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
   "employee-hooks-everywhere-any-mention-of-an-agen": {
    "said": "The agent picker will have a hook to jump to the agents, different places where agents are managed and referenced. It can go to its group chats, its training section or its employee information. Anywhere an employee is mentioned, you can access its information directly from a hook, probably a context menu with a sub menu showing everything you can do, or open one of the employee's dialogs right there on the spot. And yeah, merge the Gizmo rebuild in.",
    "at": "2026-11-10T21:55:14.370Z",

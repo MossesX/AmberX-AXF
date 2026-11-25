@@ -845,13 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 05:08 UTC · `clash-answer-run-all-defer-buttons-plus` note (all) · orchestrator
-- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:09 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
-- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:11 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 done (all) · headless
 - 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` → build-complete (all) · headless
@@ -1245,6 +1238,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 20:41 UTC · `pipeline-fixes-drop-7-mb-status-file` → queued, note (all) · watchdog
 - 2026-11-25 20:42 UTC · `pipeline-fixes-drop-7-mb-status-file` → running, note (all) · pipeline
 - 2026-11-25 20:42 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
+- 2026-11-25 23:09 UTC · `flagship-professional-skin-covering` s5 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s26 done, note (all) · foreign-write
+- 2026-11-25 23:09 UTC · `claude-emergency-access` note (all) · foreign-write
+- 2026-11-25 23:09 UTC · `pipeline-fixes-drop-7-mb-status-file` s15 done, s16 done, s17 done, note (all) · foreign-write
+- 2026-11-25 23:09 UTC · `emergency-remove-every-leftover-js` note (all) · foreign-write
+- 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · foreign-write
+- 2026-11-25 23:09 UTC · `emergency-rip-out-the-7-mb-status-` added (7 steps) (all) · foreign-write
+- 2026-11-25 23:09 UTC · `fast-stale-check-page-load-build-store` added (7 steps) (all) · foreign-write
 
 ## Token passes (log)
 
