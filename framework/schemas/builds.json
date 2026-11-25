@@ -3,9 +3,10 @@
   "record": "build-record@1",
   "step": "step-record@1",
   "version": 1,
-  "note": "The one builds store (_claude/builds/store.json). Reference: framework/plan/builds-store-core.mjs (validateStore is the contract), framework/spec/BUILDS.md. Step dependencies and claims: framework/core/build-pipeline.mjs, framework/spec/BUILD-PARALLEL.md.",
+  "note": "The one builds store (_claude/builds/store.json). Reference: framework/plan/builds-store-core.mjs (validateStore is the contract), framework/spec/BUILDS.md. Step dependencies and claims: framework/core/build-pipeline.mjs, framework/spec/BUILD-PARALLEL.md. Split runs (split-plan@1): framework/core/build-pipeline.mjs, framework/spec/BUILD-SPLIT.md, framework/schemas/split-plan.json.",
   "statuses": [
     "pending",
+    "splitting",
     "queued",
     "running",
     "waiting",
@@ -61,7 +62,9 @@
     "rearranged",
     "removedSteps",
     "legacy",
-    "copies"
+    "copies",
+    "splitId",
+    "split"
   ],
   "stepFields": [
     "id",
@@ -90,6 +93,95 @@
     "parallel",
     "claim"
   ],
+  "split": {
+    "schema": "split-plan@1",
+    "since": "2026-11-25",
+    "note": "One build at a time, split to fill every slot. Both fields are optional and absent on every build from before this contract: nothing is migrated and nothing is lost. normBuild does not list them; the store carries them like any field a checkout does not know and shapes them on every read and write (builds-store.mjs shapeSplit, build-pipeline.mjs normSplitId / normSplitPlan). The store check (builds-store.mjs verify, validateSplit) holds the rules.",
+    "status": {
+      "splitting": "the splitter is making the build's parts; the build sits in Pending and reads Splitting"
+    },
+    "splitId": {
+      "type": "string | null | absent",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,119}$",
+      "note": "the id the splitter gave this split: the proof the build went through the splitter. null = taken off (a re-split)."
+    },
+    "split": {
+      "type": "object | null | absent",
+      "kept": [
+        "by",
+        "model",
+        "at",
+        "stepCount"
+      ],
+      "keptNote": "who split it (pipeline-status@1 normSplit); these and any key this contract does not name stay as stored",
+      "parts": {
+        "type": "object[]",
+        "maxItems": 32,
+        "fields": {
+          "id": "the part's id, once per split (p1, p2, …)",
+          "steps": "string[]: ids of the build steps this part works",
+          "files": "string[]: the paths this part claims",
+          "branch": "the part's own branch",
+          "slot": "the agent-slots entry id it runs in",
+          "base": "the main commit sha it starts from (the locked main)",
+          "status": "one of partStatuses (default waiting)"
+        },
+        "optional": {
+          "account": "the Claude account it runs on",
+          "session": "its session name",
+          "attempt": "integer: 2 and up after a rebuild",
+          "startedAt": "ISO: first status past waiting",
+          "updatedAt": "ISO: last status change",
+          "doneAt": "ISO: when it reached done",
+          "note": "one plain line (string, ≤ 400)"
+        },
+        "partStatuses": [
+          "waiting",
+          "building",
+          "testing",
+          "rebuilding",
+          "failed",
+          "done"
+        ],
+        "working": [
+          "waiting",
+          "building",
+          "testing",
+          "rebuilding"
+        ]
+      },
+      "combine": {
+        "type": "object | absent",
+        "fields": {
+          "state": "one of runStates",
+          "branch": "the one branch every part is combined into",
+          "base": "the main commit sha the run is locked to",
+          "pr": "its one PR",
+          "at": "ISO: last state change",
+          "note": "one plain line (string, ≤ 400), when set"
+        },
+        "runStates": [
+          "splitting",
+          "queued",
+          "building",
+          "combining",
+          "ci",
+          "merging",
+          "merged",
+          "live",
+          "finished",
+          "failed"
+        ]
+      },
+      "rules": [
+        "a split with parts needs a split id",
+        "a part id is used once",
+        "a step is in one part only and names a step of the build",
+        "no file is claimed by two parts (the same path, or a folder holding the other path)",
+        "a part status is one of partStatuses, the run state one of runStates"
+      ]
+    }
+  },
   "stepDependencies": {
     "since": "2026-11-13",
     "dependsOn": {

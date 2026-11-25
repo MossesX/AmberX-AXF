@@ -40,6 +40,13 @@
  *                                                        one, oldest first (new and changed builds get theirs on write)
  *   … view <build>                                         pipeline-status@1: the read every screen gets (number, pr, split,
  *                                                        pipelineView, each step's uid / splitBy / model / modelBy / status)
+ *   … split <build>                                        split-plan@1: the build's split id, its parts (slot, branch, status)
+ *                                                        and the run state (exit 1 = the stored split breaks a rule)
+ *   … split-set <build> --plan <json|@file> [--by who]   split-plan@1: store { splitId, parts[], combine } on the build
+ *                                                        (refused when a rule is broken); --clear takes the split off
+ *   … split-part <build> <part> <status> [--split-id id] [--slot s] [--branch b] [--base sha] [--account a] [--session s] [--note n] [--by who]
+ *                                                        split-plan@1: one part's status (waiting | building | testing |
+ *                                                        rebuilding | failed | done); --split-id must match the build's
  *   … history <id>                                          every journal revision of one build
  *   … journal status | migrate | verify | rotate [--days n] [--apply]   the journal's home, and gzip of old parts
  *   … repair-mojibake [--apply] [--journal-dir d]           put back characters lost to U+FFFD from the journal (dry run by default)
@@ -84,6 +91,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { migrateDoneStore } from '../core/build-pipeline.mjs';
+import * as BP from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -167,6 +175,9 @@ export class StoreConflict extends Error {}
  *   keepStore       whatever a record holds that this checkout's code does not know is carried through every read and
  *                   every write, on the store, on a build and on a step. Such a field cannot be removed by leaving it
  *                   out; code that knows it sets it to null.
+ *   split-plan@1    `splitId` and `split { parts[], combine }` (framework/core/build-pipeline.mjs) are carried the same
+ *                   way (normBuild does not list them, so every checkout keeps them) and, on this code, put in shape
+ *                   on every read and write (shapeSplit). A build without them gets neither: nothing to migrate.
  *   STORE_VERSION   stamped on the store (`storeVersion`) by every write. A checkout whose number is lower than the
  *                   store's is refused (StoreTooNew): pull main, then write. Raise it by one whenever a release
  *                   changes what a stored field means, so that older code must not write at all.
@@ -203,10 +214,20 @@ function known() {
 const unknownOf = (rec, names) => (rec && typeof rec === 'object' && !Array.isArray(rec) ? Object.keys(rec).filter((k) => !names.has(k) && rec[k] !== undefined) : []);
 const carry = (from, to, names) => { for (const k of unknownOf(from, names)) if (!(k in to)) to[k] = JSON.parse(JSON.stringify(from[k])); return to; };
 const stepsByKey = (list) => { const m = new Map(); for (const x of Array.isArray(list) ? list : []) if (x && typeof x === 'object') for (const k of [x.uid, x.id]) if (k && !m.has(k)) m.set(k, x); return m; };
+/**
+ * split-plan@1: `splitId` and `split` on a build, in shape (BP.normSplitId / BP.normSplitPlan). Absent stays absent and
+ * null stays null (how a carried field is taken off); a value that is not a split id or not a record becomes null.
+ */
+function shapeSplit(b) {
+  if (b.splitId != null) b.splitId = BP.normSplitId(b.splitId) || null;
+  if (b.split != null) b.split = BP.normSplitPlan(b.split);
+  return b;
+}
 /** `to` (a normalised build) with every field of `from` (the same build, as stored) that this code does not know. */
 export function keepBuild(from, to) {
   if (!from || !to || typeof from !== 'object' || typeof to !== 'object') return to;
   carry(from, to, known().build);
+  shapeSplit(to);
   const old = stepsByKey(from.steps);
   if (old.size) for (const x of to.steps ?? []) { const o = old.get(x.uid) ?? old.get(x.id); if (o) carry(o, x, known().step); }
   return to;
@@ -818,6 +839,58 @@ export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', ex
   return out;
 }
 
+// ------------------------------------------------------------------ split-plan@1: the split run on a build
+/** A split write the contract refuses (code 'bad_split'; `errors` = [{ path, message }]). */
+export class SplitRefused extends Error { constructor(message, errors = []) { super(message); this.code = 'bad_split'; this.errors = errors; } }
+const noBuild = (id) => Object.assign(new Error(`no build "${id}"`), { code: 'not_found' });
+
+/**
+ * Store a split plan on a build: { splitId, parts[], combine } (split-plan@1, framework/core/build-pipeline.mjs). Who
+ * split it (`split.by` / `model` / `at` / `stepCount`) and every other key already on `split` stay unless the plan
+ * names them. `plan` null takes the split off (a re-split starts clean). The status is not touched: the pipeline moves
+ * the build (setFlowStatus). Throws SplitRefused when validateSplit names an error; one journal line (`split-plan`).
+ */
+export function setSplitPlan(id, plan, { by = 'pipeline', action = 'split-plan', note = '' } = {}) {
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw noBuild(id);
+    const at = new Date().toISOString();
+    if (plan == null) { if (b.splitId == null && b.split == null) return s; b.splitId = null; b.split = null; b.updatedAt = at; return s; }
+    const { splitId, ...fields } = plan;
+    const next = { ...b, splitId: splitId ?? b.splitId, split: { ...(b.split ?? {}), ...fields } };
+    const errors = BP.validateSplit(next);
+    if (errors.length) throw new SplitRefused(`${id}: ${errors.map((e) => `${e.path} ${e.message}`).join('; ')}`, errors);
+    b.splitId = BP.normSplitId(next.splitId); b.split = BP.normSplitPlan(next.split); b.updatedAt = at;
+    return s;
+  }, { by, action, note: clip(note || (plan == null ? `${id}: split taken off` : `${id}: split ${plan.splitId ?? ''} (${plan.parts?.length ?? 0} part(s))`), 500) });
+  const b = core.findBuild(r.store, id);
+  return { build: b, splitId: b?.splitId ?? '', split: b?.split ?? null, rev: r.rev };
+}
+
+/**
+ * One part's status (waiting | building | testing | rebuilding | failed | done), with slot / branch / base / account /
+ * session / note in `extra` when they changed. `splitId`, when given, must be the build's: a part runner from an older
+ * split never writes into a newer one. Throws SplitRefused; one journal line (`split-part`).
+ */
+export function setPartStatus(id, partId, status, { by = 'pipeline', splitId = '', extra = null } = {}) {
+  let part = null;
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw noBuild(id);
+    if (splitId && splitId !== b.splitId) throw new SplitRefused(`${id}: split ${splitId} is not the build's split (${b.splitId || 'none'})`);
+    const at = new Date().toISOString();
+    const t = BP.setPartStatus(b.split, partId, status, { at, extra });
+    if (!t.ok) throw new SplitRefused(`${id}: ${t.why}`);
+    const errors = BP.validateSplit({ ...b, split: t.split });
+    if (errors.length) throw new SplitRefused(`${id}: ${errors.map((e) => `${e.path} ${e.message}`).join('; ')}`, errors);
+    b.split = t.split; b.updatedAt = at; part = t.part;
+    return s;
+  }, { by, action: 'split-part', note: `${id}/${partId} → ${status}` });
+  const b = core.findBuild(r.store, id);
+  return { build: b, part: BP.partsOf(b).find((p) => p.id === partId) ?? part, rev: r.rev };
+}
+
+/** split-plan@1 over the whole store → [{ build, path, message }] (the store check). */
+export const splitErrors = (store) => (store?.builds ?? []).flatMap((b) => BP.validateSplit(b).map((e) => ({ build: b.id, ...e })));
+
 // ------------------------------------------------------------------ migration sources
 
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
@@ -1148,6 +1221,39 @@ async function main(argv) {
       return out({ ok: true, id, step: r.step?.id ?? '', status: x.status, attempt: x.attempt ?? 1, label: P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build'), rev: r.rev }, `${id}${r.step ? `/${r.step.id}` : ''}: ${P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build')}`);
     } catch (e) { process.exitCode = e.code === 'backward' ? 1 : 2; return out({ ok: false, error: e.message, code: e.code || '' }, `refused: ${e.message}`); }
   }
+  if (cmd === 'split' || cmd === 'split-set' || cmd === 'split-part') {
+    // split-plan@1: split <build> | split-set <build> --plan <json|@file> | --clear | split-part <build> <part> <status>
+    const [id, partId, status] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : undefined; };
+    const view = (b) => ({ id: b.id, status: b.status, splitId: b.splitId ?? '', parts: BP.partsOf(b), combine: b.split?.combine ?? null });
+    const partLine = (p) => `  ${p.id} ${p.status}${p.slot ? ` · slot ${p.slot}` : ''}${p.branch ? ` · ${p.branch}` : ''} · ${p.steps.length} step(s), ${p.files.length} file(s)`;
+    const usage = (text) => { process.exitCode = 2; return out({ ok: false, error: `usage: ${text}` }, `usage: ${text}`); };
+    try {
+      if (cmd === 'split') {
+        if (!id) return usage('split <build>');
+        const b = core.findBuild(loadStore(), id); if (!b) throw noBuild(id);
+        const errors = BP.validateSplit(b); if (errors.length) process.exitCode = 1;
+        const v = view(b);
+        return out({ ok: !errors.length, ...v, errors }, [`${b.id}: ${v.splitId ? `split ${v.splitId}` : 'no split'}${v.combine ? ` · ${v.combine.state}` : ''} · ${v.parts.length} part(s)`, ...v.parts.map(partLine), ...errors.map((e) => `✗ ${e.path} ${e.message}`)].join('\n'));
+      }
+      if (cmd === 'split-set') {
+        const raw = gi('--plan'); const clear = rest.includes('--clear');
+        if (!id || (!raw && !clear)) return usage('split-set <build> --plan <json|@file> [--by who] | split-set <build> --clear');
+        const plan = clear ? null : JSON.parse(raw.startsWith('@') ? readFileSync(resolve(raw.slice(1)), 'utf8') : raw);
+        if (!clear && (!plan || typeof plan !== 'object' || Array.isArray(plan))) return usage('split-set <build> --plan <json|@file>: the plan is { splitId, parts[], combine }');
+        const r = setSplitPlan(id, plan, { by: gi('--by') || 'cli' });
+        const v = view(r.build);
+        return out({ ok: true, ...v, rev: r.rev }, `${id}: ${clear ? 'split taken off' : `split ${v.splitId} stored, ${v.parts.length} part(s)`}`);
+      }
+      if (!id || !partId || !BP.PART_STATUSES.includes(status)) return usage(`split-part <build> <part> <${BP.PART_STATUSES.join('|')}> [--split-id id] [--slot s] [--branch b] [--base sha] [--account a] [--session s] [--note n] [--by who]`);
+      const extra = Object.fromEntries(['slot', 'branch', 'base', 'account', 'session', 'note'].map((k) => [k, gi(`--${k}`)]).filter(([, v]) => v !== undefined));
+      const r = setPartStatus(id, partId, status, { by: gi('--by') || 'cli', splitId: gi('--split-id') || '', extra });
+      return out({ ok: true, id, part: r.part, rev: r.rev }, `${id}/${partId}: ${r.part.status}`);
+    } catch (e) {
+      if (e?.code !== 'bad_split' && e?.code !== 'not_found' && !(e instanceof SyntaxError)) throw e;
+      process.exitCode = 1;
+      return out({ ok: false, code: e.code ?? 'bad_json', error: e.message, errors: e.errors ?? [] }, `refused: ${e.message}`);
+    }
+  }
   if (cmd === 'set-status') {
     const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
     const demo = rest.includes('--demo'); // demo-build@1: a demo action, refused on a build without the tag
@@ -1270,7 +1376,11 @@ async function main(argv) {
       ...[...numbered.reduce((m, b) => m.set(b.number, [...(m.get(b.number) ?? []), b.id]), new Map())].filter(([, ids]) => ids.length > 1).map(([num, ids]) => `${num} is held by ${ids.join(' and ')}`),
       ...readStoreNow().builds.filter((b) => 'pipelineView' in b).map((b) => `${b.id} has a stored pipelineView (it is worked out on read)`)];
     if (numberErrors.length) process.exitCode = 1;
-    const lines = [...numberErrors.map((e) => `✗ numbers ${e}`), ...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`),
+    // 6. split-plan@1: split ids, parts (ids once, no file or step in two parts), statuses and the run state
+    const splits = splitErrors(store);
+    if (splits.length) process.exitCode = 1;
+    const split = { builds: store.builds.filter((b) => BP.hasSplitPlan(b)).length, errors: splits };
+    const lines = [...numberErrors.map((e) => `✗ numbers ${e}`), ...splits.map((e) => `✗ split ${e.build} ${e.path} ${e.message}`), ...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`),
       ...deps.missing.map((m) => `✗ deps ${m.build}/${m.step} depends on "${m.missing}", which is not a step of the build`),
       ...deps.cycles.map((c) => `✗ deps ${c.build} dependency cycle: ${c.cycle.join(' → ')}`)];
     const jtext = jv.warning ? `; ${jv.warning}` : jv.checked ? `; journal: ${jv.checked} part(s) on the hub match the pointer` : '';
@@ -1279,9 +1389,9 @@ async function main(argv) {
     const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
     // demo-build@1: demo builds (tag + demo- id) are counted, never mixed with the rest
     const demo = { builds: store.builds.filter((b) => core.isDemo(b)).map((b) => b.id) };
-    const ok = !bad.length && v.ok && jv.ok && !deps.missing.length && !deps.cycles.length && !numberErrors.length;
-    const depsLine = `step deps v${store.meta?.versions?.stepDeps?.version ?? 0}: ${deps.withDeps} build(s) with a dependency list, no missing ids, no cycles`;
-    return out({ ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo, deps }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without\n${depsLine}`);
+    const ok = !bad.length && v.ok && jv.ok && !deps.missing.length && !deps.cycles.length && !numberErrors.length && !splits.length;
+    const depsLine = `step deps v${store.meta?.versions?.stepDeps?.version ?? 0}: ${deps.withDeps} build(s) with a dependency list, no missing ids, no cycles\nsplit-plan@1: ${split.builds} build(s) with a split plan, ${store.builds.length - split.builds} without (nothing to migrate)`;
+    return out({ ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo, deps, split }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without\n${depsLine}`);
   }
   const s = loadStore();
   if (cmd === 'status') {

@@ -45,6 +45,9 @@
  *   budgetUsd, spentUsd  this build's API spend cap and what its API runs have cost so far (0 = no cap / nothing spent);
  *              an API launch that would pass the cap waits, subscriptions are never counted
  *
+ * split-plan@1 (below, framework/spec/BUILD-SPLIT.md): `splitId` and `split { parts[], combine }` on the build itself, not on
+ * `pipeline`; a build being split has the status `splitting` and sits in the Pending table.
+ *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  *
  * Step dependencies and claims (Nov 13 2026, build always-fill-every-slot: "when slots are free, run independent steps
@@ -95,7 +98,7 @@
 export const SCHEMA = 'build-pipeline@1';
 export const DONE_SCHEMA = 'done-means-merged@1';
 /** The pipeline table: what each builds@1 status shows as (fixing is a kind of building: a session may be on it). */
-export const TABLE = Object.freeze({ pending: 'pending', queued: 'queued', running: 'building', waiting: 'building', fixing: 'building' });
+export const TABLE = Object.freeze({ pending: 'pending', splitting: 'pending', queued: 'queued', running: 'building', waiting: 'building', fixing: 'building' });
 export const TABLE_STATES = ['pending', 'queued', 'building'];
 export const TABLE_LABEL = Object.freeze({ pending: 'Pending', queued: 'Queue', building: 'Building' });
 export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
@@ -315,6 +318,157 @@ export function normPipeline(p) {
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
+}
+
+// ------------------------------------------------------------------ split-plan@1: the split run on a builds@1 build
+/*
+ * One build at a time, split to fill every slot (Brett, Nov 18 2026; framework/spec/BUILD-SPLIT.md). Two optional fields
+ * on a builds@1 build, both absent on every build from before this contract (nothing to migrate, nothing lost):
+ *   splitId  the id the splitter gave this split: the proof a build went through the splitter (the VPS gate refuses a
+ *            start without it). SPLIT_ID_RE.
+ *   split    the record of the split. It keeps who split it (`by`, `model`, `at`, `stepCount`: pipeline-status@1
+ *            normSplit) and adds the plan:
+ *     parts[]  { id, steps[], files[], branch, slot, base, status } + account, session, attempt, startedAt, updatedAt,
+ *              doneAt, note when set. One part = one branch, one agent slot, started from `base` (the locked main sha);
+ *              no two parts claim the same file, no step is in two parts. status = PART_STATUSES.
+ *     combine  { state, branch, base, pr, at, note }: the run as a whole. state = RUN_STATES (splitting → queued →
+ *              building → combining → ci → merging → merged → live → finished, or failed); branch = the one branch
+ *              every part is combined into, pr = its one PR.
+ * A key this code does not know, on the split, on a part or on combine, is kept as it is (a newer writer's field
+ * survives an older checkout's write). Shape: normSplitId / normSplitPart / normSplitCombine / normSplitPlan; the store
+ * shapes both fields on every read and write (builds-store.mjs keepBuild). Rules: validateSplit (the store check).
+ */
+export const SPLIT_SCHEMA = 'split-plan@1';
+export const SPLIT_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,119}$/;
+export const PART_STATUSES = Object.freeze(['waiting', 'building', 'testing', 'rebuilding', 'failed', 'done']);
+/** The part statuses a session is still working in (a badge animates only on these). */
+export const PART_WORKING = Object.freeze(['waiting', 'building', 'testing', 'rebuilding']);
+export const RUN_STATES = Object.freeze(['splitting', 'queued', 'building', 'combining', 'ci', 'merging', 'merged', 'live', 'finished', 'failed']);
+export const SPLIT_PARTS_MAX = 32;
+const PART_KEYS = ['id', 'steps', 'files', 'branch', 'slot', 'base', 'status', 'account', 'session', 'attempt', 'startedAt', 'updatedAt', 'doneAt', 'note'];
+const COMBINE_KEYS = ['state', 'branch', 'base', 'pr', 'at', 'note'];
+const sha = (v) => { const s = str(v, 64).trim(); return /^[0-9a-f]{7,64}$/i.test(s) ? s.toLowerCase() : ''; };
+const strList = (v, max, cap) => [...new Set((Array.isArray(v) ? v : []).map((x) => str(x, max).trim()).filter(Boolean))].slice(0, cap);
+/** Every key of `from` that is not in `keys`, copied as it is (JSON values only). */
+const rest = (from, keys) => { const out = {}; for (const [k, v] of Object.entries(from)) if (!keys.includes(k) && v !== undefined) { try { out[k] = JSON.parse(JSON.stringify(v)); } catch { /* not JSON: not stored */ } } return out; };
+
+/** A split id in shape, or '' (absent, or not one). */
+export const normSplitId = (v) => (typeof v === 'string' && SPLIT_ID_RE.test(v.trim()) ? v.trim() : '');
+
+/** One part in shape, or null (not an object). A part without an id gets p<n>; an unknown status reads as waiting. */
+export function normSplitPart(p, i = 0) {
+  const x = obj(p); if (!x) return null;
+  const attempt = int(x.attempt);
+  return {
+    id: str(x.id, 40).trim() || `p${i + 1}`,
+    steps: strList(x.steps, 80, 200), files: strList(x.files, 300, 2000),
+    branch: str(x.branch, 200), slot: str(x.slot, 60), base: sha(x.base),
+    status: oneOf(PART_STATUSES, x.status, 'waiting'),
+    ...(accountName(x.account) ? { account: accountName(x.account) } : {}),
+    ...(str(x.session) ? { session: str(x.session, 120) } : {}),
+    ...(attempt ? { attempt } : {}),
+    ...(iso(x.startedAt) ? { startedAt: iso(x.startedAt) } : {}),
+    ...(iso(x.updatedAt) ? { updatedAt: iso(x.updatedAt) } : {}),
+    ...(iso(x.doneAt) ? { doneAt: iso(x.doneAt) } : {}),
+    ...(str(x.note) ? { note: str(x.note, 400) } : {}),
+    ...rest(x, PART_KEYS),
+  };
+}
+
+/** The run record in shape, or null. An unknown state reads as queued when the split has parts, splitting before. */
+export function normSplitCombine(c, { parts = 0 } = {}) {
+  const x = obj(c); if (!x) return null;
+  return {
+    state: oneOf(RUN_STATES, x.state, parts ? 'queued' : 'splitting'),
+    branch: str(x.branch, 200), base: sha(x.base), pr: str(x.pr, 200), at: iso(x.at),
+    ...(str(x.note) ? { note: str(x.note, 400) } : {}),
+    ...rest(x, COMBINE_KEYS),
+  };
+}
+
+/**
+ * `split` on a build in shape, or null (not an object). Who split it (by / model / at / stepCount) and every other key
+ * stay as they are; `parts` and `combine` are shaped when present (a repeated part id keeps its first part). A split
+ * with neither is the older provenance-only record and comes back unchanged.
+ */
+export function normSplitPlan(s) {
+  const x = obj(s); if (!x) return null;
+  const out = rest(x, ['parts', 'combine']);
+  if (Array.isArray(x.parts)) {
+    const seen = new Set();
+    out.parts = x.parts.map(normSplitPart).filter((p) => p && !seen.has(p.id) && seen.add(p.id)).slice(0, SPLIT_PARTS_MAX);
+  }
+  const combine = normSplitCombine(x.combine, { parts: out.parts?.length ?? 0 });
+  if (combine) out.combine = combine;
+  return out;
+}
+
+/** The parts of a build's split ([] before the split, and on every build from before split-plan@1). */
+export const partsOf = (b) => (Array.isArray(b?.split?.parts) ? b.split.parts : []);
+/** The build went through the splitter: it carries a split id and at least one part. */
+export const hasSplitPlan = (b) => !!normSplitId(b?.splitId) && partsOf(b).length > 0;
+/** Two claimed paths clash: the same path, or one is a folder holding the other. */
+export const pathsClash = (a, b) => { const x = str(a, 300).replace(/\/+$/, ''); const y = str(b, 300).replace(/\/+$/, ''); return !!x && !!y && (x === y || y.startsWith(`${x}/`) || x.startsWith(`${y}/`)); };
+
+/**
+ * split-plan@1 on one build as stored → [{ path, message }] ([] = fine; a build with neither field is fine). Checked:
+ * the split id's shape, parts only with a split id, part ids once, statuses and the run state in their lists, a step in
+ * one part only and naming a step of the build, no file claimed by two parts.
+ */
+export function validateSplit(b) {
+  const errors = []; const err = (path, message) => errors.push({ path, message });
+  const x = obj(b); if (!x) return errors;
+  if (x.splitId != null && !normSplitId(x.splitId)) err('splitId', `"${str(x.splitId, 60)}" is not a split id`);
+  if (x.split == null) return errors;
+  const s = obj(x.split); if (!s) { err('split', 'is not an object'); return errors; }
+  if (s.parts !== undefined && !Array.isArray(s.parts)) err('split.parts', 'is not a list');
+  const parts = (Array.isArray(s.parts) ? s.parts : []).map((p, i) => ({ raw: obj(p), part: normSplitPart(p, i), at: `split.parts[${i}]` }));
+  if (parts.length && !normSplitId(x.splitId)) err('splitId', 'a split with parts needs a split id');
+  if (parts.length > SPLIT_PARTS_MAX) err('split.parts', `${parts.length} parts (at most ${SPLIT_PARTS_MAX})`);
+  const stepIds = new Set((Array.isArray(x.steps) ? x.steps : []).flatMap((st) => [st?.id, st?.uid]).filter(Boolean));
+  const ids = new Set(); const stepIn = new Map(); const claimed = [];
+  for (const { raw, part, at } of parts) {
+    if (!part) { err(at, 'is not an object'); continue; }
+    if (ids.has(part.id)) err(`${at}.id`, `"${part.id}" is used by two parts`); ids.add(part.id);
+    if (raw.status !== undefined && !PART_STATUSES.includes(raw.status)) err(`${at}.status`, `"${str(raw.status, 40)}" is not one of ${PART_STATUSES.join(', ')}`);
+    if (str(raw.base) && !sha(raw.base)) err(`${at}.base`, `"${str(raw.base, 70)}" is not a commit sha`);
+    for (const id of part.steps) {
+      if (stepIds.size && !stepIds.has(id)) err(`${at}.steps`, `"${id}" is not a step of the build`);
+      if (stepIn.has(id)) err(`${at}.steps`, `step "${id}" is also in part ${stepIn.get(id)}`); else stepIn.set(id, part.id);
+    }
+    for (const f of part.files) {
+      const other = claimed.find((c) => c.part !== part.id && pathsClash(c.file, f));
+      if (other) err(`${at}.files`, `"${f}" is also claimed by part ${other.part}${other.file === f ? '' : ` ("${other.file}")`}`);
+      claimed.push({ part: part.id, file: f });
+    }
+  }
+  const c = obj(s.combine);
+  if (s.combine != null && !c) err('split.combine', 'is not an object');
+  if (c && c.state !== undefined && !RUN_STATES.includes(c.state)) err('split.combine.state', `"${str(c.state, 40)}" is not one of ${RUN_STATES.join(', ')}`);
+  return errors;
+}
+
+/**
+ * One part's status change (pure) → { ok, why, split, part }. Stamps updatedAt, startedAt on the first working status
+ * past waiting, doneAt on done; a move to rebuilding counts one more attempt. `extra` may set slot, branch, base,
+ * account, session and note. Refused: no such part, a status outside PART_STATUSES. Which moves are legal is the
+ * state machine's (framework/core/build-split.mjs), not this record's.
+ */
+export function setPartStatus(split, partId, status, { at = new Date().toISOString(), extra = null } = {}) {
+  const plan = normSplitPlan(split);
+  const i = (plan?.parts ?? []).findIndex((p) => p.id === partId);
+  if (i < 0) return { ok: false, why: `no part "${str(partId, 40)}" in the split`, split: plan, part: null };
+  if (!PART_STATUSES.includes(status)) return { ok: false, why: `"${str(status, 40)}" is not one of ${PART_STATUSES.join(', ')}`, split: plan, part: plan.parts[i] };
+  const was = plan.parts[i]; const e = obj(extra) ?? {};
+  const set = Object.fromEntries(['slot', 'branch', 'base', 'account', 'session', 'note'].filter((k) => e[k] !== undefined).map((k) => [k, e[k]]));
+  const part = normSplitPart({
+    ...was, ...set, status, updatedAt: at,
+    ...(status !== 'waiting' && !was.startedAt ? { startedAt: at } : {}),
+    ...(status === 'rebuilding' && was.status !== 'rebuilding' ? { attempt: (was.attempt || 1) + 1 } : {}),
+    doneAt: status === 'done' ? (was.doneAt || at) : '',
+  }, i);
+  const parts = plan.parts.slice(); parts[i] = part;
+  return { ok: true, why: '', split: { ...plan, parts }, part };
 }
 
 /** Which table a build sits in ('' for builds the table does not show: built, complete, failed, blocked, archived). */
