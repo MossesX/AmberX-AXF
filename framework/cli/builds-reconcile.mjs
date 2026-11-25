@@ -11,6 +11,9 @@
  * session axf-<build>--<step>, no agent slot holding it) is reset to ready, its worktree and branch kept for the retry;
  * step branches (`<build-branch>--<step>`) are never matched as builds or orphans; and a build counts as built only when
  * every step branch has merged back (a merged one is deleted), else it stays running with a note.
+ * Status comes from the builds store only (the database once it is there; there is no status file), read at the start
+ * of the pass and again inside the one write. Brett's stops stick (build-pipeline@1 keepStops): a held, cancelled or
+ * unqueued build is never set running, queued or built by a pass; the report lists them as `stopsKept`.
  *
  *   node framework/cli/builds-reconcile.mjs              dry run: what it would change (nothing written)
  *   … --apply                                           write the changes (live to main) and the report; Pending builds
@@ -36,7 +39,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
-import { claimLive, isParallelStep, releaseStep, stepBranch } from '../core/build-pipeline.mjs';
+import { STOP_LABEL, claimLive, isParallelStep, keepStops, releaseStep, stepBranch, stopOf } from '../core/build-pipeline.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
@@ -179,9 +182,11 @@ export function stepAlive(sessions, slots) {
 
 /** Apply a plan in one store write (live to main). Returns the changes the store saw. */
 export function applyPlan(p, by = 'reconciler') {
-  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [] };
+  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [], kept: [] };
+  let kept = [];
   const r = withStore((s) => {
     const now = new Date().toISOString();
+    const was = JSON.parse(JSON.stringify(s.builds));
     for (const c of p.changes) {
       const b = s.builds.find((x) => x.id === c.id); if (!b) continue;
       // a new PR on the build: its merged time is that PR's (blank while open)
@@ -202,9 +207,16 @@ export function applyPlan(p, by = 'reconciler') {
       const rel = releaseStep(b, r.step, { runId: r.runId, now, note: `Reconciler: ${r.why}` });
       if (rel.ok && rel.released) { Object.assign(b, rel.build); b.notes.push({ text: `Reconciler: ${r.why}`, at: now }); b.updatedAt = now; }
     }
+    // Brett's stops stick (build-pipeline@1 single Queued): a held, cancelled or unqueued build keeps its stop and the
+    // status it rests in, whatever GitHub or a dead session suggests; ticked steps and PR fields still come in. The
+    // Queue itself is the dispatcher's to settle.
+    const k = keepStops(was, s.builds, { by, at: now, settle: false, soft: true });
+    kept = k.kept;
+    for (const x of kept) { const b = k.builds.find((q) => q.id === x.id); const st = stopOf(b); const text = `Reconciler: left ${st ? STOP_LABEL[st.kind].toLowerCase() : 'as it is'}: only Brett lifts that.`; if (b && b.notes?.at(-1)?.text !== text) b.notes = [...(b.notes ?? []), { text, at: now }]; }
+    s.builds = k.builds;
     return s;
   }, { by, action: 'reconcile', note: [...p.changes.map((c) => c.id), ...(p.stepResets ?? []).map((r) => `${r.id}/${r.step}`)].join(', ') });
-  return { changes: r.changes };
+  return { changes: r.changes, kept };
 }
 
 /**
@@ -265,14 +277,14 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
     const same = p.changes.find((x) => x.id === c.id);
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
   }
-  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [] };
+  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [], kept: [] };
   const requeued = await requeueParked(apply);
   const landing = error ? null : await syncLanding(builds, gathered.prs, { apply });
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
   const report = {
     $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error: [error, gathered.gitError, landing?.error ? `lander: ${landing.error}` : ''].filter(Boolean).join('; '), pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
-    changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
+    changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length, stopsKept: applied.kept ?? [],
     stepResets: p.stepResets, stepBranches: [...p.stepBranches.entries()].map(([id, list]) => ({ id, steps: list })),
     requeued, landing,
     running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,

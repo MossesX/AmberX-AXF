@@ -83,7 +83,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
-import { migrateDoneStore } from '../core/build-pipeline.mjs';
+import { keepStops, migrateDoneStore } from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -686,7 +686,9 @@ export function adoptStore(next, { journals = {} } = {}) {
 /** cutover adopt: main's newer builds → the tables (withStore: row-level patch, re-read on a conflict). The ids taken. */
 export function adoptRemote(next) {
   let taken = [];
-  withStore((s) => { const m = merge.mergeStores(s, normKeeping(next)); taken = m.taken; return m.taken.length ? m.store : s; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
+  // the tables hold the status; main's copy is a projection, so it never lifts Brett's stop on a build or moves a
+  // stopped one (build-pipeline@1 keepStops): the rest of a newer record still comes in
+  withStore((s) => { const m = merge.mergeStores(s, normKeeping(next)); taken = m.taken; if (!m.taken.length) return s; m.store.builds = keepStops(s.builds, m.store.builds, { by: 'builds-live', settle: false, soft: true }).builds; return m.store; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
   return taken;
 }
 /** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */

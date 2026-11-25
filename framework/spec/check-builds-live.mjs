@@ -75,7 +75,7 @@ async function main() {
   check(files.every((f) => f.startsWith('_claude/')), `status commit touches only _claude/ (${files.join(' ')})`);
   check(files.some((f) => f.startsWith('_claude/builds/journal/')), 'status commit carries the journal line');
   check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/current/orchestrator.json').status !== 0, 'a retired profile\'s export is taken off main by the next publish');
-  check(git(A, 'show', 'origin/main:_claude/builds/orchestrator.json').includes('"id": "x"'), 'the base profile (all) exports to the original orchestrator path');
+  check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/orchestrator.json').status !== 0, 'no status file on main: a publish never writes orchestrator.json (Nov 25 2026)');
   const live = JSON.parse(run(A, LIVE, ['status', '--json']).stdout);
   check(live.queued === 0 && live.lastOk && !live.stuck, 'outbox empty, last publish recorded');
 

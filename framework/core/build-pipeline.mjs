@@ -551,14 +551,23 @@ export function guardStop(before, after, by = '') {
   return { ok: true, why: '' };
 }
 /**
- * A reconcile pass, checked as a whole: every build whose change breaks guardStop() is put back as it was, then the
- * Queue is settled. { builds, kept: [{ id, why }] } — what the pass was not allowed to do.
+ * A reconcile pass, checked as a whole: every build whose change breaks guardStop() is put back as it was (`soft`:
+ * only its stop and resting status are put back, the rest of the change stays), then the Queue is settled
+ * (`settle: false` leaves that to the dispatcher). { builds, kept: [{ id, why }] } — what the pass was not allowed to do.
  */
-export function keepStops(before, after, { by = 'reconciler', at, priorityOf } = {}) {
+export function keepStops(before, after, { by = 'reconciler', at, priorityOf, settle = true, soft = false } = {}) {
   const was = new Map((before ?? []).map((b) => [b.id, b]));
   const kept = [];
-  const builds = (after ?? []).map((b) => { const g = guardStop(was.get(b.id), b, by); if (g.ok) return b; kept.push({ id: b.id, why: g.why }); return was.get(b.id); });
-  return { builds: settleQueue(builds, { at, by, priorityOf }).builds, kept };
+  const builds = (after ?? []).map((b) => {
+    const w = was.get(b.id); const g = guardStop(w, b, by);
+    if (g.ok) return b;
+    kept.push({ id: b.id, why: g.why });
+    // soft: what the pass learned about the build (ticked steps, its PR, a note) stays; only the stop and the status it
+    // rests in are put back. When even that breaks the guard, the build is as it was.
+    if (soft) { const s = { ...b, status: w.status, pipeline: { ...(b.pipeline ?? {}), stop: w.pipeline?.stop, heldAt: w.pipeline?.heldAt ?? '', heldBy: w.pipeline?.heldBy ?? '', heldWhy: w.pipeline?.heldWhy ?? '', queuedAt: w.pipeline?.queuedAt ?? '', queuedBy: w.pipeline?.queuedBy ?? '' } }; if (s.pipeline.stop === undefined) delete s.pipeline.stop; if (guardStop(w, s, by).ok) return s; }
+    return w;
+  });
+  return { builds: settle ? settleQueue(builds, { at, by, priorityOf }).builds : builds, kept };
 }
 
 // ------------------------------------------------------------------ step dependencies and claims (Nov 13 2026)

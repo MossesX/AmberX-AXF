@@ -81,4 +81,4 @@ export function stopBuild<B extends QueueBuild>(b: B, kind: StopKind, opts?: { a
 export function releaseStop<B extends QueueBuild>(b: B, opts?: { by?: string }): { ok: boolean; why: string; build: B };
 export function stoppedExit(b: BuildLike, status: string): string;
 export function guardStop(before: BuildLike, after: BuildLike, by?: string): { ok: boolean; why: string };
-export function keepStops<B extends QueueBuild>(before: B[], after: B[], opts?: { by?: string; at?: string; priorityOf?: Prio<B> }): { builds: B[]; kept: { id: string; why: string }[] };
+export function keepStops<B extends QueueBuild>(before: B[], after: B[], opts?: { by?: string; at?: string; priorityOf?: Prio<B>; settle?: boolean; soft?: boolean }): { builds: B[]; kept: { id: string; why: string }[] };

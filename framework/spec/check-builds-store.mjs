@@ -378,6 +378,33 @@ t('builds-store migrateStepDepsNow writes one journalled stamp; a second run wri
   const r2 = io.migrateStepDepsNow('test'); assert.equal(r2.report.stamped, false); assert.equal(r2.rev, r1.rev);
 });
 
+// single Queued (build-pipeline@1): a reconcile pass never lifts Brett's stop, and status comes from the store only
+await (async () => {
+  const rec = await import('../cli/builds-reconcile.mjs');
+  const stop = { kind: 'cancel', at: '2026-11-25T10:00:00.000Z', by: 'console', why: 'not now', from: 'running' };
+  const steps = () => [{ id: 's1', text: 'one' }, { id: 's2', text: 'two' }];
+  io.withStore((s) => { s.builds.push({ id: 'rc-stopped', title: 'Stopped', status: 'pending', profile: 'all', steps: steps(), pipeline: { stop } }, { id: 'rc-held', title: 'Held', status: 'pending', profile: 'all', steps: steps(), pipeline: { stop: { ...stop, kind: 'hold', from: 'queued' }, heldAt: stop.at, heldBy: 'console' } }, { id: 'rc-free', title: 'Free', status: 'pending', profile: 'all', steps: steps() }); return s; }, { by: 'test', action: 'add' });
+  const change = (id, set = {}) => ({ id, set: { branch: `claude/${id}`, pr: '#77', ...set }, steps: ['s1'], stepNotes: { s1: 'PR #77' }, why: ['PR #77 names s1'] });
+  const r = rec.applyPlan({ changes: [change('rc-stopped'), change('rc-held', { status: 'queued' }), change('rc-free')], stepResets: [] });
+  const after = Object.fromEntries(io.loadStore().builds.filter((b) => b.id.startsWith('rc-')).map((b) => [b.id, b]));
+  t('reconcile: an unstopped build follows GitHub (a ticked step sets it running)', () => { assert.equal(after['rc-free'].status, 'running'); assert.equal(after['rc-free'].steps[0].done, true); });
+  t('reconcile: a cancelled build stays in Pending with its stop; the step GitHub shows done and the PR still come in', () => {
+    const b = after['rc-stopped'];
+    assert.equal(b.status, 'pending'); assert.deepEqual(b.pipeline.stop, stop); assert.equal(b.steps[0].done, true); assert.equal(b.pr, '#77');
+    assert.match(b.notes.at(-1).text, /left cancelled: only Brett/);
+  });
+  t('reconcile: a held build is never queued again by the pass', () => { const b = after['rc-held']; assert.equal(b.status, 'pending'); assert.equal(b.pipeline.stop.kind, 'hold'); assert.equal(b.pipeline.heldAt, stop.at); });
+  t('reconcile: the report names the stops it kept', () => { assert.deepEqual(r.kept.map((x) => x.id).sort(), ['rc-held', 'rc-stopped']); assert.match(r.kept[0].why, /may not/); });
+  t('reconcile: a second pass over the same finding changes nothing on a stopped build', () => { const before = JSON.stringify(io.readBuild('rc-stopped')); rec.applyPlan({ changes: [{ id: 'rc-stopped', set: { status: 'running' }, steps: [], stepNotes: {}, why: ['PR #77 names s1'] }], stepResets: [] }); const b = io.readBuild('rc-stopped'); assert.equal(b.status, 'pending'); assert.deepEqual(b.pipeline.stop, stop); assert.equal(JSON.stringify({ ...b, notes: [], rev: 0, updatedAt: '', journalHash: '' }), JSON.stringify({ ...JSON.parse(before), notes: [], rev: 0, updatedAt: '', journalHash: '' })); });
+  t('pipeline status from the store: the summary and one build by id (local twin of the summary query)', () => {
+    const sum = io.pipelineSummary();
+    assert.equal(sum.$axf, 'pipeline-summary@1'); assert.equal(sum.counts.running >= 1, true); assert.ok(sum.running.some((x) => x.id === 'rc-free')); assert.equal(sum.total, io.loadStore().builds.filter((b) => !b.deleted).length);
+    assert.equal(io.readBuild('rc-free').status, 'running'); assert.equal(io.readBuild('nope'), null);
+    const w = io.withBuild('rc-free', (b) => { b.title = 'Free 2'; }, { by: 'test', action: 'retitle' });
+    assert.equal(w.row, false); assert.equal(w.build.title, 'Free 2'); assert.deepEqual(w.changes.map((x) => x.id), ['rc-free']);
+  });
+})();
+
 // builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
 // through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
 t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {

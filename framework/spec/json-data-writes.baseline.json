@@ -1,7 +1,7 @@
 {
  "$axf": "json-data-writes-baseline@1",
  "note": "Direct JSON/JSONL data writes that existed when no-json-data@1 began (Nov 19 2026). Counts may only go down: framework/spec/check-json-data-writes.mjs.",
- "total": 218,
+ "total": 217,
  "files": {
   "apps/console-web/plugins/activity/activity.mjs": 3,
   "apps/console-web/plugins/activity/server/complete.py": 1,
@@ -83,7 +83,7 @@
   "framework/cli/build-queue.mjs": 1,
   "framework/cli/build-rules-migrate.mjs": 1,
   "framework/cli/builds-data.mjs": 1,
-  "framework/cli/builds-live.mjs": 4,
+  "framework/cli/builds-live.mjs": 3,
   "framework/cli/builds-reconcile.mjs": 1,
   "framework/cli/builds-store.mjs": 4,
   "framework/cli/chrome-settings.mjs": 1,

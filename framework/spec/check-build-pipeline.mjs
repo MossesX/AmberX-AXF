@@ -184,6 +184,18 @@ eq(BP.stoppedExit({ status: 'running' }, 'queued'), 'queued', 'an unstopped buil
   const q = BP.queueOne([{ id: 'x', status: 'pending', deleted: false, hidden: false, steps: [{ id: 's1', done: false }], pipeline: { stop: { ...stopRec, kind: 'unqueue' } } }], 'x', { at: NOW, by: 'console' });
   eq([q.ok, q.builds[0].status, BP.isStopped(q.builds[0])], [true, 'queued', false], 'Brett queueing a stopped build lifts its stop'); }
 
+{ // keepStops options: soft keeps what the pass learned, settle: false leaves the Queue to the dispatcher
+  const st = { ...stopRec, kind: 'unqueue', from: 'queued' };
+  const was = [{ id: 'a', status: 'pending', steps: [{ id: 's1', done: false }], pipeline: { stop: st } }, { id: 'q1', status: 'queued', pipeline: { queuedAt: QUEUED_AT } }, { id: 'q2', status: 'queued', pipeline: { queuedAt: NOW } }];
+  const pass = [{ ...was[0], status: 'running', pr: '#9', steps: [{ id: 's1', done: true }], pipeline: {} }, was[1], was[2]];
+  const hard = BP.keepStops(was, pass, { by: 'reconciler', at: NOW });
+  eq([hard.builds[0], hard.kept.length], [was[0], 1], 'keepStops: a build whose stop was lifted is put back as it was');
+  eq(hard.builds.filter((b) => b.status === 'queued').map((b) => b.id), ['q1'], 'keepStops settles the Queue by default');
+  const soft = BP.keepStops(was, pass, { by: 'reconciler', at: NOW, soft: true, settle: false });
+  eq([soft.builds[0].status, soft.builds[0].pipeline.stop, soft.builds[0].pr, soft.builds[0].steps[0].done], ['pending', st, '#9', true], 'soft: the stop and the resting status are put back, the ticked step and the PR stay');
+  eq(soft.builds.filter((b) => b.status === 'queued').length, 2, 'settle: false leaves the Queue as it is');
+  eq(BP.keepStops(was, pass, { by: 'console', soft: true, settle: false }).kept, [], 'Brett may lift his own stop'); }
+
 if (WRITE) { writeFileSync(QFIXTURE, `${JSON.stringify(qfx, null, 2)}\n`); writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 2)}\n`); console.log(`build-pipeline: fixture written (${fixture.transition.length} transition + ${fixture.sessions.length} session cases)`); }
 if (failed) { console.error(`build-pipeline: ${failed}/${n} checks failed`); process.exit(1); }
 console.log(`build-pipeline: ${n}/${n} checks passed`);
