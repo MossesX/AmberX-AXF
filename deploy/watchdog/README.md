@@ -12,7 +12,7 @@ watchdog and the stale-row cleaner) skip Pipeline 2.0 builds.
 | 1 | The orchestrator tick does the normal work | cron `axf-orchestrator-tick`, every minute | the build orchestrator's `orchestrator.mjs tick` |
 | 2 | Finds stuck work and fixes it | cron `axf-watchdog-l2`, every minute | `layer2.mjs run` (decisions: `core.mjs`) |
 | 3 | Keeps layers 1 and 2 alive; alerts only when it can't heal | systemd `axf-watchdog-l3.timer`, every 2 min | `layer3.mjs run` |
-| – | Store audits: `builds-store.mjs verify`, `model-gate.mjs audit`, `build-origin.mjs missing` | cron `axf-watchdog-audits`, :17 and :47 | `audits.mjs run` |
+| – | Store audits: `builds-store.mjs verify`, `model-gate.mjs audit`, `build-origin.mjs missing`, and the watch coverage check | cron `axf-watchdog-audits`, :17 and :47 | `audits.mjs run` |
 
 `cron.mjs install` writes every schedule (called by `deploy/install-console.sh` and the orchestrator plugin's installer)
 and removes the retired `axf-pipeline`, `axf-auto-land` and `axf-watchdog` crons, so a deploy never brings them back.
@@ -53,12 +53,33 @@ core, and only from the main checkout (never a build worktree). The build rules 
 dispatch (`one-builds-store`, `model-upgrade-approval`, `fable-auto-upgrade`, `build-origin-verbatim`) now name a
 `watchdog:<audit>` checker; `audits.mjs handoff` makes that edit on the live rules store.
 
+## Watch coverage
+
+`coverage.mjs` (watch-coverage@1) answers "is there a watchdog for this?" for every status a build or step can stand
+in: who watches it, after how many minutes, and what the catch does. It is derived from the tables the watchdogs run on
+(the status contract, the layer-2 budgets, the Stuck statuses list), so nothing is listed by hand.
+
+| Gap | Meaning |
+|---|---|
+| `unwatched` | A status that is not an end status has no watcher with a time limit |
+| `slow` | A landing status (`build-complete` to `merging-main`) is first looked at after more than 20 minutes |
+| `off` | A watchdog or one of its watches is switched off, or a schedule is not installed (live check only) |
+
+It runs in two places. In CI (`coverage.test.mjs`): a status added to the flow without a limit, or a default raised past
+the ceiling, fails the build. On the box, as the `coverage` audit every 30 minutes with the live settings: a limit
+raised in the settings, a watch switched off or a missing cron file is one alert to Brett with the command that fixes
+it. A gap with a build already closing it is listed in `KNOWN_GAPS` and reported without failing.
+
+Why it exists (Nov 24 2026): PR #915 and #916 stood in `running-ci` until the build was failed and merged by hand.
+Three watchdogs were running and none covered that place, and nothing said so.
+
 ## Commands
 
 ```
 node deploy/watchdog/layer2.mjs scan | run | status | settings | set key=value…
 node deploy/watchdog/layer3.mjs check | run
 node deploy/watchdog/audits.mjs run [--force] | status | handoff
+node deploy/watchdog/coverage.mjs [table] | check [--json]
 node deploy/watchdog/cron.mjs install [--dir /opt/axf] | status | print | remove
 node --test deploy/watchdog/*.test.mjs
 ```
