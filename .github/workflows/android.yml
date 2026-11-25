@@ -213,6 +213,8 @@ jobs:
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
+      - name: Hub pass settings by voice (pass-voice@1: a phrase, the MCP call, the REST request and the CLI words are the same; fixture)  # axf-plugin:gate
+        run: node apps/console-web/plugins/gate/test/test.pass-voice.mjs  # axf-plugin:gate
       - name: Merge queue view (read-only projection of the builds store; no state, no actions)  # axf-plugin:merge-queue-view
         run: node apps/console-web/plugins/merge-queue-view/test.mjs  # axf-plugin:merge-queue-view
       - name: Lander (one PR per build, size-cap groups, flaky re-run, split, fix session, forward-only statuses; real git, fake GitHub, in-memory store)  # axf-plugin:gate

@@ -5,14 +5,14 @@ Brett (Nov 18 2026): "Why do I keep getting approvals when I set a pass?"
 Build `approval-pass-covers-every-call`, Pipeline 2.0, 12 steps, re-run from the top on Nov 25 2026. Two repos:
 
 - AmberX-AXF: step branches `claude/approval-pass-covers-every-call--s1` … `--s11`. `--s11` has every finished step
-  merged (s1-s8, s10) plus this step's work.
+  merged (s1-s10) plus this step's work.
 - axHub (`MossesX/axHub`): step branches `--s4`, `--s6`, `--s7`, `--s9`, merged and fixed up on
   `claude/approval-pass-covers-every-call--s11` (head `975914a`). **No axHub PR is open for this run.** The hub half
   is not live until that branch lands and the hub is deployed. PR #48 (the Nov 18 run) is superseded and conflicts with
   axHub `main`.
 
 Step notes with the detail: `approval-pass-covers-every-call/s2-pass-skips.md` (the trace), `s4-veto-path.md`,
-`s7-notices.md`. Contract: `framework/spec/AXHUB-PASS.md` (pass@2), `framework/schemas/axhub-pass.json`.
+`s7-notices.md`, `s9-pass-settings-api.md`. Contract: `framework/spec/AXHUB-PASS.md` (pass@2), `framework/schemas/axhub-pass.json`.
 
 ## Cause
 
@@ -39,7 +39,7 @@ console. Full list in `s2-pass-skips.md`; the ones that mattered:
 | axHub `pass-log.ts`, docs | Every covered run writes a `pass_run` audit row and a log entry with pass id, tool, policy skipped and time; `pass_status` counts runs per pass. MCP instructions and the `pass_grant` description say a pass covers every tool by default. | s6 |
 | axHub `approval-push.ts`, `vinnie.ts`; console `follow-amber`, `token-control` | Every notice sender asks the pass first. A covered call sends nothing, or one quiet "ran under pass" line when the pass says `quietNotice`. | s7 |
 | Console → VPS Configuration → Passes → axHub passes | Grant form opens on All tools, with an optional service / tool picker. Each active card lists its coverage and the newest calls that ran under it. Edit coverage. | s8 |
-| axHub `passes.ts`, `builtin.ts`, `passes-web.ts`, CLI | `covers` on grant, `axhub.pass_update`, one-pass read, `axhub passes update / show`. | s9 |
+| axHub `passes.ts`, `builtin.ts`, `passes-web.ts`, CLI; console `gate` (`HubPassDetail`, `hubPassActions`, `pass-voice.mjs`) | `covers` on grant, `axhub.pass_update`, one-pass read, `axhub passes update / show`; `#/passes/<id>` in the console; pass-voice@1 maps a spoken command to the same call. | s9 |
 | CI | `token-control/pass-walk.test.mjs` walks every registered tool policy under a covers-all pass and fails if one prompts, counts down or notifies. In the workflow. | s10 |
 | Both repos | This step, see below. | s11 |
 
@@ -47,7 +47,8 @@ console. Full list in `s2-pass-skips.md`; the ones that mattered:
 
 Running everything together showed gaps the separate step branches hid:
 
-- **axHub steps didn't merge.** s4 and s6 both built the run log, with different shapes; s7 and s9 both changed the
+- **The steps didn't merge cleanly.** In this repo s9 rewrote the Passes page from `main` while s8 rebuilt it;
+  merged here as s8's page plus s9's `#/passes/<id>` detail. In axHub: s4 and s6 both built the run log, with different shapes; s7 and s9 both changed the
   pass request. Merged on the axHub `--s11` branch: s6's `passRun` is the one shape, the flat `ranUnder` /
   `policySkipped` stay on the observation for log readers, one `passPolicySkipped` (in `pass-log.ts`).
 - **24 hours was still refused.** `PASS_MAX_MINUTES` is now 1440 in both repos (console engine
@@ -109,8 +110,9 @@ real clicks (`PASS_COVER_VIEW=…`) and checks what is posted. It replaces s8's 
   `main` in Docker and passes on the host; this build doesn't touch it.
 - This repo has no root `pnpm test`; the suite is the workflow. Run here on the merged branch, all green:
   `token-control/test.mjs` (24), `pass-coverage.test.mjs` (8), `pass-walk.test.mjs` (665 veto, 2 confirm, 77
-  always-approve tools, 814 plugin commands), `plugin-commands/test.mjs` (53) and `test_plugin_commands.py` (63),
-  `gate/test.mjs` (27), `hubPages/test.mjs` (268), `follow-amber/test.py` (70), `notify-control/test.py` (133),
+  always-approve tools, 814 plugin commands; 670 / 2 / 78 and 820 with s9 merged), `plugin-commands/test.mjs` (53)
+  and `test_plugin_commands.py` (63), `gate/test.mjs` (27), `gate/test/test.pass-voice.mjs` (5), `hubPages/test.mjs`
+  (276), `follow-amber/test.py` (70), `notify-control/test.py` (133),
   `claude-settings/test.mjs` (107), console `tsc --noEmit` and `vite build`, `check-theme`, `check-controls`,
   `check-toolbars`, `check-chrome-assets`, `check-plugin-settings`, `check-settings-sources`, `help-coverage --check`,
   `gen-fixtures` (no fixture changed). The whole workflow was not run locally; CI runs it on the PR.
@@ -127,6 +129,4 @@ real clicks (`PASS_COVER_VIEW=…`) and checks what is posted. It replaces s8's 
 - No wait's "until off" is still a 4-hour console pass renewed by a clock (`claude-settings/core.mjs`).
 - A call already counting down when a pass is granted keeps its countdown (s4's choice: releasing it would take away
   the chance to deny it).
-- s9's console half (pass settings in the console calling the new hub routes) had not been committed when this step
-  merged; the lander picks it up from `--s9` if it lands.
 - Kotlin twins deferred (`framework/spec/PORTING.md`).

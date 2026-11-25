@@ -515,6 +515,11 @@
         "text": "Opens the approvals log filtered to the calls that ran under this pass."
       },
       {
+        "target": "all-passes",
+        "title": "All passes",
+        "text": "Closes this one pass and goes back to the whole list: the passes that are on, the form to switch one on, and the ones that ended."
+      },
+      {
         "target": "service",
         "title": "Service",
         "text": "Which service the pass covers, for example axf-console. Only calls from that service run under it.",

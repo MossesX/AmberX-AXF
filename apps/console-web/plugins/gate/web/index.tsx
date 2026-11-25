@@ -5,6 +5,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { registerGateActions } from './actions';
+import { registerHubPassActions } from './hubPassActions';
 import { FOLDER } from './api';
 import { BUILD_RULE_DIALOG, BuildRuleDialog } from './BuildRuleDialog';
 import { CHECK_PR_DIALOG, CheckPrDialog } from './CheckPrDialog';
@@ -55,5 +56,5 @@ export const plugin: AxfWebLibrary = {
     { id: 'gate.screen-links', tab: FOLDER, title: 'On the VPS Configuration screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); registerModelTriage(rt); registerApprovals(rt); registerPasses(rt); },
+  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); registerModelTriage(rt); registerApprovals(rt); registerPasses(rt); registerHubPassActions(rt); },
 };

@@ -1,0 +1,680 @@
+{
+  "$axf": "pass-voice@1",
+  "pass": "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+  "cases": [
+    {
+      "phrase": "give me a pass for 30 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"give me a pass for 30 minutes\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"give me a pass for 30 minutes\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "30",
+        "--covers",
+        "all",
+        "--reason",
+        "Pass for 30 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "Pass for an hour.",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 60,
+          "reason": {
+            "title": "Pass for 60 minutes (voice)",
+            "description": "Said: \"Pass for an hour.\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 60,
+          "reason": {
+            "title": "Pass for 60 minutes (voice)",
+            "description": "Said: \"Pass for an hour.\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "60",
+        "--covers",
+        "all",
+        "--reason",
+        "Pass for 60 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "Hey Amber, a 24 hour pass please",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 1440,
+          "reason": {
+            "title": "Pass for 1440 minutes (voice)",
+            "description": "Said: \"Hey Amber, a 24 hour pass please\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 1440,
+          "reason": {
+            "title": "Pass for 1440 minutes (voice)",
+            "description": "Said: \"Hey Amber, a 24 hour pass please\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "1440",
+        "--covers",
+        "all",
+        "--reason",
+        "Pass for 1440 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for everything for 2 hours",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 120,
+          "reason": {
+            "title": "Pass for 120 minutes (voice)",
+            "description": "Said: \"pass for everything for 2 hours\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 120,
+          "reason": {
+            "title": "Pass for 120 minutes (voice)",
+            "description": "Said: \"pass for everything for 2 hours\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "120",
+        "--covers",
+        "all",
+        "--reason",
+        "Pass for 120 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "start a pass for half an hour",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"start a pass for half an hour\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"start a pass for half an hour\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "30",
+        "--covers",
+        "all",
+        "--reason",
+        "Pass for 30 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for everything including deletes for half an hour",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": "all",
+          "minutes": 30,
+          "include_irreversible": true,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for everything including deletes for half an hour\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": "all",
+          "minutes": 30,
+          "include_irreversible": true,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for everything including deletes for half an hour\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "30",
+        "--covers",
+        "all",
+        "--include-irreversible",
+        "--reason",
+        "Pass for 30 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for vps and the console for an hour",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "vps",
+            "axf-console"
+          ],
+          "minutes": 60,
+          "reason": {
+            "title": "Pass for 60 minutes (voice)",
+            "description": "Said: \"pass for vps and the console for an hour\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": [
+            "vps",
+            "axf-console"
+          ],
+          "minutes": 60,
+          "reason": {
+            "title": "Pass for 60 minutes (voice)",
+            "description": "Said: \"pass for vps and the console for an hour\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "60",
+        "--covers",
+        "vps,axf-console",
+        "--reason",
+        "Pass for 60 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for vps run for 30 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "vps.run"
+          ],
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for vps run for 30 minutes\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": [
+            "vps.run"
+          ],
+          "minutes": 30,
+          "reason": {
+            "title": "Pass for 30 minutes (voice)",
+            "description": "Said: \"pass for vps run for 30 minutes\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "30",
+        "--covers",
+        "vps.run",
+        "--reason",
+        "Pass for 30 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for vps.run, github for 45 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "vps.run",
+            "github"
+          ],
+          "minutes": 45,
+          "reason": {
+            "title": "Pass for 45 minutes (voice)",
+            "description": "Said: \"pass for vps.run, github for 45 minutes\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": [
+            "vps.run",
+            "github"
+          ],
+          "minutes": 45,
+          "reason": {
+            "title": "Pass for 45 minutes (voice)",
+            "description": "Said: \"pass for vps.run, github for 45 minutes\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "45",
+        "--covers",
+        "vps.run,github",
+        "--reason",
+        "Pass for 45 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for the server commands and session stops for twenty minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "vps.run",
+            "axf-console.console_terminal_sessions_stop"
+          ],
+          "minutes": 20,
+          "reason": {
+            "title": "Pass for 20 minutes (voice)",
+            "description": "Said: \"pass for the server commands and session stops for twenty minutes\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": [
+            "vps.run",
+            "axf-console.console_terminal_sessions_stop"
+          ],
+          "minutes": 20,
+          "reason": {
+            "title": "Pass for 20 minutes (voice)",
+            "description": "Said: \"pass for the server commands and session stops for twenty minutes\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "20",
+        "--covers",
+        "vps.run,axf-console.console_terminal_sessions_stop",
+        "--reason",
+        "Pass for 20 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "pass for theme changes for 15 minutes",
+      "intent": {
+        "tool": "axhub.pass_grant",
+        "arguments": {
+          "covers": [
+            "scope:tokens.theme"
+          ],
+          "minutes": 15,
+          "reason": {
+            "title": "Pass for 15 minutes (voice)",
+            "description": "Said: \"pass for theme changes for 15 minutes\""
+          }
+        }
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes",
+        "body": {
+          "covers": [
+            "scope:tokens.theme"
+          ],
+          "minutes": 15,
+          "reason": {
+            "title": "Pass for 15 minutes (voice)",
+            "description": "Said: \"pass for theme changes for 15 minutes\""
+          }
+        }
+      },
+      "cli": [
+        "passes",
+        "grant",
+        "15",
+        "--covers",
+        "scope:tokens.theme",
+        "--reason",
+        "Pass for 15 minutes (voice)"
+      ]
+    },
+    {
+      "phrase": "make the pass cover everything",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "covers": "all"
+        },
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/update",
+        "body": {
+          "covers": "all"
+        }
+      },
+      "cli": [
+        "passes",
+        "update",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+        "--covers",
+        "all"
+      ]
+    },
+    {
+      "phrase": "the pass covers vps and github",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "covers": [
+            "vps",
+            "github"
+          ]
+        },
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/update",
+        "body": {
+          "covers": [
+            "vps",
+            "github"
+          ]
+        }
+      },
+      "cli": [
+        "passes",
+        "update",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+        "--covers",
+        "vps,github"
+      ]
+    },
+    {
+      "phrase": "make the pass only cover the console",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "covers": [
+            "axf-console"
+          ]
+        },
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/update",
+        "body": {
+          "covers": [
+            "axf-console"
+          ]
+        }
+      },
+      "cli": [
+        "passes",
+        "update",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+        "--covers",
+        "axf-console"
+      ]
+    },
+    {
+      "phrase": "make the pass quiet",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "quiet_notice": true
+        },
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/update",
+        "body": {
+          "quiet_notice": true
+        }
+      },
+      "cli": [
+        "passes",
+        "update",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+        "--quiet-notice",
+        "on"
+      ]
+    },
+    {
+      "phrase": "make the pass silent",
+      "intent": {
+        "tool": "axhub.pass_update",
+        "arguments": {
+          "quiet_notice": false
+        },
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/update",
+        "body": {
+          "quiet_notice": false
+        }
+      },
+      "cli": [
+        "passes",
+        "update",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10",
+        "--quiet-notice",
+        "off"
+      ]
+    },
+    {
+      "phrase": "end the pass",
+      "intent": {
+        "tool": "axhub.pass_revoke",
+        "arguments": {},
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/revoke",
+        "body": {}
+      },
+      "cli": [
+        "passes",
+        "revoke",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "revoke my pass",
+      "intent": {
+        "tool": "axhub.pass_revoke",
+        "arguments": {},
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/revoke",
+        "body": {}
+      },
+      "cli": [
+        "passes",
+        "revoke",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "turn the pass off",
+      "intent": {
+        "tool": "axhub.pass_revoke",
+        "arguments": {},
+        "needsId": true
+      },
+      "rest": {
+        "method": "POST",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10/revoke",
+        "body": {}
+      },
+      "cli": [
+        "passes",
+        "revoke",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "pass status",
+      "intent": {
+        "tool": "axhub.pass_status",
+        "arguments": {}
+      },
+      "rest": {
+        "method": "GET",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      },
+      "cli": [
+        "passes",
+        "show",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "what does the pass cover?",
+      "intent": {
+        "tool": "axhub.pass_status",
+        "arguments": {}
+      },
+      "rest": {
+        "method": "GET",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      },
+      "cli": [
+        "passes",
+        "show",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "is a pass on",
+      "intent": {
+        "tool": "axhub.pass_status",
+        "arguments": {}
+      },
+      "rest": {
+        "method": "GET",
+        "path": "/auth/api/passes/2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      },
+      "cli": [
+        "passes",
+        "show",
+        "2b0c7c1e-5a0f-4c69-9a55-0d3f6f1f9f10"
+      ]
+    },
+    {
+      "phrase": "pass for vps including deletes for an hour",
+      "intent": null
+    },
+    {
+      "phrase": "pass for 3 days",
+      "intent": null
+    },
+    {
+      "phrase": "pass the salt",
+      "intent": null
+    },
+    {
+      "phrase": "scroll down",
+      "intent": null
+    },
+    {
+      "phrase": "make the pass cover ???",
+      "intent": null
+    },
+    {
+      "phrase": "pass for $$ for 10 minutes",
+      "intent": null
+    },
+    {
+      "phrase": "",
+      "intent": null
+    }
+  ]
+}

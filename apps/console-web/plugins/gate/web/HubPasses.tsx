@@ -19,9 +19,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Chip, Container, Note, Segmented, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { hubPost } from '@console/hubPages/api';
 import { passClock, passSecondsLeft, readPassCovers, relTime } from '@console/hubPages/core';
-import { go } from '@console/hubPages/route';
+import { go, useRouteParams } from '@console/hubPages/route';
 import { HubGate, TapTwice, useHubJson, when } from '@console/hubPages/page';
 import { cachedApprovals, loadApprovals } from './approvalRulesState';
+import { HubPassDetail } from './HubPassDetail';
 import { usePassCoverView } from './rows';
 import {
   coverageChips, coverageSummary, coversFromPick, filterTools, grantBody, lengthLabel, minutesError, pickFromCovers, pickerServices, runLines, runsHeading,
@@ -98,6 +99,8 @@ function Page() {
   useEffect(() => { if (!known.length) void loadApprovals().then((a) => setKnown(a.services), () => { /* typed entries still work */ }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const services = useMemo(() => pickerServices(d?.services, known), [d?.services, known]);
   const now = useTick(!!d?.active.length);
+  // `#/passes/<id>`: that one pass first, ended or not
+  const { id: openId } = useRouteParams('passes');
 
   const act = async (path: string, body: Record<string, unknown>, done: string) => {
     setBusy(true);
@@ -124,6 +127,7 @@ function Page() {
           <Button icon="list" onClick={() => go(rt, 'approvals-log', { pass: 'any' })}>Ran under a pass</Button>
         </div>
       </header>
+      {openId && <HubPassDetail key={openId} id={openId} />}
       {res.error && <Note tone="danger" icon="alert">{res.error}</Note>}
       {d && d.active.length === 0 && <Note icon="pause">No pass is on. Every change waits on its veto countdown or approval.</Note>}
       {d && d.active.map((p) => {
