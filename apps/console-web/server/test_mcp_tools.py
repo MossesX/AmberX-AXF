@@ -43,6 +43,78 @@ for name, t in tools.items():
     if a.read_only_hint:
         ok(name in READ_TOOLS, f"{name} is read-only, so its name says it reads (list/get/status/find/…)")
 
+# hidden-assets@1: list reads; hide / unhide / unhide all write and are not destructive (nothing is deleted). Every
+# call goes to the hidden-assets runner as {op, app?, kind?, id?, by: api:mcp}; a refusal is a ToolError with its words.
+hsent: list[dict] = []
+
+
+def _hidden_stub(req: dict) -> dict:
+    hsent.append(req)
+    if req.get("kind") == "context-menu":
+        return {"ok": False, "error": "kind must be one of tab-group, toolbar, banner, nav-menu, app-menu, widget"}
+    return {"ok": True, "app": req.get("app") or "axf-console", "count": 1, "hidden": [{"kind": "toolbar", "id": "app", "by": req["by"]}]}
+
+
+hserver = mcp_server.build_server(lambda op, **a: {}, hidden_assets=_hidden_stub)
+htools = {t.name: t for t in asyncio.run(hserver.list_tools())}
+ok(mcp_server.HIDDEN_ASSETS_TOOLS == ("hidden_assets_list", "hidden_assets_hide", "hidden_assets_unhide", "hidden_assets_unhide_all"), "the four hidden-assets tools are pinned")
+for name in mcp_server.HIDDEN_ASSETS_TOOLS:
+    ok(name in tools and name in htools, f"{name} exists (with or without a console)")
+ok(tools["hidden_assets_list"].annotations.read_only_hint is True, "hidden_assets_list reads")
+ok(all(tools[n].annotations.read_only_hint is not True and tools[n].annotations.destructive_hint is not True for n in mcp_server.HIDDEN_ASSETS_TOOLS[1:]), "hide / unhide / unhide all write, not destructive")
+ok(all("kind" in htools[n].input_schema["required"] and "id" in htools[n].input_schema["required"] for n in ("hidden_assets_hide", "hidden_assets_unhide")), "hide and unhide need a kind and an id")
+
+
+def _hidden_call(name: str, args: dict) -> dict:
+    out = asyncio.run(hserver.call_tool(name, args))
+    res = out[1] if isinstance(out, tuple) else out
+    if isinstance(res, dict):
+        return res
+    if getattr(res, "isError", False) or getattr(res, "is_error", False):
+        raise RuntimeError(" ".join(getattr(c, "text", "") for c in res.content))
+    sc = getattr(res, "structured_content", None) or getattr(res, "structuredContent", None)
+    return sc if isinstance(sc, dict) else json.loads(res.content[0].text)
+
+
+r = _hidden_call("hidden_assets_list", {})
+ok(hsent[-1] == {"op": "list", "by": "api:mcp"} and r["count"] == 1 and "ok" not in r, "list → {op: list}; the answer is the list, without ok")
+_hidden_call("hidden_assets_hide", {"kind": "toolbar", "id": "app", "app": "axhub"})
+ok(hsent[-1] == {"op": "hide", "app": "axhub", "kind": "toolbar", "id": "app", "by": "api:mcp"}, "hide → {op: hide, app, kind, id, by: api:mcp}")
+_hidden_call("hidden_assets_unhide", {"kind": "widget", "id": "clock:main"})
+ok(hsent[-1] == {"op": "unhide", "kind": "widget", "id": "clock:main", "by": "api:mcp"}, "unhide keeps a widget's <type>:<id> whole")
+_hidden_call("hidden_assets_unhide_all", {"app": "console"})
+ok(hsent[-1] == {"op": "unhide-all", "app": "console", "by": "api:mcp"}, "unhide all → {op: unhide-all, app}")
+try:
+    _hidden_call("hidden_assets_hide", {"kind": "context-menu", "id": "app"})
+    refused = ""
+except Exception as e:  # noqa: BLE001
+    refused = str(e)
+ok("kind must be one of" in refused, "a kind that can't be hidden is refused with the engine's words")
+
+# the default runner: hidden_assets.py's functions in the console process (app, kind, id positional; `by` as default_by)
+import types  # noqa: E402
+
+hcalls: list[tuple] = []
+_fake = types.ModuleType("hidden_assets")
+_fake.list_hidden = lambda app=None: hcalls.append(("list", app)) or {"ok": True, "count": 0, "hidden": []}
+_fake.hide = lambda app, kind, id_, by=None, default_by="api:rest": hcalls.append(("hide", app, kind, id_, by, default_by)) or {"ok": True, "changed": True}
+_fake.unhide = lambda app, kind, id_, by=None, default_by="api:rest": (_ for _ in ()).throw(ValueError("id must be a piece id"))
+_fake.unhide_all = lambda app=None, by=None, default_by="api:rest": hcalls.append(("unhide-all", app, by, default_by)) or {"ok": True, "shown": 2}
+_had = sys.modules.get("hidden_assets")
+sys.modules["hidden_assets"] = _fake
+try:
+    hrun = mcp_server.hidden_assets_runner()
+    ok(hrun({"op": "list", "by": "api:mcp"})["count"] == 0 and hcalls[-1] == ("list", None), "runner: list → list_hidden(app)")
+    ok(hrun({"op": "hide", "kind": "banner", "id": "app", "by": "api:mcp"})["changed"] is True and hcalls[-1] == ("hide", None, "banner", "app", None, "api:mcp"), "runner: hide → hide(app, kind, id, default_by=api:mcp)")
+    ok(hrun({"op": "unhide-all", "app": "axhub", "by": "api:mcp"})["shown"] == 2 and hcalls[-1] == ("unhide-all", "axhub", None, "api:mcp"), "runner: unhide-all → unhide_all(app, default_by=api:mcp)")
+    ok(hrun({"op": "unhide", "kind": "toolbar", "id": "Bad Id", "by": "api:mcp"}) == {"ok": False, "error": "id must be a piece id"}, "runner: a ValueError is a refusal, not a crash")
+    ok(hrun({"op": "hide", "kind": "toolbar"})["ok"] is False and hrun({"op": "nope"})["ok"] is False, "runner: a missing id or an unknown op is refused before any call")
+finally:
+    if _had is None:
+        del sys.modules["hidden_assets"]
+    else:
+        sys.modules["hidden_assets"] = _had
+
 # veto pass tools (pass_* since build pass-all; token_pass_* are the same tools under the old names)
 for name in ("pass_grant", "pass_status", "pass_revoke", "pass_undo", "token_pass_grant", "token_pass_status", "token_pass_revoke", "token_pass_undo"):
     ok(name in tools, f"{name} exists")

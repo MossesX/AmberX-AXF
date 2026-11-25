@@ -16,7 +16,7 @@ import {
   CONSOLE_CONTROL_FRAME, CONSOLE_CONTROL_WIRE, consoleControlFailure, normalizeConsoleControl, parseAddress,
   type ConsoleControlResult, type ScrollState,
 } from '../axf/core/engines/console-control';
-import { controlRegistry } from '../axf/react';
+import { CONTROL_HIGHLIGHT_CLASS, SETTINGS_SUBTAB_ROW, SETTINGS_TAB_ROW, controlRegistry } from '../axf/react';
 import { inventoryViewLabel, inventoryViewOf } from './inventory';
 import { loadedItemFor } from './search';
 
@@ -66,6 +66,39 @@ export function controlState(rt: AxfRuntime): ControlStateSnapshot {
   };
 }
 
+/**
+ * Deep links with an anchor (`view:settings/tab:appearance#hidden`): the part after the last `#` names an element on the
+ * page (`#axf-<anchor>`, e.g. the Hidden list in Settings → Appearance). The address opens as usual, then the anchor is
+ * scrolled into view and highlighted. An id that merely contains `#` followed by anything else is left alone.
+ */
+export function splitAnchor(address: string): { address: string; anchor: string } {
+  const i = address.lastIndexOf('#');
+  if (i < 1) return { address, anchor: '' };
+  const anchor = address.slice(i + 1);
+  return /^[a-z0-9][a-z0-9-]{0,63}$/.test(anchor) ? { address: address.slice(0, i), anchor } : { address, anchor: '' };
+}
+
+/** A Settings tab by its id (`view:settings/tab:<tab>`): settings open in a dialog, so the tab row may not be on the page to resolve. */
+export const SETTINGS_TAB_LINK = /^view:settings\/tab:([a-z0-9][a-z0-9._-]{0,63})$/;
+
+/** How long an anchor stays highlighted. */
+const ANCHOR_HIGHLIGHT_MS = 2400;
+
+async function scrollToAnchor(anchor: string): Promise<boolean> {
+  if (typeof document === 'undefined') return false;
+  for (const ms of [0, 150, 400, 900]) {
+    if (ms) await wait(ms);
+    await settle();
+    const el = document.getElementById(`axf-${anchor}`);
+    if (!el) continue;
+    el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    el.classList.add(CONTROL_HIGHLIGHT_CLASS);
+    setTimeout(() => el.classList.remove(CONTROL_HIGHLIGHT_CLASS), ANCHOR_HIGHLIGHT_MS);
+    return true;
+  }
+  return false;
+}
+
 /** The verbs that can open the address's screen first when it is not rendered. */
 const OPENS_SCREEN = new Set(['open', 'focus', 'press', 'set', 'state', 'scroll', 'plugin.enable', 'plugin.disable']);
 
@@ -79,6 +112,26 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
   try { cmd = normalizeConsoleControl(raw); } catch {
     const r = await reg.run(raw); // the registry's own envelope for an invalid command
     return { ...r, state: controlState(rt) } as ControlAnswer;
+  }
+  // `#anchor` deep links and Settings tabs by id (hidden-assets@1: view:settings/tab:appearance#hidden)
+  // (a registered target whose own id ends in `#word` is that target, never an anchor)
+  const own = !!cmd.address && reg.snapshot().targets.some((t) => t.address === cmd.address);
+  const link = cmd.address && !own ? splitAnchor(cmd.address) : { address: cmd.address ?? '', anchor: '' };
+  const tabId = own ? undefined : SETTINGS_TAB_LINK.exec(link.address)?.[1];
+  const settingsTab = tabId === SETTINGS_TAB_ROW || tabId === SETTINGS_SUBTAB_ROW ? undefined : tabId; // the tab rows themselves are targets
+  if ((cmd.verb === 'open' || cmd.verb === 'focus') && settingsTab) {
+    if (!rt.dispatch(`settings.open:${settingsTab}`)) return withState(rt, { ...consoleControlFailure(CONSOLE_CONTROL_WIRE.UNAVAILABLE, 'Settings did not open here'), $axf: CONSOLE_CONTROL_FRAME } as ConsoleControlResult);
+    const anchorShown = link.anchor ? await scrollToAnchor(link.anchor) : true;
+    if (!link.anchor) { await settle(); await settle(); }
+    focused = { address: cmd.address!, view: rt.getState().view };
+    const key = cmd.verb === 'open' ? 'opened' : 'focused';
+    return withState(rt, { $axf: CONSOLE_CONTROL_FRAME, ok: true, verb: cmd.verb, address: cmd.address, [key]: cmd.address, ...(link.anchor ? { anchor: link.anchor, anchorShown } : {}) } as unknown as ConsoleControlResult);
+  }
+  if (link.anchor) {
+    const inner = await executeControl(rt, { ...cmd, address: link.address });
+    if (!inner.ok) return inner;
+    const anchorShown = await scrollToAnchor(link.anchor);
+    return { ...inner, anchor: link.anchor, anchorShown } as unknown as ControlAnswer;
   }
   let res = await reg.run(cmd);
   // loaded but not rendered (a build on another tab, a folded group): the item opens itself, then ask again

@@ -130,12 +130,14 @@ CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", d
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
                  console: Callable[[dict[str, Any]], dict[str, Any]] | None = None, notes: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
                  on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None,
-                 console_control: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+                 console_control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 hidden_assets: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
     one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
     runs one command of the console domain in the caller's open console (None = no console_* tools); `notes(line)` posts
     a line into a session's mirror feed (None = no console_session_note); `on_call(caller, tool, args, ok, error, ms)`
-    is told about every tool call (the sessions nav's feed; never fails a call)."""
+    is told about every tool call (the sessions nav's feed; never fails a call); `hidden_assets(request)` runs one
+    hidden-assets@1 request `{op: list | hide | unhide | unhide-all, app?, kind?, id?, by}` (None = hidden_assets_runner())."""
     mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
     if on_call is not None:
@@ -582,6 +584,47 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     @mcp.resource("axf://plan", name="plan", title="Feature plan", mime_type="application/json", description="Every feature in the plan (compact).")
     async def plan_resource() -> str:
         return json.dumps([_compact(f) for f in await features()], indent=1)
+
+    # ------------------------------------------------------------------ Hidden assets (hidden-assets@1)
+    # The same calls as REST /api/hidden-assets (hidden_assets.py): one list per app, kept in the app's look document.
+    # In an open console the actions do the same on screen: chrome.hide:<kind>:<id> / chrome.unhide:<kind>:<id> /
+    # chrome.unhideAll / chrome.hidden (console_action), and console_show view:settings/tab:appearance#hidden or
+    # dialog:axf.hidden-assets brings up the Hidden list.
+    hidden_run = hidden_assets or hidden_assets_runner()
+
+    async def hidden_go(op: str, app: str = "", kind: str = "", id: str = "") -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: hidden_run({k: v for k, v in {"op": op, "app": app.strip(), "kind": kind.strip(), "id": id.strip(), "by": HIDDEN_ASSETS_BY}.items() if v}))
+        if not r.get("ok", True):
+            raise ToolError(str(r.get("error") or r.get("message") or r.get("detail") or "failed"))
+        return {k: v for k, v in r.items() if k != "ok"}
+
+    @mcp.tool(annotations=READ)
+    async def hidden_assets_list(app: str = "") -> dict[str, Any]:
+        """What is hidden in one app (default the console; or axhub, an app id): every tab group, toolbar, banner,
+        navigation menu, menu bar or widget someone hid, oldest first, as {app, count, hidden: [{kind, id, hiddenAt, by,
+        assetRef?}]}. In the app: Assets → Hidden items…, or Settings → Appearance → Hidden. To put the list on Brett's
+        screen: console_show "view:settings/tab:appearance#hidden" (or "dialog:axf.hidden-assets")."""
+        return await hidden_go("list", app)
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_hide(kind: str, id: str, app: str = "") -> dict[str, Any]:
+        """Hide one piece in one app (default the console). `kind`: tab-group, toolbar, banner, nav-menu, app-menu (the
+        menu bar) or widget. `id`: a tab group's id ("settings.tabs"), "app" for the app-wide toolbar / nav / menu bar /
+        banner, a page toolbar's id, a widget's "<type>:<id>". The app hides it at once (open apps follow the hub) and
+        it stays hidden across reloads; hidden_assets_unhide brings it back. Hiding what is already hidden is fine."""
+        return await hidden_go("hide", app, kind, id)
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_unhide(kind: str, id: str, app: str = "") -> dict[str, Any]:
+        """Show one hidden piece again in one app (default the console). hidden_assets_list names what is hidden
+        (its `kind` and `id` are the arguments here)."""
+        return await hidden_go("unhide", app, kind, id)
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_unhide_all(app: str = "") -> dict[str, Any]:
+        """Show everything hidden in one app again (default the console). Nothing is deleted: each piece is simply
+        drawn again."""
+        return await hidden_go("unhide-all", app)
 
     @mcp.prompt(name="build-next-step", title="Build the next step", description="Brief for building the next step in the queue with the right model.")
     async def build_next_prompt() -> str:
@@ -1122,6 +1165,77 @@ def shot_result(r: dict[str, Any]) -> CallToolResult:
     blocks: list[Any] = [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
     blocks.append(TextContent(type="text", text=json.dumps(meta, default=str)))
     return CallToolResult(content=blocks, structured_content=meta)
+
+
+# ---------------------------------------------------------------------- hidden assets (hidden-assets@1)
+
+HIDDEN_ASSETS_TOOLS = ("hidden_assets_list", "hidden_assets_hide", "hidden_assets_unhide", "hidden_assets_unhide_all")
+HIDDEN_ASSETS_BY = "api:mcp"  # who an MCP call hides as (the `by` of the list entry)
+# op → (the function in hidden_assets.py, the REST route, whether it names one piece)
+HIDDEN_ASSETS_OPS: dict[str, tuple[str, str, bool]] = {
+    "list": ("list_hidden", "", False),
+    "hide": ("hide", "/hide", True),
+    "unhide": ("unhide", "/unhide", True),
+    "unhide-all": ("unhide_all", "/unhide-all", False),
+}
+
+
+def hidden_assets_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """hidden-assets@1 requests `{op, app?, kind?, id?, by}`: in the console process through hidden_assets.py (the same
+    functions REST /api/hidden-assets calls, so one writer); in stdio mode (a local clone) through the console's REST
+    API (AXF_CONSOLE_URL + AXF_TOKEN). The answer is the REST answer; a refusal is `{ok: False, error}`."""
+
+    def remote(req: dict[str, Any]) -> dict[str, Any]:
+        import urllib.error
+        import urllib.parse
+        import urllib.request
+        base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/hidden-assets"
+        auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+        route = HIDDEN_ASSETS_OPS[req["op"]][1]
+        if route:
+            body = {k: req[k] for k in ("app", "kind", "id", "by") if req.get(k)}
+            http = urllib.request.Request(base + route, data=json.dumps(body).encode(), method="POST", headers={"content-type": "application/json", **auth})
+        else:
+            http = urllib.request.Request(base + (f"?{urllib.parse.urlencode({'app': req['app']})}" if req.get("app") else ""), headers=auth)
+        try:
+            with urllib.request.urlopen(http, timeout=60) as res:
+                return json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                err = json.loads(e.read().decode() or "{}")
+            except ValueError:
+                err = {}
+            return {"ok": False, "error": str(err.get("detail") or err.get("error") or err.get("message") or f"{e.code} from {base}{route}")}
+        except (OSError, ValueError) as e:
+            return {"ok": False, "error": f"could not reach {base}: {str(e)[:200]}"}
+
+    def local(ha: Any, req: dict[str, Any]) -> dict[str, Any]:
+        import inspect
+        name, _, piece = HIDDEN_ASSETS_OPS[req["op"]]
+        fn = getattr(ha, name)
+        args = [req.get("app") or None, *([req.get("kind"), req.get("id")] if piece else [])]
+        # who did it: `default_by` where the function has one (REST's own `by` stays the caller's), else `by`
+        params = inspect.signature(fn).parameters
+        who = {k: req["by"] for k in ("default_by", "by") if k in params and req.get("by") and req["op"] != "list"}
+        who = {k: v for k, v in who.items() if k == next(iter(who))}
+        try:
+            r = fn(*args, **who)
+        except ValueError as e:
+            return {"ok": False, "error": str(e)}
+        return r if isinstance(r, dict) else {"ok": False, "error": f"hidden_assets.{name} answered {type(r).__name__}"}
+
+    def run(req: dict[str, Any]) -> dict[str, Any]:
+        if req.get("op") not in HIDDEN_ASSETS_OPS:
+            return {"ok": False, "error": f"op must be one of {', '.join(HIDDEN_ASSETS_OPS)}"}
+        if HIDDEN_ASSETS_OPS[req["op"]][2] and not (req.get("kind") and req.get("id")):
+            return {"ok": False, "error": "kind and id are needed: kind is tab-group, toolbar, banner, nav-menu, app-menu or widget; id is the piece's id"}
+        try:
+            import hidden_assets as ha  # present only beside the console server (hidden_assets.py)
+        except ImportError:
+            return remote(req)
+        return local(ha, req)
+
+    return run
 
 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
