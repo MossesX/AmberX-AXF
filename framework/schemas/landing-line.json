@@ -82,6 +82,7 @@
         "mergeSha": { "$ref": "#/$defs/shaOrEmpty", "description": "the branch head after main was merged in" },
         "landedSha": { "$ref": "#/$defs/shaOrEmpty" },
         "steps": { "type": "array", "items": { "$ref": "#/$defs/state" }, "description": "the states this attempt passed through, in order" },
+        "direct": { "type": "boolean", "description": "true when the attempt went straight to landing: a clean green PR (merges into main as it is, CI green on its head) lands at once, without the main merge, the regenerate or a second CI run" },
         "result": { "$ref": "#/$defs/attemptResult" },
         "retries": { "type": "array", "maxItems": 10, "items": { "type": "object", "required": ["at", "why"], "properties": { "at": { "type": "string" }, "why": { "type": "array", "items": { "type": "string" } } } } },
         "failing": { "type": "array", "items": { "type": "string" }, "maxItems": 10 },

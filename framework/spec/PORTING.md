@@ -253,6 +253,12 @@ Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transit
 crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
 Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
 
+Nov 25 2026 (build `pipeline-fixes-drop-7-mb-status-file`): landing-line@1, a clean green PR lands at once. `start`
+with `clean: true` and green check runs for the head goes straight to `landing` (`landsAtOnce`; the attempt is marked
+`direct`), anything less takes the full path, and a refused merge falls back to it. Golden scenarios in
+`spec/fixtures/landing-line-migrate.json` → `landNow`, replayed by `check-landing-line.mjs`. No Kotlin twin while
+Android is on hold; a port replays `landNow.in` and must answer `landNow.out`.
+
 Nov 25 2026 (build `pipeline-fixes-drop-7-mb-status-file`): single Queued. `QUEUE_MAX = 1`, `queueOne` / `canQueueNow`
 (a second queued build is refused, the holder named), `promote` (the next Pending build moves up when the queued one
 goes live), `settleQueue` (repairs an older Queue), and Brett's stops `pipeline.stop { kind: hold | cancel | unqueue }`

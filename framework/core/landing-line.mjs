@@ -14,6 +14,11 @@
  * Exactly one entry is in flight (merging-main, regenerating, checking, landing); nothing is stacked on it. When an entry
  * goes red a fix build is filed for it and the line moves on to the next one at once.
  *
+ * A clean green PR lands at once (Brett, Nov 25 2026): when `start` says the PR merges into main as it is (`clean`) and
+ * carries green check runs for its head, the entry goes straight to landing: main is not merged in, nothing is
+ * regenerated and CI does not run again. The merge is still pinned to that head, and still one entry at a time. A
+ * merge GitHub then refuses (`land-rejected`) sends it down the full path (merging-main), as before.
+ *
  * A cancelled, superseded or stale CI run is never a verdict: a result is only success (green) or failure / timed_out
  * (red). Everything else re-runs on the same head and is logged as a retry on the attempt, never as a failure.
  */
@@ -45,7 +50,8 @@ export const ATTEMPT_RESULTS = Object.freeze(['landed', 'retry', 'red', 'conflic
 /**
  * Events the runner and the hands (console, CLI, MCP, voice) send. `by` on a hand event says who (Brett, an agent).
  *   add            a finished build / PR joins at the back        { entry }
- *   start          the first waiting entry takes the slot          (the runner)
+ *   start          the first waiting entry takes the slot          (the runner)  { head?, mainSha?, clean?, runs? }
+ *                  clean + green runs on the head → landing at once; else merging-main
  *   merged-main    main merged into the branch                     { sha }
  *   conflict       merging main hit a code conflict → fix-filed    { files }
  *   regenerated    fixtures / locks regenerated, pushed            { head }
@@ -100,9 +106,24 @@ export function normEntry(e, at = new Date().toISOString()) {
 
 const openAttempt = (e) => e.attempts.find((a) => !a.endedAt) || null;
 
-function newAttempt(e, at, head) {
+function newAttempt(e, at, head, first = 'merging-main') {
   const n = e.attempts.length + 1;
-  return { $axf: ATTEMPT_FRAME, n, startedAt: at, head: head || e.head, steps: ['merging-main'] };
+  return { $axf: ATTEMPT_FRAME, n, startedAt: at, head: head || e.head, steps: [first], ...(first === 'landing' ? { direct: true } : {}) };
+}
+
+/**
+ * May this entry land at once on `start`? Only when GitHub says the PR merges into main as it is (`clean: true`), the
+ * head is known, and the check runs given for that head are green (classifyCheckRuns: a cancelled, stale or superseded
+ * run is not a result, so it is never green). → { ok, why, runUrl }
+ */
+export function landsAtOnce(e, ev) {
+  const head = sha(ev?.head) || e?.head || '';
+  if (ev?.clean !== true) return { ok: false, why: 'not known to merge into main as it is', runUrl: '' };
+  if (!head) return { ok: false, why: 'no head to pin the merge to', runUrl: '' };
+  const runs = Array.isArray(ev.runs) ? ev.runs : ev.run ? [ev.run] : [];
+  const c = classifyCheckRuns(runs, { head });
+  if (c.verdict !== 'green') return { ok: false, why: `CI on ${head.slice(0, 8)} is ${c.verdict}`, runUrl: '' };
+  return { ok: true, why: '', runUrl: str(ev.runUrl || runs.find((r) => r?.html_url)?.html_url, 300) };
 }
 
 function closeAttempt(e, at, result, extra = {}) {
@@ -249,8 +270,11 @@ export function transition(line, ev) {
       if (busy && busy.id !== e.id) throw new Error(`${busy.id} is already in flight; one at a time`);
       if (e.hold) throw new Error(`${e.id} is held: ${e.hold}`);
       const head = sha(ev.head) || e.head;
-      e = { ...e, head, attempts: [...e.attempts, newAttempt(e, at, head)], mainSha: sha(ev.mainSha) || L.mainSha };
+      // a clean green PR lands at once: no main merge, no regenerate, no second CI run; the merge stays pinned to `head`
+      const now = landsAtOnce(e, ev);
+      e = { ...e, head, attempts: [...e.attempts, newAttempt(e, at, head, now.ok ? 'landing' : 'merging-main')], mainSha: sha(ev.mainSha) || L.mainSha };
       delete e.outcome; delete e.fix;
+      if (now.ok) return put(setState(e, 'landing', at, { ci: { verdict: 'green', at, runUrl: now.runUrl } }));
       return put(setState(e, 'merging-main', at));
     }
     case 'merged-main': {

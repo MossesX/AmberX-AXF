@@ -930,5 +930,825 @@
    },
    "notes": []
   }
+ },
+ "landNow": {
+  "note": "A clean green PR lands at once (landing-line@1 `start` with `clean` and green `runs`). Each scenario replays `events` on an empty line; `out` is the entry state after every event (or the refusal) and the attempts left.",
+  "in": [
+   {
+    "name": "clean and green: start goes straight to landing, then landed; main is never merged in and CI never runs again",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 801,
+       "build": "b801",
+       "branch": "claude/b801",
+       "title": "Build 801",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-801",
+      "at": "2026-11-14T22:17:00Z",
+      "mainSha": "f1ffffffffffffffffffffffffffffffffffffff",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       },
+       {
+        "name": "docs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/docs"
+       }
+      ]
+     },
+     {
+      "type": "landed",
+      "id": "pr-801",
+      "at": "2026-11-14T22:18:00Z",
+      "sha": "c1cccccccccccccccccccccccccccccccccccccc"
+     }
+    ]
+   },
+   {
+    "name": "green but not known to merge as it is: the full path (merging-main)",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 802,
+       "build": "b802",
+       "branch": "claude/b802",
+       "title": "Build 802",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-802",
+      "at": "2026-11-14T22:17:00Z",
+      "mainSha": "f1ffffffffffffffffffffffffffffffffffffff",
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but CI still running on the head: the full path",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 803,
+       "build": "b803",
+       "branch": "claude/b803",
+       "title": "Build 803",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-803",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but the green run is for another head (superseded): not a result, the full path",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 804,
+       "build": "b804",
+       "branch": "claude/b804",
+       "title": "Build 804",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-804",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "8088888888888888888888888888888888888888",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but one check is red: the full path, where the red is judged on the head main was merged into",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 805,
+       "build": "b805",
+       "branch": "claude/b805",
+       "title": "Build 805",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-805",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       },
+       {
+        "name": "tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/tests"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean with no runs at all: nothing says green, the full path",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 806,
+       "build": "b806",
+       "branch": "claude/b806",
+       "title": "Build 806",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-806",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": []
+     }
+    ]
+   },
+   {
+    "name": "landed at once, then GitHub refuses the merge: the second attempt takes the full path",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 807,
+       "build": "b807",
+       "branch": "claude/b807",
+       "title": "Build 807",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-807",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     },
+     {
+      "type": "land-rejected",
+      "id": "pr-807",
+      "at": "2026-11-14T22:18:00Z",
+      "why": "main moved: not mergeable"
+     },
+     {
+      "type": "merged-main",
+      "id": "pr-807",
+      "at": "2026-11-14T22:19:00Z",
+      "sha": "a7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     {
+      "type": "regenerated",
+      "id": "pr-807",
+      "at": "2026-11-14T22:20:00Z",
+      "head": "b7bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+     },
+     {
+      "type": "check",
+      "id": "pr-807",
+      "at": "2026-11-14T22:21:00Z",
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "b7bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     },
+     {
+      "type": "landed",
+      "id": "pr-807",
+      "at": "2026-11-14T22:22:00Z",
+      "sha": "c7cccccccccccccccccccccccccccccccccccccc"
+     }
+    ]
+   },
+   {
+    "name": "one at a time: a clean green PR does not start while another entry is in flight, and lands at once when its turn comes",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 808,
+       "build": "b808",
+       "branch": "claude/b808",
+       "title": "Build 808",
+       "head": "1011111111111111111111111111111111111111"
+      }
+     },
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 809,
+       "build": "b809",
+       "branch": "claude/b809",
+       "title": "Build 809",
+       "head": "9099999999999999999999999999999999999999"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-808",
+      "at": "2026-11-14T22:17:00Z"
+     },
+     {
+      "type": "start",
+      "id": "pr-809",
+      "at": "2026-11-14T22:18:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     },
+     {
+      "type": "merged-main",
+      "id": "pr-808",
+      "at": "2026-11-14T22:19:00Z",
+      "sha": "a8aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     {
+      "type": "regenerated",
+      "id": "pr-808",
+      "at": "2026-11-14T22:20:00Z",
+      "head": "b8bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+     },
+     {
+      "type": "check",
+      "id": "pr-808",
+      "at": "2026-11-14T22:21:00Z",
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "b8bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     },
+     {
+      "type": "landed",
+      "id": "pr-808",
+      "at": "2026-11-14T22:22:00Z",
+      "sha": "c8cccccccccccccccccccccccccccccccccccccc"
+     },
+     {
+      "type": "start",
+      "id": "pr-809",
+      "at": "2026-11-14T22:22:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     },
+     {
+      "type": "landed",
+      "id": "pr-809",
+      "at": "2026-11-14T22:23:00Z",
+      "sha": "c9cccccccccccccccccccccccccccccccccccccc"
+     }
+    ]
+   },
+   {
+    "name": "a held or paused entry never lands at once",
+    "events": [
+     {
+      "type": "add",
+      "at": "2026-11-14T22:16:00Z",
+      "entry": {
+       "pr": 810,
+       "build": "b810",
+       "head": "9099999999999999999999999999999999999999",
+       "hold": "its screenshots wait for Brett in UI Review"
+      }
+     },
+     {
+      "type": "start",
+      "id": "pr-810",
+      "at": "2026-11-14T22:17:00Z",
+      "clean": true,
+      "runs": [
+       {
+        "name": "ci",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "9099999999999999999999999999999999999999",
+        "html_url": "https://x/run/ci"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "out": [
+   {
+    "name": "clean and green: start goes straight to landing, then landed; main is never merged in and CI never runs again",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-801",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-801",
+      "state": "landing",
+      "inFlight": "pr-801"
+     },
+     {
+      "event": "landed",
+      "id": "pr-801",
+      "state": "landed",
+      "inFlight": ""
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-801",
+      "state": "landed",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "green",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "landing",
+         "landed"
+        ],
+        "result": "landed",
+        "direct": true
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "green but not known to merge as it is: the full path (merging-main)",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-802",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-802",
+      "state": "merging-main",
+      "inFlight": "pr-802"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-802",
+      "state": "merging-main",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main"
+        ],
+        "result": ""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but CI still running on the head: the full path",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-803",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-803",
+      "state": "merging-main",
+      "inFlight": "pr-803"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-803",
+      "state": "merging-main",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main"
+        ],
+        "result": ""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but the green run is for another head (superseded): not a result, the full path",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-804",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-804",
+      "state": "merging-main",
+      "inFlight": "pr-804"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-804",
+      "state": "merging-main",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main"
+        ],
+        "result": ""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean but one check is red: the full path, where the red is judged on the head main was merged into",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-805",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-805",
+      "state": "merging-main",
+      "inFlight": "pr-805"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-805",
+      "state": "merging-main",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main"
+        ],
+        "result": ""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "clean with no runs at all: nothing says green, the full path",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-806",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-806",
+      "state": "merging-main",
+      "inFlight": "pr-806"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-806",
+      "state": "merging-main",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main"
+        ],
+        "result": ""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "landed at once, then GitHub refuses the merge: the second attempt takes the full path",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-807",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-807",
+      "state": "landing",
+      "inFlight": "pr-807"
+     },
+     {
+      "event": "land-rejected",
+      "id": "pr-807",
+      "state": "merging-main",
+      "inFlight": "pr-807"
+     },
+     {
+      "event": "merged-main",
+      "id": "pr-807",
+      "state": "regenerating",
+      "inFlight": "pr-807"
+     },
+     {
+      "event": "regenerated",
+      "id": "pr-807",
+      "state": "checking",
+      "inFlight": "pr-807"
+     },
+     {
+      "event": "check",
+      "id": "pr-807",
+      "state": "landing",
+      "inFlight": "pr-807"
+     },
+     {
+      "event": "landed",
+      "id": "pr-807",
+      "state": "landed",
+      "inFlight": ""
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-807",
+      "state": "landed",
+      "head": "b7bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "ci": "green",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "landing"
+        ],
+        "result": "retry",
+        "direct": true
+       },
+       {
+        "n": 2,
+        "steps": [
+         "merging-main",
+         "regenerating",
+         "checking",
+         "landing",
+         "landed"
+        ],
+        "result": "landed"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "one at a time: a clean green PR does not start while another entry is in flight, and lands at once when its turn comes",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-808",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "add",
+      "id": "pr-809",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-808",
+      "state": "merging-main",
+      "inFlight": "pr-808"
+     },
+     {
+      "event": "start",
+      "id": "pr-809",
+      "refused": "pr-808 is already in flight; one at a time"
+     },
+     {
+      "event": "merged-main",
+      "id": "pr-808",
+      "state": "regenerating",
+      "inFlight": "pr-808"
+     },
+     {
+      "event": "regenerated",
+      "id": "pr-808",
+      "state": "checking",
+      "inFlight": "pr-808"
+     },
+     {
+      "event": "check",
+      "id": "pr-808",
+      "state": "landing",
+      "inFlight": "pr-808"
+     },
+     {
+      "event": "landed",
+      "id": "pr-808",
+      "state": "landed",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-809",
+      "state": "landing",
+      "inFlight": "pr-809"
+     },
+     {
+      "event": "landed",
+      "id": "pr-809",
+      "state": "landed",
+      "inFlight": ""
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-808",
+      "state": "landed",
+      "head": "b8bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "ci": "green",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "merging-main",
+         "regenerating",
+         "checking",
+         "landing",
+         "landed"
+        ],
+        "result": "landed"
+       }
+      ]
+     },
+     {
+      "id": "pr-809",
+      "state": "landed",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "green",
+      "attempts": [
+       {
+        "n": 1,
+        "steps": [
+         "landing",
+         "landed"
+        ],
+        "result": "landed",
+        "direct": true
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "name": "a held or paused entry never lands at once",
+    "steps": [
+     {
+      "event": "add",
+      "id": "pr-810",
+      "state": "waiting",
+      "inFlight": ""
+     },
+     {
+      "event": "start",
+      "id": "pr-810",
+      "refused": "pr-810 is held: its screenshots wait for Brett in UI Review"
+     }
+    ],
+    "entries": [
+     {
+      "id": "pr-810",
+      "state": "waiting",
+      "head": "9099999999999999999999999999999999999999",
+      "ci": "",
+      "attempts": []
+     }
+    ]
+   }
+  ]
  }
 }
