@@ -24,6 +24,10 @@ Sessions nav (left rail, Nov 3 2026; nav.py):
   POST nav/stop {name, where}          end a tmux session for good (asks for a confirm first)
   WS   nav/ws?ticket=…                 the nav model, pushed when it changes
   POST sessions {…, attach, readOnly}  a read-only mirror of any tmux session (tmux attach -r); Jump in = readOnly off
+Claude link (the console's connection to Claude as a live log; claude_link.py, routes.py):
+  GET  claude-link?since=&kind=&q=&limit=&all=   snapshot      GET claude-link/state   connected, last event, counts per kind
+  GET  claude-link/stream                        SSE live feed (heartbeat, Last-Event-ID resume)
+  POST claude-link/clear                         clears the view marker, not the log
 """
 from __future__ import annotations
 
@@ -39,11 +43,14 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import health, nav, sessions, store
+from . import claude_link, health, nav, routes, sessions, store
 
 router = APIRouter()
 health.ensure()
 plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
+# Claude link (terminal-main-tab-streaming-console-s): the console's connection to Claude as one live log, and its routes
+BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
+router.include_router(routes.build(lambda: BUS))
 
 
 def _err(e: Exception) -> HTTPException:

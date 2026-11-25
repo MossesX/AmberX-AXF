@@ -201,6 +201,10 @@
       {
         "route": "GET /nav/ws",
         "skip": "the sessions nav's live websocket, not a command (sessions-list is the same answer)"
+      },
+      {
+        "route": "GET /claude-link/stream",
+        "skip": "the live SSE feed of the Claude link events, not a command (GET /claude-link with since is the same answer)"
       }
     ]
   },

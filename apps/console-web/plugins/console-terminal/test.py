@@ -490,6 +490,23 @@ S.shutil.which = _which
 S.RUNNER = __import__("subprocess").run
 S.forget_console_tmux()
 
+# Claude link routes on the plugin's own router (the full route tests: server/test_claude_link_routes.py, run below)
+L = "/p/claude-link"
+check(c.get(L).json()["items"] == [] and c.get(L + "/state").json()["connected"] is None, "claude-link: empty snapshot and state on a fresh dataDir")
+mod.BUS.append({"kind": "connect", "source": "test", "summary": "axHub answered"})
+mod.BUS.append({"kind": "mcp", "source": "test", "summary": "console_show", "detail": {"token": "sk-ant-should-not-leak"}})
+snap = c.get(L, params={"kind": "mcp", "q": "console_show", "since": 1, "limit": 5}).json()
+check([e["id"] for e in snap["items"]] == [2] and "should-not-leak" not in json.dumps(snap), "claude-link: snapshot with since, kind, q and limit; secrets redacted")
+st = c.get(L + "/state").json()
+check(st["connected"] is True and st["last"]["id"] == 2 and st["counts"]["mcp"] == 1, "claude-link/state: connected, last event, counts per kind")
+sse_body = c.get(L + "/stream", params={"once": 1}, headers={"Last-Event-ID": "1"}).text
+check("event: hello" in sse_body and sse_body.count("event: link") == 1 and "id: 2\n" in sse_body, "claude-link/stream: SSE resumes after Last-Event-ID")
+check(c.post(L + "/clear").json()["clearedAt"] == 2 and c.get(L).json()["items"] == [] and len(c.get(L, params={"all": 1}).json()["items"]) == 2,
+      "claude-link/clear: moves the view marker, the log is kept")
+import subprocess as _sp  # noqa: E402
+_rt = _sp.run([sys.executable, str(HERE / "server" / "test_claude_link_routes.py")], capture_output=True, text=True)
+check(_rt.returncode == 0, "claude-link route tests (server/test_claude_link_routes.py)" + ("" if _rt.returncode == 0 else "\n" + _rt.stderr[-3000:]))
+
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
       and all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_dir()), "data files and folders private (public key and known_hosts inside a private folder)")
