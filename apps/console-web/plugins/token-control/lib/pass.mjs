@@ -27,16 +27,21 @@ const PROOF_TTL_MS = 5 * 60 * 1000;
 
 /* ------------------------------------------------------------------ settings + store */
 
-/** { maxMinutes, timeZone }: the console's setting (Settings → Plugins → Token control), else env, else defaults. */
+/**
+ * { maxMinutes, timeZone, quietNotice }: the console's setting (Settings → Plugins → Token control), else env, else
+ * defaults. `quietNotice` (default off): what a call that ran under a pass sends. Off = nothing; on = one quiet
+ * "ran under pass" line, never a veto or approval notice.
+ */
 export function passSettings() {
   let s = {};
   try { s = JSON.parse(readFileSync(SETTINGS(), 'utf8')) ?? {}; } catch { /* defaults */ }
   const max = Number(s.maxMinutes ?? process.env.AXF_PASS_MAX_MINUTES ?? PASS_MAX_MINUTES);
-  return { maxMinutes: Math.max(1, Math.min(PASS_MAX_MINUTES, Math.floor(max) || PASS_MAX_MINUTES)), timeZone: typeof s.timeZone === 'string' && s.timeZone ? s.timeZone : process.env.AXF_TIMEZONE || 'America/New_York' };
+  return { maxMinutes: Math.max(1, Math.min(PASS_MAX_MINUTES, Math.floor(max) || PASS_MAX_MINUTES)), timeZone: typeof s.timeZone === 'string' && s.timeZone ? s.timeZone : process.env.AXF_TIMEZONE || 'America/New_York', quietNotice: s.quietNotice === true };
 }
 export function savePassSettings(patch) {
   const next = { ...passSettings(), ...(patch && typeof patch === 'object' ? patch : {}) };
   next.maxMinutes = Math.max(1, Math.min(PASS_MAX_MINUTES, Math.floor(Number(next.maxMinutes)) || PASS_MAX_MINUTES));
+  next.quietNotice = next.quietNotice === true;
   mkdirSync(DATA_DIR, { recursive: true });
   writeFileSync(SETTINGS(), `${JSON.stringify(next, null, 2)}\n`);
   return next;
@@ -305,8 +310,10 @@ export function recordPassChanges(passId, command, before, after, now = Date.now
 
 /** The publication axHub reads (GET /pass): the passes now + the scope table, signed when a secret is set. */
 export function publication(now = Date.now()) {
-  const { timeZone } = passSettings();
+  const { timeZone, quietNotice } = passSettings();
   const body = passPublication(loadPasses(now).passes, now, timeZone);
+  // the notice setting travels with each active pass, so the hub's senders read it where they read the pass
+  if (quietNotice) body.active = body.active.map((p) => ({ ...p, quietNotice: true }));
   const payload = JSON.stringify(body);
   return { body, payload, signature: signPayload(payload, now) };
 }

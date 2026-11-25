@@ -157,6 +157,46 @@ ok(got and got[-1]["type"] == "approval" and got[-1]["id"].startswith("1111") an
 r = c.post(f"{P}/show", json={"target": "approval:abc"}).json()
 ok(r["ok"] and r["kind"] == "approval" and drain()[-1]["type"] == "approval", "show approval:<id> pops it up too")
 
+# ---------------------------------------------------------------- a call an approval pass covers: no notice
+class FakeControl:
+    """control@1 as Token control provides it: which pass covers a call, and the pass setting quietNotice."""
+    quiet = False
+    broken = False
+
+    def pass_covering(self, call: str, irreversible: bool = False):
+        if self.broken:
+            raise RuntimeError("the pass store can't be read")
+        return None if irreversible or call == "axhub.pass_grant" else {"id": "pass-abc", "scope": "all", "expiresAt": "later"}
+
+    def pass_quiet_notice(self) -> bool:
+        return self.quiet
+
+
+drain()
+r = c.post(f"{P}/approval", json={"id": "v1", "call": "vps.run"}).json()
+ok(r["shown"] is True and drain()[-1]["type"] == "approval", "no pass plugin: a named call pops up as before")
+control = FakeControl()
+plugin_services.provide("control@1", control, folder="token-control")
+for call in ("vps.run", "console.console_terminal_sessions_stop"):
+    r = c.post(f"{P}/approval", json={"id": "v2", "call": call, "say": "needs you"}).json()
+    ok(r["ok"] and r["shown"] is False and r["ranUnder"] == "pass-abc" and r["quiet"] is False, f"{call} under a pass: no approval pop-up, the answer names the pass")
+ok(drain() == [], "a covered call sends no frame at all")
+ok(fa.FollowAmber().approval("v2", call="vps.run")["ranUnder"] == "pass-abc", "the capability asks the pass too")
+r = c.post(f"{P}/approval", json={"id": "v3"}).json()
+ok(r["shown"] is True and drain()[-1]["type"] == "approval", "a call nobody named is not covered: it pops up")
+r = c.post(f"{P}/approval", json={"id": "v4", "call": "vps.run", "irreversible": True}).json()
+ok(r["shown"] is True and "ranUnder" not in r and drain()[-1]["type"] == "approval", "a call the pass doesn't cover pops up")
+control.broken = True
+r = c.post(f"{P}/approval", json={"id": "v5", "call": "vps.run"}).json()
+ok(r["shown"] is True and drain()[-1]["type"] == "approval", "a pass check that fails never hides a waiting call")
+control.broken = False
+control.quiet = True
+r = c.post(f"{P}/approval", json={"id": "v6", "call": "vps.run", "say": "rm -rf /tmp/x"}).json()
+got = drain()
+ok(r["shown"] is False and r["quiet"] is True and len(got) == 1 and got[0]["type"] == "pass-run", "quietNotice on: one quiet line, still no approval pop-up")
+ok(got[0]["call"] == "vps.run" and got[0]["pass"] == "pass-abc" and "say" not in got[0] and "id" not in got[0], "the quiet line carries the tool and the pass id only")
+control.quiet = False
+
 recent = c.get(f"{P}/recent").json()["items"]
 ok(recent and recent[0]["target"] == "abc" and len(recent) >= 5, "what was shown is listed")
 

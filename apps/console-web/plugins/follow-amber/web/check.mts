@@ -58,6 +58,8 @@ await t('frames', () => {
   const s = parseFrame({ $axf: 'follow-amber@1', type: 'show', kind: 'screen', target: 'plan studio', highlight: 'h1', say: 'look' });
   assert.equal(s?.type === 'show' && s.highlight, 'h1');
   assert.equal(parseFrame({ $axf: 'follow-amber@1', type: 'approval', id: A1 })?.type, 'approval');
+  assert.deepEqual(parseFrame({ $axf: 'follow-amber@1', type: 'pass-run', call: 'vps.run', pass: 'pass-abc', say: 'x' }), { $axf: 'follow-amber@1', type: 'pass-run', call: 'vps.run', pass: 'pass-abc', by: '' });
+  assert.equal(parseFrame({ $axf: 'follow-amber@1', type: 'pass-run', call: 'vps.run' }), null);
   assert.equal(parseFrame({ $axf: 'other@1', type: 'state', on: true }), null);
   assert.equal(parseFrame({ $axf: 'follow-amber@1', type: 'show' }), null, 'a show needs a target');
   assert.equal(parseFrame({ $axf: 'follow-amber@1', type: 'run', spec: 'x' }), null, 'nothing else runs');

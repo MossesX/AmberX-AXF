@@ -54,6 +54,8 @@ Core types are in `registry.json`. **A plugin's types are in its own `notify.jso
   same switch. `push`: promote to AmberX though its severity is below warning.
 - `enforced`: `gate` (default), `browser`, `device`, or the fixed `required` / `feed` / `elsewhere`, shown but not
   switchable.
+- A call an active approval pass covers sends no approval or veto notice on any channel. With the pass setting
+  `quietNotice` on it sends one quiet "ran under pass" line (`follow.pass-run`, `axhub.pass-run`); off by default.
 - `guarded`: approvals and veto. The master and app switches skip it, it goes through quiet hours, and only Brett's own
   signed-in session turns it down. A session that could mute the veto notice could act unseen. Turning it up is open.
 

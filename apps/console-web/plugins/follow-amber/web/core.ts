@@ -12,7 +12,9 @@ export const FOLLOW_FRAME = 'follow-amber@1';
 export type FollowFrame =
   | { $axf: typeof FOLLOW_FRAME; type: 'state'; on: boolean; by?: string; at?: string }
   | { $axf: typeof FOLLOW_FRAME; type: 'show'; kind: string; target: string; label?: string; highlight?: string; say?: string; by?: string }
-  | { $axf: typeof FOLLOW_FRAME; type: 'approval'; id?: string; say?: string; by?: string };
+  | { $axf: typeof FOLLOW_FRAME; type: 'approval'; id?: string; say?: string; by?: string }
+  /** A call ran under an approval pass: one quiet line, sent only when the pass setting quietNotice is on. */
+  | { $axf: typeof FOLLOW_FRAME; type: 'pass-run'; call: string; pass: string; by?: string };
 
 const str = (v: unknown, cap = 300) => (typeof v === 'string' ? v.slice(0, cap) : '');
 
@@ -25,6 +27,7 @@ export function parseFrame(raw: unknown): FollowFrame | null {
   if (f.type === 'show' && typeof f.target === 'string' && f.target) {
     return { $axf: FOLLOW_FRAME, type: 'show', kind: str(f.kind, 20), target: str(f.target, 200), label: str(f.label, 200), highlight: str(f.highlight, 200), say: str(f.say), by: str(f.by, 80) };
   }
+  if (f.type === 'pass-run' && typeof f.call === 'string' && f.call && typeof f.pass === 'string' && f.pass) return { $axf: FOLLOW_FRAME, type: 'pass-run', call: str(f.call, 200), pass: str(f.pass, 80), by: str(f.by, 80) };
   if (f.type === 'approval') return { $axf: FOLLOW_FRAME, type: 'approval', id: str(f.id, 80), say: str(f.say), by: str(f.by, 80) };
   return null;
 }
