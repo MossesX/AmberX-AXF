@@ -452,7 +452,7 @@ export function rollUp(parts, maxRebuilds = DEFAULT_MAX_REBUILDS) {
 }
 /** The expandable queue row's badge: { state, done, total, label } ('Building 2/4', 'Combining', 'Queued', …). */
 export function rollUpBadge(plan) {
-  const parts = plan?.parts ?? []; const total = parts.length; const done = parts.filter((p) => p.status === 'done').length;
+  const parts = Array.isArray(plan?.parts) ? plan.parts.filter(obj) : []; const total = parts.length; const done = parts.filter((p) => p.status === 'done').length;
   const state = PARTS_PHASE.includes(plan?.run) || !plan?.run ? rollUp(parts, plan?.maxRebuilds) : plan.run;
   const word = state.charAt(0).toUpperCase() + state.slice(1);
   const label = state === 'building' ? `Building ${done}/${total}` : state === 'ci' ? 'CI' : word;
@@ -464,7 +464,7 @@ export function rollUpBadge(plan) {
  * run not failed (a failed run never combines, whatever its parts say: the next try is a new run).
  */
 export function combineReady(plan) {
-  const parts = plan?.parts ?? [];
+  const parts = Array.isArray(plan?.parts) ? plan.parts.filter(obj) : [];
   if (!parts.length) return { ok: false, why: 'no parts' };
   if (plan.run === 'failed') return { ok: false, why: `the run failed: nothing combines${plan.failure?.why ? ` (${plan.failure.why})` : ''}` };
   if (!sha(plan.base)) return { ok: false, why: 'no base: main was never locked for this run' };
