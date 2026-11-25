@@ -22,6 +22,16 @@ mode of the key's namespace (framework/core/data-store-mode.mjs, the document at
 
 Paths map to keys through framework/schemas/data-store-paths.json (the migration map as rules). axf-data is reached at
 AXF_DATA_URL with AXF_DATA_TOKEN (conf/env/console.env from deploy/install-data.sh). No token or body is ever logged.
+
+Build status has one home, the builds store (builds@1, the `builds/store.json` key: rows on Postgres after the cut):
+
+    ds.builds_page(status=…, project=…, limit=…, offset=…)   builds-page@1: one page of builds plus counts per status
+    ds.build_row(build_id)                                    one build, or None
+    ds.build_update(build_id, {"status": …, "pr": …})         data-patch@1 on that build's row only
+
+The retired pipeline status file (_claude/builds/orchestrator.json and each profile's copy) is not a data file any
+more: it has no key, a read answers as if it were missing, a write raises DataStoreError('gone'), and nothing here
+caches, mirrors or recreates it (`is_status_file`).
 """
 from __future__ import annotations
 
@@ -47,6 +57,11 @@ ROOT = Path(os.environ.get("AXF_ROOT") or Path(__file__).resolve().parents[3])
 MODES = ("local", "shadow", "cutover", "rollback")
 _SEGMENT = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._-]{0,79}$")
 _FOLDER = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+# The retired pipeline status file: the old whole-document export of every build, in the checkout or a data dir.
+_STATUS_FILE = re.compile(r"(^|/)_claude/builds/(profiles/[^/]+/)?orchestrator\.json$")
+BUILDS_KEY = "builds/store.json"
+BUILDS_REL = Path("_claude") / "builds" / "store.json"
+PAGE_MAX = 200
 
 
 class DataStoreError(Exception):
@@ -105,7 +120,19 @@ def map_rel(root: str, rel: str) -> str | None:
     return None
 
 
+def is_status_file(path: str | os.PathLike[str]) -> bool:
+    """True for the retired pipeline status file (_claude/builds/orchestrator.json, or a profile's copy of it)."""
+    p = Path(path)
+    return bool(_STATUS_FILE.search(Path(os.path.normpath(p if p.is_absolute() else ROOT / p)).as_posix()))
+
+
+def _status_file_gone(path: str | os.PathLike[str]) -> DataStoreError:
+    return DataStoreError("gone", f"{Path(path).name} is retired: build status is a row of the builds store (data_store.build_update)", 410)
+
+
 def key_for(path: str | os.PathLike[str]) -> str | None:
+    if is_status_file(path):
+        return None  # retired: no key, so it is never fetched from, mirrored to or compared with axf-data
     p = Path(path).resolve() if Path(path).is_absolute() else (ROOT / path).resolve()
     roots = _roots()
     for name in _PATHS["order"]:
@@ -271,6 +298,11 @@ class Remote:
                 return out
             since = r["next"]
 
+    def patch(self, key: str, body: dict) -> dict:
+        """data-patch@1: some rows of a table-backed record (the builds store's builds) and its head fields in one
+        transaction on axf-data; only the named rows are locked. A row changed since `ifRev` raises `conflict`."""
+        return json.loads(self._send("POST", urllib.parse.quote(key) + ":patch", headers={"content-type": "application/json"}, body=json.dumps(body).encode())[2])
+
     def json(self, method: str, path: str, body: Any = None, q: dict | None = None) -> Any:
         b = json.dumps(body).encode() if body is not None else None
         return json.loads(self._send(method, path, headers={"content-type": "application/json"} if b else None, body=b, q=q)[2] or b"null")
@@ -380,6 +412,8 @@ def _route(path: str | os.PathLike[str]) -> tuple[str | None, str]:
 
 
 def _read_bytes(path: str | os.PathLike[str]) -> bytes | None:
+    if is_status_file(path):
+        return None  # retired: never opened, not even a leftover local copy
     key, mode = _route(path)
     if mode in ("cutover", "rollback"):
         try:
@@ -428,6 +462,8 @@ def read_bytes(path: str | os.PathLike[str]) -> bytes | None:
 
 
 def _write(path: str | os.PathLike[str], raw: bytes, local: Callable[[], Path]) -> Path:
+    if is_status_file(path):
+        raise _status_file_gone(path)
     key, mode = _route(path)
     if mode == "rollback":
         raise DataStoreError("read_only", f"{nsid_of(key)} is rolling back: writes wait until it is local again", 423)
@@ -459,6 +495,8 @@ def write_json(path: str | os.PathLike[str], data: Any, **kw: Any) -> Path:
 
 
 def append_jsonl(path: str | os.PathLike[str], entry: Any, **kw: Any) -> None:
+    if is_status_file(path):
+        raise _status_file_gone(path)
     key, mode = _route(path)
     if key and kind_of(key) != "journal":
         key = None  # a .jsonl that maps onto a non-journal namespace stays a local file
@@ -484,7 +522,7 @@ def remote_mode(path: str | os.PathLike[str]) -> bool:
 def mirror(path: str | os.PathLike[str], raw: bytes) -> None:
     """For callers that keep their own local write (modes, owners): in shadow, the same bytes to axf-data."""
     key, mode = _route(path)
-    if mode != "shadow":
+    if mode != "shadow" or not key:
         return
     body, ct = _remote_body(key, raw)
     try:
@@ -494,6 +532,8 @@ def mirror(path: str | os.PathLike[str], raw: bytes) -> None:
 
 
 def exists(path: str | os.PathLike[str]) -> bool:
+    if is_status_file(path):
+        return False
     if remote_mode(path):
         key = key_for(path)
         try:
@@ -506,7 +546,7 @@ def exists(path: str | os.PathLike[str]) -> bool:
 
 def remove(path: str | os.PathLike[str]) -> bool:
     """Delete a file (a tombstone on axf-data in cutover; mirrored in shadow). False when it wasn't there."""
-    key, mode = _route(path)
+    key, mode = _route(path)  # the retired status file has no key: only a leftover local copy is unlinked
     if mode == "rollback":
         raise DataStoreError("read_only", f"{nsid_of(key)} is rolling back", 423)
 
@@ -544,7 +584,7 @@ def list_files(directory: str | os.PathLike[str]) -> list[str]:
         try:
             while True:
                 r = REMOTE.json("GET", ns, q={"prefix": prefix, "after": after, "limit": 1000})
-                out += [i["path"][len(prefix):] for i in r["items"]]
+                out += [rel for rel in (i["path"][len(prefix):] for i in r["items"]) if not is_status_file(d / rel)]
                 if not r.get("next"):
                     return sorted(out)
                 after = r["next"]
@@ -553,7 +593,7 @@ def list_files(directory: str | os.PathLike[str]) -> list[str]:
                 raise
     if not d.is_dir():
         return []
-    return sorted(p.relative_to(d).as_posix() for p in d.rglob("*") if p.is_file())
+    return sorted(p.relative_to(d).as_posix() for p in d.rglob("*") if p.is_file() and not is_status_file(p))
 
 
 def sqlite_hydrate(path: str | os.PathLike[str]) -> bool:
@@ -616,6 +656,162 @@ def sqlite_upload(path: str | os.PathLike[str], conn: Any) -> bool:
             log_drift("write", key, "write-failed", None, None, f"{e.code}: {e}")
             return False
         raise
+
+
+# ── build status: rows of the builds store (builds@1), never a status file ────────────────────────────────────────────
+
+_BUILDS_CACHE_S = 3.0
+_builds_lock = threading.Lock()
+_builds_cache: dict[str, tuple[float, str, Any]] = {}
+
+
+def _builds_file() -> Path:
+    """The store's local twin (a test store, a scratch data dir, else the checkout's): the store before the cut."""
+    if os.environ.get("AXF_BUILDS_STORE"):
+        return Path(os.environ["AXF_BUILDS_STORE"])
+    d = os.environ.get("AXF_DATA_DIR")
+    return (Path(d) if d and d != "off" else ROOT) / BUILDS_REL
+
+
+def builds_on_tables() -> bool:
+    """True once the builds store lives on the axf-data tables (Postgres); a test store override never does."""
+    return not os.environ.get("AXF_BUILDS_STORE") and mode_of(BUILDS_KEY) in ("cutover", "rollback")
+
+
+def _builds_doc(fresh: bool = False) -> dict | None:
+    """The builds store, shared for a few seconds between readers. After the cut it comes from axf-data only: an
+    unreachable axf-data is the caller's DataStoreError('unavailable'), never a stale file read instead."""
+    on_tables = builds_on_tables()
+    f = None if on_tables else _builds_file()
+    sig = ""
+    if f is not None:
+        try:
+            st = f.stat()
+            sig = f"{st.st_size}:{st.st_mtime_ns}"
+        except OSError:
+            return None
+    ck = "tables" if on_tables else str(f)
+    now = time.time()
+    with _builds_lock:
+        hit = _builds_cache.get(ck)
+        if hit and not fresh and hit[1] == sig and (not on_tables or now - hit[0] < _BUILDS_CACHE_S):
+            return hit[2]
+    if on_tables:
+        r = REMOTE.get(BUILDS_KEY)
+        doc = None if r is None else json.loads(r[1])
+    else:
+        try:
+            doc = json.loads(f.read_text("utf-8"))
+        except (OSError, ValueError):
+            doc = None
+    if not isinstance(doc, dict):
+        doc = None
+    with _builds_lock:
+        _builds_cache.clear()
+        _builds_cache[ck] = (now, sig, doc)
+    return doc
+
+
+def builds_clear() -> None:
+    """Forget the shared read (tests, and after a write made elsewhere that must be seen at once)."""
+    with _builds_lock:
+        _builds_cache.clear()
+
+
+def _in_project(build: dict, project: str) -> bool:
+    profiles = build.get("profiles")
+    return build.get("project") == project or build.get("profile") == project or (isinstance(profiles, list) and project in profiles)
+
+
+def _statuses(status: str | list[str] | tuple[str, ...] | None) -> set[str] | None:
+    if status is None or status == "":
+        return None
+    vals = status.split(",") if isinstance(status, str) else list(status)
+    return {str(v).strip() for v in vals if str(v).strip()} or None
+
+
+def builds_page(status: str | list[str] | tuple[str, ...] | None = None, project: str | None = None, limit: int = 50, offset: int = 0,
+                *, deleted: bool = False, fresh: bool = False) -> dict:
+    """builds-page@1: one page of the builds store, newest change first.
+
+    `status` is one status, a comma list or a list; `project` a profile / project id. `counts` is builds per status
+    for the project filter alone (so the tabs can show every status while one is open), `total` the builds that match
+    both filters, `items` at most `limit` (capped at PAGE_MAX) of them from `offset`, `next` the offset of the page
+    after this one (None on the last). Deleted builds are left out unless asked for. `ok` is False when the store
+    can't be read before the cut (no file)."""
+    limit = max(0, min(int(limit or 0), PAGE_MAX))
+    offset = max(0, int(offset or 0))
+    want = _statuses(status)
+    doc = _builds_doc(fresh)
+    rows = [b for b in ((doc or {}).get("builds") or []) if isinstance(b, dict) and (deleted or not b.get("deleted"))]
+    if project:
+        rows = [b for b in rows if _in_project(b, project)]
+    counts: dict[str, int] = {}
+    for b in rows:
+        s = str(b.get("status") or "")
+        counts[s] = counts.get(s, 0) + 1
+    if want is not None:
+        rows = [b for b in rows if str(b.get("status") or "") in want]
+    rows.sort(key=lambda b: str(b.get("statusAt") or b.get("updatedAt") or b.get("createdAt") or ""), reverse=True)
+    items = rows[offset:offset + limit]
+    return {"$axf": "builds-page@1", "ok": doc is not None, "rev": int(doc.get("rev") or 0) if doc is not None else -1,
+            "status": sorted(want) if want is not None else None, "project": project or None, "limit": limit, "offset": offset,
+            "total": len(rows), "counts": dict(sorted(counts.items())), "all": sum(counts.values()), "items": items,
+            "next": offset + len(items) if items and offset + len(items) < len(rows) else None}
+
+
+def builds_counts(project: str | None = None, *, fresh: bool = False) -> dict[str, int]:
+    """Builds per status (the small summary: no build bodies)."""
+    return builds_page(project=project, limit=0, fresh=fresh)["counts"]
+
+
+def build_row(build_id: str, *, fresh: bool = False) -> dict | None:
+    """One build of the store by its id (deleted ones too), or None."""
+    for b in (_builds_doc(fresh) or {}).get("builds") or []:
+        if isinstance(b, dict) and b.get("id") == build_id:
+            return b
+    return None
+
+
+def build_update(build_id: str, fields: dict, *, by: str = "console", tries: int = 4) -> dict:
+    """Change some fields of one build (status, step, note, branch, pr, …) as a row update; returns the build as stored.
+
+    After the cut this is data-patch@1 on axf-data: only that build's row is locked and rewritten, guarded by the rev
+    it was read at; another writer's change in between is re-read and the fields applied again. Before the cut the
+    store's local file is the store and is rewritten atomically. `id` can't be changed; an unknown build raises
+    DataStoreError('not_found'); in rollback the store is read-only."""
+    if not isinstance(fields, dict) or ("id" in fields and fields["id"] != build_id):
+        raise DataStoreError("invalid_body", "fields is an object and can't change the build's id", 400)
+    on_tables = builds_on_tables()
+    if on_tables and mode_of(BUILDS_KEY) == "rollback":
+        raise DataStoreError("read_only", "builds is rolling back: writes wait until it is local again", 423)
+    tries = max(1, tries)
+    for attempt in range(tries):
+        doc = _builds_doc(fresh=True)
+        cur = next((b for b in (doc or {}).get("builds") or [] if isinstance(b, dict) and b.get("id") == build_id), None)
+        if cur is None:
+            raise DataStoreError("not_found", f"no build {build_id} in the builds store", 404)
+        now = _now()
+        rev = cur.get("rev") if isinstance(cur.get("rev"), int) and not isinstance(cur.get("rev"), bool) else 1
+        new = {**cur, **fields, "id": build_id, "rev": rev + 1, "updatedAt": now}
+        if "status" in fields and fields["status"] != cur.get("status"):
+            new["statusAt"] = fields.get("statusAt") or now
+            new["statusBy"] = fields.get("statusBy") or by
+        new.pop("pipelineView", None)  # worked out on read (pipeline-status@1), never stored
+        head = {"rev": int(doc.get("rev") or 0) + 1, "updatedAt": now}
+        if on_tables:
+            try:
+                REMOTE.patch(BUILDS_KEY, {"head": head, "lists": {"builds": [{"key": build_id, "ifRev": rev, "item": new}]}})
+            except DataStoreError as e:
+                if e.code == "conflict" and attempt < tries - 1:
+                    continue
+                raise
+        else:
+            doc = {**doc, **head, "builds": [new if b is cur else b for b in doc["builds"]]}
+            storage.write_json(_builds_file(), doc, indent=1, mode=0o644, dir_mode=None)
+        builds_clear()
+        return new
+    raise DataStoreError("conflict", build_id, 409)
 
 
 class PluginData:

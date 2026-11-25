@@ -171,6 +171,89 @@ except ValueError:
 st = ds.status()
 check(st["configured"] and st["namespaces"]["planner"]["mode"] == "rollback" and st["driftLines"]["planner"] == 3, "status: mode per namespace and drift lines")
 
+print("data_store: the pipeline status file is retired")
+sf = tmp / "repo/_claude/builds/orchestrator.json"
+sf.parent.mkdir(parents=True, exist_ok=True)
+sf.write_text('{"builds": [{"id": "left-over"}]}')
+pf = REPO / "_claude/builds/profiles/all/orchestrator.json"
+check(ds.is_status_file(sf) and ds.is_status_file(pf) and ds.is_status_file("_claude/builds/orchestrator.json"), "the file and a profile's copy are recognised")
+check(not ds.is_status_file(REPO / "_claude/builds/store.json") and not ds.is_status_file(tmp / "fixtures/orchestrator.json"), "…and nothing else is")
+check(ds.key_for(pf) is None and ds.key_for(REPO / "_claude/builds/orchestrator.json") is None, "it has no data-store key")
+check(ds.read_json(sf, "gone") == "gone" and ds.read_bytes(sf) is None and not ds.exists(sf), "a leftover copy is never read")
+refused = 0
+for write in (lambda: ds.write_json(sf, {"builds": []}), lambda: ds.write_text(pf, "{}"), lambda: ds.append_jsonl(sf, {})):
+    try:
+        write()
+    except ds.DataStoreError as e:
+        refused += e.code == "gone"
+check(refused == 3 and sf.read_text().startswith('{"builds": [{"id": "left-over"') and not pf.exists(), "a write raises gone and creates nothing")
+check(client.get("/v1/builds/orchestrator.json", headers={"authorization": "Bearer t"}).status_code == 404, "nothing reached axf-data")
+check(ds.remove(sf) and not sf.exists(), "a leftover copy can be removed")
+
+print("data_store: build status is rows of the builds store")
+STORE = {"$axf": "builds@1", "rev": 7, "builds": [
+    {"id": f"b{i}", "title": f"Build {i}", "status": ["running", "queued", "landed", "landed", "pending"][i % 5], "rev": 1,
+     "profiles": ["axf"] if i % 2 else ["voicevault"], "updatedAt": f"2026-11-25T10:{i:02d}:00.000Z", "steps": [{"id": "s1", "status": "pending"}], "notes": []}
+    for i in range(10)] + [{"id": "old", "status": "landed", "rev": 1, "deleted": True, "profiles": ["axf"], "steps": [], "notes": []}]}
+set_mode("builds", "local")
+store_file = tmp / "store.json"
+store_file.write_text(json.dumps(STORE))
+os.environ["AXF_BUILDS_STORE"] = str(store_file)
+pg = ds.builds_page()
+check(pg["$axf"] == "builds-page@1" and pg["ok"] and pg["total"] == 10 and pg["counts"] == {"landed": 4, "pending": 2, "queued": 2, "running": 2} and pg["rev"] == 7, "counts per status, deleted builds left out")
+pg = ds.builds_page(status="landed", limit=3)
+check([b["id"] for b in pg["items"]] == ["b8", "b7", "b3"] and pg["total"] == 4 and pg["next"] == 3, "a status page, newest first")
+pg = ds.builds_page(status="landed", limit=3, offset=3)
+check([b["id"] for b in pg["items"]] == ["b2"] and pg["next"] is None, "the next page ends it")
+pg = ds.builds_page(status=["running", "queued"], project="axf")
+check(sorted(b["id"] for b in pg["items"]) == ["b1", "b5"] and pg["counts"] == {"landed": 2, "pending": 1, "queued": 1, "running": 1} and pg["all"] == 5, "status list and project together; counts keep every status of the project")
+check(len(ds.builds_page(limit=10_000)["items"]) == 10 and ds.builds_page(limit=10_000)["limit"] == ds.PAGE_MAX and ds.builds_counts("voicevault")["running"] == 1, "the page size is capped; counts alone carry no builds")
+b = ds.build_update("b1", {"status": "landed", "pr": "12"})
+on_disk = json.loads(store_file.read_text())
+check(b["status"] == "landed" and b["rev"] == 2 and b["statusBy"] == "console" and on_disk["rev"] == 8 and [x for x in on_disk["builds"] if x["id"] == "b1"][0]["pr"] == "12"
+      and ds.build_row("b1")["status"] == "landed" and len(on_disk["builds"]) == 11, "before the cut a row update lands in the store's file")
+del os.environ["AXF_BUILDS_STORE"]
+ds.builds_clear()
+
+set_mode("builds", "cutover")
+ds.REMOTE.put_latest("builds/store.json", json.dumps(STORE).encode(), "application/json")
+check(ds.builds_on_tables() and ds.builds_page(status="queued", fresh=True)["total"] == 2, "after the cut the page comes from axf-data")
+b = ds.build_update("b6", {"status": "landed", "branch": "claude/b6"}, by="lander")
+got = json.loads(client.get("/v1/builds/store.json", headers={"authorization": "Bearer t"}).content)
+row = [x for x in got["builds"] if x["id"] == "b6"][0]
+check(row["status"] == "landed" and row["branch"] == "claude/b6" and row["rev"] == 2 and row["statusBy"] == "lander" and got["rev"] == 8
+      and row["steps"] == [{"id": "s1", "status": "pending"}], "a row update is a data-patch on that build")
+check([x for x in got["builds"] if x["id"] != "b6"] == [x for x in STORE["builds"] if x["id"] != "b6"], "…and the other builds are untouched")
+check(ds.builds_page(status="queued")["total"] == 1 and ds.builds_counts()["landed"] == 5, "the next read sees it")
+# another writer changes the row between our read and our patch: the patch is refused once, re-read, applied
+real_patch, raced = ds.REMOTE.patch, []
+
+
+def racing_patch(key, body):
+    if not raced:
+        raced.append(1)
+        other = dict(row, rev=3, title="renamed elsewhere")
+        real_patch(key, {"lists": {"builds": [{"key": "b6", "ifRev": 2, "item": other}]}})
+    return real_patch(key, body)
+
+
+ds.REMOTE.patch = racing_patch
+b = ds.build_update("b6", {"pr": "44"})
+ds.REMOTE.patch = real_patch
+check(b["pr"] == "44" and b["title"] == "renamed elsewhere" and b["rev"] == 4, "a conflict re-reads the row and keeps the other writer's change")
+try:
+    ds.build_update("nope", {"status": "landed"})
+    check(False, "an unknown build is not_found")
+except ds.DataStoreError as e:
+    check(e.code == "not_found", "an unknown build is not_found")
+set_mode("builds", "rollback")
+try:
+    ds.build_update("b6", {"status": "failed"})
+    check(False, "rollback refuses a row update")
+except ds.DataStoreError as e:
+    check(e.code == "read_only", "rollback refuses a row update")
+check(ds.builds_page(status="landed")["total"] == 5, "rollback still reads the rows")
+
 journal.unlink(missing_ok=True)
 print(f"data_store: {'all ok' if not fails else f'{fails} failed'}")
 sys.exit(1 if fails else 0)
