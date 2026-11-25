@@ -2,6 +2,16 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
+**Claude link (build `terminal-main-tab-streaming-console-s`, Fable; in progress).** A pinned, read-only tab that streams
+the console's connection to Claude live: headless launches and exits, account use, MCP and axHub calls, connects,
+disconnects and errors. Design note with every event source and the event shape (`claude-link-event@1`):
+`docs/claude-link.md`.
+- **Settings** (Settings → Plugins → Terminal → Claude link; settings-registry group `terminal.claude-link`,
+  `web/claude-link.ts`): auto-scroll (Simple), kinds shown by default (Basic), show detail by default (Basic), buffer
+  size in lines (Developer, 100 to 10000). Saved by the settings registry (`rt.settings`, per browser) and reachable
+  as control targets; levels in `assets/settings/default-console-terminal.json` (`levelOf`). Pure helpers and the
+  defaults: `web/claude-link-core.ts`; check `npx -y tsx apps/console-web/plugins/console-terminal/claude-link.test.mts`.
+
 **Sessions nav (v0.5.0, Nov 3 2026, Opus; build `terminal-sessions-nav`).** A collapsible rail on the left of every
 terminal window (`web/nav.tsx`, model `server/nav.py`, answer `terminal-nav@1`; setting `sessionsNav`).
 - **Sections:** *My sessions* (Brett's own tmux sessions on the VPS and in the console, e.g. Claude Code over Moshi, the

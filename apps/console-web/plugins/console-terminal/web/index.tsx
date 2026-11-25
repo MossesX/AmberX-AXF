@@ -11,6 +11,7 @@ import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import { openHeadless, openUnseen, watchHeadless } from './headless';
 import { openByName } from './nav';
+import { claudeLinkSettings } from './claude-link';
 import './terminal.css';
 import { appMenu } from './menu';
 
@@ -28,7 +29,7 @@ import { appMenu } from './menu';
  *  - VPS and console tabs live in tmux sessions (axt-…): reload, sleep or a console restart re-attaches with the
  *    scrollback replayed; Open in Moshi copies the attach command; Kill session ends one
  *  - sessions nav (nav.tsx): the left rail; actions terminal.mirror / terminal.jump [name, where], terminal.sessions
- *  - Settings → Plugins → Terminal
+ *  - Settings → Plugins → Terminal; the Claude link tab's settings are a settings-registry group there (claude-link.ts)
  */
 export const plugin: AxfWebLibrary = {
   id: ID,
@@ -68,6 +69,8 @@ export const plugin: AxfWebLibrary = {
     'terminal.connection': { title: 'Connection', icon: 'shuffle', searchable: false, render: (props, close) => <ConnectionDialog props={props} close={close} /> },
   },
   tabs: { 'terminal-host': (t) => <TerminalHost tab={t} />, terminal: (t) => <TerminalHost tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
+  // Claude link (docs/claude-link.md): buffer size, default kind filter, auto-scroll, detail; saved by the settings registry
+  settings: [claudeLinkSettings],
   settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Windows-style terminal: appearance, tabs, Claude Code profiles and connections, the VPS host key, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
     { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },

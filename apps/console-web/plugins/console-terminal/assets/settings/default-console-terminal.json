@@ -3,7 +3,7 @@
   "type": "settings",
   "id": "default-console-terminal",
   "name": "Terminal settings (default)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The default settings interface for the Terminal plugin: locked until another interface built for it is picked (settings-iface@1).",
   "author": "AmberX AXF",
   "tags": [
@@ -17,7 +17,13 @@
     "search": false,
     "descriptions": true,
     "hide": [],
-    "levelOf": {},
+    "levelOf": {
+      "terminal.claude-link": "basic",
+      "terminal.claudeLink.autoScroll": "simple",
+      "terminal.claudeLink.kinds": "basic",
+      "terminal.claudeLink.showDetail": "basic",
+      "terminal.claudeLink.buffer": "developer"
+    },
     "builtFor": "plugin:console-terminal"
   }
 }
