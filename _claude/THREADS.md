@@ -844,7 +844,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-24 18:41 UTC · `fable-fix-land-refresh-build-fix` note (all) · dispatcher
 - 2026-11-24 18:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 18:43 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
 - 2026-11-24 18:44 UTC · `fix-refreshing-console-jumps-back` PR 912 (all) · lander
@@ -1244,6 +1243,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:22 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10400,
- "updatedAt": "2026-11-25T06:22:03.515Z",
+ "rev": 10401,
+ "updatedAt": "2026-11-25T06:22:21.809Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271813,7 +271813,7 @@
    "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-25T06:21:56.612Z",
+   "updatedAt": "2026-11-25T06:22:01.705Z",
    "builtAt": "",
    "notes": [
     {
@@ -272087,6 +272087,10 @@
     {
      "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--paulie: brief only · start 11.5K tokens ($0.05) · cost $0.50 · 9 turns · 6 tools, MCP none",
      "at": "2026-11-25T06:21:56.612Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.50",
+     "at": "2026-11-25T06:22:01.705Z"
     }
    ],
    "approvals": [
@@ -273660,7 +273664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 224,
+   "rev": 225,
    "deleted": false,
    "deletedAt": "",
    "pending": {

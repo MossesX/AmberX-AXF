@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T06:22:03.515Z",
+ "updatedAt": "2026-11-25T06:22:21.809Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -188522,7 +188522,7 @@
    "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-25T06:21:56.612Z",
+   "updatedAt": "2026-11-25T06:22:01.705Z",
    "builtAt": "",
    "notes": [
     {
@@ -188796,6 +188796,10 @@
     {
      "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--paulie: brief only · start 11.5K tokens ($0.05) · cost $0.50 · 9 turns · 6 tools, MCP none",
      "at": "2026-11-25T06:21:56.612Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.50",
+     "at": "2026-11-25T06:22:01.705Z"
     }
    ],
    "approvals": [
