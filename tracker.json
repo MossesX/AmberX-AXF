@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-16T21:11:15.442Z",
+  "generatedAt": "2026-11-25T06:06:09.334Z",
   "summary": {
     "foundations": {
       "built": 71,
@@ -20,12 +20,12 @@
       "coverage": 45
     },
     "console": {
-      "built": 15,
+      "built": 21,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 19,
-      "coverage": 79
+      "total": 25,
+      "coverage": 84
     },
     "modules": {
       "built": 15,
@@ -2965,7 +2965,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The AXF Console app (apps/console-droid, overlay@1) carries the same overlay, and since Nov 18 2026 Phone Connect's open_url lands in it (console-overlay@1, PhoneConnectProvider + PhoneConnectRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",
@@ -3709,6 +3709,42 @@
       "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 8, one config file) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin."
     },
     {
+      "id": "cx.settings.onesource",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "One true source: every console setting is stored under one key with one wording; old keys are read aliases, a CI check stops a second copy (settings-sources@1)",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "settings-sources@1 (Brett, Nov 21 2026): one stored key and one wording per console setting. framework/schemas/settings-sources.json plus each plugin's own part; framework/cli/settings-audit.mjs (inventory), framework/cli/check-settings-sources.mjs (CI). Merged: Builds at once (build-limit maxBuilds; agent-slots maxAgents is a read alias), Sessions per account (claude-workers limits.building; the pipeline's parallelPerAccount, an account's parallel and the Claude setting builds.maxParallel are read aliases), Launch builds without asking and the brief size (the Claude settings; the pipeline file's copies are read aliases). Migrations keep the value saved last and log a settings-migrated line in the owning journal. build-limit: only the build host counts its own processes. Console/VPS only: no Kotlin twin."
+    },
+    {
+      "id": "cx.buildengine.emergency",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build emergency-slots (Nov 20 2026, Brett). build-limit.mjs + agent-slots.mjs: a second pool (emergencySlots, default 2) counted apart from maxBuilds; a session is in it when its build holds an emergency grant (owner only). framework/cli/emergency-builds.mjs: send only with Brett's signed-in console click (AXF_APPROVER via console); sessions, agents, the console token, MCP and voice refused. pipeline-status.mjs: emergency tag, activeBuild leaves it out, emergencyBuilds; pipeline2.mjs emergency lane. Lander: emergency builds first; before any merge a head without main's newest code pulls main, conflicts go to Fable, CI runs again. Console: Send to emergency in Plan Studio 2.0 and the builds table, Emergency badge, Agent cap shows and sizes the pool. Tests: check-build-limit, check-agent-slots, check-pipeline-2, test/emergency.test.mjs, server/test_emergency.py, deploy/lander/test. Kotlin twin deferred (PORTING.md)."
+    },
+    {
+      "id": "cx.buildengine.statuscontract",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Pipeline 2.0 status contract owns every limit: the attempt ceiling, the 15 minute step cap, the archive rule, fixed steps and whole refusals; one watchdog and one dispatcher read it",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Hand build pipe-a-status-watchdog (Nov 21 2026, Brett; the Fable deep audit part A: P1-01, P1-02, P1-05, P1-09, P1-14, B4-02..05, S5-05). framework/core/pipeline-status.mjs: MAX_ATTEMPTS is a ceiling for every writer (out of failed past it only as a reset with a reason, attempt 1 again), STEP_MAX_MINUTES 15 is the one step cap (split prompt, normDesign, splitParts, the watchdog's 2 x estimate, the builds@1 rules default), archive keeps archivedFrom and returns only there, enforceFlow is strict (one refusal drops the whole write for that build, with a note) and keeps a split build's steps and every step's status. framework/plan/builds-store-core.mjs ownsStatus: no builds@1 status derived on a Pipeline 2.0 build. deploy/watchdog/core.mjs imports the contract (holdsActive: a build waiting at split is never stuck while a failed build holds the place). pipeline2.mjs: a build that failed while waiting is activated again, retryBuild (orchestrator.mjs retry, REST retry) resets a given-up build, steps with no status get main and a slot. Tests: framework/spec/check-pipeline-2.mjs (now in CI), deploy/watchdog/core.test.mjs, build-orchestrator test/p2-status-contract.test.mjs."
+    },
+    {
       "id": "cx.buildengine.buildids",
       "tab": "console",
       "group": "console-plumbing",
@@ -3731,6 +3767,18 @@
       "wave": 1,
       "module": "app-console",
       "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
+    },
+    {
+      "id": "cx.buildengine.statustable",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "One status-driven builds table (Pipeline 2.0): no tabs, builds as rows expandable to their steps, filters on the toolbar, one colour per status, live timers, a read-only merge queue view of the same rows",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "status-table@1 (Pipeline 2.0, Nov 19 2026; build orchestrator plugin: web/status-table-core.mjs rules, status-table.mjs CLI, web/StatusTable.tsx): the orchestrator page is one table driven only by the contract statuses (pending, splitting, split shown Pending, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed; failed shows its attempt), no tabs; columns Build, Status, Steps, Model, Account, Slot, Timer, PR; filters status, account, model, date, words, show landed; timers tick client-side from the status at; rows poll GET /table (since=<rev> answers unchanged). Merge queue = the same table filtered to merging-pr..merging-main (view merge-queue, slot builds.merge-queue in the push banner). Readers ask the builds store (Postgres), never a store.json projection. REST /table, plugin command status-table (MCP, CLI), console actions build-orchestrator.open:<status|build>, build-orchestrator.merge-queue. Kotlin twin deferred."
     },
     {
       "id": "cx.buildengine.sectionowners",
@@ -3867,7 +3915,73 @@
       "status": "built",
       "wave": 1,
       "module": "app-console",
-      "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+      "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md). Pipeline 2.0 lander (build p2-lander, Nov 19 2026; Brett: \"absolutely no human intervention, ever\"): deploy/lander/run.mjs (systemd axf-lander.timer, every minute) replaces the push banner's auto-land and the auto-lander@1 runner: the one build at build-complete lands as one PR (merging-pr, pr-pulling-main, running-ci, merging-main, landed; 2, 3+ PRs over the sizeCapLines cap, one at a time), every status written to the builds store; failures go failed with attempt N and retry forward (flaky re-run, split, fix session, pull main). Build rules' command checks run in the lander's CI step, never at launch. Merge queue 2.0 = plugin merge-queue-view, read-only view of the builds store."
+    },
+    {
+      "id": "cx.modeltriage",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Model triage gate: the VPS decides which model every build step, emergency build, hand build and lander fix session runs on, from measurable, editable rules; every decision logged with the rule that fired; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build vps-model-triage-gate (Nov 23 2026; Brett, Nov 21: \"the orchestrator stops choosing models\"): model-triage@1, framework/core/model-triage.mjs (rules, decide) + framework/cli/model-triage.mjs (store, measured facts, decision log, CLI). Every lane asks it: orchestrator steps (split, assigning-models, retries), emergency builds, hand builds (deploy/claude-headless.sh) and lander fix sessions. Decisions on the step (triage) and in the log. Builds → VPS Configuration → Model triage (tab:gate.tabs=model-triage); REST model-triage routes of the VPS Configuration plugin, MCP vps_model_triage*, CLI axf gate model-triage, voice vps.model-triage.*. Tests: framework/spec/check-model-triage.mjs, build-orchestrator test/p2-triage.test.mjs. Kotlin twin deferred (PORTING.md)."
+    },
+    {
+      "id": "cx.phone",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md). Build phone-connect-popups (Nov 21 2026, Brett: \"Make it do the job\"): a refused device key is never retried (engine linkVerdict; phone and console both say Disconnected: re-pair) and the wall's token gate lets the device routes through; MCP phone_open_url (an amberxai.com page in Chrome, in front, or a one-tap notification) and phone_status (paired, online, last check-in); new axHub approvals and veto countdowns pop up on the phone with Approve / Deny, console closed (server watcher over approvals-relay@1 pending()); Follow Amber also opens the console on the phone (follow switch, on by default). App 0.2.0. Build phone-connect-open-straight-phone-no-tap (Nov 21 2026): the console opens straight on the phone, no notification to tap. The wake asks for the console app first (where: overlay); the console app opens with Display over other apps alone (its overlay, or the app in front: how console-overlay / console-app) and answers only once the page is on screen; Phone Connect starts the console activity itself when only it holds the permission; the tap-to-open notification is the fallback and says why (no-permission / launch-failed). A held approval floats over the screen with Approve / Deny (ApprovalOverlay; the notification stays for the lock screen). open / open-url / wake say opened only when the phone says it is on screen, notified otherwise. App 0.3.0."
+    },
+    {
+      "id": "cx.axhubpages",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "axHub's pages in the console: module axHub, one removable plugin per hub feature (approvals + held calls + log, passes, apps, users, handoff, account) over a hub-pages relay that takes only a wall admin's browser",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build fable-full-audit-ui-overhaul-conso s16 (Nov 20 2026; Brett Nov 19: fold the axHub web UI into the console). Six console plugins in module axHub (nav section axHub + app menu Apps → axHub): axhub-approvals (Approvals grid with held calls, Request page, Approvals log, hub.review:<id>), axhub-passes (Go pass, Passes), axhub-apps (catalog), axhub-users, axhub-handoff (runs + live progress), axhub-account (hub session + account). Shared kit src/hubPages (relay client, HubGate, routes axhub-<page>, old #/<route> addresses); console server relay server/hub_pages.py to the hub's /auth/api/* + /apps.json: wall admin browser only (its axhub_session, else owner sign-in AXF_HUB_RELAY_USER/PASSWORD), writes same-origin JSON, CSRF read server-side and never sent to the page, writes logged. apps/axhub-web archived (ARCHIVED.md, project status archived), off CI, its catalog app-plugin kind and plugin-commands home retired; VPS clean-up is systems check host item host-axhub-web-retired. Tests: server/test_hub_pages.py (22), src/hubPages/test.mjs (234). Deleting the folder itself is a follow-up (≈60 framework references: schemas' app lists, shared assets, fixtures, Kotlin test)."
+    },
+    {
+      "id": "cx.statusstyles",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Status styles: animations and styling for every status (whole row or text only, a preset library, own presets, a style per status, moving or still badges)",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build status-styles-plugin (Nov 21 2026; Brett: animations and styling states for every status level, for builds and every step). Console plugin status-styles (Settings → Plugins → Status styles; REST /api/plugins/status-styles, control@1 status-styles.*): a row style, a badge style and an animated-badge switch per status (Pipeline 2.0 builds and steps, Scoring risk, Fast merge, Post-merge CI, Rolling back, Rolled back, Plan Studio, own ids); 66 presets (whole row or text only) in assets/status-style/library.json plus own saved presets; web/core.ts builds one token-only stylesheet keyed on data-status (innermost row via :has), stopped under reduced motion; badge packs read data-status-animated and data-badge-animated / data-badge-static. Tests: test.mts, test.py."
+    },
+    {
+      "id": "cx.consoleopen",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Console opens go straight to the screen: a loaded console is never reloaded to its home screen, a wake lands on the target, a queued open is never lost, answers come in seconds",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build console-open-no-reload (Nov 23 2026; Brett: \"Every time you send me to any screen, it loads the home screen first. Stop doing that.\"). Root cause: the console app's page kept running behind its folded overlay but its timer-driven beat stopped, so every open took the wake path, the wake loaded the page again at home, and the queued open went to the page that was being torn down and was marked done. Console commands: the page also beats on its stream; a console with an open stream and no recent beat is asked first (2 s) before any wake; a queued command is done only on an ack and goes to the next page load under the same message id; the wake link carries axf-open; a name missing from a loading page's catalog is waited for; calls answer in seconds (wait asks for longer). Console app: a console link for a loaded console is handed to the page (axfNative.open, no reload). Follow Amber no longer sends the phone a second open. The app catalog has its own nav section under Home and opens the Apps menu. Tests: test_console_commands.py (195), follow-amber test.py, nativeRules.test.mjs, hubPages/test.mjs, ShellRulesTest. Not tested on a phone."
+    },
+    {
+      "id": "cx.hidden-assets",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Hide any asset and see what's hidden: right-click Hide on every tab group, toolbar, banner, nav, menu bar and widget, the Assets menu, the Hidden list with Unhide and Unhide all; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-react",
+      "notes": "Build rebuild-fresh-main-hide-any-asset (Nov 25 2026; Brett: \"We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden.\"). Right-click / long-press → Hide on every tab group, toolbar, banner, nav menu, menu bar and widget (Undo toast); Assets menu: Hidden items… (count), Unhide all, Hide ▸; Hidden list in Settings → Appearance → Hidden and as the dialog axf.hidden-assets (Unhide per row, Unhide all). State per app in app-look@1 own.hiddenAssets on axHub (rt.hidden / hide / unhide / unhideAll), so it survives reloads. REST /api/hidden-assets, MCP hidden_assets_list|hide|unhide|unhide_all, console actions chrome.hide|unhide|unhideAll|hidden, axf hidden list|hide|unhide|unhide-all, voice, deep links view:settings/tab:appearance#hidden and dialog:axf.hidden-assets. Check: spec/check-hidden-assets.mts. Kotlin twin deferred (PORTING.md)."
     },
     {
       "id": "m.kernel",

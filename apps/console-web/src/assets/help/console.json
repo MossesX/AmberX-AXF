@@ -1118,6 +1118,12 @@
         "title": "Remove link",
         "text": "Takes this link off the item. The page it points to is not touched.",
         "kind": "button"
+      },
+      {
+        "target": "hide-this-notice",
+        "title": "Hide this notice",
+        "text": "Puts the new-version notice away so you can keep using the page under it. It comes back after the next update; parts that could not load still offer their own Reload.",
+        "kind": "button"
       }
     ],
     "intros": [
