@@ -154,6 +154,17 @@ def summary_of(doc: Any) -> dict[str, Any]:
             "at": _text(doc.get("updatedAt")) if isinstance(doc, dict) else ""}
 
 
+def _row_call(fn: Any) -> Any:
+    """One row call on axf-data, or None when the service is from before data-item@1 / pipeline-summary@1 (it answers
+    `invalid_key`: unknown action). The service is deployed on its own schedule; the caller then reads the record."""
+    try:
+        return fn()
+    except data_store.DataStoreError as e:
+        if e.code == "invalid_key":
+            return None
+        raise
+
+
 def pipeline_summary(*, fresh: bool = False) -> dict[str, Any]:
     """The pipeline's status: counts by status, the one queued build, the running builds with slot and account. On the
     tables it is the summary query (a GROUP BY and the few live rows); DataStoreError when axf-data can't answer, never
@@ -164,7 +175,9 @@ def pipeline_summary(*, fresh: bool = False) -> dict[str, Any]:
         hit = _cache.get(key)
         if hit and not fresh and now - hit[0] < SUMMARY_CACHE_S:
             return hit[1]
-    out = data_store.REMOTE.summary(KEY) if on_tables() else summary_of(_load(None))
+    out = _row_call(lambda: data_store.REMOTE.summary(KEY)) if on_tables() else None
+    if out is None:  # before the cut, or an axf-data from before pipeline-summary@1: the same answer from the record
+        out = summary_of(_load(None))
     with _lock:
         _cache[key] = (now, out)
     return out
@@ -173,8 +186,9 @@ def pipeline_summary(*, fresh: bool = False) -> dict[str, Any]:
 def build(build_id: str) -> dict[str, Any] | None:
     """One build by its id as the store holds it, or None. On the tables: its row with its steps and notes."""
     if on_tables():
-        r = data_store.REMOTE.item(KEY, build_id)
-        return r.get("item") if isinstance(r, dict) and isinstance(r.get("item"), dict) else None
+        r = _row_call(lambda: data_store.REMOTE.item(KEY, build_id) or {})
+        if r is not None:
+            return r.get("item") if isinstance(r.get("item"), dict) else None
     doc = _load(None)
     return next((b for b in (doc or {}).get("builds", []) if isinstance(b, dict) and b.get("id") == build_id), None)
 

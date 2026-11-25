@@ -831,9 +831,15 @@ export function summaryOf(builds) {
   const running = live.filter((r) => r.status !== 'queued').sort((a, b) => cmp(a.slot || '~', b.slot || '~') || cmp(a.id, b.id));
   return { $axf: 'pipeline-summary@1', total: items.length, counts: Object.fromEntries(Object.keys(counts).sort().map((k) => [k, counts[k]])), queued: queued[0] ?? null, queuedAll: queued, running };
 }
+/**
+ * An axf-data from before data-item@1 / pipeline-summary@1 answers `invalid_key` (unknown action) for a row call. The
+ * service is deployed on its own schedule, so every row call falls back to the whole record on that answer: slower,
+ * never wrong, and never an error a caller sees.
+ */
+const rowCall = (req) => { try { return { ok: true, result: files.callSync(req) }; } catch (e) { if (e instanceof DataStoreError && e.code === 'invalid_key') return { ok: false, result: null }; throw e; } };
 /** The pipeline's status: counts by status, the queued build, the running builds with slot and account. No document read on axf-data. */
 export function pipelineSummary() {
-  if (remoteOn()) return files.callSync({ op: 'summary', key: storeKey() });
+  if (remoteOn()) { const r = rowCall({ op: 'summary', key: storeKey() }); if (r.ok) return r.result; }
   const s = readStore();
   return { ...summaryOf(s.builds), rev: s.rev ?? 0, at: str(s.updatedAt) };
 }
@@ -845,8 +851,9 @@ function rowStore(r) { return healOrigins(normKeeping({ ...core.emptyStore(), ..
  */
 export function readBuild(id) {
   if (!remoteOn()) return readStore().builds.find((b) => b.id === id) ?? null;
-  const r = files.callSync({ op: 'item', key: storeKey(), id: String(id ?? '') });
-  return r ? rowStore(r).builds[0] ?? null : null;
+  const r = rowCall({ op: 'item', key: storeKey(), id: String(id ?? '') });
+  if (!r.ok) return readStore().builds.find((b) => b.id === id) ?? null;
+  return r.result ? rowStore(r.result).builds[0] ?? null : null;
 }
 /**
  * Read one build, change it, save it: fn(build) changes it in place or returns the new record. Every guard of a store
@@ -872,8 +879,10 @@ export function withBuild(id, fn, meta = {}) {
   }
 }
 function withBuildOnce(id, fn, meta) {
-  const got = files.callSync({ op: 'item', key: storeKey(), id: String(id ?? '') });
-  if (!got) return null;
+  const call = rowCall({ op: 'item', key: storeKey(), id: String(id ?? '') });
+  const got = call.result;
+  // no such row, an axf-data from before data-item@1, or one whose answer has no head: the whole-store path
+  if (!call.ok || !got || !got.head || !Number.isInteger(got.head.rev)) return null;
   const start = rowStore(got);
   if (start.builds.length !== 1 || start.builds[0].id !== id) return null;
   const copy = normKeeping(JSON.parse(JSON.stringify(start)));

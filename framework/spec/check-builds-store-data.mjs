@@ -273,6 +273,20 @@ process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT,
     assert.equal(n, 2, 'read again after the conflict'); assert.equal(c.build.title, 'b2 by someone else'); assert.equal(c.build.status, 'pending');
     assert.equal(io.pipelineSummary().queued, null);
     assert.throws(() => io.withBuild('no-such-build', (b) => b, { by: 'test' }), (e) => e.code === 'not_found');
+    // an axf-data from before data-item@1 / pipeline-summary@1 (unknown action = invalid_key): the whole record instead
+    const old = join(dir, 'old-service-call.mjs');
+    writeFileSync(old, `import { execFileSync } from 'node:child_process';
+const chunks = []; for await (const c of process.stdin) chunks.push(c); const input = Buffer.concat(chunks).toString('utf8'); const req = JSON.parse(input);
+if (req.op === 'item' || req.op === 'summary') process.stdout.write(JSON.stringify({ ok: false, code: 'invalid_key', message: 'unknown action' }) + '\\n');
+else process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT, 'framework/cli/data-call.mjs'))}], { input, maxBuffer: 1 << 30 }));`);
+    process.env.AXF_DATA_CALL_SYNC = old;
+    try {
+      assert.equal(io.readBuild('b2').title, 'b2 by someone else');
+      assert.equal(io.pipelineSummary().$axf, 'pipeline-summary@1');
+      const w2 = io.withBuild('b2', (b) => { b.title = 'b2 on an old service'; }, { by: 'test', action: 'retitle' });
+      assert.equal(w2.row, false); assert.equal(w2.build.title, 'b2 on an old service');
+    } finally { delete process.env.AXF_DATA_CALL_SYNC; }
+    assert.equal((await remote('builds/store.json')).builds.find((b) => b.id === 'b2').title, 'b2 on an old service');
   });
   await t('rollback: writes refused (read_only)', async () => {
     setMode('rollback');

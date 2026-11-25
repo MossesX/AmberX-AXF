@@ -204,6 +204,17 @@ try:
     check(False, "axf-data down: an error, never a stale answer")
 except ds.DataStoreError as e:
     check(e.code == "unavailable", "axf-data down: an error, never a stale answer")
+# an axf-data from before the summary query (unknown action = invalid_key): the same answer from the record
+def _old_service(m, u, h, b):
+    if ":summary" in u or ":item" in u:
+        return 400, {"content-type": "application/json"}, json.dumps({"code": "invalid_key", "message": "unknown action"}).encode()
+    return transport(m, u, h, b)
+
+
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", _old_service))
+bs.clear()
+_o = bs.pipeline_summary()
+check(all(_o[k] == _s[k] for k in ("total", "counts", "queued", "queuedAll", "running")) and bs.build("a")["status"] == "pending" and bs.build("nope") is None, "an older axf-data: the summary and the build come from the record instead")
 ds.set_remote(ds.Remote("http://axf-data:7700", "t", transport))
 bs.clear()
 if _old_store is not None:
