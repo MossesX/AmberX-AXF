@@ -1,0 +1,6059 @@
+{
+ "$axf": "build-split@1",
+ "note": "Golden cases for split-plan@1 (framework/spec/BUILD-SPLIT.md). `in` is hand-written; `out` is generated from the reference engine (framework/core/build-split.mjs). Every port replays `in` and must answer `out`. ids: split id, part ref, branch and session formats. plans: planParts(build, freeSlots, fileClaims) at 2026-11-18T12:00:00.000Z. validate: mutations of the three-part plan of `build` and the errors each must raise. machine: scripts of part events (partNext), failures (onPartFailed), run moves (runNext), roll-ups (applyRollUp) and readiness probes (combineReady) on the three-part plan of validate.build, op k stamped 2026-11-18T12:<k+1>:00.000Z. transitions (out only): PART_TRANSITIONS, RUN_TRANSITIONS, partTarget(status, event) for every status and event ('' = does not apply), PART_WORKING, RUN_TERMINAL, PARTS_PHASE and buildStatusOf per run state. rollUps: `rollUp` = rollUp(parts, maxRebuilds), what the parts alone imply, and `badge` = rollUpBadge({ run, parts, maxRebuilds }), the queue row's overall status (maxRebuilds defaults to 2; junk entries are dropped before the badge). combine: combineReady(normSplit(plan, { build: 'demo' })). failures: onPartFailed(normSplit(plan, { build: 'demo' }), part, why, at 2026-11-18T12:00:00.000Z), answered as { ok, action, resetSteps, why, run, parts: [{ id, status, rebuilds, lastError }], failure }.",
+ "in": {
+  "ids": [
+   {
+    "build": "one-build-time",
+    "run": 1,
+    "part": "p1",
+    "agent": ""
+   },
+   {
+    "build": "one-build-time",
+    "run": 12,
+    "part": "p3",
+    "agent": "earl"
+   },
+   {
+    "build": "a",
+    "run": 9999,
+    "part": "p64",
+    "agent": "gina"
+   }
+  ],
+  "plans": [
+   {
+    "name": "three file groups, three slots: three parts, every slot filled",
+    "freeSlots": 3,
+    "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "contract",
+       "model": "Fable",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/x.mjs",
+        "framework/spec/X.md"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "web view",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "engine",
+       "model": "Opus",
+       "estimate": "5 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s4",
+       "text": "docs, no files",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": []
+      },
+      {
+       "id": "s5",
+       "text": "cli",
+       "model": "Opus",
+       "estimate": "20 min",
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "three file groups, six slots: only three parts (nothing is split past its file groups)",
+    "freeSlots": 6,
+    "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "contract",
+       "model": "Fable",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/x.mjs",
+        "framework/spec/X.md"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "web view",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "engine",
+       "model": "Opus",
+       "estimate": "5 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s4",
+       "text": "docs, no files",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": []
+      },
+      {
+       "id": "s5",
+       "text": "cli",
+       "model": "Opus",
+       "estimate": "20 min",
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "three file groups, two slots: heaviest group first onto the lightest part, steps in build order",
+    "freeSlots": 2,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "contract",
+       "model": "Fable",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/x.mjs",
+        "framework/spec/X.md"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "web view",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "engine",
+       "model": "Opus",
+       "estimate": "5 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s4",
+       "text": "docs, no files",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": []
+      },
+      {
+       "id": "s5",
+       "text": "cli",
+       "model": "Opus",
+       "estimate": "20 min",
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "one slot: one part with every open step in build order; done and skipped steps left out",
+    "freeSlots": 1,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s0",
+       "text": "already done",
+       "done": true,
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s1",
+       "text": "contract",
+       "model": "Fable",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "web view",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "skipped",
+       "skip": true,
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      },
+      {
+       "id": "s4",
+       "text": "cli",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "the planner's file claims merge with step files: a claim joins two groups",
+    "freeSlots": 3,
+    "base": "",
+    "fileClaims": {
+     "s4": [
+      "framework/cli/z.mjs"
+     ],
+     "s2": [
+      "./apps/console-web/web/y.tsx"
+     ]
+    },
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "contract",
+       "model": "Fable",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "web view",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": [
+        "apps/console-web/web/y.tsx"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "engine",
+       "model": "Opus",
+       "estimate": "5 min",
+       "files": [
+        "framework/core/x.mjs"
+       ]
+      },
+      {
+       "id": "s4",
+       "text": "glue",
+       "model": "Opus",
+       "estimate": "10 min",
+       "files": []
+      },
+      {
+       "id": "s5",
+       "text": "cli",
+       "model": "Opus",
+       "estimate": "20 min",
+       "files": [
+        "framework/cli/z.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "every step touches one shared file: one part however many slots are free",
+    "freeSlots": 4,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "a",
+       "estimate": "10 min",
+       "files": [
+        "framework/core/shared.mjs",
+        "a.mjs"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "b",
+       "estimate": "10 min",
+       "files": [
+        "b.mjs",
+        "framework/core/shared.mjs"
+       ]
+      },
+      {
+       "id": "s3",
+       "text": "c",
+       "estimate": "10 min",
+       "files": [
+        "c.mjs",
+        "b.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "no claims anywhere: one part (nothing is assumed independent without evidence)",
+    "freeSlots": 3,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "a"
+      },
+      {
+       "id": "s2",
+       "text": "b"
+      },
+      {
+       "id": "s3",
+       "text": "c"
+      }
+     ]
+    }
+   },
+   {
+    "name": "a second run of a build counts up its split id",
+    "freeSlots": 2,
+    "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "build": {
+     "id": "demo-split",
+     "splitId": "demo-split.r1",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "a",
+       "files": [
+        "a.mjs"
+       ]
+      },
+      {
+       "id": "s2",
+       "text": "b",
+       "files": [
+        "b.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "no free slot: nothing planned, the run waits",
+    "freeSlots": 0,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "a",
+       "files": [
+        "a.mjs"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "name": "every step done: nothing to plan",
+    "freeSlots": 2,
+    "base": "",
+    "build": {
+     "id": "demo-split",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "a",
+       "done": true,
+       "files": [
+        "a.mjs"
+       ]
+      }
+     ]
+    }
+   }
+  ],
+  "validate": {
+   "build": {
+    "id": "demo-split",
+    "steps": [
+     {
+      "id": "s1",
+      "text": "contract",
+      "model": "Fable",
+      "estimate": "10 min",
+      "files": [
+       "framework/core/x.mjs",
+       "framework/spec/X.md"
+      ]
+     },
+     {
+      "id": "s2",
+      "text": "web view",
+      "model": "Opus",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/web/y.tsx"
+      ]
+     },
+     {
+      "id": "s3",
+      "text": "engine",
+      "model": "Opus",
+      "estimate": "5 min",
+      "files": [
+       "framework/core/x.mjs"
+      ]
+     },
+     {
+      "id": "s4",
+      "text": "cli",
+      "model": "Opus",
+      "estimate": "20 min",
+      "files": [
+       "framework/cli/z.mjs"
+      ]
+     },
+     {
+      "id": "s9",
+      "text": "done already",
+      "done": true,
+      "files": [
+       "done.mjs"
+      ]
+     }
+    ]
+   },
+   "cases": [
+    {
+     "name": "a file in two parts",
+     "mutate": "plan.parts[1].files.push(plan.parts[0].files[0]);"
+    },
+    {
+     "name": "a step in two parts",
+     "mutate": "plan.parts[2].steps.push(plan.parts[1].steps[0]);"
+    },
+    {
+     "name": "an open step in no part",
+     "mutate": "plan.parts[1].steps = []; plan.parts[1].files = [];"
+    },
+    {
+     "name": "a done step in a part",
+     "mutate": "plan.parts[2].steps.push('s9'); plan.parts[2].files.push('done.mjs');"
+    },
+    {
+     "name": "a step the build does not have",
+     "mutate": "plan.parts[2].steps.push('s77');"
+    },
+    {
+     "name": "part ids out of order",
+     "mutate": "const [a, b] = plan.parts; plan.parts[0] = b; plan.parts[1] = a;"
+    },
+    {
+     "name": "a part on another base",
+     "mutate": "plan.parts[1].base = SHA2;"
+    },
+    {
+     "name": "the plan's base is not the main lock's",
+     "mutate": "",
+     "opts": {
+      "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+     }
+    },
+    {
+     "name": "a wrong part branch",
+     "mutate": "plan.parts[0].branch = 'claude/demo-split--r1-p9';"
+    },
+    {
+     "name": "more parts than free slots",
+     "mutate": "plan.slots.free = 2;"
+    },
+    {
+     "name": "a failed run says why",
+     "mutate": "plan.run = 'failed';"
+    },
+    {
+     "name": "a failure on a run that is not failed",
+     "mutate": "plan.failure = { at: '2026-11-18T12:30:00.000Z', part: 'p1', why: 'x' };"
+    },
+    {
+     "name": "a queued run with no parts",
+     "mutate": "plan.parts = [];"
+    },
+    {
+     "name": "steps out of build order inside a part",
+     "mutate": "plan.parts[0].steps.reverse();"
+    },
+    {
+     "name": "not in shape (an unknown part status)",
+     "mutate": "plan.parts[0].status = 'bogus';"
+    }
+   ]
+  },
+  "machine": {
+   "note": "Scripts on the three-part plan of validate.build (base aaaa…, maxRebuilds 2 unless set). ops: part <event> (partNext), failed (onPartFailed), run <to> (runNext), rollup (applyRollUp). Times step by one minute from 2026-11-18T12:01.",
+   "scripts": [
+    {
+     "name": "happy path: every part launched, ticked and green; combine, CI, merge, live, finished",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "paulie",
+        "session": "axf-demo-split--r1-p3--paulie"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "green",
+       "args": {
+        "head": "3333333333333333333333333333333333333333"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "cccccccccccccccccccccccccccccccccccccccc",
+        "pr": 4242,
+        "ciRun": "https://github.com/MossesX/AmberX-AXF/actions/runs/1"
+       }
+      },
+      {
+       "op": "run",
+       "to": "merging",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "merged",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "live",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "finished",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "name": "a part fails once: rebuilt from the same base while the others keep going",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "check-theme red"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "rollup"
+      }
+     ]
+    },
+    {
+     "name": "a part fails for good: the run fails, the waiting part is abandoned, nothing moves after",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "crash"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "crash again"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "third crash"
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p3--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "building",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "name": "a crash before the first tick: back to waiting, relaunched; the run stays building",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "crash",
+       "args": {
+        "why": "usage limit"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p1--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "name": "refused: green on a waiting part, combining before every part is done, a done part re-launched, a jump past CI",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "run",
+       "to": "combining",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "run",
+       "to": "building",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "merged",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p9",
+       "event": "launch",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "name": "green without a head is refused; all-or-nothing: two of three done is not ready",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p2--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "rollup"
+      }
+     ]
+    },
+    {
+     "name": "combine conflict: back to building, the clashing part rebuilt, combined again; red CI goes back to combining, then green",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p2--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p3--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "green",
+       "args": {
+        "head": "3333333333333333333333333333333333333333"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "failed",
+       "part": "p2",
+       "why": "merge conflict in apps/console-web/web/y.tsx"
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p2--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "cccccccccccccccccccccccccccccccccccccccc",
+        "pr": 4243
+       }
+      },
+      {
+       "op": "run",
+       "to": "combining",
+       "args": {
+        "why": "CI red: check-theme"
+       }
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "3333333333333333333333333333333333333333",
+        "pr": 4243
+       }
+      },
+      {
+       "op": "run",
+       "to": "merging",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "merged",
+       "args": {}
+      }
+     ]
+    },
+    {
+     "name": "maxRebuilds 0: the first failure fails the run",
+     "maxRebuilds": 0,
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p2--earl"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "failed",
+       "part": "p2",
+       "why": "red checks"
+      },
+      {
+       "op": "rollup"
+      }
+     ]
+    },
+    {
+     "name": "combine conflict with no rebuild left: the run fails, nothing lands, no part moves after",
+     "maxRebuilds": 0,
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "joey",
+        "session": "axf-demo-split--r1-p3--joey"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "green",
+       "args": {
+        "head": "3333333333333333333333333333333333333333"
+       }
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "failed",
+       "part": "p2",
+       "why": "conflict in framework/cli/z.mjs"
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "cccccccccccccccccccccccccccccccccccccccc",
+        "pr": 4243
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "rebuild",
+       "args": {}
+      },
+      {
+       "op": "ready"
+      }
+     ]
+    },
+    {
+     "name": "red CI with no way back: the run fails from ci, the done parts stay done, nothing lands",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "joey",
+        "session": "axf-demo-split--r1-p3--joey"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "green",
+       "args": {
+        "head": "3333333333333333333333333333333333333333"
+       }
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "cccccccccccccccccccccccccccccccccccccccc",
+        "pr": 4244,
+        "ciRun": "https://ci.example/runs/1"
+       }
+      },
+      {
+       "op": "run",
+       "to": "failed",
+       "args": {
+        "why": "CI red: check-theme"
+       }
+      },
+      {
+       "op": "run",
+       "to": "merging",
+       "args": {}
+      },
+      {
+       "op": "rollup"
+      }
+     ]
+    },
+    {
+     "name": "a run cancelled while queued: every waiting part is abandoned",
+     "ops": [
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "run",
+       "to": "failed",
+       "args": {
+        "why": "cancelled"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "late"
+      }
+     ]
+    },
+    {
+     "name": "two parts fail at once: one rebuilds, the other is out of rebuilds, the run fails and the rebuilding part is abandoned",
+     "maxRebuilds": 1,
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "joey",
+        "session": "axf-demo-split--r1-p3--joey"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "failed",
+       "part": "p2",
+       "why": "tests red"
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "failed",
+       "part": "p1",
+       "why": "session exit 1"
+      },
+      {
+       "op": "failed",
+       "part": "p2",
+       "why": "tests red again"
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "ready"
+      }
+     ]
+    },
+    {
+     "name": "merged is never undone: merged and live only move forward",
+     "ops": [
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p1",
+        "account": "earl",
+        "session": "axf-demo-split--r1-p1--earl"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p2",
+        "account": "gina",
+        "session": "axf-demo-split--r1-p2--gina"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "launch",
+       "args": {
+        "slot": "slot-p3",
+        "account": "joey",
+        "session": "axf-demo-split--r1-p3--joey"
+       }
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p1",
+       "event": "green",
+       "args": {
+        "head": "1111111111111111111111111111111111111111"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p2",
+       "event": "green",
+       "args": {
+        "head": "2222222222222222222222222222222222222222"
+       }
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "ticked",
+       "args": {}
+      },
+      {
+       "op": "part",
+       "part": "p3",
+       "event": "green",
+       "args": {
+        "head": "3333333333333333333333333333333333333333"
+       }
+      },
+      {
+       "op": "ready"
+      },
+      {
+       "op": "rollup"
+      },
+      {
+       "op": "run",
+       "to": "ci",
+       "args": {
+        "head": "cccccccccccccccccccccccccccccccccccccccc",
+        "pr": 4245
+       }
+      },
+      {
+       "op": "run",
+       "to": "merging",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "merged",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "failed",
+       "args": {
+        "why": "late red"
+       }
+      },
+      {
+       "op": "run",
+       "to": "finished",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "live",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "failed",
+       "args": {
+        "why": "late red"
+       }
+      },
+      {
+       "op": "run",
+       "to": "finished",
+       "args": {}
+      },
+      {
+       "op": "run",
+       "to": "building",
+       "args": {}
+      }
+     ]
+    }
+   ]
+  },
+  "rollUps": [
+   {
+    "name": "no parts yet: splitting",
+    "parts": []
+   },
+   {
+    "name": "every part waiting: queued",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "waiting"
+     },
+     {
+      "id": "p2",
+      "status": "waiting"
+     },
+     {
+      "id": "p3",
+      "status": "waiting"
+     }
+    ]
+   },
+   {
+    "name": "one part launched: building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "building"
+     },
+     {
+      "id": "p2",
+      "status": "waiting"
+     },
+     {
+      "id": "p3",
+      "status": "waiting"
+     }
+    ]
+   },
+   {
+    "name": "parts testing and done: building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "testing"
+     },
+     {
+      "id": "p3",
+      "status": "building"
+     }
+    ]
+   },
+   {
+    "name": "a part rebuilding among done parts: building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "rebuilding",
+      "rebuilds": 1
+     },
+     {
+      "id": "p3",
+      "status": "done"
+     }
+    ]
+   },
+   {
+    "name": "a failed part with a rebuild left: building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "failed",
+      "rebuilds": 1
+     },
+     {
+      "id": "p3",
+      "status": "testing"
+     }
+    ]
+   },
+   {
+    "name": "a failed part with no rebuild left: failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "failed",
+      "rebuilds": 2
+     },
+     {
+      "id": "p3",
+      "status": "testing"
+     }
+    ]
+   },
+   {
+    "name": "maxRebuilds 0: the first failure is failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "building"
+     },
+     {
+      "id": "p2",
+      "status": "failed",
+      "rebuilds": 0
+     }
+    ],
+    "maxRebuilds": 0
+   },
+   {
+    "name": "maxRebuilds 3: a part failed three times is failed, twice is building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "failed",
+      "rebuilds": 3
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "maxRebuilds": 3
+   },
+   {
+    "name": "every part done: combining",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     },
+     {
+      "id": "p3",
+      "status": "done"
+     }
+    ]
+   },
+   {
+    "name": "one part, done: combining",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     }
+    ]
+   },
+   {
+    "name": "every part crashed back to waiting while the run is building: the badge reads queued, the run stays (applyRollUp never walks back)",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "waiting"
+     },
+     {
+      "id": "p2",
+      "status": "waiting"
+     }
+    ],
+    "run": "building"
+   },
+   {
+    "name": "past the parts phase the run state is the row status: combining",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "combining"
+   },
+   {
+    "name": "past the parts phase: ci reads CI",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "ci"
+   },
+   {
+    "name": "past the parts phase: merging",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "merging"
+   },
+   {
+    "name": "past the parts phase: merged",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "merged"
+   },
+   {
+    "name": "past the parts phase: live",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "live"
+   },
+   {
+    "name": "past the parts phase: finished",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "finished"
+   },
+   {
+    "name": "a failed run stays failed whatever its parts say",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     {
+      "id": "p2",
+      "status": "done"
+     }
+    ],
+    "run": "failed"
+   },
+   {
+    "name": "junk in the list is skipped; an unknown status is neither done nor waiting",
+    "parts": [
+     null,
+     {
+      "id": "p1",
+      "status": "done"
+     },
+     "x",
+     {
+      "id": "p2",
+      "status": "bogus"
+     }
+    ]
+   }
+  ],
+  "combine": [
+   {
+    "name": "every part done with a pushed head on the run's base: ready",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222"
+      }
+     ]
+    }
+   },
+   {
+    "name": "one part of one, done: ready",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      }
+     ]
+    }
+   },
+   {
+    "name": "no parts",
+    "plan": {
+     "id": "demo.r1",
+     "run": "splitting",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": []
+    }
+   },
+   {
+    "name": "no base: main was never locked",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222"
+      }
+     ]
+    }
+   },
+   {
+    "name": "one part still testing: nothing combines",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "testing"
+      }
+     ]
+    }
+   },
+   {
+    "name": "two parts open: both named",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "waiting"
+      },
+      {
+       "steps": [
+        "s3"
+       ],
+       "id": "p3",
+       "status": "rebuilding",
+       "rebuilds": 1
+      }
+     ]
+    }
+   },
+   {
+    "name": "a failed run never combines, even with every part done",
+    "plan": {
+     "id": "demo.r1",
+     "run": "failed",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222"
+      }
+     ],
+     "failure": {
+      "at": "2026-11-18T11:00:00.000Z",
+      "part": "p2",
+      "why": "p2 did not merge"
+     }
+    }
+   },
+   {
+    "name": "a failed part: nothing combines",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "failed",
+       "rebuilds": 2,
+       "lastError": "check-theme red"
+      }
+     ]
+    }
+   },
+   {
+    "name": "a part done without a pushed head",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done"
+      }
+     ]
+    }
+   },
+   {
+    "name": "a part built on another base",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222",
+       "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+     ]
+    }
+   }
+  ],
+  "failures": [
+   {
+    "name": "a building part fails with rebuilds left: rebuilding, its steps reset, the run keeps building",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1",
+        "s3"
+       ],
+       "id": "p1",
+       "status": "building",
+       "slot": "slot-1",
+       "session": "axf-demo--r1-p1"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "building"
+      }
+     ]
+    },
+    "part": "p1",
+    "why": "session exit 1"
+   },
+   {
+    "name": "a testing part fails with rebuilds left: rebuilding",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "testing"
+      }
+     ]
+    },
+    "part": "p2",
+    "why": "check-theme red"
+   },
+   {
+    "name": "a part already marked failed with a rebuild left: rebuilding",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "failed",
+       "rebuilds": 1,
+       "lastError": "tests red"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "building"
+      }
+     ]
+    },
+    "part": "p1",
+    "why": "tests red"
+   },
+   {
+    "name": "the last rebuild is used up: the run fails, waiting and rebuilding parts are abandoned, building and done parts are left for the dispatcher",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "testing",
+       "rebuilds": 2
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "waiting"
+      },
+      {
+       "steps": [
+        "s3"
+       ],
+       "id": "p3",
+       "status": "rebuilding",
+       "rebuilds": 1
+      },
+      {
+       "steps": [
+        "s4"
+       ],
+       "id": "p4",
+       "status": "building"
+      },
+      {
+       "steps": [
+        "s5"
+       ],
+       "id": "p5",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222"
+      }
+     ]
+    },
+    "part": "p1",
+    "why": "tests red a third time"
+   },
+   {
+    "name": "maxRebuilds 0: the first failure fails the run",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "building"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "waiting"
+      }
+     ],
+     "maxRebuilds": 0
+    },
+    "part": "p1",
+    "why": "session exit 1"
+   },
+   {
+    "name": "no reason given",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "building",
+       "rebuilds": 2
+      }
+     ]
+    },
+    "part": "p1",
+    "why": ""
+   },
+   {
+    "name": "a done part that does not merge at combine, a rebuild left: rebuilding, the run back to building",
+    "plan": {
+     "id": "demo.r1",
+     "run": "combining",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222"
+      }
+     ]
+    },
+    "part": "p2",
+    "why": "conflict in framework/core/x.mjs"
+   },
+   {
+    "name": "a done part that does not merge at combine, no rebuild left: the run fails",
+    "plan": {
+     "id": "demo.r1",
+     "run": "combining",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "done",
+       "head": "2222222222222222222222222222222222222222",
+       "rebuilds": 2
+      }
+     ]
+    },
+    "part": "p2",
+    "why": "conflict in framework/core/x.mjs"
+   },
+   {
+    "name": "a done part outside combining: nothing failed",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "done",
+       "head": "1111111111111111111111111111111111111111"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "building"
+      }
+     ]
+    },
+    "part": "p1",
+    "why": "late report"
+   },
+   {
+    "name": "a waiting part cannot fail: it never ran",
+    "plan": {
+     "id": "demo.r1",
+     "run": "queued",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "waiting"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "waiting"
+      }
+     ]
+    },
+    "part": "p1",
+    "why": "stray report"
+   },
+   {
+    "name": "an unknown part",
+    "plan": {
+     "id": "demo.r1",
+     "run": "building",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "building"
+      }
+     ]
+    },
+    "part": "p9",
+    "why": "x"
+   },
+   {
+    "name": "the run already failed: a late failure report changes nothing",
+    "plan": {
+     "id": "demo.r1",
+     "run": "failed",
+     "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "parts": [
+      {
+       "steps": [
+        "s1"
+       ],
+       "id": "p1",
+       "status": "failed",
+       "rebuilds": 2,
+       "lastError": "tests red"
+      },
+      {
+       "steps": [
+        "s2"
+       ],
+       "id": "p2",
+       "status": "building"
+      }
+     ],
+     "failure": {
+      "at": "2026-11-18T11:00:00.000Z",
+      "part": "p1",
+      "why": "p1 failed for good"
+     }
+    },
+    "part": "p2",
+    "why": "killed"
+   }
+  ]
+ },
+ "out": {
+  "ids": [
+   {
+    "splitId": "one-build-time.r1",
+    "partRef": "one-build-time.r1/p1",
+    "branch": "claude/one-build-time--r1-p1",
+    "session": "axf-one-build-time--r1-p1"
+   },
+   {
+    "splitId": "one-build-time.r12",
+    "partRef": "one-build-time.r12/p3",
+    "branch": "claude/one-build-time--r12-p3",
+    "session": "axf-one-build-time--r12-p3--earl"
+   },
+   {
+    "splitId": "a.r9999",
+    "partRef": "a.r9999/p64",
+    "branch": "claude/a--r9999-p64",
+    "session": "axf-a--r9999-p64--gina"
+   }
+  ],
+  "plans": [
+   {
+    "name": "three file groups, three slots: three parts, every slot filled",
+    "ok": true,
+    "why": "3 parts: every free slot filled",
+    "fill": {
+     "parts": 3,
+     "slots": 3
+    },
+    "groups": [
+     [
+      "s1",
+      "s3",
+      "s4"
+     ],
+     [
+      "s2"
+     ],
+     [
+      "s5"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s3",
+       "s4"
+      ],
+      "files": [
+       "framework/core/x.mjs",
+       "framework/spec/X.md"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": "Fable"
+     },
+     {
+      "id": "p2",
+      "steps": [
+       "s2"
+      ],
+      "files": [
+       "apps/console-web/web/y.tsx"
+      ],
+      "branch": "claude/demo-split--r1-p2",
+      "model": "Opus"
+     },
+     {
+      "id": "p3",
+      "steps": [
+       "s5"
+      ],
+      "files": [
+       "framework/cli/z.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p3",
+      "model": "Opus"
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   },
+   {
+    "name": "three file groups, six slots: only three parts (nothing is split past its file groups)",
+    "ok": true,
+    "why": "3 parts: only 3 independent file groups, 6 slots free",
+    "fill": {
+     "parts": 3,
+     "slots": 6
+    },
+    "groups": [
+     [
+      "s1",
+      "s3",
+      "s4"
+     ],
+     [
+      "s2"
+     ],
+     [
+      "s5"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s3",
+       "s4"
+      ],
+      "files": [
+       "framework/core/x.mjs",
+       "framework/spec/X.md"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": "Fable"
+     },
+     {
+      "id": "p2",
+      "steps": [
+       "s2"
+      ],
+      "files": [
+       "apps/console-web/web/y.tsx"
+      ],
+      "branch": "claude/demo-split--r1-p2",
+      "model": "Opus"
+     },
+     {
+      "id": "p3",
+      "steps": [
+       "s5"
+      ],
+      "files": [
+       "framework/cli/z.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p3",
+      "model": "Opus"
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   },
+   {
+    "name": "three file groups, two slots: heaviest group first onto the lightest part, steps in build order",
+    "ok": true,
+    "why": "2 parts: every free slot filled",
+    "fill": {
+     "parts": 2,
+     "slots": 2
+    },
+    "groups": [
+     [
+      "s1",
+      "s3",
+      "s4"
+     ],
+     [
+      "s2"
+     ],
+     [
+      "s5"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s3",
+       "s4"
+      ],
+      "files": [
+       "framework/core/x.mjs",
+       "framework/spec/X.md"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": "Fable"
+     },
+     {
+      "id": "p2",
+      "steps": [
+       "s2",
+       "s5"
+      ],
+      "files": [
+       "apps/console-web/web/y.tsx",
+       "framework/cli/z.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p2",
+      "model": "Opus"
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": ""
+   },
+   {
+    "name": "one slot: one part with every open step in build order; done and skipped steps left out",
+    "ok": true,
+    "why": "1 part: every free slot filled",
+    "fill": {
+     "parts": 1,
+     "slots": 1
+    },
+    "groups": [
+     [
+      "s1"
+     ],
+     [
+      "s2"
+     ],
+     [
+      "s4"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s2",
+       "s4"
+      ],
+      "files": [
+       "apps/console-web/web/y.tsx",
+       "framework/cli/z.mjs",
+       "framework/core/x.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": "Fable"
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": ""
+   },
+   {
+    "name": "the planner's file claims merge with step files: a claim joins two groups",
+    "ok": true,
+    "why": "3 parts: every free slot filled",
+    "fill": {
+     "parts": 3,
+     "slots": 3
+    },
+    "groups": [
+     [
+      "s1",
+      "s3"
+     ],
+     [
+      "s2"
+     ],
+     [
+      "s4",
+      "s5"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s3"
+      ],
+      "files": [
+       "framework/core/x.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": "Fable"
+     },
+     {
+      "id": "p2",
+      "steps": [
+       "s2"
+      ],
+      "files": [
+       "apps/console-web/web/y.tsx"
+      ],
+      "branch": "claude/demo-split--r1-p2",
+      "model": "Opus"
+     },
+     {
+      "id": "p3",
+      "steps": [
+       "s4",
+       "s5"
+      ],
+      "files": [
+       "framework/cli/z.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p3",
+      "model": "Opus"
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": ""
+   },
+   {
+    "name": "every step touches one shared file: one part however many slots are free",
+    "ok": true,
+    "why": "1 part: only 1 independent file group, 4 slots free",
+    "fill": {
+     "parts": 1,
+     "slots": 4
+    },
+    "groups": [
+     [
+      "s1",
+      "s2",
+      "s3"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s2",
+       "s3"
+      ],
+      "files": [
+       "a.mjs",
+       "b.mjs",
+       "c.mjs",
+       "framework/core/shared.mjs"
+      ],
+      "branch": "claude/demo-split--r1-p1",
+      "model": ""
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": ""
+   },
+   {
+    "name": "no claims anywhere: one part (nothing is assumed independent without evidence)",
+    "ok": true,
+    "why": "1 part: only 1 independent file group, 3 slots free",
+    "fill": {
+     "parts": 1,
+     "slots": 3
+    },
+    "groups": [
+     [
+      "s1",
+      "s2",
+      "s3"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1",
+       "s2",
+       "s3"
+      ],
+      "files": [],
+      "branch": "claude/demo-split--r1-p1",
+      "model": ""
+     }
+    ],
+    "id": "demo-split.r1",
+    "run": "queued",
+    "base": ""
+   },
+   {
+    "name": "a second run of a build counts up its split id",
+    "ok": true,
+    "why": "2 parts: every free slot filled",
+    "fill": {
+     "parts": 2,
+     "slots": 2
+    },
+    "groups": [
+     [
+      "s1"
+     ],
+     [
+      "s2"
+     ]
+    ],
+    "parts": [
+     {
+      "id": "p1",
+      "steps": [
+       "s1"
+      ],
+      "files": [
+       "a.mjs"
+      ],
+      "branch": "claude/demo-split--r2-p1",
+      "model": ""
+     },
+     {
+      "id": "p2",
+      "steps": [
+       "s2"
+      ],
+      "files": [
+       "b.mjs"
+      ],
+      "branch": "claude/demo-split--r2-p2",
+      "model": ""
+     }
+    ],
+    "id": "demo-split.r2",
+    "run": "queued",
+    "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   {
+    "name": "no free slot: nothing planned, the run waits",
+    "ok": false,
+    "why": "no free agent slot: the run waits",
+    "fill": {
+     "parts": 0,
+     "slots": 0
+    },
+    "groups": [
+     [
+      "s1"
+     ]
+    ],
+    "parts": [],
+    "id": "",
+    "run": "",
+    "base": ""
+   },
+   {
+    "name": "every step done: nothing to plan",
+    "ok": false,
+    "why": "no open step: nothing to plan",
+    "fill": {
+     "parts": 0,
+     "slots": 2
+    },
+    "groups": [],
+    "parts": [],
+    "id": "",
+    "run": "",
+    "base": ""
+   }
+  ],
+  "validate": [
+   {
+    "name": "a file in two parts",
+    "ok": false,
+    "errors": [
+     "file framework/core/x.mjs is in p1 and p2"
+    ]
+   },
+   {
+    "name": "a step in two parts",
+    "ok": false,
+    "errors": [
+     "step s2 is in p2 and p3",
+     "p3 steps are not in the build's order"
+    ]
+   },
+   {
+    "name": "an open step in no part",
+    "ok": false,
+    "errors": [
+     "p2 has no step",
+     "open step s2 is in no part"
+    ]
+   },
+   {
+    "name": "a done step in a part",
+    "ok": false,
+    "errors": [
+     "p3 names step s9, which is done"
+    ]
+   },
+   {
+    "name": "a step the build does not have",
+    "ok": false,
+    "errors": [
+     "p3 names step s77, which the build does not have"
+    ]
+   },
+   {
+    "name": "part ids out of order",
+    "ok": false,
+    "errors": [
+     "parts[0].id is p2, expected p1 (ids in order)",
+     "parts[1].id is p1, expected p2 (ids in order)"
+    ]
+   },
+   {
+    "name": "a part on another base",
+    "ok": false,
+    "errors": [
+     "p2 base bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb differs from the plan's aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+   },
+   {
+    "name": "the plan's base is not the main lock's",
+    "ok": false,
+    "errors": [
+     "p1 base is not the main lock's (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)",
+     "p2 base is not the main lock's (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)",
+     "p3 base is not the main lock's (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)"
+    ]
+   },
+   {
+    "name": "a wrong part branch",
+    "ok": false,
+    "errors": [
+     "p1 branch claude/demo-split--r1-p9 is not claude/demo-split--r1-p1"
+    ]
+   },
+   {
+    "name": "more parts than free slots",
+    "ok": false,
+    "errors": [
+     "3 parts for 2 free slots"
+    ]
+   },
+   {
+    "name": "a failed run says why",
+    "ok": false,
+    "errors": [
+     "a failed run says why (failure)"
+    ]
+   },
+   {
+    "name": "a failure on a run that is not failed",
+    "ok": false,
+    "errors": [
+     "failure recorded while the run is queued"
+    ]
+   },
+   {
+    "name": "a queued run with no parts",
+    "ok": false,
+    "errors": [
+     "open step s1 is in no part",
+     "open step s2 is in no part",
+     "open step s3 is in no part",
+     "open step s4 is in no part",
+     "run is queued with no parts"
+    ]
+   },
+   {
+    "name": "steps out of build order inside a part",
+    "ok": false,
+    "errors": [
+     "p1 steps are not in the build's order"
+    ]
+   },
+   {
+    "name": "not in shape (an unknown part status)",
+    "ok": false,
+    "errors": [
+     "not in shape: differs from its normSplit form"
+    ]
+   }
+  ],
+  "machine": [
+   {
+    "name": "happy path: every part launched, ticked and green; combine, CI, merge, live, finished",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "ready",
+      "ok": false,
+      "why": "1 of 3 parts not done: p3 building"
+     },
+     {
+      "op": "p3 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p3 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "building",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "ready",
+      "ok": true,
+      "why": ""
+     },
+     {
+      "op": "run ci",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "combining",
+       "to": "ci"
+      }
+     },
+     {
+      "op": "run merging",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "ci",
+       "to": "merging"
+      }
+     },
+     {
+      "op": "run merged",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "merging",
+       "to": "merged"
+      }
+     },
+     {
+      "op": "run live",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "merged",
+       "to": "live"
+      }
+     },
+     {
+      "op": "run finished",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "live",
+       "to": "finished"
+      }
+     }
+    ],
+    "final": {
+     "run": "finished",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "3333333333333333333333333333333333333333",
+       "account": "paulie"
+      }
+     ],
+     "combine": {
+      "head": "cccccccccccccccccccccccccccccccccccccccc",
+      "pr": 4242,
+      "ci": "success",
+      "attempts": 1,
+      "mergedAt": "2026-11-18T12:16:00.000Z",
+      "finishedAt": "2026-11-18T12:18:00.000Z"
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 queued→building",
+      "05 p1 building→testing",
+      "06 p1 testing→done",
+      "07 p2 building→testing",
+      "08 p2 testing→done",
+      "10 p3 building→testing",
+      "11 p3 testing→done",
+      "12 building→combining",
+      "14 combining→ci",
+      "15 ci→merging",
+      "16 merging→merged",
+      "17 merged→live",
+      "18 live→finished"
+     ]
+    },
+    "badge": {
+     "state": "finished",
+     "done": 3,
+     "total": 3,
+     "label": "Finished"
+    },
+    "ready": {
+     "ok": true,
+     "why": ""
+    }
+   },
+   {
+    "name": "a part fails once: rebuilt from the same base while the others keep going",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s1",
+       "s3"
+      ],
+      "why": "rebuild 1/2"
+     },
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "rebuilding",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "building"
+     }
+    ],
+    "final": {
+     "run": "building",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 1,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 queued→building",
+      "04 p1 building→testing",
+      "05 p1 testing→failed (check-theme red)",
+      "05 p1 failed→rebuilding (rebuild 1/2)",
+      "06 p1 rebuilding→building",
+      "07 p1 building→testing",
+      "08 p1 testing→done",
+      "09 p2 building→testing",
+      "10 p2 testing→done"
+     ]
+    },
+    "badge": {
+     "state": "building",
+     "done": 2,
+     "total": 3,
+     "label": "Building 2/3"
+    },
+    "ready": {
+     "ok": false,
+     "why": "1 of 3 parts not done: p3 waiting"
+    }
+   },
+   {
+    "name": "a part fails for good: the run fails, the waiting part is abandoned, nothing moves after",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s1",
+       "s3"
+      ],
+      "why": "rebuild 1/2"
+     },
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "rebuilding",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s1",
+       "s3"
+      ],
+      "why": "rebuild 2/2"
+     },
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "rebuilding",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "run-failed",
+      "resetSteps": [],
+      "why": "p1 failed for good (2/2 rebuilds): third crash"
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "failed"
+     },
+     {
+      "op": "p3 launch",
+      "ok": false,
+      "why": "run is failed: no part moves (the dispatcher stops what still runs)",
+      "change": null
+     },
+     {
+      "op": "p2 ticked",
+      "ok": false,
+      "why": "run is failed: no part moves (the dispatcher stops what still runs)",
+      "change": null
+     },
+     {
+      "op": "run building",
+      "ok": false,
+      "why": "run: failed → building is not allowed",
+      "change": null
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "failed",
+       "rebuilds": 2,
+       "head": "",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "building",
+       "rebuilds": 0,
+       "head": "",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:08:00.000Z",
+      "part": "p1",
+      "why": "p1 failed for good (2/2 rebuilds): third crash"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 queued→building",
+      "04 p1 building→failed (crash)",
+      "04 p1 failed→rebuilding (rebuild 1/2)",
+      "05 p1 rebuilding→building",
+      "06 p1 building→failed (crash again)",
+      "06 p1 failed→rebuilding (rebuild 2/2)",
+      "07 p1 rebuilding→building",
+      "08 p1 building→failed (third crash)",
+      "08 p1 building→failed (p1 failed for good (2/2 rebuilds): third crash)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 0,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (p1 failed for good (2/2 rebuilds): third crash)"
+    }
+   },
+   {
+    "name": "a crash before the first tick: back to waiting, relaunched; the run stays building",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 crash",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "waiting"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "building"
+     },
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     }
+    ],
+    "final": {
+     "run": "building",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "testing",
+       "rebuilds": 0,
+       "head": "",
+       "account": "gina"
+      },
+      {
+       "id": "p2",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      },
+      {
+       "id": "p3",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 queued→building",
+      "03 p1 building→waiting (usage limit)",
+      "05 p1 waiting→building",
+      "06 p1 building→testing"
+     ]
+    },
+    "badge": {
+     "state": "building",
+     "done": 0,
+     "total": 3,
+     "label": "Building 0/3"
+    },
+    "ready": {
+     "ok": false,
+     "why": "3 of 3 parts not done: p1 testing, p2 waiting, p3 waiting"
+    }
+   },
+   {
+    "name": "refused: green on a waiting part, combining before every part is done, a done part re-launched, a jump past CI",
+    "steps": [
+     {
+      "op": "p1 green",
+      "ok": false,
+      "why": "p1 is waiting: green does not apply",
+      "change": null
+     },
+     {
+      "op": "run combining",
+      "ok": false,
+      "why": "run: queued → combining is not allowed",
+      "change": null
+     },
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p1 launch",
+      "ok": false,
+      "why": "p1 is done: launch does not apply",
+      "change": null
+     },
+     {
+      "op": "run building",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      }
+     },
+     {
+      "op": "run merged",
+      "ok": false,
+      "why": "run: building → merged is not allowed",
+      "change": null
+     },
+     {
+      "op": "p1 green",
+      "ok": false,
+      "why": "p1 is done: green does not apply",
+      "change": null
+     },
+     {
+      "op": "p9 launch",
+      "ok": false,
+      "why": "no part p9",
+      "change": null
+     }
+    ],
+    "final": {
+     "run": "building",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      },
+      {
+       "id": "p3",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "03 p1 waiting→building",
+      "04 p1 building→testing",
+      "05 p1 testing→done",
+      "07 queued→building"
+     ]
+    },
+    "badge": {
+     "state": "building",
+     "done": 1,
+     "total": 3,
+     "label": "Building 1/3"
+    },
+    "ready": {
+     "ok": false,
+     "why": "2 of 3 parts not done: p2 waiting, p3 waiting"
+    }
+   },
+   {
+    "name": "green without a head is refused; all-or-nothing: two of three done is not ready",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": false,
+      "why": "p1: green needs the pushed head sha",
+      "change": null
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "ready",
+      "ok": false,
+      "why": "1 of 3 parts not done: p3 waiting"
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     }
+    ],
+    "final": {
+     "run": "building",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "earl"
+      },
+      {
+       "id": "p3",
+       "status": "waiting",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p1 building→testing",
+      "05 p1 testing→done",
+      "06 p2 building→testing",
+      "07 p2 testing→done",
+      "09 queued→building"
+     ]
+    },
+    "badge": {
+     "state": "building",
+     "done": 2,
+     "total": 3,
+     "label": "Building 2/3"
+    },
+    "ready": {
+     "ok": false,
+     "why": "1 of 3 parts not done: p3 waiting"
+    }
+   },
+   {
+    "name": "combine conflict: back to building, the clashing part rebuilt, combined again; red CI goes back to combining, then green",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p3 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p3 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "p2 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s2"
+      ],
+      "why": "merge conflict in apps/console-web/web/y.tsx"
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "rebuilding",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "building",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "run ci",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "combining",
+       "to": "ci"
+      }
+     },
+     {
+      "op": "run combining",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "ci",
+       "to": "combining"
+      }
+     },
+     {
+      "op": "run ci",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "combining",
+       "to": "ci"
+      }
+     },
+     {
+      "op": "run merging",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "ci",
+       "to": "merging"
+      }
+     },
+     {
+      "op": "run merged",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "merging",
+       "to": "merged"
+      }
+     }
+    ],
+    "final": {
+     "run": "merged",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 1,
+       "head": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "account": "earl"
+      },
+      {
+       "id": "p3",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "3333333333333333333333333333333333333333",
+       "account": "earl"
+      }
+     ],
+     "combine": {
+      "head": "3333333333333333333333333333333333333333",
+      "pr": 4243,
+      "ci": "success",
+      "attempts": 3,
+      "mergedAt": "2026-11-18T12:20:00.000Z",
+      "finishedAt": ""
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 p1 building→testing",
+      "05 p1 testing→done",
+      "06 p2 building→testing",
+      "07 p2 testing→done",
+      "08 p3 building→testing",
+      "09 p3 testing→done",
+      "10 queued→building",
+      "10 building→combining",
+      "11 p2 done→rebuilding (merge conflict in apps/console-web/web/y.tsx)",
+      "11 p2 combining→building (rebuild 1/2: p2 did not merge)",
+      "12 p2 rebuilding→building",
+      "13 p2 building→testing",
+      "14 p2 testing→done",
+      "15 building→combining",
+      "16 combining→ci",
+      "17 ci→combining (CI red: check-theme)",
+      "18 combining→ci",
+      "19 ci→merging",
+      "20 merging→merged"
+     ]
+    },
+    "badge": {
+     "state": "merged",
+     "done": 3,
+     "total": 3,
+     "label": "Merged"
+    },
+    "ready": {
+     "ok": true,
+     "why": ""
+    }
+   },
+   {
+    "name": "maxRebuilds 0: the first failure fails the run",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p2 failed",
+      "ok": true,
+      "action": "run-failed",
+      "resetSteps": [],
+      "why": "p2 failed for good (0/0 rebuilds): red checks"
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "failed"
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "building",
+       "rebuilds": 0,
+       "head": "",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": "earl"
+      },
+      {
+       "id": "p3",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:04:00.000Z",
+      "part": "p2",
+      "why": "p2 failed for good (0/0 rebuilds): red checks"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 queued→building",
+      "04 p2 building→failed (red checks)",
+      "04 p2 building→failed (p2 failed for good (0/0 rebuilds): red checks)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 0,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (p2 failed for good (0/0 rebuilds): red checks)"
+    }
+   },
+   {
+    "name": "combine conflict with no rebuild left: the run fails, nothing lands, no part moves after",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p3 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p3 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "ready",
+      "ok": true,
+      "why": ""
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "building",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "p2 failed",
+      "ok": true,
+      "action": "run-failed",
+      "resetSteps": [],
+      "why": "p2 failed for good (0/0 rebuilds): conflict in framework/cli/z.mjs"
+     },
+     {
+      "op": "run ci",
+      "ok": false,
+      "why": "run: failed → ci is not allowed",
+      "change": null
+     },
+     {
+      "op": "p2 rebuild",
+      "ok": false,
+      "why": "run is failed: no part moves (the dispatcher stops what still runs)",
+      "change": null
+     },
+     {
+      "op": "ready",
+      "ok": false,
+      "why": "the run failed: nothing combines (p2 failed for good (0/0 rebuilds): conflict in framework/cli/z.mjs)"
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "3333333333333333333333333333333333333333",
+       "account": "joey"
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 1,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:13:00.000Z",
+      "part": "p2",
+      "why": "p2 failed for good (0/0 rebuilds): conflict in framework/cli/z.mjs"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 queued→building",
+      "05 p1 building→testing",
+      "06 p1 testing→done",
+      "07 p2 building→testing",
+      "08 p2 testing→done",
+      "09 p3 building→testing",
+      "10 p3 testing→done",
+      "12 building→combining",
+      "13 p2 combining→failed (p2 failed for good (0/0 rebuilds): conflict in framework/cli/z.mjs)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 3,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (p2 failed for good (0/0 rebuilds): conflict in framework/cli/z.mjs)"
+    }
+   },
+   {
+    "name": "red CI with no way back: the run fails from ci, the done parts stay done, nothing lands",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p3 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p3 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "ready",
+      "ok": true,
+      "why": ""
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "building",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "run ci",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "combining",
+       "to": "ci"
+      }
+     },
+     {
+      "op": "run failed",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "ci",
+       "to": "failed"
+      }
+     },
+     {
+      "op": "run merging",
+      "ok": false,
+      "why": "run: failed → merging is not allowed",
+      "change": null
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "failed"
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "3333333333333333333333333333333333333333",
+       "account": "joey"
+      }
+     ],
+     "combine": {
+      "head": "cccccccccccccccccccccccccccccccccccccccc",
+      "pr": 4244,
+      "ci": "failure",
+      "attempts": 1,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:14:00.000Z",
+      "part": "",
+      "why": "CI red: check-theme"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 queued→building",
+      "05 p1 building→testing",
+      "06 p1 testing→done",
+      "07 p2 building→testing",
+      "08 p2 testing→done",
+      "09 p3 building→testing",
+      "10 p3 testing→done",
+      "12 building→combining",
+      "13 combining→ci",
+      "14 ci→failed (CI red: check-theme)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 3,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (CI red: check-theme)"
+    }
+   },
+   {
+    "name": "a run cancelled while queued: every waiting part is abandoned",
+    "steps": [
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "queued"
+     },
+     {
+      "op": "run failed",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "queued",
+       "to": "failed"
+      }
+     },
+     {
+      "op": "p1 launch",
+      "ok": false,
+      "why": "run is failed: no part moves (the dispatcher stops what still runs)",
+      "change": null
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "run-failed",
+      "resetSteps": [],
+      "why": "cancelled"
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      },
+      {
+       "id": "p2",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      },
+      {
+       "id": "p3",
+       "status": "failed",
+       "rebuilds": 0,
+       "head": "",
+       "account": ""
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:02:00.000Z",
+      "part": "",
+      "why": "cancelled"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "02 queued→failed (cancelled)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 0,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (cancelled)"
+    }
+   },
+   {
+    "name": "two parts fail at once: one rebuilds, the other is out of rebuilds, the run fails and the rebuilding part is abandoned",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p2 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s2"
+      ],
+      "why": "rebuild 1/1"
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "rebuilding",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 failed",
+      "ok": true,
+      "action": "rebuild",
+      "resetSteps": [
+       "s1",
+       "s3"
+      ],
+      "why": "rebuild 1/1"
+     },
+     {
+      "op": "p2 failed",
+      "ok": true,
+      "action": "run-failed",
+      "resetSteps": [],
+      "why": "p2 failed for good (1/1 rebuilds): tests red again"
+     },
+     {
+      "op": "rollup",
+      "change": null,
+      "run": "failed"
+     },
+     {
+      "op": "ready",
+      "ok": false,
+      "why": "the run failed: nothing combines (p2 failed for good (1/1 rebuilds): tests red again)"
+     }
+    ],
+    "final": {
+     "run": "failed",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "failed",
+       "rebuilds": 1,
+       "head": "",
+       "account": ""
+      },
+      {
+       "id": "p2",
+       "status": "failed",
+       "rebuilds": 1,
+       "head": "",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "building",
+       "rebuilds": 0,
+       "head": "",
+       "account": "joey"
+      }
+     ],
+     "combine": {
+      "head": "",
+      "pr": 0,
+      "ci": "",
+      "attempts": 0,
+      "mergedAt": "",
+      "finishedAt": ""
+     },
+     "failure": {
+      "at": "2026-11-18T12:09:00.000Z",
+      "part": "p2",
+      "why": "p2 failed for good (1/1 rebuilds): tests red again"
+     },
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 queued→building",
+      "05 p2 building→failed (tests red)",
+      "05 p2 failed→rebuilding (rebuild 1/1)",
+      "06 p2 rebuilding→building",
+      "07 p2 building→testing",
+      "08 p1 building→failed (session exit 1)",
+      "08 p1 failed→rebuilding (rebuild 1/1)",
+      "09 p2 testing→failed (tests red again)",
+      "09 p2 building→failed (p2 failed for good (1/1 rebuilds): tests red again)"
+     ]
+    },
+    "badge": {
+     "state": "failed",
+     "done": 0,
+     "total": 3,
+     "label": "Failed"
+    },
+    "ready": {
+     "ok": false,
+     "why": "the run failed: nothing combines (p2 failed for good (1/1 rebuilds): tests red again)"
+    }
+   },
+   {
+    "name": "merged is never undone: merged and live only move forward",
+    "steps": [
+     {
+      "op": "p1 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p2 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "p3 launch",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "waiting",
+       "to": "building"
+      }
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "queued",
+       "to": "building"
+      },
+      "run": "building"
+     },
+     {
+      "op": "p1 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p1 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p1",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p2 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p2 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p2",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "p3 ticked",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "building",
+       "to": "testing"
+      }
+     },
+     {
+      "op": "p3 green",
+      "ok": true,
+      "why": "",
+      "change": {
+       "part": "p3",
+       "from": "testing",
+       "to": "done"
+      }
+     },
+     {
+      "op": "ready",
+      "ok": true,
+      "why": ""
+     },
+     {
+      "op": "rollup",
+      "change": {
+       "from": "building",
+       "to": "combining"
+      },
+      "run": "combining"
+     },
+     {
+      "op": "run ci",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "combining",
+       "to": "ci"
+      }
+     },
+     {
+      "op": "run merging",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "ci",
+       "to": "merging"
+      }
+     },
+     {
+      "op": "run merged",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "merging",
+       "to": "merged"
+      }
+     },
+     {
+      "op": "run failed",
+      "ok": false,
+      "why": "run: merged → failed is not allowed",
+      "change": null
+     },
+     {
+      "op": "run finished",
+      "ok": false,
+      "why": "run: merged → finished is not allowed",
+      "change": null
+     },
+     {
+      "op": "run live",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "merged",
+       "to": "live"
+      }
+     },
+     {
+      "op": "run failed",
+      "ok": false,
+      "why": "run: live → failed is not allowed",
+      "change": null
+     },
+     {
+      "op": "run finished",
+      "ok": true,
+      "why": "",
+      "change": {
+       "from": "live",
+       "to": "finished"
+      }
+     },
+     {
+      "op": "run building",
+      "ok": false,
+      "why": "run: finished → building is not allowed",
+      "change": null
+     }
+    ],
+    "final": {
+     "run": "finished",
+     "parts": [
+      {
+       "id": "p1",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "1111111111111111111111111111111111111111",
+       "account": "earl"
+      },
+      {
+       "id": "p2",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "2222222222222222222222222222222222222222",
+       "account": "gina"
+      },
+      {
+       "id": "p3",
+       "status": "done",
+       "rebuilds": 0,
+       "head": "3333333333333333333333333333333333333333",
+       "account": "joey"
+      }
+     ],
+     "combine": {
+      "head": "cccccccccccccccccccccccccccccccccccccccc",
+      "pr": 4245,
+      "ci": "success",
+      "attempts": 1,
+      "mergedAt": "2026-11-18T12:15:00.000Z",
+      "finishedAt": "2026-11-18T12:20:00.000Z"
+     },
+     "failure": null,
+     "history": [
+      "00 splitting→queued (3 parts for 3 free slots (3 file groups))",
+      "01 p1 waiting→building",
+      "02 p2 waiting→building",
+      "03 p3 waiting→building",
+      "04 queued→building",
+      "05 p1 building→testing",
+      "06 p1 testing→done",
+      "07 p2 building→testing",
+      "08 p2 testing→done",
+      "09 p3 building→testing",
+      "10 p3 testing→done",
+      "12 building→combining",
+      "13 combining→ci",
+      "14 ci→merging",
+      "15 merging→merged",
+      "18 merged→live",
+      "20 live→finished"
+     ]
+    },
+    "badge": {
+     "state": "finished",
+     "done": 3,
+     "total": 3,
+     "label": "Finished"
+    },
+    "ready": {
+     "ok": true,
+     "why": ""
+    }
+   }
+  ],
+  "transitions": {
+   "part": {
+    "waiting": [
+     "building",
+     "failed"
+    ],
+    "building": [
+     "testing",
+     "waiting",
+     "failed"
+    ],
+    "testing": [
+     "done",
+     "failed"
+    ],
+    "failed": [
+     "rebuilding"
+    ],
+    "rebuilding": [
+     "building",
+     "failed"
+    ],
+    "done": [
+     "rebuilding"
+    ]
+   },
+   "run": {
+    "splitting": [
+     "queued",
+     "failed"
+    ],
+    "queued": [
+     "building",
+     "failed"
+    ],
+    "building": [
+     "combining",
+     "failed"
+    ],
+    "combining": [
+     "ci",
+     "building",
+     "failed"
+    ],
+    "ci": [
+     "merging",
+     "combining",
+     "failed"
+    ],
+    "merging": [
+     "merged",
+     "ci",
+     "failed"
+    ],
+    "merged": [
+     "live"
+    ],
+    "live": [
+     "finished"
+    ],
+    "finished": [],
+    "failed": []
+   },
+   "partTarget": {
+    "waiting": {
+     "launch": "building",
+     "ticked": "",
+     "green": "",
+     "fail": "",
+     "crash": "",
+     "rebuild": "",
+     "abandon": "failed",
+     "conflict": ""
+    },
+    "building": {
+     "launch": "",
+     "ticked": "testing",
+     "green": "",
+     "fail": "failed",
+     "crash": "waiting",
+     "rebuild": "",
+     "abandon": "",
+     "conflict": ""
+    },
+    "testing": {
+     "launch": "",
+     "ticked": "",
+     "green": "done",
+     "fail": "failed",
+     "crash": "",
+     "rebuild": "",
+     "abandon": "",
+     "conflict": ""
+    },
+    "rebuilding": {
+     "launch": "building",
+     "ticked": "",
+     "green": "",
+     "fail": "",
+     "crash": "",
+     "rebuild": "",
+     "abandon": "failed",
+     "conflict": ""
+    },
+    "failed": {
+     "launch": "",
+     "ticked": "",
+     "green": "",
+     "fail": "",
+     "crash": "",
+     "rebuild": "rebuilding",
+     "abandon": "",
+     "conflict": ""
+    },
+    "done": {
+     "launch": "",
+     "ticked": "",
+     "green": "",
+     "fail": "",
+     "crash": "",
+     "rebuild": "",
+     "abandon": "",
+     "conflict": "rebuilding"
+    }
+   },
+   "partWorking": [
+    "waiting",
+    "building",
+    "testing",
+    "rebuilding"
+   ],
+   "runTerminal": [
+    "finished",
+    "failed"
+   ],
+   "partsPhase": [
+    "splitting",
+    "queued",
+    "building"
+   ],
+   "buildStatus": {
+    "splitting": "splitting",
+    "queued": "running",
+    "building": "running",
+    "combining": "landing",
+    "ci": "landing",
+    "merging": "landing",
+    "merged": "landed",
+    "live": "landed",
+    "finished": "complete",
+    "failed": "fixing"
+   }
+  },
+  "rollUps": [
+   {
+    "name": "no parts yet: splitting",
+    "rollUp": "splitting",
+    "badge": {
+     "state": "splitting",
+     "done": 0,
+     "total": 0,
+     "label": "Splitting"
+    }
+   },
+   {
+    "name": "every part waiting: queued",
+    "rollUp": "queued",
+    "badge": {
+     "state": "queued",
+     "done": 0,
+     "total": 3,
+     "label": "Queued"
+    }
+   },
+   {
+    "name": "one part launched: building",
+    "rollUp": "building",
+    "badge": {
+     "state": "building",
+     "done": 0,
+     "total": 3,
+     "label": "Building 0/3"
+    }
+   },
+   {
+    "name": "parts testing and done: building",
+    "rollUp": "building",
+    "badge": {
+     "state": "building",
+     "done": 1,
+     "total": 3,
+     "label": "Building 1/3"
+    }
+   },
+   {
+    "name": "a part rebuilding among done parts: building",
+    "rollUp": "building",
+    "badge": {
+     "state": "building",
+     "done": 2,
+     "total": 3,
+     "label": "Building 2/3"
+    }
+   },
+   {
+    "name": "a failed part with a rebuild left: building",
+    "rollUp": "building",
+    "badge": {
+     "state": "building",
+     "done": 1,
+     "total": 3,
+     "label": "Building 1/3"
+    }
+   },
+   {
+    "name": "a failed part with no rebuild left: failed",
+    "rollUp": "failed",
+    "badge": {
+     "state": "failed",
+     "done": 1,
+     "total": 3,
+     "label": "Failed"
+    }
+   },
+   {
+    "name": "maxRebuilds 0: the first failure is failed",
+    "rollUp": "failed",
+    "badge": {
+     "state": "failed",
+     "done": 0,
+     "total": 2,
+     "label": "Failed"
+    }
+   },
+   {
+    "name": "maxRebuilds 3: a part failed three times is failed, twice is building",
+    "rollUp": "failed",
+    "badge": {
+     "state": "failed",
+     "done": 1,
+     "total": 2,
+     "label": "Failed"
+    }
+   },
+   {
+    "name": "every part done: combining",
+    "rollUp": "combining",
+    "badge": {
+     "state": "combining",
+     "done": 3,
+     "total": 3,
+     "label": "Combining"
+    }
+   },
+   {
+    "name": "one part, done: combining",
+    "rollUp": "combining",
+    "badge": {
+     "state": "combining",
+     "done": 1,
+     "total": 1,
+     "label": "Combining"
+    }
+   },
+   {
+    "name": "every part crashed back to waiting while the run is building: the badge reads queued, the run stays (applyRollUp never walks back)",
+    "rollUp": "queued",
+    "badge": {
+     "state": "queued",
+     "done": 0,
+     "total": 2,
+     "label": "Queued"
+    }
+   },
+   {
+    "name": "past the parts phase the run state is the row status: combining",
+    "rollUp": "combining",
+    "badge": {
+     "state": "combining",
+     "done": 2,
+     "total": 2,
+     "label": "Combining"
+    }
+   },
+   {
+    "name": "past the parts phase: ci reads CI",
+    "rollUp": "combining",
+    "badge": {
+     "state": "ci",
+     "done": 2,
+     "total": 2,
+     "label": "CI"
+    }
+   },
+   {
+    "name": "past the parts phase: merging",
+    "rollUp": "combining",
+    "badge": {
+     "state": "merging",
+     "done": 2,
+     "total": 2,
+     "label": "Merging"
+    }
+   },
+   {
+    "name": "past the parts phase: merged",
+    "rollUp": "combining",
+    "badge": {
+     "state": "merged",
+     "done": 2,
+     "total": 2,
+     "label": "Merged"
+    }
+   },
+   {
+    "name": "past the parts phase: live",
+    "rollUp": "combining",
+    "badge": {
+     "state": "live",
+     "done": 2,
+     "total": 2,
+     "label": "Live"
+    }
+   },
+   {
+    "name": "past the parts phase: finished",
+    "rollUp": "combining",
+    "badge": {
+     "state": "finished",
+     "done": 2,
+     "total": 2,
+     "label": "Finished"
+    }
+   },
+   {
+    "name": "a failed run stays failed whatever its parts say",
+    "rollUp": "combining",
+    "badge": {
+     "state": "failed",
+     "done": 2,
+     "total": 2,
+     "label": "Failed"
+    }
+   },
+   {
+    "name": "junk in the list is skipped; an unknown status is neither done nor waiting",
+    "rollUp": "building",
+    "badge": {
+     "state": "building",
+     "done": 1,
+     "total": 2,
+     "label": "Building 1/2"
+    }
+   }
+  ],
+  "combine": [
+   {
+    "name": "every part done with a pushed head on the run's base: ready",
+    "ok": true,
+    "why": ""
+   },
+   {
+    "name": "one part of one, done: ready",
+    "ok": true,
+    "why": ""
+   },
+   {
+    "name": "no parts",
+    "ok": false,
+    "why": "no parts"
+   },
+   {
+    "name": "no base: main was never locked",
+    "ok": false,
+    "why": "no base: main was never locked for this run"
+   },
+   {
+    "name": "one part still testing: nothing combines",
+    "ok": false,
+    "why": "1 of 2 parts not done: p2 testing"
+   },
+   {
+    "name": "two parts open: both named",
+    "ok": false,
+    "why": "2 of 3 parts not done: p2 waiting, p3 rebuilding"
+   },
+   {
+    "name": "a failed run never combines, even with every part done",
+    "ok": false,
+    "why": "the run failed: nothing combines (p2 did not merge)"
+   },
+   {
+    "name": "a failed part: nothing combines",
+    "ok": false,
+    "why": "1 of 2 parts not done: p2 failed"
+   },
+   {
+    "name": "a part done without a pushed head",
+    "ok": false,
+    "why": "p2 done without a pushed head"
+   },
+   {
+    "name": "a part built on another base",
+    "ok": false,
+    "why": "p2 not on the run's base"
+   }
+  ],
+  "failures": [
+   {
+    "name": "a building part fails with rebuilds left: rebuilding, its steps reset, the run keeps building",
+    "ok": true,
+    "action": "rebuild",
+    "resetSteps": [
+     "s1",
+     "s3"
+    ],
+    "why": "rebuild 1/2",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "rebuilding",
+      "rebuilds": 1,
+      "lastError": "session exit 1"
+     },
+     {
+      "id": "p2",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "a testing part fails with rebuilds left: rebuilding",
+    "ok": true,
+    "action": "rebuild",
+    "resetSteps": [
+     "s2"
+    ],
+    "why": "rebuild 1/2",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p2",
+      "status": "rebuilding",
+      "rebuilds": 1,
+      "lastError": "check-theme red"
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "a part already marked failed with a rebuild left: rebuilding",
+    "ok": true,
+    "action": "rebuild",
+    "resetSteps": [
+     "s1"
+    ],
+    "why": "rebuild 2/2",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "rebuilding",
+      "rebuilds": 2,
+      "lastError": "tests red"
+     },
+     {
+      "id": "p2",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "the last rebuild is used up: the run fails, waiting and rebuilding parts are abandoned, building and done parts are left for the dispatcher",
+    "ok": true,
+    "action": "run-failed",
+    "resetSteps": [],
+    "why": "p1 failed for good (2/2 rebuilds): tests red a third time",
+    "run": "failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "failed",
+      "rebuilds": 2,
+      "lastError": "tests red a third time"
+     },
+     {
+      "id": "p2",
+      "status": "failed",
+      "rebuilds": 0,
+      "lastError": "the run failed before this part ran"
+     },
+     {
+      "id": "p3",
+      "status": "failed",
+      "rebuilds": 1,
+      "lastError": "the run failed before this part ran"
+     },
+     {
+      "id": "p4",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p5",
+      "status": "done",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": {
+     "at": "2026-11-18T12:00:00.000Z",
+     "part": "p1",
+     "why": "p1 failed for good (2/2 rebuilds): tests red a third time"
+    }
+   },
+   {
+    "name": "maxRebuilds 0: the first failure fails the run",
+    "ok": true,
+    "action": "run-failed",
+    "resetSteps": [],
+    "why": "p1 failed for good (0/0 rebuilds): session exit 1",
+    "run": "failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "failed",
+      "rebuilds": 0,
+      "lastError": "session exit 1"
+     },
+     {
+      "id": "p2",
+      "status": "failed",
+      "rebuilds": 0,
+      "lastError": "the run failed before this part ran"
+     }
+    ],
+    "failure": {
+     "at": "2026-11-18T12:00:00.000Z",
+     "part": "p1",
+     "why": "p1 failed for good (0/0 rebuilds): session exit 1"
+    }
+   },
+   {
+    "name": "no reason given",
+    "ok": true,
+    "action": "run-failed",
+    "resetSteps": [],
+    "why": "p1 failed for good (2/2 rebuilds): no reason given",
+    "run": "failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "failed",
+      "rebuilds": 2,
+      "lastError": "failed"
+     }
+    ],
+    "failure": {
+     "at": "2026-11-18T12:00:00.000Z",
+     "part": "p1",
+     "why": "p1 failed for good (2/2 rebuilds): no reason given"
+    }
+   },
+   {
+    "name": "a done part that does not merge at combine, a rebuild left: rebuilding, the run back to building",
+    "ok": true,
+    "action": "rebuild",
+    "resetSteps": [
+     "s2"
+    ],
+    "why": "conflict in framework/core/x.mjs",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p2",
+      "status": "rebuilding",
+      "rebuilds": 1,
+      "lastError": "conflict in framework/core/x.mjs"
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "a done part that does not merge at combine, no rebuild left: the run fails",
+    "ok": true,
+    "action": "run-failed",
+    "resetSteps": [],
+    "why": "p2 failed for good (2/2 rebuilds): conflict in framework/core/x.mjs",
+    "run": "failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p2",
+      "status": "done",
+      "rebuilds": 2,
+      "lastError": ""
+     }
+    ],
+    "failure": {
+     "at": "2026-11-18T12:00:00.000Z",
+     "part": "p2",
+     "why": "p2 failed for good (2/2 rebuilds): conflict in framework/core/x.mjs"
+    }
+   },
+   {
+    "name": "a done part outside combining: nothing failed",
+    "ok": false,
+    "action": "",
+    "resetSteps": [],
+    "why": "p1 is done and the run is building: nothing failed",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "done",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p2",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "a waiting part cannot fail: it never ran",
+    "ok": false,
+    "action": "",
+    "resetSteps": [],
+    "why": "p1 is waiting: fail does not apply",
+    "run": "queued",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "waiting",
+      "rebuilds": 0,
+      "lastError": ""
+     },
+     {
+      "id": "p2",
+      "status": "waiting",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "an unknown part",
+    "ok": false,
+    "action": "",
+    "resetSteps": [],
+    "why": "no part p9",
+    "run": "building",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": null
+   },
+   {
+    "name": "the run already failed: a late failure report changes nothing",
+    "ok": false,
+    "action": "",
+    "resetSteps": [],
+    "why": "run is failed: no part moves (the dispatcher stops what still runs)",
+    "run": "failed",
+    "parts": [
+     {
+      "id": "p1",
+      "status": "failed",
+      "rebuilds": 2,
+      "lastError": "tests red"
+     },
+     {
+      "id": "p2",
+      "status": "building",
+      "rebuilds": 0,
+      "lastError": ""
+     }
+    ],
+    "failure": {
+     "at": "2026-11-18T11:00:00.000Z",
+     "part": "p1",
+     "why": "p1 failed for good"
+    }
+   }
+  ]
+ }
+}
