@@ -1833,6 +1833,11 @@ ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, defa
                              systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 
+# ---- Hidden assets (hidden-assets@1): /api/hidden-assets (list, hide, unhide, unhide-all) through framework/cli/hidden-assets.mjs
+import hidden_assets  # noqa: E402
+
+app.include_router(hidden_assets.router_for(auth))
+
 # ---- Console control (console-control@1, framework/spec/CONSOLE-CONTROL.md): /api/console-control/* (console_control_api.py)
 import console_control_api  # noqa: E402
 

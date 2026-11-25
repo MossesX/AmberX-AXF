@@ -62,7 +62,6 @@ export const SCREENS = [
   { id: 'banner', app: 'console-web', title: 'Banner', search: '', words: /\bbanners?\b|\bbadges?\b/i },
   { id: 'terminal', app: 'console-web', title: 'Terminal', search: 'Terminal', words: /\bterminal\b|\bheadless tabs?\b/i },
   { id: 'axhub-web', app: 'axhub-web', title: 'axHub', search: '', words: /\baxhub (?:web|page|app)\b/i },
-  { id: 'amberx', app: 'amberx-droid', title: 'AmberX app', search: '', words: /\bamberx (?:app|android)\b|\bamberx-droid\b/i },
 ];
 
 /**
@@ -80,7 +79,6 @@ export function screensFor(build, files = [], opts = {}) {
     const title = m && opts.plugins?.[m[1]];
     if (title) add({ id: `plugin-${m[1]}`, app: 'console-web', title, search: title, words: /$^/ }, 2);
     if (/^apps\/axhub-web\//.test(String(f))) add(reg.find((s) => s.id === 'axhub-web') ?? SCREENS[9], 2);
-    if (/^apps\/amberx-droid\//.test(String(f))) add(reg.find((s) => s.id === 'amberx') ?? SCREENS[10], 2);
   }
   const ranked = [...scored.values()].sort((a, b) => b.score - a.score);
   // a passing mention doesn't make a screen: the rest must score at least a third of the top one

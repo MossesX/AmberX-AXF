@@ -379,6 +379,11 @@ export class ControlRegistry {
 
   /* ---------------- DOM helpers ---------------- */
 
+  /** The element a registered address draws into (what a console screenshot of one panel captures), or null. */
+  async elementFor(address: string): Promise<Element | null> {
+    try { return await this.elementOf(this.resolveEntry(address, 'state').entry); } catch { return null; }
+  }
+
   private async elementOf(entry: Entry): Promise<Element | null> {
     let el = entry.def.element?.() ?? null;
     if (!el) { await nextFrame(); el = entry.def.element?.() ?? null; }

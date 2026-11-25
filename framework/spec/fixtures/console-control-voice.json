@@ -280,6 +280,75 @@
       "verb": "press",
       "address": "panel:console-place"
     },
+    "hide the toolbar": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "toolbar:app"
+    },
+    "Amber, hide the menu bar please": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "app-menu:app"
+    },
+    "hide the navigation menu": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "nav-menu:app"
+    },
+    "hide my banner": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "banner:app"
+    },
+    "show what's hidden": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "what's hidden": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "show me the hidden items": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "unhide everything": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "bring back all hidden items": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "show everything again": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "unhide the toolbar": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "toolbar:app"
+    },
+    "bring the banner back": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "banner:app"
+    },
+    "show the nav again": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "nav-menu:app"
+    },
+    "show the toolbar": {
+      "verb": "list",
+      "find": {
+        "q": "the",
+        "kinds": [
+          "toolbar"
+        ]
+      }
+    },
+    "hide the plan studio": null,
     "what time is it": null,
     "": null
   },
@@ -445,6 +514,69 @@
     "restore my place": {
       "verb": "press",
       "address": "panel:console-place"
+    },
+    "hide the toolbar": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "toolbar:app"
+    },
+    "Amber, hide the menu bar please": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "app-menu:app"
+    },
+    "hide the navigation menu": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "nav-menu:app"
+    },
+    "hide my banner": {
+      "verb": "press",
+      "address": "function:chrome.hide",
+      "value": "banner:app"
+    },
+    "show what's hidden": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "what's hidden": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "show me the hidden items": {
+      "verb": "press",
+      "address": "function:chrome.hidden"
+    },
+    "unhide everything": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "bring back all hidden items": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "show everything again": {
+      "verb": "press",
+      "address": "function:chrome.unhideAll"
+    },
+    "unhide the toolbar": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "toolbar:app"
+    },
+    "bring the banner back": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "banner:app"
+    },
+    "show the nav again": {
+      "verb": "press",
+      "address": "function:chrome.unhide",
+      "value": "nav-menu:app"
+    },
+    "show the toolbar": {
+      "verb": "list",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
     }
   },
   "replies": {

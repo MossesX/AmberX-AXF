@@ -2182,7 +2182,7 @@
       "irreversible": [
         "remove"
       ],
-      "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
+      "doc": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
       "domain": "amberx",
@@ -2230,7 +2230,7 @@
     },
     "planner.plans": {
       "domain": "planner",
-      "label": "Plan Studio plans",
+      "label": "Plan Studio 2.0 plans",
       "ops": [
         "list",
         "get",
@@ -2292,7 +2292,7 @@
           "text": "string"
         }
       },
-      "doc": "plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build."
+      "doc": "Plan Studio 2.0 plans (plan-tree@1 items of kind plan; console → Plan → Plan Studio 2.0): “put it in a plan for later” lands here as parked; `build` sends one to the orchestrator as a pending build; a removed plan is in the trash and `restore` brings the newest back. Fields the tree has no place for (category, project, owner, dates, the lists) are not stored: summary, goal and why go into the body."
     },
     "planner.builds": {
       "domain": "planner",
@@ -4241,7 +4241,7 @@
         "paths": "host"
       },
       "amberx.items": {
-        "description": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
+        "description": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
         "ops": [
           "list",
           "get",
@@ -4470,7 +4470,7 @@
         "paths": "entity"
       },
       "planner.plans": {
-        "description": "plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.",
+        "description": "Plan Studio 2.0 plans (plan-tree@1 items of kind plan; console → Plan → Plan Studio 2.0): “put it in a plan for later” lands here as parked; `build` sends one to the orchestrator as a pending build; a removed plan is in the trash and `restore` brings the newest back. Fields the tree has no place for (category, project, owner, dates, the lists) are not stored: summary, goal and why go into the body.",
         "ops": [
           "list",
           "get",

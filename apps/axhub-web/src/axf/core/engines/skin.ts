@@ -40,7 +40,7 @@ import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, normalizeSkinChrome, re
 import { SKIN_SCOPE_DEFAULT, coverageSummary, coverageTable, isSubScopeKey, partsErrors, partsTypes, skinScopeChain, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 import { normalizeHubSkin } from './appearance';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, appLookSchema, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeLookPart, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
 // skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document
 export { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopeState, switchScopes } from './skin-switch.mjs';
@@ -89,6 +89,8 @@ export interface AppLookStore {
   status(): 'loading' | 'ready' | 'missing' | 'failed';
   save(doc: AppLookDocument): void;
   subscribe(fn: () => void): () => void;
+  /** Re-read now (the UI-editor rule: fresh on focus, `rt.refreshFromSaved`); subscribers hear of a change. A store without one is read live. */
+  refresh?(): void;
 }
 /** One row of the Skin picker. */
 export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-package'; description: string; data: SkinData }

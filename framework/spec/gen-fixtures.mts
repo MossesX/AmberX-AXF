@@ -25,6 +25,7 @@ import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUser
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
+import { HIDDEN_ASSETS_CONTRACT, HIDDEN_ASSETS_MAX, hide, hiddenAssetKey, hiddenAssetKinds, hiddenAssetTargetError, hiddenAssetsSchema, hiddenCount, hiddenEntry, hiddenOfKind, isHidden, listHidden, normalizeHiddenAssets, parseHiddenAssetKey, setHidden, unhide, unhideAll } from '../core/engines/hidden-assets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
@@ -2516,7 +2517,9 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'press run now on the auto-lander toolbar', 'tap the retry button in the auto lander toolbar', "what's on the auto-lander toolbar", 'list the gate rules toolbar', 'show me the builds toolbar',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place',
+    'hide the toolbar', 'Amber, hide the menu bar please', 'hide the navigation menu', 'hide my banner', "show what's hidden", "what's hidden", 'show me the hidden items', 'unhide everything', 'bring back all hidden items', 'show everything again',
+    'unhide the toolbar', 'bring the banner back', 'show the nav again', 'show the toolbar', 'hide the plan studio', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2562,6 +2565,55 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+
+/* ---- hidden-assets@1 (Brett, Nov 17 2026, build rebuild-fresh-main-hide-any-asset): hide one chrome piece per app, see
+   what is hidden, bring it back; the list is app-look@1 `own.hiddenAssets`; kinds from the chrome-settings kind list + widget ---- */
+{
+  const at = '2026-11-17T14:50:00Z';
+  const look0 = newAppLook('app', { slots: { toolbar: 'standard-icons' } });
+  const one = hide(look0, { kind: 'toolbar', id: 'main' }, { at, by: 'axf-console', assetRef: 'standard-icons' });
+  const two = hide(one, 'tab-group:settings.tabs', { at: '2026-11-17T14:51:00Z', by: 'axf-console' });
+  const three = hide(two, { kind: 'widget', id: 'clock' }, { at: '2026-11-17T14:52:00Z', by: 'plugin:clock' });
+  const many = Array.from({ length: HIDDEN_ASSETS_MAX + 3 }, (_, i) => ({ kind: 'toolbar', id: `t${i}`, hiddenAt: at, by: 'x' }));
+  write('hidden-assets.json', {
+    contract: HIDDEN_ASSETS_CONTRACT,
+    kinds: hiddenAssetKinds(),
+    max: HIDDEN_ASSETS_MAX,
+    targets: {
+      key: hiddenAssetKey('toolbar', 'main'),
+      parsed: parseHiddenAssetKey('toolbar:main'),
+      badKind: parseHiddenAssetKey('grid:main'),
+      badId: parseHiddenAssetKey('toolbar:Bad Id'),
+      errors: { ok: hiddenAssetTargetError('toolbar:main'), kind: hiddenAssetTargetError('grid:main'), id: hiddenAssetTargetError({ kind: 'banner', id: '' }), contextMenu: hiddenAssetTargetError('context-menu:main') },
+    },
+    normalize: {
+      good: normalizeHiddenAssets([{ kind: 'toolbar', id: 'main', assetRef: 'standard-icons', hiddenAt: at, by: 'axf-console' }]),
+      junk: normalizeHiddenAssets([{ kind: 'grid', id: 'x', hiddenAt: at, by: 'y' }, { kind: 'toolbar', id: 'Bad Id', hiddenAt: at, by: 'y' }, { kind: 'toolbar', id: 'main', hiddenAt: 'yesterday', by: 7, assetRef: 'Bad Ref' }, { kind: 'toolbar', id: 'main', hiddenAt: at, by: 'second' }, 'toolbar:main', null]),
+      notAList: normalizeHiddenAssets({ kind: 'toolbar', id: 'main' }),
+      capped: { length: normalizeHiddenAssets(many).length, first: normalizeHiddenAssets(many)[0]!.id, last: normalizeHiddenAssets(many).at(-1)!.id },
+    },
+    look: {
+      empty: { doc: look0, list: listHidden(look0), count: hiddenCount(look0) },
+      one: { doc: one, list: listHidden(one), isHidden: isHidden(one, 'toolbar:main'), other: isHidden(one, 'toolbar:other'), entry: hiddenEntry(one, { kind: 'toolbar', id: 'main' }) },
+      three: { doc: three, list: listHidden(three), ofKind: hiddenOfKind(three, 'toolbar'), count: hiddenCount(three) },
+      again: { same: hide(three, 'toolbar:main', { at: '2026-11-18T00:00:00Z', by: 'later' }) === three, list: listHidden(hide(three, 'toolbar:main', { at: '2026-11-18T00:00:00Z', by: 'later' })) },
+      refused: { unknownKind: hide(three, 'grid:main', { at }) === three, contextMenu: hide(three, 'context-menu:main', { at }) === three, badId: hide(three, { kind: 'toolbar', id: 'Bad Id' }, { at }) === three, badRef: listHidden(hide(look0, 'banner:top', { at, by: 'x', assetRef: 'Bad Ref' })) },
+      unhide: { doc: unhide(three, 'toolbar:main'), list: listHidden(unhide(three, 'toolbar:main')), notHidden: unhide(three, 'toolbar:other') === three, unknownKind: unhide(three, 'grid:main') === three },
+      unhideLast: unhide(one, 'toolbar:main').own,
+      unhideAll: { doc: unhideAll(three), own: unhideAll(three).own, nothing: unhideAll(look0) === look0 },
+      setHidden: { on: listHidden(setHidden(look0, 'nav-menu:side', true, { at, by: 'x' })), off: listHidden(setHidden(one, 'toolbar:main', false)) },
+      // the list rides with the app's own look: a skin pick keeps it, Restore to default (own = {}) shows everything, undo brings it back
+      withPick: listHidden(lookAfterChange(three, { slots: { button: 'terminal' } }, null)),
+      restored: { list: listHidden(restoreAppDefault(three, at)), undone: listHidden(undoRestore(restoreAppDefault(three, at))) },
+      // an old document with no list, and one saved by a writer that knew nothing of the field, read as nothing hidden
+      old: { doc: normalizeAppLook({ $axf: 'app-look@1', app: 'app', default: {}, own: { slots: { button: 'x' } }, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {} }), list: listHidden(normalizeAppLook({ $axf: 'app-look@1', app: 'app', default: {}, own: { slots: { button: 'x' } }, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {} })) },
+      roundTrip: parseAppLook(JSON.stringify(three)),
+      cleaned: listHidden(parseAppLook(JSON.stringify({ ...three, own: { ...three.own, hiddenAssets: [...three.own.hiddenAssets!, { kind: 'grid', id: 'x' }, { kind: 'toolbar', id: 'main', by: 'dup' }] } }))),
+      snapshotNeverHides: listHidden({ ...look0, default: { hiddenAssets: [{ kind: 'toolbar', id: 'main', hiddenAt: at, by: 'x' }] } }),
+    },
+    schema: hiddenAssetsSchema(),
   });
 }
 

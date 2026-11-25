@@ -583,6 +583,49 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     async def plan_resource() -> str:
         return json.dumps([_compact(f) for f in await features()], indent=1)
 
+    # ------------------------------------------------------------------ Hidden assets (hidden-assets@1)
+    # The same calls as REST /api/hidden-assets (hidden_assets.py → framework/cli/hidden-assets.mjs, the one writer).
+    # In an open app the console actions do the same: chrome.hide:<kind>:<id> / chrome.unhide / chrome.unhideAll /
+    # chrome.hidden (console_action), and console_show view:settings/tab:appearance#hidden or dialog:axf.hidden-assets.
+
+    def _hidden(fn: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+        try:
+            r = fn()
+        except ValueError as e:
+            raise ToolError(str(e))
+        if not r.get("ok"):
+            raise ToolError(str(r.get("error") or "failed"))
+        r.pop("ok", None)
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def hidden_assets_list(app: str = "") -> dict[str, Any]:
+        """What is hidden in one app (default the console; or axhub, amberx, an app id): every tab group, toolbar,
+        banner, navigation menu, menu bar or widget someone hid, oldest first, as {app, count, hidden: [{kind, id,
+        hiddenAt, by, assetRef?}]}. In the app: Assets → Hidden items…, Settings → Appearance → Hidden."""
+        import hidden_assets as ha
+        return await anyio.to_thread.run_sync(lambda: _hidden(lambda: ha.list_hidden(app or None)))
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_hide(kind: Literal["tab-group", "toolbar", "banner", "nav-menu", "app-menu", "widget"], id: str, app: str = "") -> dict[str, Any]:
+        """Hide one piece in one app (default the console): kind + its id (a tab group's settings id like settings.tabs,
+        `app` for the app-wide toolbar / nav / menu bar / banner, a page toolbar's asset id, a widget's <type>:<id>).
+        The app hides it at once (open apps follow the hub); hidden_assets_unhide brings it back."""
+        import hidden_assets as ha
+        return await anyio.to_thread.run_sync(lambda: _hidden(lambda: ha.hide(app or None, kind, id, default_by="api:mcp")))
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_unhide(kind: Literal["tab-group", "toolbar", "banner", "nav-menu", "app-menu", "widget"], id: str, app: str = "") -> dict[str, Any]:
+        """Show one hidden piece again in one app (default the console). hidden_assets_list names what is hidden."""
+        import hidden_assets as ha
+        return await anyio.to_thread.run_sync(lambda: _hidden(lambda: ha.unhide(app or None, kind, id, default_by="api:mcp")))
+
+    @mcp.tool(annotations=WRITE)
+    async def hidden_assets_unhide_all(app: str = "") -> dict[str, Any]:
+        """Show everything hidden in one app again (default the console): {shown, count}."""
+        import hidden_assets as ha
+        return await anyio.to_thread.run_sync(lambda: _hidden(lambda: ha.unhide_all(app or None, default_by="api:mcp")))
+
     @mcp.prompt(name="build-next-step", title="Build the next step", description="Brief for building the next step in the queue with the right model.")
     async def build_next_prompt() -> str:
         n = (await build_next())["next"]

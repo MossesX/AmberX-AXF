@@ -16,6 +16,8 @@
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
  *   "override the axHub skin" · "stop overriding the axHub skin" (the Override switch under it)
+ *   "hide the toolbar" · "unhide the menu bar" · "bring the banner back" · "what's hidden" · "unhide everything"
+ *   (hidden-assets@1: the console actions chrome.hide / chrome.unhide / chrome.hidden / chrome.unhideAll)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -23,6 +25,10 @@ export const VOICE_FRAME = 'console-control-voice@1';
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
 /** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
 export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
+/** The console's saved place (apps/console-web/src/place/placeApi.ts): pressing it puts the place back. */
+export const PLACE_ADDRESS = 'panel:console-place';
+/** "put me back", "back to where I was", "restore my place", "where was I" */
+export const PLACE_RESTORE_RE = /^(?:put me back(?: where i was)?|(?:take me |go |get me )?back to where i (?:was|left off)|restore (?:my |the )?(?:place|position|spot)|where was i)$/;
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -39,6 +45,14 @@ export function cleanPhrase(text) {
     .trim();
 }
 
+/** The app-wide chrome a phrase can hide by name (hidden-assets@1, instance `app`): spoken words → kind. */
+export const VOICE_HIDE_KINDS = { toolbar: 'toolbar', 'tool bar': 'toolbar', 'menu bar': 'app-menu', menubar: 'app-menu', 'app menu': 'app-menu', 'application menu': 'app-menu', nav: 'nav-menu', 'nav menu': 'nav-menu', navigation: 'nav-menu', 'navigation menu': 'nav-menu', sidebar: 'nav-menu', 'side bar': 'nav-menu', banner: 'banner' };
+const HIDE_WORDS = Object.keys(VOICE_HIDE_KINDS).sort((a, b) => b.length - a.length).join('|');
+const HIDE_RE = new RegExp(`^hide (?:the |my )?(${HIDE_WORDS})$`);
+const UNHIDE_RE = new RegExp(`^(?:unhide (?:the |my )?(${HIDE_WORDS})(?: again| back)?|(?:show|bring back|restore) (?:the |my )?(${HIDE_WORDS}) (?:again|back)|bring (?:the |my )?(${HIDE_WORDS}) back)$`);
+const HIDDEN_LIST_RE = /^(?:(?:show|tell|list|open)(?: me)? )?(?:what (?:is|s) |whats )?(?:the |all )?hidden(?: items| things| stuff| assets| pieces| list)?$/;
+const UNHIDE_ALL_RE = /^(?:(?:unhide|bring back|restore) (?:everything|all|it all|all of it|all hidden(?: items| things)?)(?: again| back)?|show (?:everything|all hidden(?: items| things)?) (?:again|back)|show all hidden(?: items| things)?)$/;
+
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
@@ -51,6 +65,9 @@ export function voiceIntent(text) {
   const p = cleanPhrase(text);
   if (!p) return null;
   let m;
+
+  // the saved place: before the "go to …" rules, so "go back to where I was" is not taken for a screen name
+  if (PLACE_RESTORE_RE.test(p)) return { verb: 'press', address: PLACE_ADDRESS };
 
   // scrolling
   if ((m = /^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$/.exec(p))) {
@@ -86,6 +103,12 @@ export function voiceIntent(text) {
   if ((m = /^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$/.exec(p))) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
+
+  // hidden assets (hidden-assets@1): the same console actions as right-click → Hide and the Assets menu
+  if (UNHIDE_ALL_RE.test(p)) return { verb: 'press', address: 'function:chrome.unhideAll' };
+  if (HIDDEN_LIST_RE.test(p)) return { verb: 'press', address: 'function:chrome.hidden' };
+  if ((m = HIDE_RE.exec(p))) return { verb: 'press', address: 'function:chrome.hide', value: `${VOICE_HIDE_KINDS[m[1]]}:app` };
+  if ((m = UNHIDE_RE.exec(p))) return { verb: 'press', address: 'function:chrome.unhide', value: `${VOICE_HIDE_KINDS[m[1] ?? m[2] ?? m[3]]}:app` };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
@@ -140,7 +163,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
-    case 'press': return `Pressed ${what}.`;
+    case 'press': return answer.address === PLACE_ADDRESS || intent.address === PLACE_ADDRESS ? 'Back where you were.' : `Pressed ${what}.`;
     case 'list': { const n = answer.targets?.length ?? 0; return n ? `${n} item${n === 1 ? '' : 's'}: ${answer.targets.slice(0, 6).map((t) => t.label).join(', ')}.` : `Nothing on ${what || 'it'}.`; }
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;

@@ -1,0 +1,719 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/app-look.schema.json",
+  "title": "AmberX AXF app look (app-look@1)",
+  "description": "One app's look on axHub (shared/settings/looks/<app>.json): its default snapshot, its own picks, its skin state, per-scope skins, one undo, backups, and the hidden assets (hidden-assets@1).",
+  "type": "object",
+  "required": [
+    "$axf",
+    "app",
+    "default",
+    "own",
+    "skin",
+    "scopes"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "app-look@1"
+    },
+    "app": {
+      "type": "string"
+    },
+    "default": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "description": "asset type → asset id"
+        },
+        "spacing": {
+          "enum": [
+            "tight",
+            "compact",
+            "regular"
+          ]
+        },
+        "hidden": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "hideable chrome type → hidden (the whole slot)"
+        },
+        "settings": {
+          "type": "object",
+          "description": "appearance settings key → value"
+        },
+        "hiddenAssets": {
+          "type": "array",
+          "description": "hidden-assets@1: the chrome pieces hidden in this app (absent = nothing hidden); one entry per kind + id, oldest first, at most 500",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "id",
+              "hiddenAt",
+              "by"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "tab-group",
+                  "toolbar",
+                  "banner",
+                  "nav-menu",
+                  "app-menu",
+                  "widget"
+                ],
+                "description": "a hideable kind: the chrome-settings@1 kinds with a region on the page, plus widget"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$",
+                "description": "the instance id (the chrome context menu slug, axf.chrome.<kind>.<id>)"
+              },
+              "assetRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,119}$",
+                "description": "the asset id the piece was drawn with when hidden"
+              },
+              "hiddenAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "when it was hidden"
+              },
+              "by": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._:@/-]{0,119}$",
+                "description": "who hid it: the app id, a plugin, or an API caller"
+              }
+            }
+          }
+        }
+      }
+    },
+    "own": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "description": "asset type → asset id"
+        },
+        "spacing": {
+          "enum": [
+            "tight",
+            "compact",
+            "regular"
+          ]
+        },
+        "hidden": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "hideable chrome type → hidden (the whole slot)"
+        },
+        "settings": {
+          "type": "object",
+          "description": "appearance settings key → value"
+        },
+        "hiddenAssets": {
+          "type": "array",
+          "description": "hidden-assets@1: the chrome pieces hidden in this app (absent = nothing hidden); one entry per kind + id, oldest first, at most 500",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "id",
+              "hiddenAt",
+              "by"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "tab-group",
+                  "toolbar",
+                  "banner",
+                  "nav-menu",
+                  "app-menu",
+                  "widget"
+                ],
+                "description": "a hideable kind: the chrome-settings@1 kinds with a region on the page, plus widget"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$",
+                "description": "the instance id (the chrome context menu slug, axf.chrome.<kind>.<id>)"
+              },
+              "assetRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,119}$",
+                "description": "the asset id the piece was drawn with when hidden"
+              },
+              "hiddenAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "when it was hidden"
+              },
+              "by": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._:@/-]{0,119}$",
+                "description": "who hid it: the app id, a plugin, or an API caller"
+              }
+            }
+          }
+        }
+      }
+    },
+    "skin": {
+      "type": "object",
+      "required": [
+        "use",
+        "inherit",
+        "id",
+        "overrides"
+      ],
+      "properties": {
+        "use": {
+          "type": "boolean"
+        },
+        "inherit": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "colorTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        }
+      }
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "use": {
+            "enum": [
+              "on",
+              "off",
+              "inherit"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "overrides": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          },
+          "colorTheme": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        }
+      },
+      "description": "\"ui:<id>\" / \"plugin:<id>\" → its skin state; a missing key inherits"
+    },
+    "undo": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "own": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "slots": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  },
+                  "description": "asset type → asset id"
+                },
+                "spacing": {
+                  "enum": [
+                    "tight",
+                    "compact",
+                    "regular"
+                  ]
+                },
+                "hidden": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "description": "hideable chrome type → hidden (the whole slot)"
+                },
+                "settings": {
+                  "type": "object",
+                  "description": "appearance settings key → value"
+                },
+                "hiddenAssets": {
+                  "type": "array",
+                  "description": "hidden-assets@1: the chrome pieces hidden in this app (absent = nothing hidden); one entry per kind + id, oldest first, at most 500",
+                  "maxItems": 500,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "id",
+                      "hiddenAt",
+                      "by"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "tab-group",
+                          "toolbar",
+                          "banner",
+                          "nav-menu",
+                          "app-menu",
+                          "widget"
+                        ],
+                        "description": "a hideable kind: the chrome-settings@1 kinds with a region on the page, plus widget"
+                      },
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$",
+                        "description": "the instance id (the chrome context menu slug, axf.chrome.<kind>.<id>)"
+                      },
+                      "assetRef": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._-]{0,119}$",
+                        "description": "the asset id the piece was drawn with when hidden"
+                      },
+                      "hiddenAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "when it was hidden"
+                      },
+                      "by": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._:@/-]{0,119}$",
+                        "description": "who hid it: the app id, a plugin, or an API caller"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "skin": {
+              "type": "object",
+              "required": [
+                "use",
+                "inherit",
+                "id",
+                "overrides"
+              ],
+              "properties": {
+                "use": {
+                  "type": "boolean"
+                },
+                "inherit": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "overrides": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  }
+                },
+                "colorTheme": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                }
+              }
+            },
+            "scopes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "use": {
+                    "enum": [
+                      "on",
+                      "off",
+                      "inherit"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "overrides": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    }
+                  },
+                  "colorTheme": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  }
+                }
+              },
+              "description": "\"ui:<id>\" / \"plugin:<id>\" → its skin state; a missing key inherits"
+            },
+            "at": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            },
+            "global": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    },
+                    "overrides": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                      }
+                    },
+                    "colorTheme": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "migrated": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "at": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string"
+        },
+        "kept": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        }
+      }
+    },
+    "legacy": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "own": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "description": "asset type → asset id"
+            },
+            "spacing": {
+              "enum": [
+                "tight",
+                "compact",
+                "regular"
+              ]
+            },
+            "hidden": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "boolean"
+              },
+              "description": "hideable chrome type → hidden (the whole slot)"
+            },
+            "settings": {
+              "type": "object",
+              "description": "appearance settings key → value"
+            },
+            "hiddenAssets": {
+              "type": "array",
+              "description": "hidden-assets@1: the chrome pieces hidden in this app (absent = nothing hidden); one entry per kind + id, oldest first, at most 500",
+              "maxItems": 500,
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "id",
+                  "hiddenAt",
+                  "by"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "tab-group",
+                      "toolbar",
+                      "banner",
+                      "nav-menu",
+                      "app-menu",
+                      "widget"
+                    ],
+                    "description": "a hideable kind: the chrome-settings@1 kinds with a region on the page, plus widget"
+                  },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$",
+                    "description": "the instance id (the chrome context menu slug, axf.chrome.<kind>.<id>)"
+                  },
+                  "assetRef": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]{0,119}$",
+                    "description": "the asset id the piece was drawn with when hidden"
+                  },
+                  "hiddenAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "when it was hidden"
+                  },
+                  "by": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._:@/-]{0,119}$",
+                    "description": "who hid it: the app id, a plugin, or an API caller"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "type": "object"
+        }
+      }
+    },
+    "backups": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "own": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "slots": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "description": "asset type → asset id"
+              },
+              "spacing": {
+                "enum": [
+                  "tight",
+                  "compact",
+                  "regular"
+                ]
+              },
+              "hidden": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "boolean"
+                },
+                "description": "hideable chrome type → hidden (the whole slot)"
+              },
+              "settings": {
+                "type": "object",
+                "description": "appearance settings key → value"
+              },
+              "hiddenAssets": {
+                "type": "array",
+                "description": "hidden-assets@1: the chrome pieces hidden in this app (absent = nothing hidden); one entry per kind + id, oldest first, at most 500",
+                "maxItems": 500,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "id",
+                    "hiddenAt",
+                    "by"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "tab-group",
+                        "toolbar",
+                        "banner",
+                        "nav-menu",
+                        "app-menu",
+                        "widget"
+                      ],
+                      "description": "a hideable kind: the chrome-settings@1 kinds with a region on the page, plus widget"
+                    },
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$",
+                      "description": "the instance id (the chrome context menu slug, axf.chrome.<kind>.<id>)"
+                    },
+                    "assetRef": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,119}$",
+                      "description": "the asset id the piece was drawn with when hidden"
+                    },
+                    "hiddenAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "when it was hidden"
+                    },
+                    "by": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._:@/-]{0,119}$",
+                      "description": "who hid it: the app id, a plugin, or an API caller"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "skin": {
+            "type": "object",
+            "required": [
+              "use",
+              "inherit",
+              "id",
+              "overrides"
+            ],
+            "properties": {
+              "use": {
+                "type": "boolean"
+              },
+              "inherit": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "overrides": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                }
+              },
+              "colorTheme": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              }
+            }
+          },
+          "scopes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "use": {
+                  "enum": [
+                    "on",
+                    "off",
+                    "inherit"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "overrides": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  }
+                },
+                "colorTheme": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                }
+              }
+            },
+            "description": "\"ui:<id>\" / \"plugin:<id>\" → its skin state; a missing key inherits"
+          },
+          "at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "updatedBy": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    }
+  }
+}

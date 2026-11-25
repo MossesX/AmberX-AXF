@@ -16,6 +16,8 @@
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
  *   "override the axHub skin" · "stop overriding the axHub skin" (the Override switch under it)
+ *   "hide the toolbar" · "unhide the menu bar" · "bring the banner back" · "what's hidden" · "unhide everything"
+ *   (hidden-assets@1: the console actions chrome.hide / chrome.unhide / chrome.hidden / chrome.unhideAll)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -42,6 +44,14 @@ export function cleanPhrase(text) {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+/** The app-wide chrome a phrase can hide by name (hidden-assets@1, instance `app`): spoken words → kind. */
+export const VOICE_HIDE_KINDS = { toolbar: 'toolbar', 'tool bar': 'toolbar', 'menu bar': 'app-menu', menubar: 'app-menu', 'app menu': 'app-menu', 'application menu': 'app-menu', nav: 'nav-menu', 'nav menu': 'nav-menu', navigation: 'nav-menu', 'navigation menu': 'nav-menu', sidebar: 'nav-menu', 'side bar': 'nav-menu', banner: 'banner' };
+const HIDE_WORDS = Object.keys(VOICE_HIDE_KINDS).sort((a, b) => b.length - a.length).join('|');
+const HIDE_RE = new RegExp(`^hide (?:the |my )?(${HIDE_WORDS})$`);
+const UNHIDE_RE = new RegExp(`^(?:unhide (?:the |my )?(${HIDE_WORDS})(?: again| back)?|(?:show|bring back|restore) (?:the |my )?(${HIDE_WORDS}) (?:again|back)|bring (?:the |my )?(${HIDE_WORDS}) back)$`);
+const HIDDEN_LIST_RE = /^(?:(?:show|tell|list|open)(?: me)? )?(?:what (?:is|s) |whats )?(?:the |all )?hidden(?: items| things| stuff| assets| pieces| list)?$/;
+const UNHIDE_ALL_RE = /^(?:(?:unhide|bring back|restore) (?:everything|all|it all|all of it|all hidden(?: items| things)?)(?: again| back)?|show (?:everything|all hidden(?: items| things)?) (?:again|back)|show all hidden(?: items| things)?)$/;
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
@@ -93,6 +103,12 @@ export function voiceIntent(text) {
   if ((m = /^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$/.exec(p))) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
+
+  // hidden assets (hidden-assets@1): the same console actions as right-click → Hide and the Assets menu
+  if (UNHIDE_ALL_RE.test(p)) return { verb: 'press', address: 'function:chrome.unhideAll' };
+  if (HIDDEN_LIST_RE.test(p)) return { verb: 'press', address: 'function:chrome.hidden' };
+  if ((m = HIDE_RE.exec(p))) return { verb: 'press', address: 'function:chrome.hide', value: `${VOICE_HIDE_KINDS[m[1]]}:app` };
+  if ((m = UNHIDE_RE.exec(p))) return { verb: 'press', address: 'function:chrome.unhide', value: `${VOICE_HIDE_KINDS[m[1] ?? m[2] ?? m[3]]}:app` };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };

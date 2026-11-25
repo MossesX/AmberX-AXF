@@ -69,6 +69,11 @@ Rules:
   on every fixture row. Case: kinds are lower case; ids keep their case but match case-insensitively.
 - A tab is `tab:<row>=<value>`: `open` on it switches the row to that tab; `state` on `tab:<row>` reads the current value and the
   tabs. The `=` form is the only id with structure; everything else is opaque.
+- Anchors (hidden-assets@1, Nov 17 2026): an address may end in `#<anchor>` (lower case letters, digits, `-`). It opens as
+  usual, then the element `#axf-<anchor>` is scrolled into view and highlighted. `view:settings/tab:<tab id>` opens that
+  Settings tab (settings open in a dialog, so the tab row is not on the page to resolve):
+  `view:settings/tab:appearance#hidden` is the Hidden list in Settings → Appearance; `dialog:axf.hidden-assets` (console_show)
+  opens the same list as a dialog.
 - Words: `search` takes free text, not an address. Everything else takes an address (or `null` for the current screen / the
   active scroll container).
 

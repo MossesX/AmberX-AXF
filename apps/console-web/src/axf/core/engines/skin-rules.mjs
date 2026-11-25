@@ -18,6 +18,7 @@
  */
 import { isSubScopeKey, resolveSkinChain, skinScopeChain, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL } from './skin-coverage.mjs';
 import { CHROME_INSTANCE_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_TYPES, isChromeInstanceId, normalizeInstanceOverride } from './chrome-settings-rules.mjs';
+import { HIDDEN_ASSETS_FIELD, hiddenAssetsSchema, normalizeHiddenAssets } from './hidden-assets-rules.mjs';
 
 export const APP_LOOK_FRAME = 'app-look@1';
 /**
@@ -152,7 +153,7 @@ export function skinChromeSettings(chrome) {
   return out;
 }
 
-/** Keep what a look holds: slots, spacing, chrome and look settings. */
+/** Keep what a look holds: slots, spacing, chrome, look settings and the hidden assets (hidden-assets@1; absent or empty = nothing hidden). */
 export function normalizeLookPart(raw) {
   const d = isObj(raw) ? raw : {};
   const out = {};
@@ -160,7 +161,59 @@ export function normalizeLookPart(raw) {
   if (SPACINGS.includes(d.spacing)) out.spacing = d.spacing;
   if (isObj(d.hidden)) out.hidden = boolMap(d.hidden);
   if (isObj(d.settings)) out.settings = { ...d.settings };
+  const hiddenAssets = normalizeHiddenAssets(d[HIDDEN_ASSETS_FIELD]);
+  if (hiddenAssets.length) out[HIDDEN_ASSETS_FIELD] = hiddenAssets;
   return out;
+}
+
+/**
+ * The JSON Schema of an app-look@1 document (`axf schemas` → schemas/json/app-look.schema.json): the shape every
+ * writer (the runtime, skins.mjs, the console server) keeps, with the hidden-assets@1 list on every look part.
+ */
+export function appLookSchema() {
+  const id = { type: 'string', pattern: ID.source };
+  const idMapSchema = { type: 'object', additionalProperties: id };
+  const lookPart = {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      slots: { ...idMapSchema, description: 'asset type → asset id' },
+      spacing: { enum: SPACINGS },
+      hidden: { type: 'object', additionalProperties: { type: 'boolean' }, description: 'hideable chrome type → hidden (the whole slot)' },
+      settings: { type: 'object', description: 'appearance settings key → value' },
+      [HIDDEN_ASSETS_FIELD]: hiddenAssetsSchema(),
+    },
+  };
+  const skinState = {
+    type: 'object',
+    required: ['use', 'inherit', 'id', 'overrides'],
+    properties: { use: { type: 'boolean' }, inherit: { type: 'boolean' }, id: { type: 'string' }, overrides: idMapSchema, colorTheme: id },
+  };
+  const scopeState = { type: 'object', properties: { use: { enum: SKIN_USES }, id: { type: 'string' }, overrides: idMapSchema, colorTheme: id } };
+  const scopes = { type: 'object', additionalProperties: scopeState, description: '"ui:<id>" / "plugin:<id>" → its skin state; a missing key inherits' };
+  const restorePoint = { own: lookPart, skin: skinState, scopes, at: { type: 'string' } };
+  return {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'axf/app-look.schema.json',
+    title: 'AmberX AXF app look (app-look@1)',
+    description: "One app's look on axHub (shared/settings/looks/<app>.json): its default snapshot, its own picks, its skin state, per-scope skins, one undo, backups, and the hidden assets (hidden-assets@1).",
+    type: 'object',
+    required: ['$axf', 'app', 'default', 'own', 'skin', 'scopes'],
+    properties: {
+      $axf: { const: APP_LOOK_FRAME },
+      app: { type: 'string' },
+      default: lookPart,
+      own: lookPart,
+      skin: skinState,
+      scopes,
+      undo: { anyOf: [{ type: 'null' }, { type: 'object', properties: { ...restorePoint, action: { type: 'string' }, scope: { type: 'string' }, global: { anyOf: [{ type: 'null' }, { type: 'object', properties: { id: id, overrides: idMapSchema, colorTheme: id } }] } } }] },
+      migrated: { type: 'object', properties: { version: { type: 'integer', minimum: 0 }, at: { type: 'string' }, by: { type: 'string' }, kept: { type: 'array', items: id } } },
+      legacy: { type: 'object', properties: { at: { type: 'string' }, own: lookPart, settings: { type: 'object' } } },
+      backups: { type: 'array', maxItems: LOOK_BACKUPS_MAX, items: { type: 'object', required: ['id', 'at'], properties: { id: { type: 'string' }, by: { type: 'string' }, reason: { type: 'string', maxLength: 200 }, ...restorePoint } } },
+      updatedBy: { type: 'string' },
+      updatedAt: { type: 'string' },
+    },
+  };
 }
 /** The app level: `use` (the Use skin switch), `inherit` (follow the hub-wide skin while off), the skin, its overrides and the colour theme picked inside it. */
 function normalizeSkinState(raw) {

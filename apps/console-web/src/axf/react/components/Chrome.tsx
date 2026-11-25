@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { useHidden } from '../hidden';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -228,7 +229,9 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
-  if (!tb) return null;
+  // hidden-assets@1: a page toolbar hidden as a piece (its asset id) draws nothing
+  const hidden = useHidden('toolbar', id);
+  if (!tb || hidden) return null;
   return <PageToolbar assetId={id} label={label}>{(tb.data as ToolbarData).showSearch ? search : null}</PageToolbar>;
 }
 

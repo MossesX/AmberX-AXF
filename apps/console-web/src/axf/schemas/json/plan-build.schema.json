@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/plan-build.schema.json",
+  "title": "plan-build@1: the one shape every plan must have before Plan Studio sends it to the orchestrator (one build; its steps are planning context)",
+  "description": "framework/spec/PIPELINE-2.md. Validated by framework/core/pipeline-status.mjs validatePlan (the same rules; check-pipeline-2.mjs keeps them in step).",
+  "type": "object",
+  "required": ["$axf", "id", "title", "steps"],
+  "properties": {
+    "$axf": { "const": "plan-build@1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "detail": { "type": "string", "maxLength": 8000 },
+    "source": { "type": "string", "maxLength": 40 },
+    "planItem": { "type": "string", "maxLength": 80 },
+    "said": { "type": "string", "maxLength": 2000 },
+    "steps": {
+      "description": "Planning steps (Plan Studio's open steps). Not build steps: the orchestrator's splitting stage designs those, each with minutes and a model. A plan with no steps needs a detail.",
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "model": { "description": "a hint for the split, optional", "enum": ["Fable", "Opus"] },
+          "minutes": { "description": "a hint for the split, optional", "type": "integer", "minimum": 1 },
+          "files": { "type": "array", "items": { "type": "string", "maxLength": 300 } }
+        }
+      }
+    }
+  }
+}

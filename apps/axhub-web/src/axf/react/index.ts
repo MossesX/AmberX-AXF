@@ -47,6 +47,7 @@ export { BannerStripPage, useBannerStripFollower } from './components/BannerStri
 export { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, BANNER_STRIP_PAGE, BANNER_STRIP_VIEW, bannerStripUrl, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripEntry, type BannerStripMessage } from './bannerStrip';
 export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
+export { Hideable, useHidden, useHiddenList } from './hidden';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
@@ -58,5 +59,5 @@ export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, ope
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { ControlRegistry, ControlScope, controlRegistry, composeAddress, controlSlug, escapeSelector, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useControlTargets, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, SETTINGS_SUBTAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller, type ControlSearcher } from './controlTargets';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
-export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, hiddenPieceLabel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
 export { installScrollControl, useScrollContainer, runScroll, scrollStateOf, scrollContainerOf, activeScrollContainer, mainScrollElement, scrollAddressOf, domScroller, isScrollable, lineHeightIn, offsetWithin, SCROLL_CONTAINER_ATTR, SCROLL_LINE_TOKEN, MAIN_SCROLL_ID } from './scrollControl';

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/pipeline-status.json",
+  "schema": "pipeline-status@1",
+  "version": 1,
+  "title": "pipeline-status@1: what a build is doing, as every screen shows it",
+  "description": "The view the builds store works out on every read and attaches to a build as `pipelineView` (framework/core/pipeline-status.mjs pipelineView; never stored), plus the stored fields the read exposes beside it: the build's `number`, `pr` / `prUrl`, `split` and `clash`, and each step's `uid`, `splitBy`, `model`, `modelBy`, `status` and `waitsFor`. Enums are checked against the engine by framework/spec/check-pipeline-status.mjs.",
+  "type": "object",
+  "required": ["state", "label", "tone", "icon", "line", "attempt", "waitingOn", "mergeLine", "split"],
+  "properties": {
+    "state": { "type": "string", "maxLength": 40, "description": "One of $defs.state; a status outside the contract is shown as itself (the raw status)." },
+    "label": { "type": "string", "maxLength": 80 },
+    "tone": { "$ref": "#/$defs/tone" },
+    "icon": { "type": "string", "maxLength": 40 },
+    "line": { "type": "string", "maxLength": 1200, "description": "Plain words: what the VPS is doing with the build now." },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "waitingOn": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/waitingOn" }] },
+    "mergeLine": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/mergeLine" }] },
+    "split": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/split" }] },
+    "clash": { "type": "object", "required": ["rejected", "reason"], "properties": { "rejected": { "type": "boolean" }, "reason": { "type": "string", "maxLength": 600 }, "answer": { "enum": ["", "run-all", "defer"] } } }
+  },
+  "$defs": {
+    "state": { "enum": ["pending", "splitting", "split", "pulling-main", "assigning-models", "ready", "sending", "building", "build-complete", "failed", "waiting-to-merge", "merging", "running-ci", "landed"] },
+    "landerState": { "enum": ["waiting-to-merge", "merging", "running-ci", "landed"] },
+    "tone": { "enum": ["muted", "info", "accent", "warning", "success", "danger"] },
+    "buildRef": {
+      "type": "object",
+      "required": ["buildId", "number", "title"],
+      "properties": { "buildId": { "type": "string", "maxLength": 80 }, "number": { "type": "string", "maxLength": 24 }, "title": { "type": "string", "maxLength": 300 } }
+    },
+    "waitingOn": {
+      "type": "object",
+      "required": ["buildId", "number", "title", "reason"],
+      "properties": { "buildId": { "type": "string" }, "number": { "type": "string" }, "title": { "type": "string" }, "reason": { "type": "string", "description": "Waiting: <title> holds the active place" } }
+    },
+    "mergeLine": {
+      "type": "object",
+      "required": ["position", "waitingFor", "text"],
+      "properties": {
+        "position": { "type": "integer", "minimum": 0, "description": "The place in the lander's line: 1 merges next." },
+        "waitingFor": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/buildRef" }] },
+        "text": { "type": "string", "description": "2nd to merge, waiting for B-0041 to merge" }
+      }
+    },
+    "split": {
+      "type": "object",
+      "description": "Stored on the build as `split` by the splitting stage.",
+      "required": ["by", "model", "at", "stepCount"],
+      "properties": {
+        "by": { "type": "string", "description": "`vps`: the split ran in the VPS splitting stage." },
+        "model": { "type": "string", "description": "The model that really ran (a Claude model id), or `rules` when Fable could not answer." },
+        "at": { "type": "string" },
+        "stepCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "build": {
+      "type": "object",
+      "description": "The stored fields of a build this contract adds to builds@1.",
+      "properties": {
+        "number": { "type": "string", "pattern": "^B-\\d{4,}$", "description": "Short unique build number, given once by the store." },
+        "pr": { "type": "string", "description": "The PR number, written as soon as the build starts (a draft PR)." },
+        "prUrl": { "type": "string" },
+        "prDraft": { "type": "boolean" },
+        "split": { "$ref": "#/$defs/split" },
+        "clash": { "type": "object", "description": "build-clash@1 (framework/core/build-clash.mjs)." }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["id", "uid", "splitBy", "model", "modelBy", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "uid": { "type": "string", "description": "The step's unique id, kept for its whole life." },
+        "splitBy": { "enum": ["", "vps-fable", "vps-rules"] },
+        "model": { "type": "string" },
+        "modelBy": { "enum": ["", "triage"], "description": "`triage` once the VPS triage gate has assigned the model (assigning-models is done)." },
+        "status": { "type": "string" },
+        "waitsFor": { "$ref": "#/$defs/buildRef" }
+      }
+    }
+  }
+}

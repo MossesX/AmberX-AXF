@@ -2731,6 +2731,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.hidden-assets",
+              "title": "Hide any asset and see what's hidden: right-click Hide on every tab group, toolbar, banner, nav, menu bar and widget, the Assets menu, the Hidden list; REST, MCP, CLI and voice",
+              "note": "hidden-assets@1 (app-look@1 own.hiddenAssets; engines/hidden-assets.ts, react/hidden.tsx, libs/settings/HiddenAssetsPanel.tsx, dialog axf.hidden-assets); REST /api/hidden-assets, MCP hidden_assets_*, axf hidden, voice; Kotlin twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

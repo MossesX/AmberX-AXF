@@ -152,6 +152,10 @@ h4 { margin: 0; line-height: 1.2; } /* same reset as the larger headings: a layo
 
 /* ---------------- shell / layout engine ---------------- */
 
+/* hidden-assets@1 (react/hidden.tsx): a hand-drawn piece hidden in this app (a plugin's toolbar strip, a tab strip, a nav)
+   takes no room, so its neighbours close up; framework components hidden this way are not rendered at all. */
+[data-axf-hidden-piece] { display: none !important; }
+
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 /* every top bar, banner, toolbar and side rail sits inside the safe area; the phone's bottom nav pads the bottom itself */
