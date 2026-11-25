@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10399,
- "updatedAt": "2026-11-25T05:50:58.400Z",
+ "rev": 10400,
+ "updatedAt": "2026-11-25T06:22:03.515Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258304,7 +258304,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-22T05:58:30.916Z",
+   "updatedAt": "2026-11-25T05:52:12.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -258518,6 +258518,11 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (attach-widgets-to-any-toolbar-banner is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced ",
      "at": "2026-11-22T06:00:31.122Z"
+    },
+    {
+     "text": "Rejected: 1 step of 2 touches files that B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed), B-1073 (Find and fix why CI stalls on lander one-part PRs) have not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 1 clean step now, defer 1 (defer).",
+     "at": "2026-11-25T05:52:12.596Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [
@@ -259318,7 +259323,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 168,
+   "rev": 169,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271800,15 +271805,15 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "split",
+   "status": "building",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/rebuild-fresh-main-hide-any-asset",
-   "pr": "#824",
+   "branch": "lander/rebuild-fresh-main-hide-any-asset",
+   "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-22T05:06:25.451Z",
+   "updatedAt": "2026-11-25T06:21:56.612Z",
    "builtAt": "",
    "notes": [
     {
@@ -271914,6 +271919,174 @@
     {
      "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
      "at": "2026-11-22T05:06:25.451Z"
+    },
+    {
+     "text": "Draft PR #923 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/923.",
+     "at": "2026-11-25T05:52:32.841Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Blast radius: 51 files depend on what it touches (limit 10)); s2 Fable (Contracts: it touches framework/schemas/asset-types.json); s3 Fable (Contracts: it touches framework/core/engines/hidden-assets.ts); s4 Fable (Contracts: it touches framework/spec/gen-fixtures.mts); s5 Fable (Contracts: it touches framework/core/runtime.ts); s6 Fable (Blast radius: 459 files depend on what it touches (limit 10)); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (Contracts: it touches framework/spec/CONSOLE-CONTROL.md); s10 Fable (no rule matched: Fable by default); s11 Fable (Contracts: it touches framework/core/control-registry); s12 Fable (Blast radius: 35 files depend on what it touches (limit 10)); s13 Fable (Contracts: it touches framework/schemas/shared-assets.json); s14 Fable (no rule matched: Fable by default); s15 Fable (Contracts: it touches framework/spec/); s16 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T05:58:48.172Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Blast radius: 51 files depend on what it touches (limit 10)); s2 Fable (Contracts: it touches framework/schemas/asset-types.json); s3 Fable (Contracts: it touches framework/core/engines/hidden-assets.ts); s4 Fable (Contracts: it touches framework/spec/gen-fixtures.mts); s5 Fable (Contracts: it touches framework/core/runtime.ts); s6 Fable (Blast radius: 459 files depend on what it touches (limit 10)); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (Contracts: it touches framework/spec/CONSOLE-CONTROL.md); s10 Fable (no rule matched: Fable by default); s11 Fable (Contracts: it touches framework/core/control-registry); s12 Fable (Blast radius: 35 files depend on what it touches (limit 10)); s13 Fable (Contracts: it touches framework/schemas/shared-assets.json); s14 Fable (no rule matched: Fable by default); s15 Fable (Contracts: it touches framework/spec/); s16 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T05:58:55.942Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s1--gina, shared account login)",
+     "at": "2026-11-25T06:00:11.234Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s2--rhonda, shared account login)",
+     "at": "2026-11-25T06:00:56.408Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:01:09.709Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s3--lenny, shared account login)",
+     "at": "2026-11-25T06:02:08.117Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on mossesx-max-.",
+     "at": "2026-11-25T06:03:01.991Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T06:04:01.685Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s2--rhonda: brief only · start 11.5K tokens ($0.05) · cost $1.23 · 16 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:04:58.454Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.23",
+     "at": "2026-11-25T06:05:09.185Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.39",
+     "at": "2026-11-25T06:05:42.136Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s3--lenny: brief only · start 11.5K tokens ($0.05) · cost $1.39 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:05:48.582Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-25T06:06:01.740Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s4--paulie, shared account login)",
+     "at": "2026-11-25T06:06:54.129Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:07:39.851Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s1--gina: brief only · start 11.8K tokens ($0.05) · cost $2.80 · 30 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:07:46.295Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.80",
+     "at": "2026-11-25T06:07:52.671Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-rebuild-fresh-main-hide-any-asset--s3--lenny is gone while the step was building.",
+     "at": "2026-11-25T06:08:01.207Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s5--sully, shared account login)",
+     "at": "2026-11-25T06:08:17.967Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s3--earl, shared account login)",
+     "at": "2026-11-25T06:09:28.708Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s3--earl: brief only · start 11.5K tokens ($0.05) · cost $0.34 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:10:34.496Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.34",
+     "at": "2026-11-25T06:10:42.678Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s6--gina, shared account login)",
+     "at": "2026-11-25T06:12:07.231Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s4--paulie: brief only · start 11.5K tokens ($0.05) · cost $2.11 · 12 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:12:26.885Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.11",
+     "at": "2026-11-25T06:12:31.973Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s7--rhonda, shared account login)",
+     "at": "2026-11-25T06:13:28.041Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--sully: brief only · start 11.5K tokens ($0.05) · cost $2.48 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:14:20.580Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.48",
+     "at": "2026-11-25T06:14:33.384Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s8--lenny, shared account login)",
+     "at": "2026-11-25T06:15:19.085Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s9--joey, shared account login)",
+     "at": "2026-11-25T06:16:12.127Z"
+    },
+    {
+     "text": "Watchdog: step s10 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T06:17:01.431Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T06:18:02.235Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s7--rhonda: brief only · start 11.5K tokens ($0.05) · cost $2.36 · 21 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:18:29.999Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.36",
+     "at": "2026-11-25T06:18:35.882Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s5--paulie, shared account login)",
+     "at": "2026-11-25T06:19:15.542Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s6--gina: brief only · start 11.5K tokens ($0.05) · cost $3.47 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:19:39.107Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.47",
+     "at": "2026-11-25T06:19:44.161Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s8--lenny: brief only · start 11.5K tokens ($0.05) · cost $2.24 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:20:56.721Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.24",
+     "at": "2026-11-25T06:21:03.089Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s10--sully, shared account login)",
+     "at": "2026-11-25T06:21:47.948Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--paulie: brief only · start 11.5K tokens ($0.05) · cost $0.50 · 9 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:21:56.612Z"
     }
    ],
    "approvals": [
@@ -271985,7 +272158,17 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-25T06:21:40.760Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie",
+     "phase": ""
+    }
    },
    "steps": [
     {
@@ -272010,14 +272193,30 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:07:39.851Z",
      "note": "Part 1: 2 plan steps in one session (they touch the same files).",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "blast-radius",
+      "why": "Blast radius: 51 files depend on what it touches (limit 10)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 5,
+       "areas": 4,
+       "minutes": 15,
+       "dependents": 51,
+       "priorFailures": 0
+      }
+     },
+     "rev": 19,
      "createdAt": "2026-11-22T03:12:33.718Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:07:39.922Z",
+     "statusAt": "2026-11-25T06:05:35.770Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 5,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -272025,9 +272224,103 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:52:40.074Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:52:46.170Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T05:59:10.734Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T05:59:28.858Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s1 already has a live session: lock launching (heartbeat 2026-11-25T05:59:21.326Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T05:59:55.615Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:00:25.150Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s1 already has a live session: tmux axf-rebuild-fresh-main-hide-any-asset--s1--gina; lock axf-rebuild-fresh-main-hide-any-asset--s1--gina (heartbeat 2026-11-25T05:59:52.812Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:01:16.306Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:01:31.194Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s1 already has a live session: tmux axf-rebuild-fresh-main-hide-any-asset--s1--gina; claude pid 3445984; lock axf-rebuild-fresh-main-hide-any-asset--s1--gina (heartbeat 2026-11-25T05:59:52.812Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:01:42.674Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:01:51.200Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s1 already has a live session: tmux axf-rebuild-fresh-main-hide-any-asset--s1--gina; claude pid 3445984; lock axf-rebuild-fresh-main-hide-any-asset--s1--gina (heartbeat 2026-11-25T05:59:52.812Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:03:01.991Z",
+       "by": "watchdog",
+       "attempt": 5,
+       "why": "retry forward at sending, attempt 5"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:05:27.418Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:05:35.770Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s1 already has a live session: tmux axf-rebuild-fresh-main-hide-any-asset--s1--gina; claude pid 3445984; lock axf-rebuild-fresh-main-hide-any-asset--s1--gina (heartbeat 2026-11-25T05:59:52.812Z)"
       }
      ],
-     "status": "pending"
+     "status": "failed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s1",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s1"
     },
     {
      "id": "s2",
@@ -272048,14 +272341,29 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:04:30.923Z",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/asset-types.json",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 9,
+       "dependents": 70,
+       "priorFailures": 0
+      }
+     },
+     "rev": 9,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:05:57.625Z",
+     "statusAt": "2026-11-25T06:05:57.549Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -272064,9 +272372,48 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:52:52.815Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:53:04.902Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T05:59:34.601Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:00:38.746Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s2--rhonda on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:05:57.549Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "pending"
+     "status": "completed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s2",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s2",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s2--rhonda"
     },
     {
      "id": "s3",
@@ -272086,15 +272433,30 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:10:57.212Z",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/engines/hidden-assets.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "dependents": 0,
+       "priorFailures": 0
+      }
+     },
+     "rev": 11,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T06:10:57.296Z",
+     "statusAt": "2026-11-25T06:10:57.212Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -272102,9 +272464,65 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:53:14.324Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:53:22.994Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:01:24.375Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:01:58.053Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s3--lenny on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:08:01.207Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-rebuild-fresh-main-hide-any-asset--s3--lenny is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:08:56.322Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:10:57.212Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "pending"
+     "status": "completed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s3",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s3",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s3--earl",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s4",
@@ -272126,15 +272544,30 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:13:56.871Z",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/gen-fixtures.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 4,
+       "areas": 1,
+       "minutes": 9,
+       "dependents": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 11,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T06:13:56.953Z",
+     "statusAt": "2026-11-25T06:13:56.871Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -272142,9 +272575,69 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:53:32.058Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:53:39.876Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:02:14.471Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:02:36.394Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-approval-pass-covers-every-call--s11--sully, axf-approval-pass-covers-every-call--s12--earl, axf-rebuild-fresh-main-hide-any-asset--s1--gina, axf"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:04:01.685Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at sending, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:06:25.840Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:06:48.071Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s4--paulie on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:13:56.871Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "pending"
+     "status": "completed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s4",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s4",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s4--paulie"
     },
     {
      "id": "s5",
@@ -272168,12 +272661,27 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/runtime.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 449,
+       "priorFailures": 0
+      }
+     },
+     "rev": 12,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:19:07.153Z",
+     "statusAt": "2026-11-25T06:19:07.028Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -272181,16 +272689,76 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:53:47.708Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:53:57.508Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:07:29.912Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:08:03.789Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s5--sully on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:16:35.879Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:18:02.235Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:18:42.891Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:19:07.028Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie on mossesx-max-"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s5",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s5",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie"
     },
     {
      "id": "s6",
      "uid": "st-mwr9h9km1ql7yt",
      "title": "",
      "text": "React: a useHidden(kind,id) hook and a <Hideable kind id> wrapper. TabGroup, toolbars (tapConfirm hosts), the banner frame, nav menus, the menu bar and widget hosts render nothing when hidden. Attached neighbours reflow with no overlap.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272205,15 +272773,30 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:20:27.297Z",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "blast-radius",
+      "why": "Blast radius: 459 files depend on what it touches (limit 10)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 459,
+       "priorFailures": 0
+      }
+     },
+     "rev": 9,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T06:20:27.404Z",
+     "statusAt": "2026-11-25T06:20:27.297Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -272221,16 +272804,62 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:54:08.131Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:54:14.470Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:11:31.022Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:11:43.319Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s6 already has a live session: lock launching (heartbeat 2026-11-25T06:11:37.678Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:11:58.696Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s6--gina on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:20:27.297Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "pending"
+     "status": "completed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s6",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s6",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s6--gina"
     },
     {
      "id": "s7",
      "uid": "st-mwr9h9km1rwx4s",
      "title": "",
      "text": "Right-click Hide: add a 'Hide <kind>' item to the shared chrome context block in ChromeContext.tsx (Settings… / Change… / Move / Hide), on every tab group, toolbar, banner, nav, menu bar and widget, with an undo toast.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272242,14 +272871,29 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:18:03.365Z",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 8,
+       "dependents": 9,
+       "priorFailures": 0
+      }
+     },
+     "rev": 9,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:19:55.211Z",
+     "statusAt": "2026-11-25T06:19:55.115Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -272258,16 +272902,55 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:54:24.803Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:54:32.271Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:12:56.759Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:13:21.263Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s7--rhonda on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:19:55.115Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "pending"
+     "status": "completed",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s7",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s7",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s7--rhonda"
     },
     {
      "id": "s8",
      "uid": "st-mwr9h9kn1s5dty",
      "title": "",
      "text": "Hidden list UI: a HiddenAssetsPanel in framework/libs/settings (tokens and framework controls only): it groups items by kind, has Unhide per row and Unhide all with confirm, and shows an empty state. Mount it in Settings → Appearance and as a dialog asset 'axf.hidden-assets'.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272284,12 +272967,27 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 4,
+       "priorFailures": 0
+      }
+     },
+     "rev": 8,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:15:10.087Z",
+     "statusAt": "2026-11-25T06:15:09.982Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -272297,16 +272995,55 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:54:51.295Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:55:02.605Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:14:42.614Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:14:49.657Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s8 already has a live session: lock launching (heartbeat 2026-11-25T06:14:45.921Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:15:09.982Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s8--lenny on mossesx-max-"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s8",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s8",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s8--lenny"
     },
     {
      "id": "s9",
      "uid": "st-mwr9h9kn1tx171",
      "title": "",
      "text": "Assets menu: add an 'Assets' menu-bar entry (an app-menu asset contribution through rt.addContextItems / menu contributions) with Hidden items… (the count as a badge), Unhide all, and a submenu to hide any visible chrome by name. Register console-control targets (data-axf-target) for the panel, each row and both buttons.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272323,10 +273060,25 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/CONSOLE-CONTROL.md",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 9,
+       "dependents": 0,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:15:57.453Z",
+     "statusAt": "2026-11-25T06:15:57.379Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272336,16 +273088,48 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:55:23.432Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:55:36.078Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:15:25.351Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:15:57.379Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s9--joey on mossesx-max-"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s9",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s9",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s9--joey"
     },
     {
      "id": "s10",
      "uid": "st-mwr9h9kn1udxww",
      "title": "",
      "text": "Console REST: add GET /api/hidden-assets?app= (list) and POST hide / unhide / unhide-all routes in the console server, reading and writing the app-look document through data_store.py / the look writer. Add pytest coverage.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272361,12 +273145,26 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 11,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T03:12:05.877Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:21:36.678Z",
+     "statusAt": "2026-11-25T06:21:36.606Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -272374,16 +273172,76 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:55:58.550Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:56:19.061Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:15:41.608Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:15:50.917Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: launcher exit 3: claude-headless: refused: rebuild-fresh-main-hide-any-asset was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:17:01.431Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at sending, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:21:12.945Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:21:25.413Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s10 already has a live session: lock launching (heartbeat 2026-11-25T06:21:18.976Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:21:36.606Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s10--sully on mossesx-max-"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "mossesx-max-",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s10",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s10",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s10--sully"
     },
     {
      "id": "s11",
      "uid": "st-mwr9h9kn1vpg3v",
      "title": "",
      "text": "MCP + console actions: add the tools hidden_assets_list, hidden_assets_hide, hidden_assets_unhide and hidden_assets_unhide_all, plus console actions chrome.hide / chrome.unhide / chrome.unhideAll / chrome.hidden. Deep links: console_show targets view:settings/tab:appearance#hidden and dialog:axf.hidden-assets. Update the console-tools pins.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272398,12 +273256,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/control-registry",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 5,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:56:47.798Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272413,16 +273286,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:56:34.570Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:56:47.798Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s11",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s11"
     },
     {
      "id": "s12",
      "uid": "st-mwr9h9kn1wtuu8",
      "title": "",
      "text": "CLI + voice: add `axf hidden list|hide <kind> <id>|unhide <kind> <id>|unhide-all [--app]` (framework/cli/hidden-assets.mjs, wired into axf.mjs), plus AmberX voice intents ('hide the toolbar', 'show what's hidden', 'unhide everything') that map to the same console actions.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272437,12 +273326,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "blast-radius",
+      "why": "Blast radius: 35 files depend on what it touches (limit 10)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 9,
+       "dependents": 35,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:57:15.253Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272452,16 +273356,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:56:59.021Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:57:15.253Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s12",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s12"
     },
     {
      "id": "s13",
      "uid": "st-mwr9h9kn1xz2c1",
      "title": "",
      "text": "Re-bake the framework into the console, axHub web and AmberX (shared-assets.mjs bake, rebake.mjs apply per app). Check that each app shows the Assets menu and the right-click Hide, and that typecheck passes in each.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272477,12 +273397,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/shared-assets.json",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 4,
+       "minutes": 10,
+       "dependents": 6,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:57:33.219Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272492,16 +273427,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:57:23.245Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:57:33.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s13",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s13"
     },
     {
      "id": "s14",
      "uid": "st-mwr9h9kn1yyqz0",
      "title": "",
      "text": "UI Review: take desktop + phone shots of the right-click Hide, the Assets menu and the Hidden list in the console. Submit at least 3 Hidden-list options as dialog assets through review.mjs submit --choices with the group named after the build.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272515,12 +273466,26 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:57:48.871Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272530,16 +273495,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:57:39.313Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:57:48.871Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s14",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s14"
     },
     {
      "id": "s15",
      "uid": "st-mwr9h9kn1zlur6",
      "title": "",
      "text": "Tests and finish: run check-hidden-assets.mts, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, the server tests and tracker --check. Finish _claude/builds/reports/rebuild-fresh-main-hide-any-asset.md (how each feature is reached: UI, REST, MCP, CLI, voice), add a THREADS.md row, open the PR, and mark the two old builds (claude/assets-menu-hide-any-asset-visible, -hidden-list) archived in the orchestrator.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -272555,12 +273536,27 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 10,
+       "dependents": 107,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:58:09.006Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272570,16 +273566,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:57:58.322Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:58:09.006Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s15",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s15"
     },
     {
      "id": "s16",
      "uid": "st-mwr9h9kn20bv6d",
      "title": "",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #824 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/rebuild-fresh-main-hide-any-asset, get every check green and push; the PR is #824.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
@@ -272590,12 +273602,26 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "doneAt": "2026-11-25T06:01:09.709Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"watchdog\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T05:58:46.066Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 7,
      "createdAt": "2026-11-22T01:25:27.959Z",
-     "updatedAt": "2026-11-22T05:06:25.559Z",
-     "statusAt": "2026-11-22T03:12:32.037Z",
+     "updatedAt": "2026-11-25T06:01:09.875Z",
+     "statusAt": "2026-11-25T05:58:26.985Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -272605,9 +273631,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T05:58:16.940Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T05:58:26.985Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s16",
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s16"
     }
    ],
    "profiles": [
@@ -272618,7 +273660,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 224,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272656,7 +273698,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-22T03:12:33.717Z",
+   "statusAt": "2026-11-25T06:00:48.537Z",
    "statusBy": "orchestrator",
    "attempt": 2,
    "statusLog": [
@@ -272673,6 +273715,41 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "16 steps for 6 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-25T05:52:22.229Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "no other build is active"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-25T05:58:35.438Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-25T05:58:48.172Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "models assigned by the triage gate"
+    },
+    {
+     "status": "sending",
+     "at": "2026-11-25T05:59:17.239Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "sending s1"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-25T06:00:48.537Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "s2 is in a slot"
     }
    ]
   },
@@ -338021,15 +339098,15 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "building",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/approval-pass-covers-every-call--s9",
+   "branch": "claude/approval-pass-covers-every-call",
    "pr": "#922",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-25T05:50:39.863Z",
+   "updatedAt": "2026-11-25T05:51:40.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -338692,6 +339769,11 @@
      "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
      "at": "2026-11-25T05:50:53.094Z",
      "by": "store"
+    },
+    {
+     "text": "Cancelled from Building (console): Brett: not needed; free the active place for the clash button build. 3 step sessions still running end on their own; nothing of them is landed.",
+     "at": "2026-11-25T05:51:40.952Z",
+     "by": "console"
     }
    ],
    "approvals": [
@@ -340203,7 +341285,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 343,
+   "rev": 345,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -340237,9 +341319,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T05:04:55.176Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T05:51:40.952Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "building",
    "statusLog": [
     {
      "status": "failed",
@@ -340289,6 +341372,13 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "s1 is in a slot"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:51:40.952Z",
+     "by": "console",
+     "attempt": 2,
+     "why": "cancel by console: Brett: not needed; free the active place for the clash button build"
     }
    ]
   },
@@ -343969,7 +345059,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-22T04:05:19.495Z",
+   "updatedAt": "2026-11-25T05:52:05.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -344147,6 +345237,11 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by a",
      "at": "2026-11-22T04:37:22.490Z"
+    },
+    {
+     "text": "Rejected: 3 steps of 28 touch files that B-1073 (Find and fix why CI stalls on lander one-part PRs), B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed) have not landed yet (apps/console-web/plugins/gate, .github/workflows/android.yml, _claude/THREADS.md). Answers: Run all now (run-all), or Run 25 clean steps now, defer 3 (defer).",
+     "at": "2026-11-25T05:52:05.078Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [
@@ -345335,7 +346430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -378504,7 +379599,7 @@
    "title": "Drop a failed part: remove a feature whose own single PR fails CI again",
    "category": "",
    "detail": "When CI fails and the VPS splits a build into one PR per part (lander-driven, landing one at a time), and a part then fails again as its own PR, give Brett a way to remove that part/feature from the build altogether: a Remove button on that part in the orchestrator and Plan Studio, plus a console/MCP/voice command. Removing closes the part's PR, deletes its branch, marks the step dropped (kept in the log with the reason), and the build carries on landing the remaining parts and can finish without it. The final report lists which parts were dropped.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -378512,7 +379607,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-24T21:22:16.340Z",
-   "updatedAt": "2026-11-24T21:24:14.096Z",
+   "updatedAt": "2026-11-25T05:54:19.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -378526,6 +379621,10 @@
     {
      "text": "auto-queued: slots free",
      "at": "2026-11-24T21:24:14.096Z"
+    },
+    {
+     "text": "Moved to the Archive from queued (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:19.729Z"
     }
    ],
    "approvals": [],
@@ -378543,8 +379642,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-24T21:24:06.334Z",
-    "queuedBy": "auto-queue (slots free)",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -378565,7 +379664,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-24T21:26:00.732Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -378696,7 +379801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -378712,7 +379817,7 @@
    "title": "Always show a build's parts, even while combined into one PR",
    "category": "",
    "detail": "In the orchestrator and Plan Studio, always show each build's parts (the steps it was split and built on) under the build, whether they are combined into one PR, recombined, or split into one PR per part after a CI failure. Each part shows its own state (built, in combined PR, CI running, merged, failed, dropped) and its PR number when it has its own. Show as one expandable build row with the parts inside, not big separate rows (ties to the known bug on plan-studio-plan-notes-don-t-wor-2icd). Pairs with drop-failed-part-remove-feature-whose (the Remove button lives on these part rows).",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -378720,7 +379825,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-24T21:23:17.993Z",
-   "updatedAt": "2026-11-24T21:40:42.966Z",
+   "updatedAt": "2026-11-25T05:55:58.494Z",
    "builtAt": "",
    "notes": [
     {
@@ -378729,23 +379834,23 @@
     },
     {
      "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T21:36:01.545Z",
-     "by": "watchdog"
+     "at": "2026-11-24T21:36:01.545Z"
     },
     {
      "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T21:39:01.910Z",
-     "by": "watchdog"
+     "at": "2026-11-24T21:39:01.910Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-24T21:40:02.692Z",
-     "by": "watchdog"
+     "at": "2026-11-24T21:40:02.692Z"
     },
     {
      "text": "Rejected: 1 step of 3 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 2 clean steps now, defer 1 (defer).",
-     "at": "2026-11-24T21:40:39.340Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T21:40:39.340Z"
+    },
+    {
+     "text": "Moved to the Archive from split (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:55:58.494Z"
     }
    ],
    "approvals": [],
@@ -378961,7 +380066,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -378972,9 +380077,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T21:40:42.966Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T05:55:58.497Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "failed",
@@ -378989,6 +380095,12 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "3 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:55:58.497Z",
+     "by": "console",
+     "attempt": 2
     }
    ]
   },
@@ -378997,7 +380109,7 @@
    "title": "Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed",
    "category": "",
    "detail": "Today refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.",
-   "status": "running-ci",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -379005,7 +380117,7 @@
    "pr": "921",
    "priority": "P0",
    "createdAt": "2026-11-24T21:25:18.141Z",
-   "updatedAt": "2026-11-25T05:40:54.717Z",
+   "updatedAt": "2026-11-25T05:56:20.266Z",
    "builtAt": "",
    "notes": [
     {
@@ -379190,18 +380302,20 @@
     },
     {
      "text": "Watchdog: step s1 stuck at completed (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-25T05:40:02.308Z",
-     "by": "watchdog"
+     "at": "2026-11-25T05:40:02.308Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (23 min past budget): re-ran the transition (7).",
-     "at": "2026-11-25T05:40:02.308Z",
-     "by": "watchdog"
+     "at": "2026-11-25T05:40:02.308Z"
     },
     {
      "text": "Watchdog: build stuck at build-complete (19 min past budget): re-ran the transition (6).",
-     "at": "2026-11-25T05:40:02.308Z",
-     "by": "watchdog"
+     "at": "2026-11-25T05:40:02.308Z"
+    },
+    {
+     "text": "Cancelled from Running CI (console).",
+     "at": "2026-11-25T05:56:20.267Z",
+     "by": "console"
     }
    ],
    "approvals": [],
@@ -379713,7 +380827,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 104,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -379724,9 +380838,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T05:40:54.717Z",
-   "statusBy": "lander",
+   "statusAt": "2026-11-25T05:56:20.266Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "running-ci",
    "statusLog": [
     {
      "status": "failed",
@@ -379802,6 +380917,13 @@
      "at": "2026-11-25T05:40:54.717Z",
      "by": "lander",
      "attempt": 1
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:56:20.266Z",
+     "by": "console",
+     "attempt": 2,
+     "why": "cancel by console"
     }
    ]
   },
@@ -380704,7 +381826,7 @@
    "title": "VPS writes every status change to the build store first, before anything else",
    "category": "",
    "detail": "On the VPS (orchestrator, dispatcher, lander, watchdogs, sessions): the moment a build's or step's status changes (started, CI running, merged, failed, etc.), write it to the builds store first, before logging, notifying, retrying or finishing the step. The store is always the first thing updated so the console never shows an old status. Pairs with fast-stale-check-page-load-build-store (the page load check is the safety net).",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -380712,7 +381834,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-24T23:39:47.041Z",
-   "updatedAt": "2026-11-24T23:59:35.127Z",
+   "updatedAt": "2026-11-25T05:55:35.876Z",
    "builtAt": "",
    "notes": [
     {
@@ -380721,23 +381843,23 @@
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T23:54:01.860Z",
-     "by": "watchdog"
+     "at": "2026-11-24T23:54:01.860Z"
     },
     {
      "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T23:58:01.713Z",
-     "by": "watchdog"
+     "at": "2026-11-24T23:58:01.713Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-24T23:59:01.649Z",
-     "by": "watchdog"
+     "at": "2026-11-24T23:59:01.649Z"
     },
     {
      "text": "Rejected: 1 step of 3 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 2 clean steps now, defer 1 (defer).",
-     "at": "2026-11-24T23:59:32.188Z",
-     "by": "orchestrator"
+     "at": "2026-11-24T23:59:32.188Z"
+    },
+    {
+     "text": "Moved to the Archive from split (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:55:35.876Z"
     }
    ],
    "approvals": [],
@@ -380953,7 +382075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -380964,9 +382086,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T23:59:35.127Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T05:55:35.878Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "failed",
@@ -380981,6 +382104,12 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "3 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:55:35.878Z",
+     "by": "console",
+     "attempt": 2
     }
    ]
   },
@@ -380989,7 +382118,7 @@
    "title": "Lander marks each part merged when its PR merges (steps stuck on 'in PR')",
    "category": "",
    "detail": "Cause found in deploy/lander/run.mjs: the only place the lander writes step statuses is the merging-pr phase, which sets each step to 'in-pr' with its prNumber. When the PR merges it only updates landing.merged and lastMerge, never the steps. That happens in merging-main (the lander's own merge), in syncPr (a PR merged by hand), and in the merge-together loop. So every part stays 'in PR' forever (B-0985 parts 1-8). Fix: in all three places, in the same store write as landing.merged, set every step in that PR (g.inFlight.steps, or the steps whose prNumber equals the PR) to status 'merged' with the merge sha. Write it to the store before logging or anything else. Add a test in the lander spec: after a merge (own and by hand) each step of that PR reads 'merged'. Also do a one-time repair: any step marked in-pr whose PR number is in the build's landing.merged gets set to merged (this fixes B-0985 parts 1-8 now).",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -380997,7 +382126,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-24T23:41:39.513Z",
-   "updatedAt": "2026-11-24T23:46:32.492Z",
+   "updatedAt": "2026-11-25T05:54:25.481Z",
    "builtAt": "",
    "notes": [
     {
@@ -381007,6 +382136,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-24T23:46:32.492Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T05:53:45.855Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:25.481Z"
     }
    ],
    "approvals": [],
@@ -381024,8 +382161,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-24T23:46:30.642Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -381531,7 +382668,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -381547,7 +382684,7 @@
    "title": "Lander updates every part's status in the store on every change, including splits",
    "category": "",
    "detail": "Goes with the lander part-merged fix. In deploy/lander/run.mjs, every time the lander changes a PR it writes every affected part's status to the builds store in the same write: opening a PR (in-pr), CI running/red/green on that PR, merging (merged), closing a PR, and splitting (the split retry closes the combined PR and must set each of its parts back to waiting for its own PR, then in-pr with the new PR number when each one opens). Dropped parts get 'dropped'. No part status may be left behind after any lander action.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -381555,7 +382692,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-24T23:42:21.656Z",
-   "updatedAt": "2026-11-24T23:53:09.611Z",
+   "updatedAt": "2026-11-25T05:54:30.571Z",
    "builtAt": "",
    "notes": [
     {
@@ -381565,6 +382702,14 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps.",
      "at": "2026-11-24T23:53:09.611Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T05:53:38.590Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:30.571Z"
     }
    ],
    "approvals": [],
@@ -381582,8 +382727,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-24T23:46:24.999Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -381601,10 +382746,16 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-24T23:53:30.068Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -381735,7 +382886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -381806,7 +382957,7 @@
    "title": "Find and fix why CI stalls on lander one-part PRs",
    "category": "",
    "detail": "Refresh-fix parts 7, 8 and 9 (PRs 915, 916, 917) all sat for 2+ hours with mergeable_state 'unstable' and never merged by themselves. Find the real cause: read the check runs on those heads and the lander's running-ci logic in deploy/lander/run.mjs (lightOnly -> dispatches the full run once per head; 'missing' required checks; ciTimedOut). Likely the full workflow_dispatch run never starts or never reports on lander/* branches, or a required check name doesn't match. Fix the cause so lander PRs go green and merge by themselves, and add a test. Pairs with watchdog-catches-lander-prs-stuck-ci (the safety net).",
-   "status": "running-ci",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -381814,7 +382965,7 @@
    "pr": "920",
    "priority": "P0",
    "createdAt": "2026-11-25T02:02:33.437Z",
-   "updatedAt": "2026-11-25T05:39:29.687Z",
+   "updatedAt": "2026-11-25T05:56:43.116Z",
    "builtAt": "",
    "notes": [
     {
@@ -381907,8 +383058,12 @@
     },
     {
      "text": "Lander: the fix pushed e875f878e; CI runs on it",
-     "at": "2026-11-25T05:39:29.687Z",
-     "by": "lander"
+     "at": "2026-11-25T05:39:29.687Z"
+    },
+    {
+     "text": "Cancelled from Running CI (console).",
+     "at": "2026-11-25T05:56:43.117Z",
+     "by": "console"
     }
    ],
    "approvals": [],
@@ -382248,7 +383403,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -382259,9 +383414,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T05:39:29.687Z",
-   "statusBy": "lander",
+   "statusAt": "2026-11-25T05:56:43.116Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "running-ci",
    "statusLog": [
     {
      "status": "failed",
@@ -382365,6 +383521,13 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: the fix pushed e875f878e; CI runs on it"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:56:43.116Z",
+     "by": "console",
+     "attempt": 2,
+     "why": "cancel by console"
     }
    ]
   },
@@ -382373,7 +383536,7 @@
    "title": "Tabs in the console app: more than one console page open at once",
    "category": "",
    "detail": "In the console app on Brett's phone (console-droid), add tabs so several console pages (e.g. Build orchestrator, Plan Studio 2.0, Settings) can be open at the same time and switched between without reloading or losing place. New tab, close tab, switch tab; each tab keeps its own screen and scroll. console_open/console_show can target a tab or open in a new one. Check first whether an existing plan already covers this and fold into it instead of duplicating.",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -382381,7 +383544,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-25T04:28:25.615Z",
-   "updatedAt": "2026-11-25T05:07:37.466Z",
+   "updatedAt": "2026-11-25T05:55:23.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -382422,8 +383585,11 @@
     },
     {
      "text": "Rejected: 2 steps of 6 touch files that B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed), B-1073 (Find and fix why CI stalls on lander one-part PRs) have not landed yet (_claude/THREADS.md, .github/workflows). Answers: Run all now (run-all), or Run 4 clean steps now, defer 2 (defer).",
-     "at": "2026-11-25T05:07:26.179Z",
-     "by": "orchestrator"
+     "at": "2026-11-25T05:07:26.179Z"
+    },
+    {
+     "text": "Moved to the Archive from split (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:55:23.299Z"
     }
    ],
    "approvals": [],
@@ -382820,7 +383986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -382831,9 +383997,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T05:07:37.466Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T05:55:23.300Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "failed",
@@ -382862,6 +384029,12 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "6 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T05:55:23.300Z",
+     "by": "console",
+     "attempt": 2
     }
    ]
   },
@@ -382870,7 +384043,7 @@
    "title": "Run more than one build at a time when they don't conflict",
    "category": "",
    "detail": "Replace the single 'active build' place with: any number of builds can run at once (up to the slot limit) as long as they don't touch the same files. Before a build starts, compare its planned files against every running build (and main); if they overlap, it waits; if not, it starts. Landing stays one at a time. Show in the orchestrator why a build is waiting (which build it clashes with). Ties to the parked clash guard plan: fold into it if it covers this.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -382878,7 +384051,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T04:31:14.625Z",
-   "updatedAt": "2026-11-25T04:34:54.447Z",
+   "updatedAt": "2026-11-25T05:54:42.106Z",
    "builtAt": "",
    "notes": [
     {
@@ -382888,6 +384061,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-25T04:34:54.447Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T05:53:31.463Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:42.106Z"
     }
    ],
    "approvals": [],
@@ -382905,8 +384086,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-25T04:34:51.658Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -383064,7 +384245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -383080,7 +384261,7 @@
    "title": "Console app tabs (small)",
    "category": "",
    "detail": "Small build, 3-4 steps max. In the console app (console-droid), add a simple tab strip: a + button opens a new tab with the console's normal start screen, tapping a tab switches to it, an x closes it. Each tab is its own console webview, so it keeps its own screen and scroll. Nothing else: no console_open changes, no settings, no new plugins.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -383088,7 +384269,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T04:43:42.901Z",
-   "updatedAt": "2026-11-25T04:44:38.537Z",
+   "updatedAt": "2026-11-25T05:54:55.978Z",
    "builtAt": "",
    "notes": [
     {
@@ -383098,6 +384279,14 @@
     {
      "text": "Split by Claude into 4 steps (3 Fable).",
      "at": "2026-11-25T04:44:38.537Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T05:53:24.627Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:55.978Z"
     }
    ],
    "approvals": [],
@@ -383115,8 +384304,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-25T04:43:55.690Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -383137,7 +384326,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-25T04:45:14.815Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -383321,7 +384516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -383337,7 +384532,7 @@
    "title": "Clash answer: Run all / Defer buttons, plus an MCP and voice command",
    "category": "",
    "detail": "Small build, 2-3 steps. Builds 'rejected for a clash' (e.g. landing-frees-slot-autoqueue, watchdog-catches-lander-prs-stuck-ci) refuse queue/act with 'answer it first (run-all, or defer)', but there is no button in the Build orchestrator or Plan Studio and no command to answer it. Add: a Run all and a Defer button on every clash-rejected build row (orchestrator and Plan Studio), and a plugin command build-orchestrator/pipeline-clash-answer {id, answer: run-all|defer} reachable from REST, MCP, CLI and voice so Claude can answer it. Run all = queue it anyway; Defer = wait until the build it clashes with lands, then queue by itself.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -383345,7 +384540,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T04:58:19.585Z",
-   "updatedAt": "2026-11-25T05:08:57.988Z",
+   "updatedAt": "2026-11-25T05:55:14.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -383355,6 +384550,14 @@
     {
      "text": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps.",
      "at": "2026-11-25T05:08:57.988Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T05:53:19.588Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:55:14.168Z"
     }
    ],
    "approvals": [],
@@ -383372,8 +384575,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-25T04:58:33.456Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -383391,10 +384594,16 @@
      "note": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-25T05:10:49.922Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -383525,12 +384734,98 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T05:08:57.988Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "clashes-never-block-pull-main-fix",
+   "title": "Clashes never block: pull in main and fix automatically",
+   "category": "",
+   "detail": "When a build is rejected for a clash (or any step/PR fails on a conflict), the pipeline must not stop and wait for a person to answer 'run-all or defer'. It pulls main into the build's branch and starts a fix session that resolves the conflicts, runs the checks and pushes, then carries on by itself. Remove the 'answer it first' gate from pipeline-queue and pipeline-act. Apply to builds already stuck this way (landing-frees-slot-autoqueue, watchdog-catches-lander-prs-stuck-ci). Supersedes the Run all / Defer button build.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T05:52:57.890Z",
+   "updatedAt": "2026-11-25T05:54:13.308Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T05:53:13.678Z"
+    },
+    {
+     "text": "Moved to the Archive from queued (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
+     "at": "2026-11-25T05:54:13.308Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When something fails, it needs to pull in main and fix it.",
+    "at": "2026-11-25T05:52:57.890Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1076
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

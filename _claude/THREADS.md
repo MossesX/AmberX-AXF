@@ -844,85 +844,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-24 14:10 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-24 14:23 UTC · `postgres-audit` added (0 steps) (all) · claude
-- 2026-11-24 14:24 UTC · `postgres-audit` → splitting (all) · orchestrator
-- 2026-11-24 14:24 UTC · `postgres-audit` note (all) · claude
-- 2026-11-24 14:25 UTC · `postgres-audit` → split, note (all) · orchestrator
-- 2026-11-24 14:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 16:02 UTC · `remove-build-breaker` added (0 steps) (all) · claude
-- 2026-11-24 16:02 UTC · `remove-build-breaker` → archived (all) · claude
-- 2026-11-24 16:04 UTC · `plan-tree-multi-select` added (0 steps) (all) · claude
-- 2026-11-24 16:05 UTC · `plan-tree-multi-select` → splitting (all) · orchestrator
-- 2026-11-24 16:07 UTC · `plan-tree-multi-select` → split, note (all) · orchestrator
-- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 16:46 UTC · `fix-refreshing-console-jumps-back` → build-complete (all) · headless
-- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
-- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · lander
-- 2026-11-24 16:47 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
-- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` PR 909 (all) · lander
-- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
-- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · orchestrator
-- 2026-11-24 16:49 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
-- 2026-11-24 16:50 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-24 16:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 16:54 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 16:57 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:03 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:07 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:10 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:14 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:17 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:18 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:19 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
-- 2026-11-24 17:19 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
-- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` PR 910 (all) · lander
-- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
-- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-24 17:20 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
-- 2026-11-24 17:21 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:24 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:35 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:39 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:43 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:46 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:50 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
-- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
-- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` PR 911 (all) · lander
-- 2026-11-24 17:51 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
-- 2026-11-24 17:52 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
-- 2026-11-24 17:53 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 17:56 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:00 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:04 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:08 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:12 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:16 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:19 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:22 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:25 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:28 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:32 UTC · `fix-refreshing-console-jumps-back` → merging-main (all) · lander
-- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` → failed, note (all) · lander
-- 2026-11-24 18:33 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main, note (all) · lander
-- 2026-11-24 18:36 UTC · `fix-refreshing-console-jumps-back` → running-ci (all) · lander
-- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 18:37 UTC · `fix-refreshing-console-jumps-back` note (all) · claude
-- 2026-11-24 18:38 UTC · `fable-fix-land-refresh-build-fix` added (0 steps) (all) · pending
-- 2026-11-24 18:39 UTC · `fable-fix-land-refresh-build-fix` note (all) · orchestrator
-- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` note (all) · pending
-- 2026-11-24 18:40 UTC · `fable-fix-land-refresh-build-fix` → queued, note (all) · auto-queue (slots free)
 - 2026-11-24 18:41 UTC · `fable-fix-land-refresh-build-fix` note (all) · dispatcher
 - 2026-11-24 18:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 18:43 UTC · `fix-refreshing-console-jumps-back` → merging-pr, note (all) · lander
@@ -1244,6 +1165,85 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 05:47 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:47 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:50 UTC · `approval-pass-covers-every-call` note (all) · builds-live
+- 2026-11-25 05:51 UTC · `approval-pass-covers-every-call` → archived, note (all) · console
+- 2026-11-25 05:52 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-25 05:52 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · orchestrator
+- 2026-11-25 05:52 UTC · `rebuild-fresh-main-hide-any-asset` → pulling-main (all) · orchestrator
+- 2026-11-25 05:52 UTC · `rebuild-fresh-main-hide-any-asset` PR 923, note (all) · orchestrator
+- 2026-11-25 05:52 UTC · `rebuild-fresh-main-hide-any-asset` s1 undone (all) · orchestrator
+- 2026-11-25 05:52 UTC · `clashes-never-block-pull-main-fix` added (0 steps) (all) · console
+- 2026-11-25 05:53 UTC · `clashes-never-block-pull-main-fix` → queued, note (all) · console
+- 2026-11-25 05:53 UTC · `clash-answer-run-all-defer-buttons-plus` → pending, note (all) · console
+- 2026-11-25 05:53 UTC · `console-app-tabs-small` → pending, note (all) · console
+- 2026-11-25 05:53 UTC · `run-more-than-one-build-time-when-they` → pending, note (all) · console
+- 2026-11-25 05:53 UTC · `lander-updates-every-part-s-status-store` → pending, note (all) · console
+- 2026-11-25 05:53 UTC · `lander-marks-each-part-merged-when-pr` → pending, note (all) · console
+- 2026-11-25 05:54 UTC · `clashes-never-block-pull-main-fix` → archived, note (all) · console
+- 2026-11-25 05:54 UTC · `drop-failed-part-remove-feature-whose` → archived, note (all) · console
+- 2026-11-25 05:54 UTC · `lander-marks-each-part-merged-when-pr` → archived, note (all) · console
+- 2026-11-25 05:54 UTC · `lander-updates-every-part-s-status-store` → archived, note (all) · console
+- 2026-11-25 05:54 UTC · `run-more-than-one-build-time-when-they` → archived, note (all) · console
+- 2026-11-25 05:54 UTC · `console-app-tabs-small` → archived, note (all) · console
+- 2026-11-25 05:55 UTC · `clash-answer-run-all-defer-buttons-plus` → archived, note (all) · console
+- 2026-11-25 05:55 UTC · `tabs-console-app-more-than-one-console` → archived, note (all) · console
+- 2026-11-25 05:55 UTC · `vps-writes-every-status-change-to-build` → archived, note (all) · console
+- 2026-11-25 05:55 UTC · `always-show-build-s-parts-even-while` → archived, note (all) · console
+- 2026-11-25 05:56 UTC · `watchdog-catches-lander-prs-stuck-ci` → archived, note (all) · console
+- 2026-11-25 05:56 UTC · `rebuild-fresh-main-hide-any-asset` s11 undone (all) · orchestrator
+- 2026-11-25 05:56 UTC · `find-fix-why-ci-stalls-lander-one-part` → archived, note (all) · console
+- 2026-11-25 05:56 UTC · `rebuild-fresh-main-hide-any-asset` s12 undone (all) · orchestrator
+- 2026-11-25 05:57 UTC · `rebuild-fresh-main-hide-any-asset` s13 undone (all) · orchestrator
+- 2026-11-25 05:57 UTC · `rebuild-fresh-main-hide-any-asset` s14 undone (all) · orchestrator
+- 2026-11-25 05:57 UTC · `rebuild-fresh-main-hide-any-asset` s15 undone (all) · orchestrator
+- 2026-11-25 05:58 UTC · `rebuild-fresh-main-hide-any-asset` s16 undone (all) · orchestrator
+- 2026-11-25 05:58 UTC · `rebuild-fresh-main-hide-any-asset` → assigning-models (all) · orchestrator
+- 2026-11-25 05:58 UTC · `rebuild-fresh-main-hide-any-asset` → ready, note (all) · orchestrator
+- 2026-11-25 05:58 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 05:59 UTC · `rebuild-fresh-main-hide-any-asset` → sending (all) · orchestrator
+- 2026-11-25 06:00 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:00 UTC · `rebuild-fresh-main-hide-any-asset` → building (all) · orchestrator
+- 2026-11-25 06:00 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:01 UTC · `rebuild-fresh-main-hide-any-asset` s1 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, note (all) · reconciler
+- 2026-11-25 06:01 UTC · `rebuild-fresh-main-hide-any-asset` s1 undone (all) · orchestrator
+- 2026-11-25 06:02 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:03 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:04 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:04 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:05 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:05 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:05 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:06 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:06 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:07 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:07 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:08 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:08 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:09 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:10 UTC · `rebuild-fresh-main-hide-any-asset` s3 done (all) · headless
+- 2026-11-25 06:12 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:12 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:12 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:13 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:13 UTC · `rebuild-fresh-main-hide-any-asset` s4 done (all) · headless
+- 2026-11-25 06:14 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:14 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:15 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:16 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:16 UTC · `rebuild-fresh-main-hide-any-asset` s5 undone (all) · orchestrator
+- 2026-11-25 06:17 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:18 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-25 06:18 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:18 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:19 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:19 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:19 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:20 UTC · `rebuild-fresh-main-hide-any-asset` s6 done (all) · headless
+- 2026-11-25 06:20 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-25 06:21 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 
 ## Token passes (log)
 

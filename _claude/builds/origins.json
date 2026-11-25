@@ -2302,6 +2302,18 @@
    "from": "",
    "addenda": []
   },
+  "clashes-never-block-pull-main-fix": {
+   "said": "When something fails, it needs to pull in main and fix it.",
+   "at": "2026-11-25T05:52:57.890Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-account-switcher": {
    "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
    "at": "2026-11-04T23:57:00.641Z",
