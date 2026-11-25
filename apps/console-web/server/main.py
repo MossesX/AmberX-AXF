@@ -1849,6 +1849,7 @@ import host_services_routes  # noqa: E402
 
 app.include_router(host_services_routes.router_for(auth))
 app.include_router(__import__("builds_events").router_for(auth))  # builds-events@1 (server/builds_events.py): POST /api/builds/updated, GET /api/builds/events (SSE)
+app.include_router(__import__("hidden_assets").router_for(auth))  # hidden-assets@1 (server/hidden_assets.py): GET /api/hidden-assets, POST …/hide, …/unhide, …/unhide-all
 
 
 async def _host_error(_request: Request, exc: Exception) -> JSONResponse:
