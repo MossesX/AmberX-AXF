@@ -7,6 +7,9 @@
  *      never reverts keys it didn't touch, and when two editors save the same key the later one stands.
  *   2. Fresh on focus. Whenever an editor opens, loads or comes back into focus (window focus, tab visible again,
  *      another tab saved), it reloads the current values with `rt.refreshFromSaved()` before showing them.
+ *      That also re-reads the app's look document (its skin state and the hidden pieces, hidden-assets@1): on axHub the
+ *      read is in the background and a change repaints through the runtime (`useAxf`), so a view that draws
+ *      `rt.hidden()` needs nothing more than this hook; `onRefresh` covers the values an editor copied into a draft.
  *
  * Use it in every UI-editing view:  useEditorSync({ onRefresh: () => setDraft(readFromSettings()) })
  * Android: `AxfRuntime.refreshFromSaved()` (call it from the editor's ON_RESUME / first composition).
