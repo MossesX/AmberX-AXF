@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10408,
- "updatedAt": "2026-11-25T11:32:56.485Z",
+ "rev": 10409,
+ "updatedAt": "2026-11-25T11:33:24.632Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292509,7 +292509,7 @@
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T11:32:51.333Z",
+   "updatedAt": "2026-11-25T11:32:59.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -293167,7 +293167,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-25T08:03:36.820Z",
+     "statusAt": "2026-11-25T11:32:59.289Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293191,9 +293191,17 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T11:32:59.289Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s4",
      "branch": "claude/terminal-main-tab-streaming-console-s--s4"
     },
@@ -293795,7 +293803,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 154,
+   "rev": 155,
    "deleted": false,
    "deletedAt": "",
    "pending": {
