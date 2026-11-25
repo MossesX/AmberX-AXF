@@ -11,11 +11,15 @@ const tmp = mkdtempSync(join(tmpdir(), 'axf-single-queue-'));
 Object.assign(process.env, {
   AXF_BUILDS_STORE: join(tmp, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_SHIPPED: 'off', AXF_DATA_DIR: 'off', AXF_CREW_SAY: 'off',
   AXF_PIPELINE_DIR: join(tmp, 'pipeline'), AXF_PIPELINE_CONSOLE: 'off', AXF_BUILD_PROFILE: 'all', AXF_PIPELINE_WORKTREES: join(tmp, 'wt'), AXF_PIPELINE_RULES: 'off',
+  // cancel's IO never touches the host: its own slots store, a listed set of tmux names, a recording kill
+  AXF_SLOTS_DIR: join(tmp, 'slots'), AXF_SLOTS_TMUX: 'off', AXF_BUILD_LOCK_TMUX: 'axf-d,axf-d--s2,axf-d--s2-101500,axf-dd,axf-other', AXF_BUILD_LOCK_PIDS: 'off',
 });
 const core = await import('../../../../../framework/plan/builds-store-core.mjs');
 const BP = await import('../../../../../framework/core/build-pipeline.mjs');
 const S = await import('../../../../../framework/cli/builds-store.mjs');
 const PL = await import('../pipeline.mjs');
+const SL = await import('../../../../../framework/cli/agent-slots.mjs');
+const killed = []; PL.sessionKiller.kill = (name) => { killed.push(name); return true; };
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const steps = () => [{ id: 's1', text: 'one', model: 'Opus', estimate: '10 min' }, { id: 's2', text: 'two', model: 'Opus', estimate: '10 min' }];
@@ -92,13 +96,24 @@ t('release is Brett\'s: an automatic caller is refused; his release puts the bui
   assert.equal(r.done.length, 1); assert.equal(BP.isStopped(get('d')), false); assert.equal(get('d').status, 'pending'); assert.equal(get('d').pipeline?.heldAt ?? '', '');
   assert.equal(PL.advanceQueue().promoted, 'd');
 });
-t('cancel: a live build is to be killed, rests in Pending, and no requeue or relaunch brings it back', () => {
+t('cancel: the build\'s tmux sessions are killed, its agent slots given back, it rests in Pending, and nothing brings it back', () => {
   goLive('d');
+  SL.withState((st) => { st.running.push({ id: 'slot-d', name: 'd', build: 'd', state: 'running', session: 'axf-d', pid: 1 }, { id: 'slot-d-s2', name: 'd', build: 'd', step: 's2', state: 'running', session: 'axf-d--s2', pid: 1 }, { id: 'slot-other', name: 'other', build: 'other', state: 'running', session: 'axf-other', pid: 1 }); st.queue.push({ id: 'wait-d', name: 'd', build: 'd', state: 'waiting' }); });
   const r = PL.buildAction('cancel', ['d'], { by: 'console', why: 'wrong plan' });
   assert.deepEqual([r.done[0].stop, r.done[0].kill, r.done[0].session], ['cancel', true, 'axf-d']);
-  assert.equal(get('d').status, 'pending'); assert.equal(BP.stopOf(get('d')).kind, 'cancel'); assert.equal(get('d').pipeline.session ?? '', '');
+  assert.deepEqual([...killed].sort(), ['axf-d', 'axf-d--s2', 'axf-d--s2-101500'], 'every session of d: its own and its step sessions; never axf-dd or another build\'s');
+  assert.deepEqual(r.done[0].ended.sessions.sort(), ['axf-d', 'axf-d--s2', 'axf-d--s2-101500']); assert.deepEqual(r.done[0].ended.slots.sort(), ['slot-d', 'slot-d-s2']); assert.deepEqual(r.done[0].ended.queued, ['wait-d']);
+  const st = SL.loadState();
+  assert.deepEqual(st.running.map((x) => x.id), ['slot-other'], 'its slots are free; another build keeps its own'); assert.equal(st.queue.length, 0);
+  assert.equal(get('d').status, 'pending'); assert.equal(BP.stopOf(get('d')).kind, 'cancel'); assert.equal(get('d').pipeline.session ?? '', ''); assert.equal(get('d').pipeline.slot ?? '', '');
+  assert.match(get('d').notes.at(-1).text, /Cancelled \(console\): wrong plan\. Its session is stopped and its slot freed\./);
   assert.equal(PL.setPipeline('d', {}, { status: 'queued', note: 'Launch crashed: back in the Queue.', by: 'pipeline', action: 'pipeline:launch-retry' }).status, 'pending');
-  assert.equal(PL.buildAction('cancel', ['d'], { by: 'console' }).refused.length, 1, 'cancelling it twice changes nothing');
+  // already gone: cancelling again is not an error and finds nothing left to end
+  process.env.AXF_BUILD_LOCK_TMUX = 'axf-dd,axf-other'; killed.length = 0;
+  const again = PL.buildAction('cancel', ['d'], { by: 'console' });
+  assert.equal(again.refused.length, 0); assert.equal(again.done[0].already, true); assert.equal(again.done[0].ended.gone, true); assert.deepEqual(killed, []);
+  assert.deepEqual(PL.endSessions('d'), { sessions: [], slots: [], queued: [], gone: true }, 'endSessions alone is idempotent too');
+  assert.deepEqual(PL.endSessions('never-existed'), { sessions: [], slots: [], queued: [], gone: true });
   assert.equal(PL.buildAction('cancel', ['c'], { by: 'console' }).refused.length, 1, 'a held build is released first, not cancelled over its hold');
   assert.deepEqual(PL.requeueStuck({ apply: true, by: 'reconciler' }).moved, []);
 });

@@ -544,6 +544,38 @@ export function stopNow(id, kind, { by = process.env.AXF_ACTOR || 'console', why
   if (!res.already) logLine({ event: kind === 'unqueue' ? 'unqueued' : kind, build: res.build.id, by: who, kill: res.kill });
   return res;
 }
+/** How a tmux session is ended (a test swaps `kill`). Never run for real while AXF_SLOTS_TMUX is off (tests). */
+export const sessionKiller = {
+  kill(name) {
+    if (process.env.AXF_SLOTS_TMUX === 'off') return false;
+    const r = spawnSync('tmux', ['kill-session', '-t', `=${name}`], { encoding: 'utf8', timeout: 15e3 });
+    return !r.error && r.status === 0;
+  },
+};
+/**
+ * Cancel's IO (build-pipeline@1 stopBuild `kill`): every tmux session of the build ends (deploy/claude-headless.sh
+ * names them axf-<build>, axf-<build>--<step>, with or without its time suffix: build-lock sessionOf), its agent slots
+ * are given back (framework/cli/agent-slots.mjs: a running entry is released, a waiting one leaves the queue) and its
+ * build lock is dropped. Idempotent: a session, slot or lock that is already gone is not an error, and a second call
+ * finds nothing to do. → { sessions: [killed], slots: [released], queued: [left the queue], gone }
+ */
+export function endSessions(id, { session = '', slot = '', by = 'console', env = process.env } = {}) {
+  const out = { sessions: [], slots: [], queued: [], gone: true };
+  let names = [];
+  try { names = lock.tmuxSessions(id, env); } catch { names = []; }
+  if (session && lock.sessionOf(id, session) && !names.includes(session) && tmuxHas(session)) names.push(session);
+  for (const n of names) { try { if (sessionKiller.kill(n)) out.sessions.push(n); } catch { /* already gone */ } }
+  try {
+    const st = slots.loadState();
+    const mine = (x) => x.build === id || (slot && x.id === slot) || (typeof x.session === 'string' && lock.sessionOf(id, x.session));
+    for (const r of (st.running ?? []).filter(mine)) { try { if (slots.release(r.id, 143)) out.slots.push(r.id); } catch { /* released meanwhile */ } }
+    for (const q of (st.queue ?? []).filter((x) => x.state === 'waiting' && mine(x))) { try { slots.cancel(q.id, by); out.queued.push(q.id); } catch { /* left the queue meanwhile */ } }
+  } catch (e) { logLine({ event: 'cancel-slots-failed', build: id, error: str(e.message, 300) }); }
+  try { lock.release(id, { dir: worktreeOf(id, env) }); } catch { /* no lock */ }
+  out.gone = !out.sessions.length && !out.slots.length && !out.queued.length;
+  logLine({ event: 'cancel-ended', build: id, by, sessions: out.sessions, slots: out.slots, queued: out.queued });
+  return out;
+}
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
@@ -575,8 +607,10 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
         const have = storeCore.findBuild(loadStore(), id);
         if (have && have.flow !== P2.FLOW) {
           const r = stopNow(id, action, { by, why: reason });
-          if (r.already) throw new Error(`${r.build.id} is ${action === 'hold' ? 'on hold' : 'cancelled'} already`);
-          done.push({ id: r.build.id, status: r.build.status, tab: BP.tabOf(r.build), stop: action, kill: r.kill, session: r.session, slot: r.slot }); continue;
+          if (r.already && action === 'hold') throw new Error(`${r.build.id} is on hold already`);
+          // cancel ends the build's sessions and gives its slots back; cancelling again is fine (anything left over goes too)
+          const ended = action === 'cancel' ? endSessions(r.build.id, { session: r.session, slot: r.slot, by }) : null;
+          done.push({ id: r.build.id, status: r.build.status, tab: BP.tabOf(r.build), stop: action, kill: r.kill, session: r.session, slot: r.slot, ...(r.already ? { already: true } : {}), ...(ended ? { ended } : {}) }); continue;
         }
         if (action === 'cancel') throw new Error(have ? `${have.id} is a Pipeline 2.0 build: cancel it with pipeline2.mjs act ${have.id} cancel` : `no build "${id}"`);
       }
