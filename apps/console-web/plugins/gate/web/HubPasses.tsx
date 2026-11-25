@@ -9,8 +9,9 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, TextField, useRuntime } from '@console/axf/react';
 import { hubPost } from '@console/hubPages/api';
 import { passClock, passCovers, passSecondsLeft, patternList, relTime } from '@console/hubPages/core';
-import { go } from '@console/hubPages/route';
+import { go, useRouteParams } from '@console/hubPages/route';
 import { HubGate, TapTwice, useHubJson, when } from '@console/hubPages/page';
+import { HubPassDetail } from './HubPassDetail';
 
 interface PassView {
   id: string;
@@ -65,6 +66,8 @@ function Page() {
   const d = res.data;
   useEffect(() => setFetchedAt(Date.now()), [d]);
   const now = useTick(!!d?.active.length);
+  // `#/passes/<id>`: that one pass first, ended or not
+  const { id: openId } = useRouteParams('passes');
 
   const act = async (path: string, body: Record<string, unknown>, done: string) => {
     setBusy(true);
@@ -91,6 +94,7 @@ function Page() {
           <Button icon="list" onClick={() => go(rt, 'approvals-log', { pass: 'any' })}>Ran under a pass</Button>
         </div>
       </header>
+      {openId && <HubPassDetail key={openId} id={openId} />}
       {res.error && <Note tone="danger" icon="alert">{res.error}</Note>}
       {d && d.active.length === 0 && <Note icon="pause">No pass is on. Every change waits on the veto countdown.</Note>}
       {d && d.active.map((p) => {

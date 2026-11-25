@@ -151,6 +151,14 @@ const view = (name) => new URL(PLUGIN_OF[name].includes('/') ? PLUGIN_OF[name] :
   eq(parseRoute('#/approvals/log?pass=feed%3Aaxf-console%3Ap1'), { view: 'approvals-log', params: { pass: 'feed:axf-console:p1' } }, 'a console feed pass id');
   eq(parseRoute('#/approvals/log?pass=%3Cscript%3E'), { view: 'approvals-log', params: {} }, 'a bad pass filter is dropped');
   eq(parseRoute('#/passes'), { view: 'passes', params: {} }, '#/passes opens the Passes page');
+  eq(parseRoute(`#/passes/${ID}`), { view: 'passes', params: { id: ID } }, '#/passes/<id> opens one pass (pass@2 deep link)');
+  eq(parseRoute('#/passes/feed%3Aaxf-console%3Ap1'), { view: 'passes', params: { id: 'feed:axf-console:p1' } }, 'a console feed pass by id');
+  eq(parseRoute('#/passes/%3Cscript%3E'), { view: 'home', params: {} }, 'a bad pass id opens nothing of its own');
+  eq(parseRoute(`#/passes/${ID}/more`), { view: 'home', params: {} }, 'nothing under a pass');
+  eq(routeHash('passes', { id: ID }), `#/passes/${ID}`, 'one pass has its own address');
+  eq(routeHash('passes', { id: 'feed:axf-console:p1' }), '#/passes/feed%3Aaxf-console%3Ap1', 'a feed pass id is escaped');
+  eq(routeHash('passes', { id: '<script>' }), '#/passes', 'a bad pass id is the list');
+  eq(parseRoute(routeHash('passes', { id: ID })), { view: 'passes', params: { id: ID } }, 'a pass address reads back');
   eq(parseRoute('#/users'), { view: 'users', params: {} }, 'users');
   eq(parseRoute('#/account'), { view: 'account', params: {} }, 'account');
   eq(parseRoute('#/apps'), { view: 'apps', params: {} }, 'apps');

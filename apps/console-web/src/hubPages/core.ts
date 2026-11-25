@@ -14,6 +14,8 @@ export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 const VIEW_RE = /^[a-z][a-z0-9-]{0,40}$/;
 /** The log's pass filter: `any`, or a pass id (stored ids are UUIDs, feed ids `feed:<service>:<id>`). */
 const PASS_FILTER_RE = /^(any|[A-Za-z0-9][A-Za-z0-9:._-]{0,99})$/;
+/** A pass id in a route: stored ids are UUIDs, feed ids `feed:<service>:<id>`. */
+export const PASS_ID_RE = /^[A-Za-z0-9][A-Za-z0-9:._-]{0,99}$/;
 /** Grid filters the hub knows (`APPROVAL_FILTERS` there). */
 export const APPROVAL_FILTERS = ['all', 'pending', 'postponed', 'approved', 'declined', 'ignored', 'revoked', 'used', 'expired'] as const;
 
@@ -46,6 +48,8 @@ export function parseRoute(hash: string): Route {
     const pick = pickOf(query.get('do'));
     return { view: 'approval', params: pick ? { id: b, do: pick } : { id: b } };
   }
+  // `#/passes/<id>`: one pass, what it covers and the runs under it (the hub's `url` for a pass; pass@2)
+  if (a === 'passes' && b && PASS_ID_RE.test(b) && parts.length === 2) return { view: 'passes', params: { id: b } };
   if (a === 'handoff' && !b) return { view: 'handoff', params: {} };
   if (a === 'handoff' && b && RUN_ID_RE.test(b) && parts.length === 2) {
     const file = query.get('file') ?? '';
@@ -65,6 +69,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
     case 'approval':
       if (!APPROVAL_ID_RE.test(params.id ?? '')) return '#/approvals';
       return pickOf(params.do) ? `#/approvals/${params.id}?do=${params.do}` : `#/approvals/${params.id}`;
+    case 'passes':
+      return PASS_ID_RE.test(params.id ?? '') ? `#/passes/${encodeURIComponent(params.id!)}` : '#/passes';
     case 'handoff-run':
       if (!RUN_ID_RE.test(params.id ?? '')) return '#/handoff';
       return params.file && safeFilePath(params.file) ? `#/handoff/${params.id}?file=${encodeURIComponent(params.file)}` : `#/handoff/${params.id}`;
