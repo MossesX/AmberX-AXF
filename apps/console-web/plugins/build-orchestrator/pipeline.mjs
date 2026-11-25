@@ -393,6 +393,19 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
   withStore((s) => {
     const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
     const now = nowIso();
+    // One Queued (build-pipeline@1): a build entering the Queue while another holds it rests in Pending instead and
+    // moves up by itself (advanceQueue); a build Brett stopped is never queued by an automatic writer. Brett's own
+    // second queue is refused with the holder named (queue() asks first; this is the same rule under the lock).
+    if (status === 'queued' && b.status !== 'queued' && b.flow !== P2.FLOW) {
+      const holder = BP.queuedBuilds(legacyLive(s), queuePriority).find((x) => x.id !== b.id);
+      const stopped = BP.isStopped(b) && !BP.speaksForBrett(by);
+      if (holder && BP.speaksForBrett(by)) throw Object.assign(new Error(`${holder.id} is already queued: one build waits in the Queue at a time. ${b.id} stays in Pending and moves up by itself when ${holder.id} starts.`), { code: 2, holder: holder.id });
+      if (holder || stopped) {
+        status = 'pending'; patch = { ...patch, queuedAt: '', queuedBy: '' };
+        const why = stopped ? `${BP.STOP_LABEL[BP.stopOf(b).kind]}: only Brett queues it again.` : `Waits in Pending: ${holder.id} holds the Queue (one build waits there at a time); it moves up by itself.`;
+        note = [str(note, 1500), why].filter(Boolean).join(' ');
+      }
+    }
     b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined;
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
@@ -405,14 +418,59 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
   return out;
 }
 
+/** Start order inside the Queue and the order Pending builds move up in: priority first (build-priority), then the oldest. */
+const queuePriority = (b) => effectivePriority(b);
+/**
+ * One Queued (build-pipeline@1, Brett Nov 25 2026): the Queue holds one build, the next to start. Each dispatcher tick
+ * settles a Queue that holds more (records from before the rule, a requeue that slipped in: the first in start order
+ * keeps the place, the rest rest in Pending in order, a held one with its hold). `promote`: when the Queue is free,
+ * the next Pending build moves up. The tick promotes when the queued build went live in it; an empty Queue nobody
+ * started stays empty until Brett queues a build (or his settings do: builds.launchWithoutAsking,
+ * builds.autoQueuePending), so a build parked in Pending still waits for his click. Pipeline 2.0 builds are not part
+ * of it: their flow has its own one active place. → { kept, demoted: [ids], promoted }
+ */
+export function advanceQueue({ by = 'dispatcher', promote = true } = {}) {
+  const out = { kept: '', demoted: [], promoted: '' };
+  const builds = runnable(loadStore());
+  const q = BP.queuedBuilds(builds, queuePriority);
+  out.kept = q.find((b) => !BP.isStopped(b))?.id ?? '';
+  const settle = q.length > BP.QUEUE_MAX || q.some((b) => BP.isStopped(b));
+  if (!settle && !(promote && !q.length && BP.promotable(builds, queuePriority).length)) return out;
+  withStore((s) => {
+    const now = nowIso();
+    const mine = runnable(s);
+    const st = BP.settleQueue(mine, { at: now, by, priorityOf: queuePriority });
+    const pr = promote ? BP.promote(st.builds, { at: now, by, priorityOf: queuePriority }) : { builds: st.builds, promoted: '' };
+    out.kept = st.kept; out.demoted = st.demoted; out.promoted = pr.promoted;
+    const next = new Map(pr.builds.map((b) => [b.id, b]));
+    const was = new Map(mine.map((b) => [b.id, b]));
+    s.builds = s.builds.map((b) => {
+      const n = next.get(b.id); if (!n || n === was.get(b.id)) return b;
+      const text = n.id === pr.promoted ? `Moved up from Pending into the Queue (${by}): the Queue was free.` : BP.isStopped(n) ? `${BP.STOP_LABEL[BP.stopOf(n).kind]}: rests in Pending until Brett releases it (one build waits in the Queue at a time).` : `Back in Pending (${by}): one build waits in the Queue at a time (${st.kept || 'none'} holds it). It moves up by itself.`;
+      const pl = BP.normPipeline(n.pipeline);
+      const rec = { ...n, notes: [...(b.notes ?? []), { text, at: now }], updatedAt: now, builtAt: '' };
+      if (pl) rec.pipeline = pl; else delete rec.pipeline;
+      return rec;
+    });
+    return s;
+  }, { by, action: 'pipeline:advance-queue', note: [out.promoted && `${out.promoted} moved up`, out.demoted.length && `${out.demoted.join(', ')} back in Pending`].filter(Boolean).join('; ') });
+  if (out.demoted.length) { logLine({ event: 'queue-settled', kept: out.kept, demoted: out.demoted, by }); crewSay('dispatcher', 'done', `One build waits in the Queue at a time: ${out.kept || 'none'} keeps the place, ${out.demoted.join(', ')} went back to Pending and move${out.demoted.length === 1 ? 's' : ''} up in order.`); }
+  if (out.promoted) { logLine({ event: 'promoted', build: out.promoted, by }); crewSay('dispatcher', 'start', `${out.promoted} moved up from Pending into the Queue.`, { ref: out.promoted }); }
+  return out;
+}
+
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   // a Pipeline 2.0 build has no Queue of its own: its split moves it on by itself, and Queue gives that a push now
   // (split it, give it the active place when it is next) instead of refusing a build that shows as Pending
   if (b.flow === P2.FLOW && !b.deleted) { const r = P2F.actBuild(b.id, 'queue', { by }); return { ...storeCore.findBuild(loadStore(), b.id), say: r.say }; }
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
+  // One Queued (build-pipeline@1): a second build is refused with the holder named; a stopped build only by Brett
+  const can = BP.canQueueNow(legacyLive(loadStore()), b.id, { by, priorityOf: queuePriority });
+  if (!can.ok) { logLine({ event: 'queue-refused', build: b.id, by, holder: can.queued, why: can.why }); throw Object.assign(new Error(can.why), { code: 2, holder: can.queued }); }
   const now = nowIso();
-  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
+  const lift = BP.isStopped(b) ? { stop: null, heldAt: '', heldBy: '', heldWhy: '' } : {};
+  const r = setPipeline(b.id, { ...lift, queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
   logLine({ event: 'queued', build: b.id, by });
   return r;
 }
@@ -429,6 +487,8 @@ export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli
     for (const f of found) {
       const b = storeCore.findBuild(loadStore(), f.id);
       if (!P.stuckAfterPhase(b)) continue; // changed meanwhile
+      // one Queued: while another build holds the Queue this one waits in Pending and moves up by itself (advanceQueue)
+      if (BP.isStopped(b) || BP.queuedBuilds(legacyLive(loadStore()), queuePriority).some((x) => x.id !== b.id)) continue;
       const lr = b.pipeline?.lastRun ?? {};
       const note = `phase ${f.phase || '?'} done, requeued for ${f.next || '?'}: back in the Queue (requeue-stuck by ${by}; ${f.why}).`;
       setPipeline(b.id, { queuedAt: b.pipeline?.queuedAt || nowIso(), queuedBy: b.pipeline?.queuedBy || str(by, 80), note: `requeued after ${f.phase ? `phase ${f.phase}` : 'its phase'}: next phase ${f.next || '?'} waits for a slot and an account`, lastRun: { ...lr, outcome: 'requeued', reason: 'phase-done' } },
@@ -480,8 +540,10 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
           if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be put on hold`);
           pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason }); note = `On hold (${by})${tail}. It keeps its place in the Queue; the dispatcher skips it until released.`;
         } else if (action === 'release') {
-          if (!BP.isHeld(b)) throw new Error(`${b.id} is not on hold`);
-          pipe({ heldAt: '', heldBy: '', heldWhy: '' }); note = `Released from hold (${by}): the dispatcher may start it.`;
+          if (!BP.isHeld(b) && !BP.isStopped(b)) throw new Error(`${b.id} is not on hold`);
+          if (!BP.speaksForBrett(by)) throw new Error(`only Brett releases a build: "${by}" does not speak for him`);
+          const was = BP.stopOf(b);
+          pipe({ stop: null, heldAt: '', heldBy: '', heldWhy: '' }); note = b.status === 'queued' ? `Released from hold (${by}): the dispatcher may start it.` : `Released (${by}; it was ${BP.STOP_LABEL[was?.kind ?? 'hold'].toLowerCase()}): it waits in Pending and moves up by itself.`;
         } else if (action === 'archive') {
           if (!BP.canArchive(b)) throw new Error(b.deleted ? `${b.id} is deleted: restore it first` : BP.isLive(b) ? `${b.id} is ${b.status}: a build with a live session is not archived under it` : `${b.id} is archived already`);
           const was = b.status; if (was === 'queued') pipe(unq); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
@@ -1862,6 +1924,11 @@ export function tick({ env = process.env } = {}) {
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   migrateOnHost(env);
+  // one Queued (build-pipeline@1): settle the Queue. Nothing moves up here: Brett's queue click starts the line (or
+  // his settings do: builds.launchWithoutAsking in intake, builds.autoQueuePending in the fill round, each through
+  // queue(), so one at a time), and each go-live below moves the next Pending build up.
+  let queueMoves = { kept: '', demoted: [], promoted: '' };
+  try { queueMoves = advanceQueue({ by: 'dispatcher', promote: false }); } catch (e) { logLine({ event: 'advance-queue-failed', error: str(e.message, 300) }); }
   let store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   // the step-dependency migration (BUILD-PARALLEL §1): once, journalled; older builds keep no dependsOn
   if (!store.meta?.versions?.stepDeps) { try { migrateStepDepsNow('dispatcher'); store = loadStore(); } catch (e) { logLine({ event: 'migrate-step-deps-failed', error: str(e.message, 300) }); } }
@@ -1933,6 +2000,8 @@ export function tick({ env = process.env } = {}) {
         tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_SHOWN });
     }
   }
+  // the queued build went live: the next Pending build moves up at once (it starts on the next tick)
+  if (launched.length) { try { const m = advanceQueue({ by: 'dispatcher' }); queueMoves = { kept: m.kept, demoted: [...queueMoves.demoted, ...m.demoted], promoted: m.promoted || queueMoves.promoted }; } catch (e) { logLine({ event: 'advance-queue-failed', error: str(e.message, 300) }); } }
   // fill every slot: parallel steps of running builds into the slots still free (BUILD-PARALLEL)
   let fill = { launched: [], failed: [], plan: null, ended: [], settings: null };
   try { fill = fillRound({ state, env, alert, rules, launchedNow: launched.length }); } catch (e) { logLine({ event: 'fill-failed', error: str(e.message, 300) }); }
@@ -1974,7 +2043,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, fill, idle, alertsSent: sent, selfCheck: check, health, verify, p2 };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, queueMoves, launched, failed, plan, fill, idle, alertsSent: sent, selfCheck: check, health, verify, p2 };
 }
 
 const MAX_PICK_TRIES = 4;
