@@ -256,6 +256,7 @@ if (hasTmux) {
   for (const s of [`axf-${tag}-a`, `axf-${tag}-b`]) spawnSync('tmux', ['kill-session', '-t', `=${s}`]);
 } else console.log('(tmux missing: skipped the claude-headless.sh end-to-end checks)');
 
-rmSync(tmp, { recursive: true, force: true });
+// a session that is still closing can write into the folder while it is removed (ENOTEMPTY): retry instead of failing
+rmSync(tmp, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 console.log(`agent-slots: ${n - failed}/${n} checks passed`);
 if (failed) process.exit(1);
