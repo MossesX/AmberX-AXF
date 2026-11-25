@@ -25,6 +25,7 @@ import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUser
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
+import { HIDDEN_ASSETS_CONTRACT, HIDDEN_ASSETS_FIELD, HIDDEN_ASSETS_MAX, hiddenAssetKey, hiddenAssetKinds, hiddenAssetTarget, hiddenAssetTargetError, hiddenCount, hiddenEntry, hiddenOfKind, hide, isHidden, listHidden, normalizeHiddenAssets, parseHiddenAssetKey, setHidden, unhide, unhideAll } from '../core/engines/hidden-assets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
@@ -2561,6 +2562,116 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
+    },
+  });
+}
+
+/* ---- hidden-assets@1 (Brett, Nov 17 2026, build rebuild-fresh-main-hide-any-asset; core/engines/hidden-assets.ts): hide one
+   chrome piece per app, see what is hidden, bring one or all back. The list is app-look@1 `own.hiddenAssets`; kinds come
+   from the chrome-settings kind list plus widget. Every time is passed in, so the fixture is the same on every run.
+   Checked by spec/check-hidden-assets.mts. ---- */
+{
+  const at = '2026-11-17T14:50:00Z';
+  const look0 = newAppLook('app', { slots: { toolbar: 'standard-icons' } });
+  const one = hide(look0, { kind: 'toolbar', id: 'main' }, { at, by: 'axf-console', assetRef: 'standard-icons' });
+  const two = hide(one, 'tab-group:settings.tabs', { at: '2026-11-17T14:51:00Z', by: 'axf-console' });
+  const three = hide(two, { kind: 'widget', id: 'clock' }, { at: '2026-11-17T14:52:00Z', by: 'plugin:clock' });
+  const again = hide(three, 'toolbar:main', { at: '2026-11-18T00:00:00Z', by: 'later' });
+  const shownAll = unhideAll(three);
+  const many = Array.from({ length: HIDDEN_ASSETS_MAX + 3 }, (_, i) => ({ kind: 'toolbar', id: `t${i}`, hiddenAt: at, by: 'x' }));
+  const capped = normalizeHiddenAssets(many);
+  const full = { ...look0, own: { [HIDDEN_ASSETS_FIELD]: many.slice(0, HIDDEN_ASSETS_MAX) } };
+  const overflow = listHidden(hide(full, 'banner:top', { at, by: 'x' }));
+  // a document saved before the list existed: picks, a slot-level Hidden choice and settings, no hiddenAssets field
+  const old = { $axf: 'app-look@1', app: 'app', default: { slots: { toolbar: 'standard-icons' } }, own: { slots: { button: 'terminal' }, hidden: { toolbar: false }, settings: { 'axf.banners.group': 'a' } }, skin: { use: true, inherit: false, id: 'windows', overrides: { dialog: 'my-dialog' } }, scopes: {}, undo: null };
+  const oldNormal = normalizeAppLook(old)!;
+  const oldHidden = hide(oldNormal, 'banner:top', { at, by: 'app' });
+  const refusedTargets: Record<string, unknown> = {
+    unknownKind: 'grid:main', contextMenu: 'context-menu:main', assetType: { kind: 'button', id: 'main' }, emptyKind: ':main', noId: 'toolbar', emptyId: { kind: 'banner', id: '' },
+    badId: { kind: 'toolbar', id: 'Bad Id' }, kindCase: 'Toolbar:main', notATarget: 7, nothing: null,
+  };
+  write('hidden-assets.json', {
+    contract: HIDDEN_ASSETS_CONTRACT,
+    field: HIDDEN_ASSETS_FIELD,
+    kinds: hiddenAssetKinds(),
+    max: HIDDEN_ASSETS_MAX,
+    targets: {
+      key: hiddenAssetKey('toolbar', 'main'),
+      parsed: parseHiddenAssetKey('toolbar:main'),
+      idWithColon: parseHiddenAssetKey('tab-group:plugin:notes/tabs'),
+      fromObject: hiddenAssetTarget({ kind: 'widget', id: 'clock' }),
+      everyKind: Object.fromEntries(hiddenAssetKinds().map((k) => [k, hiddenAssetTarget(`${k}:main`)])),
+      refused: Object.fromEntries(Object.entries(refusedTargets).map(([name, ref]) => [name, { ref, target: hiddenAssetTarget(ref as never), error: hiddenAssetTargetError(ref as never) }])),
+      okError: hiddenAssetTargetError('toolbar:main'),
+    },
+    normalize: {
+      good: normalizeHiddenAssets([{ kind: 'toolbar', id: 'main', assetRef: 'standard-icons', hiddenAt: at, by: 'axf-console' }]),
+      junk: normalizeHiddenAssets([{ kind: 'grid', id: 'x', hiddenAt: at, by: 'y' }, { kind: 'toolbar', id: 'Bad Id', hiddenAt: at, by: 'y' }, { kind: 'toolbar', id: 'main', hiddenAt: 'yesterday', by: 7, assetRef: 'Bad Ref', extra: true }, { kind: 'toolbar', id: 'main', hiddenAt: at, by: 'second' }, 'toolbar:main', null]),
+      notAList: normalizeHiddenAssets({ kind: 'toolbar', id: 'main' }),
+      nothing: normalizeHiddenAssets(undefined),
+      capped: { length: capped.length, first: capped[0]!.id, last: capped.at(-1)!.id },
+    },
+    hide: {
+      empty: { doc: look0, list: listHidden(look0), count: hiddenCount(look0), isHidden: isHidden(look0, 'toolbar:main') },
+      one: { doc: one, list: listHidden(one), isHidden: isHidden(one, 'toolbar:main'), other: isHidden(one, 'toolbar:other'), otherKind: isHidden(one, 'banner:main'), entry: hiddenEntry(one, { kind: 'toolbar', id: 'main' }), noEntry: hiddenEntry(one, 'toolbar:other') },
+      three: { doc: three, list: listHidden(three), count: hiddenCount(three), ofKind: Object.fromEntries(hiddenAssetKinds().map((k) => [k, hiddenOfKind(three, k)])) },
+      // hiding what is hidden changes nothing: the same document back, the first hide stands
+      again: { same: again === three, list: listHidden(again) },
+      // the inputs are never changed: every step hands back a new document
+      pure: { inputUntouched: listHidden(look0).length === 0 && !(HIDDEN_ASSETS_FIELD in look0.own), newDocument: one !== look0, defaultKept: one.default },
+      overflow: { length: overflow.length, first: overflow[0]!.id, last: overflow.at(-1) },
+      setHidden: listHidden(setHidden(look0, 'nav-menu:side', true, { at, by: 'x' })),
+    },
+    refused: {
+      // an unknown kind (or a bad id) is refused everywhere: the same document back, never hidden, no entry
+      hide: Object.fromEntries(Object.entries(refusedTargets).map(([name, ref]) => [name, hide(three, ref as never, { at, by: 'x' }) === three])),
+      unhide: Object.fromEntries(Object.entries(refusedTargets).map(([name, ref]) => [name, unhide(three, ref as never) === three])),
+      isHidden: Object.fromEntries(Object.entries(refusedTargets).map(([name, ref]) => [name, isHidden(three, ref as never)])),
+      list: listHidden(hide(three, 'grid:main', { at, by: 'x' })),
+      // a saved entry of an unknown kind is dropped on read and cannot be reached
+      savedUnknownKind: listHidden({ ...look0, own: { [HIDDEN_ASSETS_FIELD]: [{ kind: 'grid', id: 'main', hiddenAt: at, by: 'x' }, { kind: 'banner', id: 'top', hiddenAt: at, by: 'x' }] } }),
+      badAssetRef: listHidden(hide(look0, 'banner:top', { at, by: 'x', assetRef: 'Bad Ref' })),
+      badBy: listHidden(hide(look0, 'banner:top', { at: 'yesterday', by: '<script>' })),
+    },
+    unhide: {
+      doc: unhide(three, 'toolbar:main'),
+      list: listHidden(unhide(three, 'toolbar:main')),
+      byObject: listHidden(unhide(three, { kind: 'widget', id: 'clock' })),
+      notHidden: unhide(three, 'toolbar:other') === three,
+      nothingHidden: unhide(look0, 'toolbar:main') === look0,
+      // the last piece shown again: the field goes, the document is what it was before the first hide
+      last: { doc: unhide(one, 'toolbar:main'), own: unhide(one, 'toolbar:main').own },
+      hideAgain: listHidden(hide(unhide(three, 'toolbar:main'), 'toolbar:main', { at: '2026-11-18T00:00:00Z', by: 'later' })),
+      setHidden: listHidden(setHidden(three, 'toolbar:main', false)),
+    },
+    unhideAll: {
+      doc: unhideAll(three),
+      own: unhideAll(three).own,
+      list: listHidden(unhideAll(three)),
+      count: hiddenCount(unhideAll(three)),
+      nothing: unhideAll(look0) === look0,
+      twice: unhideAll(shownAll) === shownAll,
+      keepsOtherPicks: unhideAll(hide(oldNormal, 'banner:top', { at, by: 'app' })).own,
+    },
+    migration: {
+      // an old document has no list: it reads as nothing hidden and needs no rewrite; the first hide adds the field and
+      // keeps every other part; showing the piece again leaves the document as it was
+      old,
+      normalized: oldNormal,
+      list: listHidden(old as never),
+      listNormalized: listHidden(oldNormal),
+      count: hiddenCount(oldNormal),
+      isHidden: isHidden(oldNormal, 'banner:top'),
+      unhideAllSame: unhideAll(oldNormal) === oldNormal,
+      unhideSame: unhide(oldNormal, 'banner:top') === oldNormal,
+      hidden: { doc: oldHidden, list: listHidden(oldHidden) },
+      shownAgain: unhide(oldHidden, 'banner:top'),
+      // not a document, or a list that is not one: nothing hidden, never an error
+      noDocument: [listHidden(null), listHidden(undefined)],
+      noOwn: listHidden({ $axf: 'app-look@1', app: 'app', default: {} } as never),
+      listNotAList: listHidden({ ...look0, own: { [HIDDEN_ASSETS_FIELD]: 'toolbar:main' } } as never),
+      // only `own` is read: a default snapshot never hides anything
+      snapshotNeverHides: listHidden({ ...look0, default: { [HIDDEN_ASSETS_FIELD]: [{ kind: 'toolbar', id: 'main', hiddenAt: at, by: 'x' }] } } as never),
     },
   });
 }
