@@ -21,18 +21,33 @@ export const TRACKING_FRAME = 'tracking-paths@1';
  */
 export const TRACKING_PATHS = Object.freeze([
   { id: 'builds-store', kind: 'builds', glob: '_claude/builds/store.json', re: /^_claude\/builds\/store\.json$/ },
-  { id: 'orchestrator', kind: 'builds', glob: '_claude/builds/orchestrator.json', re: /^_claude\/builds\/orchestrator\.json$/ },
-  { id: 'orchestrator-profile', kind: 'builds', glob: '_claude/builds/profiles/*/orchestrator.json', re: /^_claude\/builds\/profiles\/[^/]+\/orchestrator\.json$/ },
   { id: 'origins', kind: 'builds', glob: '_claude/builds/origins.json', re: /^_claude\/builds\/origins\.json$/ },
   { id: 'journal', kind: 'builds', glob: '_claude/builds/journal/*.jsonl', re: /^_claude\/builds\/journal\/[^/]+\.jsonl$/ },
   { id: 'pending', kind: 'plan', glob: 'framework/plan/pending.json', re: /^framework\/plan\/pending\.json$/ },
   { id: 'build-queue', kind: 'plan', glob: 'framework/plan/build-queue.json', re: /^framework\/plan\/build-queue\.json$/ },
 ]);
 
+/**
+ * Retired tracking files: they carried build status once and exist nowhere now. The orchestrator.json status file
+ * (Nov 25 2026, Brett: "We don't need that file. All the status states exist in the database."): status is a row of
+ * the builds store. A retired file is deleted wherever it turns up: a merge never keeps it (whichever side still has
+ * it), nothing writes it, a worktree stops hiding it, and its removal never counts as a build's work.
+ */
+export const RETIRED_PATHS = Object.freeze([
+  { id: 'orchestrator', kind: 'builds', glob: '_claude/builds/orchestrator.json', re: /^_claude\/builds\/orchestrator\.json$/ },
+  { id: 'orchestrator-profile', kind: 'builds', glob: '_claude/builds/profiles/*/orchestrator.json', re: /^_claude\/builds\/profiles\/[^/]+\/orchestrator\.json$/ },
+]);
+
 const clean = (p) => String(p || '').trim().replace(/^"|"$/g, '').replace(/^\.\//, '');
 
 /** Is this repo path a tracking file? */
 export const isTracking = (path) => { const p = clean(path); return TRACKING_PATHS.some((t) => t.re.test(p)); };
+
+/** Is this repo path a retired tracking file (deleted wherever it turns up)? */
+export const isRetired = (path) => { const p = clean(path); return RETIRED_PATHS.some((t) => t.re.test(p)); };
+
+/** The git pathspecs of the retired files. */
+export const retiredPathspecs = () => RETIRED_PATHS.map((t) => `:(glob)${t.glob}`);
 
 /** The entry a path matches, or null. */
 export const trackingEntry = (path) => { const p = clean(path); return TRACKING_PATHS.find((t) => t.re.test(p)) || null; };

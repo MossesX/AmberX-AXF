@@ -17,7 +17,7 @@ import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TRACKING_PATHS, excludeLines, trackingPathspecs } from '../core/tracking-paths.mjs';
+import { RETIRED_PATHS, TRACKING_PATHS, excludeLines, retiredPathspecs, trackingPathspecs } from '../core/tracking-paths.mjs';
 
 const git = (dir, args) => { const r = spawnSync('git', args, { cwd: dir, encoding: 'utf8', maxBuffer: 16 << 20 }); return { code: r.status ?? 1, out: (r.stdout || '').trim(), err: (r.stderr || '').trim() }; };
 
@@ -44,6 +44,10 @@ export function guard(dir) {
   if (process.env.AXF_WORKTREE_GUARD === 'off') return { ok: false, why: 'AXF_WORKTREE_GUARD=off', skip: [], excluded: [] };
   const w = isBuildWorktree(dir); if (!w.ok) return { ok: false, why: w.why, skip: [], excluded: [] };
   const files = tracked(dir);
+  // a retired tracking file (orchestrator.json) is not hidden any more: a worktree made before it was retired still
+  // has it skip-worktree, which would keep its removal on main from reaching the worktree
+  { const old = git(dir, ['ls-files', '-v', '--', ...retiredPathspecs()]).out.split('\n').filter((l) => /^S /.test(l)).map((l) => l.slice(2));
+    if (old.length) git(dir, ['update-index', '--no-skip-worktree', '--', ...old]); }
   // a modified one stays modified on disk but leaves `git add -A` / `commit -a` / `git status`: it is the hub's, never the build's
   if (files.length) { const r = git(dir, ['update-index', '--skip-worktree', '--', ...files]); if (r.code) return { ok: false, why: r.err.slice(-200), skip: [], excluded: [] }; }
   const ex = excludeFile(dir); const added = [];
@@ -68,7 +72,7 @@ export function main(argv) {
   const i = argv.indexOf('--dir'); const dir = resolve(i >= 0 ? argv[i + 1] || '.' : '.');
   const cmd = argv.find((a) => !a.startsWith('--') && a !== (i >= 0 ? argv[i + 1] : null)) || 'status';
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  if (cmd === 'paths') return print({ $axf: 'tracking-paths@1', paths: TRACKING_PATHS.map(({ id, kind, glob, re }) => ({ id, kind, glob, re: re.source })) }, TRACKING_PATHS.map((t) => t.glob).join('\n'));
+  if (cmd === 'paths') return print({ $axf: 'tracking-paths@1', paths: TRACKING_PATHS.map(({ id, kind, glob, re }) => ({ id, kind, glob, re: re.source })), retired: RETIRED_PATHS.map(({ id, kind, glob, re }) => ({ id, kind, glob, re: re.source })) }, TRACKING_PATHS.map((t) => t.glob).join('\n'));
   if (cmd === 'guard') { const r = guard(dir); return print(r, r.ok ? `worktree guard: ${r.skip.length} tracking file(s) skip-worktree, ${r.excluded.length} exclude line(s) added` : `worktree guard: skipped (${r.why})`); }
   if (cmd === 'clear') { const r = clear(dir); return print(r, `worktree guard: cleared skip-worktree on ${r.cleared.length} file(s)`); }
   if (cmd === 'status') { const w = isBuildWorktree(dir); const s = skipped(dir); return print({ ...w, skip: s }, `${w.ok ? `build worktree (${w.branch})` : w.why}: ${s.length} tracking file(s) skip-worktree`); }

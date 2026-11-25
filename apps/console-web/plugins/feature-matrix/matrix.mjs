@@ -27,6 +27,7 @@ import * as fm from './web/fm-core.mjs';
 import * as ap from './web/fm-apply.mjs';
 import * as dr from './web/draft.mjs';
 import { activeProfile, baseDataPath, dataPath, orchestratorPath, readProfiles } from '../../../../framework/cli/persist.mjs';
+import { absorbTrackerBuilds, trackerDoc } from '../../../../framework/cli/builds-store.mjs';
 
 export const FOLDER = 'feature-matrix';
 export const DATA_REL = `.axf-console/plugins/${FOLDER}`;
@@ -44,12 +45,17 @@ export function matricesFile(profile = activeId()) {
 /** Where the plugin's mirror of a profile's file lives (the plugin data folder, on the hub when /projects is mounted). */
 export const mirrorFile = (profile) => (process.env.AXF_FM_DIR ? join(process.env.AXF_FM_DIR, 'mirror', `${profile}.json`) : baseDataPath(`${DATA_REL}/matrices/${profile}.json`));
 const reportsFile = () => (process.env.AXF_FM_DIR ? join(process.env.AXF_FM_DIR, 'reports.json') : baseDataPath(`${DATA_REL}/reports.json`));
-export const trackerFile = (profile) => (process.env.AXF_ORCH_FILE && profile === activeId() ? process.env.AXF_ORCH_FILE : orchestratorPath(profile));
+/**
+ * The builds a matrix works on come from the builds store (framework/cli/builds-store.mjs trackerDoc); there is no
+ * orchestrator.json status file (Nov 25 2026). AXF_ORCH_FILE names an orchestrator@1 file instead (tests, a scratch run).
+ */
+export const trackerFile = (profile) => (process.env.AXF_ORCH_FILE && profile === activeId() ? process.env.AXF_ORCH_FILE : '');
+const readTracker = (profile) => (trackerFile(profile) ? readJson(trackerFile(profile)) : trackerDoc(profile));
 
 // ---- the tables a build lives in (raw files: the plugin never imports another plugin's code)
 export function readTables(profile) {
   return withProfile(profile, () => {
-    const orch = readJson(trackerFile(profile));
+    const orch = readTracker(profile);
     const pending = readJson(dataPath('framework/plan/pending.json'));
     const plan = readJson(dataPath('framework/plan/plan.json'));
     const queue = readJson(dataPath('framework/plan/build-queue.json'));
@@ -113,7 +119,10 @@ export function applyMatrix({ matrix, change } = {}, now = new Date().toISOStrin
   const targets = dr.targetsFor(m.ref, t);
   const { targets: out, report } = ap.applyAll(m, targets, now);
   withProfile(profile, () => {
-    if (out.build) { const f = trackerFile(profile); const o = readJson(f); const i = o.builds.findIndex((b) => b.id === out.build.id); if (i >= 0 && JSON.stringify(o.builds[i]) !== JSON.stringify(out.build)) { o.builds[i] = out.build; o.updatedAt = now; writeJson(f, o); } }
+    if (out.build) {
+      const f = trackerFile(profile); const o = readTracker(profile); const i = o.builds.findIndex((b) => b.id === out.build.id);
+      if (i >= 0 && JSON.stringify(o.builds[i]) !== JSON.stringify(out.build)) { if (f) { o.builds[i] = out.build; o.updatedAt = now; writeJson(f, o); } else absorbTrackerBuilds([out.build], { profile, by: 'feature-matrix', now }); }
+    }
     if (out.pending) { const f = dataPath('framework/plan/pending.json'); const o = readJson(f); const i = o.items.findIndex((x) => x.id === out.pending.id); if (i >= 0 && JSON.stringify(o.items[i]) !== JSON.stringify(out.pending)) { o.items[i] = out.pending; o.updatedAt = now; writeJson(f, o); } }
     if (out.queue && m.ref.kind === 'queue') { const f = dataPath('framework/plan/build-queue.json'); const o = readJson(f); if (JSON.stringify(o.steps?.[m.ref.id] ?? {}) !== JSON.stringify(out.queue)) { o.steps = { ...(o.steps ?? {}), [m.ref.id]: out.queue }; o.updatedAt = now; writeJson(f, o); } }
     if (out.feature) { const f = dataPath('framework/plan/plan.json'); const o = readJson(f); const i = o.features.findIndex((x) => x.id === out.feature.id); if (i >= 0 && JSON.stringify(o.features[i]) !== JSON.stringify(out.feature)) { o.features[i] = out.feature; o.updatedAt = now; writeJson(f, o); } }

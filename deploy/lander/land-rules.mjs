@@ -6,7 +6,7 @@
  * Imports: the generated-files manifest (generated-files@1) and the tracking paths (tracking-paths@1).
  */
 import manifest from '../../framework/spec/generated-files.json' with { type: 'json' };
-import { isTracking, TRACKING_PATHS } from '../../framework/core/tracking-paths.mjs';
+import { isRetired, isTracking, TRACKING_PATHS } from '../../framework/core/tracking-paths.mjs';
 
 /** Commit messages of status-only commits on main (framework/cli/builds-live.mjs, the reconciler, the store). */
 export const STATUS_ONLY_MARK = '[skip ci]';
@@ -24,7 +24,9 @@ const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claud
  */
 const BUILDS = TRACKING_PATHS.filter((t) => t.kind === 'builds').map((t) => t.re);
 /** Every tracking file (builds store exports, journal, pending list and build queue exports). */
-export const trackingPath = (p) => isTracking(p);
+export const trackingPath = (p) => isTracking(p) || isRetired(p);
+/** A retired tracking file (the orchestrator.json status file): removed by every merge, never anyone's work. */
+export const retiredPath = (p) => isRetired(p);
 /** Line files: both sides' lines kept (union). */
 const UNION = [/^_claude\/THREADS\.md$/, /^_claude\/memory\/STATUS\.md$/, /^_claude\/memory\/decisions\.md$/, /\.log$/, /\.jsonl$/];
 /**
@@ -97,8 +99,9 @@ export const landTests = () => (MANIFEST.tests || []).map((t) => [...t]);
  * main's copy (s6): a build branch never carries them, so main's is the live one.
  */
 export function planConflicts(paths) {
-  const out = { tracking: [], builds: [], union: [], unionJson: [], generated: [], code: [] };
+  const out = { retired: [], tracking: [], builds: [], union: [], unionJson: [], generated: [], code: [] };
   for (const p of paths || []) {
+    if (isRetired(p)) { out.retired.push(String(p).replace(/^\.\//, '')); continue; }
     if (isTracking(p)) { out.tracking.push(String(p).replace(/^\.\//, '')); continue; }
     const k = classifyPath(p); out[k === 'union-json' ? 'unionJson' : k].push(p);
   }

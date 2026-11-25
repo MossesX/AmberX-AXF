@@ -797,6 +797,19 @@ function guardAndSave(start, r, meta, { foreign = [], row = false } = {}) {
  * (pipeline-summary@1: counts by status, the queued build, the running builds, computed in SQL). In local and shadow
  * mode the file is the store, so the same functions answer from it.
  */
+/**
+ * A profile's builds in the orchestrator@1 shape (what the retired orchestrator.json held), straight from the store:
+ * for the few readers that still think in that shape (feature matrix, agent swarm). → { $axf, updatedAt, rules, builds }
+ */
+export function trackerDoc(profile = activeProfile().id) { return exportText(loadStore(), 'orchestrator', profile).doc; }
+/**
+ * Take orchestrator@1 builds a caller changed back into the store (the write those readers used to make on the status
+ * file): only the builds given are touched, as one journalled write. → { changes, rev }
+ */
+export function absorbTrackerBuilds(builds, { profile = activeProfile().id, by = 'tracker', now = new Date().toISOString() } = {}) {
+  const r = withStore((s) => core.absorbOrchestrator(s, profile, { builds: (builds ?? []).map((b) => ({ ...b, updatedAt: now })) }, { now, by, newerOnly: true }), { by, action: 'absorb', note: `${(builds ?? []).map((b) => b.id).join(', ')} (orchestrator@1 shape)` });
+  return { changes: r.changes, rev: r.rev };
+}
 /** Statuses of a build somebody is working on right now (services/axf-data/tables.py RUNNING_STATUSES, the same list). */
 export const SUMMARY_RUNNING = Object.freeze(['running', 'fixing', 'landing', 'splitting', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
 const SUMMARY_PIPELINE = ['slot', 'account', 'session', 'model', 'queuedAt', 'queuedBy', 'heldAt', 'heldBy', 'heldWhy'];

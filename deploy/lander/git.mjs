@@ -274,6 +274,8 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
   const stage = (p, n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
   // tracking files (tracking-paths@1): main's copy, whichever side main is; main deleted it = it goes (s6)
   const mainStage = mainSide === 'ours' ? 2 : 3;
+  // retired tracking files (the orchestrator.json status file): gone, whichever side still changed it
+  for (const p of plan.retired) { if (g(['rm', '-q', '-f', '--ignore-unmatch', '--', p]).code === 0) { resolved.push(p); tracked.push(p); log(`${p}: removed (retired status file)`); } }
   for (const p of plan.tracking) {
     const has = g(['cat-file', '-e', `:${mainStage}:${p}`]).code === 0;
     const r = has ? g(['checkout', `--${mainSide}`, '--', p]) : g(['rm', '-q', '--cached', '--ignore-unmatch', '--', p]);

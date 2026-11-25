@@ -142,8 +142,21 @@ def stale_profile_paths():
 STALE_DIRS, STALE_FILES = stale_profile_paths()
 
 
+# Retired tracking files (tracking-paths@1 `retired`, framework/core/tracking-paths.mjs): the orchestrator.json status
+# file (Nov 25 2026). Never kept by a merge, whichever side still has it.
+def load_retired():
+    try:
+        out = subprocess.run(["node", "framework/cli/worktree-setup.mjs", "paths", "--json"], capture_output=True, text=True, timeout=30).stdout
+        return [re.compile(p["re"]) for p in json.loads(out).get("retired", [])]
+    except Exception:
+        return []
+
+
+RETIRED = load_retired()
+
+
 def stale(f):
-    return f in STALE_FILES or any(f.startswith(d) for d in STALE_DIRS)
+    return f in STALE_FILES or any(f.startswith(d) for d in STALE_DIRS) or any(rx.match(f) for rx in RETIRED)
 
 
 def load_manifest():
@@ -208,7 +221,7 @@ def load_tracking():
         out = subprocess.run(["node", "framework/cli/worktree-setup.mjs", "paths", "--json"], capture_output=True, text=True, timeout=30).stdout
         return [re.compile(p["re"]) for p in json.loads(out).get("paths", [])]
     except Exception:
-        return [re.compile(x) for x in (r"^_claude/builds/store\.json$", r"^_claude/builds/orchestrator\.json$", r"^_claude/builds/profiles/[^/]+/orchestrator\.json$",
+        return [re.compile(x) for x in (r"^_claude/builds/store\.json$",
                                         r"^_claude/builds/origins\.json$", r"^_claude/builds/journal/[^/]+\.jsonl$", r"^framework/plan/pending\.json$", r"^framework/plan/build-queue\.json$")]
 
 

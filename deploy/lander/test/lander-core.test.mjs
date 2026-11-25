@@ -212,3 +212,14 @@ test('merge queue rows: read-only projection of the same builds, live status', (
   assert.deepEqual(rows.map((r) => r.build), ['x', 'y']);
   assert.deepEqual(rows[0].prs, [{ pr: 5, steps: ['s1', 's2'], state: 'open' }]);
 });
+
+test('the retired status file is removed by a merge, never taken from main, and never counts as work', async () => {
+  const R = await import('../land-rules.mjs');
+  const plan = R.planConflicts(['_claude/builds/orchestrator.json', '_claude/builds/profiles/x/orchestrator.json', '_claude/builds/store.json', 'src/app.mjs']);
+  assert.deepEqual(plan.retired, ['_claude/builds/orchestrator.json', '_claude/builds/profiles/x/orchestrator.json']);
+  assert.deepEqual(plan.tracking, ['_claude/builds/store.json']);
+  assert.deepEqual(plan.code, ['src/app.mjs']);
+  assert.ok(R.retiredPath('_claude/builds/orchestrator.json') && !R.retiredPath('_claude/builds/store.json'));
+  // deleting its 400 000 lines is not a big diff
+  assert.equal(L.numstatLines('0\t400000\t_claude/builds/orchestrator.json\n3\t1\tsrc/app.mjs', R.trackingPath), 4);
+});

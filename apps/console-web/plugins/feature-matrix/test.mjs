@@ -26,7 +26,7 @@ t('server part has no delete route', () => { const py = readFileSync(join(repo, 
 
 // ---- the draft (feature-matrix@0) → feature-matrix@1 (s66: the first matrix of the dataset)
 const draftRel = '_claude/builds/matrices.json'; // the Refactor draft was converted when every profile merged into all, the base profile (Nov 7 2026)
-const orchRel = '_claude/builds/orchestrator.json';
+const orchRel = 'apps/console-web/plugins/feature-matrix/test-fixtures/orchestrator.json'; // one orchestrator@1 build (the status file is gone: builds come from the store)
 const draft = existsSync(join(repo, draftRel)) ? read(draftRel) : null;
 const orch = read(orchRel);
 if (draft && draft.$axf !== fm.SCHEMA) {
