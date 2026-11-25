@@ -845,33 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 04:58 UTC · `approval-pass-covers-every-call` PR 922, note (all) · orchestrator
-- 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` added (0 steps) (all) · console
-- 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` → queued, note (all) · console
-- 2026-11-25 05:01 UTC · `approval-pass-covers-every-call` s11 undone (all) · orchestrator
-- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` s12 undone (all) · orchestrator
-- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` → assigning-models (all) · orchestrator
-- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` → ready, note (all) · orchestrator
-- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:03 UTC · `approval-pass-covers-every-call` → sending (all) · orchestrator
-- 2026-11-25 05:04 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:04 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:04 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:04 UTC · `approval-pass-covers-every-call` → building (all) · orchestrator
-- 2026-11-25 05:05 UTC · `tabs-console-app-more-than-one-console` note (all) · watchdog
-- 2026-11-25 05:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:06 UTC · `tabs-console-app-more-than-one-console` → failed, note (all) · watchdog
-- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → pending, note (all) · watchdog
-- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → splitting (all) · orchestrator
-- 2026-11-25 05:07 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → split, note (all) · orchestrator
-- 2026-11-25 05:07 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:07 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:08 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 undone (all) · orchestrator
-- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:08 UTC · `clash-answer-run-all-defer-buttons-plus` note (all) · orchestrator
 - 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
@@ -1245,6 +1218,33 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` branch claude/pipeline-fixes-drop-7-mb-status-file (all) · pipeline
 - 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
 - 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` added (0 steps) (all) · console
+- 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` note, removed (all) · console
+- 2026-11-25 12:01 UTC · `emergency-remove-every-leftover-js` added (0 steps) (all) · admin
+- 2026-11-25 12:01 UTC · `emergency-remove-every-leftover-js` note (all) · admin
+- 2026-11-25 12:02 UTC · `emergency-remove-every-leftover-js` → splitting (all) · orchestrator
+- 2026-11-25 12:03 UTC · `emergency-remove-every-leftover-js` → split, note (all) · orchestrator
+- 2026-11-25 12:04 UTC · `emergency-remove-every-leftover-js` → pulling-main (all) · orchestrator
+- 2026-11-25 12:04 UTC · `emergency-remove-every-leftover-js` branch lander/emergency-remove-every-leftover-js, PR 928, note (all) · orchestrator
+- 2026-11-25 12:06 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-25 12:13 UTC · `emergency-check-can-these-plugins-` added (0 steps) (all) · admin
+- 2026-11-25 12:14 UTC · `emergency-check-can-these-plugins-` note (all) · admin
+- 2026-11-25 12:15 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-25 12:15 UTC · `clash-fix-console-app-tabs-2` → landing, note (all) · watchdog
+- 2026-11-25 12:15 UTC · `emergency-check-can-these-plugins-` → splitting (all) · orchestrator
+- 2026-11-25 12:16 UTC · `emergency-check-can-these-plugins-` → split, note (all) · orchestrator
+- 2026-11-25 12:17 UTC · `emergency-check-can-these-plugins-` → pulling-main (all) · orchestrator
+- 2026-11-25 12:17 UTC · `emergency-check-can-these-plugins-` branch lander/emergency-check-can-these-plugins-, PR 929, note (all) · orchestrator
+- 2026-11-25 12:17 UTC · `emergency-check-can-these-plugins-` PR 930, note (all) · orchestrator
+- 2026-11-25 12:18 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-25 12:19 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 12:21 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 12:23 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 12:24 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 19:32 UTC · `pipeline-fixes-drop-7-mb-status-file` → pending, note (all) · pipeline
+- 2026-11-25 19:33 UTC · `pipeline-fixes-drop-7-mb-status-file` → fixing, note (all) · pipeline
+- 2026-11-25 20:41 UTC · `pipeline-fixes-drop-7-mb-status-file` → queued, note (all) · watchdog
+- 2026-11-25 20:42 UTC · `pipeline-fixes-drop-7-mb-status-file` → running, note (all) · pipeline
+- 2026-11-25 20:42 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
 
 ## Token passes (log)
 
