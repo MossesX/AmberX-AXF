@@ -191,6 +191,8 @@ function FollowClient() {
           rt.toast(m.say ? `Amber: ${m.say}` : `Amber opened ${m.label || m.target}`, 'info', 'Follow Amber');
           return;
         }
+        // a covered call never pops up: at most this one quiet line (pass setting quietNotice)
+        if (m.type === 'pass-run') rt.toast(`${m.call} ran under pass ${m.pass}.`, 'info', 'Ran under pass');
         if (m.type === 'approval') { if (m.say) rt.toast(`Amber: ${m.say}`, 'info', 'Follow Amber'); void checkFor(m.id ?? ''); }
       },
     );

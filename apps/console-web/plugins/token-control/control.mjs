@@ -318,7 +318,7 @@ export async function main(argv) {
     out({ ok: true, target: c.target, op: c.op, scope, irreversible: irr, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs ${scope === 'all' ? 'an' : 'a'} ${scope} pass${irr ? ' with include_irreversible' : ''})` : 'no pass can cover this');
     return 0;
   }
-  if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
+  if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone} · a covered run sends ${s.quietNotice ? 'one quiet line' : 'nothing'}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 
   const parsed = commandFromArgv(argv);

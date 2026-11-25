@@ -11,8 +11,9 @@ about opens on his screen right away, and axHub's held / confirm calls pop up in
                                                   on that build; "<screen> <tab>" (e.g. "build-orchestrator pending") or
                                                   `focus` opens that tab or item on the screen. The answer's `status` is
                                                   delivered (a console acked it), pending or failed.
-  POST approval {id?, by?}                        a held / confirm call is waiting: every follow client reads the
-                                                  approvals feed now and pops it up (a no-op when off)
+  POST approval {id?, call?, irreversible?, by?}  a held / confirm call is waiting: every follow client reads the
+                                                  approvals feed now and pops it up (a no-op when off). `call` names
+                                                  it (`service.tool`): a call an active pass covers pops nothing up
   GET  stream?client=<id>                         server-sent events, one follow-amber@1 frame per `data:`
   GET  recent                                     the last things shown
 
@@ -266,9 +267,43 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
     return r
 
 
-def approval(aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
-    """A held / confirm call is waiting for Brett: the follow clients read the feed now and pop it up."""
+def covering_pass(call: str, irreversible: bool = False) -> dict[str, Any] | None:
+    """The active approval pass that covers the call `service.tool`, or None. Asked before any approval notice goes
+    out. No name, no pass plugin or a check that fails all count as not covered: the notice goes out."""
+    if not call:
+        return None
+    try:
+        control = plugin_services.get("control@1")
+        p = control.pass_covering(call, irreversible) if control is not None and hasattr(control, "pass_covering") else None
+    except Exception:  # noqa: BLE001 - a broken check never hides a waiting call
+        return None
+    return p if isinstance(p, dict) and p.get("id") else None
+
+
+def _quiet_notice() -> bool:
+    try:
+        control = plugin_services.get("control@1")
+        return bool(control is not None and hasattr(control, "pass_quiet_notice") and control.pass_quiet_notice())
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def approval(aid: str = "", by: str = "amber", say: str = "", call: str = "", irreversible: bool = False) -> dict[str, Any]:
+    """A held / confirm call is waiting for Brett: the follow clients read the feed now and pop it up. A call an
+    active pass covers runs at once and pops nothing up; with the pass setting quietNotice the consoles get one quiet
+    `pass-run` line instead."""
     st = load_state()
+    covered = covering_pass(_text(call, 200), irreversible)
+    if covered is not None:
+        pid = _text(covered.get("id"), 80)
+        r: dict[str, Any] = {"ok": True, "shown": False, "follow": st["on"], "ranUnder": pid, "quiet": False,
+                             "message": f"{_text(call, 200)} is covered by pass {pid}: it runs at once, no approval notice"}
+        gate = plugin_services.get("axf.notify@1")
+        if st["on"] and _quiet_notice() and (gate is None or gate.allowed("follow.pass-run", "popup")):
+            # the tool name and the pass id only, never the arguments
+            r["consoles"] = broadcast({"type": "pass-run", "call": _text(call, 200), "pass": pid, "by": by})
+            r["quiet"] = True
+        return r
     gate = plugin_services.get("axf.notify@1")
     if gate is not None and not gate.allowed("follow.approval", "popup"):
         return {"ok": True, "shown": False, "follow": st["on"], "message": "the approval pop-up is off in the Notifications panel"}
@@ -327,7 +362,8 @@ async def post_show(request: Request) -> dict[str, Any]:
 async def post_approval(request: Request) -> dict[str, Any]:
     name = _owner(request)
     b = await _body(request)
-    return approval(_text(b.get("id"), 80), _text(b.get("by"), 80) or name, _text(b.get("say")))
+    return await run_in_threadpool(approval, _text(b.get("id"), 80), _text(b.get("by"), 80) or name, _text(b.get("say")),
+                                   _text(b.get("call"), 200), b.get("irreversible") is True)
 
 
 @router.get("/recent")
@@ -380,8 +416,12 @@ class FollowAmber:
     def show(self, target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber", focus: str = "") -> dict[str, Any]:
         return show(target, kind, highlight, say, to, by, focus)
 
-    def approval(self, aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
-        return approval(aid, by, say)
+    def approval(self, aid: str = "", by: str = "amber", say: str = "", call: str = "", irreversible: bool = False) -> dict[str, Any]:
+        return approval(aid, by, say, call, irreversible)
+
+    def covering_pass(self, call: str, irreversible: bool = False) -> dict[str, Any] | None:
+        """The active pass covering `service.tool`, or None (other notice senders ask before they send)."""
+        return covering_pass(_text(call, 200), irreversible)
 
     def phone(self, address: str, by: str = "amber") -> dict[str, Any] | None:
         """The phone half of a show for callers that open a console-control@1 address themselves (console_show with

@@ -26,7 +26,8 @@ Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; CONTROL.md
                                   approves (his session: on at once). No scope = all: every command, every plugin
   POST   pass/approve | pass/deny { scope, request }  Brett's session, or axHub with X-AXF-Pass-Approval / -Approver
   POST   pass/revoke | pass/undo  { scope, by? }
-  GET|PUT pass/settings           { maxMinutes, timeZone }
+  GET|PUT pass/settings           { maxMinutes, timeZone, quietNotice } (quietNotice: a covered run sends one quiet
+                                  "ran under pass" line; off by default, a covered run sends nothing)
 
 Capability control@1: plugin_services.get("control@1").run(command, grants=[…], by="…") → the answer dict.
 Who may: the console token and hub admins = the admin role (`*`); a role's grants come from the console's uac-policy
@@ -286,7 +287,7 @@ def pass_settings_get() -> Any:
 @router.put("/pass/settings")
 async def pass_settings_put(request: Request) -> Any:
     b = await _body(request)
-    patch = {k: b[k] for k in ("maxMinutes", "timeZone") if k in b}
+    patch = {k: b[k] for k in ("maxMinutes", "timeZone", "quietNotice") if k in b}
     try:
         proc = subprocess.run(["node", str(CLI), "pass-settings", json.dumps(patch), "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
         return json.loads(proc.stdout)
@@ -394,7 +395,7 @@ class Control:
         return run(cmd, grants, by=name, approver=approver)
 
     def pass_settings(self, patch: dict[str, Any] | None = None) -> dict[str, Any]:
-        """{ maxMinutes, timeZone }. A caller that changes them checks owner() first (Claude settings, Approvals & veto)."""
+        """{ maxMinutes, timeZone, quietNotice }. A caller that changes them checks owner() first (Claude settings, Approvals & veto)."""
         if patch is None:
             return meta("pass-settings")
         proc = subprocess.run(["node", str(CLI), "pass-settings", json.dumps(patch), "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
@@ -413,6 +414,21 @@ class Control:
         approver = {"via": via, "name": who if who.endswith("(standing)") else f"{who} (standing)"}
         cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": "grant", "input": input_, "by": "no-wait-standing", "reason": reason}
         return run(cmd, ["*"], by="no-wait-standing", approver=approver)
+
+    def pass_covering(self, call: str, irreversible: bool = False) -> dict[str, Any] | None:
+        """The active pass that covers the axHub call `service.tool` now, or None. A notice sender asks it before a
+        veto or approval notice goes out: a covered call sends none. No name, or a check that fails, is not covered
+        (the notice goes out)."""
+        if not str(call or "").strip():
+            return None
+        r = pass_check(call=str(call).strip()[:200], irreversible=irreversible)
+        p = r.get("pass") if isinstance(r, dict) and r.get("covered") is True else None
+        return p if isinstance(p, dict) and p.get("id") else None
+
+    def pass_quiet_notice(self) -> bool:
+        """Does a run under a pass send one quiet "ran under pass" line (pass setting quietNotice)? Default: nothing."""
+        s = meta("pass-settings")
+        return isinstance(s, dict) and s.get("quietNotice") is True
 
     def pass_publication(self) -> Any:
         """The veto pass publication (what GET pass answers, unsigned) for in-process readers."""

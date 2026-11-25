@@ -329,6 +329,25 @@ await test('pass: signed publication, check, CLI words', async () => {
   await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.theme', action: 'revoke' });
 });
 
+await test('pass notices: a covered run sends nothing unless the pass setting quietNotice is on', async () => {
+  assert.equal(passLib.passSettings().quietNotice, false, 'off by default');
+  await grant('all', 30, { approver: BRETT });
+  const covered = passLib.coveringCall({ tool: 'vps.run' });
+  assert.ok(covered, 'the pass covers the veto tool, so its senders have a pass to find');
+  assert.ok(passLib.coveringCall({ tool: 'console.console_terminal_sessions_stop' }), 'and the always-approve tool');
+  let p = passLib.publication();
+  assert.ok(p.body.active.length === 1 && !('quietNotice' in p.body.active[0]), 'default: the published pass asks for no notice');
+  assert.equal(passLib.savePassSettings({ quietNotice: true }).quietNotice, true);
+  p = passLib.publication();
+  assert.equal(p.body.active[0].quietNotice, true, 'on: the published pass carries quietNotice for the hub senders');
+  assert.ok(passLib.verifyPayload(p.payload, p.signature), 'and the signature covers it');
+  assert.equal(passLib.savePassSettings({ quietNotice: 'yes' }).quietNotice, false, 'only true turns it on');
+  const log = console.log; let printed = ''; console.log = (x) => { printed += x; };
+  try { assert.equal(await main(['pass-settings']), 0); } finally { console.log = log; }
+  assert.match(printed, /a covered run sends nothing/);
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke' });
+});
+
 await test('pass all: everything by default, ordinary deletes skip the confirm, irreversible ones only when included', async () => {
   // CLI: no scope = everything; --scope narrows; the old word order still works
   assert.deepEqual(commandFromArgv(['pass', 'grant', '30']).command, { op: 'act', target: 'pass.scopes', action: 'grant', path: 'all', input: { minutes: 30 } });

@@ -7,12 +7,25 @@
       "group": "approvals",
       "app": "console",
       "source": "Follow Amber",
-      "description": "With Follow Amber on, a held or confirm call pops up in the console. The veto banner and AmberX still show it when this is off.",
+      "description": "With Follow Amber on, a held or confirm call pops up in the console. A call an active pass covers runs at once and never pops up. The veto banner and AmberX still show a waiting call when this is off.",
       "enforced": "gate",
       "only": [
         "popup"
       ],
       "priority": "high"
+    },
+    {
+      "id": "follow.pass-run",
+      "label": "Ran under pass (quiet line)",
+      "group": "approvals",
+      "app": "console",
+      "source": "Follow Amber",
+      "description": "One quiet line in the console when a call ran under an approval pass: the tool and the pass id. Only sent while the pass setting quietNotice is on; off by default, a covered run sends nothing.",
+      "enforced": "gate",
+      "only": [
+        "popup"
+      ],
+      "priority": "low"
     }
   ]
 }
