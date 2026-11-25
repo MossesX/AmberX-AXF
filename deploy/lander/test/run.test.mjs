@@ -104,7 +104,7 @@ test('two steps clash in code: split; then main clashes with the second: a fix s
   await tick(opts); // split: s1 lands as its own PR, s2's PR clashes with the new main
   b = store.list[0];
   assert.ok(onMain(r, 'shared.txt'));
-  assert.equal(b.failure.kind, 'clash-main'); assert.equal(b.failure.retry, 'fix'); assert.equal(b.landing.attempt, 2);
+  assert.equal(b.failure.kind, 'clash-main'); assert.equal(b.failure.retry, 'fix'); assert.equal(b.landing.attempt, 1, 'the first PR merged: the second PR has its own attempt count');
   now.add(L.backoffMinutes(2) + 1);
   await tick(opts); // the fix session starts (and pushes, in the fake)
   assert.equal(fixes, 1);

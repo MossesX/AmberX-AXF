@@ -42,7 +42,8 @@
  *   infra        push / API / git error, build rules that could not run → the same phase again
  *   pr-closed    the PR was closed without merging                → stop until it is reopened or re-sent
  *   hand-merge   the PR was merged by hand and CI is not green on it → stop until CI is green or Brett decides
- * The ladder has a top: after `maxFixes` fix sessions on one PR, or `maxAttempts` failures in one landing run, the
+ * The ladder has a top: after `maxFixes` fix sessions on one PR, or `maxAttempts` failures on one PR (the count starts
+ * again when a PR of the build merges: a build split into many PRs does not spend one PR's failures on the next), the
  * build stops (`failure.retry: 'hold'`, `failure.needsBrett`) with the exact failing check, is posted once, shows on the
  * systems check, and moves to the back of the merge line. `lander retry <build>` (or the reopened PR) starts it again.
  */
@@ -99,7 +100,7 @@ const RANGES = { sizeCapLines: [50, 1e7], flakyReruns: [0, 5], backoffBaseMin: [
 const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : v == null ? '' : String(v).slice(0, n));
 const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
 const num = (v, d = 0) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
-const minutesBetween = (from, to) => (Date.parse(to) - Date.parse(from)) / 60000;
+export const minutesBetween = (from, to) => (Date.parse(to) - Date.parse(from)) / 60000;
 const plusMin = (iso, m) => new Date(Date.parse(iso) + m * 60000).toISOString();
 
 /** A list of names from an array, a JSON array or a `|`-separated line (check names hold commas). */
@@ -396,8 +397,20 @@ export function ciOf(runs, { required = [] } = {}) {
   }
   return { ci: missing.length ? 'missing' : 'success', failing: [], runIds: [], jobIds: [], missing };
 }
-/** The jobs of a light PR run (ci-scope.mjs `light`, android.yml `scope` + "Light PR checks …"). */
-const LIGHT = /^(Light PR checks|scope)\b/i;
+/**
+ * The names of the GitHub Actions checks that are red on a commit (the newest per name; a skipped check is not red).
+ * Plain names, without the conclusion ciOf() adds for the reader.
+ */
+export function redChecks(runs) {
+  return newest((runs || []).filter(actions)).filter((r) => r?.status === 'completed' && r.conclusion !== 'success' && r.conclusion !== 'skipped').map((r) => str(r.name, 200));
+}
+/**
+ * The jobs of a light PR run (ci-scope.mjs `light`): android.yml's `scope` job, which reports as "CI scope (what
+ * changed)", and "Light PR checks …". A check run carries the job's `name:`, not its id.
+ */
+const LIGHT = /^(Light PR checks|CI scope|scope)\b/i;
+/** Is this check run one of the light PR run's jobs (never the full CI run by itself)? */
+export const isLightCheck = (r) => LIGHT.test(String(r?.name || ''));
 /**
  * Only light PR checks ran on the head (a pull_request run while the repo variable AXF_MERGE_QUEUE is on): no full CI
  * yet. True when a light job is there and no other GitHub Actions job is.
