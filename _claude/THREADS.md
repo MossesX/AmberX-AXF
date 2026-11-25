@@ -845,31 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 done (all) · headless
-- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` → build-complete (all) · headless
-- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:12 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:12 UTC · `find-fix-why-ci-stalls-lander-one-part` → failed, note (all) · lander
-- 2026-11-25 05:13 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:13 UTC · `find-fix-why-ci-stalls-lander-one-part` → running-ci, note (all) · lander
-- 2026-11-25 05:13 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
-- 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:16 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:16 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` s5 undone (all) · orchestrator
-- 2026-11-25 05:18 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:18 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
-- 2026-11-25 05:18 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
@@ -1245,6 +1220,31 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 23:09 UTC · `emergency-rip-out-the-7-mb-status-` added (7 steps) (all) · foreign-write
 - 2026-11-25 23:09 UTC · `fast-stale-check-page-load-build-store` added (7 steps) (all) · foreign-write
 - 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-25 23:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-25 23:10 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-25 23:10 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:10 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-25 23:10 UTC · `claude-emergency-access` → pulling-main (all) · orchestrator
+- 2026-11-25 23:11 UTC · `claude-emergency-access` branch lander/claude-emergency-access, PR 933, note (all) · orchestrator
+- 2026-11-25 23:12 UTC · `emergency-check-can-these-plugins-` → sending (all) · orchestrator
+- 2026-11-25 23:13 UTC · `emergency-remove-every-leftover-js` → sending (all) · orchestrator
+- 2026-11-25 23:14 UTC · `claude-emergency-access` → assigning-models (all) · orchestrator
+- 2026-11-25 23:14 UTC · `claude-emergency-access` → ready, note (all) · orchestrator
+- 2026-11-25 23:14 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-25 23:15 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 23:15 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:17 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-25 23:17 UTC · `emergency-remove-every-leftover-js` → building (all) · orchestrator
+- 2026-11-25 23:19 UTC · `emergency-check-can-these-plugins-` → building (all) · orchestrator
+- 2026-11-25 23:20 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-25 23:21 UTC · `pipeline-fixes-drop-7-mb-status-file` → queued, note (all) · watchdog
+- 2026-11-25 23:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:28 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:29 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 23:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:30 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-25 23:30 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:31 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 
 ## Token passes (log)
 
