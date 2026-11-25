@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10420,
- "updatedAt": "2026-11-25T23:33:16.580Z",
+ "rev": 10421,
+ "updatedAt": "2026-11-25T23:33:49.591Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -395617,7 +395617,7 @@
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-25T23:32:02.769Z",
+   "updatedAt": "2026-11-25T23:33:01.767Z",
    "builtAt": "",
    "notes": [
     {
@@ -395699,6 +395699,11 @@
     {
      "text": "Watchdog: step s2 failed at building, attempt 4: tmux session axf-emergency-check-can-these-plugins---s2--sully is gone while the step was building.",
      "at": "2026-11-25T23:32:02.769Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-25T23:33:01.767Z",
      "by": "watchdog"
     }
    ],
@@ -396000,13 +396005,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 15,
+     "rev": 17,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T23:32:22.285Z",
-     "statusAt": "2026-11-25T23:32:02.769Z",
+     "updatedAt": "2026-11-25T23:33:40.942Z",
+     "statusAt": "2026-11-25T23:33:01.767Z",
      "statusBy": "watchdog",
-     "attempt": 4,
-     "failedFrom": "building",
+     "attempt": 5,
      "statusLog": [
       {
        "status": "pending",
@@ -396084,9 +396088,16 @@
        "by": "watchdog",
        "attempt": 4,
        "why": "tmux session axf-emergency-check-can-these-plugins---s2--sully is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:33:01.767Z",
+       "by": "watchdog",
+       "attempt": 5,
+       "why": "retry forward at building, attempt 5"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s2",
      "branch": "claude/emergency-check-can-these-plugins---s2",
@@ -396717,7 +396728,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 75,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
