@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10406,
- "updatedAt": "2026-11-25T08:05:15.102Z",
+ "rev": 10407,
+ "updatedAt": "2026-11-25T08:05:30.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292500,7 +292500,7 @@
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T08:05:02.927Z",
+   "updatedAt": "2026-11-25T08:05:22.807Z",
    "builtAt": "",
    "notes": [
     {
@@ -293218,7 +293218,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:05:22.807Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293228,9 +293228,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:05:15.373Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:05:22.807Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s9",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s9"
     },
     {
      "id": "s10",
@@ -293479,7 +293495,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
