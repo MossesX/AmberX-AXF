@@ -7,7 +7,8 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './core.ts';
-import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, passSkippedLabel, patternList } from './core.ts';
+import { readFileSync } from 'node:fs';
+import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passCoversLabel, passSecondsLeft, passSkippedLabel, patternList, readPassCovers } from './core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../../../framework/libs/hub/apps.ts';
 
@@ -371,6 +372,30 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   eq([passSkippedLabel('confirm'), passSkippedLabel('always-approve'), passSkippedLabel('deny'), passSkippedLabel(undefined)],
     ['the approval prompt (ran at once)', "the owner's own approval (ran at once)", '', ''], 'the skipped policy in plain words; unknown values say nothing');
   eq(Object.fromEntries(directRunRows({ ...under, status: 'failed under pass', resultStatus: undefined }).map((r) => [r.key, r.value])).result.split(' · ')[0], 'error', 'failed under a pass reads as an error');
+}
+
+/* ---------------------------------------------------------------- pass@2 coverage (framework/spec/AXHUB-PASS.md) */
+{
+  const schema = JSON.parse(readFileSync(new URL('../../../../framework/schemas/axhub-pass.json', import.meta.url), 'utf8'));
+  const cases = schema['x-migration'].cases;
+  ok(cases.length >= 10, 'the schema carries the migration cases');
+  for (const c of cases) eq(readPassCovers(c.record), c.covers, `migration pass-covers-1: ${c.name}`);
+  eq(schema.$defs.covers.default, 'all', 'covers defaults to all');
+  eq(Object.keys(schema['x-decision'].policies), ['allow', 'veto', 'confirm', 'always-approve', 'deny'], 'every policy has a decision');
+  for (const policy of ['veto', 'confirm', 'always-approve']) {
+    const d = schema['x-decision'].policies[policy];
+    ok(d.underPass === 'run' && d.ranUnder === true && d.countdown === false && d.prompt === false && d.notice === false, `${policy}: runs at once under a pass, logged, no countdown, prompt or notice`);
+  }
+  ok(schema['x-decision'].policies.deny.underPass === 'deny' && schema['x-decision'].policies.allow.ranUnder === false, 'deny stays denied; allow names no pass');
+  ok(schema.$defs.logEntry.required.includes('ranUnder') && schema.$defs.logEntry.properties.policySkipped.enum.join() === 'veto,confirm,always-approve', 'a covered run logs ranUnder and the policy it skipped');
+  eq(passCoversLabel({}), 'everything', 'a pass with no covers reads as everything');
+  eq(passCoversLabel({ covers: 'all', includeIrreversible: true }), 'everything, including irreversible calls', 'all with irreversible');
+  eq(passCoversLabel({ covers: [{ service: 'vps', tool: 'run' }, { service: 'axf-console' }, { service: '*', scope: 'tokens.theme' }] }), 'vps.run, axf-console (every tool), scope tokens.theme', 'a list reads entry by entry');
+  eq(passCoversLabel({ covers: [{ service: 'vps', tool: 'run', extra: 1 }] }), 'nothing (its coverage could not be read)', 'a bad entry covers nothing');
+  eq(readPassCovers({ covers: [{ service: 'vps', tool: '*' }] }), [{ service: 'vps' }], 'tool * is every tool');
+  eq(readPassCovers({ service: '*', tools: ['control_set'] }), 'none', 'pass@1 tools on any service without a scope: nothing');
+  eq(passCovers({ service: '*', tools: ['*'], all: true }), 'everything', 'a pass for everything on the card');
+  eq(passCovers({ service: 'vps', tools: ['run'], covers: [{ service: 'vps', tool: 'run' }] }), 'vps.run', 'a pass@2 list on the card');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

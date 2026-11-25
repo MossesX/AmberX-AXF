@@ -402,8 +402,65 @@ export function passClock(seconds: number): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s % 60)}` : `${m}:${pad(s % 60)}`;
 }
 
-/** What a pass covers, in one line: `axf-console · control_set, control_reset · scope tokens.theme`. */
-export function passCovers(p: { service: string; tools: string[]; scope?: string[] }): string {
+/* pass@2 coverage (framework/spec/AXHUB-PASS.md, framework/schemas/axhub-pass.json) */
+
+/** One thing a pass covers: a service (`*` = any, only with a scope), a tool pattern (absent = every tool), a control@1 scope. */
+export interface PassCoverEntry { service: string; tool?: string; scope?: string }
+/** `all` = every tool on every service; a list = exactly those entries; `none` = a `covers` that isn't valid (fail closed). */
+export type PassCoverage = 'all' | 'none' | PassCoverEntry[];
+/** A pass as far as coverage reads it: pass@2 `covers`, or the pass@1 fields (`scope` is the web view's spelling of `scopes`). */
+export interface PassCoverSource { covers?: unknown; all?: unknown; service?: unknown; tools?: unknown; scopes?: unknown; scope?: unknown; includeIrreversible?: unknown }
+
+const COVER_PATTERN_RE = /^[A-Za-z0-9._/*-]{1,128}$/;
+const COVER_MAX = 50;
+const coverPattern = (v: unknown): v is string => typeof v === 'string' && COVER_PATTERN_RE.test(v);
+const coverPatterns = (v: unknown): string[] => (Array.isArray(v) ? v : typeof v === 'string' ? [v] : []).filter(coverPattern);
+
+function coverEntry(raw: unknown): PassCoverEntry | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  if (Object.keys(r).some((k) => k !== 'service' && k !== 'tool' && k !== 'scope')) return null;
+  if (!coverPattern(r.service) || (r.tool !== undefined && !coverPattern(r.tool)) || (r.scope !== undefined && !coverPattern(r.scope))) return null;
+  if (r.service === '*' && r.scope === undefined) return null; // anything, anywhere is spelled `all`
+  return { service: r.service, ...(r.tool !== undefined && r.tool !== '*' ? { tool: r.tool } : {}), ...(r.scope !== undefined ? { scope: r.scope } : {}) };
+}
+
+/**
+ * What a pass covers (migration `pass-covers-1`): a valid `covers` as is; a `covers` that isn't valid covers nothing;
+ * no `covers` reads as `all`, except a pass@1 record that named something narrower, which keeps exactly that.
+ */
+export function readPassCovers(p: PassCoverSource): PassCoverage {
+  if (p.covers !== undefined && p.covers !== null) {
+    if (p.covers === 'all') return 'all';
+    if (!Array.isArray(p.covers) || p.covers.length === 0 || p.covers.length > COVER_MAX) return 'none';
+    const entries = p.covers.map(coverEntry);
+    return entries.every((e): e is PassCoverEntry => e !== null) ? entries : 'none';
+  }
+  if (p.all === true) return 'all';
+  const service = coverPattern(p.service) ? p.service : '*';
+  const tools = coverPatterns(p.tools).filter((t) => t !== '*');
+  const scopes = coverPatterns(p.scopes !== undefined ? p.scopes : p.scope);
+  if (service === '*' && !tools.length && !scopes.length) return 'all';
+  if (service === '*' && !scopes.length) return 'none'; // pass@1 never stored tools on any service without a scope
+  const out: PassCoverEntry[] = [];
+  for (const tool of tools.length ? tools : [undefined]) {
+    for (const scope of scopes.length ? scopes : [undefined]) out.push({ service, ...(tool ? { tool } : {}), ...(scope ? { scope } : {}) });
+  }
+  return out.slice(0, COVER_MAX);
+}
+
+/** The coverage in the owner's words: `everything`, `everything, including irreversible calls`, `nothing`, or the entries. */
+export function passCoversLabel(p: PassCoverSource): string {
+  const covers = readPassCovers(p);
+  if (covers === 'all') return p.includeIrreversible === true ? 'everything, including irreversible calls' : 'everything';
+  if (covers === 'none') return 'nothing (its coverage could not be read)';
+  return covers.map((e) => [e.service === '*' ? '' : e.tool ? `${e.service}.${e.tool}` : `${e.service} (every tool)`, e.scope ? `scope ${e.scope}` : ''].filter(Boolean).join(' · ')).join(', ');
+}
+
+/** What a pass covers, in one line: `axf-console · control_set, control_reset · scope tokens.theme` (pass@2: the coverage label). */
+export function passCovers(p: { service: string; tools: string[]; scope?: string[]; covers?: unknown; all?: unknown; includeIrreversible?: unknown }): string {
+  if (p.covers !== undefined && p.covers !== null) return passCoversLabel(p);
+  if (readPassCovers(p) === 'all') return passCoversLabel(p);
   const tools = p.tools.length === 1 && p.tools[0] === '*' ? 'every tool' : p.tools.join(', ');
   return [p.service, tools, p.scope?.length ? `scope ${p.scope.join(', ')}` : ''].filter(Boolean).join(' · ');
 }

@@ -152,6 +152,8 @@ uninstalling the plugin removes the tab, never the gate.
   scope, recent passes, and the longest-pass setting. The passes still belong to the control@1 runner (the Token
   control plugin's `pass/*` routes); `web/passesState.ts` calls them, owner actions with Brett's session first. The
   pass banner stays with Token control.
+- What an axHub pass covers (pass@2 `covers`: `all` by default, or a list of services, tools and scopes), how it
+  decides veto, confirm and always-approve calls, and what a covered run logs: `framework/spec/AXHUB-PASS.md`.
 - **axHub passes** and **Go pass** (`web/HubPasses.tsx`, `web/HubGoPass.tsx`): the two pages of the `axhub-passes`
   plugin, which was removed. This plugin provides `view:axhub-passes`, `view:axhub-go-pass`, the actions
   `axhub-passes.open` / `axhub-go-pass.open` and the Apps → axHub menu entries, so every old link still opens them.
