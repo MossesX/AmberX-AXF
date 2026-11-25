@@ -122,6 +122,164 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
     return out
 
 
+# ---------------------------------------------------------------------- pipeline status (small summary, builds store only)
+#
+# Build status has one home: the builds store (builds@1, rows on Postgres after the cut), read through data_store.py.
+# Nothing here opens, writes or refreshes a status file, and no answer carries build bodies: every row is cut down to a
+# few fields, the row count is capped and so is the size of the whole answer.
+
+PIPELINE_STATUS_SCHEMA = "pipeline-status-summary@1"
+PIPELINE_STATUS_PATH = "/api/pipeline-status"
+PIPELINE_ROWS_DEFAULT = 20
+PIPELINE_ROWS_MAX = 50          # hard cap on rows per answer, whatever `limit` asks for
+PIPELINE_QUEUE_HEAD = 5         # builds shown from the head of the queue
+PIPELINE_ACTIVE_MAX = 10        # other active builds listed beside the first
+PIPELINE_BYTES_MAX = 32_000     # hard cap on the answer as JSON; rows are dropped from the end to fit
+# pipeline-2@1 (framework/core/pipeline-status.mjs): ACTIVE is pulling-main … merging-main, WAITING is split; the
+# statuses of builds from before pipeline 2.0 that mean the same are listed with them.
+PIPELINE_ACTIVE = ("pulling-main", "assigning-models", "ready", "sending", "building", "build-complete", "merging-pr", "pr-pulling-main",
+                   "running-ci", "merging-main", "running", "landing", "fixing")
+PIPELINE_QUEUED = ("split", "queued")
+
+
+def _text(v: Any, n: int) -> str:
+    s = v if isinstance(v, str) else "" if v is None else str(v)
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
+def _in_project(b: dict[str, Any], project: str) -> bool:
+    profiles = b.get("profiles")
+    return b.get("project") == project or b.get("profile") == project or (isinstance(profiles, list) and project in profiles)
+
+
+def _status_set(status: Any) -> list[str]:
+    vals = status.split(",") if isinstance(status, str) else list(status or [])
+    return sorted({str(v).strip() for v in vals if str(v).strip()})
+
+
+def _builds_page(status: Any = None, project: str = "", limit: int = 0, offset: int = 0) -> dict[str, Any]:
+    """One page of the builds store, newest status change first: { ok, rev, total, counts, items }. `counts` is builds
+    per status for the project filter alone. data_store.builds_page (builds-page@1) answers when the data layer has
+    it; otherwise the same page is cut from the store as data_store reads it (builds_store: the axf-data tables after
+    the cut). Raises data_store.DataStoreError when axf-data can't be reached."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import data_store
+    want = _status_set(status)
+    if callable(getattr(data_store, "builds_page", None)):
+        return data_store.builds_page(status=want or None, project=project or None, limit=limit, offset=offset)
+    import builds_store
+    doc = builds_store.read()
+    rows = [b for b in ((doc or {}).get("builds") or []) if isinstance(b, dict) and not b.get("deleted")]
+    if project:
+        rows = [b for b in rows if _in_project(b, project)]
+    counts: dict[str, int] = {}
+    for b in rows:
+        st = str(b.get("status") or "")
+        counts[st] = counts.get(st, 0) + 1
+    if want:
+        rows = [b for b in rows if str(b.get("status") or "") in want]
+    rows.sort(key=lambda b: str(b.get("statusAt") or b.get("updatedAt") or b.get("createdAt") or ""), reverse=True)
+    return {"ok": doc is not None, "rev": int(doc.get("rev") or 0) if doc is not None else -1, "total": len(rows),
+            "counts": dict(sorted(counts.items())), "items": rows[offset:offset + limit]}
+
+
+def _build_line(b: dict[str, Any]) -> dict[str, Any]:
+    """A build as one small row: who it is, where it stands, how far its steps are. Never its detail, notes or logs."""
+    steps = [x for x in (b.get("steps") or []) if isinstance(x, dict)]
+    done = sum(1 for x in steps if x.get("done") is True or x.get("status") in ("completed", "in-pr"))
+    cur = next((x for x in steps if x.get("status") in ("sending", "building", "failed")), None) \
+        or next((x for x in steps if not (x.get("done") is True or x.get("status") in ("completed", "in-pr"))), None)
+    profiles = b.get("profiles") if isinstance(b.get("profiles"), list) else []
+    row: dict[str, Any] = {"id": _text(b.get("id"), 80), "title": _text(b.get("title"), 120), "status": _text(b.get("status"), 40),
+                           "statusAt": _text(b.get("statusAt") or b.get("updatedAt"), 30), "steps": {"total": len(steps), "done": done}}
+    for key, val in (("number", b.get("number")), ("project", b.get("project") or b.get("profile") or (profiles[0] if profiles else "")),
+                     ("pr", b.get("pr")), ("branch", b.get("branch")), ("attempt", b.get("attempt") if b.get("attempt") not in (None, 1) else None)):
+        if val not in (None, ""):
+            row[key] = val if isinstance(val, (int, float)) and not isinstance(val, bool) else _text(val, 120)
+    if b.get("emergency"):
+        row["emergency"] = True
+    if cur is not None:
+        row["step"] = {k: _text(v, 60) for k, v in (("id", cur.get("id")), ("status", cur.get("status")), ("model", cur.get("model")),
+                                                     ("account", cur.get("account"))) if v not in (None, "")}
+    return row
+
+
+def _queue_place(b: dict[str, Any], project: str) -> tuple[int, float, str]:
+    """Queue order: emergency builds first, then the build's place in its project's order, then the oldest wait."""
+    order = b.get("order") if isinstance(b.get("order"), dict) else {}
+    place = order.get(project) if project else order.get("all", next(iter(order.values()), None))
+    place = place if isinstance(place, (int, float)) and not isinstance(place, bool) else float("inf")
+    return (0 if b.get("emergency") else 1, place, str(b.get("statusAt") or b.get("createdAt") or ""))
+
+
+def pipeline_status_summary(status: str = "", project: str = "", limit: int = PIPELINE_ROWS_DEFAULT, offset: int = 0) -> dict[str, Any]:
+    """pipeline-status-summary@1: the pipeline in one small answer, read from the builds store (Postgres after the cut).
+
+    counts per status, the active build (and how many are active), the head of the queue, and, when `status` (one
+    status or a comma list) or `project` is given, one page of matching builds as small rows: at most `limit` (capped
+    at PIPELINE_ROWS_MAX) from `offset`, with `next` the offset of the page after. The whole answer stays under
+    PIPELINE_BYTES_MAX: rows are dropped from the end (`truncated`) and `next` points at the first one left out.
+    Raises data_store.DataStoreError when the store can't be reached."""
+    project = _text(str(project or "").strip(), 80)
+    want = _status_set(status)[:20]
+    try:
+        limit = max(0, min(int(limit), PIPELINE_ROWS_MAX))
+        offset = max(0, int(offset))
+    except (TypeError, ValueError):
+        limit, offset = PIPELINE_ROWS_DEFAULT, 0
+    act = _builds_page(PIPELINE_ACTIVE, project, PIPELINE_ACTIVE_MAX + 1)
+    que = _builds_page(PIPELINE_QUEUED, project, 200)
+    counts = {_text(k, 40): v for k, v in (act.get("counts") or {}).items()}
+    active = [_build_line(b) for b in act.get("items") or []]
+    queued = sorted(que.get("items") or [], key=lambda b: _queue_place(b, project))
+    out: dict[str, Any] = {
+        "$axf": PIPELINE_STATUS_SCHEMA, "ok": bool(act.get("ok", True)), "rev": act.get("rev", -1), "project": project or None,
+        "total": sum(counts.values()), "counts": counts,
+        "active": active[0] if active else None, "activeCount": int(act.get("total") or 0), "alsoActive": active[1:PIPELINE_ACTIVE_MAX],
+        "queue": {"total": int(que.get("total") or 0), "head": [_build_line(b) for b in queued[:PIPELINE_QUEUE_HEAD]]},
+    }
+    if want or project:
+        page = _builds_page(want, project, limit, offset)
+        rows = [_build_line(b) for b in page.get("items") or []]
+        total = int(page.get("total") or 0)
+        out |= {"status": want or None, "limit": limit, "offset": offset, "matched": total, "rows": rows,
+                "next": offset + len(rows) if rows and offset + len(rows) < total else None}
+    # the hard size cap: rows first, then the other active builds, then the queue head
+    size = lambda: len(json.dumps(out, ensure_ascii=False).encode("utf-8"))  # noqa: E731
+    for key, holder in (("rows", out), ("alsoActive", out), ("head", out["queue"])):
+        while holder.get(key) and size() > PIPELINE_BYTES_MAX:
+            holder[key].pop()
+            out["truncated"] = True
+            if key == "rows":
+                out["next"] = offset + len(holder[key])
+    return out
+
+
+def pipeline_status_route(token: Callable[[], str] | None = None) -> Any:
+    """The REST twin of the pipeline_status tool: GET /api/pipeline-status?status=&project=&limit=&offset= → the same
+    small summary. `token()` is the console token (empty = open); a request without it as Bearer is answered 401."""
+    from starlette.responses import JSONResponse
+    from starlette.routing import Route
+
+    async def endpoint(request: Any) -> Any:
+        tok = token() if token else ""
+        if tok and request.headers.get("authorization", "") != f"Bearer {tok}":
+            return JSONResponse({"error": "unauthorized"}, status_code=401, headers={"www-authenticate": "Bearer"})
+        q = request.query_params
+        try:
+            limit, offset = int(q.get("limit") or PIPELINE_ROWS_DEFAULT), int(q.get("offset") or 0)
+        except ValueError:
+            return JSONResponse({"error": "limit and offset are whole numbers"}, status_code=400)
+        try:
+            return JSONResponse(await anyio.to_thread.run_sync(lambda: pipeline_status_summary(q.get("status") or "", q.get("project") or "", limit, offset)))
+        except Exception as e:  # noqa: BLE001 — the store can't be read: say so, never fall back to a file
+            return JSONResponse({"error": f"the builds store can't be read ({_text(str(e), 200)})"}, status_code=503)
+
+    return Route(PIPELINE_STATUS_PATH, endpoint=endpoint, methods=["GET"], name="pipeline_status")
+
+
 # Who is calling /mcp right now (the console's endpoint sets it from the request's X-Axhub-Session / client headers), so
 # each tool call lands in that session's mirror feed in the Terminal's sessions nav.
 CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", default="")
@@ -177,6 +335,22 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "byStatus": b.get("byStatus", {}), "activeInProfile": b.get("activeCount", 0),
                        "byProfile": b.get("byProfile", {}), "running": b.get("running", [])},
         }
+
+    @mcp.tool(annotations=READ)
+    async def pipeline_status(status: str = "", project: str = "", limit: int = PIPELINE_ROWS_DEFAULT, offset: int = 0) -> dict[str, Any]:
+        """The build pipeline in one small answer, read from the builds store: builds per status, the active build (and how
+        many are active), the head of the queue. Give `status` (one status or a comma list, e.g. "failed" or
+        "split,pending") and / or `project` to also get matching builds as small rows, `limit` at a time (50 at most)
+        from `offset`; `next` is the offset of the page after. Never a build's full record: the answer is capped in rows
+        and in size (`truncated` when rows were dropped to fit)."""
+        try:
+            return await anyio.to_thread.run_sync(lambda: pipeline_status_summary(status, project, limit, offset))
+        except Exception as e:  # noqa: BLE001 — the store can't be read: say so, never fall back to a file
+            raise ToolError(f"The builds store can't be read ({_text(str(e), 200)})") from e
+
+    # the same summary over REST, on the MCP HTTP app (the console API mounts pipeline_status_route beside /mcp)
+    _rest = pipeline_status_route(lambda: os.environ.get("AXF_TOKEN", ""))
+    mcp.custom_route(PIPELINE_STATUS_PATH, methods=["GET"], name="pipeline_status")(_rest.endpoint)
 
     @mcp.tool(annotations=READ)
     async def plan_search(query: str = "", status: str = "", area: str = "", kind: Literal["", "epic", "feature", "task"] = "",
