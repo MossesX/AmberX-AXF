@@ -220,3 +220,18 @@ r = client.post("/api/plugins/plugin-commands/try", json={"op": "act", "target":
 eq(r.json()["value"]["ok"], True, "the docs page's runner")
 
 print(f"✓ plugin commands server — {checks} checks")
+
+# ---- decision #120: the pass axHub sends with a call it ran under (_meta["axhub/pass"]), signed with the console token
+import hashlib as _h
+import hmac as _hm
+
+_t = 1_800_000_000_000
+_sig = _hm.new(b"tok", f"{_t}.p1.c1".encode(), _h.sha256).hexdigest()
+_meta = {"axhub/pass": {"id": "p1", "covers": "all", "expiresAt": "2099-01-01T00:00:00Z", "callId": "c1", "t": _t, "sig": _sig}}
+eq(pc.hub_pass(_meta, now_ms=_t, key="tok")["id"], "p1", "a signed, fresh hub pass is read")
+eq(pc.hub_pass(_meta, now_ms=_t, key="tok")["covers"], "all", "with its covers")
+eq(pc.hub_pass(_meta, now_ms=_t + 6 * 60_000, key="tok"), None, "a stale one is ignored")
+eq(pc.hub_pass(_meta, now_ms=_t, key="other"), None, "a wrongly signed one is ignored")
+eq(pc.hub_pass({"axhub/pass": {**_meta["axhub/pass"], "sig": ""}}, now_ms=_t, key="tok"), None, "an unsigned one is ignored")
+eq(pc.hub_pass({}, now_ms=_t, key="tok"), None, "no pass, no pass")
+print("✓ hub pass (decision #120)")
