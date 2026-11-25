@@ -5,7 +5,19 @@ export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'bui
 export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string; uid: string; splitBy: string; split: string; modelBy: string };
 export type RowClash = { reason: string; answer: '' | 'run-all' | 'defer'; answeredBy: string; auto: boolean; canAnswer: boolean; runAllLabel: string; deferLabel: string; runAllLine: string; deferLine: string };
 export type TableRow = { clash?: RowClash | null; id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; number: string; view: PipelineView; split: SplitInfo | null; splitLabel: string };
-export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
+/** The orchestrator's views: sent (queued, building, built; landed too when asked), landed, pending (its own tab). */
+export type TableView = 'sent' | 'landed' | 'pending';
+export type TableFilter = { view?: TableView | ''; status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
+export const VIEWS: readonly TableView[];
+export const VIEW_LABEL: Readonly<Record<TableView, string>>;
+export const VIEW_HINT: Readonly<Record<TableView, string>>;
+export const PENDING_STATUSES: readonly BuildStatus[];
+export const QUEUED_STATUSES: readonly BuildStatus[];
+export const BUILT_STATUSES: readonly BuildStatus[];
+export const SENT_STATUSES: readonly BuildStatus[];
+export function viewOfStatus(status: string): TableView;
+export function viewStatuses(view: TableView | ''): BuildStatus[];
+export function viewCounts(rows: { status: string }[] | null | undefined): Record<TableView, number>;
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];
 export const MERGE_QUEUE: readonly BuildStatus[];

@@ -28,6 +28,32 @@ const LABEL = Object.freeze({
 
 /** The merge queue: a read-only view of the same rows, from merging-pr through merging-main. */
 export const MERGE_QUEUE = Object.freeze(['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
+/**
+ * The orchestrator's views (Brett, Nov 25 2026: the orchestrator shows only sent builds, queued / building / built,
+ * plus landed; Pending stays in its own tab):
+ *   sent     on its way: queued to start (pulling-main, assigning-models, ready, sending), building, built (build-complete
+ *            and the merge queue), or failed on the way. Landed builds join it when "Show landed" is on.
+ *   landed   merged and on main.
+ *   pending  not sent yet: pending, splitting, split.
+ * The view is a filter on the one table, picked with the framework's Segmented control; nothing else about a row changes.
+ */
+export const VIEWS = Object.freeze(['sent', 'landed', 'pending']);
+export const VIEW_LABEL = Object.freeze({ sent: 'Sent', landed: 'Landed', pending: 'Pending' });
+export const VIEW_HINT = Object.freeze({ sent: 'Queued, building and built builds', landed: 'Builds merged into main', pending: 'Builds not sent yet' });
+export const PENDING_STATUSES = Object.freeze(['pending', 'splitting', 'split']);
+export const QUEUED_STATUSES = Object.freeze(['pulling-main', 'assigning-models', 'ready', 'sending']);
+export const BUILT_STATUSES = Object.freeze(['build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
+export const SENT_STATUSES = Object.freeze([...QUEUED_STATUSES, 'building', ...BUILT_STATUSES, 'failed']);
+/** The view a status belongs to. */
+export const viewOfStatus = (status) => (PENDING_STATUSES.includes(status) ? 'pending' : status === 'landed' ? 'landed' : 'sent');
+/** The statuses a view lists (its Status filter offers these). */
+export const viewStatuses = (view) => (view === 'pending' ? [...PENDING_STATUSES] : view === 'landed' ? ['landed'] : view === 'sent' ? [...SENT_STATUSES] : [...BUILD_STATUSES]);
+/** How many rows each view holds: { sent, landed, pending } (landed counts only the rows that were read). */
+export function viewCounts(rows) {
+  const out = { sent: 0, landed: 0, pending: 0 };
+  for (const r of rows ?? []) out[viewOfStatus(r.status)] += 1;
+  return out;
+}
 /** Statuses whose clock stops: total time is frozen at the moment the build got there. */
 export const TERMINAL = Object.freeze(['landed']);
 
@@ -200,7 +226,8 @@ function since(range, now) {
 }
 
 /**
- * The rows a toolbar filter keeps. `status` is one status, a list, or '' (all but landed unless `landed`); `queue`
+ * The rows a toolbar filter keeps. `view` is one of VIEWS ('' = every view): sent (plus landed when `landed`), landed,
+ * pending. `status` is one status, a list, or '' (all but landed unless `landed` or the landed view); `queue`
  * keeps only the merge queue; `account` / `model` match the build or any of its steps; `date` is a DATE_RANGES key
  * on the last change; `text` matches id, title or branch.
  */
@@ -208,8 +235,11 @@ export function filterRows(rows, f = {}, now = Date.now()) {
   const statuses = f.queue ? MERGE_QUEUE : Array.isArray(f.status) ? f.status : f.status ? [f.status] : null;
   const from = since(f.date ?? '', now);
   const text = str(f.text).trim().toLowerCase();
+  const view = !f.queue && VIEWS.includes(f.view) ? f.view : '';
   return rows.filter((r) => {
-    if (statuses ? !statuses.includes(r.status) : r.status === 'landed' && !f.landed) return false;
+    // the view first: Pending is its own tab, the Sent view never lists a build that was not sent
+    if (view) { const v = viewOfStatus(r.status); if (v !== view && !(view === 'sent' && v === 'landed' && (f.landed || statuses?.includes('landed')))) return false; }
+    if (statuses ? !statuses.includes(r.status) : r.status === 'landed' && !f.landed && view !== 'landed') return false;
     if (f.account && r.account !== f.account && !r.steps.some((s) => s.account === f.account)) return false;
     if (f.model && r.model !== f.model && !r.steps.some((s) => s.model === f.model)) return false;
     if (from && Date.parse(r.updatedAt || r.at || '') < from) return false;

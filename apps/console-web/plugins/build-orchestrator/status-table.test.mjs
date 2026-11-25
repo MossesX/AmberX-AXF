@@ -71,6 +71,30 @@ test('statusSince: statusAt, else the history entry for the current status, else
   assert.equal(T.statusSince({ status: 'ready', updatedAt: at(1) }), at(1));
 });
 
+test('views: the orchestrator lists sent builds (queued, building, built) plus landed when asked; Pending is its own view', () => {
+  const rows = T.tableRows({ builds: [
+    { id: 'p1', status: 'pending', updatedAt: at(1) }, { id: 'p2', status: 'splitting', updatedAt: at(2) }, { id: 'p3', status: 'split', updatedAt: at(3) },
+    { id: 'q1', status: 'ready', updatedAt: at(4) }, { id: 'q2', status: 'queued', updatedAt: at(5) }, { id: 'b1', status: 'building', updatedAt: at(6) }, { id: 'b2', status: 'running', updatedAt: at(7) },
+    { id: 'd1', status: 'build-complete', updatedAt: at(8) }, { id: 'd2', status: 'running-ci', updatedAt: at(9) }, { id: 'd3', status: 'built', updatedAt: at(10) },
+    { id: 'f1', status: 'failed', updatedAt: at(11) }, { id: 'l1', status: 'landed', updatedAt: at(12) }, { id: 'l2', status: 'complete', updatedAt: at(13) },
+  ] });
+  const ids = (f) => T.filterRows(rows, f, NOW).map((r) => r.id).sort();
+  assert.deepEqual(ids({ view: 'sent' }), ['b1', 'b2', 'd1', 'd2', 'd3', 'f1', 'q1', 'q2'], 'sent: queued, building, built (and failed on the way); no Pending build, no landed one');
+  assert.deepEqual(ids({ view: 'sent', landed: true }), ['b1', 'b2', 'd1', 'd2', 'd3', 'f1', 'l1', 'l2', 'q1', 'q2'], 'plus landed when asked');
+  assert.deepEqual(ids({ view: 'pending' }), ['p1', 'p2', 'p3'], 'Pending stays in its own view');
+  assert.deepEqual(ids({ view: 'pending', landed: true }), ['p1', 'p2', 'p3']);
+  assert.deepEqual(ids({ view: 'landed' }), ['l1', 'l2'], 'the landed view needs no switch');
+  assert.deepEqual(ids({ view: 'sent', status: 'building' }), ['b1', 'b2']);
+  assert.deepEqual(ids({ view: 'sent', status: 'pending' }), [], 'a Pending status never shows in the sent view');
+  assert.deepEqual(ids({ view: 'sent', status: 'landed' }), ['l1', 'l2']);
+  assert.deepEqual(ids({}), ['b1', 'b2', 'd1', 'd2', 'd3', 'f1', 'p1', 'p2', 'p3', 'q1', 'q2'], 'no view (the CLI, an older caller): every row but landed, as before');
+  assert.deepEqual(ids({ queue: true, view: 'pending' }), ['d2'], 'the merge queue is not a view: it ignores one');
+  assert.deepEqual(T.viewCounts(rows), { sent: 8, landed: 2, pending: 3 });
+  assert.deepEqual([...T.VIEWS], ['sent', 'landed', 'pending']);
+  for (const s of T.BUILD_STATUSES) assert.ok(T.viewStatuses(T.viewOfStatus(s)).includes(s), `${s} is listed by the view it belongs to`);
+  assert.deepEqual([...T.PENDING_STATUSES, ...T.SENT_STATUSES, 'landed'].sort(), [...T.BUILD_STATUSES].sort(), 'every status is in exactly one view');
+});
+
 test('filters: status, merge queue, landed hidden by default, account and model on any step, date, text', () => {
   const rows = T.tableRows({ builds: [
     { id: 'a', status: 'building', updatedAt: at(1), steps: [{ id: 's1', account: 'acc1', model: 'Fable' }] },

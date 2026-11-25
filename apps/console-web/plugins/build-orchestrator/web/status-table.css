@@ -31,6 +31,10 @@
 .st-emergency { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); margin: 0 }
 
 /* phone first: the filters wrap two to a row, the find field takes a whole row; wider screens put them on one line */
+/* the view picker (Sent · Landed · Pending): the framework's Segmented control, full width on a phone */
+.st-views { display: flex; min-width: 0 }
+.st-views > .fx-seg { flex: 1 1 auto; min-width: 0 }
+@container st-page (min-width: 760px) { .st-views > .fx-seg { flex: 0 1 auto } }
 .st-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
 .st-toolbar > .st-pick { flex: 1 1 calc(var(--fx-font-size) * 9); min-width: 0; margin: 0 }
 .st-toolbar > .st-find { flex: 1 1 100%; min-width: 0; margin: 0 }
