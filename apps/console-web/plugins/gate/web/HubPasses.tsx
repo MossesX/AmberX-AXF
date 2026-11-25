@@ -11,15 +11,18 @@
  * `reason`, `quietNotice`, `include_irreversible`), `…/<id>/update` (coverage), `…/<id>/extend`, `…/<id>/revoke`.
  * The picker's services come from the page's own `services` (namespace, displayName, tools) when the hub sends them,
  * else the names the Approval rules tab already read; typed entries always work.
+ * How "All tools or a pick" is asked is the plugin's view choice `gate.pass-cover-view` (UI Review options,
+ * plugins/gate/assets/settings/pass-coverage-*.json): `segmented` (the default), `switch` or `select`.
  * console-control@1: buttons `button:hub-pass-grant | hub-pass-edit-<id> | hub-pass-save-<id>`.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, Container, Note, Segmented, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Container, Note, Segmented, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { hubPost } from '@console/hubPages/api';
 import { passClock, passSecondsLeft, readPassCovers, relTime } from '@console/hubPages/core';
 import { go } from '@console/hubPages/route';
 import { HubGate, TapTwice, useHubJson, when } from '@console/hubPages/page';
 import { cachedApprovals, loadApprovals } from './approvalRulesState';
+import { usePassCoverView } from './rows';
 import {
   coverageChips, coverageSummary, coversFromPick, filterTools, grantBody, lengthLabel, minutesError, pickFromCovers, pickerServices, runLines, runsHeading,
   serviceState, toggleService, toggleTool, toolPicked, updateBody,
@@ -218,10 +221,21 @@ function Coverage({ id, services, initial, busy, blocked, submit, onSubmit }: {
   const [quiet, setQuiet] = useState(initial?.quietNotice === true);
   const { covers, error } = coversFromPick(mode, pick);
   const anyTools = services.some((s) => s.tools.length > 0);
+  const view = usePassCoverView();
   return (
-    <div className="axp-gate__cover" data-axf-pass-coverage={id}>
-      <Segmented<CoverMode> label="What the pass covers" value={mode} onChange={setMode}
-        options={[{ value: 'all', label: 'All tools', icon: 'check' }, { value: 'pick', label: 'Pick services and tools', icon: 'list' }]} />
+    <div className="axp-gate__cover" data-axf-pass-coverage={id} data-axf-pass-cover-view={view}>
+      {view === 'segmented' && (
+        <Segmented<CoverMode> label="What the pass covers" value={mode} onChange={setMode}
+          options={[{ value: 'all', label: 'All tools', icon: 'check' }, { value: 'pick', label: 'Pick services and tools', icon: 'list' }]} />
+      )}
+      {view === 'switch' && (
+        <Switch label="All tools" checked={mode === 'all'} onChange={(on) => setMode(on ? 'all' : 'pick')}
+          hint="Every tool on every service, whatever its policy. Off: pick the services and tools the pass covers." />
+      )}
+      {view === 'select' && (
+        <SelectField label="What the pass covers" value={mode} onChange={(v) => setMode(v === 'pick' ? 'pick' : 'all')}
+          options={[{ value: 'all', label: 'All tools' }, { value: 'pick', label: 'Pick services and tools' }]} />
+      )}
       {mode === 'all' && <Switch label="Include irreversible calls" checked={irreversible} onChange={setIrreversible} hint="Hard deletes nothing can bring back run without asking too." />}
       {mode === 'pick' && (
         <div className="axp-gate__cover">

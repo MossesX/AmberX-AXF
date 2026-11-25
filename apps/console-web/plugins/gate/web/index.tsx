@@ -12,7 +12,7 @@ import { AutoLanderSettings } from './AutoLanderSettings';
 import { GateScreenLinks, GateSettings } from './GateSettings';
 import { GateAlias, GateView, PLUGIN_ID, VIEW_ALIAS } from './GateView';
 import { appMenu } from './menu';
-import { VIEW_KEY } from './rows';
+import { PASS_COVER_VIEW_KEY, VIEW_KEY } from './rows';
 import { registerSettingTargets } from './settingsStore';
 import { registerBuildCap } from './buildCapState';
 import { registerModelTriage } from './modelTriageState';
@@ -44,6 +44,9 @@ export const plugin: AxfWebLibrary = {
   settings: [{
     id: 'gate.look', tab: FOLDER, label: 'Lists', icon: 'list', order: 20, description: 'How the Rules, Auto-lander and History lists are drawn.',
     settings: [{ key: VIEW_KEY, label: 'Show the lists as', kind: 'choice', default: '', scope: 'app', options: [{ value: '', label: 'Follow the skin (one or two lines a row)' }, { value: 'grid', label: 'Grid, two lines a row' }, { value: 'cards', label: 'Cards' }, { value: 'compact', label: 'Compact grid, one line a row' }], description: 'Grid shows each title with its detail under it; cards read best on a phone; compact fits the most rows.' }],
+  }, {
+    id: 'gate.passes', tab: FOLDER, label: 'Passes', icon: 'clock', order: 30, description: 'How the pass form asks what a pass covers. A new pass always starts on All tools.',
+    settings: [{ key: PASS_COVER_VIEW_KEY, label: 'Ask what a pass covers with', kind: 'choice', default: 'segmented', scope: 'app', options: [{ value: 'segmented', label: 'Two buttons: All tools | Pick services and tools' }, { value: 'switch', label: 'One "All tools" switch' }, { value: 'select', label: 'A drop-down' }], description: 'The buttons show both answers at once; the switch reads as "everything unless I turn it off"; the drop-down takes the least room on a phone.' }],
   }],
   settingsPanels: [
     { id: 'gate.settings', tab: FOLDER, title: 'VPS Configuration', icon: 'shield', order: 10, render: () => <GateSettings /> },

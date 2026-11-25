@@ -354,7 +354,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     else:
         outcome = _action(plan, grants, who, request)
     if plan.get("effect") != "read":
-        under = f" · ran under pass {plan['ranUnder']} (skipped {plan.get('skippedPolicy', 'confirm')})" if plan.get("ranUnder") else ""
+        under = f" · ran under pass {plan['ranUnder']} (skipped {plan.get('policySkipped') or plan.get('skippedPolicy', 'confirm')})" if plan.get("ranUnder") else ""
         cx.log("plugins", f"{who}: {plan.get('name')} — {plan.get('title')} ({plan['command'].get('path')}) {'ok' if outcome.get('ok', 200 <= outcome.get('status', 200) < 300) else 'failed'}{under}")
     return _engine("finish", {"command": plan["command"], "outcome": outcome})
 

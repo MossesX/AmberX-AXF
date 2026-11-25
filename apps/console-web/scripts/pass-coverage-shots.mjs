@@ -4,7 +4,8 @@
  * (`/api/hub-pages/*`) answered from a fixed fake hub. Nothing reaches a real hub.
  *
  *   node scripts/pass-coverage-shots.mjs [out-dir]      (build first: npm run build)
- *   PASS_SHOTS_PORT=7398 · PW_CHROMIUM=<chromium path>
+ *   PASS_SHOTS_PORT=7398 · PW_CHROMIUM=<chromium path> · PASS_COVER_VIEW=segmented|switch|select (the plugin's
+ *   view choice `gate.pass-cover-view`; default segmented): the same checks run against whichever control is drawn.
  *
  * It fails unless:
  *   - each active pass card lists its coverage ("All tools", or the entries) and the calls that ran under it
@@ -25,6 +26,18 @@ const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2] || '';
 const PORT = Number(process.env.PASS_SHOTS_PORT) || 7398;
+const VIEW = ['switch', 'select'].includes(process.env.PASS_COVER_VIEW) ? process.env.PASS_COVER_VIEW : 'segmented';
+/** "All tools" or the picker, through whichever control the view draws. */
+const coverMode = async (box) => {
+  if (VIEW === 'switch') return (await box.getByRole('switch', { name: 'All tools' }).isChecked()) ? 'all' : 'pick';
+  if (VIEW === 'select') return box.getByLabel('What the pass covers').inputValue();
+  return (await box.getByRole('radio', { name: 'All tools' }).getAttribute('aria-checked')) === 'true' ? 'all' : 'pick';
+};
+const setCoverMode = async (box, mode) => {
+  if (VIEW === 'switch') return box.getByRole('switch', { name: 'All tools' }).setChecked(mode === 'all', { force: true });
+  if (VIEW === 'select') return box.getByLabel('What the pass covers').selectOption(mode);
+  return box.getByRole('radio', { name: mode === 'all' ? 'All tools' : 'Pick services and tools' }).click();
+};
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
 if (!playwright) { console.error('playwright not found'); process.exit(2); }
@@ -89,13 +102,23 @@ try {
     await page.goto(`http://127.0.0.1:${PORT}/`);
     await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
     const control = (cmd) => page.evaluate((c) => window.axfConsoleControl(c), cmd);
+    if (VIEW !== 'segmented') {
+      // the view choice is an app setting: save it where the console keeps its settings, then load again
+      await page.evaluate((view) => {
+        const keys = Object.keys(localStorage).filter((k) => /^axf:.*:settings$/.test(k));
+        if (!keys.length) throw new Error('no settings store yet');
+        for (const k of keys) localStorage.setItem(k, JSON.stringify({ ...JSON.parse(localStorage.getItem(k) || '{}'), 'gate.pass-cover-view': view }));
+      }, VIEW);
+      await page.reload();
+      await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
+    }
     await sleep(10_000); // first visit: every plugin loads once to learn its shape before its views can be opened
     let opened = null;
     for (let i = 0; i < 40; i++) { opened = await control({ verb: 'open', address: 'view:axhub-passes' }).catch((e) => ({ ok: false, message: String(e) })); if (opened?.ok) break; await sleep(500); }
     say(`${device}: open → ${JSON.stringify(opened).slice(0, 160)}`);
     const shot = async (name, target) => {
       if (!OUT) return;
-      const file = join(OUT, `pass-coverage-${name}-${device}.png`);
+      const file = join(OUT, `pass-coverage-${VIEW === 'segmented' ? '' : `${VIEW}-`}${name}-${device}.png`);
       if (target) { await target.scrollIntoViewIfNeeded(); await sleep(300); }
       if (target && !mobile) await target.screenshot({ path: file }); else await page.screenshot({ path: file, fullPage: !mobile });
       shots.push(file);
@@ -117,7 +140,8 @@ try {
     const grant = page.locator('[data-axf-pass-grant]');
     if (!(await grant.isVisible())) await page.locator('.fx-card', { has: page.getByRole('heading', { name: 'Switch a pass on' }) }).getByRole('button', { name: 'Expand' }).click();
     await grant.waitFor({ state: 'visible', timeout: 10_000 });
-    assert.equal(await grant.getByRole('radio', { name: 'All tools' }).getAttribute('aria-checked'), 'true', 'All tools is the default');
+    assert.equal(await grant.locator('[data-axf-pass-coverage]').getAttribute('data-axf-pass-cover-view'), VIEW, `the ${VIEW} view is drawn`);
+    assert.equal(await coverMode(grant), 'all', 'All tools is the default');
     assert.match(await text('[data-axf-pass-grant] [data-axf-pass-summary]'), /^Covers every tool on every service/);
     await grant.getByRole('radio', { name: '24 h' }).click();
     await shot('grant-all', grant);
@@ -126,7 +150,7 @@ try {
     assert.deepEqual(posts.pop(), { path: 'auth/api/passes', body: { covers: 'all', minutes: 1440, reason: 'Work with Claude', quietNotice: false } });
 
     // the picker: a service's tool plus a typed entry
-    await grant.getByRole('radio', { name: 'Pick services and tools' }).click();
+    await setCoverMode(grant, 'pick');
     assert.equal(await page.locator('#hub-pass-grant').isDisabled(), true, 'nothing picked yet');
     const vps = grant.locator('[data-axf-pass-service="vps"]');
     await vps.getByRole('button', { name: '5 tools' }).click();
@@ -142,11 +166,11 @@ try {
     // Edit coverage on the picked pass: opens on its entries, saves to /update
     await page.locator('#hub-pass-edit-p-pick').click();
     const edit = page.locator('[data-axf-pass-coverage="p-pick"]');
-    assert.equal(await edit.getByRole('radio', { name: 'Pick services and tools' }).getAttribute('aria-checked'), 'true');
+    assert.equal(await coverMode(edit), 'pick');
     assert.equal(await edit.locator('[data-axf-pass-service="vps"]').getByRole('checkbox', { name: 'run', exact: true }).isChecked(), true);
     assert.equal(await edit.getByLabel('More services, tools and scopes').inputValue(), 'axf-console.console_terminal_sessions_*, scope:tokens.theme');
     await shot('edit', page.locator('[data-axf-pass="p-pick"]'));
-    await edit.getByRole('radio', { name: 'All tools' }).click();
+    await setCoverMode(edit, 'all');
     await page.locator('#hub-pass-save-p-pick').click();
     await sleep(600);
     assert.deepEqual(posts.pop(), { path: 'auth/api/passes/p-pick/update', body: { covers: 'all', quietNotice: true, include_irreversible: false } });

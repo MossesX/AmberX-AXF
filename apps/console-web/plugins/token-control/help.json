@@ -32,7 +32,7 @@
       {
         "target": "veto-passes",
         "title": "Veto passes",
-        "text": "The longest a pass may last (1 to 240 minutes; longer requests are cut to it) and the time zone used for \"until 10:42 AM\".",
+        "text": "The longest a pass may last (1 to 1440 minutes, 24 hours; longer requests are cut to it) and the time zone used for \"until 10:42 AM\".",
         "kind": "card"
       },
       {
@@ -173,7 +173,7 @@
       {
         "target": "longest-pass-minutes",
         "title": "Longest pass (minutes)",
-        "text": "The longest a veto pass may last, 1 to 240 minutes. A longer request is cut to this.",
+        "text": "The longest a veto pass may last, 1 to 1440 minutes (24 hours). A longer request is cut to this.",
         "kind": "field"
       },
       {

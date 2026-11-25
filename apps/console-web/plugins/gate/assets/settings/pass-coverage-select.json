@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "pass-coverage-select",
+ "name": "pass-coverage: A drop-down",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Takes the least room on a phone. The second answer is one tap further away than with the buttons.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pass-coverage",
+  "choice-option:select"
+ ],
+ "data": {
+  "view": "select",
+  "settingKey": "gate.pass-cover-view",
+  "appliesTo": [
+   "gate.passes"
+  ],
+  "builtFor": "plugin:gate"
+ }
+}

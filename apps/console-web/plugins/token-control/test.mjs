@@ -227,7 +227,7 @@ await test('pass engine: scopes, coverage, minutes, narrow scopes never cover de
   assert.equal(pc.passScopeOf({ op: 'get', target: 'amberx.items' }), null, 'reads need no pass');
   assert.equal(pc.passScopeOf({ op: 'act', target: 'pass.scopes', action: 'grant' }), null, 'a pass never covers the pass target');
   assert.deepEqual(pc.passScopesFor({ op: 'set', target: 'tokens.style' }), ['all', 'tokens.style', 'tokens.*']);
-  assert.equal(pc.passMinutes(undefined), 30); assert.equal(pc.passMinutes(0), 1); assert.equal(pc.passMinutes(999), 240); assert.equal(pc.passMinutes(90, 60), 60);
+  assert.equal(pc.passMinutes(undefined), 30); assert.equal(pc.passMinutes(0), 1); assert.equal(pc.passMinutes(999), 999); assert.equal(pc.passMinutes(24 * 60), 1440, "a 24-hour pass lasts 24 hours"); assert.equal(pc.passMinutes(9999), 1440); assert.equal(pc.passMinutes(90, 60), 60);
   assert.equal(pc.passScopeId('colours'), 'tokens.theme'); assert.equal(pc.passScopeId('all'), 'all'); assert.equal(pc.passScopeId('everything'), 'all'); assert.equal(pc.passScopeId(''), 'all', 'no scope = everything'); assert.equal(pc.passScopeId('tokens'), 'tokens.*'); assert.equal(pc.passScopeId('nope'), null);
   const p = { id: 'p', scope: 'tokens.*', state: 'active', expiresAt: new Date(1e12 + 60000).toISOString() };
   for (const op of ['remove', 'add', 'act']) assert.equal(pc.passCovering([p], { op, target: 'tokens.theme' }, 1e12), null, `${op} is never covered`);
@@ -235,7 +235,7 @@ await test('pass engine: scopes, coverage, minutes, narrow scopes never cover de
   assert.equal(pc.passCovering([p], { op: 'set', target: 'tokens.theme' }, 1e12 + 60000), null, 'expiry is the clock');
 });
 
-await test('pass coverage (decision #120): covers, migration of older records, ranUnder', async () => {
+await test('pass coverage (decision 120): covers, migration of older records, ranUnder', async () => {
   const { readAudit } = await import('./lib/common.mjs');
   assert.equal(pc.passCoversOf({ scope: 'all' }), 'all', 'an all pass with no field reads as all');
   assert.equal(pc.passCoversOf({ scope: 'all', covers: ['vps'] })[0], 'vps', 'a stored list is kept');

@@ -4,15 +4,15 @@
  *   node apps/console-web/plugins/token-control/pass-coverage.test.mjs
  *
  * Brett: "Why do I keep getting approvals when I set a pass?" Each test below says what an active pass for everything
- * must do (framework/spec/AXHUB-PASS.md) and FAILS on main: it reproduces one place the call path skips the pass.
+ * must do (framework/spec/AXHUB-PASS.md) and failed on main: it reproduces one place the call path skipped the pass.
  * The trace with every such place is _claude/builds/reports/approval-pass-covers-every-call/s2-pass-skips.md.
  *
  *   veto case     vps.run still counts down                        → tests V1-V3 (what the console hands the hub)
  *   confirm case  console_terminal_sessions_stop still asks        → tests C1-C2 (the console's own confirm)
  *
- * Tests marked "control" pass today and pin what already works. This file is not in the CI workflow while it is
- * red: the steps that fix the path (s3-s5) turn it green and s10 wires it. The hub's half of the veto case is
- * reproduced in the axHub repo (packages/core/test/passes.test.ts on claude/approval-pass-covers-every-call).
+ * Tests marked "control" pin what already worked. Every test failed on main before the build and passes now; the
+ * file runs in the CI workflow. The hub's half of the veto case is in the axHub repo (packages/core/test/passes.test.ts,
+ * packages/server/test/passes.test.ts).
  * Every store is a temp copy.
  */
 import assert from 'node:assert/strict';

@@ -159,6 +159,11 @@
         "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
       },
       {
+        "target": "gate.pass-cover-view",
+        "title": "Ask what a pass covers with",
+        "text": "How the pass form asks what a pass covers: two buttons (All tools | Pick services and tools), one All tools switch, or a drop-down. Whichever you pick, a new pass starts on All tools."
+      },
+      {
         "target": "build-rules",
         "title": "Build rules",
         "text": "Every rule a build has to follow, in one list: who does it (the VPS or the build session), when, its check and fixer, on or off, and how it went last time. VPS rules are done by the VPS and never reach a session's brief, so nothing is done twice. Same as `axf gate build-rules …`, the gate_build_rules_* MCP tools and voice (gate.build-rules.*).",
@@ -587,6 +592,24 @@
         "title": "Quiet notice per run",
         "text": "On: each call that runs under the pass sends one quiet “ran under pass” line. Off, the default: a covered call sends nothing. It is sent when the pass is switched on or its coverage is saved.",
         "kind": "toggle"
+      },
+      {
+        "target": "from-now",
+        "title": "from now",
+        "text": "Moves the pass’s end to that long from now (30 min, 1 h, 4 h or 24 h). What it covers stays the same.",
+        "kind": "button"
+      },
+      {
+        "target": "all-tools",
+        "title": "All tools",
+        "text": "On: the pass covers every tool on every service, whatever its policy (veto countdown, approval, always-approve). Off: pick the services and tools it covers.",
+        "kind": "toggle"
+      },
+      {
+        "target": "what-the-pass-covers",
+        "title": "What the pass covers",
+        "text": "All tools (the default: every tool on every service) or Pick services and tools, to name only what the pass should cover.",
+        "kind": "field"
       }
     ],
     "intros": [

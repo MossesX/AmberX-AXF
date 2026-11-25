@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "pass-coverage-segmented",
+ "name": "pass-coverage: Two buttons: All tools | Pick services and tools",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Both answers are on screen at once, All tools picked. One tap to switch. The default until one is picked.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pass-coverage",
+  "choice-option:segmented"
+ ],
+ "data": {
+  "view": "segmented",
+  "settingKey": "gate.pass-cover-view",
+  "appliesTo": [
+   "gate.passes"
+  ],
+  "builtFor": "plugin:gate"
+ }
+}

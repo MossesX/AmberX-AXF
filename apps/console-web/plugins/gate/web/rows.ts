@@ -35,3 +35,19 @@ export function useGateLayout(): { view: GateViewKind; rows: 1 | 2 } {
 
 /** Lines a grid row (kept for the tabs' cells). */
 export function useGridRows(): 1 | 2 { return useGateLayout().rows; }
+
+/**
+ * How the pass coverage form asks "All tools or a pick" (HubPasses.tsx). The plugin's view choice `gate.pass-cover-view`
+ * (UI Review options, plugins/gate/assets/settings/pass-coverage-*.json):
+ *   segmented  two buttons side by side: All tools | Pick services and tools (the default)
+ *   switch     one "All tools" switch; off opens the picker
+ *   select     a drop-down, the least room on a phone
+ * Whichever is drawn, a new pass starts on All tools.
+ */
+export const PASS_COVER_VIEW_KEY = 'gate.pass-cover-view';
+export const PASS_COVER_VIEWS = ['segmented', 'switch', 'select'] as const;
+export type PassCoverView = (typeof PASS_COVER_VIEWS)[number];
+export function usePassCoverView(): PassCoverView {
+  const v = useSetting(PASS_COVER_VIEW_KEY);
+  return (PASS_COVER_VIEWS as readonly unknown[]).includes(v) ? (v as PassCoverView) : 'segmented';
+}

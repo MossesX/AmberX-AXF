@@ -38,7 +38,7 @@ import { registry } from '../../../../framework/cli/plugin-commands.mjs';
 import { PASS_CONSOLE_SERVICE, passActive, passCoversCall, passCoversOf, passRanUnder, passReachesIrreversible } from '../../../../framework/core/engines/control-pass.mjs';
 
 /**
- * The pass that lifts this command's confirm (decision #120), or null: the first active one whose `covers` names the
+ * The pass that lifts this command's confirm (decision 120), or null: the first active one whose `covers` names the
  * console service, the command's MCP tool or its control@1 target. `passes`: the console's own active passes and the
  * one axHub sent with the call (verified by the server). A deleting command counts as irreversible only when the
  * plugin says so; then only an all pass with include_irreversible covers it.
@@ -210,7 +210,9 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     // the command's own effect on top of the gate (a read needs read, a deleting command delete + a confirm token)
     const need = `control.plugins.${{ read: 'read', write: 'write', navigate: 'write', destructive: 'delete' }[cmd.effect]}`;
     if (!controlGranted(grants, need)) throw new PluginError(CONTROL_WIRE.DENIED, `${c.path} needs ${need}`, { requires: need });
-    // decision #120: a covering pass runs a confirm command at once (no confirmation_required); logged ranUnder
+    // axHub decision 120: a covering pass runs a confirm command at once (no confirmation_required). The run is logged
+    // `ranUnder` with what it skipped: `skippedPolicy` (control-pass@1's class) and `policySkipped` (pass@2's word:
+    // a destructive confirm command is `always-approve`, framework/spec/AXHUB-PASS.md §3).
     const covering = cmd.confirm && !controlConfirmValid(c, c.confirm, confirmSalt(), now) ? commandPass([...(pass ? [pass] : []), ...(typeof passes === 'function' ? passes(now) : passes)], plugin, cmd, c, now) : null;
     const under = covering ? passRanUnder(covering, 'confirm') : null;
     if (cmd.confirm && !covering && !controlConfirmValid(c, c.confirm, confirmSalt(), now)) {
@@ -225,7 +227,7 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     const dispatch = cmd.run.route
       ? { kind: 'route', ...pluginRouteRequest(plugin.folder, cmd, input) }
       : { kind: 'action', action: cmd.run.action, args: input.args ?? null, to: input.to ?? 'recent' };
-    return { ok: true, dispatch, command: c, effect: cmd.effect, plugin: plugin.folder, name: plugin.name, title: cmd.title, ...(under ? { ranUnder: under.ranUnder, skippedPolicy: under.skippedPolicy } : {}) };
+    return { ok: true, dispatch, command: c, effect: cmd.effect, plugin: plugin.folder, name: plugin.name, title: cmd.title, ...(under ? { ranUnder: under.ranUnder, skippedPolicy: under.skippedPolicy, policySkipped: cmd.effect === 'destructive' ? 'always-approve' : 'confirm' } : {}) };
   } catch (e) {
     if (e instanceof PluginError) return fail(e.code, e.message, e.extra);
     if (e?.code && Object.values(CONTROL_WIRE).includes(e.code)) return fail(e.code, e.message);

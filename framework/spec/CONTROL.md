@@ -254,7 +254,7 @@ token scopes.
 
 | Verb | Input | What it does |
 |---|---|---|
-| `grant` | `minutes?` (1-240, default 30, capped by the console's *Longest pass* setting), `reason?`, `include_irreversible?` (all only) | files a request; on at once only when the transport carries Brett's approval |
+| `grant` | `minutes?` (1-1440, default 30, capped by the console's *Longest pass* setting), `reason?`, `include_irreversible?` (all only) | files a request; on at once only when the transport carries Brett's approval |
 | `approve` / `deny` | `request` | Brett only (see below): turns a waiting request on / refuses it |
 | `revoke` | – | ends the scope's pass now and withdraws a waiting request |
 | `undo` | – | rolls back what can be rolled back: every token the scope's latest pass changed goes back to its value before the pass first touched it. Everything else (AmberX, planner, other commands) is listed in `notUndoable` (`{at, by, op, target, path?, action?, what}`) and in the answer's `text`, to check by hand. The pass stays as it is |

@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "pass-coverage-switch",
+ "name": "pass-coverage: One \"All tools\" switch",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Reads as \"everything unless I turn it off\". Sits with the other two switches (irreversible calls, quiet notice); turning it off opens the picker.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pass-coverage",
+  "choice-option:switch"
+ ],
+ "data": {
+  "view": "switch",
+  "settingKey": "gate.pass-cover-view",
+  "appliesTo": [
+   "gate.passes"
+  ],
+  "builtFor": "plugin:gate"
+ }
+}

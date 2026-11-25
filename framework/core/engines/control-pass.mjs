@@ -39,7 +39,7 @@
 
 export const PASS_FRAME = 'control-pass@1';
 export const PASS_TARGET = 'pass.scopes';
-export const PASS_MAX_MINUTES = 240;
+export const PASS_MAX_MINUTES = 1440;
 export const PASS_DEFAULT_MINUTES = 30;
 /** The scope a grant gets when it names none: everything. */
 export const PASS_DEFAULT_SCOPE = 'all';
@@ -357,6 +357,9 @@ export function passPublication(passes, now = Date.now(), timeZone) {
     $axf: PASS_FRAME,
     at: new Date(now).toISOString(),
     active: list.filter((p) => passActive(p, now)).map((p) => passPublic(p, now, timeZone)),
+    // the same active passes as the hub's feed reader takes them (axHub packages/server/src/pass-feed.ts): a `passes`
+    // list, each entry naming who granted it
+    passes: list.filter((p) => passActive(p, now)).map((p) => ({ ...passPublic(p, now, timeZone), grantedBy: p.approvedBy ?? '' })),
     pending: list.filter((p) => passPending(p, now)).map((p) => passPublic(p, now, timeZone)),
     scopes: Object.fromEntries(Object.entries(PASS_SCOPES).map(([id, s]) => [id, { label: s.label, targets: s.targets, ops: s.ops, ...(s.includes ? { includes: s.includes } : {}) }])),
     default: PASS_DEFAULT_SCOPE,
