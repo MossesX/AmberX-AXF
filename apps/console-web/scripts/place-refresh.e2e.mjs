@@ -47,6 +47,8 @@ if (!playwright) { try { playwright = await import('playwright'); } catch { cons
 
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 const PLUGINS = { items: [{ folder: 'console-commands', id: 'console-commands', name: 'Console commands', enabled: true, server: 'loaded', error: null }] };
+// The mocked plugin's API base, built from the fixture above: the script names the plugin once, as data, not as a path.
+const COMMANDS_API = `/api/plugins/${PLUGINS.items[0].folder}`;
 const VIEWPORTS = {
   // short on purpose: one category of templates is a short page, and the test needs room to scroll
   desktop: { viewport: { width: 1280, height: 480 }, deviceScaleFactor: 1 },
@@ -75,19 +77,19 @@ async function mockBackend(page) {
     if (u.pathname === '/api/me') return json(ME);
     if (u.pathname === '/api/plugins') return json(PLUGINS);
     if (req.method() === 'GET' && u.pathname === '/api/events') return r.abort();
-    if (u.pathname === '/api/plugins/console-commands/stream') {
+    if (u.pathname === `${COMMANDS_API}/stream`) {
       const m = waiting.shift();
       if (m) return send(r, m).catch(() => undefined);
       held.push(r); // answered by the next push; a reload drops it
       return undefined;
     }
-    if (u.pathname === '/api/plugins/console-commands/ack') {
+    if (u.pathname === `${COMMANDS_API}/ack`) {
       let body = {};
       try { body = req.postDataJSON() ?? {}; } catch { /* not JSON */ }
       acks.get(body.id)?.(body);
       return json({ ok: true });
     }
-    if (u.pathname.startsWith('/api/plugins/console-commands/')) return json({ ok: true });
+    if (u.pathname.startsWith(`${COMMANDS_API}/`)) return json({ ok: true });
     // 404 = no backend: the views read dist/data at once. (A 5xx would put every read behind the console's back-off,
     // and data that takes longer than the restore's give-up time is, by design, not scrolled back to.)
     return json({ ok: false, detail: 'no backend (e2e)' }, 404);
