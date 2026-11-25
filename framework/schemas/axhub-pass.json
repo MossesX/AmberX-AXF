@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axf.amberx.app/schemas/axhub-pass.json",
+  "title": "pass@2",
+  "description": "One axHub approval pass with its coverage (framework/spec/AXHUB-PASS.md). pass@2 adds `covers` to axHub's pass@1 record (axHub docs/veto-pass.md, PolicyPassSchema in packages/core/src/schemas.ts): `all` (the default) or an explicit list of service / tool / scope entries. A pass@1 record has no `covers`; every reader derives it with the migration in `x-migration` and never widens what the owner approved. `x-decision` is the table a pass decides a call with, `x-log` what a covered run writes.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "reason", "createdAt", "expiresAt", "grantedBy", "grantedVia", "uses"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": { "enum": [1, 2], "description": "1 = a record written before `covers` (read through the migration); 2 = written with `covers`." },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9:._-]{0,99}$", "description": "A UUID for a stored pass, `feed:<service>:<id>` for a feed pass." },
+    "covers": { "$ref": "#/$defs/covers" },
+    "includeIrreversible": { "type": "boolean", "description": "Only with covers `all`: irreversible calls run under the pass too." },
+    "quietNotice": { "type": "boolean", "default": false, "description": "true = one quiet `ran under pass` line per covered run; false (default) = a covered run sends no notice at all." },
+    "all": { "type": "boolean", "description": "pass@1 mirror, still written: true exactly when covers is `all`." },
+    "service": { "type": "string", "description": "pass@1 mirror, still written: `*` for covers `all`, else the one service every entry names, else `*`." },
+    "tools": { "type": "array", "items": { "$ref": "#/$defs/pattern" }, "maxItems": 50, "description": "pass@1 mirror, still written: `[\"*\"]` for covers `all`, else the entries' tool patterns." },
+    "scopes": { "type": "array", "items": { "$ref": "#/$defs/pattern" }, "maxItems": 50, "description": "pass@1 mirror, still written: the entries' scope patterns; absent for covers `all`." },
+    "reason": {
+      "type": "object",
+      "required": ["title", "description"],
+      "properties": { "title": { "type": "string", "maxLength": 120 }, "description": { "type": "string", "maxLength": 1000 } }
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time", "description": "Any length the hub's longest-pass limit allows (24 hours must be allowed). Coverage does not depend on length." },
+    "grantedBy": { "type": "string", "maxLength": 200 },
+    "grantedVia": { "enum": ["approval", "web", "cli", "feed"] },
+    "confirmationId": { "type": "string" },
+    "requestedBy": { "type": "string", "maxLength": 200 },
+    "source": { "type": "object" },
+    "uses": { "type": "integer", "minimum": 0, "description": "Calls that ran under this pass (the `runs` count pass_status shows)." },
+    "lastUsedAt": { "type": "string", "format": "date-time" },
+    "revokedAt": { "type": "string", "format": "date-time" },
+    "revokedBy": { "type": "string", "maxLength": 200 },
+    "extendedAt": { "type": "string", "format": "date-time" },
+    "extendedBy": { "type": "string", "maxLength": 200 }
+  },
+  "allOf": [
+    {
+      "if": { "required": ["includeIrreversible"], "properties": { "includeIrreversible": { "const": true } } },
+      "then": { "anyOf": [{ "properties": { "covers": { "const": "all" } }, "required": ["covers"] }, { "properties": { "all": { "const": true } }, "required": ["all"] }] }
+    }
+  ],
+  "$defs": {
+    "pattern": { "type": "string", "pattern": "^[A-Za-z0-9._/*-]{1,128}$", "description": "`*` stands for any run of characters (none included); everything else is literal and case-sensitive; the whole name must match." },
+    "entry": {
+      "type": "object",
+      "description": "One thing a pass covers. A call matches when the service matches, the tool matches, and (when `scope` is set) the call's control@1 `target` argument matches.",
+      "required": ["service"],
+      "additionalProperties": false,
+      "properties": {
+        "service": { "$ref": "#/$defs/pattern", "description": "A service namespace, or `*` for any service (then `scope` is required)." },
+        "tool": { "$ref": "#/$defs/pattern", "default": "*", "description": "A tool name or pattern; left out = every tool of the service." },
+        "scope": { "$ref": "#/$defs/pattern", "description": "A control@1 target (`tokens.theme`, `planner.builds`); a scoped entry never covers a call without a `target`." }
+      },
+      "if": { "properties": { "service": { "const": "*" } } },
+      "then": { "required": ["service", "scope"] }
+    },
+    "covers": {
+      "description": "What the pass covers. `all` (the default for every new pass): every tool on every service, whatever its policy. A list: exactly the entries named.",
+      "default": "all",
+      "oneOf": [
+        { "const": "all" },
+        { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "$ref": "#/$defs/entry" } }
+      ]
+    },
+    "coversRequest": {
+      "description": "`covers` as a grant or update may send it (pass_grant, pass_update, POST /auth/api/passes, the CLI, voice). Left out = `all`. A list item is an entry or its short form: `<service>` (every tool), `<service>.<tool>` (split at the first dot), `scope:<target>` (any service).",
+      "oneOf": [
+        { "const": "all" },
+        { "type": "array", "minItems": 1, "maxItems": 50, "items": { "oneOf": [{ "$ref": "#/$defs/entry" }, { "type": "string", "pattern": "^(scope:)?[A-Za-z0-9._/*-]{1,128}$" }] } }
+      ]
+    },
+    "logEntry": {
+      "type": "object",
+      "description": "What a call that ran under a pass adds to its job and its approvals-log entry.",
+      "required": ["ranUnder", "policySkipped", "ranAt", "status"],
+      "properties": {
+        "ranUnder": { "type": "string", "description": "The pass id. Present exactly when a pass let the call run." },
+        "policySkipped": { "enum": ["veto", "confirm", "always-approve"] },
+        "ranAt": { "type": "string", "format": "date-time" },
+        "status": { "enum": ["ran under pass", "failed under pass"] },
+        "passId": { "type": "string", "description": "pass@1 name for `ranUnder`, still written." },
+        "passGrantedBy": { "type": "string" },
+        "passExpiresAt": { "type": "string", "format": "date-time" },
+        "passScope": { "type": "string", "description": "The coverage label: `everything`, `everything, including irreversible calls`, or the entries." }
+      }
+    }
+  },
+  "x-decision": {
+    "note": "What an active pass that covers the call does with each policy. `always-approve` = a tool whose approval is always the owner's straight approval and never a countdown (annotation explicitApproval, or a destructive / guarded tool held at confirm), e.g. console_terminal_sessions_stop.",
+    "policies": {
+      "allow": { "underPass": "run", "ranUnder": false, "why": "runs anyway; no pass is used or named" },
+      "veto": { "underPass": "run", "ranUnder": true, "countdown": false, "prompt": false, "notice": false },
+      "confirm": { "underPass": "run", "ranUnder": true, "countdown": false, "prompt": false, "notice": false },
+      "always-approve": { "underPass": "run", "ranUnder": true, "countdown": false, "prompt": false, "notice": false },
+      "deny": { "underPass": "deny", "ranUnder": false, "why": "no pass ever lifts a deny" }
+    },
+    "neverCovered": [
+      { "id": "owner-grant", "what": "tools annotated ownerGrant (axhub.pass_grant, axhub.pass_update): a pass can't grant, widen or stretch a pass" },
+      { "id": "irreversible", "what": "a call the connector marks irreversible, unless covers is `all` and includeIrreversible is true" },
+      { "id": "confirmation-id", "what": "a call that carries a confirmation_id: it is the answer to an approval already asked" },
+      { "id": "ended", "what": "a pass past expiresAt by the hub's clock, or revoked" }
+    ],
+    "pick": "When several active passes cover a call, the one ending last is named in ranUnder."
+  },
+  "x-log": {
+    "fields": ["ranUnder", "policySkipped", "ranAt", "status", "passId", "passGrantedBy", "passExpiresAt", "passScope"],
+    "audit": "one audit entry per covered run: pass id, qualified tool, policy skipped, time",
+    "counter": "the pass's `uses` goes up by one and `lastUsedAt` is set"
+  },
+  "x-migration": {
+    "id": "pass-covers-1",
+    "note": "Read-time, on every reader (hub, web app, console). A record with a valid `covers` is read as is. A record with no `covers` reads as `all`, except a pass@1 record whose own fields name something narrower: that one keeps exactly what it named, as a list. A `covers` that is present but not valid covers nothing.",
+    "storage": "axHub SQLite migration 7: `ALTER TABLE passes ADD COLUMN covers TEXT` (NULL = not written yet; no backfill is needed, a backfill writes what the read rule answers).",
+    "rules": [
+      "covers is `all` or a valid list → covers",
+      "covers present, anything else → none (the pass covers nothing; fail closed)",
+      "no covers, all === true → all",
+      "no covers, no narrow term (service absent or `*`, tools absent or only `*`, no scopes) → all",
+      "no covers, a narrow term → one entry per tool × scope: { service, tool (left out when `*`), scope? }"
+    ],
+    "cases": [
+      { "name": "no pass fields at all", "record": {}, "covers": "all" },
+      { "name": "pass@1 for everything", "record": { "all": true, "service": "*", "tools": ["*"] }, "covers": "all" },
+      { "name": "pass@1 with wildcards only", "record": { "service": "*", "tools": ["*"] }, "covers": "all" },
+      { "name": "pass@1 narrow: tools and a scope", "record": { "service": "axf-console", "tools": ["control_set", "control_reset"], "scopes": ["tokens.theme"] }, "covers": [{ "service": "axf-console", "tool": "control_set", "scope": "tokens.theme" }, { "service": "axf-console", "tool": "control_reset", "scope": "tokens.theme" }] },
+      { "name": "pass@1 narrow: one service", "record": { "service": "vps", "tools": ["*"] }, "covers": [{ "service": "vps" }] },
+      { "name": "pass@1 narrow: a scope on any service", "record": { "service": "*", "tools": ["*"], "scopes": ["tokens.theme"] }, "covers": [{ "service": "*", "scope": "tokens.theme" }] },
+      { "name": "the web view's `scope` spelling", "record": { "service": "axf-console", "tools": ["*"], "scope": ["tokens.layout"] }, "covers": [{ "service": "axf-console", "scope": "tokens.layout" }] },
+      { "name": "pass@2 all", "record": { "covers": "all", "all": true, "service": "*", "tools": ["*"] }, "covers": "all" },
+      { "name": "pass@2 list wins over the mirrors", "record": { "covers": [{ "service": "vps", "tool": "run" }], "service": "*", "tools": ["*"] }, "covers": [{ "service": "vps", "tool": "run" }] },
+      { "name": "covers not valid", "record": { "covers": "everything" }, "covers": "none" },
+      { "name": "covers an empty list", "record": { "covers": [] }, "covers": "none" },
+      { "name": "an entry for any service without a scope", "record": { "covers": [{ "service": "*" }] }, "covers": "none" }
+    ]
+  }
+}
