@@ -142,7 +142,7 @@ Names resolve by id, title or a few words, against what the open console reports
   {
     id: 'passes',
     title: 'Veto passes: 30 minutes to do whatever Brett says, without a veto on every call',
-    body: `Every changing call through axHub waits on a veto countdown. A **pass** lets commands run at once for a while: "allow everything for the next 30 minutes". By default it covers everything; a narrower scope covers only token changes.
+    body: `Every changing call through axHub waits on a veto countdown. A **pass** lets commands run at once for a while: "allow everything for the next 30 minutes". By default it covers every tool, whatever its policy: veto tools (\`vps.run\`), confirm tools and always-approve tools (\`console_terminal_sessions_stop\`) run at once, with no countdown and no approval prompt. A narrower scope covers only token changes.
 
 \`\`\`sh
 axf pass grant 30 --reason "redo the console look"      # everything, 30 min
@@ -157,6 +157,8 @@ axf pass revoke
 - **Brett approves each pass once.** A grant from Claude, an agent, the MCP tool \`pass_grant\` or a script is only a request: it shows on the banner (Pass) with Approve / Deny, or waits for his approval in axHub. From his own console session it is on at once. A pass never covers granting another pass.
 - **Deletes**: under \`all\`, ordinary deletes (plans, builds) run without the confirm token. Irreversible ones (AmberX notes, to-dos and lists are deleted on every device for good; tools axHub marks irreversible) still confirm unless the pass was granted with \`include_irreversible\`.
 - **While it runs**: the banner shows "Everything: 29:41 left" (or the scope) with Extend, Undo and Revoke, and warns two minutes before the end. Every change is logged (who, token, old → new, or the command) and Undo rolls back every token in one go and names what it can't roll back.
+- **Every covered run is logged**: axHub records each call that ran under a pass with the pass id, the tool, the policy it skipped (\`veto\`, \`confirm\` or \`always-approve\`) and the time, in the approvals log ("ran under pass"), the audit log (\`pass_run\`) and on the job. \`axhub.pass_status\` shows the count per pass as \`runs\` (framework/spec/AXHUB-PASS.md §3).
+- **Never covered**: a \`deny\`, granting or changing a pass, and irreversible calls unless the pass includes them.
 - **It ends on the server's clock**: no app or tool can keep it alive past its time.
 
 REST: \`POST /api/plugins/token-control/pass/grant {scope?, minutes, reason, include_irreversible?}\`, \`GET …/pass/status\`, \`POST …/pass/revoke | undo {scope?}\`, \`GET …/pass/check?call=service.tool\`. MCP: \`pass_grant\`, \`pass_status\`, \`pass_revoke\`, \`pass_undo\` (also under the old \`token_pass_*\` names). The axHub side reads the signed \`GET …/pass\` (framework/spec/CONTROL.md → Veto passes).`,

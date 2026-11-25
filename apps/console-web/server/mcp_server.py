@@ -915,7 +915,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
     async def pass_grant(scope: PassScope = "all", minutes: int = 30, reason: str = "", include_irreversible: bool = False, by: str = "") -> dict[str, Any]:
         """Ask for a timed veto pass. scope all (the default) = every command through the API, MCP or CLI on every
-        plugin and every call axHub holds runs without the veto countdown, ordinary deletes without the confirm token;
+        plugin and every call axHub holds (veto, confirm and always-approve tools alike) runs at once, with no veto
+        countdown and no approval prompt, ordinary deletes without the confirm token; each run is logged under the pass;
         theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
         axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
         Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
