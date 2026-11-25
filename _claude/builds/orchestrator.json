@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T11:33:43.784Z",
+ "updatedAt": "2026-11-25T11:34:19.037Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -199968,7 +199968,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "building",
+   "status": "archived",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
@@ -199977,7 +199977,7 @@
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T11:33:34.650Z",
+   "updatedAt": "2026-11-25T11:33:51.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -200218,8 +200218,16 @@
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
-     "at": "2026-11-25T11:33:11.762Z",
-     "by": "store"
+     "at": "2026-11-25T11:33:11.762Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-terminal-main-tab-streaming-console-s--s4--gina, shared account login)",
+     "at": "2026-11-25T11:33:41.637Z"
+    },
+    {
+     "text": "Cancelled from Building (console). 2 step sessions still running end on their own; nothing of them is landed.",
+     "at": "2026-11-25T11:33:51.844Z",
+     "by": "console"
     }
    ],
    "approvals": [],

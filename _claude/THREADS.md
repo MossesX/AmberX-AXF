@@ -845,8 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 02:18 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · watchdog
-- 2026-11-25 02:19 UTC · `find-fix-why-ci-stalls-lander-one-part` → failed, note (all) · watchdog
 - 2026-11-25 02:19 UTC · `find-fix-why-ci-stalls-lander-one-part` → split, note (all) · orchestrator
 - 2026-11-25 04:23 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · admin
 - 2026-11-25 04:23 UTC · `fix-refreshing-console-jumps-back` PR 919 (all) · lander
@@ -1245,6 +1243,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 11:32 UTC · `terminal-main-tab-streaming-console-s` s1 undone (all) · orchestrator
 - 2026-11-25 11:32 UTC · `dispatcher-reads-only-account-routing` → queued, note (all) · console
 - 2026-11-25 11:32 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
+- 2026-11-25 11:33 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
+- 2026-11-25 11:33 UTC · `terminal-main-tab-streaming-console-s` → archived, note (all) · console
 
 ## Token passes (log)
 
