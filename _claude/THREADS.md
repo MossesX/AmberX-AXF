@@ -844,90 +844,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-24 12:40 UTC · `banner-widget-shapes-plus-change-icon` s1 done, s2 done, s3 done, s4 done, s5 done, note (all) · reconciler
-- 2026-11-24 12:40 UTC · `terminal-main-tab-streaming-console-s` s1 done, s2 done, s3 done, s14 done, note (all) · reconciler
-- 2026-11-24 12:40 UTC · `icon-picker-every-banner-settings-widget` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · reconciler
-- 2026-11-24 12:40 UTC · `flagship-professional-skin-covering-2` s5 done, note (all) · reconciler
-- 2026-11-24 12:41 UTC · `pipeline-controls-plugin` added (0 steps) (all) · claude
-- 2026-11-24 12:42 UTC · `pipeline-controls-plugin` → splitting (all) · orchestrator
-- 2026-11-24 12:43 UTC · `pipeline-controls-plugin` → split, note (all) · orchestrator
-- 2026-11-24 12:47 UTC · `plan-autoqueue-manifest` added (0 steps) (all) · claude
-- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → splitting (all) · orchestrator
-- 2026-11-24 12:48 UTC · `plan-autoqueue-manifest` → split, note (all) · orchestrator
-- 2026-11-24 12:50 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
-- 2026-11-24 12:50 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
-- 2026-11-24 13:20 UTC · `orchestrator-settings-collapsible-split` → archived (all) · claude
-- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` → pulling-main (all) · orchestrator
-- 2026-11-24 13:21 UTC · `fix-refreshing-console-jumps-back` PR 909, note (all) · orchestrator
-- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → assigning-models (all) · orchestrator
-- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` → ready, note (all) · orchestrator
-- 2026-11-24 13:26 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:27 UTC · `fix-refreshing-console-jumps-back` → sending (all) · orchestrator
-- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:28 UTC · `fix-refreshing-console-jumps-back` → building (all) · orchestrator
-- 2026-11-24 13:29 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:30 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:32 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:34 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:35 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:36 UTC · `fix-refreshing-console-jumps-back` s1 undone (all) · orchestrator
-- 2026-11-24 13:37 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:39 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:40 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:41 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:41 UTC · `pipeline-controls-plugin` → archived (all) · claude
-- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:42 UTC · `settings-consolidation` added (0 steps) (all) · claude
-- 2026-11-24 13:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` s6 undone, note (all) · watchdog
-- 2026-11-24 13:43 UTC · `settings-consolidation` → archived (all) · claude
-- 2026-11-24 13:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:44 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:45 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:45 UTC · `fix-refreshing-console-jumps-back` s5 undone, note (all) · watchdog
-- 2026-11-24 13:46 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:46 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:47 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:47 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:48 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` s4 undone, note (all) · watchdog
-- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` s4 done (all) · headless
-- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:49 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` s7 done (all) · headless
-- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:51 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:52 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:53 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:53 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:54 UTC · `fix-refreshing-console-jumps-back` s5 undone, s6 undone, note (all) · watchdog
-- 2026-11-24 13:55 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:55 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
-- 2026-11-24 13:56 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:56 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:57 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:57 UTC · `fix-refreshing-console-jumps-back` note (all) · claude
-- 2026-11-24 13:58 UTC · `fix-refreshing-console-jumps-back` s9 done (all) · headless
-- 2026-11-24 13:59 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 13:59 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:01 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:01 UTC · `fix-refreshing-console-jumps-back` s5 done (all) · headless
-- 2026-11-24 14:06 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:06 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:08 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
-- 2026-11-24 14:10 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-24 14:10 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-24 14:20 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
 - 2026-11-24 14:23 UTC · `postgres-audit` added (0 steps) (all) · claude
@@ -1244,6 +1160,90 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 05:13 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
 - 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:15 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:16 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:16 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:17 UTC · `approval-pass-covers-every-call` s5 undone (all) · orchestrator
+- 2026-11-25 05:18 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:18 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:18 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:21 UTC · `approval-pass-covers-every-call` s5 done (all) · headless
+- 2026-11-25 05:22 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:22 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:23 UTC · `approval-pass-covers-every-call` s1 undone, note (all) · watchdog
+- 2026-11-25 05:23 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:23 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:24 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:25 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:25 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:25 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:25 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:26 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:27 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:27 UTC · `approval-pass-covers-every-call` s2 done (all) · headless
+- 2026-11-25 05:27 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:27 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:27 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:28 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:28 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:29 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:29 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:29 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:30 UTC · `approval-pass-covers-every-call` s1 undone, note (all) · watchdog
+- 2026-11-25 05:30 UTC · `approval-pass-covers-every-call` s6 undone (all) · orchestrator
+- 2026-11-25 05:30 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:31 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:31 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:31 UTC · `find-fix-why-ci-stalls-lander-one-part` → failed, note (all) · lander
+- 2026-11-25 05:32 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:33 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:33 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:33 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:33 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:34 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:35 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:35 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · lander
+- 2026-11-25 05:36 UTC · `approval-pass-covers-every-call` s1 undone (all) · orchestrator
+- 2026-11-25 05:36 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:37 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:37 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:37 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:37 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:38 UTC · `approval-pass-covers-every-call` s4 done (all) · headless
+- 2026-11-25 05:39 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:39 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:39 UTC · `find-fix-why-ci-stalls-lander-one-part` → running-ci, note (all) · lander
+- 2026-11-25 05:40 UTC · `watchdog-catches-lander-prs-stuck-ci` → merging-pr, note (all) · lander
+- 2026-11-25 05:40 UTC · `watchdog-catches-lander-prs-stuck-ci` → pr-pulling-main (all) · lander
+- 2026-11-25 05:40 UTC · `watchdog-catches-lander-prs-stuck-ci` → running-ci (all) · lander
+- 2026-11-25 05:41 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:41 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:41 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:41 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:42 UTC · `approval-pass-covers-every-call` s11 undone (all) · orchestrator
+- 2026-11-25 05:42 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:43 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:43 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:43 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:44 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:44 UTC · `approval-pass-covers-every-call` s12 undone (all) · orchestrator
+- 2026-11-25 05:44 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:45 UTC · `approval-pass-covers-every-call` s7 done (all) · headless
+- 2026-11-25 05:47 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:47 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:50 UTC · `approval-pass-covers-every-call` note (all) · builds-live
 
 ## Token passes (log)
 

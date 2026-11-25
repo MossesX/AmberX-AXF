@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T05:13:54.957Z",
+ "updatedAt": "2026-11-25T05:50:26.323Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -217446,11 +217446,11 @@
    "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
-   "branch": "claude/approval-pass-covers-every-call",
-   "pr": "922",
+   "branch": "claude/approval-pass-covers-every-call--s10",
+   "pr": "#922",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-25T05:13:46.567Z",
+   "updatedAt": "2026-11-25T05:49:45.958Z",
    "builtAt": "",
    "notes": [
     {
@@ -217748,6 +217748,367 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s2--rhonda, shared account login)",
      "at": "2026-11-25T05:13:39.239Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (appr",
+     "at": "2026-11-25T05:13:55.257Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-25T05:14:02.091Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s4--lenny, shared account login)",
+     "at": "2026-11-25T05:14:42.037Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s1--lenny: brief only · start 10.8K tokens ($0.04) · cost $2.24 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:15:13.893Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.24",
+     "at": "2026-11-25T05:15:19.668Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (appr",
+     "at": "2026-11-25T05:15:36.101Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s6--joey, shared account login)",
+     "at": "2026-11-25T05:15:51.744Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s5--earl: brief only · start 10.7K tokens ($0.04) · cost $2.06 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:16:05.419Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.06",
+     "at": "2026-11-25T05:16:14.965Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (appr",
+     "at": "2026-11-25T05:16:22.061Z"
+    },
+    {
+     "text": "Reconciler: PR #836 names s11, s12 done",
+     "at": "2026-11-25T05:16:57.029Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-approval-pass-covers-every-call--s1--lenny is gone while the step was building.",
+     "at": "2026-11-25T05:17:01.485Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s7--paulie, shared account login)",
+     "at": "2026-11-25T05:17:33.208Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (appr",
+     "at": "2026-11-25T05:17:44.600Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T05:18:02.213Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s1--sully, shared account login)",
+     "at": "2026-11-25T05:18:42.261Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (appr",
+     "at": "2026-11-25T05:19:02.098Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T05:19:02.240Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s2--rhonda: brief only · start 10.8K tokens ($0.00) · cost $2.85 · 32 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:19:26.882Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.85",
+     "at": "2026-11-25T05:19:31.890Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s1--sully: brief only · start 10.8K tokens ($0.04) · cost $0.22 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:20:18.686Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.22",
+     "at": "2026-11-25T05:20:30.874Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s5--earl, shared account login)",
+     "at": "2026-11-25T05:20:58.988Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (appr",
+     "at": "2026-11-25T05:21:21.099Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s2--gina, shared account login)",
+     "at": "2026-11-25T05:22:57.147Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 2: tmux session axf-approval-pass-covers-every-call--s1--sully is gone while the step was building.",
+     "at": "2026-11-25T05:23:01.443Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $4.53",
+     "at": "2026-11-25T05:23:15.418Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s5--earl: brief only · start 10.7K tokens ($0.04) · cost $2.46 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:23:23.483Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (appr",
+     "at": "2026-11-25T05:23:41.664Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (appr",
+     "at": "2026-11-25T05:23:55.208Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s1--rhonda, shared account login)",
+     "at": "2026-11-25T05:24:30.918Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (appr",
+     "at": "2026-11-25T05:24:49.677Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.22",
+     "at": "2026-11-25T05:25:19.943Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s2--gina: brief only · start 10.7K tokens ($0.04) · cost $0.22 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:25:28.207Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s4--lenny: brief only · start 10.7K tokens ($0.04) · cost $3.42 · 46 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:25:43.991Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.42",
+     "at": "2026-11-25T05:25:51.880Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s8--lenny, shared account login)",
+     "at": "2026-11-25T05:26:19.497Z"
+    },
+    {
+     "text": "s7 (Fable): the notice senders live in axHub, so the change is on MossesX/axHub branch claude/approval-pass-covers-every-call--s7 (worktree /root/axf-builds/approval-pass-covers-every-call--s7.axhub): ApprovalPush and Vinnie ask Hub.coveringPassFor before any veto or approval notice; a pass with quietNotice sends one quiet 'Ran under pass' line. AmberX-AXF branch claude/approval-pass-covers-every-call--s7 carries no change. axHub tests: 635/636, the one failure (ssh build-tools build_land) also fails on clean axHub main.",
+     "at": "2026-11-25T05:26:41.352Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (appr",
+     "at": "2026-11-25T05:26:50.897Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s1--rhonda: brief only · start 10.8K tokens ($0.00) · cost $0.28 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:27:16.932Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.26",
+     "at": "2026-11-25T05:27:43.545Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.28",
+     "at": "2026-11-25T05:27:50.012Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s7--paulie: brief only · start 10.7K tokens ($0.04) · cost $3.26 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:27:56.397Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 2: tmux session axf-approval-pass-covers-every-call--s4--lenny is gone while the step was building.",
+     "at": "2026-11-25T05:28:01.911Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s6--joey: brief only · start 10.8K tokens ($0.04) · cost $3.30 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:28:37.343Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.30",
+     "at": "2026-11-25T05:28:49.709Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s4--joey, shared account login)",
+     "at": "2026-11-25T05:29:09.262Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:29:30.221Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s9--paulie, shared account login)",
+     "at": "2026-11-25T05:29:51.686Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:30:15.916Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-approval-pass-covers-every-call--s1--rhonda is gone while the step was building.",
+     "at": "2026-11-25T05:30:04.506Z"
+    },
+    {
+     "text": "Watchdog: step s7 failed at building, attempt 1: tmux session axf-approval-pass-covers-every-call--s7--paulie is gone while the step was building.",
+     "at": "2026-11-25T05:30:04.506Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.17",
+     "at": "2026-11-25T05:30:59.278Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s4--joey: brief only · start 10.7K tokens ($0.04) · cost $0.17 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:31:14.758Z"
+    },
+    {
+     "text": "Watchdog: step s7 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T05:31:01.967Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s1--sully, shared account login)",
+     "at": "2026-11-25T05:31:46.378Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (appr",
+     "at": "2026-11-25T05:32:07.697Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s6--earl, shared account login)",
+     "at": "2026-11-25T05:32:38.625Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:33:11.237Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 4: tmux session axf-approval-pass-covers-every-call--s4--joey is gone while the step was building.",
+     "at": "2026-11-25T05:33:02.032Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s1--sully: brief only · start 10.8K tokens ($0.04) · cost $0.50 · 10 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:33:38.797Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $0.72",
+     "at": "2026-11-25T05:33:45.519Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s4--gina, shared account login)",
+     "at": "2026-11-25T05:34:34.229Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:34:51.182Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s7--rhonda, shared account login)",
+     "at": "2026-11-25T05:35:31.195Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:35:59.636Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (appr",
+     "at": "2026-11-25T05:36:24.103Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s4--gina: brief only · start 10.7K tokens ($0.00) · cost $0.17 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:36:30.733Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.17",
+     "at": "2026-11-25T05:36:37.665Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on mossesx-max-.",
+     "at": "2026-11-25T05:37:01.418Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s6--earl: brief only · start 10.8K tokens ($0.04) · cost $0.65 · 11 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:37:26.207Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.65",
+     "at": "2026-11-25T05:37:31.712Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-25T05:39:02.364Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s1--joey, shared account login)",
+     "at": "2026-11-25T05:39:23.835Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (appr",
+     "at": "2026-11-25T05:39:50.487Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.14",
+     "at": "2026-11-25T05:41:24.416Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s1--joey: brief only · start 10.8K tokens ($0.00) · cost $0.14 · 5 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:41:33.236Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s10--paulie, shared account login)",
+     "at": "2026-11-25T05:41:41.726Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (ap",
+     "at": "2026-11-25T05:42:00.948Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s11--sully, shared account login)",
+     "at": "2026-11-25T05:42:56.182Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T05:43:26.075Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s7--rhonda: brief only · start 10.7K tokens ($0.00) · cost $2.93 · 35 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:43:39.852Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.93",
+     "at": "2026-11-25T05:43:48.283Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $4.97",
+     "at": "2026-11-25T05:43:55.680Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s8--lenny: brief only · start 11.2K tokens ($0.05) · cost $4.97 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:44:03.139Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s12--earl, shared account login)",
+     "at": "2026-11-25T05:44:43.761Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s10 step s10 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T05:44:54.867Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s10--paulie: brief only · start 10.7K tokens ($0.04) · cost $2.60 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:47:25.324Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.60",
+     "at": "2026-11-25T05:47:32.356Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s9 step s9 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T05:50:21.472Z",
+     "by": "store"
     }
    ],
    "approvals": [
@@ -217788,9 +218149,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T05:13:32.534Z",
+     "doneAt": "2026-11-25T05:40:41.694Z",
      "note": "",
-     "uid": "st-mwlgr9vm01j4ye",
+     "uid": "st-mwranxoz1lst8e",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217807,9 +218168,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T06:00:37.023Z",
+     "doneAt": "2026-11-25T05:27:23.078Z",
      "note": "",
-     "uid": "st-mwlgr9vm021izx",
+     "uid": "st-mwranxoz1m369d",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217845,9 +218206,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T06:25:01.149Z",
+     "doneAt": "2026-11-25T05:38:08.723Z",
      "note": "",
-     "uid": "st-mwlgr9vm04ext1",
+     "uid": "st-mwranxoz1ozdue",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217864,9 +218225,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T06:35:22.642Z",
+     "doneAt": "2026-11-25T05:22:17.303Z",
      "note": "",
-     "uid": "st-mwlgr9vm05so2t",
+     "uid": "st-mwranxp01psmza",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217882,8 +218243,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T05:36:56.955Z",
      "note": "Part 6: 2 plan steps in one session (they touch the same files).",
      "uid": "st-mwranxp01qqtzm",
      "createdAt": "2026-11-22T03:45:44.532Z"
@@ -217902,9 +218263,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T06:49:26.442Z",
+     "doneAt": "2026-11-25T05:45:11.630Z",
      "note": "",
-     "uid": "st-mwlgr9vm07f2y1",
+     "uid": "st-mwranxp01rsunj",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217921,9 +218282,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T07:00:08.259Z",
+     "doneAt": "2026-11-25T05:43:07.830Z",
      "note": "",
-     "uid": "st-mwlgr9vm08pip9",
+     "uid": "st-mwranxp01svxz9",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -217959,9 +218320,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-18T07:11:55.230Z",
+     "doneAt": "2026-11-25T05:46:47.978Z",
      "note": "",
-     "uid": "st-mwlgr9vm0bp70i",
+     "uid": "st-mwranxp01umfvm",
      "createdAt": "2026-11-18T01:49:40.384Z"
     },
     {
@@ -223533,7 +223894,7 @@
    "title": "Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed",
    "category": "",
    "detail": "Today refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.",
-   "status": "build-complete",
+   "status": "running-ci",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
@@ -223542,7 +223903,7 @@
    "pr": "921",
    "priority": "P0",
    "createdAt": "2026-11-24T21:25:18.141Z",
-   "updatedAt": "2026-11-25T05:13:10.248Z",
+   "updatedAt": "2026-11-25T05:40:54.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -223672,6 +224033,73 @@
     {
      "text": "Worker accounts: mossesx-max-: 2 runs, $3.61",
      "at": "2026-11-25T05:13:10.248Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T05:18:02.213Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-25T05:22:02.289Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T05:22:02.289Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (8 min past budget): re-ran the transition (3).",
+     "at": "2026-11-25T05:25:03.537Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-25T05:25:03.537Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (12 min past budget): re-ran the transition (4).",
+     "at": "2026-11-25T05:29:01.919Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (8 min past budget): re-ran the transition (3).",
+     "at": "2026-11-25T05:29:01.919Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (16 min past budget): re-ran the transition (5).",
+     "at": "2026-11-25T05:33:02.032Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (12 min past budget): re-ran the transition (4).",
+     "at": "2026-11-25T05:33:02.032Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at completed (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T05:37:01.418Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (20 min past budget): re-ran the transition (6).",
+     "at": "2026-11-25T05:37:01.418Z"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (16 min past budget): re-ran the transition (5).",
+     "at": "2026-11-25T05:37:01.418Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1, s2, s3)",
+     "at": "2026-11-25T05:40:14.363Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at completed (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-25T05:40:02.308Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (23 min past budget): re-ran the transition (7).",
+     "at": "2026-11-25T05:40:02.308Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at build-complete (19 min past budget): re-ran the transition (6).",
+     "at": "2026-11-25T05:40:02.308Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -224300,7 +224728,7 @@
    "pr": "920",
    "priority": "P0",
    "createdAt": "2026-11-25T02:02:33.437Z",
-   "updatedAt": "2026-11-25T05:13:10.405Z",
+   "updatedAt": "2026-11-25T05:39:29.687Z",
    "builtAt": "",
    "notes": [
     {
@@ -224381,7 +224809,19 @@
     },
     {
      "text": "Lander: attempt 1: re-running the failed CI jobs on e8f803f69 (flaky check)",
-     "at": "2026-11-25T05:13:10.405Z",
+     "at": "2026-11-25T05:13:10.405Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 2: CI is red on e8f803f69 (Build engine sweep (Node))",
+     "at": "2026-11-25T05:31:30.280Z"
+    },
+    {
+     "text": "Lander: attempt 2: fix session 1 of 2 on lander/find-fix-why-ci-stalls-lander-one-part (fable, axf-lander-fix-pr920-1--lenny)",
+     "at": "2026-11-25T05:35:44.881Z"
+    },
+    {
+     "text": "Lander: the fix pushed e875f878e; CI runs on it",
+     "at": "2026-11-25T05:39:29.687Z",
      "by": "lander"
     }
    ],
