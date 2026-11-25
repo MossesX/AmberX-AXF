@@ -171,6 +171,44 @@ except ValueError:
 st = ds.status()
 check(st["configured"] and st["namespaces"]["planner"]["mode"] == "rollback" and st["driftLines"]["planner"] == 3, "status: mode per namespace and drift lines")
 
+print("builds_store: pipeline status is the summary query and one row, never the document")
+import builds_store as bs  # noqa: E402
+
+_pl = lambda **k: {"slot": "", "account": "", "queuedAt": "", **k}  # noqa: E731
+_doc = {"$axf": "builds@1", "rev": 7, "updatedAt": "2026-11-25T12:00:00.000Z", "meta": {}, "builds": [
+    {"id": "a", "title": "A", "status": "pending", "rev": 1, "steps": [{"id": "s1", "done": True}, {"id": "s2", "done": False}], "notes": []},
+    {"id": "b", "title": "B", "status": "queued", "rev": 2, "priority": "P0", "pipeline": _pl(queuedAt="2026-11-25T10:00:00Z", queuedBy="console"), "steps": [], "notes": []},
+    {"id": "c", "title": "C", "status": "running", "rev": 4, "number": "B-0007", "pipeline": _pl(slot="2", account="acct-one", session="axf-c"), "steps": [], "notes": [{"text": "n"}]},
+    {"id": "d", "title": "D", "status": "building", "rev": 1, "pipeline": _pl(slot="1", account="acct-two"), "steps": []},
+    {"id": "e", "title": "E", "status": "queued", "rev": 1, "deleted": True}]}
+_r = client.put("/v1/builds/store.json", content=json.dumps(_doc), headers={"authorization": "Bearer t", "content-type": "application/json", "if-none-match": "*"})
+check(_r.status_code in (200, 201), f"the builds store is on axf-data ({_r.status_code})")
+set_mode("builds", "cutover")
+_seen: list[str] = []
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda m, u, h, b: (_seen.append(u), transport(m, u, h, b))[1]))
+_old_store = os.environ.pop("AXF_BUILDS_STORE", None)
+bs.clear()
+_s = bs.pipeline_summary()
+check(_s["$axf"] == "pipeline-summary@1" and _s["total"] == 4 and _s["counts"] == {"building": 1, "pending": 1, "queued": 1, "running": 1}, "counts by status, deleted builds left out")
+check(_s["queued"]["id"] == "b" and _s["queued"]["queuedBy"] == "console" and [(r["id"], r["slot"], r["account"]) for r in _s["running"]] == [("d", "1", "acct-two"), ("c", "2", "acct-one")], "the queued build and the running builds with slot and account")
+_local = bs.summary_of(_doc)
+check(all(_local[k] == _s[k] for k in ("total", "counts", "queued", "queuedAll", "running")), "the file twin (before the cut) answers the same")
+_b = bs.build("a")
+check(_b is not None and _b["status"] == "pending" and len(_b["steps"]) == 2 and bs.build("nope") is None, "one build by its id, None for an unknown one")
+check(bs.pipeline_summary() is _s, "polls inside the cache window share one read")
+check(_seen and all(":summary" in u or ":item" in u for u in _seen), f"only :summary and :item were asked, never the document ({_seen[:4]})")
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda *a: (_ for _ in ()).throw(OSError("down"))))
+bs.clear()
+try:
+    bs.pipeline_summary()
+    check(False, "axf-data down: an error, never a stale answer")
+except ds.DataStoreError as e:
+    check(e.code == "unavailable", "axf-data down: an error, never a stale answer")
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", transport))
+bs.clear()
+if _old_store is not None:
+    os.environ["AXF_BUILDS_STORE"] = _old_store
+
 journal.unlink(missing_ok=True)
 print(f"data_store: {'all ok' if not fails else f'{fails} failed'}")
 sys.exit(1 if fails else 0)

@@ -431,6 +431,10 @@ export function httpBackend(opts = {}) {
     // data-patch@1: some rows of a table-backed record (the builds store), its head fields and one journal line in one
     // transaction on axf-data; only the named rows are locked. `conflict` names the items another writer changed.
     async patch(ns, path, body) { return (await send(`${url(ns, path)}:patch`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json(); },
+    // data-item@1 / pipeline-summary@1: one row of a table-backed record by its key (one build, with the record's scalar
+    // head fields), and the pipeline's status computed from the rows. Neither reads the document.
+    async item(ns, path, key, o = {}) { const u = new URL(`${url(ns, path)}:item`); u.searchParams.set('key', key); if (o.list) u.searchParams.set('list', o.list); return (await send(u.toString())).json(); },
+    async summary(ns, path, o = {}) { const u = new URL(`${url(ns, path)}:summary`); if (o.list) u.searchParams.set('list', o.list); return (await send(u.toString())).json(); },
     async list(ns, o = {}) { return (await send(url(ns, '', { prefix: o.prefix, after: o.after, limit: o.limit, deleted: o.deleted ? 1 : '' }))).json(); },
     async append(ns, path, entries, o = {}) { return (await send(`${url(ns, path)}:append`, { method: 'POST', headers: { 'content-type': 'application/json', ...(o.idempotencyKey ? { 'idempotency-key': o.idempotencyKey } : {}) }, body: JSON.stringify({ entries }) })).json(); },
     async read(ns, path, o = {}) { return (await send(url(ns, path, { since: o.tail ? undefined : Math.max(0, Number(o.since) || 0), limit: o.limit, tail: o.tail }))).json(); }, // `since` always rides along: a GET without it is a get, refused on a journal
@@ -500,6 +504,13 @@ export function createDataStore(o = {}) {
     async delete(key, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.delete(ns, path, withBy(opts))); },
     /** patch(key, { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? }) → data-patch@1 (http backend; others answer invalid_body). */
     async patch(key, body) { const { ns, path } = parseKey(key); if (!backend.patch) throw new DataStoreError('invalid_body', `${backend.name} backend has no patch`, { ns, path }); return retrying(() => backend.patch(ns, path, body)); },
+    /** item(key, id) → data-item@1 { rev, head, item } or null when the record has no such item (http backend). */
+    async item(key, id, opts = {}) {
+      const { ns, path } = parseKey(key); if (!backend.item) throw new DataStoreError('invalid_body', `${backend.name} backend has no item`, { ns, path });
+      try { return await retrying(() => backend.item(ns, path, id, opts)); } catch (e) { if (e instanceof DataStoreError && e.code === 'not_found') return null; throw e; }
+    },
+    /** summary(key) → pipeline-summary@1 { counts, total, queued, queuedAll, running, rev, at } (http backend). */
+    async summary(key, opts = {}) { const { ns, path } = parseKey(key); if (!backend.summary) throw new DataStoreError('invalid_body', `${backend.name} backend has no summary`, { ns, path }); return retrying(() => backend.summary(ns, path, opts)); },
     async list(ns, opts = {}) { const { ns: head, prefix } = parseNamespace(ns); return retrying(() => backend.list(head, { ...opts, prefix: prefix + (opts.prefix || '') })); },
     async append(key, entries, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.append(ns, path, entries, withBy(opts))); },
     async read(key, opts = {}) { const { ns, path } = parseKey(key); return retrying(() => backend.read(ns, path, opts)); },

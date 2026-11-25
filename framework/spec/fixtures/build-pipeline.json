@@ -1,0 +1,1144 @@
+{
+  "$axf": "build-pipeline-queue@1",
+  "note": "Single Queued (build-pipeline@1, Nov 25 2026): each scenario replays its ops in order on its builds through framework/core/build-pipeline.mjs; `out` is one line per op (ok / why / promoted / what changed) and the status of every build after it. Regenerate: node framework/spec/check-build-pipeline.mjs --write. A scenario with `breach: true` starts with more than one queued build (records from before the contract).",
+  "scenarios": [
+    {
+      "name": "one queued max: a second queue is refused with the holder named",
+      "builds": [
+        {
+          "id": "a",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "status": "pending",
+          "createdAt": "2026-11-21T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "status": "pending",
+          "createdAt": "2026-11-22T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        }
+      ],
+      "ops": [
+        {
+          "op": "queue",
+          "id": "a",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "queue",
+          "id": "b",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "queue",
+          "id": "b",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "queue",
+          "id": "a",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:queued b:pending c:pending"
+        },
+        {
+          "ok": false,
+          "why": "a is already queued: one build waits in the Queue at a time. b stays in Pending and moves up by itself when a starts.",
+          "after": "a:queued b:pending c:pending"
+        },
+        {
+          "ok": false,
+          "why": "a is already queued: one build waits in the Queue at a time. b stays in Pending and moves up by itself when a starts.",
+          "after": "a:queued b:pending c:pending"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:queued b:pending c:pending"
+        },
+        {
+          "promoted": "",
+          "why": "a is queued",
+          "after": "a:queued b:pending c:pending"
+        }
+      ]
+    },
+    {
+      "name": "promotion on go-live: the oldest Pending build moves up when the queued build starts",
+      "builds": [
+        {
+          "id": "a",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-25T09:00:00.000Z",
+            "queuedBy": "console"
+          }
+        },
+        {
+          "id": "old",
+          "status": "pending",
+          "createdAt": "2026-11-18T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        },
+        {
+          "id": "new",
+          "status": "pending",
+          "createdAt": "2026-11-23T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        },
+        {
+          "id": "urgent",
+          "status": "pending",
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "priority": "P0"
+        }
+      ],
+      "ops": [
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "a"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "urgent"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "old"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "new"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "promoted": "",
+          "why": "a is queued",
+          "after": "a:queued old:pending new:pending urgent:pending"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:running old:pending new:pending urgent:pending"
+        },
+        {
+          "promoted": "urgent",
+          "why": "",
+          "after": "a:running old:pending new:pending urgent:queued"
+        },
+        {
+          "promoted": "",
+          "why": "urgent is queued",
+          "after": "a:running old:pending new:pending urgent:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:running old:pending new:pending urgent:running"
+        },
+        {
+          "promoted": "old",
+          "why": "",
+          "after": "a:running old:queued new:pending urgent:running"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:running old:running new:pending urgent:running"
+        },
+        {
+          "promoted": "new",
+          "why": "",
+          "after": "a:running old:running new:queued urgent:running"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:running old:running new:running urgent:running"
+        },
+        {
+          "promoted": "",
+          "why": "no Pending build can move up",
+          "after": "a:running old:running new:running urgent:running"
+        }
+      ]
+    },
+    {
+      "name": "what never moves up: no steps left, hidden, deleted, an epic, handed back to Brett, stopped",
+      "builds": [
+        {
+          "id": "done",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": true,
+              "model": "Opus"
+            }
+          ]
+        },
+        {
+          "id": "hidden",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "hidden": true
+        },
+        {
+          "id": "gone",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "deleted": true
+        },
+        {
+          "id": "epic",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "kind": "epic"
+        },
+        {
+          "id": "returned",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "lastRun": {
+              "at": "2026-11-25T10:00:00.000Z",
+              "exit": 0,
+              "outcome": "returned",
+              "reason": "needs-brett",
+              "stepsLeft": 1
+            }
+          }
+        },
+        {
+          "id": "crashed",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "lastRun": {
+              "at": "2026-11-25T10:00:00.000Z",
+              "exit": 1,
+              "outcome": "failed",
+              "reason": "crash-limit",
+              "stepsLeft": 1
+            }
+          }
+        },
+        {
+          "id": "held",
+          "status": "pending",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "stop": {
+              "kind": "hold",
+              "at": "2026-11-25T10:00:00.000Z",
+              "by": "console",
+              "why": "later",
+              "from": "pending"
+            }
+          }
+        },
+        {
+          "id": "requeued",
+          "status": "pending",
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "lastRun": {
+              "at": "2026-11-25T10:00:00.000Z",
+              "exit": 0,
+              "outcome": "requeued",
+              "reason": "phase-done",
+              "stepsLeft": 1
+            }
+          }
+        }
+      ],
+      "ops": [
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "requeued"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "promoted": "requeued",
+          "why": "",
+          "after": "done:pending hidden:pending gone:pending epic:pending returned:pending crashed:pending held:pending:hold requeued:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "done:pending hidden:pending gone:pending epic:pending returned:pending crashed:pending held:pending:hold requeued:running"
+        },
+        {
+          "promoted": "",
+          "why": "no Pending build can move up",
+          "after": "done:pending hidden:pending gone:pending epic:pending returned:pending crashed:pending held:pending:hold requeued:running"
+        }
+      ]
+    },
+    {
+      "name": "unqueue sticks: back in Pending, skipped by promote, refused to automatic writers, across a reconcile pass",
+      "builds": [
+        {
+          "id": "a",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-25T09:00:00.000Z",
+            "queuedBy": "console"
+          }
+        },
+        {
+          "id": "b",
+          "status": "pending",
+          "createdAt": "2026-11-21T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        }
+      ],
+      "ops": [
+        {
+          "op": "stop",
+          "id": "a",
+          "kind": "unqueue",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "a",
+          "kind": "unqueue",
+          "by": "console",
+          "why": "not yet",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "queue",
+          "id": "a",
+          "by": "watchdog",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "b"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "set": {
+            "a": {
+              "status": "queued"
+            }
+          }
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "set": {
+            "a": {
+              "status": "running"
+            }
+          }
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "clearStop": [
+            "a"
+          ]
+        },
+        {
+          "op": "release",
+          "id": "a",
+          "by": "reconciler"
+        },
+        {
+          "op": "queue",
+          "id": "a",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "ok": false,
+          "why": "unqueue is Brett's call: \"dispatcher\" does not speak for him",
+          "kill": false,
+          "after": "a:queued b:pending"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "kill": false,
+          "after": "a:pending:unqueue b:pending"
+        },
+        {
+          "promoted": "b",
+          "why": "",
+          "after": "a:pending:unqueue b:queued"
+        },
+        {
+          "ok": false,
+          "why": "a is back in pending (console): only Brett queues it again",
+          "after": "a:pending:unqueue b:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "promoted": "",
+          "why": "no Pending build can move up",
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "kept": [
+            {
+              "id": "a",
+              "why": "a is back in pending (console): reconciler may not move it to queued"
+            }
+          ],
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "kept": [
+            {
+              "id": "a",
+              "why": "a is back in pending (console): reconciler may not move it to running"
+            }
+          ],
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "kept": [
+            {
+              "id": "a",
+              "why": "a is back in pending (console): reconciler may not lift that"
+            }
+          ],
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "ok": false,
+          "why": "only Brett releases a unqueue: \"reconciler\" does not speak for him",
+          "after": "a:pending:unqueue b:running"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "a:queued b:running"
+        }
+      ]
+    },
+    {
+      "name": "hold sticks: a queued build is parked and the line moves on; a live build finishes its step and rests in Pending",
+      "builds": [
+        {
+          "id": "q",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-25T09:00:00.000Z",
+            "queuedBy": "console"
+          }
+        },
+        {
+          "id": "run",
+          "status": "running",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "session": "axf-run--joey",
+            "slot": "slot-1",
+            "account": "acct-one"
+          }
+        },
+        {
+          "id": "p",
+          "status": "pending",
+          "createdAt": "2026-11-21T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        }
+      ],
+      "ops": [
+        {
+          "op": "stop",
+          "id": "q",
+          "kind": "hold",
+          "by": "console",
+          "why": "wait for the design",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "run",
+          "kind": "hold",
+          "by": "voice",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "exit",
+          "id": "run",
+          "status": "queued"
+        },
+        {
+          "op": "exit",
+          "id": "run",
+          "status": "landing"
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "set": {
+            "run": {
+              "status": "pending"
+            },
+            "q": {
+              "status": "queued"
+            }
+          }
+        },
+        {
+          "op": "guard",
+          "id": "q",
+          "by": "dispatcher",
+          "status": "running"
+        },
+        {
+          "op": "guard",
+          "id": "q",
+          "by": "watchdog",
+          "status": "failed"
+        },
+        {
+          "op": "guard",
+          "id": "q",
+          "by": "lander",
+          "status": "archived"
+        },
+        {
+          "op": "stop",
+          "id": "q",
+          "kind": "hold",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "q",
+          "kind": "cancel",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "release",
+          "id": "q",
+          "by": "console"
+        },
+        {
+          "op": "live",
+          "id": "p"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "ok": true,
+          "why": "",
+          "kill": false,
+          "after": "q:pending:hold run:running p:pending"
+        },
+        {
+          "promoted": "p",
+          "why": "",
+          "after": "q:pending:hold run:running p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "kill": false,
+          "after": "q:pending:hold run:running:hold p:queued"
+        },
+        {
+          "status": "pending",
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "status": "pending",
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "kept": [
+            {
+              "id": "q",
+              "why": "q is on hold (console): reconciler may not move it to queued"
+            }
+          ],
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": false,
+          "why": "q is on hold (console): dispatcher may not move it to running",
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": true,
+          "why": "already on hold",
+          "kill": false,
+          "already": true,
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": false,
+          "why": "q is on hold: release it first",
+          "kill": false,
+          "after": "q:pending:hold run:pending:hold p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "q:pending run:pending:hold p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "q:pending run:pending:hold p:running"
+        },
+        {
+          "promoted": "q",
+          "why": "",
+          "after": "q:queued run:pending:hold p:running"
+        }
+      ]
+    },
+    {
+      "name": "cancel sticks: the session is to be killed, the slot released, and no tick, relaunch or reconcile brings it back",
+      "builds": [
+        {
+          "id": "run",
+          "status": "running",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "session": "axf-run--joey",
+            "slot": "slot-2",
+            "account": "acct-one",
+            "queuedAt": "2026-11-25T08:00:00.000Z"
+          }
+        },
+        {
+          "id": "p",
+          "status": "pending",
+          "createdAt": "2026-11-21T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ]
+        }
+      ],
+      "ops": [
+        {
+          "op": "stop",
+          "id": "p",
+          "kind": "cancel",
+          "by": "console",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "run",
+          "kind": "cancel",
+          "by": "pipeline",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "run",
+          "kind": "cancel",
+          "by": "mcp",
+          "why": "wrong plan",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "stop",
+          "id": "run",
+          "kind": "cancel",
+          "by": "mcp",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "exit",
+          "id": "run",
+          "status": "queued"
+        },
+        {
+          "op": "queue",
+          "id": "run",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "set": {
+            "run": {
+              "status": "running"
+            }
+          }
+        },
+        {
+          "op": "reconcile",
+          "by": "reconciler",
+          "at": "2026-11-25T10:00:00.000Z",
+          "set": {
+            "run": {
+              "status": "queued"
+            }
+          }
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "p"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "ok": false,
+          "why": "p is pending: cancel does not apply",
+          "kill": false,
+          "after": "run:running p:pending"
+        },
+        {
+          "ok": false,
+          "why": "cancel is Brett's call: \"pipeline\" does not speak for him",
+          "kill": false,
+          "after": "run:running p:pending"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "kill": true,
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "ok": true,
+          "why": "already cancelled",
+          "kill": false,
+          "already": true,
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "status": "pending",
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "ok": false,
+          "why": "run is cancelled (mcp): only Brett queues it again",
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "kept": [
+            {
+              "id": "run",
+              "why": "run is cancelled (mcp): reconciler may not move it to running"
+            }
+          ],
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "kept": [
+            {
+              "id": "run",
+              "why": "run is cancelled (mcp): reconciler may not move it to queued"
+            }
+          ],
+          "after": "run:pending:cancel p:pending"
+        },
+        {
+          "promoted": "p",
+          "why": "",
+          "after": "run:pending:cancel p:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "run:pending:cancel p:running"
+        },
+        {
+          "promoted": "",
+          "why": "no Pending build can move up",
+          "after": "run:pending:cancel p:running"
+        }
+      ]
+    },
+    {
+      "name": "a Queue from before the contract is settled: the first keeps the place, a held one keeps its hold, the rest move up one at a time",
+      "breach": true,
+      "builds": [
+        {
+          "id": "held",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-22T01:00:00.000Z",
+            "heldAt": "2026-11-22T02:00:00.000Z",
+            "heldBy": "console",
+            "heldWhy": "parked"
+          }
+        },
+        {
+          "id": "q2",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-22T05:00:00.000Z"
+          }
+        },
+        {
+          "id": "q1",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "pipeline": {
+            "queuedAt": "2026-11-22T03:00:00.000Z"
+          }
+        },
+        {
+          "id": "q0",
+          "status": "queued",
+          "createdAt": "2026-11-20T00:00:00.000Z",
+          "steps": [
+            {
+              "id": "s1",
+              "done": false,
+              "model": "Opus"
+            }
+          ],
+          "priority": "P0",
+          "pipeline": {
+            "queuedAt": "2026-11-22T09:00:00.000Z"
+          }
+        }
+      ],
+      "ops": [
+        {
+          "op": "settle",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "settle",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "live",
+          "id": "q0"
+        },
+        {
+          "op": "promote",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        },
+        {
+          "op": "queue",
+          "id": "held",
+          "by": "dispatcher",
+          "at": "2026-11-25T10:00:00.000Z"
+        }
+      ],
+      "out": [
+        {
+          "kept": "q0",
+          "demoted": [
+            "held",
+            "q1",
+            "q2"
+          ],
+          "after": "held:pending:hold q2:pending q1:pending q0:queued"
+        },
+        {
+          "kept": "q0",
+          "demoted": [],
+          "after": "held:pending:hold q2:pending q1:pending q0:queued"
+        },
+        {
+          "ok": true,
+          "why": "",
+          "after": "held:pending:hold q2:pending q1:pending q0:running"
+        },
+        {
+          "promoted": "q1",
+          "why": "",
+          "after": "held:pending:hold q2:pending q1:queued q0:running"
+        },
+        {
+          "ok": false,
+          "why": "held is on hold (console): only Brett queues it again",
+          "after": "held:pending:hold q2:pending q1:queued q0:running"
+        }
+      ]
+    }
+  ]
+}

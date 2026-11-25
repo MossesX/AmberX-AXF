@@ -260,6 +260,30 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
                 "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "active": b.get("active", []), "running": b.get("running", [])}}
 
     @mcp.tool(annotations=READ)
+    async def pipeline_status(build: str = "") -> dict[str, Any]:
+        """The build pipeline's status (pipeline-summary@1): how many builds are in each status, the one queued build
+        (next to start) and the builds running now with their slot and account. With `build`: that one build's status
+        row and step counts. Read from the builds store's rows; the same answer as the console's
+        GET /api/plugins/build-orchestrator/pipeline/summary (and /pipeline/build/<id>)."""
+        import builds_store  # server/builds_store.py: the summary query and one row, never the whole store
+        import data_store
+
+        def read() -> dict[str, Any]:
+            if not build:
+                return builds_store.pipeline_summary()
+            if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}", build):
+                raise ToolError("build is a build id")
+            b = builds_store.build(build)
+            if b is None or b.get("deleted") is True:
+                raise ToolError(f"no build {build}")
+            steps = [s for s in b.get("steps") or [] if isinstance(s, dict)]
+            return {"$axf": "pipeline-build@1", **builds_store.summary_row(b), "steps": {"total": len(steps), "done": sum(1 for s in steps if s.get("done") is True)}}
+        try:
+            return await anyio.to_thread.run_sync(read)
+        except data_store.DataStoreError as e:
+            raise ToolError(f"the builds store can't be read: {e}") from e
+
+    @mcp.tool(annotations=READ)
     async def build_next() -> dict[str, Any]:
         """The next step to build: the first queued step whose dependencies are all built, with the model to use,
         its linked features, acceptance criteria and dependencies. Also lists steps flagged for rework."""

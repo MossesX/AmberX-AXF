@@ -11,6 +11,8 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   DELETE /v1/<key>                          same preconditions; leaves a tombstone
   GET    /v1/<ns>                           data-list@1 (?prefix= &after= &limit= &deleted=1); `plugins/<folder>` too
   POST   /v1/<key>:append                   { entries } ; Idempotency-Key
+  GET    /v1/<key>:summary                  pipeline-summary@1: counts by status, the queued build, running builds (builds/store.json)
+  GET    /v1/<key>:item?key=<id>            data-item@1: one row of a keyed list by its key (one build) + the scalar head fields, no document read
   POST   /v1/<key>:patch                    data-patch@1: { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? } on a
                                             table-backed record (the builds store): only the named rows are locked and rewritten
   GET    /v1/<ns>:manifest                  one namespace of data-manifest@1
@@ -190,6 +192,14 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
             if isinstance(body, dict) and isinstance(body.get('journal'), dict):
                 p.need('append', ns, str(body['journal'].get('path') or ''))
             return st.patch(ns, path, body, caller)
+        if action == 'summary' and req.method == 'GET':
+            # pipeline-summary@1: counts by status, the queued build, the running builds, computed from the rows
+            p.need('get', ns, path)
+            return st.summary(ns, path, q.get('list') or 'builds')
+        if action == 'item' and req.method == 'GET':
+            # data-item@1: one row of a keyed list by its key (one build by id); its update is :patch with ifRev
+            p.need('get', ns, path)
+            return st.item(ns, path, q.get('key') or '', q.get('list') or 'builds')
         if action:
             raise DataError('invalid_key', f'unknown action :{action}', ns=ns, path=path)
         if req.method == 'GET':

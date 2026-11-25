@@ -496,6 +496,38 @@ class PgStore:
         self._jhash[(ns, path)] = (total, h)
         return out, c
 
+    def _doc_table(self, ns: str, path: str):
+        cur = self._row(ns, path)
+        if not cur or cur['deleted']:
+            raise DataError('not_found', f'{ns}/{path} not found', ns=ns, path=path)
+        return cur, T.by_name(cur.get('table_name') or '')
+
+    def item(self, ns: str, path: str, key: str, lkey: str = 'builds') -> dict:
+        """data-item@1: one row of a keyed list by its key (one build), read from its own rows, never the document.
+        `head` = the record's scalar head fields (rev, updatedAt, storeVersion…), what a writer of that one row needs."""
+        cur, t = self._doc_table(ns, path)
+        try:
+            T.row_query(t, lkey, key)
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        with self.tx() as tcur:
+            item = T.list_row(tcur, t, lkey, key)
+            head = T.list_head(tcur, ns, path)
+        if item is None:
+            raise DataError('not_found', f'{ns}/{path}: no {lkey} item "{key}"', ns=ns, path=path)
+        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'head': head, 'item': item}
+
+    def summary(self, ns: str, path: str, lkey: str = 'builds') -> dict:
+        """pipeline-summary@1: counts by status, the queued build, the running builds with slot and account, in SQL."""
+        cur, t = self._doc_table(ns, path)
+        try:
+            T.row_query(t, lkey, '-')
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        with self.tx() as tcur:
+            out = T.pipeline_summary(tcur, t, lkey)
+        return {**out, 'ns': ns, 'path': path, 'rev': cur['rev'], 'at': cur['at']}
+
     def patch(self, ns: str, path: str, body: dict, caller: Caller) -> dict:
         """data-patch@1 (row-level): some rows of a keyed list (the builds), the head fields given, and one journal line,
         in one transaction. Only the named rows are locked (`SELECT … FOR UPDATE`); a row whose `rev` is not the `ifRev`

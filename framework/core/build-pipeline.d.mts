@@ -21,6 +21,8 @@ export interface BuildPipeline {
   planned: PipelinePlan | null; tried: string[]; pickedAt: string;
   /** On hold: stays in the Queue, the dispatcher skips it until released ('' = not held). */
   heldAt: string; heldBy: string; heldWhy: string;
+  /** Brett's stop on this build (single Queued): absent unless one stands. */
+  stop?: PipelineStop;
 }
 export interface PipelinePlan { model: string; account: string; kind: '' | 'api' | 'subscription'; at: string; why: string }
 export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors' | 'archive' | 'deleted';
@@ -52,3 +54,31 @@ export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: '
 export function nextStatusOnExit(run: ExitInput, maxRuns?: number): ExitResult;
 export function outcomeOf(run: ExitInput & { phaseSwitch?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
 export function outcomeLine(b: { pipeline?: { runs?: number } | null }, run: PipelineRun): string;
+
+/** Single Queued (Nov 25 2026): one build in the Queue, Pending builds move up by themselves, Brett's stops stick. */
+export type StopKind = 'hold' | 'cancel' | 'unqueue';
+export interface PipelineStop { kind: StopKind; at: string; by: string; why: string; from: string }
+export const QUEUE_MAX: 1;
+export const STOP_KINDS: readonly StopKind[];
+export const STOP_LABEL: Readonly<Record<StopKind, string>>;
+export const BRETT_ACTORS: readonly string[];
+export const STOPPED_MAY_BE: readonly string[];
+type QueueBuild = NonNullable<BuildLike> & { id: string; createdAt?: string; kind?: string; priority?: string };
+type Prio<B> = (b: B) => string;
+export function speaksForBrett(by: unknown): boolean;
+export function normStop(s: unknown): PipelineStop | null;
+export function stopOf(b: BuildLike): PipelineStop | null;
+export function isStopped(b: BuildLike): boolean;
+export function queuedBuilds<B extends QueueBuild>(builds: B[], priorityOf?: Prio<B>): B[];
+export function canPromote(b: BuildLike): boolean;
+export function promotable<B extends QueueBuild>(builds: B[], priorityOf?: Prio<B>): B[];
+export function canQueueNow<B extends QueueBuild>(builds: B[], id: string, opts?: { by?: string; priorityOf?: Prio<B> }): { ok: boolean; why: string; queued: string };
+export function queueOne<B extends QueueBuild>(builds: B[], id: string, opts?: { at?: string; by?: string; priorityOf?: Prio<B> }): { ok: boolean; why: string; builds: B[]; id: string };
+export function promote<B extends QueueBuild>(builds: B[], opts?: { at?: string; by?: string; priorityOf?: Prio<B> }): { builds: B[]; promoted: string; why: string };
+export function settleQueue<B extends QueueBuild>(builds: B[], opts?: { at?: string; by?: string; priorityOf?: Prio<B> }): { builds: B[]; kept: string; demoted: string[] };
+export function stopsFor(b: BuildLike): StopKind[];
+export function stopBuild<B extends QueueBuild>(b: B, kind: StopKind, opts?: { at?: string; by?: string; why?: string }): { ok: boolean; why: string; build: B; kill: boolean; already?: boolean };
+export function releaseStop<B extends QueueBuild>(b: B, opts?: { by?: string }): { ok: boolean; why: string; build: B };
+export function stoppedExit(b: BuildLike, status: string): string;
+export function guardStop(before: BuildLike, after: BuildLike, by?: string): { ok: boolean; why: string };
+export function keepStops<B extends QueueBuild>(before: B[], after: B[], opts?: { by?: string; at?: string; priorityOf?: Prio<B> }): { builds: B[]; kept: { id: string; why: string }[] };

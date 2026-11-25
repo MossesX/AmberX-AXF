@@ -271,6 +271,21 @@ class Remote:
                 return out
             since = r["next"]
 
+    def summary(self, key: str, lst: str = "") -> dict:
+        """pipeline-summary@1 of a table-backed record (builds/store.json): counts by status, the queued build and the
+        running builds with slot and account, computed from the rows on axf-data. The document is never read."""
+        return json.loads(self._send("GET", urllib.parse.quote(key) + ":summary", q={"list": lst} if lst else None)[2])
+
+    def item(self, key: str, item_key: str, lst: str = "") -> dict | None:
+        """data-item@1: one row of a keyed list by its key (one build with its steps and notes, plus the record's scalar
+        head fields), or None when there is no such item. The document is never read."""
+        try:
+            return json.loads(self._send("GET", urllib.parse.quote(key) + ":item", q={"key": item_key, **({"list": lst} if lst else {})})[2])
+        except DataStoreError as e:
+            if e.code == "not_found":
+                return None
+            raise
+
     def json(self, method: str, path: str, body: Any = None, q: dict | None = None) -> Any:
         b = json.dumps(body).encode() if body is not None else None
         return json.loads(self._send(method, path, headers={"content-type": "application/json"} if b else None, body=b, q=q)[2] or b"null")

@@ -347,6 +347,106 @@ class DocTable:
 
 # ── data-patch@1: the shape both engines accept, checked once, applied to rows (pg.py) or to the document (store.py) ──
 
+# ── pipeline-summary@1: one build row by id, and the pipeline's status without the document ─────────────────────────
+# (framework/spec/DATA-INVENTORY.md → Pipeline status.) A status is a row of `builds`; nothing reads the whole record to
+# learn one. The update of one row is data-patch@1 (DocTable.patch) with that build's `ifRev`.
+
+SUMMARY_SCHEMA = 'pipeline-summary@1'
+QUEUED_STATUS = 'queued'
+# a build some session, the dispatcher or the lander is working on right now (builds@1 + pipeline-2@1 statuses)
+RUNNING_STATUSES = ('running', 'fixing', 'landing', 'splitting', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building',
+                    'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main')
+_SUMMARY_PIPELINE = ('slot', 'account', 'session', 'model', 'queuedAt', 'queuedBy', 'heldAt', 'heldBy', 'heldWhy')
+
+
+def _text(v: Any) -> str:
+    return v if isinstance(v, str) else ''
+
+
+def summary_row(b: dict) -> dict:
+    """What a list shows of one build: the lifted columns and who runs it where. Never steps, notes or the origin."""
+    pl = b.get('pipeline') if isinstance(b.get('pipeline'), dict) else {}
+    out = {'id': _text(b.get('id')), 'number': _text(b.get('number')), 'title': _text(b.get('title')), 'status': _text(b.get('status')),
+           'priority': _text(b.get('priority')), 'pr': b.get('pr') if isinstance(b.get('pr'), (str, int)) else '', 'branch': _text(b.get('branch')),
+           'rev': b.get('rev') if isinstance(b.get('rev'), int) else None, 'updatedAt': _text(b.get('updatedAt')),
+           'statusAt': _text(b.get('statusAt')), 'statusBy': _text(b.get('statusBy'))}
+    out.update({k: _text(pl.get(k)) for k in _SUMMARY_PIPELINE})
+    return out
+
+
+def _summary(counts: dict[str, int], live: list[dict], running: tuple) -> dict:
+    """The answer both engines give: counts by status, the queued builds oldest first (`queued` = the one a
+    single-Queued pipeline holds), and the running builds with slot and account."""
+    queued = sorted((r for r in live if r['status'] == QUEUED_STATUS), key=lambda r: (r['queuedAt'] or r['updatedAt'] or '~', r['id']))
+    run = sorted((r for r in live if r['status'] in running), key=lambda r: (r['slot'] or '~', r['id']))
+    return {'$axf': SUMMARY_SCHEMA, 'total': sum(counts.values()), 'counts': dict(sorted(counts.items())),
+            'queued': queued[0] if queued else None, 'queuedAll': queued, 'running': run}
+
+
+def pipeline_summary(cur, table: 'DocTable', lkey: str = 'builds', running: tuple = RUNNING_STATUSES) -> dict:
+    """pipeline-summary@1 in SQL: a GROUP BY over the status index and the few live rows. No document is assembled."""
+    spec = table.lists[lkey]
+    cur.execute(f'SELECT COALESCE(status, \'\') AS status, COUNT(*) AS n FROM "{spec.table}" WHERE section=%s AND deleted IS NOT TRUE GROUP BY 1', (spec.section,))
+    counts = {r['status']: r['n'] for r in cur.fetchall()}
+    cur.execute(f'SELECT * FROM "{spec.table}" WHERE section=%s AND deleted IS NOT TRUE AND status = ANY(%s)', (spec.section, [QUEUED_STATUS, *running]))
+    return _summary(counts, [summary_row(unlift(r, spec.cols, r['extra'])) for r in cur.fetchall()], running)
+
+
+def pipeline_summary_doc(doc: Any, lkey: str = 'builds', running: tuple = RUNNING_STATUSES) -> dict:
+    """The document twin (SQLite engine, tests): the same answer from a record's list."""
+    items = [b for b in (doc.get(lkey) if isinstance(doc, dict) else None) or [] if isinstance(b, dict) and b.get('deleted') is not True]
+    counts: dict[str, int] = {}
+    for b in items:
+        counts[_text(b.get('status'))] = counts.get(_text(b.get('status')), 0) + 1
+    return _summary(counts, [summary_row(b) for b in items if b.get('status') == QUEUED_STATUS or b.get('status') in running], running)
+
+
+def list_row(cur, table: 'DocTable', lkey: str, key: str) -> dict | None:
+    """One item of a keyed list by its key (one build with its steps and notes): three indexed reads, no document."""
+    spec = table.lists[lkey]
+    cur.execute(f'SELECT * FROM "{spec.table}" WHERE section=%s AND rid=%s', (spec.section, key))
+    row = cur.fetchone()
+    if not row:
+        return None
+    item = unlift(row, spec.cols, row['extra'])
+    lifted = row.get('children_lifted') or {}
+    for ckey, ctable, ccols in spec.kids:
+        if lifted.get(ckey):
+            cur.execute(f'SELECT * FROM "{ctable}" WHERE section=%s AND {spec.parent_col}=%s ORDER BY pos', (spec.section, key))
+            item[ckey] = [unlift(r, ccols, r['extra']) for r in cur.fetchall()]
+    return item
+
+
+def head_scalars(head: Any) -> dict:
+    """The head fields a row writer needs beside its row (rev, updatedAt, storeVersion, counters): the scalar ones only,
+    so maps and lists of the head (meta, rules, drafts) never ride along with one build."""
+    return {k: v for k, v in (head.items() if isinstance(head, dict) else []) if isinstance(v, (str, int, float, bool)) or v is None}
+
+
+def list_head(cur, ns: str, path: str) -> dict:
+    """The scalar head fields of a table-backed record: one row of store_heads."""
+    cur.execute('SELECT head FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+    r = cur.fetchone()
+    return head_scalars(r['head'] if r else None)
+
+
+def list_row_doc(doc: Any, table: 'DocTable', lkey: str, key: str) -> dict | None:
+    spec = table.lists[lkey]
+    for it in (doc.get(lkey) if isinstance(doc, dict) else None) or []:
+        if isinstance(it, dict) and it.get(spec.key) == key:
+            return it
+    return None
+
+
+def row_query(table: Any, lkey: str, key: str) -> ListSpec:
+    """Checks an `:item` / `:summary` request against the table (ValueError = invalid_body)."""
+    if not isinstance(table, DocTable) or lkey not in table.patchable():
+        raise ValueError(f'no keyed list "{lkey}" here: rows are read by key on a table-backed record (builds/store.json → builds)')
+    if not isinstance(key, str) or not key:
+        raise ValueError('key is the item\'s id')
+    return table.lists[lkey]
+
+
 def check_patch(body: Any, table: DocTable | None) -> dict:
     """Validate a patch body: { head?: {…}, lists: { <list>: [ { key, ifRev?, item } ] }, journal?: { path, entry, idem? } }."""
     if not isinstance(body, dict):

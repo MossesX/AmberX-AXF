@@ -5,6 +5,9 @@
  * crashes, then Pending ('crash-limit'); Pending otherwise only for a blocked upgrade, a session that needs Brett, or
  * a stop mid-phase. Golden cases live in fixtures/build-pipeline-exit.json: `transition` replays the pure
  * nextStatusOnExit(), `sessions` replays the dispatcher's endOutcome() on build records.
+ * Single Queued (Nov 25 2026): fixtures/build-pipeline.json replays queue / promote / stop / reconcile scenarios and
+ * asserts on every op: at most one queued build, promotion only into a free Queue, hold / cancel / unqueue kept by
+ * every automatic writer across a reconcile pass.
  *   node framework/spec/check-build-pipeline.mjs            compare the engine with the fixture
  *   node framework/spec/check-build-pipeline.mjs --write    regenerate the fixture's `out` blocks from the engine
  */
@@ -107,6 +110,80 @@ eq(P.launchedPhase(lp)?.name, 'Phase 1', 'launchedPhase by the recorded name');
 eq(P.launchedPhase({ ...lp, pipeline: { ...lp.pipeline, phase: '' } })?.name, 'Phase 1', 'launchedPhase by the ticked step');
 eq(P.launchedPhase({ ...lp, pipeline: { ...lp.pipeline, phase: '', launchedAt: '2026-11-08T02:00:00.000Z' } }), null, 'nothing ticked since the launch and no name: unknown');
 
-if (WRITE) { writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 2)}\n`); console.log(`build-pipeline: fixture written (${fixture.transition.length} transition + ${fixture.sessions.length} session cases)`); }
+// ---------------- single Queued (Nov 25 2026): one queued max, promotion on go-live, hold / cancel / unqueue stick
+const QFIXTURE = join(HERE, 'fixtures/build-pipeline.json');
+const qfx = JSON.parse(readFileSync(QFIXTURE, 'utf8'));
+eq(qfx.$axf, 'build-pipeline-queue@1', 'queue fixture schema');
+const prio = (b) => b.priority || 'P2';
+const line = (builds) => builds.map((b) => `${b.id}:${b.status}${BP.stopOf(b) ? `:${BP.stopOf(b).kind}` : ''}`).join(' ');
+const queuedCount = (builds) => builds.filter((b) => b.status === 'queued' && !b.deleted).length;
+/** One op of a scenario on its builds: { builds, res } (the engine's answer, trimmed to what a caller acts on). */
+function replay(builds, o) {
+  const one = (id) => builds.find((b) => b.id === id);
+  const put = (nb) => builds.map((b) => (b.id === nb.id ? nb : b));
+  if (o.op === 'queue') { const r = BP.queueOne(builds, o.id, { at: o.at, by: o.by, priorityOf: prio }); return { builds: r.builds, res: { ok: r.ok, why: r.why } }; }
+  if (o.op === 'promote') { const r = BP.promote(builds, { at: o.at, by: o.by, priorityOf: prio }); return { builds: r.builds, res: { promoted: r.promoted, why: r.why } }; }
+  if (o.op === 'settle') { const r = BP.settleQueue(builds, { at: o.at, by: o.by, priorityOf: prio }); return { builds: r.builds, res: { kept: r.kept, demoted: r.demoted } }; }
+  // the dispatcher launched it: the status a launch writes (guardStop decides whether it may)
+  if (o.op === 'live') { const nb = { ...one(o.id), status: 'running' }; const g = BP.guardStop(one(o.id), nb, 'dispatcher'); return { builds: g.ok ? put(nb) : builds, res: { ok: g.ok, why: g.why } }; }
+  if (o.op === 'stop') { const r = BP.stopBuild(one(o.id), o.kind, { at: o.at, by: o.by, why: o.why }); return { builds: r.ok ? put(r.build) : builds, res: { ok: r.ok, why: r.why, kill: r.kill, ...(r.already ? { already: true } : {}) } }; }
+  if (o.op === 'release') { const r = BP.releaseStop(one(o.id), { by: o.by }); return { builds: r.ok ? put(r.build) : builds, res: { ok: r.ok, why: r.why } }; }
+  // the session ended: the exit transition proposed `status`; a stopped build rests in Pending instead
+  if (o.op === 'exit') { const status = BP.stoppedExit(one(o.id), o.status); return { builds: put({ ...one(o.id), status }), res: { status } }; }
+  if (o.op === 'guard') { const g = BP.guardStop(one(o.id), { ...one(o.id), status: o.status }, o.by); return { builds, res: { ok: g.ok, why: g.why } }; }
+  if (o.op === 'reconcile') {
+    const after = builds.map((b) => { let nb = { ...b, ...(o.set?.[b.id] ?? {}) }; if ((o.clearStop ?? []).includes(b.id)) { const { stop, ...pl } = nb.pipeline ?? {}; nb = { ...nb, pipeline: { ...pl, heldAt: '' } }; } return nb; });
+    const r = BP.keepStops(builds, after, { by: o.by, at: o.at, priorityOf: prio });
+    return { builds: r.builds, res: { kept: r.kept } };
+  }
+  throw new Error(`unknown op ${o.op}`);
+}
+let qops = 0;
+for (const sc of qfx.scenarios) {
+  let builds = sc.builds.map((b) => ({ deleted: false, hidden: false, ...b, pipeline: BP.normPipeline(b.pipeline) }));
+  const stops = new Map(); // id → kind, while Brett's stop stands
+  const got = [];
+  sc.ops.forEach((o, i) => {
+    const before = builds;
+    const r = replay(builds, o); builds = r.builds; qops++;
+    got.push({ ...r.res, after: line(builds) });
+    const what = `queue: ${sc.name}: op ${i + 1} (${o.op}${o.id ? ` ${o.id}` : ''})`;
+    // the contract, on every op of every scenario (not only the golden lines)
+    ok(queuedCount(builds) <= BP.QUEUE_MAX || (sc.breach && o.op !== 'settle' && queuedCount(builds) <= queuedCount(before)), `${what}: at most ${BP.QUEUE_MAX} queued (${line(builds)})`);
+    if (o.op === 'promote' && r.res.promoted) ok(queuedCount(before) === 0 && builds.find((b) => b.id === r.res.promoted).status === 'queued', `${what}: promotes only into a free Queue`);
+    if (o.op === 'promote' && r.res.promoted) ok(!BP.isStopped(before.find((b) => b.id === r.res.promoted)), `${what}: never promotes a stopped build`);
+    for (const b of builds) {
+      const s = BP.stopOf(b); const had = stops.get(b.id);
+      if (had && !BP.speaksForBrett(o.by ?? 'dispatcher')) {
+        ok(s?.kind === had, `${what}: ${b.id} keeps its ${had} (automatic writer ${o.by ?? 'dispatcher'})`);
+        const was = before.find((x) => x.id === b.id).status;
+        ok(b.status === was || BP.STOPPED_MAY_BE.includes(b.status), `${what}: stopped ${b.id} only rests (${was} → ${b.status})`);
+      }
+      if (s) stops.set(b.id, s.kind); else stops.delete(b.id);
+    }
+  });
+  if (WRITE) sc.out = got; else eq(got, sc.out, `queue: ${sc.name}`);
+}
+// the record keeps a stop, and nothing else new: an unstopped record is byte for byte what it was
+const stopRec = { kind: 'cancel', at: NOW, by: 'console', why: 'x', from: 'running' };
+eq(BP.normPipeline({ queuedAt: QUEUED_AT, stop: stopRec }).stop, stopRec, 'normPipeline keeps pipeline.stop');
+ok(!('stop' in BP.normPipeline({ queuedAt: QUEUED_AT })), 'no stop key on a build that has none');
+eq(BP.normPipeline({ stop: { kind: 'nope', at: NOW } }), null, 'an unknown stop kind is no stop');
+eq(BP.normStop({ kind: 'hold', at: 'not a date' }), null, 'a stop without a time is no stop');
+eq(BP.stopOf({ status: 'queued', pipeline: { heldAt: NOW, heldBy: 'console', heldWhy: 'w' } }), { kind: 'hold', at: NOW, by: 'console', why: 'w', from: 'queued' }, 'a hold from before the contract reads as a stop');
+eq(['brett', 'console', 'rest', 'mcp', 'cli', 'voice', 'amberx', 'phone', 'console:brett'].map(BP.speaksForBrett), Array(9).fill(true), "Brett's surfaces speak for him");
+eq(['dispatcher', 'pipeline', 'watchdog', 'reconciler', 'lander', 'auto', 'orchestrator', 'reaper', 'someone-new', '', undefined, 'clients'].map(BP.speaksForBrett), Array(12).fill(false), 'every other writer is automatic, also an unknown one');
+eq(BP.stopBuild({ id: 'x', status: 'complete' }, 'cancel', { at: NOW, by: 'console' }).ok, false, 'a finished build is not cancelled');
+eq(BP.stopBuild({ id: 'x', status: 'running' }, 'pause', { at: NOW, by: 'console' }).ok, false, 'an unknown stop is refused');
+eq(BP.stopsFor({ id: 'x', status: 'queued' }), ['unqueue', 'hold'], 'a queued build: unqueue or hold');
+eq(BP.stopsFor({ id: 'x', status: 'running' }), ['hold', 'cancel'], 'a live build: hold or cancel');
+eq(BP.stoppedExit({ status: 'running' }, 'queued'), 'queued', 'an unstopped build follows its exit transition');
+{ const done = { id: 'x', status: 'pending', steps: [{ id: 's1', done: true }], pipeline: { stop: { ...stopRec, kind: 'hold' } } };
+  eq(BP.releaseStop(done, { by: 'console' }).build.status, 'landing', 'a held build that finished its steps lands once released');
+  eq(BP.releaseStop({ ...done, pipeline: { stop: stopRec } }, { by: 'console' }).build.status, 'pending', 'a cancelled one stays in Pending');
+  const q = BP.queueOne([{ id: 'x', status: 'pending', deleted: false, hidden: false, steps: [{ id: 's1', done: false }], pipeline: { stop: { ...stopRec, kind: 'unqueue' } } }], 'x', { at: NOW, by: 'console' });
+  eq([q.ok, q.builds[0].status, BP.isStopped(q.builds[0])], [true, 'queued', false], 'Brett queueing a stopped build lifts its stop'); }
+
+if (WRITE) { writeFileSync(QFIXTURE, `${JSON.stringify(qfx, null, 2)}\n`); writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 2)}\n`); console.log(`build-pipeline: fixture written (${fixture.transition.length} transition + ${fixture.sessions.length} session cases)`); }
 if (failed) { console.error(`build-pipeline: ${failed}/${n} checks failed`); process.exit(1); }
 console.log(`build-pipeline: ${n}/${n} checks passed`);
