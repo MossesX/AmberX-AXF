@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T08:04:02.432Z",
+ "updatedAt": "2026-11-25T08:04:51.969Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -199948,7 +199948,7 @@
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T08:03:56.331Z",
+   "updatedAt": "2026-11-25T08:04:36.527Z",
    "builtAt": "",
    "notes": [
     {
@@ -200079,6 +200079,11 @@
      "text": "Draft PR #924 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/924.",
      "at": "2026-11-25T08:02:19.386Z",
      "by": "orchestrator"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or",
+     "at": "2026-11-25T08:04:46.236Z",
+     "by": "store"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10404,
- "updatedAt": "2026-11-25T08:04:02.432Z",
+ "rev": 10405,
+ "updatedAt": "2026-11-25T08:04:51.969Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292500,7 +292500,7 @@
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T08:03:56.331Z",
+   "updatedAt": "2026-11-25T08:04:36.527Z",
    "builtAt": "",
    "notes": [
     {
@@ -292631,6 +292631,11 @@
      "text": "Draft PR #924 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/924.",
      "at": "2026-11-25T08:02:19.386Z",
      "by": "orchestrator"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or",
+     "at": "2026-11-25T08:04:46.236Z",
+     "by": "store"
     }
    ],
    "approvals": [],
@@ -293060,7 +293065,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:04:18.310Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293070,9 +293075,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:04:09.875Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:04:18.310Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s6",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s6"
     },
     {
      "id": "s7",
@@ -293095,7 +293116,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:04:36.527Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293105,9 +293126,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:04:26.836Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:04:36.527Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s7",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s7"
     },
     {
      "id": "s8",
@@ -293426,7 +293463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {

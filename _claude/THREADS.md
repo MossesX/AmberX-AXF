@@ -844,7 +844,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
 - 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` note (all) · console
 - 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` PR 916 (all) · lander
 - 2026-11-24 21:13 UTC · `fix-refreshing-console-jumps-back` → pr-pulling-main (all) · lander
@@ -1244,6 +1243,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` s1 undone (all) · orchestrator
 - 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` s2 undone (all) · orchestrator
 - 2026-11-25 08:03 UTC · `terminal-main-tab-streaming-console-s` s3 undone (all) · orchestrator
+- 2026-11-25 08:04 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
 
 ## Token passes (log)
 
