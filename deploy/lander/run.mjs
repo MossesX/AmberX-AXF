@@ -60,6 +60,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from './lander-core.mjs';
 import * as G from './git.mjs';
+import { ciDecision, prMerged, NEW_HEAD } from './ci-state.mjs';
 import { makeStore, memoryStore } from './store.mjs';
 import { FIX_MODEL, defaultFixSession, fixWorktree } from './fix-session.mjs';
 import { crewSay } from '../../framework/cli/crew-say.mjs';
@@ -215,7 +216,6 @@ export function rulesOnBranch({ s, git, b, branch, buildRules }) {
 const branchFor = (b, opened) => L.groupBranch(b.id, opened);
 const openedCount = (b) => { const l = L.landingOf(b); return l.merged.length + l.closed.length; };
 /** What a new head starts without: the CI and rules records of the old one. */
-const NEW_HEAD = Object.freeze({ reruns: null, rules: null, ciKick: null, fullKick: null, green: null });
 
 /**
  * One tick. Everything injectable for tests: s (settings), git, gh, store ({ read, write }), cfg, now, fixSession,
@@ -438,7 +438,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         const own = L.failedIn(b) === 'merging-main' && !!head && b.landing?.green?.head === head;
         const ci = own ? 'success' : await handCi(head, sha);
         const lastMerge = { pr: n, sha, head, at: str(pr.merged_at, 40) || at, ...(own ? {} : { byHand: true, ci, by: str(pr.merged_by?.login, 80) }) };
-        if (!write({ status: 'merging-pr', group: true, failure: null, landing: { merged: [...new Set([...L.landingOf(b).merged, n])], lastMerge, ...NEW_HEAD, mainPull: null, fixes: null }, note: own ? `Lander: PR #${n} is merged (${sha.slice(0, 9)}).` : `Lander: PR #${n} was merged by hand${lastMerge.by ? ` by ${lastMerge.by}` : ''} (${sha.slice(0, 9)}, CI ${ci}): recorded, the build goes on.` })) return 'stop';
+        if (!write({ status: 'merging-pr', group: true, failure: null, landing: prMerged(b, lastMerge), note: own ? `Lander: PR #${n} is merged (${sha.slice(0, 9)}).` : `Lander: PR #${n} was merged by hand${lastMerge.by ? ` by ${lastMerge.by}` : ''} (${sha.slice(0, 9)}, CI ${ci}): recorded, the build goes on.` })) return 'stop';
         act(own ? `PR #${n} is merged` : `PR #${n} was merged by hand (${sha.slice(0, 9)}, CI ${ci}): recorded`);
         const gone = str(pr.head?.ref, 250) || branchFor(b, openedCount(b));
         if (gone && gone !== s.base) git(['push', '-q', s.remote, '--delete', gone]);
@@ -570,33 +570,15 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         if (!head) return fail('infra', { why: `${branch} is not on GitHub` });
         let runs = [];
         try { runs = await checksOf(head); } catch (e) { out.waiting = `CI can't be read (${e.message})`; return 'stop'; }
-        // the CI clocks start at the status change, or at the last pull of main into the PR (a new head: CI starts over)
-        const since = [b.statusAt, b.landing?.mainPull?.at].filter(Boolean).sort().pop() || at;
-        const startFull = async (why) => {
-          if (b.landing?.fullKick?.head === head || dry) return;
-          try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); write({ landing: { fullKick: { head, at } } }); act(`${why} on ${head.slice(0, 9)}: started the full CI run`); } catch (e) { log(`dispatch: ${e.message}`); }
-        };
-        // light PR checks only (ci-scope: a PR while the old merge queue's repo variable is on): the one CI run must be the
-        // full one, so it is dispatched once per head (workflow_dispatch is always full) and only the full run counts
-        if (L.lightOnly(runs)) {
-          await startFull('only light PR checks');
-          if (L.ciTimedOut(since, at, cfg)) return fail('ci-timeout', { why: `no full CI run after ${cfg.ciTimeoutMin} min`, head, pr: g.inFlight.pr });
-          out.waiting = 'waiting for the full CI run'; return 'stop';
+        // the decision itself is pure (ci-state.mjs): what the check runs say, whether a run has to be started, whether
+        // the wait is over. Here it is only carried out
+        const d = ciDecision({ runs, head, landing: b.landing, statusAt: b.statusAt, at, cfg });
+        if (d.kick && !dry) {
+          try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); write({ landing: { [d.kick.marker]: { head, at } } }); act(d.kick.said); } catch (e) { log(`dispatch: ${e.message}`); }
         }
-        const ci = L.ciOf(runs, { required: cfg.requiredChecks });
-        if (ci.ci === 'none') {
-          const kick = b.landing?.ciKick;
-          if (kick?.head !== head && L.ciKickDue(since, at, cfg) && !dry) {
-            try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); write({ landing: { ciKick: { head, at } } }); act(`no CI on ${head.slice(0, 9)}: started it`); } catch (e) { log(`dispatch: ${e.message}`); }
-          }
-          out.waiting = 'CI has not started on the head'; return 'stop';
-        }
-        if (ci.ci === 'running') {
-          if (L.ciTimedOut(since, at, cfg)) return fail('ci-timeout', { why: `CI still running after ${cfg.ciTimeoutMin} min`, head, pr: g.inFlight.pr });
-          out.waiting = 'CI is running'; return 'stop';
-        }
-        if (ci.ci === 'failure') {
-          const ctx = { why: `CI is red on ${head.slice(0, 9)} (${ci.failing.slice(0, 3).join(', ') || 'checks failed'})`, head, pr: g.inFlight.pr, failing: ci.failing, runIds: ci.runIds, jobIds: ci.jobIds };
+        if (d.state === 'failure') {
+          const ci = d.ci;
+          const ctx = { ...d.fail.ctx, head, pr: g.inFlight.pr };
           // re-runs and fix sessions used up on a PR of several steps: it splits only when the failing log names one step's files
           if (g.inFlight.steps.length > 1 && rerunsOn(head) >= cfg.flakyReruns && L.fixesOf(b, g.inFlight.pr) >= cfg.maxFixes && !dry) {
             ctx.log = await logOf(ci.jobIds);
@@ -605,12 +587,8 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
           }
           return fail('ci-red', ctx);
         }
-        // nothing red, nothing running, but a required check has not reported on this head: not green yet
-        if (ci.ci === 'missing') {
-          if (L.ciKickDue(since, at, cfg)) await startFull(`required checks have not reported (${ci.missing.slice(0, 3).join(', ')})`);
-          if (L.ciTimedOut(since, at, cfg)) return fail('ci-timeout', { why: `required checks never reported in ${cfg.ciTimeoutMin} min: ${ci.missing.join(', ')}`, head, pr: g.inFlight.pr, failing: ci.missing });
-          out.waiting = `waiting for required checks: ${ci.missing.join(', ')}`; return 'stop';
-        }
+        if (d.fail) return fail(d.fail.kind, { ...d.fail.ctx, head, pr: g.inFlight.pr });
+        if (d.state !== 'success') { out.waiting = d.waiting; return 'stop'; }
         // green. The merge rule (Brett, Nov 24 2026): a green PR is merged as it is. Main having moved since CI ran is no
         // reason to pull it in or to run CI again here; only a merge GitHub refuses is (merging-main, then the retry)
         // the build rules at the gate, once per head (a fixer's commit is a new head: CI again). The gate fails
@@ -666,16 +644,15 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
             return fail('infra', { why: `merging PR #${g.inFlight.pr}: ${e.message}`, head, pr: g.inFlight.pr });
           }
         }
-        const merged = [...L.landingOf(b).merged, g.inFlight.pr];
         // the merge evidence done-means-merged@1 asks of `landed`: the PR, its merge commit and CI green on the head it merged (sha pinned)
         const lastMerge = { pr: g.inFlight.pr, sha: mergeSha || head, head, at };
         const together = mates();
-        if (!write({ landing: { merged, lastMerge, ...NEW_HEAD, mainPull: null, fixes: null }, failure: null })) return 'stop';
+        if (!write({ landing: prMerged(b, lastMerge), failure: null })) return 'stop';
         act(`PR #${g.inFlight.pr} merged into main${together.length ? ` (merge together: ${[b.id, ...together.map((m) => m.id)].join(', ')})` : ''}`);
         if (branch !== s.base) git(['push', '-q', s.remote, '--delete', branch]);
         // merge together: the one merge is every build's merge, with the same evidence (the head CI went green on)
         for (const m of together) {
-          const r1 = put(m.id, { landing: { merged: [...new Set([...L.landingOf(m).merged, g.inFlight.pr])], lastMerge, ...NEW_HEAD, mainPull: null, fixes: null }, failure: null });
+          const r1 = put(m.id, { landing: prMerged(m, lastMerge), failure: null });
           const mb = r1.build || m;
           const r2 = put(m.id, { status: 'landed', failure: null, mergeLine: null, ...L.landedEvidence(mb, at), note: `Lander: landed together with ${[b.id, ...together.filter((x) => x.id !== m.id).map((x) => x.id)].join(', ')} (#${g.inFlight.pr}).` });
           if (!r2.ok) { log(L.say(m, `store: ${r2.why || 'write refused'}`)); continue; }
