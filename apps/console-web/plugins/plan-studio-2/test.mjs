@@ -234,10 +234,12 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.equal(st.$axf, 'plan-tree@1'); assert.equal(st.items.length, 3);
   const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1); assert.equal(pv.planning, 1);
   const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.planning, 1);
+  assert.equal(b.status, 'pending'); assert.equal(b.queued, false); assert.equal(b.build.status, 'pending'); assert.match(b.say, /Sent it to Pending as launch/, 'Send to build answers Pending, never Queued');
   const orch = JSON.parse(readFileSync(join(dir, 'store.json'), 'utf8'));
   const sent = orch.builds.find((x) => x.id === 'launch');
   assert.equal(sent.source, 'plan-studio-2'); assert.equal(sent.origin.said, 'ship it');
   assert.equal(sent.flow, 'pipeline-2'); assert.equal(sent.status, 'pending'); assert.ok(sent.statusAt && sent.statusBy, 'pipeline-2@1: at / by recorded');
+  assert.ok(!sent.pipeline?.queuedAt && !sent.pipeline?.queuedBy && sent.status !== 'queued', 'Send to build never queues: no queue mark on the record');
   assert.equal(sent.steps.length, 0, 'one build, no build steps: the splitting stage designs them');
   assert.deepEqual(sent.planning, [{ text: 'Deploy', model: 'Opus', minutes: 30 }], 'the plan steps are kept as planning context');
   assert.ok(cliJson('show', 'Launch').item.links.some((l) => l.type === 'build' && l.ref.endsWith(':launch')));

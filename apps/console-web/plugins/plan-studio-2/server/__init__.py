@@ -223,9 +223,13 @@ async def import_items(request: Request) -> dict[str, Any]:
 
 @router.post("/build")
 async def build(request: Request) -> dict[str, Any]:
-    """Send an item to the build orchestrator: {id, profile, buildId, preview, said}. Its open steps become the build's."""
+    """Send an item to the build orchestrator: {id, profile, buildId, preview, said}. Its open steps become the build's.
+    The build is created in Pending, never Queued (the answer says `status: pending`, `queued: false`): a status or a
+    queue flag in the body is dropped, the pipeline moves it up when the Queue is free."""
     body = await _body(request)
     body.pop("emergency", None)  # an emergency build goes through POST /emergency (Brett's signed-in console only)
+    for k in ("status", "queue", "queued", "pipeline"):  # Send never queues
+        body.pop(k, None)
     return _write("build", request, body)
 
 

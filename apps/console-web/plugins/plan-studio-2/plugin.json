@@ -180,7 +180,7 @@
         "route": "POST /build",
         "id": "build",
         "title": "Send to the build orchestrator",
-        "description": "The item becomes one pending Pipeline 2.0 build (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps); `preview: true` shows it without writing it."
+        "description": "The item becomes one Pipeline 2.0 build in Pending, never Queued (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps; it moves up to the Queue by itself when the Queue is free). Answers `status: pending`, `queued: false`. `preview: true` shows it without writing it."
       },
       {
         "route": "POST /emergency",

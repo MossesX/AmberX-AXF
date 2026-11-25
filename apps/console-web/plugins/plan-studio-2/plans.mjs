@@ -131,14 +131,14 @@ export function restoreDeleted(trashId = '') { const r = tc.undo(load(), trashId
 /** plans@1 `restore` named a saved version; the tree has none. */
 export function restore() { throw new Error('Plan Studio 2.0 keeps no versions of a plan: a deleted plan comes back with undo (plan-studio-2 undo)'); }
 
-/** One pending Pipeline 2.0 build from the plan (tree.mjs sendToBuild: plan-build@1 checked, the plan linked to it). */
+/** One Pipeline 2.0 build in Pending, never Queued, from the plan (tree.mjs sendToBuild: plan-build@1 checked, the plan linked to it). */
 export function turnIntoBuild(id, { profile = '', buildId = '', preview = false, by = '', said = '' } = {}) {
   const s = load();
   if (!planItem(s, id)) throw new Error(`no plan ${id}`);
   const r = sendToBuild(s, id, { profile, id: buildId, preview, by, said });
   if (r.preview) return r;
   const st = save(r.state);
-  return { ok: true, plan: toPlan(st, tc.byId(st, id)), build: r.build };
+  return { ok: true, plan: toPlan(st, tc.byId(st, id)), build: r.build, status: r.status, queued: false };
 }
 
 export function exportPlans(ids, format = 'json') {

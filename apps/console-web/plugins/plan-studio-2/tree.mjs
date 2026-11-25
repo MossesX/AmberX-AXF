@@ -207,7 +207,7 @@ export function planOf(state, ref, { id = '', said = '' } = {}) {
 /**
  * Send to orchestrator (pipeline-2@1, framework/spec/PIPELINE-2.md): the plan must pass plan-build@1 (nothing invalid
  * moves on: every reason is listed), gets its build id, and goes into the builds store as ONE Pipeline 2.0 build
- * (`flow: pipeline-2`, status `pending`, no build steps; the plan's steps kept as `planning`). The orchestrator flow
+ * (`flow: pipeline-2`, status `pending`: always Pending, never Queued; no build steps; the plan's steps kept as `planning`). The orchestrator flow
  * takes it from there: splitting (Fable designs the build steps, each with minutes and a model) → split → pulling-main
  * → assigning-models → ready. The item gets a `build` link back.
  *
@@ -215,6 +215,8 @@ export function planOf(state, ref, { id = '', said = '' } = {}) {
  * builds in the emergency slots and lands first. Brett's signed-in console only: who is asking is read from `env`
  * (framework/cli/emergency-builds.mjs ownerFrom) and checked before anything is written, so a refused ask sends nothing.
  */
+/** Where Send to build puts a build: Pending. Never the Queue: the pipeline moves it up when the Queue is free. */
+export const SENT_STATUS = 'pending';
 export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '', emergency = false, env = process.env } = {}) {
   if (emergency && !preview) { const o = ownerFrom(env); if (!o.ok) throw new tc.TreeError('forbidden', o.why); }
   const prof = profile || activeProfile().id;
@@ -233,14 +235,19 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
       ...(said ? { origin: { said, at: now, source: 'console', by: by || 'Brett' } } : {}),
       planning: plan.steps,
       steps: [],
-    }, 'pending', { at: now, by: who, why: 'Send to orchestrator' }).rec;
-    s.builds.push(core.normBuild(b, { now, profile: prof }));
+    }, SENT_STATUS, { at: now, by: who, why: 'Send to orchestrator' }).rec;
+    // Send lands in Pending, never in the Queue (single Queued, build-pipeline@1): no queue mark of any kind rides
+    // along, whoever sends it (the page, REST, MCP, the CLI, voice, an emergency send). It moves up by itself.
+    const rec = core.normBuild(b, { now, profile: prof });
+    if (rec.status !== SENT_STATUS) throw new tc.TreeError('validation', `a sent plan starts in Pending, not ${rec.status}`);
+    if (rec.pipeline) rec.pipeline = { ...rec.pipeline, queuedAt: '', queuedBy: '' };
+    s.builds.push(rec);
     return s;
-  }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
+  }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps, Pending` });
   if (emergency) sendToEmergency(plan.id, { env });
   refreshBuilds(); // the new build locks the plan from the next read on
   const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
-  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
+  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id, status: SENT_STATUS }, status: SENT_STATUS, queued: false, planning: plan.steps.length, plan, emergency: !!emergency };
 }
 
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
@@ -316,7 +323,7 @@ export function api(r, { by = '' } = {}) {
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
     case 'import': { guard(r.parent ?? r.in); const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
-    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
+    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, status: res.status, queued: false, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to Pending as ${res.build.id}. Fable splits it into build steps; it moves up to the Queue by itself when the Queue is free.` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
