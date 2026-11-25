@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalS
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
+import { installAssetsMenu } from './components/AssetsMenu';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
 
@@ -104,6 +105,8 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
 
   // Menus that place themselves (plugins' ⋯ menus) stay on screen and scroll when too tall, like the framework's (menu-fit@1).
   useEffect(() => installMenuFit(), []);
+  // hidden-assets@1 (components/AssetsMenu.tsx): the Assets menu-bar entry every app gets (Hidden items…, Unhide all, Hide ▸).
+  useEffect(() => installAssetsMenu(runtime), [runtime]);
 
   // console-control@1 (controlTargets.ts): every control on the page is addressable; the verbs ride on console.actions.
   useEffect(() => installControlRegistry(runtime), [runtime]);

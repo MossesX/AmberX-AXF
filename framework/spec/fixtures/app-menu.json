@@ -3359,6 +3359,31 @@
               "origin": "asset",
               "icon": "refresh",
               "action": "assets.reset"
+            },
+            {
+              "id": "axf-assets-top",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "axf-assets-hidden",
+              "label": "Hidden items…",
+              "locked": false,
+              "origin": "asset",
+              "icon": "eye",
+              "action": "chrome.hidden",
+              "badge": "hidden-assets.count"
+            },
+            {
+              "id": "axf-assets-unhide-all",
+              "label": "Unhide all",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "chrome.unhideAll",
+              "requires": "assets.swap"
             }
           ]
         },
@@ -3435,7 +3460,9 @@
         }
       ],
       "conflicts": [],
-      "notes": []
+      "notes": [
+        "assets/axf-assets-hide: live list \"axf.hideable\" is not registered"
+      ]
     },
     "user": {
       "menus": [
@@ -3619,6 +3646,31 @@
               "origin": "asset",
               "icon": "refresh",
               "action": "assets.reset"
+            },
+            {
+              "id": "axf-assets-top",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "axf-assets-hidden",
+              "label": "Hidden items…",
+              "locked": false,
+              "origin": "asset",
+              "icon": "eye",
+              "action": "chrome.hidden",
+              "badge": "hidden-assets.count"
+            },
+            {
+              "id": "axf-assets-unhide-all",
+              "label": "Unhide all",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "chrome.unhideAll",
+              "requires": "assets.swap"
             }
           ]
         },
@@ -3695,7 +3747,9 @@
         }
       ],
       "conflicts": [],
-      "notes": []
+      "notes": [
+        "assets/axf-assets-hide: live list \"axf.hideable\" is not registered"
+      ]
     },
     "admin": {
       "menus": [
@@ -3879,6 +3933,31 @@
               "origin": "asset",
               "icon": "refresh",
               "action": "assets.reset"
+            },
+            {
+              "id": "axf-assets-top",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "axf-assets-hidden",
+              "label": "Hidden items…",
+              "locked": false,
+              "origin": "asset",
+              "icon": "eye",
+              "action": "chrome.hidden",
+              "badge": "hidden-assets.count"
+            },
+            {
+              "id": "axf-assets-unhide-all",
+              "label": "Unhide all",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "chrome.unhideAll",
+              "requires": "assets.swap"
             }
           ]
         },
@@ -3955,7 +4034,9 @@
         }
       ],
       "conflicts": [],
-      "notes": []
+      "notes": [
+        "assets/axf-assets-hide: live list \"axf.hideable\" is not registered"
+      ]
     }
   },
   "providers": {

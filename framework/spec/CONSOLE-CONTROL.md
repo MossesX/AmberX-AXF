@@ -128,6 +128,47 @@ needs `useControlTarget` (or the `data-axf-target="<address>"` attribute, which 
 A snapshot of the registry (`{ $axf: 'console-control-targets@1', view, targets: [...] }`) is what the engine resolves against,
 what the console reports to the server (as catalog items of kind `target`), and what `list` answers.
 
+### Hidden assets (hidden-assets@1)
+
+Hiding a piece of chrome (a tab group, toolbar, banner, navigation menu, the menu bar, a widget) and bringing it back is on the
+screen in three places, and each one is addressable without per-view code. A piece is `<kind>:<id>`: the kind is one the runtime
+lists (`rt.hideableKinds()`), the id is the piece's chrome instance id (`app` for the chrome an app draws once; a widget's id is
+`<type>:<id>`). Inside an address a `/` in the id is written `%2F`; inside a button id `:` and `/` are dots.
+
+| Where | Address | Kind | What a verb does |
+|---|---|---|---|
+| The Assets menu-bar entry (every app; `installAssetsMenu`) | `button:menu.assets` | button | `press` opens the menu: Hidden items… (the count as a badge), Unhide all, Hide ▸ |
+| The Assets panel (`<AssetsMenu />`) | `panel:assets-menu` | panel | `state` reads its text; `focus` scrolls to it; `data-axf-hidden-count` on the element is the count |
+| ↳ Hidden items… | `panel:assets-menu/button:assets.hidden-items` | button | `press` runs `chrome.hidden` (opens the Hidden list); its label carries the count |
+| ↳ Unhide all | `panel:assets-menu/button:assets.unhide-all` | button | `press` runs `chrome.unhideAll`; disabled while nothing is hidden; needs `assets.swap` |
+| ↳ the visible pieces | `panel:assets-menu/grid:assets-hide` | grid | `list` under it answers one row per piece on screen that can be hidden |
+| ↳ one visible piece | `…/grid:assets-hide/row:<kind>:<id>` | row | `focus` scrolls to it; `state` reads its name (`Toolbar: Page tools`) |
+| ↳ its Hide button | `…/row:<kind>:<id>/button:assets.hide.<kind>.<id>` | button | `press` runs `chrome.hide:<kind>:<id>`; needs `assets.swap` |
+| The Hidden list (Settings → Appearance → Hidden, dialog `axf.hidden-assets`) | `panel:hidden-assets` | panel | `state` / `focus`; `data-axf-hidden-count` is the count |
+| ↳ what is hidden | `panel:hidden-assets/grid:hidden-assets` | grid | `list` answers one row per hidden piece, grouped by kind |
+| ↳ one hidden piece | `…/grid:hidden-assets/row:<kind>:<id>` | row | `focus` / `state` (name, the asset it was drawn with, when and by whom it was hidden) |
+| ↳ its Unhide button | `button:hidden.unhide.<kind>.<id>` | button | `press` runs `chrome.unhide:<kind>:<id>`; needs `assets.swap` |
+| ↳ Unhide all | `button:hidden.unhide-all` | button | `press` runs `chrome.unhideAll` (the list asks once first: press again); needs `assets.swap` |
+
+Short forms resolve as everywhere: `button:assets.unhide-all`, `row:toolbar:page.tools`, `button:hidden.unhide-all`. Rows exist
+only while their piece is on screen (Assets panel) or hidden (Hidden list), so a `not_found` on a row means the piece is not in
+that state; `nearest` names the rows that are.
+
+Nothing here owns state. Every press ends in one of the four console actions, which call the runtime (`rt.hide`, `rt.unhide`,
+`rt.unhideAll`, `rt.hidden`; the list is in the app's look document), so a caller with no console open uses the same actions
+through `console.actions`, or the REST / MCP / CLI surface for hidden assets, and gets the same result:
+
+| Action | Does |
+|---|---|
+| `chrome.hidden` | opens the Hidden list (the dialog `axf.hidden-assets`, else Settings → Appearance) |
+| `chrome.hide:<kind>:<id>` | hides one piece in this app (everything after the kind is the id, so a widget is `chrome.hide:widget:<type>:<id>`) |
+| `chrome.unhide:<kind>:<id>` | shows it again |
+| `chrome.unhideAll` | shows every hidden piece again |
+
+The menu's own rows are app-menu items (`data-axf-menu-item`): `axf-assets-hidden`, `axf-assets-unhide-all`, `axf-assets-hide`
+and, in the live list under Hide ▸ (provider `axf.hideable`), `axf-assets-hide:<kind>:<id>`. They are in the search index (kind
+`menu`), so `search` finds "Hidden items" and "Unhide all" and answers the action to run.
+
 ### Scroll maths
 
 `ScrollState` is `{ container, top, left, height, extent, atTop, atBottom, fraction }`: `height` is the visible height, `extent`
