@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T11:58:50.959Z",
+ "updatedAt": "2026-11-25T11:59:10.827Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213518,7 +213518,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T11:55:11.723Z",
-   "updatedAt": "2026-11-25T11:58:43.724Z",
+   "updatedAt": "2026-11-25T11:59:07.429Z",
    "builtAt": "",
    "notes": [
     {
@@ -213898,7 +213898,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "launch failed: launcher exit 3: claude-headless: refused: pipeline-fixes-drop-7-mb-status-file was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestr",
      "uid": "st-mww2k40m1yzi46",
      "createdAt": "2026-11-25T11:57:40.053Z",
      "after": []

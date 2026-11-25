@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10412,
- "updatedAt": "2026-11-25T11:58:50.959Z",
+ "rev": 10413,
+ "updatedAt": "2026-11-25T11:59:10.827Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -393570,7 +393570,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T11:55:11.723Z",
-   "updatedAt": "2026-11-25T11:58:43.724Z",
+   "updatedAt": "2026-11-25T11:59:07.429Z",
    "builtAt": "",
    "notes": [
     {
@@ -394212,7 +394212,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "launch failed: launcher exit 3: claude-headless: refused: pipeline-fixes-drop-7-mb-status-file was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestr",
      "after": [],
      "triage": {
       "model": "Fable",
@@ -394228,9 +394228,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-25T11:57:40.053Z",
-     "updatedAt": "2026-11-25T11:57:40.053Z"
+     "updatedAt": "2026-11-25T11:59:07.516Z"
     },
     {
      "id": "s15",
@@ -394458,7 +394458,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
