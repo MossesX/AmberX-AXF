@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/pipeline-2.schema.json",
+  "title": "pipeline-2@1: Pipeline 2.0 build and step status (the contract fields of a builds@1 record)",
+  "description": "framework/spec/PIPELINE-2.md. Only the contract's fields are described; a builds@1 build carries its other fields as before. Enums are checked against framework/core/pipeline-status.mjs by framework/spec/check-pipeline-2.mjs.",
+  "type": "object",
+  "required": ["id", "flow", "status", "statusAt", "statusBy", "steps"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "flow": { "const": "pipeline-2" },
+    "status": { "$ref": "#/$defs/buildStatus" },
+    "statusAt": { "type": "string", "format": "date-time" },
+    "statusBy": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "failedFrom": { "$ref": "#/$defs/buildStatus" },
+    "archivedFrom": { "$ref": "#/$defs/buildStatus", "description": "Only while the build is archived: the status it was archived from. It returns there, or to failed from it, never anywhere else." },
+    "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
+    "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, mainPull, lastMerge" },
+    "emergency": { "type": "object", "description": "Sent to emergency by Brett from his signed-in console: skips the one-active-build line, builds in the emergency slot pool, lands first", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
+    "hand": { "type": "object", "description": "Started by hand (axHub vps.build_start, a console launch): one step whose session was already running, so it entered the flow at building. It runs beside the one-active-build line, is never launched by the dispatcher, and lands through the lander like any other build", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
+    "budgetStop": { "type": "object", "description": "build-budget@1: the build was stopped at a budget cap (its own, or the day's). Nothing of it is launched and the watchdog leaves it alone until the cap allows it again", "required": ["at", "kind"], "properties": { "at": { "type": "string", "format": "date-time" }, "kind": { "enum": ["build", "daily"] }, "spentUsd": { "type": "number", "minimum": 0 }, "capUsd": { "type": "number", "minimum": 0 } } },
+    "landedAt": { "type": "string", "format": "date-time" },
+    "planning": {
+      "description": "The plan's steps as Plan Studio sent them: planning context for the splitting stage, never build steps (kept for the record after the split)",
+      "type": "array", "maxItems": 100,
+      "items": { "type": "object", "required": ["text"], "properties": { "text": { "type": "string", "minLength": 1, "maxLength": 2000 }, "model": { "enum": ["Fable", "Opus"] }, "minutes": { "type": "integer", "minimum": 1 }, "files": { "type": "array", "items": { "type": "string", "maxLength": 300 } } } }
+    },
+    "steps": { "type": "array", "description": "Build steps. A build sent from Plan Studio arrives with none; the splitting stage writes them.", "items": { "$ref": "#/$defs/step" } }
+  },
+  "allOf": [
+    { "if": { "properties": { "status": { "const": "failed" } } }, "then": { "required": ["attempt", "failedFrom"] } }
+  ],
+  "$defs": {
+    "buildStatus": {
+      "enum": ["pending", "splitting", "split", "pulling-main", "assigning-models", "ready", "sending", "building", "build-complete", "merging-pr", "pr-pulling-main", "running-ci", "merging-main", "landed", "failed"]
+    },
+    "stepStatus": {
+      "enum": ["pending", "pulling-main", "ready", "sending", "building", "completed", "in-pr", "failed"]
+    },
+    "logLine": {
+      "type": "object",
+      "required": ["status", "at", "by", "attempt"],
+      "properties": {
+        "status": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "at": { "type": "string" },
+        "by": { "type": "string", "maxLength": 80 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "why": { "type": "string", "maxLength": 300 },
+        "reset": { "const": true, "description": "This move left failed past the attempt ceiling as attempt 1 (Brett's retry, the watchdog's escalation). Needs why." },
+        "resplit": { "const": true, "description": "A build waiting at split was split again (no step past pending). Needs why." }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["id", "text", "model"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "text": { "type": "string" },
+        "status": { "$ref": "#/$defs/stepStatus", "description": "Never missing on a stored step: the store's guard gives a step that arrives without one the status it had, and a new step pending." },
+        "statusAt": { "type": "string" },
+        "statusBy": { "type": "string", "maxLength": 80 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "failedFrom": { "$ref": "#/$defs/stepStatus" },
+        "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
+        "model": { "enum": ["Fable", "Opus"] },
+        "account": { "type": "string", "maxLength": 300 },
+        "slot": { "type": "string", "maxLength": 300 },
+        "worktree": { "type": "string", "maxLength": 300 },
+        "branch": { "type": "string", "maxLength": 300 },
+        "tmux": { "type": "string", "maxLength": 300 },
+        "tried": { "type": "array", "maxItems": 10, "items": { "type": "string", "minLength": 1, "maxLength": 80 } },
+        "prNumber": { "type": "integer", "minimum": 1 },
+        "files": { "type": "array", "items": { "type": "string" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "in-pr" } }, "required": ["status"] }, "then": { "required": ["prNumber"] } },
+        { "if": { "properties": { "status": { "const": "failed" } }, "required": ["status"] }, "then": { "required": ["attempt", "failedFrom"] } }
+      ]
+    }
+  }
+}

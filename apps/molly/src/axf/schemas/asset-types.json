@@ -475,7 +475,8 @@
       },
       "hideable": true,
       "optional_fields": {
-        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true",
+        "search": "boolean | string \u2014 a Search anywhere box pinned at the bottom of every menu of this asset (a string is its placeholder); typing replaces the list with search results"
       }
     },
     "tab-group": {
@@ -1872,7 +1873,7 @@
       "optional_fields": {
         "about": "the glossary entry id it demonstrates (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)",
         "entries": "glossary entry ids it covers (the about entry is always one)",
-        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "app": "the app it runs in (console, axhub-web); default console",
         "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5\u20132 }",
         "chain": "demonstration ids played after this one (a tour)",
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
@@ -2029,6 +2030,18 @@
   "hideDefaults": {
     "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings \u2192 Appearance \u2192 Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
   },
+  "hiddenAssets": {
+    "_doc": "Hidden assets (hidden-assets@1, Brett Nov 17 2026: hide toolbars, tab groups and all that, and see what's hidden). Besides hiding a whole slot (hideDefaults), the user hides one piece: this toolbar, that tab row, a banner, a nav or application menu, a widget. The list is per app, in its own look document (app-look@1 `own.hiddenAssets`, schemas/json/app-look.schema.json), so it lives on axHub, survives reloads and Restore to default shows everything again. Kinds come from the chrome-settings@1 kind list (the kinds with a target on the page) plus widget; never an app list. Engine core/engines/hidden-assets-rules.mjs (the list) + hidden-assets.ts (hide / unhide / unhideAll / isHidden / listHidden); fixture spec/fixtures/hidden-assets.json; Kotlin twin deferred (spec/PORTING.md).",
+    "field": "hiddenAssets",
+    "entry": {
+      "kind": "string — a hideable kind: tab-group | toolbar | banner | nav-menu | app-menu | widget (hiddenAssetKinds())",
+      "id": "string — the instance id, the chrome context menu's slug (axf.chrome.<kind>.<id>)",
+      "assetRef": "string, optional — the asset id the piece was drawn with when it was hidden",
+      "hiddenAt": "string — ISO time it was hidden",
+      "by": "string — who hid it: the app id, a plugin, or an API caller"
+    },
+    "max": 500
+  },
   "attachDefaults": {
     "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance \u2192 Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
   },
@@ -2053,7 +2066,8 @@
       "order": "number \u2014 placement among siblings (default 100)",
       "before": "string \u2014 sibling id to go before",
       "after": "string \u2014 sibling id to go after",
-      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule"
+      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule",
+      "place": "string \u2014 context menus only: toolbar puts a top-level item in the icon strip above the list (cut / copy / paste and similar), not in the list"
     },
     "checkedKinds": [
       "setting",

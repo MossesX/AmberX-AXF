@@ -63,7 +63,7 @@ export function appIds() {
   return [...new Set([...listed, ...onHub])].sort();
 }
 
-function appId(name) {
+export function appId(name) {
   const id = ALIASES[name] ?? name;
   if (!id || !appIds().includes(id)) throw new Error(`no app "${name}": one of ${appIds().join(', ')}`);
   return id;

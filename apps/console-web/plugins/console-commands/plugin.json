@@ -32,7 +32,8 @@
       "_claude/THREADS.md",
       "apps/console-web/server/main.py",
       "apps/console-web/server/mcp_server.py",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "apps/console-web/scripts/place-refresh.e2e.mjs"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },

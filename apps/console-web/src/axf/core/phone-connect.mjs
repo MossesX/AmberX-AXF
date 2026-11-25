@@ -69,7 +69,7 @@ export const NOT_IN_ALL = Object.freeze(['vps.run']); // "approve all" never cov
 
 export const LIMITS = Object.freeze({
   name: 80, url: 2000, title: 120, body: 600, summary: 600, text: 600, session: 120, group: 120, note: 600,
-  tool: 120, allowlist: 64, who: 160, listenMin: 1, listenMax: 30, listenDefault: 10, ttlMax: 3600,
+  tool: 120, allowlist: 64, who: 160, listenMin: 1, listenMax: 30, listenDefault: 10, ttlMax: 3600, revMax: 2147483647,
 });
 
 /** Every command: argument shapes, policy (fixed per command), the capability it needs, the AXPP tool on the wire, the default ttl (seconds). */
@@ -87,7 +87,7 @@ export const COMMANDS = Object.freeze({
   approval: {
     label: 'Show an approval prompt', policy: 'allow', capability: 'approvals@1', wire: 'approval.show', ttl: 600,
     required: ['approvalId', 'kind'],
-    arguments: { approvalId: { type: 'uuid' }, kind: { enum: ['approval', 'veto'] }, tool: { type: 'string', max: 'tool' }, summary: { type: 'string', max: 'summary' }, url: { type: 'url' }, secondsLeft: { type: 'integer', min: 0, max: 86400 }, actions: { type: 'list', items: APPROVAL_ACTIONS, default: ['approve', 'deny'] } },
+    arguments: { approvalId: { type: 'uuid' }, kind: { enum: ['approval', 'veto'] }, tool: { type: 'string', max: 'tool' }, title: { type: 'string', max: 'title' }, rev: { type: 'integer', min: 0, max: 'revMax' }, summary: { type: 'string', max: 'summary' }, url: { type: 'url' }, secondsLeft: { type: 'integer', min: 0, max: 86400 }, actions: { type: 'list', items: APPROVAL_ACTIONS, default: ['approve', 'deny'] } },
   },
   'recorder.start': {
     label: 'Start recording the phone\'s audio output', policy: 'confirm', capability: 'recorder@1', wire: 'recorder.start', ttl: 120,
@@ -106,6 +106,11 @@ export const COMMANDS = Object.freeze({
 /** Three things a command can never carry: a decision, a mic switch, a url outside policy. Named here so every port refuses the same keys. */
 export const FORBIDDEN_ARGUMENTS = Object.freeze({ approval: ['decision', 'decide'], 'recorder.start': ['mic'] });
 export const URL_SCHEMES = Object.freeze(['https:']);
+/**
+ * Brett's own sites. Url mode `own` covers the console's host and, when the console itself is on one of these, every
+ * host on that same site (the hub, the apps): `phone_open_url` opens an amberxai.com page without widening the policy.
+ */
+export const OWN_SITES = Object.freeze(['amberxai.com']);
 
 /** AmberX tool names that resolve for one release (answered normally, plus `deprecated`); after that `not_found`. */
 export const ALIASES = Object.freeze({
@@ -145,7 +150,11 @@ export const LINK = Object.freeze({
   protocol: 'axpp@1', header: 'X-AXPP', auth: 'Bearer', scheme: 'https:',
   calls: ['hello', 'next', 'ack', 'answer', 'rotate'],
   noContent: 204, restarted: 404,
+  // A rejected token is never retried (linkVerdict): these codes end the loop at once; a bare 401 / 403 with no wire
+  // code (a proxy or the sign-in wall answered, not the plugin) ends it after `rejectLimit` in a row.
+  rejectedCodes: ['denied', 'revoked', 'unpaired'], rejectedStatuses: [401, 403], rejectLimit: 3,
 });
+export const LINK_VERDICTS = Object.freeze(['ok', 'hello', 'retry', 'rejected']);
 
 export const DEVICE_REQUIRED = Object.freeze(['$axf', 'deviceId', 'name', 'app', 'appVersion', 'platform', 'capabilities', 'state', 'owner', 'token', 'watch', 'urlPolicy', 'pairedAt', 'lastSeenAt', 'revokedAt', 'updatedAt', 'capabilityState']);
 export const DEVICE_OPTIONAL = Object.freeze(['migratedFrom']);
@@ -161,7 +170,7 @@ export const REGISTRY = Object.freeze({
   fromKinds: FROM_KINDS, vias: VIAS, policies: POLICIES, stages: STAGES, ackStatuses: ACK_STATUSES, byKinds: BY_KINDS,
   authKinds: AUTH_KINDS, approvalActions: APPROVAL_ACTIONS, neverAuto: NEVER_AUTO, notInAll: NOT_IN_ALL, limits: LIMITS,
   commands: COMMANDS, forbiddenArguments: FORBIDDEN_ARGUMENTS, urlSchemes: URL_SCHEMES, aliases: ALIASES, deprecatedPrefix: DEPRECATED_PREFIX,
-  errors: ERROR_CODES, data: DATA, link: LINK,
+  errors: ERROR_CODES, data: DATA, link: LINK, linkVerdicts: LINK_VERDICTS, ownSites: OWN_SITES,
   required: { device: DEVICE_REQUIRED, pairing: PAIRING_REQUIRED, command: COMMAND_REQUIRED, result: RESULT_REQUIRED },
   optional: { device: DEVICE_OPTIONAL, result: RESULT_OPTIONAL },
 });
@@ -555,7 +564,16 @@ export function presence(device, at) {
   return isTimestamp(device.lastSeenAt) ? `offline: last seen ${ago(device.lastSeenAt, at)}` : 'offline: never seen';
 }
 
-/** The url rule: https only, no user info, ≤ 2000, host inside the device's policy (`own` = the console origin's host). */
+/** The own site a host is on (`amberxai.com` for `axhub.amberxai.com`), or '' when it is on none. A port never counts. */
+export function ownSite(host) {
+  const h = String(host ?? '').toLowerCase().replace(/:\d+$/, '');
+  return OWN_SITES.find((s) => h === s || h.endsWith(`.${s}`)) ?? '';
+}
+
+/**
+ * The url rule: https only, no user info, ≤ 2000, host inside the device's policy. `own` = the console origin's host,
+ * plus every host on the console's own site (OWN_SITES) when the console is on one.
+ */
 export function urlErrors(url, device, origin) {
   if (typeof url !== 'string' || !url || url.length > LIMITS.url) return wireError('validation', `url is a string up to ${LIMITS.url} characters`);
   let u;
@@ -566,6 +584,8 @@ export function urlErrors(url, device, origin) {
   if (mode === 'any') return null;
   const own = (() => { try { return new URL(origin).host; } catch { return ''; } })();
   const allowed = mode === 'own' ? [own] : [own, ...(device?.urlPolicy?.allowlist ?? [])];
+  const site = ownSite(own);
+  if (site && ownSite(u.host) === site) return null;
   if (!allowed.includes(u.host)) return wireError('denied', `${u.host} is outside this phone's url policy (${mode})`, { host: u.host, mode });
   return null;
 }
@@ -690,6 +710,20 @@ export function rotateToken(device, token, { at, random }) {
   if (e) return { ok: false, error: e };
   const fresh = makeToken(random);
   return { ok: true, token: fresh, device: { ...device, token: { ...tokenAtRest(fresh, device.token.issuedAt, at) }, updatedAt: at } };
+}
+
+/**
+ * What the phone does after one `hello` / `next` reply: `ok` (carry on), `hello` (the console restarted: greet again),
+ * `retry` (wait the next backoff step and try again) or `rejected` (this token is dead: stop the loop, drop the token,
+ * show "Disconnected: tap to re-pair"; never try it again). `reply` is { status, code } where `code` is the wire error
+ * code ('' when the answer carried none) and `uncoded` counts the bare 401 / 403 answers in a row before this one.
+ */
+export function linkVerdict({ status = 0, code = '' } = {}, uncoded = 0) {
+  if (status === LINK.noContent || (status >= 200 && status < 300)) return 'ok';
+  if (LINK.rejectedCodes.includes(code)) return 'rejected';
+  if (!code && LINK.rejectedStatuses.includes(status)) return uncoded + 1 >= LINK.rejectLimit ? 'rejected' : 'retry';
+  if (status === LINK.restarted) return 'hello';
+  return 'retry';
 }
 
 /** A poll touched the device. */

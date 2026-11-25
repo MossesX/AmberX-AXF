@@ -341,6 +341,7 @@ jobs:
             node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
+            npx -y tsx framework/spec/check-hidden-assets.mts          # hidden-assets@1: hide / unhide / unhide all one chrome piece per app in its look document, unknown kind refused, old documents migrate, kinds from the chrome kind list, app-look JSON Schema current
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
             node framework/spec/check-token-registry.mjs                # token-registry@1: every --fx-* token registered (element, area, state, scheme, level, description, default, source); no UI reads an unregistered token, nothing registered goes unread, new plugins register tokens in plugin.json; skin-snapshot@1 fixture
             node framework/spec/check-skin-colour-rule.mjs              # skin + colour theme rule: a colour pick switches inside the skin, never a new or forked skin
@@ -439,6 +440,7 @@ jobs:
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
+            python apps/console-web/server/tests/test_hidden_assets.py  # hidden-assets@1: /api/hidden-assets list, hide, unhide, unhide-all through the one writer (hidden-assets.mjs)
             python apps/console-web/plugins/host-services/test.py  # host-services plugin routes (MCP commands): down state, confirm on destructive presses  # axf-plugin:host-services
             python apps/console-web/server/tests/test_host_services.py  # host services, console half: client down state + endpoint order, REST + plugin routes (confirm on destructive presses), live host API, health@1 items, capability
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools

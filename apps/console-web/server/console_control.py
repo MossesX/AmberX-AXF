@@ -554,6 +554,15 @@ def place_command(restore: bool = False, source: Any = None) -> dict[str, Any]:
     return {"verb": "press", "address": PLACE_ADDRESS, **({"value": src} if src else {})}
 
 
+# hidden-assets@1 (same words and order as console-control-voice.mjs)
+VOICE_HIDE_KINDS = {"toolbar": "toolbar", "tool bar": "toolbar", "menu bar": "app-menu", "menubar": "app-menu", "app menu": "app-menu", "application menu": "app-menu", "nav": "nav-menu", "nav menu": "nav-menu", "navigation": "nav-menu", "navigation menu": "nav-menu", "sidebar": "nav-menu", "side bar": "nav-menu", "banner": "banner"}
+_HIDE_WORDS = "|".join(sorted(VOICE_HIDE_KINDS, key=lambda w: -len(w)))
+_HIDE_RE = re.compile(rf"^hide (?:the |my )?({_HIDE_WORDS})$")
+_UNHIDE_RE = re.compile(rf"^(?:unhide (?:the |my )?({_HIDE_WORDS})(?: again| back)?|(?:show|bring back|restore) (?:the |my )?({_HIDE_WORDS}) (?:again|back)|bring (?:the |my )?({_HIDE_WORDS}) back)$")
+_HIDDEN_LIST_RE = re.compile(r"^(?:(?:show|tell|list|open)(?: me)? )?(?:what (?:is|s) |whats )?(?:the |all )?hidden(?: items| things| stuff| assets| pieces| list)?$")
+_UNHIDE_ALL_RE = re.compile(r"^(?:(?:unhide|bring back|restore) (?:everything|all|it all|all of it|all hidden(?: items| things)?)(?: again| back)?|show (?:everything|all hidden(?: items| things)?) (?:again|back)|show all hidden(?: items| things)?)$")
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
@@ -585,6 +594,14 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    if _UNHIDE_ALL_RE.match(p):
+        return {"verb": "press", "address": "function:chrome.unhideAll"}
+    if _HIDDEN_LIST_RE.match(p):
+        return {"verb": "press", "address": "function:chrome.hidden"}
+    if m := _HIDE_RE.match(p):
+        return {"verb": "press", "address": "function:chrome.hide", "value": f"{VOICE_HIDE_KINDS[m.group(1)]}:app"}
+    if m := _UNHIDE_RE.match(p):
+        return {"verb": "press", "address": "function:chrome.unhide", "value": f"{VOICE_HIDE_KINDS[m.group(1) or m.group(2) or m.group(3)]}:app"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):

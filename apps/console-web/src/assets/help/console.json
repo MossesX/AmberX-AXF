@@ -616,6 +616,12 @@
         "text": "Previous picture."
       },
       {
+        "target": "hide-this-notice",
+        "title": "Hide this notice",
+        "text": "Puts the new-version notice away so you can keep using the page. Parts that couldn't load still offer their own Reload.",
+        "kind": "button"
+      },
+      {
         "target": "reload-screenshots",
         "title": "Reload screenshots",
         "text": "Reads the screenshots again."

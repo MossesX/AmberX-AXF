@@ -26,6 +26,7 @@ import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/compo
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
+import { useHidden } from '../hidden';
 
 export interface TabDef<T extends string = string> {
   value: T;
@@ -94,6 +95,7 @@ const MORE_ROOM = 44; // px of row kept for the More button while measuring (lay
 
 export function TabGroup<T extends string = string>({ id, label, value, onChange, tabs, className, onClose, onReorder, extra, children, asset, size }: TabGroupProps<T>) {
   const rt = useRuntime();
+  const hiddenRow = useHidden('tab-group', id);
   const data = useTabGroupData(id, asset);
   useSettingsKeys(rt, [TAB_GROUP_FOLD_KEY(id), INSTANCE_TOKENS_KEY]);
   const hidden = rt.slotHidden('tab-group');
@@ -288,9 +290,11 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     );
   }
 
+  // hidden-assets@1: a hidden tab row draws nothing; its panel (when it has one) keeps the whole frame
+  if (hiddenRow) row = null;
   if (children === undefined) return row;
   return (
-    <div className="fx-tabframe" data-fx-tabs-position={data.position}>
+    <div className="fx-tabframe" data-fx-tabs-position={hiddenRow ? undefined : data.position} data-axf-hidden-row={hiddenRow ? id : undefined}>
       {row}
       <div className="fx-tabframe__panel" role="tabpanel"><ControlScope address={`${tabKind}:${id}=${value}`}>{children}</ControlScope></div>
     </div>

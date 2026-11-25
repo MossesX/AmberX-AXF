@@ -3,14 +3,15 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerE
 import { SEARCH_KIND_LABELS, filterMenu, resolveChecked, type AssetType, type MenuItem, type SearchHit } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
 import { scanPage } from './Search';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
 import { dialogSurface } from '../../core/engines/settingsopen';
+import { CHROME_PIECE_SELECTOR, chromeTargetOf } from '../hidden';
 import { CONTEXT_LEAD_PREFIX, splitContextBar, withContextLead, type MenuEntry } from '../../core/engines/windows';
-import { chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 
 export interface DialogDef {
   title: string;
@@ -135,6 +136,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.act && <Button size="sm" tone="neutral" onClick={() => { rt.dismissToast(t.id); rt.dispatch(t.act!.action); }}>{t.act.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>
@@ -161,16 +163,16 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // any widget host (banner, toolbar): the widget under the pointer, for its Hide (hidden-assets@1)
+      const wEl = target?.closest('[data-axf-banner-item], [data-axf-toolbar-widget]');
+      rt.contextWidget = wEl ? { host: wEl.hasAttribute('data-axf-banner-item') ? 'banner' : 'toolbar', key: wEl.getAttribute('data-axf-banner-item') ?? wEl.getAttribute('data-axf-toolbar-widget') ?? '' } : null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
-      const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
-      const own = el?.getAttribute('data-fx-ctx-target');
-      const name = own ?? (el?.getAttribute('role') === 'toolbar' ? 'toolbar' : el?.getAttribute('role') === 'tablist' ? 'tab-group' : el?.tagName === 'NAV' && el.getAttribute('data-axf-not-nav') === null ? 'nav' : 'default');
-      if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
-      // an implicit target's instance id: its settings id, else its accessible name as a slug
-      const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
-      const slug = chromeInstanceSlug(label);
-      rt.openContext(x, y, name, slug || undefined);
+      // an implicit target's instance id: its settings id, else its accessible name as a slug (hidden.tsx, shared with
+      // the hidden-assets pass so right-click → Hide names the same piece)
+      const el = target?.closest(CHROME_PIECE_SELECTOR);
+      const { name, payload } = el ? chromeTargetOf(el) : { name: 'default', payload: undefined };
+      rt.openContext(x, y, name, payload);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.

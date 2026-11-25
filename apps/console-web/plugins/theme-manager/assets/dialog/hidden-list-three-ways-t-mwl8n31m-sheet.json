@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-three-ways-t-mwl8n31m-sheet",
+ "name": "hidden-list-three-ways-t-mwl8n31m: Bottom sheet",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Rises from the bottom (680 wide, filled header): thumb-reachable on the phone, Unhide all at the top.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list-three-ways-t-mwl8n31m",
+  "choice-option:sheet"
+ ],
+ "data": {
+  "variant": "sheet",
+  "width": 680,
+  "backdrop": "dim",
+  "animation": "slide",
+  "header": "filled",
+  "closeOnBackdrop": true
+ }
+}

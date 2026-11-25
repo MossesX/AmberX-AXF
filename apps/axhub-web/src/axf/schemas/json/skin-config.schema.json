@@ -1309,6 +1309,9 @@
                         },
                         "contributions": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "search": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }

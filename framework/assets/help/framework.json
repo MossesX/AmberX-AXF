@@ -1706,6 +1706,38 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
+      },
+      {
+        "target": "action:chrome.hide",
+        "title": "Hide",
+        "text": "Hides this tab group, toolbar, banner, navigation menu, menu bar or widget in this app. The rest of the screen closes up around it.",
+        "more": "Right-click (or long-press) any of them and pick Hide. It is listed under Hidden items (Assets menu, or Settings → Appearance → Hidden) until you bring it back; the toast after a Hide has Undo. Hidden pieces are saved with this app's look on axHub, so they stay hidden after a reload and on your other devices.",
+        "tryIt": "Say \"hide the toolbar\", or run axf hidden hide toolbar app."
+      },
+      {
+        "target": "action:chrome.unhide",
+        "title": "Unhide",
+        "text": "Shows one hidden piece again, where it was."
+      },
+      {
+        "target": "unhide-all",
+        "title": "Unhide all",
+        "text": "Shows everything hidden in this app again (Assets menu, the Hidden list). In the Hidden list it asks first: tap twice.",
+        "tryIt": "Say \"unhide everything\".",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:chrome.hidden",
+        "title": "Hidden items",
+        "text": "The list of everything hidden in this app, grouped by kind (tab groups, toolbars, banners, navigation, menu bar, widgets), with Unhide on each and Unhide all.",
+        "more": "Also in Settings → Appearance → Hidden, and on the page's own right-click menu, so you can reach it even with the menu bar hidden. The Assets menu shows how many pieces are hidden and has Hide ▸ for anything on screen.",
+        "tryIt": "Say \"what's hidden\"."
+      },
+      {
+        "target": "hidden-items",
+        "title": "Hidden items…",
+        "text": "Opens the list of what is hidden in this app; the badge is how many.",
+        "kind": "menu"
       }
     ],
     "intros": [

@@ -8,7 +8,8 @@
  *
  * One mode per namespace (`plugins/<folder>` counts as one), with a store-wide default; the document is
  * data-store-mode@1, kept at `_meta/mode` on axf-data and as `<data>/data-store/mode.json` locally, and every client
- * reads it before a write.
+ * reads it before a write. A namespace entry may also carry key-level overrides (`keys`, see transitionKey) so one record
+ * or one prefix moves ahead of the rest of its namespace.
  *
  *   local     reads and writes go to the local store; axf-data is not touched.
  *   shadow    every write goes to local first, then to axf-data; reads come from local, and each read also asks axf-data
@@ -72,11 +73,59 @@ export function normState(v, at) {
     if (!isObj(e)) continue;
     const id = nsId(ns);
     s.namespaces[id] = { mode: MODES.includes(e.mode) ? e.mode : 'local', since: iso(e.since, s.since), cursor: Number.isInteger(e.cursor) && e.cursor >= 0 ? e.cursor : 0, manifest: typeof e.manifest === 'string' ? e.manifest : '', drift: Number.isInteger(e.drift) && e.drift >= 0 ? e.drift : 0, lastDriftAt: iso(e.lastDriftAt, '') };
+    if (isObj(e.keys)) {
+      const keys = {};
+      for (const [p, k] of Object.entries(e.keys)) if (isObj(k) && KEY_PATH.test(p)) keys[p] = { mode: MODES.includes(k.mode) ? k.mode : 'local', since: iso(k.since, s.since), by: typeof k.by === 'string' ? k.by : '', ...(isObj(k.verified) ? { verified: k.verified } : {}) };
+      if (Object.keys(keys).length) s.namespaces[id].keys = keys;
+    }
   }
   return s;
 }
-/** The mode of one namespace: its own entry, else the store default. */
-export function modeOf(state, ns) { const e = state?.namespaces?.[nsId(ns)]; return e ? e.mode : MODES.includes(state?.mode) ? state.mode : 'local'; }
+/**
+ * Key-level modes (Nov 18 2026, "builds store first, then every JSON data file"): a namespace entry may carry
+ * `keys: { '<path>' | '<prefix>/': { mode, since, by, verified } }`, so one record (`store.json`) or one prefix
+ * (`journal/`) of a namespace moves before the rest of it. Paths are relative to the namespace id (for `plugins/<folder>`,
+ * after the folder). The longest matching override wins; without one the namespace mode applies, then the store default.
+ */
+const KEY_PATH = /^[A-Za-z0-9._-]{1,80}(\/[A-Za-z0-9._-]{1,80})*\/?$/;
+export const KEY_EVENTS = Object.freeze({ 'local→shadow': 'start-shadow', 'local→cutover': 'cut-over', 'shadow→cutover': 'cut-over', 'shadow→local': 'back-to-local', 'cutover→local': 'back-to-local' });
+/** The key override that covers `path` in namespace `id` (exact path, or the longest prefix ending in `/`), or null. */
+export function keyOverride(state, ns, path) {
+  const keys = state?.namespaces?.[nsId(ns)]?.keys; if (!keys || !path) return null;
+  let best = null;
+  for (const [p, k] of Object.entries(keys)) {
+    const hit = p.endsWith('/') ? path.startsWith(p) : path === p;
+    if (hit && (!best || p.length > best.path.length)) best = { path: p, ...k };
+  }
+  return best;
+}
+/** The mode of one namespace (or of one key in it, when `path` is given): the key override, else its own entry, else the store default. */
+export function modeOf(state, ns, path = '') {
+  const k = path ? keyOverride(state, ns, path) : null; if (k) return k.mode;
+  const e = state?.namespaces?.[nsId(ns)]; return e ? e.mode : MODES.includes(state?.mode) ? state.mode : 'local';
+}
+/**
+ * Move one key (or prefix) of a namespace. The copy is checked by the caller under its own write lock (a record: the same
+ * canonical body on both sides; a journal: every entry equal), so unlike a namespace there is no 30-minute shadow:
+ * `verified` = { at, how, counts } is required to move into shadow or cutover and is kept on the entry. Back to local is
+ * always allowed (the local copy is the read-only backup made at the cut). Rollback is a namespace move, not a key one.
+ */
+export function transitionKey(state, { ns, path, to, at, by = 'svc:cli', verified = null }) {
+  const when = iso(at, '') || bad('transitionKey needs `at` (ISO UTC)');
+  const id = nsId(ns);
+  if (!KEY_PATH.test(path || '')) bad(`bad key path "${path}"`, { ns: id });
+  if (!MODES.includes(to) || to === 'rollback') bad(`a key moves to local, shadow or cutover, not "${to}"`, { ns: id });
+  const from = modeOf(state, id, path);
+  const event = KEY_EVENTS[`${from}→${to}`];
+  if (!event) bad(`${id}/${path}: no way from ${from} to ${to}`, { ns: id });
+  if ((to === 'shadow' || to === 'cutover') && !isObj(verified)) bad(`${id}/${path} → ${to}: the copy must be verified first (pass verified: { at, how, counts })`, { ns: id });
+  const next = JSON.parse(JSON.stringify(state));
+  const e = next.namespaces[id] || (next.namespaces[id] = { mode: modeOf(next, id), since: when, cursor: 0, manifest: '', drift: 0, lastDriftAt: '' });
+  e.keys = e.keys || {};
+  if (to === modeOf(next, id)) delete e.keys[path]; else e.keys[path] = { mode: to, since: when, by, ...(verified ? { verified } : {}) };
+  if (!Object.keys(e.keys).length) delete e.keys;
+  return { state: next, changes: [{ ns: id, key: path, from, to, event, at: when, by }] };
+}
 export const route = (mode) => ROUTES[MODES.includes(mode) ? mode : 'local'];
 /** Where a read of `ns` goes, and whether to compare with the other side. */
 export function readPlan(state, ns) { const mode = modeOf(state, ns); const r = route(mode); return { mode, from: r.read, compare: r.diff ? 'remote' : '' }; }

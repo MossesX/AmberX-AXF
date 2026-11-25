@@ -735,6 +735,8 @@ export interface Toast {
   message: string;
   /** the interface scope it was raised in ('' / absent = the app itself; react/components/InterfaceScope.tsx) */
   scope?: string;
+  /** one button on the toast (Undo after a Hide): pressing it dispatches the action and closes the toast */
+  act?: { label: string; action: string };
 }
 
 export interface AxfState {

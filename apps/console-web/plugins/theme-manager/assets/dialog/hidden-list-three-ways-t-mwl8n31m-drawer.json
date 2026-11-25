@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-three-ways-t-mwl8n31m-drawer",
+ "name": "hidden-list-three-ways-t-mwl8n31m: Side drawer",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The Hidden list slides in from the side (440 wide, blurred page behind, accent bar). The screen stays in view, so you see a piece come back as you press Unhide.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list-three-ways-t-mwl8n31m",
+  "choice-option:drawer"
+ ],
+ "data": {
+  "variant": "drawer",
+  "width": 440,
+  "backdrop": "blur",
+  "animation": "slide",
+  "header": "accent-bar",
+  "closeOnBackdrop": true
+ }
+}
