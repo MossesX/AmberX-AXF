@@ -11,6 +11,8 @@
  *   records      normPart · normSplit · normMainLock · buildStatusOf(runState)
  *   states       PART_TRANSITIONS · RUN_TRANSITIONS · partNext(plan, partId, event) · runNext(plan, to) · rollUp(parts)
  *                combineReady(plan) · onPartFailed(plan, partId, why) · applyRollUp(plan)
+ *   one at a time  RUN_ACTIVE · activeRuns(builds) · canStartRun(plan, { lock, builds }) · startRun(plan, { lock, sha })
+ *                takeMainLock · releaseMainLock · lockAfterRun(plan, lock) · mainLockStale · oneBase(plan, lock)
  */
 
 export const SCHEMA = 'split-plan@1';
@@ -553,3 +555,129 @@ export function applyRollUp(plan, at = new Date().toISOString()) {
   return { plan: cur, change: { from: plan.run, to: cur.run } };
 }
 
+// ------------------------------------------------------------------ one run at a time and the main lock (main-lock@1)
+
+/**
+ * A run is active from `building` through `live`: main belongs to it. `queued` runs wait their turn; `finished` and
+ * `failed` have given main back (BUILD-SPLIT.md → One run at a time and the main lock).
+ */
+export const RUN_ACTIVE = Object.freeze(['building', 'combining', 'ci', 'merging', 'merged', 'live']);
+export const isRunActive = (plan) => RUN_ACTIVE.includes(obj(plan)?.run);
+
+/** The split record of a builds@1 build in shape (its `split`, read as the build's own plan), or null. */
+export const planOf = (build) => normSplit(obj(build)?.split, { build: str(obj(build)?.id, 80) });
+
+/**
+ * The builds whose run is active, in the order given: [{ build: id, splitId, run }]. One at most when the rule held;
+ * more than one is what the dispatcher inherited (reported, never started by it).
+ */
+export function activeRuns(builds) {
+  return (Array.isArray(builds) ? builds : []).filter((b) => obj(b) && !b.deleted).map((b) => ({ b, plan: planOf(b) }))
+    .filter(({ plan }) => isRunActive(plan)).map(({ b, plan }) => ({ build: str(b.id, 80), splitId: plan.id, run: plan.run }));
+}
+
+/** Does this lock belong to this split? */
+export const holdsMainLock = (lock, splitId) => { const l = normMainLock(lock); return !!l && isSplitId(splitId) && l.splitId === splitId; };
+
+/**
+ * Take the main lock for a split (pure) → { ok, lock, why, taken }. `sha` is main's head at this moment: it becomes the
+ * one base of the whole run. Refused while another split holds the lock, and for the same split with another sha (the
+ * base of a run is never rewritten). Taking a lock this split already holds changes nothing (`taken: false`).
+ */
+export function takeMainLock(lock, { splitId, sha: head, at = new Date().toISOString(), by = 'dispatcher', note = '' } = {}) {
+  const held = normMainLock(lock);
+  const sp = parseSplitId(splitId);
+  if (!sp) return { ok: false, lock: held, why: `"${str(splitId, 60)}" is not a split id: main is locked only for a split run`, taken: false };
+  const base = sha(head);
+  if (!base) return { ok: false, lock: held, why: 'the main lock needs main\'s full commit sha', taken: false };
+  if (held && held.splitId !== splitId) return { ok: false, lock: held, why: `main is locked by ${held.build} (${held.splitId}) since ${held.lockedAt}: one build at a time`, taken: false };
+  if (held && held.base !== base) return { ok: false, lock: held, why: `${splitId} already holds main at ${held.base.slice(0, 12)}: the base of a run is never rewritten`, taken: false };
+  if (held) return { ok: true, lock: held, why: '', taken: false };
+  const next = normMainLock({ build: sp.build, splitId, base, lockedAt: iso(at) || new Date().toISOString(), by: str(by, 80) || 'dispatcher', note });
+  return { ok: true, lock: next, why: '', taken: true };
+}
+
+/**
+ * Give main back (pure) → { ok, lock, why, released }. With `splitId`, only that split's lock is released (another
+ * run's lock is left alone and the call refused); without it, whatever lock there is (the watchdog's stale release).
+ * No lock held = ok, nothing released.
+ */
+export function releaseMainLock(lock, { splitId = '' } = {}) {
+  const held = normMainLock(lock);
+  if (!held) return { ok: true, lock: null, why: '', released: null };
+  if (splitId && held.splitId !== splitId) return { ok: false, lock: held, why: `main is locked by ${held.splitId}, not ${str(splitId, 60)}`, released: null };
+  return { ok: true, lock: null, why: '', released: held };
+}
+
+/**
+ * A lock nobody is working under: older than `staleMs` with no live session on its build (`live` = the dispatcher's
+ * answer), or one whose run is over (`plan` = the holder's plan: finished, failed, or another split by now).
+ * → { stale, why }.
+ */
+export function mainLockStale(lock, { now = Date.now(), live = false, plan = undefined, staleMs = MAIN_LOCK_STALE_MS } = {}) {
+  const held = normMainLock(lock);
+  if (!held) return { stale: false, why: '' };
+  const p = obj(plan);
+  if (plan !== undefined && (!p || p.id !== held.splitId)) return { stale: true, why: `${held.splitId} is no longer ${held.build}'s plan` };
+  if (p && RUN_TERMINAL.includes(p.run)) return { stale: true, why: `run ${held.splitId} is ${p.run}: main was never given back` };
+  const age = (typeof now === 'number' ? now : Date.parse(now)) - Date.parse(held.lockedAt);
+  if (!live && age > staleMs) return { stale: true, why: `held ${Math.round(age / 3600e3)} h with no live session on ${held.build}` };
+  return { stale: false, why: '' };
+}
+
+/**
+ * May this run start now? (pure) → { ok, why }. One build at a time: a `queued` run starts only when no other run is
+ * active (`builds` = the store's builds) and main is free or already held by this split.
+ */
+export function canStartRun(plan, { lock = null, builds = [] } = {}) {
+  const p = obj(plan);
+  if (!p || !isSplitId(p.id)) return { ok: false, why: 'no split plan: a build starts only through the splitter' };
+  if (p.run !== 'queued') return { ok: false, why: `run is ${p.run}: only a queued run starts` };
+  if (!(Array.isArray(p.parts) ? p.parts : []).length) return { ok: false, why: 'the plan has no parts' };
+  const held = normMainLock(lock);
+  if (held && held.splitId !== p.id) return { ok: false, why: `main is locked by ${held.build} (${held.splitId}): one build at a time` };
+  const other = activeRuns(builds).find((r) => r.splitId !== p.id);
+  if (other) return { ok: false, why: `${other.build} is ${other.run} (${other.splitId}): one build at a time` };
+  return { ok: true, why: '' };
+}
+
+/**
+ * Start a run (pure): take the main lock and, in the same step, move the run `queued` → `building` with the locked sha
+ * as its base and as the base of every part (no part pulls main again). → { ok, plan, lock, why, change }. The caller
+ * writes `plan` and `lock` in one store write. Refused by canStartRun, by takeMainLock, and when the plan already has
+ * another base. Nothing changes on a refusal.
+ */
+export function startRun(plan, { lock = null, builds = [], sha: head, at = new Date().toISOString(), by = 'dispatcher' } = {}) {
+  const refuseStart = (why) => ({ ok: false, plan, lock: normMainLock(lock), why, change: null });
+  const can = canStartRun(plan, { lock, builds });
+  if (!can.ok) return refuseStart(can.why);
+  const base = sha(head);
+  if (plan.base && base && plan.base !== base) return refuseStart(`the plan is already based on ${plan.base.slice(0, 12)}: the base of a run is never rewritten`);
+  const took = takeMainLock(lock, { splitId: plan.id, sha: base || plan.base, at, by });
+  if (!took.ok) return refuseStart(took.why);
+  const based = { ...plan, base: took.lock.base, parts: plan.parts.map((p) => ({ ...p, base: took.lock.base })) };
+  const run = runNext(based, 'building', { at, why: `main locked at ${took.lock.base.slice(0, 12)}` });
+  if (!run.ok) return refuseStart(run.why);
+  return { ok: true, plan: run.plan, lock: took.lock, why: '', change: run.change };
+}
+
+/**
+ * The lock after a run moved (pure): released once the run is `finished` or `failed`, kept otherwise.
+ * → { lock, released }. Call it with the plan a transition returned, in the same store write.
+ */
+export function lockAfterRun(plan, lock) {
+  const held = normMainLock(lock);
+  if (!held || !obj(plan) || held.splitId !== plan.id || !RUN_TERMINAL.includes(plan.run)) return { lock: held, released: null };
+  return { lock: null, released: held };
+}
+
+/** Every part is on the run's one base (the locked main sha): → { ok, why }. */
+export function oneBase(plan, lock = undefined) {
+  const p = obj(plan); const parts = Array.isArray(p?.parts) ? p.parts.filter(obj) : [];
+  const off = parts.filter((x) => x.base !== p.base);
+  if (off.length) return { ok: false, why: `${off.map((x) => x.id).join(', ')} not on the run's base (${p.base ? p.base.slice(0, 12) : 'none'})` };
+  const held = lock === undefined ? null : normMainLock(lock);
+  if (isRunActive(p) && !sha(p.base)) return { ok: false, why: `run is ${p.run} with no base: main was never locked for it` };
+  if (held && held.splitId === p.id && held.base !== p.base) return { ok: false, why: `the plan's base ${p.base ? p.base.slice(0, 12) : '(none)'} is not the main lock's (${held.base.slice(0, 12)})` };
+  return { ok: true, why: '' };
+}

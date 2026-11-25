@@ -189,12 +189,11 @@ echo "started $ses in $(pwd)"
     assert.deepEqual(r.fill.autoQueued, [], 'auto-queue is off: nothing moved');
     assert.equal(find('pend').status, 'pending');
   });
-  await t('e2e auto-queue: only with builds.autoQueuePending on; the clean Pending build moves with its note, the clashing one waits', () => {
+  await t('e2e auto-queue: one build at a time; with builds.autoQueuePending on nothing moves while a build is running', () => {
     writeFileSync(settingsFile, JSON.stringify({ values: { 'builds.autoQueuePending': true } }));
     const r = tick();
-    assert.deepEqual(r.fill.autoQueued, ['pend']);
-    assert.equal(find('pend').status, 'queued'); assert.ok(find('pend').notes.some((x) => x.text === 'auto-queued: slots free'));
-    assert.equal(find('pend-clash').status, 'pending', 'a.txt is open in the running DAG build');
+    assert.deepEqual(r.fill.autoQueued, [], 'the running builds hold the line');
+    assert.equal(find('pend').status, 'pending'); assert.equal(find('pend-clash').status, 'pending');
   });
   await t('e2e fill off: no step launches, even with ready steps and free slots', () => {
     writeFileSync(settingsFile, JSON.stringify({ values: { 'builds.fillSlots': false } }));

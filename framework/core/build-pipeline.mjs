@@ -76,10 +76,13 @@
  * slot, account, branch, model, now, ttlMs }) takes one (refused: not ready, a file clash, another run's live claim, a
  * model above the pin); releaseStep(build, stepId, { runId, note }) gives it back; expiredClaims(build, now) lists the
  * dead ones.
- * Planner: planFill({ slots, accounts, running, queue, pending, settings }) fills every free slot: parallel-ready steps of
- * running builds, then Queue builds by priority, then Pending builds when auto-queue is on; agent cap, VPS hard limit,
- * memory floor, per-account model limits, the API budget cap and each build's own caps (pipeline.maxParallel,
- * pipeline.budgetUsd / spentUsd) respected; every launch and every wait says why.
+ * Planner: planFill({ slots, accounts, running, queue, pending, mainLock, settings }) runs ONE build at a time and fills
+ * every free slot with it (Brett, Nov 18 2026; the rule before, up to 4 builds side by side, is retired: RETIRED_FILL
+ * below carries the migration note). The active build's waiting parts (split-plan@1) or parallel-ready steps come
+ * first; only when no build is active and main is not locked does the next Queue build start, then, with auto-queue on,
+ * the next Pending build. Agent cap, VPS hard limit, memory floor, per-account model limits, the API budget cap and
+ * each build's own caps (pipeline.maxParallel, pipeline.budgetUsd / spentUsd) respected; every launch and every wait
+ * says why.
  *
  * done-means-merged@1 (Nov 17 2026, spec/DONE-MEANS-MERGED.md; Brett: "We asked you to build it. You should do whatever
  * you have to do to build it, period."): a build is `landed` only once its PR merged to main with CI green on the merge
@@ -688,7 +691,10 @@ export function releaseStep(b, stepId, { runId = '', now = Date.now(), note = ''
 // ------------------------------------------------------------------ fill every slot (Nov 13 2026)
 
 export const FILL_DEFAULTS = Object.freeze({
-  /** Parallel step sessions one running build may have at once (its main session not counted). */
+  /**
+   * RETIRED (Nov 25 2026, RETIRED_FILL): the planner no longer reads it. Kept at its old default so a caller that still
+   * shows or stores the number reads what it always read; the one build that runs takes every free slot.
+   */
   maxParallelPerBuild: 3,
   /** Launches one planning round may make, whatever the slots say (a runaway guard). */
   maxLaunchesPerRound: 12,
@@ -699,8 +705,69 @@ export const FILL_DEFAULTS = Object.freeze({
   /** Optional budget for API launches this round: { capUsd, spentUsd, perLaunchUsd }; null = no cap here (the account's own caps still hold). */
   budget: null,
 });
-export const FILL_KINDS = ['step', 'build', 'pending'];
+export const FILL_KINDS = ['part', 'step', 'build', 'pending'];
 const normFill = (s) => ({ ...FILL_DEFAULTS, ...(s && typeof s === 'object' ? s : {}), budget: s?.budget && typeof s.budget === 'object' ? s.budget : null });
+
+// ------------------------------------------------------------------ one build at a time (Nov 18 2026, BUILD-SPLIT.md)
+
+/** How many builds the dispatcher runs at once. Not a setting: the slots are filled by splitting the one build. */
+export const BUILDS_AT_ONCE = 1;
+/** A split run holds main from `building` through `live`; `queued` waits its turn, `finished` and `failed` gave main back. */
+export const RUN_ACTIVE = Object.freeze(['building', 'combining', 'ci', 'merging', 'merged', 'live']);
+/**
+ * The retired "up to 4 builds" rule, key by key, with what replaces it (the migration note). Before: the planner started
+ * every Queue build a free slot could take, so up to 4 builds ran side by side (one own session plus
+ * `maxParallelPerBuild` = 3 parallel step sessions each, under the host's Builds at once). Now: BUILDS_AT_ONCE.
+ * Migration: nothing is rewritten and nothing is lost. A stored value of a retired key is ignored (migrateFillSettings
+ * drops it and says so); builds that were already running side by side when the rule changed finish as they are, and
+ * the next build starts only once none of them is left. A per-build `pipeline.maxParallel` Brett set by hand still caps
+ * that build's legacy parallel steps; a split build is capped by its plan (one part per free slot).
+ */
+export const RETIRED_FILL = Object.freeze({
+  maxParallelPerBuild: 'retired Nov 25 2026: one build at a time; the splitter gives the running build one part per free slot (split-plan@1), so there is no per-build cap of 3 parallel sessions to set',
+  'builds.maxParallelPerBuild': 'retired Nov 25 2026: the Claude setting behind maxParallelPerBuild; ignored by the planner, safe to delete',
+  maxBuildsAtOnce: `retired Nov 25 2026: the dispatcher runs ${BUILDS_AT_ONCE} build at a time whatever was stored (was up to 4 side by side); the host's slot count (build-limit.json maxBuilds) now says how many parts that build is split into`,
+});
+/**
+ * The migration of stored fill settings (pure): { settings, notes: [{ key, was, note }] }. Retired keys are dropped and
+ * named; every other key is kept as it is. Running it twice changes nothing more.
+ */
+export function migrateFillSettings(settings) {
+  const x = obj(settings) ?? {};
+  const notes = Object.keys(x).filter((k) => Object.hasOwn(RETIRED_FILL, k)).map((k) => ({ key: k, was: x[k], note: RETIRED_FILL[k] }));
+  return { settings: Object.fromEntries(Object.entries(x).filter(([k]) => !Object.hasOwn(RETIRED_FILL, k))), notes };
+}
+
+/** A build's run state (split-plan@1: `split.run`, or `split.combine.state` on the store's record), '' when it has no split plan. */
+export function runStateOf(b) {
+  const s = obj(b?.split); if (!s) return '';
+  return RUN_STATES.includes(s.run) ? s.run : RUN_STATES.includes(obj(s.combine)?.state) ? s.combine.state : '';
+}
+/** The build's split id (`splitId`, or the id on its plan), '' when it never went through the splitter. */
+export const splitIdOf = (b) => normSplitId(b?.splitId) || normSplitId(obj(b?.split)?.id);
+/** The build carries a plan with parts (split-plan@1): the dispatcher starts it part by part. */
+export const isSplitBuild = (b) => !!splitIdOf(b) && partsOf(b).length > 0;
+/** The run base: the main sha every part starts from ('' until main is locked for the run). */
+export const runBaseOf = (b) => sha(obj(b?.split)?.base) || sha(obj(b?.split)?.baseSha) || sha(obj(obj(b?.split)?.combine)?.base);
+/** The store's main lock as the planner reads it: { build, splitId, base } or null (main-lock@1; `sha` is read as `base`). */
+export function mainLockOf(l) {
+  const x = obj(l); if (!x) return null;
+  const build = str(x.build, 80).trim(); const base = sha(x.base) || sha(x.sha);
+  return build && base ? { build, splitId: normSplitId(x.splitId), base } : null;
+}
+/**
+ * Does this build hold the line right now? A session is on it (running, waiting), or its split run is active
+ * (RUN_ACTIVE: main is its own until finished or failed). A split build whose run is still `queued` does not.
+ */
+export function holdsLine(b) {
+  if (!b || b.deleted) return false;
+  const run = runStateOf(b);
+  if (RUN_ACTIVE.includes(run)) return true;
+  if (isSplitBuild(b) && (run === 'queued' || run === 'splitting' || run === 'finished' || run === 'failed')) return false;
+  return b.status === 'running' || b.status === 'waiting';
+}
+/** The parts of a split build a session may start now: waiting or rebuilding, with no session on them. */
+export const startableParts = (b) => partsOf(b).filter((p) => obj(p) && (p.status === 'waiting' || p.status === 'rebuilding') && !str(p.session) && !str(p.slot));
 const list = (v) => (Array.isArray(v) ? v : []);
 const prioRank = (p) => { const n = parseInt(String(p ?? '').replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
 
@@ -730,24 +797,36 @@ function noAccountLine(accounts, model) {
 }
 
 /**
- * Fill every free slot (Brett, Nov 13 2026: "Always fill every slot"). Pure. Inputs:
+ * ONE build at a time, filling every free slot (Brett, Nov 13 2026: "Always fill every slot"; Nov 18 2026: "ONE build
+ * at a time on the VPS"). Pure. Inputs:
  *   slots     agent-slots status: { free, used, cap, hard: { max, live, free }, memory: { availGb, floorGb } }
  *   accounts  the pipeline's account views (pickAccount)                 settings  FILL_DEFAULTS overrides
  *   running   builds@1 records in Building (running / waiting)          queue     queued builds (any order)
- *   pending   pending builds (used only when settings.autoQueuePending)
- * Order: 1. ready steps of running builds that carry an explicit `after` list and are not `parallel: never` (a step
- * without a list is sequential and belongs to the build's own session, as does the first ready step when no step is
- * claimed yet); a step that shares a file with the session's step or with one launched this round is held back, and a
- * build never has more than its cap (pipeline.maxParallel, else maxParallelPerBuild) of parallel sessions;
- * 2. Queue builds by priority, then queue time; 3. Pending builds when auto-queue is on: split (steps present), by
- * priority then creation time, skipped while a running build is on one of their files. Every launch takes one agent
- * slot and one account slot on the step's / phase's pinned model (Fable only to accounts with Fable). Nothing is launched
- * under the memory floor, over the agent cap or the VPS hard limit, past the API budget cap or past a build's own
- * budget (pipeline.budgetUsd).
- * Returns { launches: [{ kind, id, step, model, account, accountKind, rule, branch, why }], waits: [{ id, step?, why }],
- *           free, blocked } where `blocked` is the one reason nothing more fits ('' when slots simply ran out).
+ *   pending   pending builds (used only when settings.autoQueuePending) mainLock  the store's main-lock@1 record, or null
+ * Order: 1. the build that holds the line (holdsLine). A split build: its waiting / rebuilding parts, one session per
+ * part, every part on the run's one base (the locked main sha; a part is never launched before main is locked for its
+ * run). A build without a plan: its ready steps that carry an explicit `after` list and are not `parallel: never` (a
+ * step without a list is sequential and belongs to the build's own session, as does the first ready step when no step
+ * is claimed yet); a step that shares a file with the session's step or with one launched this round is held back; the
+ * only cap is the one Brett set on that build (pipeline.maxParallel). Builds that were already running side by side
+ * when this rule came in each keep filling until they finish.
+ * 2. Only when no build holds the line and main is not locked: the first Queue build that can start, by priority then
+ * queue time (a build On hold, with nothing open, or that no account can take now does not hold the line up). A split
+ * build starts with every waiting part the slots take, and the plan says main must be locked for it first (`lock`).
+ * Every other Queue build waits and says for whom.
+ * 3. Only when still nothing started and auto-queue is on: the first Pending build that can start, by priority then
+ * creation time.
+ * Every launch takes one agent slot and one account slot on the part's / step's / phase's pinned model (Fable only to
+ * accounts with Fable). Nothing is launched under the memory floor, over the agent cap or the VPS hard limit, past the
+ * API budget cap or past a build's own budget (pipeline.budgetUsd).
+ * Returns { launches: [{ kind, id, step, part?, splitId?, base?, model, account, accountKind, rule, branch, why }],
+ *           waits: [{ id, step?, part?, why }], free, blocked, active, started, lock } where `blocked` is the one reason
+ * nothing more fits ('' when slots simply ran out), `active` = the ids of the builds holding the line, `started` = the
+ * id of the build this round starts ('' for none) and `lock` = { build, splitId, held, base } when a launch of this
+ * round needs main locked for that split (`held: false` = the dispatcher takes the lock, in the same store write that
+ * starts the run, before any part is launched), else null.
  */
-export function planFill({ slots = {}, accounts = [], running = [], queue = [], pending = [], settings = {}, now = Date.now(), priorityOf = (b) => b?.priority || 'P2' } = {}) {
+export function planFill({ slots = {}, accounts = [], running = [], queue = [], pending = [], mainLock = null, settings = {}, now = Date.now(), priorityOf = (b) => b?.priority || 'P2' } = {}) {
   const st = normFill(settings);
   const acc = list(accounts).map((a) => ({ ...a, free: Math.max(0, Number(a.free) || 0), running: Number(a.running) || 0 }));
   const launches = []; const waits = [];
@@ -775,47 +854,86 @@ export function planFill({ slots = {}, accounts = [], running = [], queue = [], 
     launches.push({ ...item, model, account: pick.account.name, accountKind: pick.kind, rule: pick.rule });
     return true;
   };
-  // files other builds are on right now: every open step of a running build (and of each build launched this round)
-  const busy = new Map(); // file → build id
-  const occupy = (b) => { for (const s of openSteps(b)) for (const f of stepFiles(s)) if (!busy.has(f)) busy.set(f, b.id); };
-  const live = list(running).filter((b) => b && !b.deleted && (b.status === 'running' || b.status === 'waiting'));
-  for (const b of live) occupy(b);
-  // 1. parallel-ready steps of running builds
+  const held = mainLockOf(mainLock);
+  let lock = null; // what a launch of this round needs of the main lock
+  // the parts of one split build: one launch per startable part, in part order
+  const takeParts = (b, kind, lead) => {
+    const splitId = splitIdOf(b);
+    const mine = !!held && held.build === b.id && (!held.splitId || held.splitId === splitId);
+    const base = mine ? held.base : runBaseOf(b);
+    let n = 0;
+    for (const p of startableParts(b)) {
+      const first = (b.steps ?? []).find((x) => x.id === p.steps?.[0]);
+      const model = CLAIM_MODELS.includes(p.model) ? p.model : first?.model || nextModel(b);
+      const why = `${lead}: part ${p.id} of ${partsOf(b).length}${p.status === 'rebuilding' ? ' (rebuild)' : ''}`;
+      if (take(model, b, { kind, id: b.id, step: str(p.steps?.[0], 40), part: p.id, splitId, base, branch: str(p.branch, 200), why })) n += 1;
+    }
+    if (n) lock = { build: b.id, splitId, held: mine, base };
+    return n;
+  };
+  const all = [...list(running), ...list(queue)].filter((b) => b && !b.deleted);
+  const live = all.filter((b, i) => holdsLine(b) && all.findIndex((x) => x.id === b.id) === i);
+  const liveIds = new Set(live.map((b) => b.id));
+  // 1. the build that holds the line: its parts (split-plan@1) or its parallel-ready steps
   for (const b of live) {
+    if (isSplitBuild(b)) {
+      const run = runStateOf(b);
+      const open = startableParts(b);
+      if (!open.length) continue;
+      if (run !== 'building') { for (const p of open) waits.push({ id: b.id, part: p.id, why: `run is ${run || 'not started'}: no part starts now` }); continue; }
+      if (!held || held.build !== b.id) { for (const p of open) waits.push({ id: b.id, part: p.id, why: held ? `main is locked by ${held.build}, not this run` : 'main is not locked for this run: no part starts without its base' }); continue; }
+      takeParts(b, 'part', 'part of the running build');
+      continue;
+    }
+    if (b.status !== 'running' && b.status !== 'waiting') continue;
     const ready = readySteps(b, { now });
     const claimed = (b.steps ?? []).filter((s) => claimLive(s.claim, now)).length;
     const mainTaken = claimed > 0 ? 0 : 1; // no claim anywhere: the build's own session is on the first ready step
     const parallel = ready.filter((s, i) => isParallelStep(s) && !(mainTaken && i === 0));
     const beside = mainTaken && ready[0] ? [ready[0]] : []; // steps started this round: no file of theirs may be touched twice
     const liveParallel = Math.max(0, claimed - 1); // one live claim is the build's own session
-    const cap = b.pipeline?.maxParallel > 0 ? b.pipeline.maxParallel : st.maxParallelPerBuild;
-    let room = Math.max(0, cap - liveParallel);
+    const cap = b.pipeline?.maxParallel > 0 ? b.pipeline.maxParallel : 0; // 0 = no cap but the slots (maxParallelPerBuild is retired)
+    let room = cap ? Math.max(0, cap - liveParallel) : Infinity;
     for (const s of parallel) {
       const clash = fileClashes(b, s, { now, against: beside });
       if (clash.length) { waits.push({ id: b.id, step: s.id, why: clashLine(clash) }); continue; }
       if (room <= 0) { waits.push({ id: b.id, step: s.id, why: `build at its parallel cap (${cap})` }); continue; }
-      if (take(s.model, b, { kind: 'step', id: b.id, step: s.id, branch: stepBranch(b, s, { parallel: true }), why: `ready step of a running build: ${dependsOn(b, s).length ? `after ${dependsOn(b, s).join(', ')}` : 'independent'}` })) { room -= 1; beside.push(s); }
+      if (take(s.model, b, { kind: 'step', id: b.id, step: s.id, branch: stepBranch(b, s, { parallel: true }), why: `ready step of the running build: ${dependsOn(b, s).length ? `after ${dependsOn(b, s).join(', ')}` : 'independent'}` })) { room -= 1; beside.push(s); }
     }
   }
-  // 2. the Queue, by priority then queue time
-  const q = queueOrder(list(queue).filter((b) => b && !b.deleted), priorityOf);
+  // one build at a time: who holds the line, in one phrase ('' = nobody, the next build may start)
+  const lockedOut = held && !liveIds.has(held.build) ? held : null; // main locked by a run past its sessions (combining … live)
+  let line = live.length ? `${live[0].id} is ${runStateOf(live[0]) || 'building'}${live.length > 1 ? ` (and ${live.length - 1} more from before the rule)` : ''}`
+    : lockedOut ? `main is locked by ${lockedOut.build}${lockedOut.splitId ? ` (${lockedOut.splitId})` : ''}` : '';
+  let started = '';
+  // one candidate: hold, nothing open and a refused take do not hold the line up; the first that starts takes it
+  const tryStart = (b, kind, lead) => {
+    if (line) { waits.push({ id: b.id, why: `one build at a time: ${line}` }); return; }
+    if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); return; }
+    if (held && held.build !== b.id) { waits.push({ id: b.id, why: `one build at a time: main is locked by ${held.build}` }); return; }
+    let ok;
+    if (isSplitBuild(b)) {
+      const run = runStateOf(b);
+      if (run && run !== 'queued') { waits.push({ id: b.id, why: `its run is ${run}: ${run === 'failed' || run === 'finished' ? 'a new try is a re-split' : 'waiting for the split'}` }); return; }
+      if (!startableParts(b).length) { waits.push({ id: b.id, why: 'no part is waiting to start' }); return; }
+      ok = takeParts(b, kind === 'pending' ? 'pending' : 'part', lead) > 0;
+    } else ok = take(nextModel(b), b, { kind, id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: lead });
+    if (ok) { started = b.id; line = `${b.id} starts first`; }
+  };
+  // 2. the Queue, by priority then queue time: the first build that can start, and only that one
+  const q = queueOrder(list(queue).filter((b) => b && !b.deleted && !liveIds.has(b.id)), priorityOf);
   for (const b of q) {
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline?.heldBy ? ` (${b.pipeline.heldBy})` : ''}` }); continue; }
-    if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); continue; }
-    if (take(nextModel(b), b, { kind: 'build', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `next in the Queue (${priorityOf(b)})` })) occupy(b);
+    tryStart(b, 'build', `next in the Queue (${priorityOf(b)})`);
   }
-  // 3. Pending, only when auto-queue is on: split builds whose files no running build is on
+  // 3. Pending, only when auto-queue is on and the Queue started nothing: the first split build that can start
+  const pend = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending');
   if (st.autoQueuePending) {
-    const p = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending')
-      .sort((a, b) => prioRank(priorityOf(a)) - prioRank(priorityOf(b)) || str(a.createdAt).localeCompare(str(b.createdAt)));
-    for (const b of p) {
-      if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); continue; }
-      const shared = [...new Set(openSteps(b).flatMap(stepFiles))].filter((f) => busy.has(f));
-      if (shared.length) { waits.push({ id: b.id, why: `files clash with running build ${busy.get(shared[0])} (${shared.join(', ')})` }); continue; }
-      if (take(nextModel(b), b, { kind: 'pending', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `auto-queue: Pending build taken (${priorityOf(b)})` })) occupy(b);
-    }
-  } else if (list(pending).length && !blocked && free > 0) blocked = `${list(pending).length} Pending build${list(pending).length === 1 ? '' : 's'} wait for Brett (auto-queue is off)`;
-  return { launches, waits, free, blocked, at: nowIso(now) };
+    const p = pend.sort((a, b) => prioRank(priorityOf(a)) - prioRank(priorityOf(b)) || str(a.createdAt).localeCompare(str(b.createdAt)));
+    for (const b of p) tryStart(b, 'pending', `auto-queue: Pending build taken (${priorityOf(b)})`);
+  } else if (list(pending).length && !blocked && free > 0 && !line) blocked = `${list(pending).length} Pending build${list(pending).length === 1 ? '' : 's'} wait for Brett (auto-queue is off)`;
+  if (!blocked && free > 0 && line && (q.length || (st.autoQueuePending && pend.length))) blocked = `one build at a time: ${line}`;
+  return { launches, waits, free, blocked, active: live.map((b) => b.id), started, lock, at: nowIso(now) };
 }
 
 /** The steps still to do (not done, not skipped). */

@@ -247,6 +247,11 @@ and claims on builds@1 steps (`after`, `claim`; `normAfter`, `normClaim`, `claim
 Same deferral: the planner runs only in the VPS dispatcher; no Kotlin or Python twin while Android is on hold. A port
 replays the fixture's `ready`, `claims` and `fill` blocks.
 
+Nov 25 2026, one build at a time (spec `BUILD-SPLIT.md`): `planFill` starts one build and fills the slots with its
+parts, with the main lock (`main-lock@1`: `takeMainLock`, `startRun`, `lockAfterRun` in `framework/core/build-split.mjs`);
+`maxParallelPerBuild` is retired (`RETIRED_FILL`, `migrateFillSettings`). Deferred like the rest: the dispatcher runs
+only on the VPS, no Kotlin or Python twin.
+
 Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transition `nextStatusOnExit()` with
 `EXIT_REASONS` (all-done, phase-done, crash, crash-limit, upgrade-blocked, needs-brett, stopped), `pipeline.phase`,
 `pipeline.crashes`, `lastRun.reason` / `lastRun.phase`, `STATUS_AFTER.failed = pending`, the Errors tab for a

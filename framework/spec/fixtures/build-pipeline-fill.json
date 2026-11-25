@@ -1710,6 +1710,501 @@
     "settings": {
      "autoQueuePending": true
     }
+   },
+   "oneAtATimeSplitStart": {
+    "slots": {
+     "free": 4,
+     "used": 0,
+     "cap": 4
+    },
+    "accounts": [
+     {
+      "name": "max-a",
+      "kind": "subscription",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 1,
+      "parallel": 3,
+      "order": 0
+     },
+     {
+      "name": "pro-b",
+      "kind": "subscription",
+      "usable": true,
+      "fable": false,
+      "free": 1,
+      "running": 0,
+      "parallel": 1,
+      "order": 1
+     },
+     {
+      "name": "api-c",
+      "kind": "api",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 0,
+      "parallel": 2,
+      "api": {
+       "usable": true
+      }
+     }
+    ],
+    "running": [],
+    "queue": [
+     {
+      "id": "sp",
+      "status": "queued",
+      "priority": "P2",
+      "splitId": "sp.r1",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:00:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus",
+        "files": [
+         "a.mjs"
+        ]
+       },
+       {
+        "id": "s2",
+        "model": "Fable",
+        "files": [
+         "b.mjs"
+        ]
+       },
+       {
+        "id": "s3",
+        "model": "Opus",
+        "files": [
+         "c.mjs"
+        ]
+       }
+      ],
+      "split": {
+       "$axf": "split-plan@1",
+       "id": "sp.r1",
+       "run": "queued",
+       "base": "",
+       "parts": [
+        {
+         "id": "p1",
+         "status": "waiting",
+         "steps": [
+          "s1"
+         ],
+         "files": [
+          "a.mjs"
+         ],
+         "branch": "claude/sp--r1-p1",
+         "base": "",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        },
+        {
+         "id": "p2",
+         "status": "waiting",
+         "steps": [
+          "s2"
+         ],
+         "files": [
+          "b.mjs"
+         ],
+         "branch": "claude/sp--r1-p2",
+         "base": "",
+         "slot": "",
+         "session": "",
+         "model": "Fable"
+        },
+        {
+         "id": "p3",
+         "status": "waiting",
+         "steps": [
+          "s3"
+         ],
+         "files": [
+          "c.mjs"
+         ],
+         "branch": "claude/sp--r1-p3",
+         "base": "",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        }
+       ]
+      }
+     },
+     {
+      "id": "later",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:01:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     }
+    ],
+    "pending": []
+   },
+   "oneAtATimeSplitRunning": {
+    "slots": {
+     "free": 4,
+     "used": 0,
+     "cap": 4
+    },
+    "accounts": [
+     {
+      "name": "max-a",
+      "kind": "subscription",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 1,
+      "parallel": 3,
+      "order": 0
+     },
+     {
+      "name": "pro-b",
+      "kind": "subscription",
+      "usable": true,
+      "fable": false,
+      "free": 1,
+      "running": 0,
+      "parallel": 1,
+      "order": 1
+     },
+     {
+      "name": "api-c",
+      "kind": "api",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 0,
+      "parallel": 2,
+      "api": {
+       "usable": true
+      }
+     }
+    ],
+    "mainLock": {
+     "$axf": "main-lock@1",
+     "build": "sp",
+     "splitId": "sp.r1",
+     "base": "cccccccccccccccccccccccccccccccccccccccc",
+     "lockedAt": "2026-11-25T10:05:00.000Z",
+     "by": "dispatcher"
+    },
+    "running": [
+     {
+      "id": "sp",
+      "status": "running",
+      "priority": "P2",
+      "splitId": "sp.r1",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:00:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus",
+        "files": []
+       },
+       {
+        "id": "s2",
+        "model": "Opus",
+        "files": []
+       },
+       {
+        "id": "s3",
+        "model": "Opus",
+        "files": []
+       },
+       {
+        "id": "s4",
+        "model": "Opus",
+        "files": []
+       }
+      ],
+      "split": {
+       "$axf": "split-plan@1",
+       "id": "sp.r1",
+       "run": "building",
+       "base": "cccccccccccccccccccccccccccccccccccccccc",
+       "parts": [
+        {
+         "id": "p1",
+         "status": "building",
+         "steps": [
+          "s1"
+         ],
+         "files": [],
+         "branch": "claude/sp--r1-p1",
+         "base": "cccccccccccccccccccccccccccccccccccccccc",
+         "slot": "slot-1",
+         "session": "axf-sp--r1-p1",
+         "model": "Opus"
+        },
+        {
+         "id": "p2",
+         "status": "waiting",
+         "steps": [
+          "s2"
+         ],
+         "files": [],
+         "branch": "claude/sp--r1-p2",
+         "base": "cccccccccccccccccccccccccccccccccccccccc",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        },
+        {
+         "id": "p3",
+         "status": "rebuilding",
+         "steps": [
+          "s3"
+         ],
+         "files": [],
+         "branch": "claude/sp--r1-p3",
+         "base": "cccccccccccccccccccccccccccccccccccccccc",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        },
+        {
+         "id": "p4",
+         "status": "done",
+         "steps": [
+          "s4"
+         ],
+         "files": [],
+         "branch": "claude/sp--r1-p4",
+         "base": "cccccccccccccccccccccccccccccccccccccccc",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        }
+       ]
+      }
+     }
+    ],
+    "queue": [
+     {
+      "id": "later",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:01:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     }
+    ],
+    "pending": []
+   },
+   "oneAtATimeMainLocked": {
+    "slots": {
+     "free": 4,
+     "used": 0,
+     "cap": 4
+    },
+    "accounts": [
+     {
+      "name": "max-a",
+      "kind": "subscription",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 1,
+      "parallel": 3,
+      "order": 0
+     },
+     {
+      "name": "pro-b",
+      "kind": "subscription",
+      "usable": true,
+      "fable": false,
+      "free": 1,
+      "running": 0,
+      "parallel": 1,
+      "order": 1
+     },
+     {
+      "name": "api-c",
+      "kind": "api",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 0,
+      "parallel": 2,
+      "api": {
+       "usable": true
+      }
+     }
+    ],
+    "mainLock": {
+     "$axf": "main-lock@1",
+     "build": "sp",
+     "splitId": "sp.r1",
+     "base": "cccccccccccccccccccccccccccccccccccccccc",
+     "lockedAt": "2026-11-25T10:05:00.000Z",
+     "by": "dispatcher"
+    },
+    "running": [
+     {
+      "id": "sp",
+      "status": "landing",
+      "priority": "P2",
+      "splitId": "sp.r1",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:00:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus",
+        "files": []
+       }
+      ],
+      "split": {
+       "$axf": "split-plan@1",
+       "id": "sp.r1",
+       "run": "ci",
+       "base": "cccccccccccccccccccccccccccccccccccccccc",
+       "parts": [
+        {
+         "id": "p1",
+         "status": "done",
+         "steps": [
+          "s1"
+         ],
+         "files": [],
+         "branch": "claude/sp--r1-p1",
+         "base": "cccccccccccccccccccccccccccccccccccccccc",
+         "slot": "",
+         "session": "",
+         "model": "Opus"
+        }
+       ]
+      }
+     }
+    ],
+    "queue": [
+     {
+      "id": "later",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:01:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     },
+     {
+      "id": "later2",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:02:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     }
+    ],
+    "pending": []
+   },
+   "oneAtATimeQueueOfTwo": {
+    "slots": {
+     "free": 4,
+     "used": 0,
+     "cap": 4
+    },
+    "accounts": [
+     {
+      "name": "max-a",
+      "kind": "subscription",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 1,
+      "parallel": 3,
+      "order": 0
+     },
+     {
+      "name": "pro-b",
+      "kind": "subscription",
+      "usable": true,
+      "fable": false,
+      "free": 1,
+      "running": 0,
+      "parallel": 1,
+      "order": 1
+     },
+     {
+      "name": "api-c",
+      "kind": "api",
+      "usable": true,
+      "fable": true,
+      "free": 2,
+      "running": 0,
+      "parallel": 2,
+      "api": {
+       "usable": true
+      }
+     }
+    ],
+    "running": [],
+    "queue": [
+     {
+      "id": "first",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:01:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     },
+     {
+      "id": "second",
+      "status": "queued",
+      "priority": "P2",
+      "pipeline": {
+       "queuedAt": "2026-11-25T10:02:00.000Z"
+      },
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Opus"
+       }
+      ]
+     }
+    ],
+    "pending": []
    }
   }
  },
@@ -2269,7 +2764,7 @@
       "id": "r1",
       "step": "s3",
       "branch": "claude/r1--s3",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2280,31 +2775,17 @@
       "id": "r1",
       "step": "s4",
       "branch": "claude/r1--s4",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Fable",
       "account": "max-a",
-      "accountKind": "subscription",
-      "rule": ""
-     },
-     {
-      "kind": "build",
-      "id": "q-low",
-      "step": "s1",
-      "branch": "claude/q-low",
-      "why": "next in the Queue (P3)",
-      "model": "Opus",
-      "account": "pro-b",
       "accountKind": "subscription",
       "rule": ""
      }
     ],
     "waits": [
      {
-      "kind": "build",
       "id": "q-hi",
-      "step": "s1",
-      "branch": "claude/q-hi",
-      "why": "API budget cap reached ($9.50 of $10.00)"
+      "why": "one build at a time: r1 is building"
      },
      {
       "id": "held",
@@ -2312,18 +2793,24 @@
      },
      {
       "id": "unsplit",
-      "why": "no steps yet: waiting for the split"
+      "why": "one build at a time: r1 is building"
      },
      {
-      "kind": "pending",
+      "id": "q-low",
+      "why": "one build at a time: r1 is building"
+     },
+     {
       "id": "p1",
-      "step": "s1",
-      "branch": "claude/p1",
-      "why": "API budget cap reached ($9.50 of $10.00)"
+      "why": "one build at a time: r1 is building"
      }
     ],
-    "free": 3,
-    "blocked": ""
+    "free": 4,
+    "blocked": "one build at a time: r1 is building",
+    "active": [
+     "r1"
+    ],
+    "started": "",
+    "lock": null
    },
    "apiOverflowWithinBudget": {
     "launches": [
@@ -2337,30 +2824,23 @@
       "account": "api-c",
       "accountKind": "api",
       "rule": "overflow"
-     },
-     {
-      "kind": "build",
-      "id": "q3",
-      "step": "s1",
-      "branch": "claude/q3",
-      "why": "next in the Queue (P2)",
-      "model": "Opus",
-      "account": "api-c",
-      "accountKind": "api",
-      "rule": "overflow"
      }
     ],
     "waits": [
      {
-      "kind": "build",
       "id": "q2",
-      "step": "s1",
-      "branch": "claude/q2",
-      "why": "every account is full (max-a 1/1, api-c 1/2)"
+      "why": "one build at a time: q1 starts first"
+     },
+     {
+      "id": "q3",
+      "why": "one build at a time: q1 starts first"
      }
     ],
-    "free": 2,
-    "blocked": ""
+    "free": 3,
+    "blocked": "one build at a time: q1 starts first",
+    "active": [],
+    "started": "q1",
+    "lock": null
    },
    "overflowOff": {
     "launches": [],
@@ -2374,7 +2854,10 @@
      }
     ],
     "free": 2,
-    "blocked": ""
+    "blocked": "",
+    "active": [],
+    "started": "",
+    "lock": null
    },
    "memoryFloor": {
     "launches": [],
@@ -2388,7 +2871,10 @@
      }
     ],
     "free": 3,
-    "blocked": "memory under the floor (1.4 GB free, floor 2 GB)"
+    "blocked": "memory under the floor (1.4 GB free, floor 2 GB)",
+    "active": [],
+    "started": "",
+    "lock": null
    },
    "hardLimit": {
     "launches": [],
@@ -2402,13 +2888,19 @@
      }
     ],
     "free": 0,
-    "blocked": "VPS hard build limit reached (4/4 running)"
+    "blocked": "VPS hard build limit reached (4/4 running)",
+    "active": [],
+    "started": "",
+    "lock": null
    },
    "autoQueueOff": {
     "launches": [],
     "waits": [],
     "free": 2,
-    "blocked": "2 Pending builds wait for Brett (auto-queue is off)"
+    "blocked": "2 Pending builds wait for Brett (auto-queue is off)",
+    "active": [],
+    "started": "",
+    "lock": null
    },
    "autoQueueOn": {
     "launches": [
@@ -2422,22 +2914,19 @@
       "account": "max-a",
       "accountKind": "subscription",
       "rule": ""
-     },
-     {
-      "kind": "pending",
-      "id": "p1",
-      "step": "s1",
-      "branch": "claude/p1",
-      "why": "auto-queue: Pending build taken (P2)",
-      "model": "Opus",
-      "account": "max-a",
-      "accountKind": "subscription",
-      "rule": ""
      }
     ],
-    "waits": [],
-    "free": 0,
-    "blocked": "every agent slot is filled"
+    "waits": [
+     {
+      "id": "p1",
+      "why": "one build at a time: p2 starts first"
+     }
+    ],
+    "free": 1,
+    "blocked": "one build at a time: p2 starts first",
+    "active": [],
+    "started": "p2",
+    "lock": null
    },
    "parallelCapAndClaimedMain": {
     "launches": [
@@ -2446,7 +2935,7 @@
       "id": "wide",
       "step": "s2",
       "branch": "claude/wide--s2",
-      "why": "ready step of a running build: independent",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2457,7 +2946,7 @@
       "id": "wide",
       "step": "s3",
       "branch": "claude/wide--s3",
-      "why": "ready step of a running build: independent",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2468,28 +2957,43 @@
       "id": "wide",
       "step": "s4",
       "branch": "claude/wide--s4",
-      "why": "ready step of a running build: independent",
+      "why": "ready step of the running build: independent",
+      "model": "Opus",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     },
+     {
+      "kind": "step",
+      "id": "wide",
+      "step": "s5",
+      "branch": "claude/wide--s5",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
       "rule": ""
      }
     ],
-    "waits": [
-     {
-      "id": "wide",
-      "step": "s5",
-      "why": "build at its parallel cap (3)"
-     }
+    "waits": [],
+    "free": 4,
+    "blocked": "",
+    "active": [
+     "wide"
     ],
-    "free": 5,
-    "blocked": ""
+    "started": "",
+    "lock": null
    },
    "linearUnchanged": {
     "launches": [],
     "waits": [],
     "free": 6,
-    "blocked": ""
+    "blocked": "",
+    "active": [
+     "lin"
+    ],
+    "started": "",
+    "lock": null
    },
    "fanOutFanIn": {
     "launches": [
@@ -2498,7 +3002,7 @@
       "id": "dag",
       "step": "s3",
       "branch": "claude/dag--s3",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2509,7 +3013,7 @@
       "id": "dag",
       "step": "s4",
       "branch": "claude/dag--s4",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Fable",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2518,7 +3022,12 @@
     ],
     "waits": [],
     "free": 4,
-    "blocked": ""
+    "blocked": "",
+    "active": [
+     "dag"
+    ],
+    "started": "",
+    "lock": null
    },
    "fileClashHeld": {
     "launches": [
@@ -2527,7 +3036,7 @@
       "id": "clash",
       "step": "s4",
       "branch": "claude/clash--s4",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2538,7 +3047,7 @@
       "id": "clash",
       "step": "s5",
       "branch": "claude/clash--s5",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2558,7 +3067,12 @@
      }
     ],
     "free": 4,
-    "blocked": ""
+    "blocked": "",
+    "active": [
+     "clash"
+    ],
+    "started": "",
+    "lock": null
    },
    "fableNoFableAccount": {
     "launches": [
@@ -2567,7 +3081,7 @@
       "id": "r",
       "step": "s4",
       "branch": "claude/r--s4",
-      "why": "ready step of a running build: after s1",
+      "why": "ready step of the running build: after s1",
       "model": "Opus",
       "account": "pro-b",
       "accountKind": "subscription",
@@ -2583,15 +3097,17 @@
       "why": "every Fable account is full (max-a 4/4)"
      },
      {
-      "kind": "build",
       "id": "q-fable",
-      "step": "s1",
-      "branch": "claude/q-fable",
-      "why": "every Fable account is full (max-a 4/4)"
+      "why": "one build at a time: r is building"
      }
     ],
     "free": 5,
-    "blocked": ""
+    "blocked": "one build at a time: r is building",
+    "active": [
+     "r"
+    ],
+    "started": "",
+    "lock": null
    },
    "capsReached": {
     "launches": [
@@ -2600,7 +3116,7 @@
       "id": "a",
       "step": "s3",
       "branch": "claude/a--s3",
-      "why": "ready step of a running build: independent",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2611,18 +3127,18 @@
       "id": "b",
       "step": "s5",
       "branch": "claude/b--s5",
-      "why": "ready step of a running build: independent",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
       "rule": ""
      },
      {
-      "kind": "build",
-      "id": "q1",
-      "step": "s1",
-      "branch": "claude/q1",
-      "why": "next in the Queue (P1)",
+      "kind": "step",
+      "id": "b",
+      "step": "s6",
+      "branch": "claude/b--s6",
+      "why": "ready step of the running build: independent",
       "model": "Opus",
       "account": "max-a",
       "accountKind": "subscription",
@@ -2636,20 +3152,22 @@
       "why": "build at its parallel cap (1)"
      },
      {
-      "id": "b",
-      "step": "s6",
-      "why": "build at its parallel cap (3)"
+      "id": "q1",
+      "why": "one build at a time: a is building (and 1 more from before the rule)"
      },
      {
-      "kind": "build",
       "id": "q2",
-      "step": "s1",
-      "branch": "claude/q2",
-      "why": "every agent slot is filled"
+      "why": "one build at a time: a is building (and 1 more from before the rule)"
      }
     ],
     "free": 0,
-    "blocked": "every agent slot is filled"
+    "blocked": "every agent slot is filled",
+    "active": [
+     "a",
+     "b"
+    ],
+    "started": "",
+    "lock": null
    },
    "priorityTie": {
     "launches": [
@@ -2663,68 +3181,209 @@
       "account": "max-a",
       "accountKind": "subscription",
       "rule": ""
-     },
-     {
-      "kind": "build",
-      "id": "q-newer",
-      "step": "s1",
-      "branch": "claude/q-newer",
-      "why": "next in the Queue (P1)",
-      "model": "Opus",
-      "account": "max-a",
-      "accountKind": "subscription",
-      "rule": ""
-     },
-     {
-      "kind": "build",
-      "id": "q-late",
-      "step": "s1",
-      "branch": "claude/q-late",
-      "why": "next in the Queue (P1)",
-      "model": "Opus",
-      "account": "max-a",
-      "accountKind": "subscription",
-      "rule": ""
      }
     ],
     "waits": [
      {
-      "kind": "build",
+      "id": "q-newer",
+      "why": "one build at a time: q-older starts first"
+     },
+     {
+      "id": "q-late",
+      "why": "one build at a time: q-older starts first"
+     },
+     {
       "id": "q-p2",
-      "step": "s1",
-      "branch": "claude/q-p2",
-      "why": "every agent slot is filled"
+      "why": "one build at a time: q-older starts first"
      }
     ],
-    "free": 0,
-    "blocked": "every agent slot is filled"
+    "free": 2,
+    "blocked": "one build at a time: q-older starts first",
+    "active": [],
+    "started": "q-older",
+    "lock": null
    },
    "autoQueueClash": {
-    "launches": [
-     {
-      "kind": "pending",
-      "id": "clear",
-      "step": "s1",
-      "branch": "claude/clear",
-      "why": "auto-queue: Pending build taken (P2)",
-      "model": "Opus",
-      "account": "max-a",
-      "accountKind": "subscription",
-      "rule": ""
-     }
-    ],
+    "launches": [],
     "waits": [
      {
       "id": "unsplit",
-      "why": "no steps yet: waiting for the split"
+      "why": "one build at a time: r is building"
      },
      {
       "id": "clash",
-      "why": "files clash with running build r (shared.mjs)"
+      "why": "one build at a time: r is building"
+     },
+     {
+      "id": "clear",
+      "why": "one build at a time: r is building"
      }
     ],
-    "free": 5,
-    "blocked": ""
+    "free": 6,
+    "blocked": "one build at a time: r is building",
+    "active": [
+     "r"
+    ],
+    "started": "",
+    "lock": null
+   },
+   "oneAtATimeSplitStart": {
+    "launches": [
+     {
+      "kind": "part",
+      "id": "sp",
+      "step": "s1",
+      "part": "p1",
+      "splitId": "sp.r1",
+      "base": "",
+      "branch": "claude/sp--r1-p1",
+      "why": "next in the Queue (P2): part p1 of 3",
+      "model": "Opus",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     },
+     {
+      "kind": "part",
+      "id": "sp",
+      "step": "s2",
+      "part": "p2",
+      "splitId": "sp.r1",
+      "base": "",
+      "branch": "claude/sp--r1-p2",
+      "why": "next in the Queue (P2): part p2 of 3",
+      "model": "Fable",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     },
+     {
+      "kind": "part",
+      "id": "sp",
+      "step": "s3",
+      "part": "p3",
+      "splitId": "sp.r1",
+      "base": "",
+      "branch": "claude/sp--r1-p3",
+      "why": "next in the Queue (P2): part p3 of 3",
+      "model": "Opus",
+      "account": "pro-b",
+      "accountKind": "subscription",
+      "rule": ""
+     }
+    ],
+    "waits": [
+     {
+      "id": "later",
+      "why": "one build at a time: sp starts first"
+     }
+    ],
+    "free": 1,
+    "blocked": "one build at a time: sp starts first",
+    "active": [],
+    "started": "sp",
+    "lock": {
+     "build": "sp",
+     "splitId": "sp.r1",
+     "held": false,
+     "base": ""
+    }
+   },
+   "oneAtATimeSplitRunning": {
+    "launches": [
+     {
+      "kind": "part",
+      "id": "sp",
+      "step": "s2",
+      "part": "p2",
+      "splitId": "sp.r1",
+      "base": "cccccccccccccccccccccccccccccccccccccccc",
+      "branch": "claude/sp--r1-p2",
+      "why": "part of the running build: part p2 of 4",
+      "model": "Opus",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     },
+     {
+      "kind": "part",
+      "id": "sp",
+      "step": "s3",
+      "part": "p3",
+      "splitId": "sp.r1",
+      "base": "cccccccccccccccccccccccccccccccccccccccc",
+      "branch": "claude/sp--r1-p3",
+      "why": "part of the running build: part p3 of 4 (rebuild)",
+      "model": "Opus",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     }
+    ],
+    "waits": [
+     {
+      "id": "later",
+      "why": "one build at a time: sp is building"
+     }
+    ],
+    "free": 2,
+    "blocked": "one build at a time: sp is building",
+    "active": [
+     "sp"
+    ],
+    "started": "",
+    "lock": {
+     "build": "sp",
+     "splitId": "sp.r1",
+     "held": true,
+     "base": "cccccccccccccccccccccccccccccccccccccccc"
+    }
+   },
+   "oneAtATimeMainLocked": {
+    "launches": [],
+    "waits": [
+     {
+      "id": "later",
+      "why": "one build at a time: sp is ci"
+     },
+     {
+      "id": "later2",
+      "why": "one build at a time: sp is ci"
+     }
+    ],
+    "free": 4,
+    "blocked": "one build at a time: sp is ci",
+    "active": [
+     "sp"
+    ],
+    "started": "",
+    "lock": null
+   },
+   "oneAtATimeQueueOfTwo": {
+    "launches": [
+     {
+      "kind": "build",
+      "id": "first",
+      "step": "s1",
+      "branch": "claude/first",
+      "why": "next in the Queue (P2)",
+      "model": "Opus",
+      "account": "max-a",
+      "accountKind": "subscription",
+      "rule": ""
+     }
+    ],
+    "waits": [
+     {
+      "id": "second",
+      "why": "one build at a time: first starts first"
+     }
+    ],
+    "free": 3,
+    "blocked": "one build at a time: first starts first",
+    "active": [],
+    "started": "first",
+    "lock": null
    }
   }
  }
