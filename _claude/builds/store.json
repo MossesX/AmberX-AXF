@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10402,
- "updatedAt": "2026-11-25T06:22:37.905Z",
+ "rev": 10403,
+ "updatedAt": "2026-11-25T06:22:56.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271813,7 +271813,7 @@
    "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-25T06:22:28.329Z",
+   "updatedAt": "2026-11-25T06:22:50.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -273277,10 +273277,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:22:28.414Z",
-     "statusAt": "2026-11-25T06:22:28.329Z",
+     "updatedAt": "2026-11-25T06:22:51.011Z",
+     "statusAt": "2026-11-25T06:22:50.935Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -273311,12 +273311,20 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:22:50.935Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s11--earl on mossesx-max-"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s11",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s11"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s11",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s11--earl"
     },
     {
      "id": "s12",
@@ -273672,7 +273680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 226,
+   "rev": 227,
    "deleted": false,
    "deletedAt": "",
    "pending": {
