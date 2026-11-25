@@ -426,6 +426,66 @@ try {
     assert.ok(tc('index.tsx').includes('PassBanner') && tc('index.tsx').includes("vps.passes.open:veto"), 'Token control keeps the banner and links here');
     assert.ok(web('index.tsx').includes("'vps.open'") === false && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'vps.open'") && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'gate.open'"), 'vps.open is the new address, gate.open still works');
   });
+  const passCoverage = await import('./web/pass-coverage.mjs');
+  t('axHub pass coverage: All tools by default, the picker sends pass@2 covers, the card lists coverage and runs', () => {
+    const c = passCoverage;
+    const services = c.pickerServices([{ namespace: 'vps', displayName: 'VPS', tools: [{ name: 'run' }, { name: 'build_start' }, 'build_stop'] }], [{ service: 'vps', displayName: 'dup' }, { service: 'axf-console', displayName: 'Console' }, { service: 'bad name' }]);
+    assert.deepEqual(services, [{ namespace: 'vps', displayName: 'VPS', tools: ['run', 'build_start', 'build_stop'] }, { namespace: 'axf-console', displayName: 'Console', tools: [] }]);
+    // the default: a new pass, and a pass with no `covers`, is All tools
+    assert.deepEqual(c.pickFromCovers(undefined, services), { mode: 'all', pick: c.emptyPick() });
+    assert.deepEqual(c.coversFromPick('all', c.emptyPick()), { covers: 'all', error: '' });
+    assert.deepEqual(c.grantBody({ covers: 'all', minutes: '1440', reason: ' a day ' }), { covers: 'all', minutes: 1440, reason: 'a day', quietNotice: false });
+    assert.equal(c.grantBody({ covers: 'all', minutes: 30, reason: 'x', includeIrreversible: true, quietNotice: true }).include_irreversible, true);
+    assert.equal('include_irreversible' in c.grantBody({ covers: [{ service: 'vps' }], minutes: 30, reason: 'x', includeIrreversible: true }), false, 'a list never includes irreversible calls');
+    assert.deepEqual(c.updateBody({ covers: [{ service: 'vps', tool: 'run' }], includeIrreversible: true }), { covers: [{ service: 'vps', tool: 'run' }], quietNotice: false, include_irreversible: false });
+    // typed entries: the contract's short forms, plus a scoped entry of one service
+    assert.deepEqual(c.parseEntries('vps, vps.run axf-console.console_terminal_sessions_* scope:tokens.theme axf-console.control_set@tokens.*').entries, [
+      { service: 'vps' }, { service: 'vps', tool: 'run' }, { service: 'axf-console', tool: 'console_terminal_sessions_*' }, { service: '*', scope: 'tokens.theme' }, { service: 'axf-console', tool: 'control_set', scope: 'tokens.*' }]);
+    assert.deepEqual(c.parseEntries('* *.run v*s.run scope: a b!').bad, ['*', '*.run', 'v*s.run', 'scope:', 'b!']);
+    assert.deepEqual(c.parseEntry('vps.*'), { service: 'vps' }, 'every tool is the service itself');
+    for (const e of c.parseEntries('vps vps.run scope:tokens.theme axf-console.control_set@tokens.theme axf-console@tokens.*').entries) assert.deepEqual(c.parseEntry(c.entryText(e)), e);
+    // the picker
+    let pick = c.toggleTool(c.emptyPick(), 'vps', 'run', true, services[0].tools);
+    assert.equal(c.serviceState(pick, 'vps'), 'some'); assert.equal(c.toolPicked(pick, 'vps', 'run'), true); assert.equal(c.toolPicked(pick, 'vps', 'build_stop'), false);
+    assert.deepEqual(c.coversFromPick('pick', pick).covers, [{ service: 'vps', tool: 'run' }]);
+    pick = c.toggleTool(c.toggleTool(pick, 'vps', 'build_start', true, services[0].tools), 'vps', 'build_stop', true, services[0].tools);
+    assert.equal(c.serviceState(pick, 'vps'), 'all', 'every tool ticked is the whole service');
+    pick = c.toggleTool(pick, 'vps', 'run', false, services[0].tools);
+    assert.deepEqual(pick.services.vps, ['build_start', 'build_stop'], 'unticking one tool keeps the rest');
+    pick = c.toggleService({ ...pick, more: 'vps.run, axf-console.console_terminal_sessions_stop, vps.run' }, 'vps', true);
+    assert.deepEqual(c.coversFromPick('pick', pick).covers, [{ service: 'vps' }, { service: 'axf-console', tool: 'console_terminal_sessions_stop' }], 'a tool of a whole service and repeats are dropped');
+    assert.equal(c.serviceState(c.toggleService(pick, 'vps', false), 'vps'), 'none');
+    assert.match(c.coversFromPick('pick', c.emptyPick()).error, /Pick at least one/); assert.equal(c.coversFromPick('pick', c.emptyPick()).covers, null);
+    assert.match(c.coversFromPick('pick', { services: {}, more: 'not ok!' }).error, /Not a service, tool or scope: ok!/);
+    assert.match(c.coversFromPick('pick', { services: { vps: Array.from({ length: 51 }, (_, i) => `t${i}`) }, more: '' }).error, /at most 50/);
+    // editing: a pass's entries open ticked where the picker knows them, typed where it doesn't, and send back the same
+    const covers = [{ service: 'axf-console' }, { service: 'vps', tool: 'run' }, { service: 'vps', tool: 'build_*' }, { service: '*', scope: 'tokens.theme' }];
+    const opened = c.pickFromCovers(covers, services);
+    assert.deepEqual(opened, { mode: 'pick', pick: { services: { 'axf-console': true, vps: ['run'] }, more: 'vps.build_*, scope:tokens.theme' } });
+    assert.deepEqual(new Set(c.coversFromPick(opened.mode, opened.pick).covers.map(c.entryText)), new Set(covers.map(c.entryText)));
+    assert.deepEqual(c.pickFromCovers('none', services), { mode: 'pick', pick: c.emptyPick() }, 'an unreadable coverage never opens as All tools');
+    assert.deepEqual(c.filterTools(['run', 'build_start', 'build_stop'], 'BUILD', 1), { shown: ['build_start'], more: 1 });
+    // the card
+    assert.deepEqual(c.coverageChips('all'), [{ label: 'All tools', tone: 'success' }]);
+    assert.deepEqual(c.coverageChips('all', true).map((x) => x.label), ['All tools', 'irreversible calls too']);
+    assert.equal(c.coverageChips('none')[0].tone, 'danger');
+    assert.deepEqual(c.coverageChips(covers, false, 3).map((x) => x.label), ['axf-console (every tool)', 'vps.run', 'vps.build_*', '+1 more']);
+    assert.match(c.coverageSummary('all'), /every tool on every service.*Irreversible calls still ask/); assert.match(c.coverageSummary(covers), /^Covers only: axf-console \(every tool\), vps\.run/);
+    assert.equal(c.runsHeading(0), 'No call has run under it yet.'); assert.equal(c.runsHeading(1), '1 call ran under it'); assert.equal(c.runsHeading(12, '3 min ago'), '12 calls ran under it, last 3 min ago');
+    assert.deepEqual(c.runLines([{ id: 'a', qualifiedTool: 'vps.run', policySkipped: 'veto', ranAt: '2026-11-25T05:00:00Z', status: 'ran under pass' },
+      { service: 'axf-console', tool: 'console_terminal_sessions_stop', policySkipped: 'always-approve', createdAt: '2026-11-25T05:01:00Z', status: 'failed under pass' }, { id: 'c' }], 2), [
+      { id: 'a', tool: 'vps.run', skipped: 'no countdown', at: '2026-11-25T05:00:00Z', failed: false },
+      { id: 'axf-console.console_terminal_sessions_stop@2026-11-25T05:01:00Z', tool: 'axf-console.console_terminal_sessions_stop', skipped: 'no approval prompt (always-approve tool)', at: '2026-11-25T05:01:00Z', failed: true }]);
+    assert.equal(c.lengthLabel(45), '45 min'); assert.equal(c.lengthLabel(1440), '24 h'); assert.equal(c.lengthLabel(90), '1 h 30 min');
+    assert.equal(c.minutesError('1440', { min: 1, max: 1440 }), ''); assert.match(c.minutesError('1441', { min: 1, max: 1440 }), /1 to 1440/); assert.notEqual(c.minutesError('', { min: 1, max: 60 }), '');
+    // the page: framework controls, All tools first, the card draws coverage and runs
+    const page = readFileSync(join(HERE, 'web/HubPasses.tsx'), 'utf8');
+    assert.match(page, /options=\{\[\{ value: 'all', label: 'All tools', icon: 'check' \}, \{ value: 'pick', label: 'Pick services and tools'/);
+    assert.match(page, /pickFromCovers\(initial \? \(readPassCovers\(initial\) as Coverage\) : 'all', services\)/, 'a new pass opens on All tools; an edit opens on what the pass covers');
+    assert.match(page, /data-axf-pass-covers=\{p\.id\}/); assert.match(page, /<Runs pass=\{p\} \/>/); assert.match(page, /\/auth\/api\/passes\/\$\{encodeURIComponent\(p\.id\)\}\/update`, updateBody\(c\)/);
+    assert.ok(!/<(input|select|button|textarea)\b/.test(page), 'framework controls only');
+    assert.ok(!/style=\{/.test(page), 'no inline styles');
+  });
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);
   });

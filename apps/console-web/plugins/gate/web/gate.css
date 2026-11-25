@@ -44,3 +44,9 @@
 /* Model triage: the gate's settings and each rule's fields, side by side when there is room, one a row on a phone */
 .axp-gate__triage { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 64)), 1fr)); gap: var(--fx-dens-gap-md); align-items: start; min-width: 0; }
 .axp-gate__triage > * { min-width: 0; }
+
+/* axHub passes: the coverage picker (mode, services with their tools, typed entries); one column on a phone */
+.axp-gate__cover { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-gate__cover-svc { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-gate__cover-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 60)), 1fr)); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); min-width: 0; overflow-wrap: anywhere; }
+.axp-gate__runs { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; overflow-wrap: anywhere; }

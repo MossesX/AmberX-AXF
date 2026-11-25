@@ -421,7 +421,7 @@
       {
         "target": "axhub-passes",
         "title": "axHub passes",
-        "text": "The hub's timed passes: what each covers, time left, extend, revoke, and the calls that ran under it."
+        "text": "The hub's timed passes. A pass covers All tools unless you pick services, tools or scopes; while it is on, every call it covers runs at once with no countdown and no approval prompt. Each pass shows what it covers, time left and the calls that ran under it; extend, edit the coverage or revoke."
       },
       {
         "target": "go-pass",
@@ -569,6 +569,24 @@
         "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of VPS Configuration.",
         "kind": "toggle",
         "draft": true
+      },
+      {
+        "target": "all-its-calls",
+        "title": "All its calls",
+        "text": "Opens the approvals log filtered to the calls that ran under this pass. The card itself lists the newest five.",
+        "kind": "button"
+      },
+      {
+        "target": "include-irreversible-calls",
+        "title": "Include irreversible calls",
+        "text": "Only with All tools. On: calls nothing can bring back (hard deletes) run under the pass too. Off, the default: they still ask. It is sent when the pass is switched on or its coverage is saved.",
+        "kind": "toggle"
+      },
+      {
+        "target": "quiet-notice-per-run",
+        "title": "Quiet notice per run",
+        "text": "On: each call that runs under the pass sends one quiet “ran under pass” line. Off, the default: a covered call sends nothing. It is sent when the pass is switched on or its coverage is saved.",
+        "kind": "toggle"
       }
     ],
     "intros": [
