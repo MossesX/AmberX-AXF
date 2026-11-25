@@ -42,6 +42,27 @@ How it is wired:
    cron tick reading the same event never launches it twice. The store has the last word: a `phase-done` claim whose
    phase still has open steps lands as `stopped`.
 
+## Pipeline status, views and Brett's stops (Nov 25 2026)
+
+One Queued build, Pending builds that move up by themselves, stops that stick, and no status file: a build's status
+is its row in the builds store. Everything the page shows or does is reached the same way on every surface.
+
+| What | Page | Deep link / action | REST (`/api/plugins/build-orchestrator`) | MCP plugin command · CLI `axf build-orchestrator <id>` · voice |
+|---|---|---|---|---|
+| The views: Sent (queued, building, built), Landed, Pending | the Segmented control above the table | `build-orchestrator.view:<sent\|landed\|pending>`, `build-orchestrator.open:<view>`, `console_show "build-orchestrator/<view>"`; control targets `setting:build-orchestrator.view` (get / set) and `panel:build-orchestrator.<view>` | the table itself: `GET /table` | `status-table` |
+| Pipeline state: counts by status and by view, the queued build, running builds with slot and account | the table and its counts | `build-orchestrator.pipeline-summary` | `GET /pipeline/summary` | `pipeline-summary`; console MCP tool `pipeline_status` |
+| One build's status row | its row | `build-orchestrator.open:<build>` | `GET /pipeline/build/{build}` | `pipeline-build`; `pipeline_status build=<id>` |
+| Queue (one build waits in the Queue; a second is refused, the holder named) | Queue on a Pending row | `build-orchestrator.queue:<build>` | `POST /pipeline/queue` | `pipeline-queue` ("queue the … build") |
+| Unqueue (back to Pending, and it stays there) | Back to Pending | `build-orchestrator.unqueue:<build>` | `POST /pipeline/unqueue` | `pipeline-unqueue` |
+| Hold (rests in Pending until released) | Hold | `build-orchestrator.hold:<build>` | `POST /pipeline/hold` | `pipeline-hold` ("hold the … build") |
+| Cancel (kills its tmux sessions, frees its slots) | Cancel on a running row | `build-orchestrator.cancel:<build>` | `POST /pipeline/cancel` | `pipeline-cancel` ("cancel the … build") |
+| Release (lifts a hold, cancel or unqueue) | Release | `build-orchestrator.release:<build>` | `POST /pipeline/release` | `pipeline-release` |
+
+`POST /pipeline/action {action, ids}` runs the same code for several builds at once (`pipeline-build-action`), and the
+host CLI is `node apps/console-web/plugins/build-orchestrator/pipeline.mjs <queue|unqueue|hold|cancel|release> <build>`.
+A stop is Brett's: the store keeps it against every automatic writer (dispatcher, tick, watchdog, reconciler, lander,
+sessions), and only release or queueing the build again lifts it (`framework/core/build-pipeline.mjs`, build-pipeline@1).
+
 ## Repairing builds parked by the old rule
 
 Before this, a clean phase end with steps left went to Pending and the next phase never started.

@@ -217,6 +217,36 @@ try:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "cancel", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    # ---- Brett's stops by name (Nov 25 2026): POST /pipeline/hold | cancel | release take the same road as /pipeline/action
+    routes = {r.path: r for r in srv.router.routes if hasattr(r, "path")}
+    for act in ("hold", "cancel", "release"):
+        fn = routes[f"/pipeline/{act}"].endpoint
+        asyncio.run(fn(_Req({"id": "alpha", "why": "not now"}, True)))
+        cmd = _calls[-1]
+        check(cmd[2:4] == [act, "alpha"] and cmd[cmd.index("--by") + 1] == "Brett" and cmd[cmd.index("--why") + 1] == "not now", f"POST /pipeline/{act}: pipeline.mjs {act} alpha, by Brett, with the reason")
+        asyncio.run(srv.pipeline_action(_Req({"action": act, "id": "alpha", "why": "not now"}, True)))
+        check(_calls[-1] == cmd, f"/pipeline/{act} and /pipeline/action {act} run the same command")
+        asyncio.run(fn(_Req({"ids": ["alpha", "beta"]})))
+        check(_calls[-1][2:5] == [act, "alpha", "beta"] and _calls[-1][_calls[-1].index("--by") + 1] == "console", f"/pipeline/{act}: several builds, the console as the actor without a signed-in click")
+        try:
+            asyncio.run(fn(_Req({"id": "../x"})))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"/pipeline/{act}: a bad build id is refused")
+    check(srv.views_of({"pending": 2, "split": 1, "splitting": 1, "ready": 1, "queued": 1, "running": 2, "building": 1, "built": 3, "running-ci": 1, "failed": 1, "landed": 4, "complete": 5, "archived": 9}) == {"sent": 10, "landed": 9, "pending": 4}, "summary views: sent (queued, building, built, failed), landed, pending; archived in none")
+    check(srv.views_of({}) == {"sent": 0, "landed": 0, "pending": 0}, "an empty store has three empty views")
+    for path in ("/pipeline/summary", "/pipeline/build/{build}", "/pipeline/queue", "/pipeline/unqueue", "/pipeline/action", "/pipeline/hold", "/pipeline/cancel", "/pipeline/release"):
+        check(path in routes, f"route {path} is mounted")
+    # every command the manifest lists for the pipeline's state and stops names a mounted route
+    manifest = json.loads((Path(__file__).resolve().parent / "plugin.json").read_text())
+    by_id = {c["id"]: c for c in manifest["commands"]["items"]}
+    for cid, want in (("pipeline-summary", "GET /pipeline/summary"), ("pipeline-build", "GET /pipeline/build/{build}"), ("pipeline-queue", "POST /pipeline/queue"), ("pipeline-unqueue", "POST /pipeline/unqueue"),
+                      ("pipeline-hold", "POST /pipeline/hold"), ("pipeline-cancel", "POST /pipeline/cancel"), ("pipeline-release", "POST /pipeline/release"), ("pipeline-build-action", "POST /pipeline/action")):
+        c = by_id.get(cid) or {}
+        check(c.get("route") == want and want.split(" ", 1)[1] in routes and want.split(" ", 1)[0] in routes[want.split(" ", 1)[1]].methods, f"command {cid} → {want}")
+    check(by_id["pipeline-summary"].get("readOnly") is True and by_id["pipeline-build"].get("readOnly") is True, "the two reads are read-only (axHub runs them without a veto)")
+    check("cancel" in by_id["pipeline-build-action"]["input"]["properties"]["action"]["enum"], "cancel is a build action on the bulk command too")
     # ---- fill every slot (Nov 13 2026): GET /pipeline/fill, POST /pipeline/fill/run, steps/:step/deps, fill settings
     srv.pipeline_fill()
     check(_calls[-1][2:4] == ["fill", "status"] and _calls[-1][-1] == "--json", "GET /pipeline/fill runs pipeline.mjs fill status")

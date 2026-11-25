@@ -451,7 +451,7 @@
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
-        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'.",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. One build waits in the Queue at a time: a second one is refused and the answer names the build that holds it (the rest move up by themselves as each one starts). Queueing a held, cancelled or unqueued build lifts that stop. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -551,7 +551,7 @@
         "id": "pipeline-unqueue",
         "route": "POST /pipeline/unqueue",
         "title": "Take a build out of the Queue",
-        "description": "Move a queued build back to Pending before it starts.",
+        "description": "Move a queued build back to Pending before it starts. It is Brett's stop: the build stays in Pending and nothing queues it again until he queues or releases it. Say 'take the icon browser build out of the queue'.",
         "input": {
           "type": "object",
           "properties": {
@@ -655,6 +655,111 @@
           ]
         },
         "output": "{ action, done: [{ id, status, tab }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-summary",
+        "route": "GET /pipeline/summary",
+        "title": "Pipeline status summary",
+        "description": "The pipeline at a glance, read from the builds store's rows (no whole-store read, no status file): how many builds are in each status, how many each orchestrator view holds (sent, landed, pending), the one queued build (next to start) and the builds running now with their slot and account. Say 'what is queued', 'what is building' or 'how many builds are pending'.",
+        "readOnly": true,
+        "output": "{ counts: { <status>: n }, total, views: { sent, landed, pending }, queued: { id, number, title, queuedAt, queuedBy } | null, queuedAll, running: [{ id, title, status, slot, account, session, model }], rev, at }"
+      },
+      {
+        "id": "pipeline-build",
+        "route": "GET /pipeline/build/{build}",
+        "title": "One build's status",
+        "description": "One build's status row by its id, read from its own row: status, when and who set it, priority, PR, branch, slot, account, session, queue and hold marks, and how many steps are done. Say 'where is the icon browser build'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, number, title, status, statusAt, statusBy, priority, pr, branch, slot, account, session, model, queuedAt, queuedBy, heldAt, heldBy, heldWhy, steps: { total, done } }"
+      },
+      {
+        "id": "pipeline-hold",
+        "route": "POST /pipeline/hold",
+        "title": "Hold a build",
+        "description": "Brett's hold: the build rests in Pending with the hold on its record (a running build's session finishes the step it is on first). No tick, relaunch or reconcile starts it; release it or queue it again to go on. Say 'hold the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason (kept on the build)"
+            }
+          }
+        },
+        "output": "{ done: [{ id, status, tab, stop }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-cancel",
+        "route": "POST /pipeline/cancel",
+        "title": "Cancel a running build",
+        "description": "Brett's cancel: the build's tmux sessions are killed, its agent slots freed, and it rests in Pending; nothing brings it back until it is released or queued again. Cancelling a build that is already cancelled is not an error. Say 'cancel the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason (kept on the build)"
+            }
+          }
+        },
+        "output": "{ done: [{ id, status, tab, stop, kill, ended: { sessions, slots, queued, gone }, already? }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-release",
+        "route": "POST /pipeline/release",
+        "title": "Release a held or cancelled build",
+        "description": "Lift a hold, cancel or unqueue: the build is back in line in Pending and moves up to the Queue by itself. Say 'release the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            }
+          }
+        },
+        "output": "{ done: [{ id, status, tab }], refused: [{ id, error }] }"
       },
       {
         "id": "pipeline-split",

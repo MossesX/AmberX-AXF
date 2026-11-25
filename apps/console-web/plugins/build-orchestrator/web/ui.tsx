@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Icon, Slot, useRuntime } from '@console/axf/react';
-import { BUILD_STATUSES } from './status-table-core.mjs';
+import { BUILD_STATUSES, viewOfStatus } from './status-table-core.mjs';
 import { pluginApi } from '@console/plugins';
 import * as core from './orchestrator-core.mjs';
 import { PipelineTab } from './pipeline';
@@ -35,11 +35,13 @@ type Act = (c: Record<string, unknown>) => Promise<boolean>;
  * console command and voice phrase that names a tab still lands somewhere sensible.
  */
 export const TABS = [
-  { id: 'pending', label: 'Pending', filter: { status: 'pending' } }, { id: 'queue', label: 'Ready', filter: { status: 'ready' } },
-  { id: 'active', label: 'Building', filter: { status: 'building' } }, { id: 'incomplete', label: 'Failed', filter: { status: 'failed' } },
-  { id: 'errors', label: 'Failed', filter: { status: 'failed' } }, { id: 'complete', label: 'Landed', filter: { status: 'landed', landed: true } },
-  { id: 'merge-queue', label: 'Merge queue', filter: { status: 'merging-pr' } }, { id: 'builds', label: 'All builds', filter: {} },
-  { id: 'archive', label: 'All builds', filter: {} }, { id: 'deleted', label: 'All builds', filter: {} },
+  // the three views (Brett, Nov 25 2026): the orchestrator opens on Sent; Landed and Pending are their own views
+  { id: 'sent', label: 'Sent', filter: { view: 'sent' } }, { id: 'landed', label: 'Landed', filter: { view: 'landed' } }, { id: 'pending', label: 'Pending', filter: { view: 'pending' } },
+  { id: 'queue', label: 'Ready', filter: { view: 'sent', status: 'ready' } },
+  { id: 'active', label: 'Building', filter: { view: 'sent', status: 'building' } }, { id: 'incomplete', label: 'Failed', filter: { view: 'sent', status: 'failed' } },
+  { id: 'errors', label: 'Failed', filter: { view: 'sent', status: 'failed' } }, { id: 'complete', label: 'Landed', filter: { view: 'landed' } },
+  { id: 'merge-queue', label: 'Merge queue', filter: { view: 'sent', status: 'merging-pr' } }, { id: 'builds', label: 'Sent builds', filter: { view: 'sent' } },
+  { id: 'archive', label: 'Sent builds', filter: { view: 'sent' } }, { id: 'deleted', label: 'Sent builds', filter: { view: 'sent' } },
 ] as const satisfies readonly { id: string; label: string; filter: Partial<Filters> }[];
 /** Settings panels that used to be tabs: a deep link to one opens Settings → Plugins → Build orchestrator. */
 export const SETTINGS_TABS = ['accounts', 'watchdog', 'groups', 'approvals', 'rules'] as const;
@@ -48,7 +50,7 @@ export const SETTINGS_TABS = ['accounts', 'watchdog', 'groups', 'approvals', 'ru
 export function openTab(t: string) {
   const tab = TABS.find((x) => x.id === t);
   if (tab) { setTableFilter({ status: '', account: '', model: '', date: '', text: '', ...tab.filter }); return true; }
-  if ((BUILD_STATUSES as readonly string[]).includes(t)) { setTableFilter({ status: t, landed: t === 'landed' }); return true; }
+  if ((BUILD_STATUSES as readonly string[]).includes(t)) { setTableFilter({ view: viewOfStatus(t), status: t === 'landed' ? '' : t, account: '', model: '', date: '', text: '' }); return true; }
   return false;
 }
 

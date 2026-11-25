@@ -676,17 +676,35 @@ def pipeline_summary() -> dict[str, Any]:
     import builds_store  # server/builds_store.py
     import data_store
     try:
-        return builds_store.pipeline_summary()
+        s = builds_store.pipeline_summary()
     except data_store.DataStoreError as e:
         raise HTTPException(503, f"the builds store can't be read: {e}") from e
+    return {**s, "views": views_of(s.get("counts") or {})}
 
 
-@router.get("/pipeline/build/{build_id}")
-def pipeline_build(build_id: str) -> dict[str, Any]:
+# The orchestrator's views (web/status-table-core.mjs VIEWS, the same rule): sent = queued to start, building, built
+# or failed on the way; landed; pending = not sent yet. An older record's status counts as the one it stands for.
+VIEW_PENDING = ("pending", "splitting", "split")
+VIEW_LANDED = ("landed", "complete")
+VIEW_OFF = ("archived",)
+
+
+def views_of(counts: dict[str, Any]) -> dict[str, int]:
+    """{ sent, landed, pending } from the summary's counts by status: what each orchestrator view holds."""
+    out = {"sent": 0, "landed": 0, "pending": 0}
+    for status, n in counts.items():
+        if status in VIEW_OFF or not isinstance(n, int):
+            continue
+        out["pending" if status in VIEW_PENDING else "landed" if status in VIEW_LANDED else "sent"] += n
+    return out
+
+
+@router.get("/pipeline/build/{build}")
+def pipeline_build(build: str) -> dict[str, Any]:
     """One build's status row by its id (pipeline-summary@1 row shape plus its step counts), from its own row."""
     import builds_store
     import data_store
-    bid = _build_id(build_id)
+    bid = _build_id(build)
     try:
         b = builds_store.build(bid)
     except data_store.DataStoreError as e:
@@ -757,14 +775,17 @@ async def pipeline_health_now(request: Request) -> dict[str, Any]:
 
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
-    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
+    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free.
+    One build waits in the Queue at a time: a second is refused (400) with the build that holds it named. Queueing a
+    held, cancelled or unqueued build lifts that stop."""
     body = await _json_body(request)
     return _pipeline("queue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
 @router.post("/pipeline/unqueue")
 async def pipeline_unqueue(request: Request) -> dict[str, Any]:
-    """{id}: Queue → Pending (a queued build that has not started)."""
+    """{id}: Queue → Pending (a queued build that has not started). Brett's stop (build-pipeline@1 unqueue): it stays in
+    Pending, and nothing queues it again until he does."""
     body = await _json_body(request)
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
@@ -830,7 +851,12 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     in the builds store forever, Deleted tab) / restore. A build an action does not fit is refused, the others still go:
     { done: [{ id, status, tab, stop? }], refused: [{ id, error }] }."""
     body = await _json_body(request)
-    action = str(body.get("action") or "")
+    return _build_action(request, str(body.get("action") or ""), body)
+
+
+def _build_action(request: Request, action: str, body: dict[str, Any]) -> dict[str, Any]:
+    """One build action on one build or many: the one road every surface takes (the action route, the hold / cancel /
+    release routes, the MCP commands, `axf build-orchestrator …`, voice)."""
     if action not in BUILD_ACTIONS:
         raise HTTPException(400, f"action is one of {', '.join(BUILD_ACTIONS)}")
     raw = body.get("ids")
@@ -843,6 +869,29 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     if why.strip():
         args += ["--why", why]
     return _pipeline(*args)
+
+
+
+# Brett's stops and their release by their own names: each is POST /pipeline/action with that action, so REST, the MCP
+# commands (pipeline-hold / pipeline-cancel / pipeline-release), `axf build-orchestrator …` and voice take one road.
+@router.post("/pipeline/hold")
+async def pipeline_hold(request: Request) -> dict[str, Any]:
+    """{id | ids, why?}: hold a build. It rests in Pending with the hold on its record; a running build's session
+    finishes the step it is on first. Nothing starts it until it is released or queued again."""
+    return _build_action(request, "hold", await _json_body(request))
+
+
+@router.post("/pipeline/cancel")
+async def pipeline_cancel(request: Request) -> dict[str, Any]:
+    """{id | ids, why?}: cancel a running build. Its tmux sessions are killed, its agent slots freed, and it rests in
+    Pending; no tick, relaunch or reconcile brings it back. Cancelling again is not an error."""
+    return _build_action(request, "cancel", await _json_body(request))
+
+
+@router.post("/pipeline/release")
+async def pipeline_release(request: Request) -> dict[str, Any]:
+    """{id | ids}: lift a hold, cancel or unqueue. The build is back in line in Pending and moves up by itself."""
+    return _build_action(request, "release", await _json_body(request))
 
 
 @router.get("/attempts/{build}")

@@ -1,13 +1,13 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { controlRegistry, flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
-import { StatusTable } from './StatusTable';
-import { ensureViews, statusLabel, type TableRow } from './status-table-core.mjs';
+import { NO_FILTERS, StatusTable, setTableFilter, type Filters } from './StatusTable';
+import { VIEWS, VIEW_HINT, VIEW_LABEL, ensureViews, statusLabel, type TableRow, type TableView } from './status-table-core.mjs';
 import { focusBuild } from './focus';
 import { mergeTogether, mergeTogetherLine } from './mergeTogether';
 import { waitingToMerge } from './pipeline-view-core.mjs';
@@ -21,8 +21,19 @@ import { registerWatchdogActions } from './watchdogActions';
 import { WatchdogPanel, registerWatchdogTargets } from './WatchdogPanel';
 import { WatchdogsPanel, loadWatchdogs, passLine, registerWatchdogs, runWatchdogs, statusLine } from './Watchdogs';
 
-const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
-const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
+/**
+ * The build actions this page offers by name. Brett's stops (build-pipeline@1: unqueue, hold, cancel) and their release
+ * are listed here in full, whatever the baked core copy of the app knows, so `cancel` is an action on every surface.
+ */
+type WebAction = BuildAction | 'cancel';
+const WEB_ACTIONS: WebAction[] = [...new Set<WebAction>([...BUILD_ACTIONS, 'cancel'])];
+const ACTION_LABEL: Record<WebAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (rests in Pending until released)', cancel: 'Cancel (ends its session)', release: 'Release (back in line)', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
+const ACTION_ICON: Record<WebAction, string> = { unqueue: 'arrow-left', hold: 'pause', cancel: 'x', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
+/** The summary GET /pipeline/summary answers (pipeline-summary@1 plus the views' counts). */
+type Summary = { ok?: boolean; counts: Record<string, number>; total: number; views: Record<TableView, number>; queued: { id: string; title: string } | null; running: { id: string; status: string; slot: string; account: string }[] };
+const isView = (v: string): v is TableView => (VIEWS as readonly string[]).includes(v);
+/** The view the table is on (it keeps its filters in the console's local store). */
+const currentView = (): TableView => { const v = consoleApi.readLocal<Filters>('orch-table-filters', NO_FILTERS).view; return isView(v) ? v : 'sent'; };
 
 /*
  * Pipeline 2.0 (Nov 19 2026): the page is ONE table driven by status (StatusTable.tsx), no tabs. Actions (console API,
@@ -42,9 +53,14 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
  * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
  * navigate-only grant may run them.
- * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
- * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
- * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
+ * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever; Nov 25 2026: cancel, and the
+ * stops stick): build-orchestrator.<unqueue|hold|cancel|release|archive|unarchive|delete|restore>:<build>[,<build>…] →
+ * POST pipeline/action (the same call as the cards, the bulk toolbar, the MCP commands pipeline-build-action /
+ * pipeline-hold / pipeline-cancel / pipeline-release and `pipeline.mjs <action> <id…>`); build-orchestrator.queue:<build>
+ * → POST pipeline/queue (one build waits in the Queue at a time).
+ * The three views (Nov 25 2026): build-orchestrator.view:<sent|landed|pending> (also build-orchestrator.open:<view>,
+ * console_show "build-orchestrator/<view>"), the control targets setting:build-orchestrator.view and
+ * panel:build-orchestrator.<view>; build-orchestrator.pipeline-summary reads GET pipeline/summary.
  */
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 // search and the context menu read the same rows as the table (GET /table: the builds store, landed ones included)
@@ -123,13 +139,31 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('build-orchestrator.group-add', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'add' }, `${a.list.join(', ')} → ${a.group}`); }, { label: 'Build orchestrator: put builds in a group (<group>|<build>,<build>)' });
     rt.actions.register('build-orchestrator.group-remove', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'remove' }, `${a.list.join(', ')} out of ${a.group}`); }, { label: 'Build orchestrator: take builds out of a group (<group>|<build>,<build>)' });
     rt.actions.register('build-orchestrator.group-action', ([arg]) => { const a = splitArg(arg); const [action = '', priority = ''] = (a.list[0] ?? '').split(':'); groupCall(`groups/${encodeURIComponent(a.group)}/action`, { action, priority }, `${a.group}: ${action}`); }, { label: 'Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)' });
-    rt.actions.register('build-orchestrator.start', ([arg]) => {
+    const queueBuild = (arg: string | undefined) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }
-      void pipeApi.post<{ ok: boolean; error?: string }>('pipeline/queue', { id })
-        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is ready: it starts by itself when nothing else is active.`, 'success'); void open(id); })
+      // POST pipeline/queue: one build waits in the Queue at a time; a second is refused and the answer names the holder
+      void pipeApi.post<{ ok: boolean; error?: string; say?: string }>('pipeline/queue', { id })
+        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(r.say ?? `${id} is queued: it starts when a slot and an account are free.`, 'success'); void open(id); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
-    }, { label: 'Start a build (put it in the Queue)' });
+    };
+    rt.actions.register('build-orchestrator.start', ([arg]) => queueBuild(arg), { label: 'Start a build (put it in the Queue)' });
+    rt.actions.register('build-orchestrator.queue', ([arg]) => queueBuild(arg), { label: 'Build orchestrator: queue a build (one waits in the Queue at a time)', params: true });
+    // the three views (Sent · Landed · Pending): build-orchestrator.view:<view>, console_show "build-orchestrator/<view>"
+    const showView = (v: string) => { const view = isView(v) ? v : 'sent'; rt.navigate('build-orchestrator'); setTableFilter({ view, status: '' }); return view; };
+    rt.actions.register('build-orchestrator.view', ([arg]) => { showView(decodeURIComponent(arg ?? '').trim().toLowerCase()); }, { label: 'Build orchestrator: show the Sent, Landed or Pending builds (build-orchestrator.view:<sent|landed|pending>)', params: true, effect: 'navigate' });
+    // the pipeline's state, read from the builds store's rows (GET pipeline/summary: the same answer as the MCP command
+    // pipeline-summary, the console MCP tool pipeline_status and `axf build-orchestrator pipeline-summary`)
+    rt.actions.register('build-orchestrator.pipeline-summary', () => {
+      void pipeApi.call<Summary>('pipeline/summary')
+        .then((s) => rt.toast(`${s.queued ? `Queued: ${s.queued.id}` : 'Nothing queued'} · ${s.running.length ? `running: ${s.running.map((r) => `${r.id}${r.account ? ` on ${r.account}` : ''}`).join(', ')}` : 'nothing running'} · ${s.views.sent} sent, ${s.views.pending} pending, ${s.views.landed} landed`, 'info', 'Pipeline'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: what is queued, what is running, how many builds are sent, pending and landed', effect: 'read' });
+    // console-control targets: the view picker as one setting (get / set), and each view as a panel to open
+    { const reg = controlRegistry(rt);
+      reg.register({ address: 'setting:build-orchestrator.view', kind: 'setting', label: 'Build orchestrator: which builds (Sent, Landed, Pending)', keywords: ['orchestrator', 'builds', 'view', 'sent', 'landed', 'pending', 'queued', 'building', 'built'],
+        get: () => currentView(), set: (v: unknown) => showView(String(v).trim().toLowerCase()), open: () => { showView(currentView()); } });
+      for (const v of VIEWS) reg.register({ address: `panel:build-orchestrator.${v}`, kind: 'panel', label: `Build orchestrator: ${VIEW_LABEL[v]} builds`, keywords: ['orchestrator', 'builds', v, ...VIEW_HINT[v].toLowerCase().split(/[ ,]+/).filter((w) => w.length > 3)], open: () => { showView(v); }, get: () => currentView() === v }); }
     const fill = fillApi(pipeApi);
     const fail = (e: unknown) => rt.toast((e as Error).message, 'danger');
     rt.actions.register('build-orchestrator.pipeline-fill-status', ([arg]) => {
@@ -165,7 +199,7 @@ export const plugin: AxfWebLibrary = {
         })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Build orchestrator: requeue builds parked in Pending after a finished phase (":apply" moves them)', params: true });
-    for (const action of BUILD_ACTIONS) {
+    for (const action of WEB_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
         if (!ids.length) { rt.toast(`Name a build: build-orchestrator.${action}:<build>`, 'warning'); return; }
@@ -179,7 +213,7 @@ export const plugin: AxfWebLibrary = {
             if (done[0]?.id) void open(done[0].id);
           })
           .catch((e: Error) => rt.toast(e.message, 'danger'));
-      }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
+      }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)`, params: true, ...(action === 'cancel' || action === 'delete' ? { effect: 'destructive' as const } : {}) });
     }
     // Merge together (Brett, Nov 23 2026): the lander combines every build waiting in the merge line into one branch,
     // runs CI once and merges them in one go; the same call as the button on a build's merge line. Named builds only
@@ -227,7 +261,8 @@ export const plugin: AxfWebLibrary = {
       const out = [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: `build-orchestrator.open:${encodeURIComponent(id)}` }];
       const b = rows.find((x) => x.id === id);
       if (b?.status === 'failed') out.push({ id: 'build-orchestrator.retry', label: `Retry (${label(b)})`, icon: 'refresh', action: `build-orchestrator.retry:${encodeURIComponent(id)}` });
-      for (const a of ['hold', 'archive', 'delete'] as BuildAction[]) out.push({ id: `build-orchestrator.${a}`, label: ACTION_LABEL[a], icon: ACTION_ICON[a], action: `build-orchestrator.${a}:${encodeURIComponent(id)}` });
+      const live = !!b && ['sending', 'building'].includes(b.status);
+      for (const a of ['hold', ...(live ? ['cancel'] : []), 'archive', 'delete'] as WebAction[]) out.push({ id: `build-orchestrator.${a}`, label: ACTION_LABEL[a], icon: ACTION_ICON[a], action: `build-orchestrator.${a}:${encodeURIComponent(id)}` });
       return out;
     });
   },
