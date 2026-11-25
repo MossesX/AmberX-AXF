@@ -268,7 +268,7 @@ try {
   await t('B4-09 the store\'s header describes the cutover, not store.json as "the store"', () => {
     const head = readFileSync(join(ROOT, 'framework/cli/builds-store.mjs'), 'utf8').split('*/')[0];
     assert.ok(!/store\.json\s+the store \(repo file/.test(head), 'the old line is gone');
-    assert.ok(/on axf-data/.test(head) && /Postgres/.test(head) && /orchestrator\.json export in the repo is no longer rewritten/.test(head));
+    assert.ok(/on axf-data/.test(head) && /Postgres/.test(head) && /there is no orchestrator\.json status file/.test(head));
   });
 
   console.log(`store transport and encoding: ${n} checks passed`);

@@ -21,6 +21,9 @@
  *
  * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes), or on the VPS host the
  * `conf/env/host.env` file it writes for processes outside the containers (remoteConfig). Tests pass `remote`.
+ * No pipeline status file (Nov 25 2026): `_claude/builds/orchestrator.json` and its per-profile twins map to no key
+ * (keyFor), so this layer never carries the whole-document status to or from axf-data. Build status is read and
+ * written as rows of the builds store (framework/cli/builds-store.mjs readBuild / withBuild / queryBuilds).
  * Modes are per namespace with key-level overrides (data-store-mode@1 `keys`): the builds store and its journal moved
  * first (Nov 18 2026), the rest of `builds` follows namespace by namespace.
  */
@@ -31,6 +34,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { DataStoreError, NAMESPACES, LIMITS, PATTERNS, canonical, createDataStore, etagOf, httpBackend, kindOfFile } from './data-store.mjs';
 import { clip } from './clip.mjs';
+import { isRetired } from './tracking-paths.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PATHS = JSON.parse(readFileSync(join(REPO, 'framework/schemas/data-store-paths.json'), 'utf8'));
@@ -126,7 +130,12 @@ export function keyFor(p, env = process.env) {
   const r = roots(env);
   for (const name of PATHS.order) {
     const rel = relative(r[name], abs);
-    if (rel && !rel.startsWith('..') && !isAbsolute(rel)) return mapRel(name, rel.split(sep).join('/'));
+    if (rel && !rel.startsWith('..') && !isAbsolute(rel)) {
+      // a retired status file (orchestrator.json, tracking-paths@1 RETIRED_PATHS) has no key: status is a row of the
+      // builds store, so a stray copy in a checkout is never read from or uploaded to axf-data, whatever the mode
+      if (name === 'repo' && isRetired(rel.split(sep).join('/'))) return null;
+      return mapRel(name, rel.split(sep).join('/'));
+    }
   }
   return null;
 }

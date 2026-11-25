@@ -378,6 +378,41 @@ t('builds-store migrateStepDepsNow writes one journalled stamp; a second run wri
   const r2 = io.migrateStepDepsNow('test'); assert.equal(r2.report.stamped, false); assert.equal(r2.rev, r1.rev);
 });
 
+// no status file (Nov 25 2026): a status write is one build's row, a status read is a page of rows or a short summary
+await (async () => {
+  const { existsSync: there, readdirSync: ls } = await import('node:fs');
+  const { dirname: dir } = await import('node:path');
+  io.withStore((s) => { for (let i = 0; i < 7; i += 1) s.builds.push({ id: `row-${i}`, title: `Row ${i}`, status: i < 5 ? 'pending' : 'running', profile: 'all', updatedAt: `2026-11-25T10:0${i}:00.000Z`, steps: [{ id: 's1', text: 'one' }], notes: [{ text: 'n', at: '2026-11-25T10:00:00.000Z' }] }); return s; }, { by: 'test', action: 'add' });
+  t('withBuild changes one build (status, note, branch, PR) as one journalled change', () => {
+    const w = io.withBuild('row-0', (b) => { b.branch = 'claude/row-0'; b.pr = '#5'; b.notes.push({ text: 'linked', at: '2026-11-25T11:00:00.000Z' }); }, { by: 'test', action: 'link' });
+    assert.deepEqual(w.changes.map((x) => x.id), ['row-0']); assert.equal(w.build.pr, '#5'); assert.equal(io.readBuild('row-0').branch, 'claude/row-0'); assert.equal(io.readBuild('nope'), null);
+    assert.throws(() => io.withBuild('nope', () => {}, { by: 'test' }), /no build/);
+  });
+  t('queryBuilds pages by status and project: rows without steps or notes, totals and counts', () => {
+    const all = io.loadStore().builds.filter((b) => !b.deleted);
+    const p1 = io.queryBuilds({ status: 'pending', project: 'all', limit: 2 });
+    const pend = all.filter((b) => b.status === 'pending' && b.profiles.includes('all'));
+    assert.equal(p1.$axf, 'builds-page@1'); assert.equal(p1.total, pend.length); assert.equal(p1.items.length, 2); assert.equal(p1.limit, 2); assert.equal(p1.offset, 0); assert.equal(p1.next, 2);
+    assert.ok(p1.items.every((r) => r.status === 'pending' && typeof r.steps === 'number' && !('notes' in r)));
+    const p2 = io.queryBuilds({ status: 'pending', project: 'all', limit: 2, offset: 2 });
+    assert.equal(p2.offset, 2); assert.ok(!p2.items.some((r) => p1.items.some((q) => q.id === r.id)));
+    const seen = []; for (let off = 0; off !== null;) { const p = io.queryBuilds({ status: ['pending', 'running'], limit: 3, offset: off }); seen.push(...p.items.map((r) => r.id)); off = p.next; }
+    assert.deepEqual(seen.slice().sort(), all.filter((b) => ['pending', 'running'].includes(b.status)).map((b) => b.id).sort());
+    assert.equal(p1.counts.pending, pend.length); assert.equal(Object.values(io.queryBuilds({}).counts).reduce((a, n) => a + n, 0), all.length);
+    assert.equal(io.queryBuilds({ limit: 100000 }).limit, io.QUERY_MAX); assert.equal(io.queryBuilds({ project: 'no-such-project' }).total, 0);
+  });
+  t('pipelineSummary: counts, the queued build and the running rows, a few KB whatever the store holds', () => {
+    const sum = io.pipelineSummary();
+    assert.equal(sum.$axf, 'pipeline-summary@1'); assert.equal(sum.total, io.loadStore().builds.filter((b) => !b.deleted).length); assert.ok(sum.running.some((r) => r.id === 'row-5')); assert.ok(sum.counts.running >= 2);
+    assert.ok(!JSON.stringify(sum).includes('"notes"'));
+  });
+  t('no orchestrator.json status file is written by any of it, and none is an export', () => {
+    assert.deepEqual(io.orchestratorExports(io.loadStore()), []);
+    assert.ok(!ls(dir(io.storeFile())).some((f) => f.endsWith('orchestrator.json')));
+    assert.ok(!there(new URL('../../_claude/builds/profiles/all/orchestrator.json', import.meta.url)));
+  });
+})();
+
 // builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
 // through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
 t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {

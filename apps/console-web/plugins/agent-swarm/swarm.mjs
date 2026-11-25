@@ -30,7 +30,8 @@ import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync,
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
-import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
+import { persistRoot } from '../../../../framework/cli/persist.mjs';
+import { absorbTrackerBuilds, trackerDoc } from '../../../../framework/cli/builds-store.mjs';
 import * as watch from './web/chat-watch.mjs';
 import { spawnSync } from 'node:child_process';
 import { ownLogin, runJob, worktreeFor } from './runner.mjs';
@@ -42,7 +43,8 @@ loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setti
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
-export const trackerFile = () => process.env.AXF_ORCH_FILE || orchestratorPath();
+/** AXF_ORCH_FILE names an orchestrator@1 file (tests); otherwise builds come from the builds store: no status file exists. */
+export const trackerFile = () => process.env.AXF_ORCH_FILE || '';
 /** The checkout the swarm works on (AXF_SWARM_REPO overrides, for tests). */
 export const repoRoot = () => process.env.AXF_SWARM_REPO || ROOT;
 export const dataDir = () => process.env.AXF_SWARM_DIR || join(ROOT, '.axf-console/plugins/agent-swarm');
@@ -68,10 +70,10 @@ export function loadSkills() {
   for (const [k, v] of Object.entries(hs)) if (!files[k] && typeof v?.body === 'string') files[k] = { id: k, title: String(v.title ?? k), schema: 'agent-skill@1', body: v.body.slice(0, core.SKILL_MAX_CHARS), lines: v.body.split('\n').length, chars: Math.min(v.body.length, core.SKILL_MAX_CHARS) };
   return files;
 }
-export function loadTracker() { const f = trackerFile(); return existsSync(f) ? readJson(f, { builds: [] }) : { builds: [] }; }
+export function loadTracker() { const f = trackerFile(); if (!f) return trackerDoc(); return existsSync(f) ? readJson(f, { builds: [] }) : { builds: [] }; }
 export function findBuilds(ids) {
   const t = loadTracker();
-  return ids.map((id) => { const b = (t.builds ?? []).find((x) => x.id === id); if (!b) throw new Error(`no build "${id}" in ${trackerFile()}`); return b; });
+  return ids.map((id) => { const b = (t.builds ?? []).find((x) => x.id === id); if (!b) throw new Error(`no build "${id}" in ${trackerFile() || 'the builds store'}`); return b; });
 }
 
 /** Swarm state (swarm-state@1): statuses, history, pay, chat. Time-driven changes are applied on every read. */
@@ -301,7 +303,7 @@ export function batchMerge(buildId, opts = {}) {
   }
   st.conflicts = conflicts; writeJson(mergesFile(), ms);
   let lines = [];
-  if (merged.length && !opts.noShared) { const r = core.applyMerge(loadTracker(), buildId, merged, new Date().toISOString()); writeJson(trackerFile(), r.tracker); lines = r.lines; }
+  if (merged.length && !opts.noShared) { const r = core.applyMerge(loadTracker(), buildId, merged, new Date().toISOString()); if (trackerFile()) writeJson(trackerFile(), r.tracker); else absorbTrackerBuilds((r.tracker.builds ?? []).filter((b) => b.id === buildId), { by: 'agent-swarm' }); lines = r.lines; }
   if (opts.push && merged.length) { const r = git(dir, 'push', '-u', 'origin', branch); if (r.status) throw new Error(r.stderr.trim()); }
   return { branch, merged: merged.map((m) => m.job.id), conflicts, refused, notes: lines };
 }

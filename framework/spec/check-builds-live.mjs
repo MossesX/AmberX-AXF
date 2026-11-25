@@ -75,7 +75,7 @@ async function main() {
   check(files.every((f) => f.startsWith('_claude/')), `status commit touches only _claude/ (${files.join(' ')})`);
   check(files.some((f) => f.startsWith('_claude/builds/journal/')), 'status commit carries the journal line');
   check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/current/orchestrator.json').status !== 0, 'a retired profile\'s export is taken off main by the next publish');
-  check(git(A, 'show', 'origin/main:_claude/builds/orchestrator.json').includes('"id": "x"'), 'the base profile (all) exports to the original orchestrator path');
+  check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/orchestrator.json').status !== 0, 'no status file on main: a publish never writes orchestrator.json (Nov 25 2026)');
   const live = JSON.parse(run(A, LIVE, ['status', '--json']).stdout);
   check(live.queued === 0 && live.lastOk && !live.stuck, 'outbox empty, last publish recorded');
 
@@ -278,7 +278,7 @@ async function main() {
   fetchA();
   check(mainStore().builds.find((b) => b.id === 'z')?.profiles.includes('hub-only'), 'the hub-only build itself reached main in the store');
   check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/hub-only/orchestrator.json').status !== 0, 'no repo export on main for a profile the repo registry does not list');
-  check(existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'the hub-only export lives in the profile\'s shared-data folder');
+  check(!existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'no status file in the profile\'s shared-data folder either: status lives in the store only (Nov 25 2026)');
   check(!existsSync(leaked), 'a repo export of a hub-only profile from an older version is swept');
   check(!existsSync(join(ROOT, '_claude/builds/profiles/hub-only')), 'nothing was written into the real repo');
 

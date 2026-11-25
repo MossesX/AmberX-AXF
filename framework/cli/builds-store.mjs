@@ -5,7 +5,8 @@
  *
  * Where the store lives (since the cutover of Nov 18 2026): on axf-data, in the Postgres tables `builds`, `build_steps`,
  * `build_notes` and `journal`, under the keys `builds/store.json` and `builds/journal/<YYYY-MM>`. Nothing in a checkout
- * is the store: no store.json is written, and the old orchestrator.json export in the repo is no longer rewritten.
+ * is the store: no store.json is written, and there is no orchestrator.json status file (Nov 25 2026): it is neither
+ * written nor read in any mode. A build's status is its row in the store (readBuild / withBuild / queryBuilds).
  * The files below are what a checkout that has NOT moved to axf-data uses (local and shadow mode: tests, a dev machine):
  *
  *   _claude/builds/store.json            the store file (local / shadow mode only)
@@ -21,7 +22,11 @@
  *                                                           (plus step dependencies: missing ids and cycles)
  *   … migrate-deps [--dry]                                  step-dependency migration (build-pipeline@1): older builds get
  *                                                           no dependsOn; stamps meta.versions.stepDeps in one journal line
- *   … export                                                regenerate the old files (read-only exports of the store)
+ *   … export                                                regenerate the pending and queue exports of the store
+ *   … query [--status a,b] [--project p] [--limit n] [--offset n]   a page of build rows (no steps, no notes) with the
+ *                                                           total and the counts per status
+ *   … summary                                               the pipeline in short: counts per status, the queued and
+ *                                                           the running builds
  *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
  *                                                            back to landing / fixing, once (dry run without --apply)
  *   … attempt <build> --attempt <json> | --close ok|failed  done-means-merged@1: add an attempt to the build's one log (an
@@ -52,9 +57,9 @@
  * In a build worktree the store lives on the hub data store (worktreeHome), never in the checkout.
  * Live (Nov 3 2026, orch-live-sync): every write that changes a build is also queued for main (builds-live.mjs) and
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
- * The old per-profile files (orchestrator.json, pending.json, build-queue.json) are READ-ONLY exports of the store
- * (see exportAll) in local and shadow mode; a direct edit is taken into the store. In cutover the repo's
- * orchestrator.json is not written at all (it only dirtied the live checkout).
+ * The old per-profile files pending.json and build-queue.json are READ-ONLY exports of the store (see exportAll) in
+ * local and shadow mode; a direct edit is taken into the store. orchestrator.json was the third until Nov 25 2026: a
+ * whole-document status file (12 MB) nobody had read since the cutover. It is not an export any more.
  * Old writers (S5-01): a field this checkout's code does not know is kept on every read and write (keepStore), and a
  * checkout whose STORE_VERSION is older than the store's is refused (StoreTooNew) instead of writing it back poorer.
  * Step dependencies (Nov 13 2026, build-pipeline@1): a step's optional `after` list (`dependsOn` on input), `parallel`
@@ -407,8 +412,9 @@ export function numberBuildsNow({ apply = false, by = 'numbers' } = {}) {
 
 // ------------------------------------------------------------------ the old files as read-only exports
 /*
- * The pre-store files stay where every older reader looks for them (Pending page on the hub, plugins, other sessions'
- * checkouts), but they are generated from the store after every write: read-only exports, like tracker.json.
+ * The pre-store pending and queue files stay where every older reader looks for them (Pending page on the hub, plugins,
+ * other sessions' checkouts), but they are generated from the store after every write: read-only exports, like
+ * tracker.json. The orchestrator.json status file is not one of them (Nov 25 2026): status lives in the store only.
  * A file changed by anything else since the last export (an old checkout, a hand edit, a git merge) is a foreign write:
  * it is absorbed into the store (journalled as `foreign-write`) before the next export, so it is never overwritten
  * unseen. Exports are off for test stores (AXF_BUILDS_STORE) unless AXF_BUILDS_EXPORT=1; AXF_BUILDS_EXPORT=0 turns them off.
@@ -419,10 +425,9 @@ export const EXPORT_NOTE = 'builds@1 export (read-only): generated from _claude/
 function exportTargets() {
   const hub = persistRoot();
   const data = (id, r) => join(hub ?? REPO_ROOT, profileRel(id, r));
-  // the orchestrator export is a repo file only for a repo-registered profile (persist.mjs hasRepoExport); a hub-only
-  // profile's orchestratorPath is already inside the data root, so it is never moved under the scratch folder twice
+  // No status file (Nov 25 2026): orchestrator.json is neither written nor read here in any mode. A build's status is
+  // its row in the store (readBuild / withBuild), a list is queryBuilds(), the pipeline in short is pipelineSummary().
   return readProfiles().profiles.flatMap((p) => [
-    { kind: 'orchestrator', profile: p.id, file: scratchDir() && hasRepoExport(p.id) ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
     { kind: 'pending', profile: p.id, file: data(p.id, 'framework/plan/pending.json') },
     { kind: 'queue', profile: p.id, file: data(p.id, 'framework/plan/build-queue.json') },
   ]);
@@ -446,7 +451,6 @@ function absorbForeign(store, log) {
     if (!(str(j.updatedAt || j.generatedAt) > str(s.migratedAt))) continue;
     // newer-only: a foreign file may be older than the store, so it can add and update builds, never revert or remove
     const before = s;
-    if (t.kind === 'orchestrator' && Array.isArray(j.builds)) s = core.absorbOrchestrator(s, t.profile, j, { by: 'foreign-write', newerOnly: true });
     if (t.kind === 'pending' && Array.isArray(j.items)) s = core.absorbPending(s, t.profile, j, null, { newerOnly: true });
     if (t.kind === 'queue' && Array.isArray(j.order) && !j.$export) s = core.absorbQueue(s, t.profile, j, epicsOf(t.profile));
     if (core.diffStores(before, core.normalizeStore(JSON.parse(JSON.stringify(s)))).length) log.push(`${rel(t.file)} had newer builds than the store: taken in`);
@@ -463,12 +467,10 @@ export function exportText(store, kind, profile) {
   return doc ? { doc, text: `${JSON.stringify({ $export: EXPORT_NOTE, ...doc }, null, 1)}\n` } : null;
 }
 /**
- * The orchestrator exports as repo-relative paths (the files main carries): [{ rel, text, builds }]. Only profiles the
- * repo registry lists (hasRepoExport): a hub-only profile's export is shared data, never a file on main.
+ * Kept for callers from before Nov 25 2026 (the name and the signature): there is no orchestrator.json status file, so
+ * there is nothing to export. Always [].
  */
-export function orchestratorExports(store) {
-  return readProfiles().profiles.filter((p) => hasRepoExport(p.id)).map((p) => { const e = exportText(store, 'orchestrator', p.id); return { rel: rel(orchestratorPath(p.id)), text: e.text, builds: e.doc.builds.length }; });
-}
+export function orchestratorExports() { return []; }
 /**
  * Repo exports (_claude/builds/profiles/<id>/orchestrator.json) of profiles that are not repo-registered: our own
  * projections an older version wrote (test-sandbox, Nov 13 2026) or a merge brought back. Removed, so the checkout
@@ -494,17 +496,14 @@ function sweepStaleRepoExports(ex) {
 export const storeText = (store) => `${JSON.stringify(core.compactStore(store), null, 1)}\n`;
 function exportAll(store) {
   const ex = readExports();
-  const cut = remoteOn();
+  // entries of the retired orchestrator.json export are dropped (the file itself is never touched again)
+  for (const [f, e] of Object.entries(ex)) if (e?.kind === 'orchestrator') delete ex[f];
   for (const t of exportTargets()) {
     const e = exportText(store, t.kind, t.profile);
     // Nothing to export (e.g. a profile without a queue) but the file exists: it was absorbed just before this, so
     // record it as seen. Unrecorded, it read as a foreign write forever and every read took the lock to absorb it.
     if (!e) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
-    // B4-09: after the cutover the repo's orchestrator.json is not an export any more (every reader asks the store); it
-    // was still rewritten on each write and left the live main checkout dirty. Seen, never written.
-    if (cut && t.kind === 'orchestrator' && hasRepoExport(t.profile)) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
-    const { doc, text } = e;
-    if (t.kind === 'orchestrator' && !doc.builds.length && !existsSync(t.file)) continue;
+    const { text } = e;
     let old = ''; try { old = readFileSync(t.file, 'utf8'); } catch { /* new */ }
     if (old !== text) writeKeepingOwner(t.file, text);
     ex[t.file] = { sig: sig(t.file), kind: t.kind, profile: t.profile, rev: store.rev };
@@ -777,6 +776,97 @@ function withStoreOnce(fn, meta) {
   return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused], flowRefused: flowed.refused };
 }
 
+// ------------------------------------------------------------------ one build as one row (pipeline status, Nov 25 2026)
+/*
+ * A build's status is its row in the store; there is no status document beside it. A status write (step, status, note,
+ * branch, PR) goes through withBuild: on axf-data (cutover) the save is a data-patch@1 of that one build's rows, checked
+ * against the rev it was read at (writeStoreRemote), plus the journal line, in one transaction. A status read is
+ * readBuild (one build), queryBuilds (a page of rows by status / project, with totals) or pipelineSummary (counts, the
+ * queued and the running builds): none of them hands the caller the whole store, and a row carries no steps or notes.
+ * data-store@1 on main has no call that reads one row or filters rows on the server, so these still assemble the
+ * record from the tables once per call; they are the one place to move onto such a call when axf-data has it.
+ */
+/** Statuses of a build somebody is working on right now. */
+export const SUMMARY_RUNNING = Object.freeze(['running', 'fixing', 'landing', 'splitting', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
+const SUMMARY_PIPELINE = ['slot', 'account', 'session', 'model', 'queuedAt', 'queuedBy', 'heldAt', 'heldBy', 'heldWhy'];
+/** The most rows one queryBuilds page carries. */
+export const QUERY_MAX = 200;
+/** What a list shows of one build: never steps, notes or the origin (step counts instead). */
+export function summaryRow(b) {
+  const pl = b?.pipeline && typeof b.pipeline === 'object' ? b.pipeline : {};
+  const steps = Array.isArray(b?.steps) ? b.steps : [];
+  return {
+    id: str(b?.id), number: str(b?.number), title: str(b?.title), status: str(b?.status), priority: str(b?.priority), pr: ['string', 'number'].includes(typeof b?.pr) ? b.pr : '', branch: str(b?.branch),
+    profiles: Array.isArray(b?.profiles) ? b.profiles : [], rev: Number.isInteger(b?.rev) ? b.rev : null, createdAt: str(b?.createdAt), updatedAt: str(b?.updatedAt), statusAt: str(b?.statusAt), statusBy: str(b?.statusBy),
+    steps: steps.length, stepsDone: steps.filter((s) => s?.done === true).length,
+    ...Object.fromEntries(SUMMARY_PIPELINE.map((k) => [k, str(pl[k])])),
+  };
+}
+const liveBuilds = (builds) => (builds ?? []).filter((b) => b && typeof b === 'object' && b.deleted !== true);
+const countsOf = (items) => { const c = {}; for (const b of items) c[str(b.status)] = (c[str(b.status)] ?? 0) + 1; return Object.fromEntries(Object.keys(c).sort().map((k) => [k, c[k]])); };
+const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+/** pipeline-summary@1 from a list of builds: counts per status, the queued build, the running builds with slot and account. */
+export function summaryOf(builds) {
+  const items = liveBuilds(builds);
+  const live = items.filter((b) => b.status === 'queued' || SUMMARY_RUNNING.includes(b.status)).map(summaryRow);
+  const queued = live.filter((r) => r.status === 'queued').sort((a, b) => cmpStr(a.queuedAt || a.updatedAt || '~', b.queuedAt || b.updatedAt || '~') || cmpStr(a.id, b.id));
+  const running = live.filter((r) => r.status !== 'queued').sort((a, b) => cmpStr(a.slot || '~', b.slot || '~') || cmpStr(a.id, b.id));
+  return { $axf: 'pipeline-summary@1', total: items.length, counts: countsOf(items), queued: queued[0] ?? null, queuedAll: queued, running };
+}
+/** The pipeline in short: counts per status, the queued build, the running builds. A few rows, never the store. */
+export function pipelineSummary() {
+  const s = readStore();
+  return { ...summaryOf(s.builds), rev: s.rev ?? 0, at: str(s.updatedAt) };
+}
+/**
+ * A page of build rows (summaryRow: no steps, no notes), newest change first.
+ *   status   one status, a comma list or an array ('' = every status)
+ *   project  a profile id ('' = every profile)
+ *   limit    1 … QUERY_MAX (default 50)      offset   rows to skip (default 0)
+ * → { $axf: 'builds-page@1', items, total (rows matching the filter), limit, offset, next (the next offset, or null),
+ *     counts (per status, within the project filter), rev }
+ */
+export function queryBuilds({ status = '', project = '', limit = 50, offset = 0 } = {}) {
+  const want = (Array.isArray(status) ? status : String(status ?? '').split(',')).map((x) => String(x).trim()).filter(Boolean);
+  const lim = Math.max(1, Math.min(QUERY_MAX, Math.floor(Number(limit)) || 50));
+  const off = Math.max(0, Math.floor(Number(offset)) || 0);
+  const s = readStore();
+  const inProject = liveBuilds(s.builds).filter((b) => !project || (Array.isArray(b.profiles) ? b.profiles.includes(project) : b.profile === project));
+  const hit = (want.length ? inProject.filter((b) => want.includes(str(b.status))) : inProject)
+    .sort((a, b) => cmpStr(str(b.updatedAt), str(a.updatedAt)) || cmpStr(str(a.id), str(b.id)));
+  const items = hit.slice(off, off + lim).map(summaryRow);
+  return { $axf: 'builds-page@1', items, total: hit.length, limit: lim, offset: off, next: off + items.length < hit.length ? off + items.length : null, counts: countsOf(inProject), rev: s.rev ?? 0 };
+}
+/** One build by its id, as the store holds it (no `pipelineView`: that is worked out over every build), or null. */
+export function readBuild(id) { return readStore().builds.find((b) => b.id === id) ?? null; }
+/**
+ * Read one build, change it, save it: fn(build) changes it in place or returns the new record. Every guard of a store
+ * write applies (done-means-merged@1, pipeline-2@1, the demo guard) and the write is versioned and journalled the same.
+ * On axf-data the save patches that build's rows only (its ifRev; a conflict re-reads and re-applies).
+ * → { build, changes, rev, refused, flowRefused }
+ */
+export function withBuild(id, fn, meta = {}) {
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 'not_found' });
+    const out = fn(b); if (out && out !== b) s.builds[s.builds.indexOf(b)] = out;
+    return s;
+  }, meta);
+  return { build: core.findBuild(r.store, id), changes: r.changes, rev: r.rev, refused: r.refused, flowRefused: r.flowRefused };
+}
+/**
+ * A profile's builds in the orchestrator@1 shape (what the retired orchestrator.json held), straight from the store:
+ * for the few readers that still think in that shape (feature matrix, agent swarm). → { $axf, updatedAt, rules, builds }
+ */
+export function trackerDoc(profile = activeProfile().id) { return exportText(loadStore(), 'orchestrator', profile).doc; }
+/**
+ * Take orchestrator@1 builds a caller changed back into the store (the write those readers used to make on the status
+ * file): only the builds given are touched, as one journalled write. → { changes, rev }
+ */
+export function absorbTrackerBuilds(builds, { profile = activeProfile().id, by = 'tracker', now = new Date().toISOString() } = {}) {
+  const r = withStore((s) => core.absorbOrchestrator(s, profile, { builds: (builds ?? []).map((b) => ({ ...b, updatedAt: now })) }, { now, by, newerOnly: true }), { by, action: 'absorb', note: `${(builds ?? []).map((b) => b.id).join(', ')} (orchestrator@1 shape)` });
+  return { changes: r.changes, rev: r.rev };
+}
+
 // ------------------------------------------------------------------ pipeline-2@1: one status change, forward-only
 
 export class FlowRefused extends Error { constructor(m, d = {}) { super(m); this.code = 'backward'; Object.assign(this, d); } }
@@ -847,8 +937,9 @@ export function gatherSources({ history = true } = {}) {
   const hub = persistRoot();
   const profiles = [];
   for (const id of [BASE_PROFILE, ...[...ids].filter((x) => x !== BASE_PROFILE)]) {
-    // a build worktree's exports are on the hub with its store (worktreeHome), not the checkout's stale copies
-    const orchFile = worktreeHome() && hasRepoExport(id) ? join(worktreeHome(), rel(orchestratorPath(id))) : orchestratorPath(id);
+    // the orchestrator.json status file is not a source any more (Nov 25 2026): everything it held went into the store
+    // at the migration of Oct 31, and the file is gone. `orch: null` keeps the shape the migration core reads.
+    const orchFile = orchestratorPath(id);
     const pRel = profileRel(id, 'framework/plan/pending.json');
     const qRel = profileRel(id, 'framework/plan/build-queue.json');
     const planRel = profileRel(id, 'framework/plan/plan.json');
@@ -858,7 +949,7 @@ export function gatherSources({ history = true } = {}) {
     const queue = (qHub?.order?.length ?? -1) >= (qRepo?.order?.length ?? -1) ? qHub ?? qRepo : qRepo;
     const plan = (hub ? readJson(join(hub, planRel)) : null) ?? readJson(join(REPO_ROOT, planRel));
     profiles.push({
-      id, orchFile: rel(orchFile), orch: readJson(orchFile), pending, queue, queueFile: `${queue === qHub ? 'hub' : 'repo'}:${qRel}`,
+      id, orchFile: rel(orchFile), orch: null, pending, queue, queueFile: `${queue === qHub ? 'hub' : 'repo'}:${qRel}`,
       features: (plan?.features ?? []).filter((f) => f.kind === 'epic'),
       history: history ? gitHistoryItems(pRel) : [],
       registered: reg.profiles.some((p) => p.id === id),
@@ -1118,6 +1209,15 @@ async function main(argv) {
     const i = rest.indexOf('--report');
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
+  }
+  if (cmd === 'query') {
+    const opt = (k, d = '') => { const i = rest.indexOf(`--${k}`); return i >= 0 ? rest[i + 1] ?? d : d; };
+    const r = queryBuilds({ status: opt('status'), project: opt('project'), limit: opt('limit', 50), offset: opt('offset', 0) });
+    return out({ ok: true, ...r }, [`${r.total} build(s), rows ${r.offset + (r.items.length ? 1 : 0)}–${r.offset + r.items.length}${r.next === null ? '' : ` (next: --offset ${r.next})`}`, ...r.items.map((b) => `${(b.number || '').padEnd(7)} ${b.status.padEnd(16)} ${b.id}${b.pr ? `  PR ${b.pr}` : ''}`)].join('\n'));
+  }
+  if (cmd === 'summary') {
+    const r = pipelineSummary();
+    return out({ ok: true, ...r }, [`${r.total} build(s): ${Object.entries(r.counts).map(([k, n]) => `${k || '(none)'} ${n}`).join(', ')}`, `queued: ${r.queued ? r.queued.id : 'none'}`, ...r.running.map((b) => `${b.status.padEnd(16)} ${b.id}${b.account ? `  ${b.account}` : ''}`)].join('\n'));
   }
   if (cmd === 'numbers') {
     // pipeline-status@1: numbers [--apply]   every build without a number gets one, oldest first (dry run by default)
