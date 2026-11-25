@@ -1,0 +1,296 @@
+{
+ "$axf": "lander-ci-fixture@1",
+ "about": "Recorded from GitHub (read-only) on 2026-11-25: every check run, commit status and android.yml workflow run on the heads of PR #917, trimmed to the fields the lander reads. No tokens, no logs, no user data; the repository is written o/r.",
+ "pr": {
+  "number": 917,
+  "head": {
+   "ref": "lander/fix-refreshing-console-jumps-back-9",
+   "sha": "230824dee0cbfc13981f9fdf9b59bdc70b7befaf"
+  },
+  "created_at": "2026-11-24T23:48:11Z",
+  "merged_at": "2026-11-25T02:01:33Z",
+  "merged_by_hand": true,
+  "merge_commit_sha": "54f8fbbea28f7c91227d7eba031aa58f63cacdab",
+  "mergeable_state_while_open": "unstable"
+ },
+ "lander": {
+  "build": "fix-refreshing-console-jumps-back",
+  "runningCiAt": "2026-11-24T23:48:31.502Z",
+  "verdictAt": "2026-11-25T00:19:03.032Z",
+  "attemptBefore": 6,
+  "fixesBefore": 0,
+  "rerunsBefore": 0,
+  "baseSha": "78f513661",
+  "recorded": "failed in running-ci, attempt 7: CI is red on 230824dee (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)) Stopped (attempt 7 of 5): needs Brett",
+  "then": "held: no re-run, no fix session; merged by hand 02:01:33Z"
+ },
+ "heads": {
+  "031d06781117b6e3ff6e9e8049442f9f0119dea1": {
+   "committed_at": "2026-11-24T16:38:54Z",
+   "check_runs": [
+    {
+     "id": 138865377469,
+     "name": "Gradle — framework modules, kernel tests, console APK",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "cancelled",
+     "started_at": "2026-11-24T23:48:37Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": "https://github.com/o/r/actions/runs/45512997789/job/138865377469"
+    },
+    {
+     "id": 138865377156,
+     "name": "Build engine sweep (Node)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "cancelled",
+     "started_at": "2026-11-24T23:48:37Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": "https://github.com/o/r/actions/runs/45512997789/job/138865377156"
+    },
+    {
+     "id": 138865377145,
+     "name": "Web Dev Console (React/TS) + Python API",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "cancelled",
+     "started_at": "2026-11-24T23:48:37Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": "https://github.com/o/r/actions/runs/45512997789/job/138865377145"
+    },
+    {
+     "id": 138865376775,
+     "name": "Light PR checks (full run happens once, in the merge queue)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "cancelled",
+     "started_at": "2026-11-24T23:48:37Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": "https://github.com/o/r/actions/runs/45512997789/job/138865376775"
+    },
+    {
+     "id": 138865257193,
+     "name": "CodeRabbit",
+     "app": {
+      "slug": "coderabbitai"
+     },
+     "status": "completed",
+     "conclusion": "skipped",
+     "started_at": "2026-11-24T23:48:22Z",
+     "completed_at": "2026-11-24T23:48:22Z",
+     "details_url": ""
+    },
+    {
+     "id": 138865216691,
+     "name": "CI scope (what changed)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "cancelled",
+     "started_at": "2026-11-24T23:48:18Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": "https://github.com/o/r/actions/runs/45512997789/job/138865216691"
+    }
+   ],
+   "statuses": [],
+   "workflow_runs": [
+    {
+     "id": 45512997789,
+     "name": "Android framework + console",
+     "path": ".github/workflows/android.yml",
+     "event": "pull_request",
+     "status": "completed",
+     "conclusion": "cancelled",
+     "head_branch": "lander/fix-refreshing-console-jumps-back-9",
+     "head_sha": "031d06781117b6e3ff6e9e8049442f9f0119dea1",
+     "run_attempt": 1,
+     "created_at": "2026-11-24T23:48:15Z",
+     "run_started_at": "2026-11-24T23:48:15Z",
+     "updated_at": "2026-11-24T23:48:37Z"
+    }
+   ]
+  },
+  "230824dee0cbfc13981f9fdf9b59bdc70b7befaf": {
+   "committed_at": "2026-11-24T23:48:26Z",
+   "check_runs": [
+    {
+     "id": 138871136850,
+     "name": "Gradle — framework modules, kernel tests, console APK",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "skipped",
+     "started_at": "2026-11-25T00:01:22Z",
+     "completed_at": "2026-11-25T00:01:22Z",
+     "details_url": "https://github.com/o/r/actions/runs/45513038585/job/138871136850"
+    },
+    {
+     "id": 138871136834,
+     "name": "Light PR checks (full run happens once, in the merge queue)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "skipped",
+     "started_at": "2026-11-25T00:01:22Z",
+     "completed_at": "2026-11-25T00:01:22Z",
+     "details_url": "https://github.com/o/r/actions/runs/45513038585/job/138871136834"
+    },
+    {
+     "id": 138871134196,
+     "name": "Web Dev Console (React/TS) + Python API",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "failure",
+     "started_at": "2026-11-25T00:01:24Z",
+     "completed_at": "2026-11-25T00:05:32Z",
+     "details_url": "https://github.com/o/r/actions/runs/45513038585/job/138871134196"
+    },
+    {
+     "id": 138871134172,
+     "name": "Build engine sweep (Node)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "failure",
+     "started_at": "2026-11-25T00:01:24Z",
+     "completed_at": "2026-11-25T00:18:39Z",
+     "details_url": "https://github.com/o/r/actions/runs/45513038585/job/138871134172"
+    },
+    {
+     "id": 138865378155,
+     "name": "CI scope (what changed)",
+     "app": {
+      "slug": "github-actions"
+     },
+     "status": "completed",
+     "conclusion": "success",
+     "started_at": "2026-11-24T23:48:39Z",
+     "completed_at": "2026-11-25T00:01:21Z",
+     "details_url": "https://github.com/o/r/actions/runs/45513038585/job/138865378155"
+    },
+    {
+     "id": 138865373229,
+     "name": "CodeRabbit",
+     "app": {
+      "slug": "coderabbitai"
+     },
+     "status": "completed",
+     "conclusion": "skipped",
+     "started_at": "2026-11-24T23:48:37Z",
+     "completed_at": "2026-11-24T23:48:37Z",
+     "details_url": ""
+    }
+   ],
+   "statuses": [],
+   "workflow_runs": [
+    {
+     "id": 45513038585,
+     "name": "Android framework + console",
+     "path": ".github/workflows/android.yml",
+     "event": "pull_request",
+     "status": "completed",
+     "conclusion": "failure",
+     "head_branch": "lander/fix-refreshing-console-jumps-back-9",
+     "head_sha": "230824dee0cbfc13981f9fdf9b59bdc70b7befaf",
+     "run_attempt": 1,
+     "created_at": "2026-11-24T23:48:33Z",
+     "run_started_at": "2026-11-24T23:48:33Z",
+     "updated_at": "2026-11-25T00:18:40Z"
+    }
+   ]
+  }
+ },
+ "base": {
+  "sha": "78f513661",
+  "note": "main when the PR head was cut (the base the PR pulled in)",
+  "check_runs": [
+   {
+    "id": 138862937654,
+    "name": "Light PR checks (full run happens once, in the merge queue)",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "skipped",
+    "started_at": "2026-11-24T23:43:23Z",
+    "completed_at": "2026-11-24T23:43:23Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049087/job/138862937654"
+   },
+   {
+    "id": 138862935164,
+    "name": "Build engine sweep (Node)",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "failure",
+    "started_at": "2026-11-24T23:43:25Z",
+    "completed_at": "2026-11-25T00:04:56Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049087/job/138862935164"
+   },
+   {
+    "id": 138862934637,
+    "name": "Gradle — framework modules, kernel tests, console APK",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-24T23:43:25Z",
+    "completed_at": "2026-11-24T23:48:24Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049087/job/138862934637"
+   },
+   {
+    "id": 138862934518,
+    "name": "Web Dev Console (React/TS) + Python API",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "failure",
+    "started_at": "2026-11-24T23:43:25Z",
+    "completed_at": "2026-11-24T23:48:01Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049087/job/138862934518"
+   },
+   {
+    "id": 138858538321,
+    "name": "CI scope (what changed)",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-24T23:34:05Z",
+    "completed_at": "2026-11-24T23:43:22Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049087/job/138858538321"
+   },
+   {
+    "id": 138858538277,
+    "name": "build-publish",
+    "app": {
+     "slug": "github-actions"
+    },
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-24T23:34:04Z",
+    "completed_at": "2026-11-24T23:34:27Z",
+    "details_url": "https://github.com/o/r/actions/runs/45511049071/job/138858538277"
+   }
+  ]
+ },
+ "failingCause": "help coverage ratchet: \"console-web: help coverage fell to 99.9% (ratchet 100%)\" (the last step of both red jobs)"
+}

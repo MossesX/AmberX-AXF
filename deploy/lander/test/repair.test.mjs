@@ -473,7 +473,7 @@ test('L2-06: a red check on the second page of check runs is seen', async () => 
   const b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'ci-red'); assert.deepEqual(b.failure.failing, ['job 217']); assert.deepEqual(b.failure.jobIds, [218]);
   assert.equal(merges(gh), 0);
-  assert.deepEqual(gh.calls.filter((c) => c.includes('/check-runs')).map((c) => c.match(/page=(\d+)$/)[1]), ['1', '2', '3'], 'every page was read');
+  assert.deepEqual(gh.calls.filter((c) => c.includes('/check-runs')).map((c) => c.match(/page=(\d+)$/)[1]).slice(0, 3), ['1', '2', '3'], 'every page was read (the red head first; main is read after it, to say whether the red is main\'s)');
 });
 
 test('L2-06: green waits for every required check; the full run is started once when one never reports', async () => {

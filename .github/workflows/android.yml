@@ -217,6 +217,8 @@ jobs:
         run: node apps/console-web/plugins/merge-queue-view/test.mjs  # axf-plugin:merge-queue-view
       - name: Lander (one PR per build, size-cap groups, flaky re-run, split, fix session, forward-only statuses; real git, fake GitHub, in-memory store)  # axf-plugin:gate
         run: node --test 'deploy/lander/test/*.test.mjs'
+      - name: Lander CI decision (the recorded heads of PRs 915-917 replayed; dispatch, required names, timeout clock, attempts per PR)  # axf-plugin:gate
+        run: node --test deploy/lander/test-ci-stall.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)  # axf-plugin:project-wizard
