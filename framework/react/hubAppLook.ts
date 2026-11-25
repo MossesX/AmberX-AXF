@@ -21,6 +21,7 @@ export class HubAppLookStore implements AppLookStore {
   private es: EventSource | null = null;
   private wanted: AppLookDocument | null = null;
   private saving = false;
+  private reading = false;
   private readonly path: string;
 
   constructor(private readonly opts: HubAppLookOptions) { this.path = `${APP_LOOK_PROJECT}/${appLookPath(opts.appId)}`; }
@@ -36,6 +37,17 @@ export class HubAppLookStore implements AppLookStore {
   async load(): Promise<void> {
     if (this.st === 'loading' || this.st === 'failed') await this.read();
     this.watch();
+  }
+
+  /**
+   * Re-read now (fresh on focus: `rt.refreshFromSaved`, useEditorSync), so a change made elsewhere (another tab, REST, MCP,
+   * the CLI: a skin, a hidden piece) shows without a reload even with no live feed. A save in flight wins, so nothing just
+   * written is lost; a store that has not been loaded yet is left to its first load.
+   */
+  refresh(): void {
+    if (this.saving || this.wanted || this.reading || this.st === 'loading') return;
+    this.reading = true;
+    void this.read().then((changed) => { if (changed && !this.saving && !this.wanted) for (const fn of this.listeners) fn(); }).finally(() => { this.reading = false; });
   }
 
   /** Returns true when the document changed. */
