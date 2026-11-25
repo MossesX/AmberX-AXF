@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T11:59:10.827Z",
+ "updatedAt": "2026-11-25T11:59:28.344Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -214036,6 +214036,38 @@
      ]
     }
    ]
+  },
+  {
+   "id": "remove-leftover-json-data-files-postgres",
+   "title": "Remove leftover JSON data files that Postgres already covers",
+   "category": "",
+   "detail": "Postgres is the one store. ~133 files in apps/console-web/plugins still json.dump to data files (claude-handoff, plugin-manager, builds-page, agent-manager, feature-matrix, output-recorder, claude-badge, chat-viewer, crew-live, console-terminal, maintenance, agent-swarm, agent-voice, session-checkin, theme-editor, gate, claude-session, molly-guide, agent-slots, plugin-commands, amberx-listeners, and more). For each: if the data already lives in Postgres, switch reads/writes to data-store@1 per-row and delete the file and its writer. If not yet in Postgres, migrate it, then delete. No dual writes, no JSON backups. Keep true config/export files only if listed in DATA-INVENTORY.md with a reason. Lower the check-json-data-writes baseline.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:59:12.382Z",
+   "updatedAt": "2026-11-25T11:59:17.155Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Does that include getting rid of all those JSON files you just found? Switch it over, not run both.",
+    "at": "2026-11-25T11:59:12.382Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   },
   {
    "id": "fable-fix-land-refresh-build-fix",

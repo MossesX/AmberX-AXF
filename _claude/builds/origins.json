@@ -8646,6 +8646,18 @@
    "from": "",
    "addenda": []
   },
+  "remove-leftover-json-data-files-postgres": {
+   "said": "Does that include getting rid of all those JSON files you just found? Switch it over, not run both.",
+   "at": "2026-11-25T11:59:12.382Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the": {
    "said": "",
    "at": "",

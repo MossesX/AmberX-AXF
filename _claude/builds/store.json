@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10413,
- "updatedAt": "2026-11-25T11:59:10.827Z",
+ "rev": 10414,
+ "updatedAt": "2026-11-25T11:59:28.344Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -394464,6 +394464,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T11:57:40.053Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "remove-leftover-json-data-files-postgres",
+   "title": "Remove leftover JSON data files that Postgres already covers",
+   "category": "",
+   "detail": "Postgres is the one store. ~133 files in apps/console-web/plugins still json.dump to data files (claude-handoff, plugin-manager, builds-page, agent-manager, feature-matrix, output-recorder, claude-badge, chat-viewer, crew-live, console-terminal, maintenance, agent-swarm, agent-voice, session-checkin, theme-editor, gate, claude-session, molly-guide, agent-slots, plugin-commands, amberx-listeners, and more). For each: if the data already lives in Postgres, switch reads/writes to data-store@1 per-row and delete the file and its writer. If not yet in Postgres, migrate it, then delete. No dual writes, no JSON backups. Keep true config/export files only if listed in DATA-INVENTORY.md with a reason. Lower the check-json-data-writes baseline.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:59:12.382Z",
+   "updatedAt": "2026-11-25T11:59:17.155Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Does that include getting rid of all those JSON files you just found? Switch it over, not run both.",
+    "at": "2026-11-25T11:59:12.382Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1053
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

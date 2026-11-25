@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 04:57 UTC · `approval-pass-covers-every-call` → pulling-main (all) · orchestrator
 - 2026-11-25 04:58 UTC · `approval-pass-covers-every-call` PR 922, note (all) · orchestrator
 - 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` added (0 steps) (all) · console
 - 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` → queued, note (all) · console
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` → running, note (all) · pipeline
 - 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` branch claude/pipeline-fixes-drop-7-mb-status-file (all) · pipeline
 - 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
+- 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` added (0 steps) (all) · console
 
 ## Token passes (log)
 
