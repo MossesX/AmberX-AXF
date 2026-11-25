@@ -68,6 +68,7 @@ async function mockBackend(page) {
   const acks = new Map();
   const frame = (m) => `event: message\ndata: ${JSON.stringify(m)}\n\n`;
   const send = (route, m) => route.fulfill({ status: 200, contentType: 'text/event-stream', body: `: connected\n\n${frame(m)}` });
+  const COMMANDS = '/api/plugins/console-commands'; // the console's command stream  axf-plugin:console-commands
   await page.route('**/api/**', async (r) => {
     const req = r.request();
     const u = new URL(req.url());
@@ -75,19 +76,19 @@ async function mockBackend(page) {
     if (u.pathname === '/api/me') return json(ME);
     if (u.pathname === '/api/plugins') return json(PLUGINS);
     if (req.method() === 'GET' && u.pathname === '/api/events') return r.abort();
-    if (u.pathname === '/api/plugins/console-commands/stream') {
+    if (u.pathname === `${COMMANDS}/stream`) {
       const m = waiting.shift();
       if (m) return send(r, m).catch(() => undefined);
       held.push(r); // answered by the next push; a reload drops it
       return undefined;
     }
-    if (u.pathname === '/api/plugins/console-commands/ack') {
+    if (u.pathname === `${COMMANDS}/ack`) {
       let body = {};
       try { body = req.postDataJSON() ?? {}; } catch { /* not JSON */ }
       acks.get(body.id)?.(body);
       return json({ ok: true });
     }
-    if (u.pathname.startsWith('/api/plugins/console-commands/')) return json({ ok: true });
+    if (u.pathname.startsWith(`${COMMANDS}/`)) return json({ ok: true });
     // 404 = no backend: the views read dist/data at once. (A 5xx would put every read behind the console's back-off,
     // and data that takes longer than the restore's give-up time is, by design, not scrolled back to.)
     return json({ ok: false, detail: 'no backend (e2e)' }, 404);
