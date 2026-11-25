@@ -1,0 +1,755 @@
+{
+  "contract": "hidden-assets@1",
+  "field": "hiddenAssets",
+  "kinds": [
+    "tab-group",
+    "toolbar",
+    "banner",
+    "nav-menu",
+    "app-menu",
+    "widget"
+  ],
+  "max": 500,
+  "targets": {
+    "key": "toolbar:main",
+    "parsed": {
+      "kind": "toolbar",
+      "id": "main"
+    },
+    "idWithColon": {
+      "kind": "tab-group",
+      "id": "plugin:notes/tabs"
+    },
+    "fromObject": {
+      "kind": "widget",
+      "id": "clock"
+    },
+    "everyKind": {
+      "tab-group": {
+        "kind": "tab-group",
+        "id": "main"
+      },
+      "toolbar": {
+        "kind": "toolbar",
+        "id": "main"
+      },
+      "banner": {
+        "kind": "banner",
+        "id": "main"
+      },
+      "nav-menu": {
+        "kind": "nav-menu",
+        "id": "main"
+      },
+      "app-menu": {
+        "kind": "app-menu",
+        "id": "main"
+      },
+      "widget": {
+        "kind": "widget",
+        "id": "main"
+      }
+    },
+    "refused": {
+      "unknownKind": {
+        "ref": "grid:main",
+        "target": null,
+        "error": "\"grid\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "contextMenu": {
+        "ref": "context-menu:main",
+        "target": null,
+        "error": "\"context-menu\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "assetType": {
+        "ref": {
+          "kind": "button",
+          "id": "main"
+        },
+        "target": null,
+        "error": "\"button\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "emptyKind": {
+        "ref": ":main",
+        "target": null,
+        "error": "\"\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "noId": {
+        "ref": "toolbar",
+        "target": null,
+        "error": "\"\" is not an instance id"
+      },
+      "emptyId": {
+        "ref": {
+          "kind": "banner",
+          "id": ""
+        },
+        "target": null,
+        "error": "\"\" is not an instance id"
+      },
+      "badId": {
+        "ref": {
+          "kind": "toolbar",
+          "id": "Bad Id"
+        },
+        "target": null,
+        "error": "\"Bad Id\" is not an instance id"
+      },
+      "kindCase": {
+        "ref": "Toolbar:main",
+        "target": null,
+        "error": "\"Toolbar\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "notATarget": {
+        "ref": 7,
+        "target": null,
+        "error": "\"\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      },
+      "nothing": {
+        "ref": null,
+        "target": null,
+        "error": "\"\" is not a kind that can be hidden (tab-group, toolbar, banner, nav-menu, app-menu, widget)"
+      }
+    },
+    "okError": null
+  },
+  "normalize": {
+    "good": [
+      {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "axf-console",
+        "assetRef": "standard-icons"
+      }
+    ],
+    "junk": [
+      {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "",
+        "by": ""
+      }
+    ],
+    "notAList": [],
+    "nothing": [],
+    "capped": {
+      "length": 500,
+      "first": "t3",
+      "last": "t502"
+    }
+  },
+  "hide": {
+    "empty": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "toolbar": "standard-icons"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "list": [],
+      "count": 0,
+      "isHidden": false
+    },
+    "one": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "toolbar": "standard-icons"
+          }
+        },
+        "own": {
+          "hiddenAssets": [
+            {
+              "kind": "toolbar",
+              "id": "main",
+              "hiddenAt": "2026-11-17T14:50:00Z",
+              "by": "axf-console",
+              "assetRef": "standard-icons"
+            }
+          ]
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "list": [
+        {
+          "kind": "toolbar",
+          "id": "main",
+          "hiddenAt": "2026-11-17T14:50:00Z",
+          "by": "axf-console",
+          "assetRef": "standard-icons"
+        }
+      ],
+      "isHidden": true,
+      "other": false,
+      "otherKind": false,
+      "entry": {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "axf-console",
+        "assetRef": "standard-icons"
+      },
+      "noEntry": null
+    },
+    "three": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "toolbar": "standard-icons"
+          }
+        },
+        "own": {
+          "hiddenAssets": [
+            {
+              "kind": "toolbar",
+              "id": "main",
+              "hiddenAt": "2026-11-17T14:50:00Z",
+              "by": "axf-console",
+              "assetRef": "standard-icons"
+            },
+            {
+              "kind": "tab-group",
+              "id": "settings.tabs",
+              "hiddenAt": "2026-11-17T14:51:00Z",
+              "by": "axf-console"
+            },
+            {
+              "kind": "widget",
+              "id": "clock",
+              "hiddenAt": "2026-11-17T14:52:00Z",
+              "by": "plugin:clock"
+            }
+          ]
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "list": [
+        {
+          "kind": "toolbar",
+          "id": "main",
+          "hiddenAt": "2026-11-17T14:50:00Z",
+          "by": "axf-console",
+          "assetRef": "standard-icons"
+        },
+        {
+          "kind": "tab-group",
+          "id": "settings.tabs",
+          "hiddenAt": "2026-11-17T14:51:00Z",
+          "by": "axf-console"
+        },
+        {
+          "kind": "widget",
+          "id": "clock",
+          "hiddenAt": "2026-11-17T14:52:00Z",
+          "by": "plugin:clock"
+        }
+      ],
+      "count": 3,
+      "ofKind": {
+        "tab-group": [
+          {
+            "kind": "tab-group",
+            "id": "settings.tabs",
+            "hiddenAt": "2026-11-17T14:51:00Z",
+            "by": "axf-console"
+          }
+        ],
+        "toolbar": [
+          {
+            "kind": "toolbar",
+            "id": "main",
+            "hiddenAt": "2026-11-17T14:50:00Z",
+            "by": "axf-console",
+            "assetRef": "standard-icons"
+          }
+        ],
+        "banner": [],
+        "nav-menu": [],
+        "app-menu": [],
+        "widget": [
+          {
+            "kind": "widget",
+            "id": "clock",
+            "hiddenAt": "2026-11-17T14:52:00Z",
+            "by": "plugin:clock"
+          }
+        ]
+      }
+    },
+    "again": {
+      "same": true,
+      "list": [
+        {
+          "kind": "toolbar",
+          "id": "main",
+          "hiddenAt": "2026-11-17T14:50:00Z",
+          "by": "axf-console",
+          "assetRef": "standard-icons"
+        },
+        {
+          "kind": "tab-group",
+          "id": "settings.tabs",
+          "hiddenAt": "2026-11-17T14:51:00Z",
+          "by": "axf-console"
+        },
+        {
+          "kind": "widget",
+          "id": "clock",
+          "hiddenAt": "2026-11-17T14:52:00Z",
+          "by": "plugin:clock"
+        }
+      ]
+    },
+    "pure": {
+      "inputUntouched": true,
+      "newDocument": true,
+      "defaultKept": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      }
+    },
+    "overflow": {
+      "length": 500,
+      "first": "t1",
+      "last": {
+        "kind": "banner",
+        "id": "top",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "x"
+      }
+    },
+    "setHidden": [
+      {
+        "kind": "nav-menu",
+        "id": "side",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "x"
+      }
+    ]
+  },
+  "refused": {
+    "hide": {
+      "unknownKind": true,
+      "contextMenu": true,
+      "assetType": true,
+      "emptyKind": true,
+      "noId": true,
+      "emptyId": true,
+      "badId": true,
+      "kindCase": true,
+      "notATarget": true,
+      "nothing": true
+    },
+    "unhide": {
+      "unknownKind": true,
+      "contextMenu": true,
+      "assetType": true,
+      "emptyKind": true,
+      "noId": true,
+      "emptyId": true,
+      "badId": true,
+      "kindCase": true,
+      "notATarget": true,
+      "nothing": true
+    },
+    "isHidden": {
+      "unknownKind": false,
+      "contextMenu": false,
+      "assetType": false,
+      "emptyKind": false,
+      "noId": false,
+      "emptyId": false,
+      "badId": false,
+      "kindCase": false,
+      "notATarget": false,
+      "nothing": false
+    },
+    "list": [
+      {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "axf-console",
+        "assetRef": "standard-icons"
+      },
+      {
+        "kind": "tab-group",
+        "id": "settings.tabs",
+        "hiddenAt": "2026-11-17T14:51:00Z",
+        "by": "axf-console"
+      },
+      {
+        "kind": "widget",
+        "id": "clock",
+        "hiddenAt": "2026-11-17T14:52:00Z",
+        "by": "plugin:clock"
+      }
+    ],
+    "savedUnknownKind": [
+      {
+        "kind": "banner",
+        "id": "top",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "x"
+      }
+    ],
+    "badAssetRef": [
+      {
+        "kind": "banner",
+        "id": "top",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "x"
+      }
+    ],
+    "badBy": [
+      {
+        "kind": "banner",
+        "id": "top",
+        "hiddenAt": "",
+        "by": ""
+      }
+    ]
+  },
+  "unhide": {
+    "doc": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      },
+      "own": {
+        "hiddenAssets": [
+          {
+            "kind": "tab-group",
+            "id": "settings.tabs",
+            "hiddenAt": "2026-11-17T14:51:00Z",
+            "by": "axf-console"
+          },
+          {
+            "kind": "widget",
+            "id": "clock",
+            "hiddenAt": "2026-11-17T14:52:00Z",
+            "by": "plugin:clock"
+          }
+        ]
+      },
+      "skin": {
+        "use": false,
+        "inherit": false,
+        "id": "",
+        "overrides": {}
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "list": [
+      {
+        "kind": "tab-group",
+        "id": "settings.tabs",
+        "hiddenAt": "2026-11-17T14:51:00Z",
+        "by": "axf-console"
+      },
+      {
+        "kind": "widget",
+        "id": "clock",
+        "hiddenAt": "2026-11-17T14:52:00Z",
+        "by": "plugin:clock"
+      }
+    ],
+    "byObject": [
+      {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "2026-11-17T14:50:00Z",
+        "by": "axf-console",
+        "assetRef": "standard-icons"
+      },
+      {
+        "kind": "tab-group",
+        "id": "settings.tabs",
+        "hiddenAt": "2026-11-17T14:51:00Z",
+        "by": "axf-console"
+      }
+    ],
+    "notHidden": true,
+    "nothingHidden": true,
+    "last": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "toolbar": "standard-icons"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "own": {}
+    },
+    "hideAgain": [
+      {
+        "kind": "tab-group",
+        "id": "settings.tabs",
+        "hiddenAt": "2026-11-17T14:51:00Z",
+        "by": "axf-console"
+      },
+      {
+        "kind": "widget",
+        "id": "clock",
+        "hiddenAt": "2026-11-17T14:52:00Z",
+        "by": "plugin:clock"
+      },
+      {
+        "kind": "toolbar",
+        "id": "main",
+        "hiddenAt": "2026-11-18T00:00:00Z",
+        "by": "later"
+      }
+    ],
+    "setHidden": [
+      {
+        "kind": "tab-group",
+        "id": "settings.tabs",
+        "hiddenAt": "2026-11-17T14:51:00Z",
+        "by": "axf-console"
+      },
+      {
+        "kind": "widget",
+        "id": "clock",
+        "hiddenAt": "2026-11-17T14:52:00Z",
+        "by": "plugin:clock"
+      }
+    ]
+  },
+  "unhideAll": {
+    "doc": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      },
+      "own": {},
+      "skin": {
+        "use": false,
+        "inherit": false,
+        "id": "",
+        "overrides": {}
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "own": {},
+    "list": [],
+    "count": 0,
+    "nothing": true,
+    "twice": true,
+    "keepsOtherPicks": {
+      "slots": {
+        "button": "terminal"
+      },
+      "hidden": {
+        "toolbar": false
+      },
+      "settings": {
+        "axf.banners.group": "a"
+      }
+    }
+  },
+  "migration": {
+    "old": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      },
+      "own": {
+        "slots": {
+          "button": "terminal"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a"
+        }
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "dialog": "my-dialog"
+        }
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "normalized": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      },
+      "own": {
+        "slots": {
+          "button": "terminal"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a"
+        }
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "dialog": "my-dialog"
+        }
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "list": [],
+    "listNormalized": [],
+    "count": 0,
+    "isHidden": false,
+    "unhideAllSame": true,
+    "unhideSame": true,
+    "hidden": {
+      "doc": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "toolbar": "standard-icons"
+          }
+        },
+        "own": {
+          "slots": {
+            "button": "terminal"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a"
+          },
+          "hiddenAssets": [
+            {
+              "kind": "banner",
+              "id": "top",
+              "hiddenAt": "2026-11-17T14:50:00Z",
+              "by": "app"
+            }
+          ]
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "my-dialog"
+          }
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "list": [
+        {
+          "kind": "banner",
+          "id": "top",
+          "hiddenAt": "2026-11-17T14:50:00Z",
+          "by": "app"
+        }
+      ]
+    },
+    "shownAgain": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "toolbar": "standard-icons"
+        }
+      },
+      "own": {
+        "slots": {
+          "button": "terminal"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "settings": {
+          "axf.banners.group": "a"
+        }
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {
+          "dialog": "my-dialog"
+        }
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "noDocument": [
+      [],
+      []
+    ],
+    "noOwn": [],
+    "listNotAList": [],
+    "snapshotNeverHides": []
+  }
+}
