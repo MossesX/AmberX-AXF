@@ -426,6 +426,13 @@ with one not on main yet, its `run-all` / `defer` answers). Schema `framework/sc
 regenerates it). **Kotlin twin deferred** (no new Android work): AmberX shows the `pipelineView` the console's REST
 gives it; a Kotlin twin answering the fixture's views is needed only once an Android surface reads the builds store itself.
 
+Nov 25 2026 (build clash-fix-console-app-tabs-2): a clash never blocks. `build-clash.mjs` gained `autoAnswer` (the
+pipeline's own `run-all`, `auto: true`), `canAnswer` and a hand answer that replaces the pipeline's; `pipelineView`
+shows a clash as an ordinary waiting build (`clash: { rejected: false, reason, answer, auto, canAnswer }`) and the step
+contract keeps `waitsFor`, `alsoWaitsFor` and `clashFix`. The fixture was regenerated. **Kotlin twin still deferred**,
+for the same reason. The console app's tab strip (`apps/console-droid` `TabRules`, plain Java in the WebView shell) has
+no framework engine and no twin: it is shell code, like `OverlayRules`.
+
 Pipeline repair part A (Nov 21 2026, the Fable deep audit): the contract now owns every limit. `checkTransition` /
 `transition` take `reset` and `max` (the attempt ceiling `MAX_ATTEMPTS`: out of `failed` past it only as a reset with a
 reason, attempt 1 again) and `resplit`; archive records `archivedFrom` and an archived build returns only there or to
