@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10407,
- "updatedAt": "2026-11-25T08:05:30.823Z",
+ "rev": 10408,
+ "updatedAt": "2026-11-25T11:32:56.485Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258304,7 +258304,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-25T05:52:12.596Z",
+   "updatedAt": "2026-11-25T11:17:16.815Z",
    "builtAt": "",
    "notes": [
     {
@@ -258521,7 +258521,11 @@
     },
     {
      "text": "Rejected: 1 step of 2 touches files that B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed), B-1073 (Find and fix why CI stalls on lander one-part PRs) have not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 1 clean step now, defer 1 (defer).",
-     "at": "2026-11-25T05:52:12.596Z",
+     "at": "2026-11-25T05:52:12.596Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:16.815Z",
      "by": "orchestrator"
     }
    ],
@@ -259323,7 +259327,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 169,
+   "rev": 171,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263727,7 +263731,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-24T12:40:34.724Z",
+   "updatedAt": "2026-11-25T11:17:25.428Z",
    "builtAt": "",
    "notes": [
     {
@@ -263909,6 +263913,11 @@
     {
      "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5 done",
      "at": "2026-11-24T12:40:34.724Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:25.428Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [
@@ -264278,7 +264287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -292492,15 +292501,15 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "pulling-main",
+   "status": "building",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/terminal-main-tab-streaming-console-s",
+   "branch": "claude/terminal-main-tab-streaming-console-s--s2",
    "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-25T08:05:22.807Z",
+   "updatedAt": "2026-11-25T11:32:51.333Z",
    "builtAt": "",
    "notes": [
     {
@@ -292629,13 +292638,115 @@
     },
     {
      "text": "Draft PR #924 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/924.",
-     "at": "2026-11-25T08:02:19.386Z",
-     "by": "orchestrator"
+     "at": "2026-11-25T08:02:19.386Z"
     },
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or",
-     "at": "2026-11-25T08:04:46.236Z",
-     "by": "store"
+     "at": "2026-11-25T08:04:46.236Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Work that might need Fable: \"registry\" might need Fable); s2 Fable (no rule matched: Fable by default); s3 Fable (no rule matched: Fable by default); s4 Fable (Work that might need Fable: \"auth\" might need Fable); s5 Fable (Work that might need Fable: \"headless\" might need Fable); s6 Fable (no rule matched: Fable by default); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (no rule matched: Fable by default); s10 Fable (Work that might need Fable: \"registries\" might need Fable); s11 Fable (no rule matched: Fable by default); s12 Fable (Work that might need Fable: \"ci\" might need Fable); s13 Fable (no rule matched: Fable by default); s14 Fable (CI failures: it says \"failing checks\"); s15 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T08:07:32.511Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Work that might need Fable: \"registry\" might need Fable); s2 Fable (no rule matched: Fable by default); s3 Fable (no rule matched: Fable by default); s4 Fable (Work that might need Fable: \"auth\" might need Fable); s5 Fable (Work that might need Fable: \"headless\" might need Fable); s6 Fable (no rule matched: Fable by default); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (no rule matched: Fable by default); s10 Fable (Work that might need Fable: \"registries\" might need Fable); s11 Fable (no rule matched: Fable by default); s12 Fable (Work that might need Fable: \"ci\" might need Fable); s13 Fable (no rule matched: Fable by default); s14 Fable (CI failures: it says \"failing checks\"); s15 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T08:07:38.007Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-terminal-main-tab-streaming-console-s--s1--joey, shared account login)",
+     "at": "2026-11-25T08:08:37.417Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-terminal-main-tab-streaming-console-s--s2--paulie, shared account login)",
+     "at": "2026-11-25T08:09:12.762Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
+     "at": "2026-11-25T08:09:36.418Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-terminal-main-tab-streaming-console-s--s3--sully, shared account login)",
+     "at": "2026-11-25T08:10:23.272Z"
+    },
+    {
+     "text": "Reconciler: PR #819 names s1, s2, s3, s14 done",
+     "at": "2026-11-25T08:10:36.980Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
+     "at": "2026-11-25T08:10:46.439Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 2: usage limit on mossesx-max-: \"out of credits\".",
+     "at": "2026-11-25T08:12:01.430Z"
+    },
+    {
+     "text": "Headless run axf-terminal-main-tab-streaming-console-s--s3--sully: brief only · start 11.8K tokens ($0.05) · cost $1.79 · 16 turns · 6 tools, MCP none",
+     "at": "2026-11-25T08:14:53.614Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.79",
+     "at": "2026-11-25T08:15:13.377Z"
+    },
+    {
+     "text": "Headless run axf-terminal-main-tab-streaming-console-s--s2--paulie: brief only · start 11.8K tokens ($0.05) · cost $3.07 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-25T08:17:22.611Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.07",
+     "at": "2026-11-25T08:17:27.473Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
+     "at": "2026-11-25T08:20:18.706Z"
+    },
+    {
+     "text": "Reconciler: PR #819 names s1, s2, s3, s14 done",
+     "at": "2026-11-25T08:20:38.869Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
+     "at": "2026-11-25T08:30:21.188Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:04:02.266Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:04:02.266Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at ready (2 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T09:06:01.512Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Building): its steps are fixed, none is removed or replaced); s8 step s8 was r",
+     "at": "2026-11-25T09:10:17.364Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-terminal-main-tab-streaming-console-s--s1--earl, shared account login)",
+     "at": "2026-11-25T11:32:51.333Z"
     }
    ],
    "approvals": [],
@@ -292700,14 +292811,14 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-18T00:17:54.575Z",
+     "at": "2026-11-25T08:17:06.800Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
-     "account": "hulu0241",
-     "session": "axf-terminal-main-tab-streaming-console-s--joey",
-     "phase": "Phase 1"
+     "account": "mossesx-max-",
+     "session": "axf-terminal-main-tab-streaming-console-s--s2--paulie",
+     "phase": ""
     }
    },
    "attempts": [
@@ -292770,7 +292881,7 @@
       "rule": "fable-words",
       "why": "Work that might need Fable: \"registry\" might need Fable",
       "lane": "orchestrator",
-      "at": "2026-11-24T12:36:41.331Z",
+      "at": "2026-11-25T08:07:33.225Z",
       "suggested": "Opus",
       "facts": {
        "files": 0,
@@ -292779,12 +292890,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 4,
+     "rev": 14,
      "createdAt": "2026-11-24T12:36:41.343Z",
-     "updatedAt": "2026-11-25T08:02:36.787Z",
-     "statusAt": "2026-11-25T08:02:36.718Z",
+     "updatedAt": "2026-11-25T11:32:44.763Z",
+     "statusAt": "2026-11-25T11:32:12.586Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -292806,11 +292917,51 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T08:07:46.571Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T08:08:02.808Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: terminal-main-tab-streaming-console-s--s1 already has a live session: lock launching (heartbeat 2026-11-25T08:07:56.462Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T08:08:29.139Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-terminal-main-tab-streaming-console-s--s1--joey on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T08:12:01.430Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "usage limit on mossesx-max-: \"out of credits\""
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T11:32:12.586Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s1",
-     "branch": "claude/terminal-main-tab-streaming-console-s--s1"
+     "branch": "claude/terminal-main-tab-streaming-console-s--s1",
+     "tmux": "axf-terminal-main-tab-streaming-console-s--s1--earl",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s2",
@@ -292827,15 +292978,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T08:16:40.904Z",
      "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
      "triage": {
       "model": "Fable",
       "rule": "default",
       "why": "no rule matched: Fable by default",
       "lane": "orchestrator",
-      "at": "2026-11-24T12:36:41.331Z",
+      "at": "2026-11-25T08:07:33.225Z",
       "suggested": "Opus",
       "facts": {
        "files": 0,
@@ -292844,11 +292995,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 4,
+     "rev": 11,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-25T08:02:54.605Z",
-     "statusAt": "2026-11-25T08:02:54.529Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T08:18:07.007Z",
+     "statusAt": "2026-11-25T08:18:06.917Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -292871,11 +293022,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T08:08:10.952Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T08:08:56.432Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-terminal-main-tab-streaming-console-s--s2--paulie on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T08:18:06.917Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s2",
-     "branch": "claude/terminal-main-tab-streaming-console-s--s2"
+     "branch": "claude/terminal-main-tab-streaming-console-s--s2",
+     "tmux": "axf-terminal-main-tab-streaming-console-s--s2--paulie"
     },
     {
      "id": "s3",
@@ -292892,15 +293066,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T08:14:29.798Z",
      "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
      "triage": {
       "model": "Fable",
       "rule": "default",
       "why": "no rule matched: Fable by default",
       "lane": "orchestrator",
-      "at": "2026-11-24T12:36:41.331Z",
+      "at": "2026-11-25T08:07:33.225Z",
       "suggested": "Opus",
       "facts": {
        "files": 0,
@@ -292909,12 +293083,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 4,
+     "rev": 12,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-25T08:03:17.027Z",
-     "statusAt": "2026-11-25T08:03:16.940Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T08:14:59.319Z",
+     "statusAt": "2026-11-25T08:14:59.249Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -292936,11 +293110,41 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T08:09:23.104Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T08:09:44.708Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: terminal-main-tab-streaming-console-s--s3 already has a live session: lock launching (heartbeat 2026-11-25T08:09:32.476Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T08:10:15.363Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-terminal-main-tab-streaming-console-s--s3--sully on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T08:14:59.249Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s3",
-     "branch": "claude/terminal-main-tab-streaming-console-s--s3"
+     "branch": "claude/terminal-main-tab-streaming-console-s--s3",
+     "tmux": "axf-terminal-main-tab-streaming-console-s--s3--sully"
     },
     {
      "id": "s4",
@@ -293269,7 +293473,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:05:37.157Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293279,9 +293483,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:05:29.767Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:05:37.157Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s10",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s10"
     },
     {
      "id": "s11",
@@ -293304,7 +293524,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:05:54.837Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293314,9 +293534,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:05:44.791Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:05:54.837Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s11",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s11"
     },
     {
      "id": "s12",
@@ -293339,7 +293575,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:06:15.268Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293349,9 +293585,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:06:07.111Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:06:15.268Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s12",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s12"
     },
     {
      "id": "s13",
@@ -293374,7 +293626,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:06:36.212Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293384,9 +293636,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:06:24.287Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:06:36.212Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s13",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s13"
     },
     {
      "id": "s14",
@@ -293404,14 +293672,14 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-24T12:40:34.724Z",
+     "doneAt": "2026-11-25T08:10:36.980Z",
      "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
      "triage": {
       "model": "Fable",
       "rule": "ci-fix",
       "why": "CI failures: it says \"failing checks\"",
       "lane": "orchestrator",
-      "at": "2026-11-24T12:36:41.331Z",
+      "at": "2026-11-25T08:07:33.225Z",
       "suggested": "Opus",
       "facts": {
        "files": 0,
@@ -293420,10 +293688,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 2,
+     "rev": 7,
      "createdAt": "2026-11-18T01:13:29.208Z",
-     "updatedAt": "2026-11-24T12:40:34.955Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "updatedAt": "2026-11-25T08:10:37.124Z",
+     "statusAt": "2026-11-25T08:06:56.193Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293433,9 +293701,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:06:44.221Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:06:56.193Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s14",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s14"
     },
     {
      "id": "s15",
@@ -293460,7 +293744,7 @@
       "rule": "fable-words",
       "why": "Work that might need Fable: \"watchdog\" might need Fable",
       "lane": "orchestrator",
-      "at": "2026-11-24T12:36:41.331Z",
+      "at": "2026-11-25T08:07:33.225Z",
       "suggested": "Opus",
       "facts": {
        "files": 0,
@@ -293469,10 +293753,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 5,
      "createdAt": "2026-11-22T02:25:21.835Z",
-     "updatedAt": "2026-11-24T12:35:33.959Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "updatedAt": "2026-11-25T08:07:38.092Z",
+     "statusAt": "2026-11-25T08:07:15.664Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -293482,9 +293766,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:07:07.088Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:07:15.664Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s15",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s15"
     }
    ],
    "profiles": [
@@ -293495,7 +293795,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 154,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297739,7 +298039,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T08:02:08.438Z",
+   "statusAt": "2026-11-25T08:08:45.493Z",
    "statusBy": "orchestrator",
    "attempt": 2,
    "statusLog": [
@@ -297777,6 +298077,34 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "no other build is active"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-25T08:07:26.132Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-25T08:07:32.510Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "models assigned by the triage gate"
+    },
+    {
+     "status": "sending",
+     "at": "2026-11-25T08:07:53.663Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "sending s1"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-25T08:08:45.493Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "s1 is in a slot"
     }
    ]
   },
@@ -300652,7 +300980,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-24T12:40:34.724Z",
+   "updatedAt": "2026-11-25T11:17:32.343Z",
    "builtAt": "",
    "notes": [
     {
@@ -300826,6 +301154,11 @@
     {
      "text": "Reconciler: PR #820 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 done",
      "at": "2026-11-24T12:40:34.724Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:32.343Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [
@@ -301437,7 +301770,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -345731,7 +346064,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-25T05:52:05.077Z",
+   "updatedAt": "2026-11-25T11:17:39.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -345912,7 +346245,15 @@
     },
     {
      "text": "Rejected: 3 steps of 28 touch files that B-1073 (Find and fix why CI stalls on lander one-part PRs), B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed) have not landed yet (apps/console-web/plugins/gate, .github/workflows/android.yml, _claude/THREADS.md). Answers: Run all now (run-all), or Run 25 clean steps now, defer 3 (defer).",
-     "at": "2026-11-25T05:52:05.078Z",
+     "at": "2026-11-25T05:52:05.078Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (one-build-time-always-split-to-fill is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by a",
+     "at": "2026-11-25T06:00:41.119Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:39.299Z",
      "by": "orchestrator"
     }
    ],
@@ -347102,7 +347443,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -375704,7 +376045,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T14:23:41.717Z",
-   "updatedAt": "2026-11-24T14:25:20.231Z",
+   "updatedAt": "2026-11-25T11:17:47.462Z",
    "builtAt": "",
    "notes": [
     {
@@ -375722,6 +376063,11 @@
     {
      "text": "Rejected: 1 step of 11 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (apps/console-web/plugins/agent-swarm). Answers: Run all now (run-all), or Run 10 clean steps now, defer 1 (defer).",
      "at": "2026-11-24T14:25:12.101Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:47.463Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -376311,7 +376657,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "postgres-audit-find-everything-s-56pe",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -376451,7 +376797,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T16:04:12.449Z",
-   "updatedAt": "2026-11-24T16:07:12.949Z",
+   "updatedAt": "2026-11-25T11:17:56.590Z",
    "builtAt": "",
    "notes": [
     {
@@ -376465,6 +376811,11 @@
     {
      "text": "Rejected: 8 steps of 8 touch files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (apps/console-web/plugins/plan-studio-2/tree.mjs, apps/console-web/plugins/plan-studio-2/tree.test.mjs, apps/console-web/plugins/plan-studio-2/control.mjs, apps/console-web/plugins/plan-studio-2/server, +21 more). Answers: Run all now (run-all), or Defer all 8 steps (defer).",
      "at": "2026-11-24T16:07:08.885Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:17:56.590Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -376920,7 +377271,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "multi-select-in-the-plan-tree-svg3",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -377577,7 +377928,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T21:00:42.102Z",
-   "updatedAt": "2026-11-24T21:02:46.152Z",
+   "updatedAt": "2026-11-25T11:18:07.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -377591,6 +377942,11 @@
     {
      "text": "Rejected: 8 steps of 18 touch files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (apps/console-web/plugins/x-search/plugin.json, apps/console-web/plugins/x-search/install.mjs, apps/console-web/plugins/x-search/uninstall.mjs, apps/console-web/plugins/x-search/README.md, +15 more). Answers: Run all now (run-all), or Run 10 clean steps now, defer 8 (defer).",
      "at": "2026-11-24T21:02:40.151Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:18:07.174Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -378568,7 +378924,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "new-library-x-search-cit7",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -378618,7 +378974,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T21:02:18.851Z",
-   "updatedAt": "2026-11-24T21:04:47.281Z",
+   "updatedAt": "2026-11-25T11:18:15.479Z",
    "builtAt": "",
    "notes": [
     {
@@ -378632,6 +378988,11 @@
     {
      "text": "Rejected: 6 steps of 16 touch files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (framework/cli/check-token-gate.mjs, apps/console-web/plugins/gate, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, +10 more). Answers: Run all now (run-all), or Run 10 clean steps now, defer 6 (defer).",
      "at": "2026-11-24T21:04:41.393Z"
+    },
+    {
+     "text": "Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.",
+     "at": "2026-11-25T11:18:15.479Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -379547,7 +379908,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "gate-every-asset-is-token-driven-56x3",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -386788,15 +387149,16 @@
    "title": "Clash fix + console app tabs",
    "category": "",
    "detail": "Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on by itself; remove the 'answer it first' gate; add Run all / Defer buttons plus an MCP/voice command to answer a clash by hand. Part B: console app tabs: small tab strip with + to add, tap to switch, x to close. Parts run in parallel slots, merge into one at the end and land together.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/clash-fix-console-app-tabs-2",
-   "pr": "",
+   "pr": "#925",
+   "mergedAt": "2026-11-25T11:06:50Z",
    "priority": "P0",
    "createdAt": "2026-11-25T07:58:13.409Z",
-   "updatedAt": "2026-11-25T08:00:59.948Z",
+   "updatedAt": "2026-11-25T11:12:18Z",
    "builtAt": "",
    "notes": [
     {
@@ -386814,6 +387176,50 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-clash-fix-console-app-tabs-2--lenny, shared account login)",
      "at": "2026-11-25T08:00:59.948Z"
+    },
+    {
+     "text": "s2 is Brett's delivery instruction, not separate work: the clash fix (Part A) and the console app tabs (Part B) are on the one branch claude/clash-fix-console-app-tabs-2 and land together in one PR. The two parts share no files (orchestrator + framework/core vs apps/console-droid + console src/native).",
+     "at": "2026-11-25T08:18:10.891Z"
+    },
+    {
+     "text": "All three steps ticked; PR #925 (https://github.com/MossesX/AmberX-AXF/pull/925). Not seen on a phone yet: the tab strip compiles (JDK 17 against Android 14 classes) and its rules are tested, but the layout on a device is unverified until CI's APK is installed. No screenshots or UI Review options. Report: _claude/builds/reports/clash-fix-console-app-tabs-2.md",
+     "at": "2026-11-25T08:21:17.903Z"
+    },
+    {
+     "text": "Reconciler: PR #925",
+     "at": "2026-11-25T08:30:40.923Z"
+    },
+    {
+     "text": "PR #925: CI green on every job and mergeable. Two of the red runs came from main, fixed on this branch: missing help for the update notice's Hide button (#915) and three unmarked console-commands references in place-refresh.e2e.mjs (#917). Main stays red on those until this lands.",
+     "at": "2026-11-25T10:13:34.763Z"
+    },
+    {
+     "text": "Headless run axf-clash-fix-console-app-tabs-2--lenny: brief only · start 17.3K tokens ($0.12) · cost $71.91 · 106 turns · 6 tools, MCP none",
+     "at": "2026-11-25T10:13:59.086Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $71.91",
+     "at": "2026-11-25T10:14:05.463Z"
+    },
+    {
+     "text": "Session axf-clash-fix-console-app-tabs-2--lenny on mossesx-max- ended (exit 0); the build was already landing.",
+     "at": "2026-11-25T10:14:11.300Z"
+    },
+    {
+     "text": "Fixing: it stalled (landing for 2 h: PR #925 is still open and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-25T10:25:18.152Z"
+    },
+    {
+     "text": "Watchdog: landing for 2 h: PR #925 is still open and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-25T10:25:18.152Z"
+    },
+    {
+     "text": "Reconciler: PR #925 merged",
+     "at": "2026-11-25T11:11:17.531Z"
+    },
+    {
+     "text": "Shipped manifest sm-clash-fix-console-app-tabs-2 rev 1 sent to Shipped features (orchestrator): PR #925, 39 file(s), 7 test line(s), 6 open.",
+     "at": "2026-11-25T11:12:18Z"
     }
    ],
    "approvals": [],
@@ -386834,14 +387240,23 @@
     "queuedAt": "2026-11-25T07:58:25.425Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-clash-fix-console-app-tabs-2--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-25T08:00:43.244Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-25T10:14:03.658Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-clash-fix-console-app-tabs-2--lenny",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-25T07:59:17.208Z",
      "by": "orchestrator",
@@ -386867,7 +387282,31 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-25T10:13:47.264Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-clash-fix-console-app-tabs-2--lenny",
+     "phase": "Phase 1"
+    }
+   },
+   "failure": {
+    "kind": "stalled",
+    "at": "2026-11-25T10:25:18.152Z",
+    "why": "landing for 2 h: PR #925 is still open and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
+   "shipped": {
+    "id": "sm-clash-fix-console-app-tabs-2",
+    "rev": 1,
+    "at": "2026-11-25T11:12:18Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -386885,8 +387324,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T08:17:37.600Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -386902,9 +387341,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-25T07:59:17.208Z",
-     "updatedAt": "2026-11-25T07:59:17.208Z"
+     "updatedAt": "2026-11-25T08:17:38.172Z"
     },
     {
      "id": "s2",
@@ -386921,8 +387360,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T08:18:25.159Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -386938,9 +387377,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-25T07:59:17.208Z",
-     "updatedAt": "2026-11-25T07:59:17.208Z"
+     "updatedAt": "2026-11-25T08:18:25.725Z"
     },
     {
      "id": "s3",
@@ -386960,8 +387399,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T08:20:24.622Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -386977,9 +387416,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-25T07:59:17.208Z",
-     "updatedAt": "2026-11-25T07:59:17.208Z"
+     "updatedAt": "2026-11-25T08:20:25.230Z"
     }
    ],
    "profiles": [
@@ -386990,12 +387429,3484 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T07:59:17.208Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "pipeline-test-5-documents",
+   "title": "Pipeline test 5 (documents)",
+   "category": "",
+   "detail": "Re-run of pipeline-test-5: the pipeline test on the documents. Send as one build; the VPS splits it when it starts.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:08:10.098Z",
+   "updatedAt": "2026-11-25T11:18:58.083Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:08:34.404Z"
+    },
+    {
+     "text": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps.",
+     "at": "2026-11-25T11:09:27.725Z"
+    },
+    {
+     "text": "Deleted (console): Empty copy; real test 5 restored instead. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T11:18:58.083Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Let's run that pipeline, that five thing, that test on the documents.",
+    "at": "2026-11-25T11:08:10.098Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:09:27.725Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "",
+     "kind": "",
+     "at": "2026-11-25T11:11:56.877Z",
+     "why": "the one build account mossesx-max- is out of API credit until 2026-11-25 13:12 (API overflow is off)"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww0u4a61lc5gj",
+     "title": "",
+     "text": "Re-run of pipeline-test-5: the pipeline test on the documents. Send as one build; the VPS splits it when it starts.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "designer",
+      "why": "Splitter's suggestion: marked Fable when it was split",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:09:25.626Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:09:27.725Z",
+     "updatedAt": "2026-11-25T11:09:27.725Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww0u4a61m7i88",
+     "title": "",
+     "text": "Let's run that pipeline, that five thing, that test on the documents.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "designer",
+      "why": "Splitter's suggestion: marked Fable when it was split",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:09:25.626Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:09:27.725Z",
+     "updatedAt": "2026-11-25T11:09:27.725Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww0u4a61n2bqc",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/pipeline-test-5-documents.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/pipeline-test-5-documents.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:09:25.626Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:09:27.725Z",
+     "updatedAt": "2026-11-25T11:09:27.725Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1076
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
+   "deleted": true,
+   "deletedAt": "2026-11-25T11:18:58.083Z",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:09:27.725Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-fix-dead-dropdowns-tap-slot",
+   "title": "Orchestrator: fix dead dropdowns + tap a slot to open its build",
+   "category": "",
+   "detail": "1) In the Build orchestrator page on the console app (phone), the filter dropdowns (e.g. 'Any status') do nothing when tapped. Make every dropdown open and filter. 2) In the slots list, tapping a slot row opens that build's detail (steps, status, PR); a free slot does nothing. Send as one build; the VPS splits it.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:08:52.332Z",
+   "updatedAt": "2026-11-25T11:10:21.310Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:09:08.762Z"
+    },
+    {
+     "text": "Deleted (console): Replaced with corrected spec (theme dialogs). Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T11:09:29.669Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (11 Fable, 4 can run beside earlier steps).",
+     "at": "2026-11-25T11:10:21.310Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click this any status, nothing comes up. None of those drop downs do anything. In the tabs that list all the slots, am I supposed to be able to click those and see the build?",
+    "at": "2026-11-25T11:08:52.331Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:10:21.310Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 11,
+     "note": "Split by Claude into 11 steps (11 Fable, 4 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww0v9mm1oo6ki",
+     "title": "",
+     "text": "Reproduce the dead filter dropdowns at phone size: run the console via vite preview with the /api/me mock, open view:build-orchestrator at 412px with touch emulation, tap 'Any status' and every other filter Select, and log what each tap does (whether SelectPopover opens, whether tapConfirm on the surrounding role=toolbar swallows the first tap, whether a pointer handler or z-index/overlay blocks it). Write the root cause and the list of affected dropdowns to _claude/builds/reports/orchestrator-fix-dead-dropdowns-tap-slot.md (findings section).",
+     "model": "Fable",
+     "why": "Root cause likely sits in the shared Select/SelectPopover or tapConfirm framework behaviour used by every app",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-fix-dead-dropdowns-tap-slot.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "designer",
+      "why": "Splitter's suggestion: marked Fable when it was split",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww0v9mm1ptsiu",
+     "title": "",
+     "text": "Fix the root cause in the framework: make Select (framework/react/components/Select.tsx, SelectPopover.tsx) open on a single touch tap everywhere, including inside role=toolbar hosts (form controls are not tap-confirm buttons: exempt them in framework/react/tapConfirm.ts / framework/core/engines/tapconfirm.ts, or fix the pointer/overlay bug found in s1). Keep mouse/keyboard behaviour unchanged; regenerate fixtures if the tapconfirm engine changes and record the Kotlin twin as a deferred gap in framework/spec/PORTING.md.",
+     "model": "Fable",
+     "why": "Changes how a shared framework control and tap-to-confirm behave across every app",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/Select.tsx",
+      "framework/react/components/SelectPopover.tsx",
+      "framework/react/tapConfirm.ts",
+      "framework/core/engines/tapconfirm.ts",
+      "framework/spec/fixtures",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/engines/tapconfirm.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 6,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww0v9mm1qil8j",
+     "title": "",
+     "text": "Add a test for the fix: extend framework/spec/check-tapconfirm.mts (or a new framework/spec/check-select-touch.mts) so a touch tap on a Select inside a toolbar opens it in one tap and a toolbar button still needs two; wire it into CI next to check-tapconfirm.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/check-tapconfirm.mts",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/spec/check-tapconfirm.mts",
+      "framework/spec/check-select-touch.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-tapconfirm.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mww0v9mm1r0e0f",
+     "title": "",
+     "text": "Wire every Build orchestrator filter so choosing a value actually filters the list: check each Select in apps/console-web/plugins/build-orchestrator/web/OrchestratorView.tsx has value + onChange bound to filter state that the build list reads (status, profile, model, priority, any others), and fix any that are unbound or filter on the wrong field.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/OrchestratorView.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mww0v9mm1ske4x",
+     "title": "",
+     "text": "API for the filters: register each filter as a control target (data-axf-target / framework Select settings id) so console_control and console_show can read and set it, and add a deep link view:build-orchestrator?status=…&model=… that opens the page pre-filtered; add a plugin route GET/POST filters in apps/console-web/plugins/build-orchestrator/server so REST, MCP (plugin-commands), CLI (axf console …) and voice can read the current filters and set them.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/OrchestratorView.tsx",
+      "apps/console-web/plugins/build-orchestrator/server",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mww0v9mm1t5qwk",
+     "title": "",
+     "text": "Make busy slot rows open their build: in apps/console-web/plugins/agent-slots/web/SlotsPanel.tsx (and the slots tab inside OrchestratorView.tsx if it draws its own list) make a row holding a build a tappable, keyboard-focusable row that opens that build's detail (steps, status, PR) through the existing orchestrator build detail; a free slot row stays inert with no hover/press affordance. Use framework controls and tokens only.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/agent-slots/web/SlotsPanel.tsx",
+      "apps/console-web/plugins/build-orchestrator/web/OrchestratorView.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mww0v9mm1u8vkn",
+     "title": "",
+     "text": "API for slot-to-build: give each slot row a control address (row:slot-<n>) and an action 'open-build' that resolves the slot's build id and opens view:build-orchestrator/build:<id>; expose the slot→build mapping in agent-slots status (REST route in apps/console-web/plugins/agent-slots/server, MCP plugin command, `node framework/cli/agent-slots.mjs status --json` showing buildId, voice phrase 'open slot N'). Free slot = clear 'slot is free' answer, no navigation.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/agent-slots/server",
+      "apps/console-web/plugins/agent-slots/plugin.json",
+      "apps/console-web/plugins/agent-slots/web/SlotsPanel.tsx",
+      "framework/cli/agent-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mww0v9mm1vjs7y",
+     "title": "",
+     "text": "Plugin tests: add cases to apps/console-web/plugins/build-orchestrator and agent-slots tests for the filters route (set/read filters, deep link parsing) and the slot open-build action (busy slot returns build id, free slot returns free); run check-console-control.mjs, check-toolbars.mjs, check-theme.mjs, check-controls.mjs and plugin-lifecycle check for both plugins and fix findings.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test.py",
+      "apps/console-web/plugins/agent-slots/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5",
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mww0v9mm1wl9g2",
+     "title": "",
+     "text": "Re-bake the framework into the console (rm -rf apps/console-web/src/axf and copy core react ui schemas libs, or framework/cli/rebake.mjs) and any other baked app that rebake.mjs status lists as behind for Select/tapConfirm; typecheck and build apps/console-web.",
+     "model": "Fable",
+     "why": "Contracts: it says \"schemas\"",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "apps/console-web/src/axf",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3",
+      "s8"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"schemas\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mww0v9mm1xj87k",
+     "title": "",
+     "text": "UI Review: shoot the orchestrator page at phone and desktop with a dropdown open and filtered, and the slots list with a busy slot tapped into its build detail; submit through review.mjs submit --kind screen with 3 options as assets (row affordance variants for tappable slots, e.g. chevron / whole-row press / 'Open' chip) under apps/console-web/plugins/agent-slots/assets/, group 'orchestrator-fix-dead-dropdowns-tap-slot - <date>'.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/agent-slots/assets",
+      "_claude/builds/reports/orchestrator-fix-dead-dropdowns-tap-slot"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s9"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mww0v9mm1ytags",
+     "title": "",
+     "text": "Finish: run the full checks (check-tapconfirm, new select touch test, plugin tests, check-theme, check-controls, check-console-control, check-toolbars, tracker.mjs --check), complete _claude/builds/reports/orchestrator-fix-dead-dropdowns-tap-slot.md (root cause, fix, before/after, how each feature is reached by deep link, REST, MCP, CLI and voice), add the THREADS row, push the branch and open the PR saying UI Review is waiting.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"root cause\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-fix-dead-dropdowns-tap-slot.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"root cause\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:10:12.253Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:10:21.310Z",
+     "updatedAt": "2026-11-25T11:10:21.310Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1077
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": true,
+   "deletedAt": "2026-11-25T11:09:29.669Z",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:10:21.310Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-dropdowns-open-theme",
+   "title": "Orchestrator: dropdowns open theme dialogs + tap a slot to open its build",
+   "category": "",
+   "detail": "1) In the Build orchestrator page (console app on phone), every dropdown/filter (e.g. 'Any status') currently does nothing. Each one must open the framework's theme dialog (token-driven colours, sizes, radii like the rest of the framework), listing the options to pick; no native or plain HTML dropdowns. 2) In the slots list, tapping a slot row opens that build's detail (steps, status, PR); a free slot does nothing. Send as one build; the VPS splits it.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:09:37.559Z",
+   "updatedAt": "2026-11-25T11:10:10.056Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:09:50.416Z"
+    },
+    {
+     "text": "Deleted (console): Replaced: build a themed picker library first. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T11:10:10.056Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The drop downs are supposed to turn into dialogues, theme dialogues that were token driven, just like the rest of the framework. Am I supposed to be able to click the slots and see the build?",
+    "at": "2026-11-25T11:09:37.559Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1077
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": true,
+   "deletedAt": "2026-11-25T11:10:10.056Z",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "themed-picker-library-dropdowns",
+   "title": "Themed picker library (dropdowns, calendars, browsers) + use it in the orchestrator",
+   "category": "",
+   "detail": "1) Check whether the framework already has a themed picker/dialog asset library; if not, create one. It is a library of themed, token-driven assets (colours, sizes, radii from the framework tokens like everything else): a dropdown that opens as a theme dialog, a calendar/date picker, browser-style pickers (file/item/icon browsers) and the other common pickers. No native or plain HTML selects. 2) Replace every dropdown/filter on the Build orchestrator page (e.g. 'Any status', which currently does nothing on the phone) with the library's dialog. 3) In the slots list, tapping a slot row opens that build's detail (steps, status, PR); a free slot does nothing. Send as one build; the VPS splits it.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:10:35.459Z",
+   "updatedAt": "2026-11-25T11:14:09.218Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:10:57.831Z"
+    },
+    {
+     "text": "Deleted (console): Duplicate of themed-picker-library-dropdowns-2. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T11:13:48.898Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (14 Fable, 5 can run beside earlier steps).",
+     "at": "2026-11-25T11:14:09.218Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The drop downs are supposed to be a library. It's supposed to include the calendars, the drop downs, and all the other stuff, the browser things. Themed assets that are a library. I think you have to make the library.",
+    "at": "2026-11-25T11:10:35.459Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:14:09.218Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 18,
+     "note": "Split by Claude into 18 steps (14 Fable, 5 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww105he1lu9la",
+     "title": "",
+     "text": "Audit what exists: search framework/react/components, framework/libs, framework/assets and framework/schemas/asset-types.json for any picker, select, dropdown, calendar or browser control and asset type; list every native <select> / <input type=date|file> in apps/console-web/plugins/build-orchestrator; write the findings and the library design (picker kinds, which reuse existing dialog/popup assets) to _claude/memory/docs/picker-library.md",
+     "model": "Fable",
+     "why": "Decides whether a new cross-app asset type is needed and how pickers sit on the dialog/popup contracts",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/memory/docs/picker-library.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"schemas\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww105he1m1tkn",
+     "title": "",
+     "text": "Add the picker@1 asset type to framework/schemas/asset-types.json (kinds: dropdown, multi-select, calendar/date, date-range, time, file browser, item browser, icon browser, colour; presentation dialog|sheet|popover; size, density, search, grouping; skin coverage declaration via parts box/text/icon/items), regenerate framework/schemas/json with axf.mjs schemas",
+     "model": "Fable",
+     "why": "New shared asset type and schema contract used by every app and port",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/asset-types.json",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww105he1nw59n",
+     "title": "",
+     "text": "Reference engine framework/core/engines/picker.ts: compile a picker asset into tokens/CSS vars (only --fx-* tokens, opacity tokens for scrim/hover), plus pure state logic (open/close, filter, keyboard/selection model, multi-select, calendar month grid, range rules) with no DOM",
+     "model": "Fable",
+     "why": "Engine internals that the Kotlin kernel must mirror file for file",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/engines/picker.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/engines/picker.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mww105he1opm5t",
+     "title": "",
+     "text": "Validators and golden fixtures: add picker validation to the JS/TS validators, generate framework/spec/fixtures/picker.json with gen-fixtures.mts, record the Kotlin PickerEngine twin as a deferred gap in framework/spec/PORTING.md (Android on hold)",
+     "model": "Fable",
+     "why": "Cross-port conformance contract for the new engine",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/picker.json",
+      "framework/spec/PORTING.md",
+      "framework/core/validate.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/gen-fixtures.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mww105he1p7noh",
+     "title": "",
+     "text": "Starter assets in framework/assets/picker/: dropdown-dialog, dropdown-sheet (phone), calendar, date-range, time, file-browser, item-browser, icon-browser, colour; each with a description for the glossary; validate with axf.mjs validate --framework",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/assets/picker/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"colour\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mww105he1q2242",
+     "title": "",
+     "text": "Base Picker shell in framework/react/components/pickers/PickerDialog.tsx: opens the picker asset as a theme dialog (framework Dialog/Container, sheet on phone widths), search field, list with tokens only, keyboard + touch, registers data-axf-target addresses; CSS in framework/ui/axf.css picker section using compiled vars only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/PickerDialog.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"css\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mww105he1rw870",
+     "title": "",
+     "text": "Dropdown and MultiSelect controls (framework/react/components/pickers/Dropdown.tsx, MultiSelect.tsx): trigger button styled as fx-btn, value label, clear, opens PickerDialog; works on tap (no native select)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/react/components/pickers/Dropdown.tsx",
+      "framework/react/components/pickers/MultiSelect.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"label\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mww105he1s5jbg",
+     "title": "",
+     "text": "CalendarPicker, DateRangePicker and TimePicker (framework/react/components/pickers/Calendar*.tsx, TimePicker.tsx) driven by the engine month grid, tokens only",
+     "model": "Fable",
+     "why": "Contracts: it says \"engine\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/CalendarPicker.tsx",
+      "framework/react/components/pickers/DateRangePicker.tsx",
+      "framework/react/components/pickers/TimePicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"engine\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mww105he1te4a7",
+     "title": "",
+     "text": "Browser pickers: ItemBrowser (grid/list of items with breadcrumbs), FileBrowser (on an injected listing provider, no fetch inside), IconBrowser (icon pack) and ColourPicker (theme swatches) in framework/react/components/pickers/",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/ItemBrowser.tsx",
+      "framework/react/components/pickers/FileBrowser.tsx",
+      "framework/react/components/pickers/IconBrowser.tsx",
+      "framework/react/components/pickers/ColourPicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"icon\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mww105he1ucn46",
+     "title": "",
+     "text": "Export the library (framework/react/components/pickers/index.ts, framework/react/index.ts), add a check to check-controls.mjs that flags new raw <select>/<input type=date|time|file> in web TSX (ratchet baseline in framework/spec/conform-baseline.json)",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/conform-baseline.json",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/react/components/pickers/index.ts",
+      "framework/react/index.ts",
+      "framework/cli/check-controls.mjs",
+      "framework/spec/conform-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s7",
+      "s8",
+      "s9"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/conform-baseline.json",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mww105he1vs7f3",
+     "title": "",
+     "text": "Picker API: one open-picker command registered as a console action (picker.open {target, kind, options} → returns state; picker.set / picker.state) so any picker is deep-linkable (console_show target `picker:<id>`), readable and settable without the UI; REST via /api/console-control, MCP console_control_*, axf console picker …, voice entries",
+     "model": "Fable",
+     "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/pickerControl.ts",
+      "framework/cli/axf.mjs",
+      "apps/console-web/src/console-control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "cross-cutting",
+      "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mww105he1wi9d8",
+     "title": "",
+     "text": "Rebake the framework into apps/console-web/src/axf (rebake.mjs apply console-web) and run the skin-coverage, theme and toolbar checks for the new type",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s11"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 8,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mww105he1xe964",
+     "title": "",
+     "text": "Build orchestrator page: replace the status filter ('Any status') and every other dropdown/filter (profile, model, priority, sort) with Dropdown/MultiSelect from the library; keep filter state in the plugin's settings keys",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s12"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mww105he1ycu2b",
+     "title": "",
+     "text": "Orchestrator filters API: expose filter state and setters as targets (setting:build-orchestrator.filter.status etc.), REST GET/PUT /api/plugins/build-orchestrator/filters, plugin commands (MCP), orchestrator.mjs filters get|set, voice phrases",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s13"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mww105he1zcxis",
+     "title": "",
+     "text": "Slots list: tapping a busy slot row opens that build's detail (steps, status, PR) in the existing build detail view; free slot rows are inert (no handler, no hover affordance); row targets row:<slot>",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/SlotsList.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s13"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mww105he20szif",
+     "title": "",
+     "text": "Slots API: console action slot.open <n> → console_show of the build detail (error on a free slot), slots state read via REST/MCP/CLI (agent-slots.mjs status --json already) and voice 'open slot N'",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s15",
+      "s14"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mww105he21stw7",
+     "title": "",
+     "text": "Tests: engine fixture check, React picker tests (open/select/close, touch path), orchestrator filter + slot tap tests, check-controls/check-theme/check-console-control/skin-coverage/chrome-assets/catalog --check all green; desktop + phone screenshots of each picker kind and the orchestrator page",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/check-picker.mts",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/check-picker.mts",
+      "apps/console-web/plugins/build-orchestrator/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s16"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-picker.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mww105he228b9x",
+     "title": "",
+     "text": "UI Review submission with 3 option assets for the dropdown dialog look (review.mjs submit --choices), report _claude/builds/reports/themed-picker-library-dropdowns.md (library contents, API per feature, deferred Android twin), THREADS row, push branch and open the PR stating how each feature is reached by REST, MCP, CLI and voice",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"android\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/themed-picker-library-dropdowns.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/build-orchestrator/assets/picker/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s17"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"android\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:14:05.231Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:14:09.218Z",
+     "updatedAt": "2026-11-25T11:14:09.218Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1077
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": true,
+   "deletedAt": "2026-11-25T11:13:48.898Z",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:14:09.218Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "themed-picker-library-dropdowns-2",
+   "title": "Themed picker library (dropdowns, calendars, browsers) + use it in the orchestrator",
+   "category": "",
+   "detail": "Checked first: no shared picker library exists (only apps/console-web/src/dialogs.tsx; no calendar/date picker anywhere). 1) Create a framework library of themed, token-driven picker assets (colours, sizes, radii from framework tokens): dropdown that opens as a theme dialog, calendar/date picker, browser-style pickers (file/item/icon browsers) and other common pickers. No native or plain HTML selects. Build on dialogs.tsx where it fits. 2) Replace every dropdown/filter on the Build orchestrator page (e.g. 'Any status', dead on the phone) with the library's dialog. 3) In the slots list, tapping a slot row opens that build's detail (steps, status, PR); a free slot does nothing. Send as one build; the VPS splits it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:12:34.777Z",
+   "updatedAt": "2026-11-25T11:15:18.209Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:12:53.342Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (17 Fable).",
+     "at": "2026-11-25T11:15:18.209Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The drop downs are supposed to be a library. Calendars, drop downs, the browser things. Themed assets that are a library. I think you have to make the library.",
+    "at": "2026-11-25T11:12:34.777Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-25T11:12:50.529Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:15:18.209Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 18,
+     "note": "Split by Claude into 18 steps (17 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "",
+     "kind": "",
+     "at": "2026-11-25T11:18:39.330Z",
+     "why": "the one build account mossesx-max- is out of API credit until 2026-11-25 13:12 (API overflow is off)"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww11mpt23jet6",
+     "title": "",
+     "text": "Design the picker@1 asset type: add 'picker' to framework/schemas/asset-types.json (kinds dropdown, calendar, date-range, time, browser-file, browser-item, browser-icon, colour; presentation dialog|sheet|popover; size, density, columns, search, multi-select, item template), give it a skin declaration (by: parts via a customize.json style target), place it before uac-policy, then regenerate JSON Schemas with `node framework/cli/axf.mjs schemas`.",
+     "model": "Fable",
+     "why": "New shared asset type and schema contract used across apps and ports",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/customize.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/schemas/asset-types.json",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww11mpt243e7l",
+     "title": "",
+     "text": "Write the picker reference engine framework/core/engines/picker.ts: compile a picker asset into --fx-picker-* tokens from theme/scale tokens only (no literals), plus pure helpers: option filtering/search, keyboard and selection model (single/multi), calendar month grid (week start, min/max, disabled days, ranges) and browser tree paging. Export from framework/core index.",
+     "model": "Fable",
+     "why": "Engine internals that the Kotlin twin must match file for file",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/engines/picker.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/engines/picker.ts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww11mpt25lprp",
+     "title": "",
+     "text": "Add the picker conformance fixture: extend framework/spec/gen-fixtures.mts to emit framework/spec/fixtures/picker.json (token compile, filter, calendar grids incl. leap year and range, selection model), run it, and record the deferred Kotlin twin PickerEngine as a gap in framework/spec/PORTING.md.",
+     "model": "Fable",
+     "why": "Cross-port conformance contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/picker.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/gen-fixtures.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mww11mpt26qkmn",
+     "title": "",
+     "text": "Add starter picker assets in framework/assets/picker/ (dropdown-default, calendar-default, date-range-default, time-default, browser-file-default, browser-item-default, browser-icon-default, colour-default), each with a description; run `node framework/cli/axf.mjs validate --framework` and fix findings.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/picker/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mww11mpt27pxnt",
+     "title": "",
+     "text": "Create the picker library scaffold framework/libs/pickers/ (library manifest, README, index.ts) and the shared PickerDialog shell in framework/react/components/pickers/PickerDialog.tsx: opens as a theme dialog (sheet on phone, dialog on desktop) built on the framework dialog/Container controls, reading only --fx-* / --fx-picker-* tokens, with search field, list region and footer actions; touch-safe (no native select, no hover-only).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/libs/pickers/",
+      "framework/react/components/pickers/PickerDialog.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"scaffold\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mww11mpt28t2xy",
+     "title": "",
+     "text": "Build Dropdown (single + multi, grouped options, search, clear, 'Any' option) in framework/react/components/pickers/Dropdown.tsx: a trigger button (fx-btn) that opens PickerDialog; value/onChange API, aria roles, keyboard nav; settings id + data-axf-target for console control.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/Dropdown.tsx",
+      "framework/libs/pickers/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mww11mpt29ctlo",
+     "title": "",
+     "text": "Build CalendarPicker and DateRangePicker in framework/react/components/pickers/Calendar.tsx on the engine's month grid (month/year switcher, today, min/max, disabled days, range highlight), plus TimePicker in Time.tsx; tokens only.",
+     "model": "Fable",
+     "why": "Contracts: it says \"engine\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/Calendar.tsx",
+      "framework/react/components/pickers/Time.tsx",
+      "framework/libs/pickers/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"engine\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mww11mpt2arh26",
+     "title": "",
+     "text": "Build the browser pickers in framework/react/components/pickers/Browser.tsx: generic ItemBrowser (tree/grid, breadcrumbs, search, paging via a provider callback) with FileBrowser and IconBrowser presets, plus ColourPicker reading theme swatches; tokens only.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/Browser.tsx",
+      "framework/react/components/pickers/Colour.tsx",
+      "framework/libs/pickers/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mww11mpt2bcnn1",
+     "title": "",
+     "text": "Picker API: a runtime registry of open pickers (framework/react/components/pickers/registry.ts) exposing state (open picker, kind, options, value) and actions picker.open / picker.choose / picker.clear / picker.close, registered as console actions + control@1 targets (append new targets last) so REST /api/console-control, MCP console_control_*, `axf console …` and voice reach every picker; deep link `picker:<settings id>`.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/core/control/",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/react/components/pickers/registry.ts",
+      "framework/core/control/",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s8"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/control/",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mww11mpt2c34if",
+     "title": "",
+     "text": "Engine tests: framework/spec/check-pickers.mts runs the engine against fixtures/picker.json and renders each component headless to assert no literal sizes/colours, no <select>/<input type=date>, roles and data-axf-target present; wire it into CI (.github/workflows/android.yml check sweep).",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/check-pickers.mts",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/check-pickers.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s9"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-pickers.mts",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mww11mpt2damh9",
+     "title": "",
+     "text": "Re-bake the framework into the console (rm -rf apps/console-web/src/axf + copy core react ui schemas libs, refresh lock) and run `npm run typecheck` in apps/console-web; fix any break.",
+     "model": "Fable",
+     "why": "Contracts: it says \"schemas\"",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"schemas\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mww11mpt2ehz2s",
+     "title": "",
+     "text": "Inventory every dropdown/filter on the Build orchestrator page (status 'Any status', profile, model, priority, sort and any native select) in apps/console-web/plugins/build-orchestrator/ and replace them with the library's Dropdown; keep the same settings keys and filter state.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s11"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mww11mpt2f1ch3",
+     "title": "",
+     "text": "Replace any date/day filters on the orchestrator page with CalendarPicker/DateRangePicker; expose each filter as a control@1 target + REST read/set route (/api/plugins/build-orchestrator/filters) and a plugin command so MCP, CLI and voice set filters the same as the UI.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/",
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s12"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mww11mpt2g2yet",
+     "title": "",
+     "text": "Slots list: tapping an occupied slot row opens that build's detail (steps, status, PR, what Brett said) in a theme dialog; a free slot does nothing (no cursor, no ripple). Add deep link row:slot/<n> → build:<id> through console_show, a REST read of slot → build, and the slot.open action for MCP/CLI/voice.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/",
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s13"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mww11mpt2hwzc9",
+     "title": "",
+     "text": "Phone check: run the console via vite preview with mocked /api/me and builds, verify every orchestrator dropdown and the slot tap work with CDP touch on a phone viewport; fix anything dead.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s14"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mww11mpt2ia6u1",
+     "title": "",
+     "text": "Run the conformance sweep: check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, check-console-control.mjs, check-skin-coverage.mjs, glossary-index catalog.mjs --check, tracker.mjs --check, check-json-data-writes.mjs; fix findings and add descriptions/help for the new library and asset type.",
+     "model": "Fable",
+     "why": "Contracts: it says \"asset type\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/libs/pickers/",
+      "apps/console-web/plugins/glossary-index/",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s15"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"asset type\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 4,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mww11mpt2jcpyc",
+     "title": "",
+     "text": "UI Review: ship 3 options of the picker look as picker assets (compact list, card grid, sheet) under apps/console-web/plugins/build-orchestrator/assets/picker/, shoot desktop + phone for dropdown, calendar, browser and the orchestrator page, submit with review.mjs submit --choices (group named after the build).",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/picker/",
+      "_claude/builds/reports/themed-picker-library-dropdowns-2/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s16"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mww11mpt2kabnu",
+     "title": "",
+     "text": "Final tests, report and PR: run check-pickers.mts, gen-fixtures diff, console typecheck/build and the plugin tests; write _claude/builds/reports/themed-picker-library-dropdowns-2.md (what was added, API reach per feature: deep link, state, actions via REST/MCP/CLI/voice, Kotlin gap); update the THREADS row; push branch, open the PR saying UI Review is waiting, link it with builds-live.mjs link.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"kotlin\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/themed-picker-library-dropdowns-2.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s17"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"kotlin\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:15:02.127Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:15:18.209Z",
+     "updatedAt": "2026-11-25T11:15:18.209Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1076
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:15:18.209Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "newest-first-orchestrator-plan-studio",
+   "title": "Newest first in the orchestrator and Plan Studio",
+   "category": "",
+   "detail": "Build orchestrator: the current/running build at the very top, then the rest newest first (most recent activity on top). Plan Studio: same order, newest at the top; it is currently the opposite (oldest first). Applies to every list and tab in both, on the phone console app too. Send as one build; the VPS splits it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:14:42.333Z",
+   "updatedAt": "2026-11-25T11:20:19.283Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:15:27.596Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (9 Fable, 2 can run beside earlier steps).",
+     "at": "2026-11-25T11:20:19.283Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need the current build to be at the top of the orchestrator. The most recent at the top. Same thing with Plan Studio. It's the opposite.",
+    "at": "2026-11-25T11:14:42.333Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-25T11:15:17.959Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:20:19.283Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 9,
+     "note": "Split by Claude into 9 steps (9 Fable, 2 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww1830z1lrrjg",
+     "title": "",
+     "text": "Add a shared list-order helper: newestFirst(items, {activityOf, isCurrent}) puts running/current items at the very top, then everything else by most recent activity (updatedAt / last step / createdAt fallback) descending, stable on ties; plus an `order` option (newest|oldest, default newest). Unit test covering running pinned on top, ties, missing timestamps.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/core/list-order.mjs",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/core/list-order.mjs",
+      "framework/spec/check-list-order.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/list-order.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww183101mmqn8",
+     "title": "",
+     "text": "Build orchestrator back end: every list the orchestrator CLI and plugin routes return (builds, pipeline Pending / Queue / Building, history, merge-queue view rows) goes through newestFirst; accept `?order=newest|oldest` on the REST routes and `--order` on orchestrator.mjs / pipeline.mjs list commands, default newest. Never reorders the Queue's dispatch order, only what is shown.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "14 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/server"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 14,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww183101n9w94",
+     "title": "",
+     "text": "Build orchestrator UI: every list and tab (orchestrator list, Pipeline tabs Pending / Queue / Building, Build manager rows, history) renders current/running build first then newest first, using the server order; keep manual Queue moves visible where they are the dispatch order and label that tab's order.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "14 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 14,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mww183101os13v",
+     "title": "",
+     "text": "Plan Studio 2.0 back end: tree.mjs list/export and the plugin routes return plans and items newest first (most recent activity on top, in-progress plan first), with the same `order` param / `--order` flag; existing manual sibling order inside a plan stays untouched unless the list is a flat recency list.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "13 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/tree.mjs",
+      "apps/console-web/plugins/plan-studio-2/server"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 13,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mww183101pcoea",
+     "title": "",
+     "text": "Plan Studio 2.0 UI: every list and tab (plans list, parked, sent-to-build, recent items) shows newest at the top, reading the server order; remove the oldest-first sort in the views.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "13 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 13,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mww183101qe13m",
+     "title": "",
+     "text": "API parity for the order: an `order` setting per plugin (axf.orchestrator.listOrder, axf.planStudio.listOrder; newest|oldest, default newest) readable and settable through REST, MCP plugin commands, `axf console` CLI and voice actions; console_show deep links to each list keep working and the state read reports the current order.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "14 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "apps/console-web/plugins/plan-studio-2/plugin.json",
+      "apps/console-web/plugins/build-orchestrator/web",
+      "apps/console-web/plugins/plan-studio-2/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3",
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 14,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mww183101r75dy",
+     "title": "",
+     "text": "Phone console check: open both plugins at phone width in the console (vite preview + mocked /api/me), confirm every list/tab shows running first then newest first; fix any phone-only list component that sorts separately.",
+     "model": "Fable",
+     "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/plugins/build-orchestrator/web",
+      "apps/console-web/plugins/plan-studio-2/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "cross-cutting",
+      "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mww183101sm9np",
+     "title": "",
+     "text": "Desktop + phone screenshots before/after, submitted to UI Review with --single-option \"list order change requested verbatim; no new visual design\" and the build branch/PR.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "_claude/builds/reports/newest-first-orchestrator-plan-studio"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mww183101tsfu2",
+     "title": "",
+     "text": "Tests and wrap-up: run check-list-order, plugin tests, check-theme, check-controls, check-console-control, tracker --check; write _claude/builds/reports/newest-first-orchestrator-plan-studio.md (what changed, how each list is reached via REST/MCP/CLI/voice/deep link); THREADS row; open the PR.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/newest-first-orchestrator-plan-studio.md",
+      "_claude/THREADS.md",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s8"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:16.199Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:19.283Z",
+     "updatedAt": "2026-11-25T11:20:19.283Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1077
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:20:19.283Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "pipeline-test-5-four-docs-edits-one",
+   "title": "Pipeline test 5: four docs edits + one planted failure",
+   "category": "",
+   "detail": "Test of the pipeline, 5 parts. 1) Add the line 'Pipeline test 5, step 1' at the end of framework/spec/README.md under a 'Pipeline tests' section (create it at the end if missing). Touch no other file. 2) Same with 'Pipeline test 5, step 2' in apps/console-web/README.md. 3) Same with 'Pipeline test 5, step 3' in deploy/README.md; this is the file a planted merge conflict targets (a commit pushed straight to main after the split edits the same 'Pipeline tests' line), so write it exactly as described and let the pipeline pull main in and resolve the clash itself. 4) Same with 'Pipeline test 5, step 4' in _claude/builds/README.md. 5) PLANTED FAILURE: create framework/spec/check-pipeline-test5.mjs, a tiny Node check asserting 1 === 2 (exits non-zero with 'pipeline-test-5 planted failure'), and add it to CI's build engine sweep in .github/workflows/android.yml next to the other node framework/spec/check-*.mjs lines. Leave it wrong on purpose so CI goes red and the lander catches it and fixes or drops the part. Report in _claude/builds/reports/pipeline-test-5.md. Send as one build; the VPS splits it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:19:29.375Z",
+   "updatedAt": "2026-11-25T11:20:42.219Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:19:54.513Z"
+    },
+    {
+     "text": "Split by Claude into 6 steps (6 Fable, 5 can run beside earlier steps).",
+     "at": "2026-11-25T11:20:42.219Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Let's run that pipeline, that five thing, that test on the documents.",
+    "at": "2026-11-25T11:19:29.375Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-25T11:19:51.979Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T11:20:42.219Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 6,
+     "note": "Split by Claude into 6 steps (6 Fable, 5 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mww18kq31uctx7",
+     "title": "",
+     "text": "Append a 'Pipeline tests' section (create it at the end if missing) to framework/spec/README.md containing exactly the line 'Pipeline test 5, step 1'. Touch no other file. Commit and tick.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/README.md",
+     "phase": "",
+     "group": "",
+     "estimate": "3 min",
+     "files": [
+      "framework/spec/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/README.md",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 3,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mww18kq31vpxpo",
+     "title": "",
+     "text": "Append a 'Pipeline tests' section (create it at the end if missing) to apps/console-web/README.md containing exactly the line 'Pipeline test 5, step 2'. Touch no other file. Commit and tick.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"pipeline\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "3 min",
+     "files": [
+      "apps/console-web/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"pipeline\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 3,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mww18kq31w66l9",
+     "title": "",
+     "text": "Append a 'Pipeline tests' section (create it at the end if missing) to deploy/README.md containing exactly the line 'Pipeline test 5, step 3'. Write it exactly as described. This is the target of a planted merge conflict (a commit pushed to main after the split edits the same line), so do not pre-empt it; the pipeline pulls main in and resolves the clash itself. Commit and tick.",
+     "model": "Fable",
+     "why": "Merge clashes: it says \"merge conflict\"",
+     "phase": "",
+     "group": "",
+     "estimate": "3 min",
+     "files": [
+      "deploy/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "merge-clash",
+      "why": "Merge clashes: it says \"merge conflict\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 3,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mww18kq31xfxrb",
+     "title": "",
+     "text": "Append a 'Pipeline tests' section (create it at the end if missing) to _claude/builds/README.md containing exactly the line 'Pipeline test 5, step 4'. Touch no other file. Commit and tick.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"pipeline\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "3 min",
+     "files": [
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"pipeline\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 3,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mww18kq31y5mjw",
+     "title": "",
+     "text": "PLANTED FAILURE: create framework/spec/check-pipeline-test5.mjs, a tiny Node check asserting 1 === 2 that prints 'pipeline-test-5 planted failure' and exits non-zero. Add 'node framework/spec/check-pipeline-test5.mjs' to the build engine sweep in .github/workflows/android.yml next to the other node framework/spec/check-*.mjs lines. Leave it failing on purpose so CI goes red and the lander catches it and fixes or drops the part. Commit and tick.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/check-pipeline-test5.mjs",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "framework/spec/check-pipeline-test5.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/check-pipeline-test5.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 6,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mww18kq31znkxh",
+     "title": "",
+     "text": "Tests, report, THREADS row and PR: confirm each README has exactly its one new line under 'Pipeline tests' and no other files changed (git diff --stat against the base); run node framework/spec/check-pipeline-test5.mjs and record that it fails as planned (expected red). Write _claude/builds/reports/pipeline-test-5.md (the 5 parts, the planted deploy/README.md conflict, the planted CI failure and what the lander is expected to do with each; no UI added, so no API surface). Add the THREADS row and open the PR noting the planted conflict and planted red check.",
+     "model": "Fable",
+     "why": "CI failures: it says \"ci failure\"",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/pipeline-test-5.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "ci-fix",
+      "why": "CI failures: it says \"ci failure\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T11:20:39.468Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T11:20:42.219Z",
+     "updatedAt": "2026-11-25T11:20:42.219Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1078
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T11:20:42.219Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "dispatcher-reads-only-account-routing",
+   "title": "Dispatcher reads only the account routing setting",
+   "category": "",
+   "detail": "Today a separate 'build account' pin (claude-workers buildAccount) silently overrides the Job routing settings: with mossesx-max- pinned and out of credit, turning on 'Console account takes jobs' did nothing and every queued build sat with 6 free slots. Make the dispatcher decide which accounts run builds from one place only, the Job routing settings (workers list, console account takes jobs, API rules). Remove or fold the buildAccount pin into that setting so nothing else overrides it. When the account in use hits a limit, move to the next allowed account automatically. Show the one setting clearly in the console. Send as one build; the VPS splits it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T11:31:54.244Z",
+   "updatedAt": "2026-11-25T11:32:13.654Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T11:32:13.654Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "That shouldn't be like that. It should read the setting, nothing else.",
+    "at": "2026-11-25T11:31:54.244Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-25T11:32:11.455Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1079
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
