@@ -240,14 +240,17 @@ export function passCovering(passes, command, now = Date.now(), opts = {}) {
     && passCoversCall(passCoversOf(p), call) && (!opts.irreversible || passReachesIrreversible(p))) ?? null;
 }
 
+/** A pass tool by name, bare or `<service>.`-qualified: `pass_*` and its old name `token_pass_*`. No pass covers one. */
+export const PASS_TOOL = /(^|\.)(token_)?pass_/;
+
 /**
  * The active pass covering a call axHub holds (any service, any tool), or null: what axHub asks before it skips the
  * hold. `call` = { service?, tool?, target?, irreversible? }; covered when the pass's `covers` names it (decision #120).
- * Never the pass target or a pass_* tool; an irreversible call only under an all pass with include_irreversible.
+ * Never the pass target or a pass tool (pass_*, and token_pass_*, the same tools under their old names); an irreversible call only under an all pass with include_irreversible.
  */
 export function passCoveringCall(passes, call = {}, now = Date.now()) {
   const c = isObj(call) ? call : {};
-  if (c.target === PASS_TARGET || PASS_EXCLUDED_TARGETS.includes(c.target) || /(^|\.)pass_/.test(String(c.tool ?? ''))) return null;
+  if (c.target === PASS_TARGET || PASS_EXCLUDED_TARGETS.includes(c.target) || PASS_TOOL.test(String(c.tool ?? ''))) return null;
   // decision #120: any pass whose `covers` names the call's service, tool or scope (an `all` pass names everything)
   return (Array.isArray(passes) ? passes : []).find((p) => passActive(p, now) && passCoversCall(passCoversOf(p), c) && (!c.irreversible || passReachesIrreversible(p))) ?? null;
 }

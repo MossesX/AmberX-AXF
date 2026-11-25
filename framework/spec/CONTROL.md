@@ -352,6 +352,12 @@ and the publication carry `covers` (`all` or the list) beside the scope's compil
 (`pass.scopes`, `pass_*`, `axhub.pass_grant`); an irreversible command unless `include_irreversible`. The hub's old narrow-pass
 exclusions (destructive, delete-named, explicit-approval tools, `ssh` services, hub namespaces) are withdrawn.
 
+**CI check.** `apps/console-web/plugins/token-control/pass-walk.test.mjs` (in the test workflow) walks every registered tool and
+its policy (the console MCP tools, the control@1 tools and every target × write op, every plugin command, `vps.run`) and fails when
+an active `covers: all` pass leaves a veto, confirm or always-approve call held: by `passCoveringCall` (what the hub asks before a
+countdown, an approval or a notice), by the runner, or by the plugin confirm. The pass tools (`PASS_TOOL`: `pass_*`, `token_pass_*`)
+and irreversible commands must keep their guard. A tool registered later is walked the day it lands.
+
 **Deciding each policy class** (one table, both sides):
 
 | The call would get | Under a covering pass |
