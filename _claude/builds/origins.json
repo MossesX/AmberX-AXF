@@ -393,6 +393,18 @@
    "from": "",
    "addenda": []
   },
+  "always-show-build-s-parts-even-while": {
+   "said": "I want the splits to always be shown, even when it's combined, recombined.",
+   "at": "2026-11-24T21:23:17.993Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amber-chat-asset": {
    "said": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
    "at": "2026-11-07T12:30:40.602Z",
@@ -2278,6 +2290,18 @@
    "from": "",
    "addenda": []
   },
+  "clash-answer-run-all-defer-buttons-plus": {
+   "said": "Make a session that makes that button. You run it.",
+   "at": "2026-11-25T04:58:19.585Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-account-switcher": {
    "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
    "at": "2026-11-04T23:57:00.641Z",
@@ -2592,6 +2616,18 @@
    "link": "",
    "by": "console-app-part-4-console-side-safe",
    "brief": "# Build: console-app-part-4-console-side-safe\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:41:32.589Z\n> split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel\n\n## What to build\nContinue build \"Console app part 4: console-side safe areas and wrapper support\" (console-app-part-4-console-side-safe) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:41):\n\"split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (7 left, ~1.2 h):\n[ ] s1 (~10 min) Parallel part 4 of 4 of console-android-app-thin-webview-wrapper (parent). Web console side only (apps/console-web, framework).\n[ ] s2 (~10 min) viewport-fit=cover, and every top bar, banner, toolbar, menu bar and bottom nav padded with env(safe-area-inset-*) through framework tokens, so nothing is ever drawn under the clock, camera cutout or notification shade (Brett's screenshots: the AmberX title/search/menu sat under the status bar).\n[ ] s3 (~10 min) Detects when it's running in the wrapper (window.axfNative) and uses native features when present, falling back gracefully in a browser.\n[ ] s4 (~10 min) Auto-update path so the wrapper always loads the live console.\n[ ] s5 (~10 min) Tests, including a CI check for safe-area padding on top and bottom bars. Help, Shipped features.\n[ ] s6 (~10 min) split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel\n[ ] s7 (~10 min) Tests green, report _claude/builds/reports/console-app-part-4-console-side-safe.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/console-app-part-4-console-side-safe.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-app-part-4-console-side-safe <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-app-part-4-console-side-safe --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step console-app-part-4-console-side-safe <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-app-part-4-console-side-safe \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "console-app-tabs-small": {
+   "said": "It should not be 22 steps to add tabs.",
+   "at": "2026-11-25T04:43:42.901Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3518,6 +3554,18 @@
    "from": "",
    "addenda": []
   },
+  "fast-stale-check-page-load-build-store": {
+   "said": "It's supposed to just search for stale things. Just check the build store real quick. It shouldn't run everything against GitHub, that's ridiculous. It takes 20 minutes for the page to load sometimes.",
+   "at": "2026-11-24T23:38:19.363Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "feature-matrix": {
    "said": "Make a plugin to build a feature matrix just like this [the windows-terminal scope list: https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS] for every build and put hooks to them in every builds grid in orchestrator, pending, queued, build manager, etc. I need to be able to access its associated matrix from any entry in any grid. All matrix are compiled into 1 dataset that lists each one in expandable rows that open to display its matrix. The grid has column with date added and time cost to build generated by the matrix. When matrix changes an apply button lights up that updates the status across all tables. Nothing is ever removed only set for skip when time comes to build. They can be added removed whenever they never leave the matrix.",
    "at": "2026-10-28",
@@ -3550,6 +3598,18 @@
    "link": "",
    "by": "file-watchdog-plugin-watch-files-run-scripts-or",
    "brief": "# Build: file-watchdog-plugin-watch-files-run-scripts-or\n\n## Brett said (verbatim)\nAt: 2026-11-09T18:43:22.318Z\n> I need a watchdog plugin that I can tell to watch files for changes without using AI. I need it to run scripts, or run commands on the console. It can use AI, but it doesn't have to. I can give it a prompt to use AI, and switch it to enable AI.\n\n## What to build\nContinue build \"File watchdog plugin: watch files, run scripts or console commands, optional AI prompt (off by default)\" (file-watchdog-plugin-watch-files-run-scripts-or) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 18:43):\n\"I need a watchdog plugin that I can tell to watch files for changes without using AI. I need it to run scripts, or run commands on the console. It can use AI, but it doesn't have to. I can give it a prompt to use AI, and switch it to enable AI.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) New console plugin. Core runs with zero AI: watch files or folders (paths, globs) on the VPS/repo for changes (created, modified, deleted) using inotify/fs.watch. Add/remove watches by voice, API (control@1) and UI. Each watch has one or more actions when it fires: notify AmberX/console, run a script, run a shell command (VPS, same approval/policy as other VPS writes), run console commands (control@1 / plugin-commands, e.g. open a screen, queue a build). Optional AI action, OFF by default with a per-watch 'Enable AI' switch: Brett gives it a prompt; when it fires, it sends the prompt plus the changed path, event and diff to Claude (account/model picked through the orchestrator's routing and caps, cost logged). Pass changed path and event type to every action. Log every event and action result. Settings per watch: debounce, recursive, ignore patterns, enabled. List of active watches and recent events. Skip non-essential steps like screenshots (mark them skipped, keep the step).\n[ ] s2 (~30 min) I need a watchdog plugin that I can tell to watch files for changes without using AI. I need it to run scripts, or run commands on the console. It can use AI, but it doesn't have to. I can give it a prompt to use AI, and switch it to enable AI.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/file-watchdog-plugin-watch-files-run-scripts-or.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/file-watchdog-plugin-watch-files-run-scripts-or.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step file-watchdog-plugin-watch-files-run-scripts-or <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link file-watchdog-plugin-watch-files-run-scripts-or --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-1 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step file-watchdog-plugin-watch-files-run-scripts-or <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note file-watchdog-plugin-watch-files-run-scripts-or \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "find-fix-why-ci-stalls-lander-one-part": {
+   "said": "Why is it getting stuck in CI if it's merging without conflicts? What are we gonna do about that to get the pipeline running smooth?",
+   "at": "2026-11-25T02:02:33.437Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "find-fix-why-ci-stalls-lander-one-part--s1",
+   "brief": "# Find and fix why CI stalls on lander one-part PRs: step s1\n\nBuild find-fix-why-ci-stalls-lander-one-part (Pipeline 2.0), step s1 of 2. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/find-fix-why-ci-stalls-lander-one-part--s1 (already cut from main) · branch claude/find-fix-why-ci-stalls-lander-one-part--s1.\n\n## Your step\n- Collect the evidence for PRs 915, 916 and 917 in the report, read-only through the token broker. For each head sha list the check runs, commit statuses and android.yml workflow runs (event, head_sha, status, conclusion, created/started/finished times). Add main's required checks from branch protection or rulesets, plus how and when each PR finally merged. Read other heads of these PRs too if the head moved. Commit as a table in the report.\n- Trace the running-ci path in deploy/lander/run.mjs and the modules it imports: lightOnly, the once-per-head dispatch and where its marker is stored, how 'missing' required checks are worked out, ciTimedOut, and what state each branch leads to. Compare it with the lander's log and stored state for parts 7, 8 and 9. Add the timeline to the report: what the lander saw and decided on each tick, and where it stopped moving.\n- Trace the workflow side in .github/workflows: which triggers, branch and path filters, job if-conditions and concurrency groups apply to lander/* branches for pull_request and workflow_dispatch; which check names each run reports and on which sha; whether a push by the app token starts a run at all; whether concurrency cancels the dispatched run. Compare the reported names with the lander's required list and main's protection. End with the proven root cause, the hypotheses ruled out with evidence, and the chosen fix, in the report.\n- Prove the fix on real data: run the new decision code read-only (no dispatch, no merge) against the recorded heads and any lander/* PR open now, and check that a workflow_dispatch run on a lander/* head reports every required name using runs that already exist. Write before and after per PR in the report, with what can only be confirmed by the next real landing and how to check it. Never merge or update a PR by hand.\n- Tests, report, THREADS row and PR: run the lander tests, check-landing-line.mjs, check-gate-rules.mjs and check-json-data-writes.mjs; finish _claude/builds/reports/\n\nFiles: _claude/builds/reports/find-fix-why-ci-stalls-lander-one-part.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nRefresh-fix parts 7, 8 and 9 (PRs 915, 916, 917) all sat for 2+ hours with mergeable_state 'unstable' and never merged by themselves. Find the real cause: read the check runs on those heads and the lander's running-ci logic in deploy/lander/run.mjs (lightOnly -> dispatches the full run once per head; 'missing' required checks; ciTimedOut). Likely the full workflow_dispatch run never starts or never reports on lander/* branches, or a required check name doesn't match. Fix the cause so lander PRs go green and merge by themselves, and add a test. Pairs with watchdog-catches-lander-prs-stuck-ci (the safety net).\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -5052,6 +5112,18 @@
    "from": "",
    "addenda": []
   },
+  "lander-marks-each-part-merged-when-pr": {
+   "said": "The lander can set the status for each step, right? Find out why, fix it.",
+   "at": "2026-11-24T23:41:39.513Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "lander-regenerates-generated-files-clash": {
    "said": "the voice control still isn't done; land what's completed",
    "at": "2026-11-13T20:47:11.569Z",
@@ -5060,6 +5132,18 @@
    "link": "",
    "by": "lander-regenerates-generated-files-clash",
    "brief": "# Build: lander-regenerates-generated-files-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:47:11.569Z\n> the voice control still isn't done; land what's completed\n\n## What to build\nContinue build \"Lander regenerates generated files on clash\" (lander-regenerates-generated-files-clash) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:47):\n\"the voice control still isn't done; land what's completed\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link lander-regenerates-generated-files-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note lander-regenerates-generated-files-clash \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "lander-updates-every-part-s-status-store": {
+   "said": "Anytime it has to put something up, it has to update everything. If a single build breaks and has to get split up, it needs to update the store accordingly.",
+   "at": "2026-11-24T23:42:21.656Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -6543,6 +6627,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-each-step-row-expands-to": {
+   "said": "Why can't I expand these steps in the orchestrator? I can only see the list of 11 steps, but I can't expand the steps themselves to see what's going on in the PR.",
+   "at": "2026-11-24T23:43:23.879Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-gate": {
    "said": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
    "at": "",
@@ -6587,6 +6683,18 @@
    "link": "",
    "by": "Landin' Lenny",
    "brief": "# Build: orchestrator-merge-first-switch-separate-merger\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:21:49.158Z\n> I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n\n## What to build\nContinue build \"Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds\" (orchestrator-merge-first-switch-separate-merger) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:21):\n\"I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.\n[ ] s2 (~30 min) I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-merge-first-switch-separate-merger --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-merge-first-switch-separate-merger \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-never-shows-stale-step": {
+   "said": "How can that even be stale? If their page loads, it should check for stale stuff. It shouldn't load stale stuff ever because it should find it when it loads.",
+   "at": "2026-11-24T23:37:00.247Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -8670,6 +8778,18 @@
    "from": "",
    "addenda": []
   },
+  "run-more-than-one-build-time-when-they": {
+   "said": "I want to be able to run more than one build at a time as long as they don't conflict.",
+   "at": "2026-11-25T04:31:14.625Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "saved-claude-logins-never-end-up-on-a-spent-refr": {
    "said": "Why is it expiring when it gets a new refresh token every time? ... Okay, we need to do something about that so it doesn't happen.",
    "at": "2026-11-09T20:14:49.766Z",
@@ -9656,6 +9776,18 @@
    "session": "",
    "link": "",
    "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "tabs-console-app-more-than-one-console": {
+   "said": "I need to make tabs in the app so I can have more than one console page open at a time. I need tabs in the console app.",
+   "at": "2026-11-25T04:28:25.615Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -10833,6 +10965,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-writes-every-status-change-to-build": {
+   "said": "Any change in the status on the VPS needs to update the store immediately before anything else, before it even logs the fail. Before it even finishes the step, it needs to update the status in the build store.",
+   "at": "2026-11-24T23:39:47.041Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "walkthrough-chapters": {
    "said": "break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
    "at": "2026-11-02",
@@ -10918,6 +11062,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "watchdog-catches-lander-prs-stuck-ci": {
+   "said": "So what are we gonna do about this problem so it doesn't keep happening? Don't we have a watchdog for this?",
+   "at": "2026-11-24T21:25:18.141Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "watchdog-catches-lander-prs-stuck-ci--s2",
+   "brief": "# Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed: step s2\n\nBuild watchdog-catches-lander-prs-stuck-ci (Pipeline 2.0), step s2 of 3. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/watchdog-catches-lander-prs-stuck-ci--s2 (already cut from main) · branch claude/watchdog-catches-lander-prs-stuck-ci--s2.\n\n## Your step\nSo what are we gonna do about this problem so it doesn't keep happening? Don't we have a watchdog for this?\n\n## The build\nToday refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "watchdog-plugin-owns-every-vps": {

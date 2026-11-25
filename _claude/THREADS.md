@@ -844,162 +844,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-24 00:31 UTC · `console-idle-load-fix` → pr-pulling-main (all) · lander
-- 2026-11-24 00:31 UTC · `console-idle-load-fix` → running-ci (all) · lander
-- 2026-11-24 01:00 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 01:01 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 01:02 UTC · `console-idle-load-fix` → merging-pr, note (all) · lander
-- 2026-11-24 01:03 UTC · `console-idle-load-fix` → landed, merged, note (all) · lander
-- 2026-11-24 01:03 UTC · `pipeline-sync-hand-2` added (1 steps) (all) · Greenlight Gina
-- 2026-11-24 01:03 UTC · `console-idle-load-fix` note (all) · orchestrator
-- 2026-11-24 01:04 UTC · `psync-a-core` added (1 steps) (all) · Reel Rhonda
-- 2026-11-24 01:04 UTC · `psync-b-server-lander` added (1 steps) (all) · Janitor Joey
-- 2026-11-24 01:04 UTC · `pipeline-sync-live-badges` note (all) · voice-claude
-- 2026-11-24 01:05 UTC · `psync-c-planstudio` added (1 steps) (all) · Ping Paulie
-- 2026-11-24 01:05 UTC · `psync-d-orch-ui` added (1 steps) (all) · Snap Sully
-- 2026-11-24 01:05 UTC · `urgent-all-data-to-postgres-builds-store` → landed, note (all) · watchdog
-- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → landed, note (all) · watchdog
-- 2026-11-24 01:06 UTC · `rebuild-fresh-main-phone-connect-small` → landed, note (all) · watchdog
-- 2026-11-24 01:06 UTC · `apk-stable-signing` added (1 steps) (all) · Earl the Ear
-- 2026-11-24 01:06 UTC · `guided-live-demo-test-watch-orchestrator` → landed, note (all) · watchdog
-- 2026-11-24 01:06 UTC · `orchestrator-stale-row-watchdog-vps` → complete, note (all) · verify
-- 2026-11-24 01:07 UTC · `psync-a-core-2` added (1 steps) (all) · Greenlight Gina
-- 2026-11-24 01:07 UTC · `rebuild-fresh-main-phone-connect-small` → complete, note (all) · verify
-- 2026-11-24 01:07 UTC · `guided-live-demo-test-watch-orchestrator` → complete, note (all) · verify
-- 2026-11-24 01:07 UTC · `pipeline-sync-hand-2` → failed, note (all) · orchestrator
-- 2026-11-24 01:07 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · verify
-- 2026-11-24 01:08 UTC · `psync-a-core` → failed, note (all) · orchestrator
-- 2026-11-24 01:30 UTC · `psync-d-orch-ui` → build-complete, note (all) · headless
-- 2026-11-24 01:30 UTC · `psync-d-orch-ui` note (all) · orchestrator
-- 2026-11-24 01:31 UTC · `psync-d-orch-ui` note (all) · orchestrator
-- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → merging-pr, note (all) · lander
-- 2026-11-24 01:31 UTC · `psync-d-orch-ui` PR 903 (all) · lander
-- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → pr-pulling-main (all) · lander
-- 2026-11-24 01:31 UTC · `psync-d-orch-ui` → running-ci (all) · lander
-- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
-- 2026-11-24 01:33 UTC · `psync-c-planstudio` note (all) · orchestrator
-- 2026-11-24 01:33 UTC · `psync-c-planstudio` → build-complete, note (all) · headless
-- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
-- 2026-11-24 01:35 UTC · `psync-b-server-lander` → build-complete, note (all) · headless
-- 2026-11-24 01:35 UTC · `psync-b-server-lander` note (all) · orchestrator
-- 2026-11-24 01:41 UTC · `pipeline-sync-live-badges` note (all) · psync-a-core-2
-- 2026-11-24 01:42 UTC · `psync-a-core-2` note (all) · orchestrator
-- 2026-11-24 01:42 UTC · `psync-a-core-2` s1 done (all) · headless
-- 2026-11-24 01:43 UTC · `psync-a-core-2` → build-complete, note (all) · headless
-- 2026-11-24 01:43 UTC · `psync-a-core-2` note (all) · orchestrator
-- 2026-11-24 01:44 UTC · `psync-c-planstudio` → merging-pr, note (all) · lander
-- 2026-11-24 01:44 UTC · `psync-c-planstudio` PR 904 (all) · lander
-- 2026-11-24 01:44 UTC · `psync-c-planstudio` → pr-pulling-main (all) · lander
-- 2026-11-24 01:44 UTC · `psync-c-planstudio` → running-ci (all) · lander
-- 2026-11-24 01:44 UTC · `psync-c-planstudio` note (all) · watchdog
-- 2026-11-24 01:46 UTC · `psync-b-server-lander` → merging-pr, note (all) · lander
-- 2026-11-24 01:46 UTC · `psync-b-server-lander` PR 905 (all) · lander
-- 2026-11-24 01:46 UTC · `psync-b-server-lander` → pr-pulling-main (all) · lander
-- 2026-11-24 01:46 UTC · `psync-b-server-lander` → running-ci (all) · lander
-- 2026-11-24 01:46 UTC · `psync-b-server-lander` note (all) · watchdog
-- 2026-11-24 01:54 UTC · `psync-a-core-2` → merging-pr, note (all) · lander
-- 2026-11-24 01:54 UTC · `psync-a-core-2` PR 906 (all) · lander
-- 2026-11-24 01:54 UTC · `psync-a-core-2` → pr-pulling-main (all) · lander
-- 2026-11-24 01:54 UTC · `psync-a-core-2` → running-ci (all) · lander
-- 2026-11-24 01:54 UTC · `psync-a-core-2` note (all) · watchdog
-- 2026-11-24 02:02 UTC · `psync-d-orch-ui` → failed, note (all) · lander
-- 2026-11-24 02:13 UTC · `psync-c-planstudio` → failed, note (all) · lander
-- 2026-11-24 02:21 UTC · `psync-b-server-lander` → failed, note (all) · lander
-- 2026-11-24 02:22 UTC · `psync-a-core-2` → failed, note (all) · lander
-- 2026-11-24 02:23 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
-- 2026-11-24 02:24 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
-- 2026-11-24 02:25 UTC · `psync-b-server-lander` note (all) · lander
-- 2026-11-24 02:26 UTC · `psync-a-core-2` → running-ci, note (all) · lander
-- 2026-11-24 02:41 UTC · `psync-d-orch-ui` → failed, note (all) · lander
-- 2026-11-24 02:42 UTC · `psync-c-planstudio` → failed, note (all) · lander
-- 2026-11-24 02:43 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
-- 2026-11-24 02:44 UTC · `psync-a-core-2` → failed, note (all) · lander
-- 2026-11-24 02:45 UTC · `apk-stable-signing` note (all) · orchestrator
-- 2026-11-24 02:45 UTC · `apk-stable-signing` → archived, note (all) · headless
-- 2026-11-24 02:45 UTC · `psync-d-orch-ui` note (all) · lander
-- 2026-11-24 02:46 UTC · `psync-c-planstudio` note (all) · lander
-- 2026-11-24 02:56 UTC · `psync-b-server-lander` → failed, note (all) · lander
-- 2026-11-24 02:57 UTC · `psync-a-core-2` note (all) · lander
-- 2026-11-24 02:58 UTC · `psync-d-orch-ui` → running-ci, note (all) · lander
-- 2026-11-24 02:59 UTC · `psync-c-planstudio` → running-ci, note (all) · lander
-- 2026-11-24 03:00 UTC · `psync-b-server-lander` → running-ci, note (all) · lander
-- 2026-11-24 03:01 UTC · `psync-a-core-2` → running-ci, note (all) · lander
-- 2026-11-24 03:15 UTC · `psync-d-orch-ui` → failed, note (all) · lander
-- 2026-11-24 03:21 UTC · `psync-c-planstudio` → failed, note (all) · lander
-- 2026-11-24 03:22 UTC · `psync-b-server-lander` → failed, note (all) · lander
-- 2026-11-24 03:27 UTC · `pipeline-test-3-docs` added (0 steps) (all) · mcp
-- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → splitting (all) · orchestrator
-- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` → split, note (all) · orchestrator
-- 2026-11-24 03:28 UTC · `pipeline-test-3-docs` note (all) · orchestrator
-- 2026-11-24 03:30 UTC · `psync-a-core-2` → failed, note (all) · lander
-- 2026-11-24 03:30 UTC · `psync-b-server-lander` note (all) · lander
-- 2026-11-24 03:31 UTC · `psync-c-planstudio` note (all) · lander
-- 2026-11-24 03:31 UTC · `psync-a-core-2` note (all) · lander
-- 2026-11-24 03:32 UTC · `psync-d-orch-ui` note (all) · lander
-- 2026-11-24 03:58 UTC · `orchestrator-settings-collapsible-split` note (all) · lander
-- 2026-11-24 04:01 UTC · `plan-studio-2-open-button-working-deep` → archived, note (all) · cron
-- 2026-11-24 04:01 UTC · `every-plugin-gets-own-default-toolbar` → archived, note (all) · cron
-- 2026-11-24 04:01 UTC · `stop-push-storm-builds-live-pushes-build` → archived, note (all) · cron
-- 2026-11-24 10:40 UTC · `fix907-ci` added (1 steps) (all) · Reel Rhonda
-- 2026-11-24 12:03 UTC · `fix907-ci` s1 done (all) · headless
-- 2026-11-24 12:03 UTC · `fix907-ci` → build-complete, note (all) · headless
-- 2026-11-24 12:03 UTC · `fix907-ci` note (all) · orchestrator
-- 2026-11-24 12:04 UTC · `fix907-ci` note (all) · orchestrator
-- 2026-11-24 12:04 UTC · `fix907-ci` → merging-pr, note (all) · lander
-- 2026-11-24 12:04 UTC · `fix907-ci` PR 908 (all) · lander
-- 2026-11-24 12:04 UTC · `fix907-ci` → pr-pulling-main (all) · lander
-- 2026-11-24 12:04 UTC · `fix907-ci` → running-ci (all) · lander
-- 2026-11-24 12:10 UTC · `fix907-ci` → merging-pr, note (all) · lander
-- 2026-11-24 12:10 UTC · `fix907-ci` merged, note (all) · reconciler
-- 2026-11-24 12:11 UTC · `fix907-ci` note (all) · orchestrator
-- 2026-11-24 12:19 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · cli
-- 2026-11-24 12:19 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · cli
-- 2026-11-24 12:19 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · cli
-- 2026-11-24 12:19 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · cli
-- 2026-11-24 12:19 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · cli
-- 2026-11-24 12:30 UTC · `pipeline-test-5-four-docs-edits-planted` added (5 steps) (all) · claude
-- 2026-11-24 12:31 UTC · `pipeline-test-5-four-docs-edits-planted` → archived (all) · claude
-- 2026-11-24 12:31 UTC · `pipeline-test-5` added (0 steps) (all) · claude
-- 2026-11-24 12:31 UTC · `pipeline-test-5` → splitting (all) · orchestrator
-- 2026-11-24 12:31 UTC · `pipeline-test-5` → split, note (all) · orchestrator
-- 2026-11-24 12:32 UTC · `fix907-ci` → landed, note (all) · lander
-- 2026-11-24 12:32 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
-- 2026-11-24 12:32 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
-- 2026-11-24 12:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
-- 2026-11-24 12:32 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
-- 2026-11-24 12:32 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
-- 2026-11-24 12:34 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
-- 2026-11-24 12:34 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
-- 2026-11-24 12:34 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
-- 2026-11-24 12:34 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
-- 2026-11-24 12:34 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
-- 2026-11-24 12:35 UTC · `banner-widget-shapes-plus-change-icon` → failed, note (all) · watchdog
-- 2026-11-24 12:35 UTC · `terminal-main-tab-streaming-console-s` → failed, note (all) · watchdog
-- 2026-11-24 12:35 UTC · `icon-picker-every-banner-settings-widget` → failed, note (all) · watchdog
-- 2026-11-24 12:35 UTC · `flagship-professional-skin-covering-2` → failed, note (all) · watchdog
-- 2026-11-24 12:35 UTC · `auto-lander-never-wait-missing-ui-review` → failed, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → pending, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `auto-lander-never-wait-missing-ui-review` → pending, note (all) · watchdog
-- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → splitting (all) · orchestrator
-- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → splitting (all) · orchestrator
-- 2026-11-24 12:36 UTC · `banner-widget-shapes-plus-change-icon` → split, note (all) · orchestrator
-- 2026-11-24 12:36 UTC · `terminal-main-tab-streaming-console-s` → split (all) · orchestrator
-- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → splitting (all) · orchestrator
-- 2026-11-24 12:36 UTC · `icon-picker-every-banner-settings-widget` → split, note (all) · orchestrator
-- 2026-11-24 12:36 UTC · `flagship-professional-skin-covering-2` → splitting (all) · orchestrator
-- 2026-11-24 12:37 UTC · `flagship-professional-skin-covering-2` → split (all) · orchestrator
-- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → splitting (all) · orchestrator
-- 2026-11-24 12:37 UTC · `auto-lander-never-wait-missing-ui-review` → split (all) · orchestrator
-- 2026-11-24 12:38 UTC · `banner-widget-shapes-plus-change-icon` note (all) · builds-live
-- 2026-11-24 12:38 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
-- 2026-11-24 12:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · builds-live
-- 2026-11-24 12:38 UTC · `flagship-professional-skin-covering-2` note (all) · builds-live
-- 2026-11-24 12:38 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · builds-live
 - 2026-11-24 12:40 UTC · `banner-widget-shapes-plus-change-icon` s1 done, s2 done, s3 done, s4 done, s5 done, note (all) · reconciler
 - 2026-11-24 12:40 UTC · `terminal-main-tab-streaming-console-s` s1 done, s2 done, s3 done, s14 done, note (all) · reconciler
 - 2026-11-24 12:40 UTC · `icon-picker-every-banner-settings-widget` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · reconciler
@@ -1244,6 +1088,162 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-24 21:18 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 21:21 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
 - 2026-11-24 21:22 UTC · `drop-failed-part-remove-feature-whose` added (0 steps) (all) · console
+- 2026-11-24 21:23 UTC · `drop-failed-part-remove-feature-whose` note (all) · orchestrator
+- 2026-11-24 21:23 UTC · `always-show-build-s-parts-even-while` added (0 steps) (all) · console
+- 2026-11-24 21:24 UTC · `drop-failed-part-remove-feature-whose` → queued, note (all) · auto-queue (slots free)
+- 2026-11-24 21:24 UTC · `drop-failed-part-remove-feature-whose` note (all) · dispatcher
+- 2026-11-24 21:24 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:25 UTC · `watchdog-catches-lander-prs-stuck-ci` added (0 steps) (all) · console
+- 2026-11-24 21:25 UTC · `always-show-build-s-parts-even-while` note (all) · orchestrator
+- 2026-11-24 21:27 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:27 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-24 21:30 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:34 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:36 UTC · `always-show-build-s-parts-even-while` note (all) · watchdog
+- 2026-11-24 21:38 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:38 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-24 21:39 UTC · `always-show-build-s-parts-even-while` note (all) · watchdog
+- 2026-11-24 21:40 UTC · `fix-refreshing-console-jumps-back` → failed (all) · lander
+- 2026-11-24 21:40 UTC · `always-show-build-s-parts-even-while` → failed, note (all) · watchdog
+- 2026-11-24 21:40 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 21:40 UTC · `always-show-build-s-parts-even-while` → split, note (all) · orchestrator
+- 2026-11-24 21:41 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 21:42 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-24 21:43 UTC · `watchdog-catches-lander-prs-stuck-ci` → failed, note (all) · watchdog
+- 2026-11-24 21:43 UTC · `watchdog-catches-lander-prs-stuck-ci` → split, note (all) · orchestrator
+- 2026-11-24 23:34 UTC · `fix-refreshing-console-jumps-back` → merging-pr (all) · lander
+- 2026-11-24 23:35 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 23:35 UTC · `fix-refreshing-console-jumps-back` → failed (all) · lander
+- 2026-11-24 23:36 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-24 23:37 UTC · `orchestrator-never-shows-stale-step` added (0 steps) (all) · console
+- 2026-11-24 23:38 UTC · `orchestrator-never-shows-stale-step` note, removed (all) · console
+- 2026-11-24 23:39 UTC · `vps-writes-every-status-change-to-build` added (0 steps) (all) · console
+- 2026-11-24 23:40 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-24 23:41 UTC · `fix-refreshing-console-jumps-back` merged, note (all) · reconciler
+- 2026-11-24 23:41 UTC · `orchestrator-never-shows-stale-step` note (all) · orchestrator
+- 2026-11-24 23:41 UTC · `lander-marks-each-part-merged-when-pr` added (0 steps) (all) · console
+- 2026-11-24 23:42 UTC · `lander-updates-every-part-s-status-store` added (0 steps) (all) · console
+- 2026-11-24 23:42 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-24 23:43 UTC · `orchestrator-each-step-row-expands-to` added (0 steps) (all) · console
+- 2026-11-24 23:43 UTC · `orchestrator-each-step-row-expands-to` note, removed (all) · console
+- 2026-11-24 23:43 UTC · `vps-writes-every-status-change-to-build` note (all) · orchestrator
+- 2026-11-24 23:44 UTC · `lander-marks-each-part-merged-when-pr` note (all) · orchestrator
+- 2026-11-24 23:46 UTC · `lander-updates-every-part-s-status-store` → queued, note (all) · console
+- 2026-11-24 23:46 UTC · `lander-marks-each-part-merged-when-pr` → queued, note (all) · console
+- 2026-11-24 23:48 UTC · `fix-refreshing-console-jumps-back` PR 917 (all) · lander
+- 2026-11-24 23:53 UTC · `lander-updates-every-part-s-status-store` note (all) · orchestrator
+- 2026-11-24 23:54 UTC · `vps-writes-every-status-change-to-build` note (all) · watchdog
+- 2026-11-24 23:58 UTC · `vps-writes-every-status-change-to-build` note (all) · watchdog
+- 2026-11-24 23:59 UTC · `vps-writes-every-status-change-to-build` → failed, note (all) · watchdog
+- 2026-11-24 23:59 UTC · `vps-writes-every-status-change-to-build` → split, note (all) · orchestrator
+- 2026-11-25 02:02 UTC · `find-fix-why-ci-stalls-lander-one-part` added (0 steps) (all) · console
+- 2026-11-25 02:02 UTC · `fix-refreshing-console-jumps-back` PR 918 (all) · lander
+- 2026-11-25 02:03 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 02:14 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · watchdog
+- 2026-11-25 02:18 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · watchdog
+- 2026-11-25 02:19 UTC · `find-fix-why-ci-stalls-lander-one-part` → failed, note (all) · watchdog
+- 2026-11-25 02:19 UTC · `find-fix-why-ci-stalls-lander-one-part` → split, note (all) · orchestrator
+- 2026-11-25 04:23 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · admin
+- 2026-11-25 04:23 UTC · `fix-refreshing-console-jumps-back` PR 919 (all) · lander
+- 2026-11-25 04:23 UTC · `find-fix-why-ci-stalls-lander-one-part` → pulling-main (all) · orchestrator
+- 2026-11-25 04:24 UTC · `find-fix-why-ci-stalls-lander-one-part` branch lander/find-fix-why-ci-stalls-lander-one-part, PR 920, note (all) · orchestrator
+- 2026-11-25 04:25 UTC · `find-fix-why-ci-stalls-lander-one-part` → assigning-models (all) · orchestrator
+- 2026-11-25 04:25 UTC · `find-fix-why-ci-stalls-lander-one-part` → ready, note (all) · orchestrator
+- 2026-11-25 04:25 UTC · `find-fix-why-ci-stalls-lander-one-part` → sending (all) · orchestrator
+- 2026-11-25 04:26 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:26 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:27 UTC · `find-fix-why-ci-stalls-lander-one-part` → building (all) · orchestrator
+- 2026-11-25 04:27 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · watchdog
+- 2026-11-25 04:28 UTC · `tabs-console-app-more-than-one-console` added (0 steps) (all) · console
+- 2026-11-25 04:29 UTC · `tabs-console-app-more-than-one-console` → queued, note (all) · console
+- 2026-11-25 04:30 UTC · `tabs-console-app-more-than-one-console` note (all) · orchestrator
+- 2026-11-25 04:31 UTC · `run-more-than-one-build-time-when-they` added (0 steps) (all) · console
+- 2026-11-25 04:32 UTC · `run-more-than-one-build-time-when-they` note (all) · orchestrator
+- 2026-11-25 04:34 UTC · `run-more-than-one-build-time-when-they` → queued, note (all) · console
+- 2026-11-25 04:36 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:36 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:37 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · admin
+- 2026-11-25 04:38 UTC · `watchdog-catches-lander-prs-stuck-ci` → pulling-main (all) · orchestrator
+- 2026-11-25 04:38 UTC · `watchdog-catches-lander-prs-stuck-ci` branch lander/watchdog-catches-lander-prs-stuck-ci, PR 921, note (all) · orchestrator
+- 2026-11-25 04:39 UTC · `watchdog-catches-lander-prs-stuck-ci` → assigning-models (all) · orchestrator
+- 2026-11-25 04:39 UTC · `watchdog-catches-lander-prs-stuck-ci` → ready, note (all) · orchestrator
+- 2026-11-25 04:40 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:40 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 04:40 UTC · `watchdog-catches-lander-prs-stuck-ci` → sending (all) · orchestrator
+- 2026-11-25 04:41 UTC · `tabs-console-app-more-than-one-console` → pending, note (all) · console
+- 2026-11-25 04:41 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:41 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:41 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:41 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:42 UTC · `watchdog-catches-lander-prs-stuck-ci` → building (all) · orchestrator
+- 2026-11-25 04:42 UTC · `tabs-console-app-more-than-one-console` → queued, note (all) · console
+- 2026-11-25 04:43 UTC · `tabs-console-app-more-than-one-console` → pending, note (all) · console
+- 2026-11-25 04:43 UTC · `find-fix-why-ci-stalls-lander-one-part` → build-complete (all) · headless
+- 2026-11-25 04:43 UTC · `console-app-tabs-small` added (0 steps) (all) · console
+- 2026-11-25 04:43 UTC · `console-app-tabs-small` → queued, note (all) · console
+- 2026-11-25 04:44 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 04:44 UTC · `find-fix-why-ci-stalls-lander-one-part` → merging-pr, note (all) · lander
+- 2026-11-25 04:44 UTC · `find-fix-why-ci-stalls-lander-one-part` PR 920 (all) · lander
+- 2026-11-25 04:44 UTC · `find-fix-why-ci-stalls-lander-one-part` → pr-pulling-main (all) · lander
+- 2026-11-25 04:44 UTC · `find-fix-why-ci-stalls-lander-one-part` → running-ci (all) · lander
+- 2026-11-25 04:44 UTC · `console-app-tabs-small` note (all) · orchestrator
+- 2026-11-25 04:44 UTC · `find-fix-why-ci-stalls-lander-one-part` note (all) · orchestrator
+- 2026-11-25 04:46 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:46 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:46 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:54 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:54 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:55 UTC · `tabs-console-app-more-than-one-console` note (all) · watchdog
+- 2026-11-25 04:56 UTC · `fix-refreshing-console-jumps-back` → archived, note (all) · console
+- 2026-11-25 04:56 UTC · `fix-refreshing-console-jumps-back` → failed (all) · lander
+- 2026-11-25 04:57 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 04:57 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 04:57 UTC · `approval-pass-covers-every-call` → pulling-main (all) · orchestrator
+- 2026-11-25 04:58 UTC · `approval-pass-covers-every-call` PR 922, note (all) · orchestrator
+- 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` added (0 steps) (all) · console
+- 2026-11-25 04:58 UTC · `clash-answer-run-all-defer-buttons-plus` → queued, note (all) · console
+- 2026-11-25 05:01 UTC · `approval-pass-covers-every-call` s11 undone (all) · orchestrator
+- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` s12 undone (all) · orchestrator
+- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` → assigning-models (all) · orchestrator
+- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` → ready, note (all) · orchestrator
+- 2026-11-25 05:02 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:03 UTC · `approval-pass-covers-every-call` → sending (all) · orchestrator
+- 2026-11-25 05:04 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:04 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:04 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:04 UTC · `approval-pass-covers-every-call` → building (all) · orchestrator
+- 2026-11-25 05:05 UTC · `tabs-console-app-more-than-one-console` note (all) · watchdog
+- 2026-11-25 05:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:06 UTC · `tabs-console-app-more-than-one-console` → failed, note (all) · watchdog
+- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → pending, note (all) · watchdog
+- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → splitting (all) · orchestrator
+- 2026-11-25 05:07 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:07 UTC · `tabs-console-app-more-than-one-console` → split, note (all) · orchestrator
+- 2026-11-25 05:07 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:07 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:08 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 undone (all) · orchestrator
+- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:08 UTC · `clash-answer-run-all-defer-buttons-plus` note (all) · orchestrator
+- 2026-11-25 05:08 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:09 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · watchdog
+- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:09 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-25 05:11 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 done (all) · headless
+- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` → build-complete (all) · headless
+- 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:12 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:12 UTC · `find-fix-why-ci-stalls-lander-one-part` → failed, note (all) · lander
+- 2026-11-25 05:13 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:13 UTC · `find-fix-why-ci-stalls-lander-one-part` → running-ci, note (all) · lander
+- 2026-11-25 05:13 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
+- 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-25 05:13 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 
 ## Token passes (log)
 

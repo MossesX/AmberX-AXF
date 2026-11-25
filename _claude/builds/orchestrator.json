@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-24T21:22:56.562Z",
+ "updatedAt": "2026-11-25T05:13:54.957Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -204835,398 +204835,19 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running-ci",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-refreshing-console-jumps-back",
-   "pr": "916",
+   "pr": "919",
+   "mergedAt": "2026-11-24T23:33:59Z",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-24T21:13:50.472Z",
+   "updatedAt": "2026-11-25T04:56:29.217Z",
    "builtAt": "",
    "notes": [
-    {
-     "text": "Watchdog: step s9 stuck at completed (142 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T16:50:01.248Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (133 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T16:50:01.248Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (103 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T16:50:01.248Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (164 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (155 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (143 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (134 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (153 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (132 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (146 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (137 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (107 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T16:54:01.207Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (167 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (158 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (146 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (137 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (156 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (135 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (149 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (140 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (110 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T16:57:01.763Z"
-    },
-    {
-     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-24T17:00:28.371Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (170 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (161 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (149 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (140 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (159 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (138 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (152 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (143 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (113 min past budget): re-ran the transition (4).",
-     "at": "2026-11-24T17:00:01.776Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (173 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (164 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (152 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (143 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (162 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (141 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (155 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (146 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (116 min past budget): re-ran the transition (5).",
-     "at": "2026-11-24T17:03:02.273Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (177 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (168 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (156 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (147 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (166 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (145 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (159 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (150 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (120 min past budget): re-ran the transition (6).",
-     "at": "2026-11-24T17:07:01.993Z"
-    },
-    {
-     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-24T17:10:21.073Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (180 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (171 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (159 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (150 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (169 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (148 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (162 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (153 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (123 min past budget): re-ran the transition (7).",
-     "at": "2026-11-24T17:10:02.692Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (184 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (175 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (163 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (154 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (173 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (152 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (166 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (157 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (127 min past budget): re-ran the transition (8).",
-     "at": "2026-11-24T17:14:01.813Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at completed (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-24T17:17:01.741Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at completed (188 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (179 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (167 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (158 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (177 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (156 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (170 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (161 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (131 min past budget): re-ran the transition (9).",
-     "at": "2026-11-24T17:18:02.197Z"
-    },
-    {
-     "text": "Lander: PR 2 of 11 (s3, split after a failure)",
-     "at": "2026-11-24T17:19:44.153Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at completed (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-24T17:20:02.371Z"
-    },
-    {
-     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Pulling in main (PR)): its steps are fixed, none is removed or replaced)",
-     "at": "2026-11-24T17:20:34.591Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (182 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (170 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (161 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (180 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (159 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at completed (173 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at completed (164 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at completed (134 min past budget): re-ran the transition (10).",
-     "at": "2026-11-24T17:21:02.346Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at completed (7 min past budget): re-ran the transition (3).",
-     "at": "2026-11-24T17:24:01.863Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at completed (186 min past budget): re-ran the transition (11).",
-     "at": "2026-11-24T17:25:02.094Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at completed (174 min past budget): re-ran the transition (11).",
-     "at": "2026-11-24T17:25:02.094Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at completed (165 min past budget): re-ran the transition (11).",
-     "at": "2026-11-24T17:25:02.094Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at completed (184 min past budget): re-ran the transition (11).",
-     "at": "2026-11-24T17:25:02.094Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at completed (163 min past budget): re-ran the transition (11).",
-     "at": "2026-11-24T17:25:02.094Z"
-    },
     {
      "text": "Watchdog: step s9 stuck at completed (177 min past budget): re-ran the transition (11).",
      "at": "2026-11-24T17:25:02.094Z"
@@ -206890,6 +206511,724 @@
     {
      "text": "Watchdog: step s12 stuck at completed (374 min past budget): re-ran the transition (3).",
      "at": "2026-11-24T21:21:01.537Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T21:22:50.630Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (247 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T21:24:01.702Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (407 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T21:24:01.702Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (377 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T21:24:01.702Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (250 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T21:27:01.703Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (410 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T21:27:01.703Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (380 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T21:27:01.703Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T21:30:28.066Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (253 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T21:30:04.158Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (413 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T21:30:04.158Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (383 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T21:30:04.158Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (257 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T21:34:01.995Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (417 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T21:34:01.995Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (387 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T21:34:01.995Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (261 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T21:38:01.757Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (421 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T21:38:01.757Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (391 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T21:38:01.757Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 5: CI is red on c644a8766 (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)) Stopped (attempt 5 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-24T21:40:06.975Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 5): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T21:40:28.673Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at running-ci. Alerted Brett.",
+     "at": "2026-11-24T21:41:01.372Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 5): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T21:50:19.742Z"
+    },
+    {
+     "text": "Lander: PR #916 was merged by hand by MossesX (78f513661, CI running): recorded, the build goes on.",
+     "at": "2026-11-24T23:34:24.714Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (378 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:35:01.791Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (538 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:35:01.791Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (508 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:35:01.791Z"
+    },
+    {
+     "text": "Lander: failed in merging-pr, attempt 6: opening the PR: fetch failed Stopped (attempt 6 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-24T23:35:53.423Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 6 of 5 failed at merging-pr. Alerted Brett.",
+     "at": "2026-11-24T23:36:02.252Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 6): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T23:40:43.563Z"
+    },
+    {
+     "text": "Reconciler: PR #916 merged",
+     "at": "2026-11-24T23:41:07.901Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-refreshing-console-jumps-back rev 1 sent to Shipped features (orchestrator): PR #916, 74 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-24T23:42:19Z"
+    },
+    {
+     "text": "Retry by console: Parts 1-8 merged on main; lander must open parts 9-11 now.. The attempt counts start again.",
+     "at": "2026-11-24T23:47:47.078Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (391 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:48:02.194Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (551 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:48:02.194Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (521 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:48:02.194Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T23:50:14.833Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (555 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T23:52:01.621Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (525 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T23:52:01.621Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (558 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T23:55:01.708Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (528 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T23:55:01.708Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (561 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T23:58:01.713Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (531 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T23:58:01.713Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T00:00:33.070Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (565 min past budget): re-ran the transition (5).",
+     "at": "2026-11-25T00:02:02.047Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (535 min past budget): re-ran the transition (5).",
+     "at": "2026-11-25T00:02:02.047Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (568 min past budget): re-ran the transition (6).",
+     "at": "2026-11-25T00:05:03.019Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (538 min past budget): re-ran the transition (6).",
+     "at": "2026-11-25T00:05:03.019Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (572 min past budget): re-ran the transition (7).",
+     "at": "2026-11-25T00:09:01.379Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (542 min past budget): re-ran the transition (7).",
+     "at": "2026-11-25T00:09:01.379Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T00:10:15.400Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (575 min past budget): re-ran the transition (8).",
+     "at": "2026-11-25T00:12:02.106Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (545 min past budget): re-ran the transition (8).",
+     "at": "2026-11-25T00:12:02.106Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (578 min past budget): re-ran the transition (9).",
+     "at": "2026-11-25T00:15:02.130Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (548 min past budget): re-ran the transition (9).",
+     "at": "2026-11-25T00:15:02.130Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 7: CI is red on 230824dee (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)) Stopped (attempt 7 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-25T00:19:03.032Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (582 min past budget): re-ran the transition (10).",
+     "at": "2026-11-25T00:19:01.418Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (552 min past budget): re-ran the transition (10).",
+     "at": "2026-11-25T00:19:01.418Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 7 of 5 failed at running-ci. Alerted Brett.",
+     "at": "2026-11-25T00:20:01.861Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 7): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T00:20:22.072Z"
+    },
+    {
+     "text": "Lander: PR #917 was merged by hand by MossesX (54f8fbbea, CI running): recorded, the build goes on.",
+     "at": "2026-11-25T02:01:48.332Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (685 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T02:02:01.401Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (655 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T02:02:01.401Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (658 min past budget): re-ran the transition (2).",
+     "at": "2026-11-25T02:05:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (662 min past budget): re-ran the transition (3).",
+     "at": "2026-11-25T02:09:02.570Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T02:10:22.280Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (666 min past budget): re-ran the transition (4).",
+     "at": "2026-11-25T02:13:01.678Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (670 min past budget): re-ran the transition (5).",
+     "at": "2026-11-25T02:17:01.570Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (673 min past budget): re-ran the transition (6).",
+     "at": "2026-11-25T02:20:02.674Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T02:20:19.528Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (677 min past budget): re-ran the transition (7).",
+     "at": "2026-11-25T02:24:01.760Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (681 min past budget): re-ran the transition (8).",
+     "at": "2026-11-25T02:28:01.252Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T02:30:20.216Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (684 min past budget): re-ran the transition (9).",
+     "at": "2026-11-25T02:31:01.936Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (687 min past budget): re-ran the transition (10).",
+     "at": "2026-11-25T02:34:02.310Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 8: CI is red on e88545a3c (Build engine sweep (Node)) Stopped (attempt 8 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-25T02:36:36.631Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 8 of 5 failed at running-ci. Alerted Brett.",
+     "at": "2026-11-25T02:37:01.852Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 8): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T02:40:21.178Z"
+    },
+    {
+     "text": "Lander: PR #918 was merged by hand by MossesX (e29231ce0, CI running): recorded, the build goes on.",
+     "at": "2026-11-25T04:23:04.509Z"
+    },
+    {
+     "text": "Lander: failed in pr-pulling-main, attempt 9: merging main into lander/fix-refreshing-console-jumps-back-11 conflicts in code (_claude/builds/reports/fix-refreshing-console-jumps-back.md, _claude/memory/docs/console-control.md, apps/console-web/plugins/console-commands/web/index.tsx, apps/console-web/scripts/place-refresh.e2e.mjs) Stopped (attempt 9 of 5): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-25T04:23:58.415Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 9 of 5 failed at pr-pulling-main. Alerted Brett.",
+     "at": "2026-11-25T04:24:01.924Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 9): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T04:26:53.659Z"
+    },
+    {
+     "text": "Store: refused a write by console, nothing of it was kept: \"queued\" is not a build status of pipeline-2@1 (pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed, failed); s13 step s13 was added: fix-refreshing-console-jumps-back is past the split (failed, attempt 9): no step is added to a build that is being built",
+     "at": "2026-11-25T04:27:52.361Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (failed, attempt 9): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-25T04:40:18.749Z"
+    },
+    {
+     "text": "Cancelled from failed, attempt 9 (console): Done: parts 1-10 are on main (PRs 909-918). Part 11 (PR 919) was a stale watchdog 'land this build' step, dropped by Brett..",
+     "at": "2026-11-25T04:56:19.111Z",
+     "by": "console"
+    },
+    {
+     "text": "Lander: failed in pr-pulling-main, attempt 10: PR #919 was closed without merging. Reopen it and the lander goes on; or re-send the build (lander retry fix-refreshing-console-jumps-back) and a new PR is opened. Stopped (the PR was closed without merging): needs Brett. Start it again: node deploy/lander/run.mjs retry fix-refreshing-console-jumps-back",
+     "at": "2026-11-25T04:56:29.217Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (142 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T16:50:01.248Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (133 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T16:50:01.248Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (103 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T16:50:01.248Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (164 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (155 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (143 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (134 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (153 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (132 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (146 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (137 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (107 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T16:54:01.207Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (167 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (158 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (146 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (137 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (156 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (135 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (149 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (140 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (110 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T16:57:01.763Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:00:28.371Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (170 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (161 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (149 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (140 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (159 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (138 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (152 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (143 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (113 min past budget): re-ran the transition (4).",
+     "at": "2026-11-24T17:00:01.776Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (173 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (164 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (152 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (143 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (162 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (141 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (155 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (146 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (116 min past budget): re-ran the transition (5).",
+     "at": "2026-11-24T17:03:02.273Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (177 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (168 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (156 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (147 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (166 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (145 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (159 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (150 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (120 min past budget): re-ran the transition (6).",
+     "at": "2026-11-24T17:07:01.993Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Running CI): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:10:21.073Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (180 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (171 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (159 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (150 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (169 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (148 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (162 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (153 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (123 min past budget): re-ran the transition (7).",
+     "at": "2026-11-24T17:10:02.692Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (184 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (175 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (163 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (154 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (173 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (152 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (166 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (157 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (127 min past budget): re-ran the transition (8).",
+     "at": "2026-11-24T17:14:01.813Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T17:17:01.741Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at completed (188 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (179 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (167 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (158 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (177 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (156 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (170 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (161 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (131 min past budget): re-ran the transition (9).",
+     "at": "2026-11-24T17:18:02.197Z"
+    },
+    {
+     "text": "Lander: PR 2 of 11 (s3, split after a failure)",
+     "at": "2026-11-24T17:19:44.153Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T17:20:02.371Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (fix-refreshing-console-jumps-back is split (Pulling in main (PR)): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-24T17:20:34.591Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (182 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (170 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (161 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (180 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (159 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (173 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (164 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (134 min past budget): re-ran the transition (10).",
+     "at": "2026-11-24T17:21:02.346Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (7 min past budget): re-ran the transition (3).",
+     "at": "2026-11-24T17:24:01.863Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (186 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:25:02.094Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (174 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:25:02.094Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (165 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:25:02.094Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (184 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:25:02.094Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (163 min past budget): re-ran the transition (11).",
+     "at": "2026-11-24T17:25:02.094Z"
     },
     {
      "text": "Headless run axf-fix-refreshing-console-jumps-back--rhonda: brief only · start 17.0K tokens ($0.06) · cost $5.16 · 110 turns · 6 tools, MCP none",
@@ -217102,16 +217441,16 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "split",
+   "status": "building",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "console",
    "pendingId": "",
    "branch": "claude/approval-pass-covers-every-call",
-   "pr": "#836",
+   "pr": "922",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-22T05:06:25.451Z",
+   "updatedAt": "2026-11-25T05:13:46.567Z",
    "builtAt": "",
    "notes": [
     {
@@ -217313,6 +217652,102 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (approval",
      "at": "2026-11-22T05:45:57.769Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 w",
+     "at": "2026-11-25T04:58:04.654Z"
+    },
+    {
+     "text": "Draft PR #922 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/922.",
+     "at": "2026-11-25T04:58:12.374Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 w",
+     "at": "2026-11-25T04:58:35.628Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"contract\"); s2 Fable (Work that might need Fable: \"failing\" might need Fable); s3 Fable (no rule matched: Fable by default); s4 Fable (no rule matched: Fable by default); s5 Fable (no rule matched: Fable by default); s6 Fable (Work that might need Fable: \"audit\" might need Fable); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (no rule matched: Fable by default); s10 Fable (Work that might need Fable: \"ci\" might need Fable); s11 Fable (no rule matched: Fable by default); s12 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T05:02:33.628Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"contract\"); s2 Fable (Work that might need Fable: \"failing\" might need Fable); s3 Fable (no rule matched: Fable by default); s4 Fable (no rule matched: Fable by default); s5 Fable (no rule matched: Fable by default); s6 Fable (Work that might need Fable: \"audit\" might need Fable); s7 Fable (no rule matched: Fable by default); s8 Fable (no rule matched: Fable by default); s9 Fable (no rule matched: Fable by default); s10 Fable (Work that might need Fable: \"ci\" might need Fable); s11 Fable (no rule matched: Fable by default); s12 Fable (Work that might need Fable: \"watchdog\" might need Fable).",
+     "at": "2026-11-25T05:02:41.310Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s1--lenny, shared account login)",
+     "at": "2026-11-25T05:04:31.260Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s2--joey, shared account login)",
+     "at": "2026-11-25T05:05:10.438Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s3--paulie, shared account login)",
+     "at": "2026-11-25T05:05:32.269Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (appr",
+     "at": "2026-11-25T05:06:11.285Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s4--sully, shared account login)",
+     "at": "2026-11-25T05:07:48.915Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 4 on mossesx-max-.",
+     "at": "2026-11-25T05:08:01.810Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s5--earl, shared account login)",
+     "at": "2026-11-25T05:08:35.405Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s3--paulie: brief only · start 10.7K tokens ($0.04) · cost $0.16 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:08:51.699Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s2--joey: brief only · start 10.8K tokens ($0.04) · cost $0.09 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:08:58.380Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.16",
+     "at": "2026-11-25T05:09:08.658Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.09",
+     "at": "2026-11-25T05:09:19.629Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--s4--sully: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:09:35.431Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.00",
+     "at": "2026-11-25T05:09:41.597Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s3 step s3 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (approval-pass-covers-every-call is split (Building): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (appr",
+     "at": "2026-11-25T05:10:46.246Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-approval-pass-covers-every-call--s2--joey is gone while the step was building.",
+     "at": "2026-11-25T05:11:01.212Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T05:12:02.627Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 5 on mossesx-max-.",
+     "at": "2026-11-25T05:12:02.627Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T05:13:01.773Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--s2--rhonda, shared account login)",
+     "at": "2026-11-25T05:13:39.239Z"
     }
    ],
    "approvals": [
@@ -217361,7 +217796,7 @@
     {
      "id": "s2",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217380,7 +217815,7 @@
     {
      "id": "s3",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217399,7 +217834,7 @@
     {
      "id": "s4",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217418,7 +217853,7 @@
     {
      "id": "s5",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217437,7 +217872,7 @@
     {
      "id": "s6",
      "text": "- Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.\n- Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
@@ -217456,7 +217891,7 @@
     {
      "id": "s7",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217475,7 +217910,7 @@
     {
      "id": "s8",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217494,7 +217929,7 @@
     {
      "id": "s9",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217513,7 +217948,7 @@
     {
      "id": "s10",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217532,7 +217967,7 @@
     {
      "id": "s11",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -217542,8 +217977,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #836 (claude/approval-pass-covers-every-call)",
      "uid": "st-mwranxp01vubs9",
      "createdAt": "2026-11-18T01:49:40.384Z"
@@ -217551,7 +217986,7 @@
     {
      "id": "s12",
      "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #836 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/approval-pass-covers-every-call, get every check green and push; the PR is #836.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "watchdog ladder: fresh-session",
      "phase": "",
      "group": "",
@@ -217561,8 +217996,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-22T05:06:25.451Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #836 (claude/approval-pass-covers-every-call)",
      "uid": "st-mwranxp01w0x3t",
      "createdAt": "2026-11-22T02:55:17.897Z"
@@ -222873,7 +223308,7 @@
    "title": "Drop a failed part: remove a feature whose own single PR fails CI again",
    "category": "",
    "detail": "When CI fails and the VPS splits a build into one PR per part (lander-driven, landing one at a time), and a part then fails again as its own PR, give Brett a way to remove that part/feature from the build altogether: a Remove button on that part in the orchestrator and Plan Studio, plus a console/MCP/voice command. Removing closes the part's PR, deletes its branch, marks the step dropped (kept in the log with the reason), and the build carries on landing the remaining parts and can finish without it. The final report lists which parts were dropped.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -222881,9 +223316,22 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-24T21:22:16.340Z",
-   "updatedAt": "2026-11-24T21:22:32.502Z",
+   "updatedAt": "2026-11-24T21:24:14.096Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: not JSON: Expected property name or '}' in JSON at position 1): one step per line of the request, review the steps.",
+     "at": "2026-11-24T21:23:17.968Z"
+    },
+    {
+     "text": "Queued by auto-queue (slots free).",
+     "at": "2026-11-24T21:24:09.341Z"
+    },
+    {
+     "text": "auto-queued: slots free",
+     "at": "2026-11-24T21:24:14.096Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -222898,7 +223346,1678 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "When CI fails and the VPS splits a build into one PR per part (lander-driven, landing one at a time), and a part then fails again as its own PR, give Brett a way to remove that part/feature from the build altogether: a Remove button on that part in the orchestrator and Plan Studio, plus a console/MCP/voice command. Removing closes the part's PR, deletes its branch, marks the step dropped (kept in the log with the reason), and the build carries on landing the remaining parts and can finish without it. The final report lists which parts were dropped.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7bo0g1l2vr2",
+     "createdAt": "2026-11-24T21:23:17.968Z"
+    },
+    {
+     "id": "s2",
+     "text": "Once CI fails and the VPS splits up the build into individual PRs to land one thing at a time, I want to be able to remove failed items if they fail again. If they fail as their own PR, I want to be able to just remove the feature altogether.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7bo0g1m0vbf",
+     "createdAt": "2026-11-24T21:23:17.968Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/drop-failed-part-remove-feature-whose.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/drop-failed-part-remove-feature-whose.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7bo0g1nk0ox",
+     "createdAt": "2026-11-24T21:23:17.968Z"
+    }
+   ]
+  },
+  {
+   "id": "always-show-build-s-parts-even-while",
+   "title": "Always show a build's parts, even while combined into one PR",
+   "category": "",
+   "detail": "In the orchestrator and Plan Studio, always show each build's parts (the steps it was split and built on) under the build, whether they are combined into one PR, recombined, or split into one PR per part after a CI failure. Each part shows its own state (built, in combined PR, CI running, merged, failed, dropped) and its PR number when it has its own. Show as one expandable build row with the parts inside, not big separate rows (ties to the known bug on plan-studio-plan-notes-don-t-wor-2icd). Pairs with drop-failed-part-remove-feature-whose (the Remove button lives on these part rows).",
+   "status": "split",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-24T21:23:17.993Z",
+   "updatedAt": "2026-11-24T21:40:42.966Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: not JSON: Expected property name or '}' in JSON at position 1): one step per line of the request, review the steps.",
+     "at": "2026-11-24T21:25:24.375Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T21:36:01.545Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T21:39:01.910Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-24T21:40:02.692Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Rejected: 1 step of 3 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 2 clean steps now, defer 1 (defer).",
+     "at": "2026-11-24T21:40:39.340Z",
+     "by": "orchestrator"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the splits to always be shown, even when it's combined, recombined.",
+    "at": "2026-11-24T21:23:17.993Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "In the orchestrator and Plan Studio, always show each build's parts (the steps it was split and built on) under the build, whether they are combined into one PR, recombined, or split into one PR per part after a CI failure. Each part shows its own state (built, in combined PR, CI running, merged, failed, dropped) and its PR number when it has its own. Show as one expandable build row with the parts inside, not big separate rows (ties to the known bug on plan-studio-plan-notes-don-t-wor-2icd). Pairs with drop-failed-part-remove-feature-whose (the Remove button lives on these part rows).",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7xzjr1la2dl",
+     "createdAt": "2026-11-24T21:25:24.375Z"
+    },
+    {
+     "id": "s2",
+     "text": "I want the splits to always be shown, even when it's combined, recombined.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7xzjr1m0q70",
+     "createdAt": "2026-11-24T21:25:24.375Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/always-show-build-s-parts-even-while.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/always-show-build-s-parts-even-while.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwv7xzjr1n4wo4",
+     "createdAt": "2026-11-24T21:25:24.375Z"
+    }
+   ]
+  },
+  {
+   "id": "watchdog-catches-lander-prs-stuck-ci",
+   "title": "Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed",
+   "category": "",
+   "detail": "Today refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.",
+   "status": "build-complete",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/watchdog-catches-lander-prs-stuck-ci--s3",
+   "pr": "921",
+   "priority": "P0",
+   "createdAt": "2026-11-24T21:25:18.141Z",
+   "updatedAt": "2026-11-25T05:13:10.248Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: not JSON: Unexpected non-whitespace character after JSON at position 55): one step per line of the request, review the steps.",
+     "at": "2026-11-24T21:27:16.468Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T21:38:01.757Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T21:42:01.286Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-24T21:43:01.251Z"
+    },
+    {
+     "text": "Rejected: 1 step of 3 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 2 clean steps now, defer 1 (defer).",
+     "at": "2026-11-24T21:43:27.445Z"
+    },
+    {
+     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
+     "at": "2026-11-25T04:37:46.851Z"
+    },
+    {
+     "text": "Draft PR #921 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/921.",
+     "at": "2026-11-25T04:38:47.623Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (CI failures: it says \"fix ci\"); s2 Fable (Splitter's suggestion: marked Fable when it was split); s3 Fable (no rule matched: Fable by default).",
+     "at": "2026-11-25T04:39:58.740Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (CI failures: it says \"fix ci\"); s2 Fable (Splitter's suggestion: marked Fable when it was split); s3 Fable (no rule matched: Fable by default).",
+     "at": "2026-11-25T04:40:09.752Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (404 min past budget): re-ran the transition (1), the tick exited 1.",
+     "at": "2026-11-25T04:38:01.184Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-watchdog-catches-lander-prs-stuck-ci--s2--sully, shared account login)",
+     "at": "2026-11-25T04:41:37.511Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-watchdog-catches-lander-prs-stuck-ci--s1--earl, shared account login)",
+     "at": "2026-11-25T04:41:54.168Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T04:44:01.619Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 3 on mossesx-max-.",
+     "at": "2026-11-25T04:44:01.619Z"
+    },
+    {
+     "text": "Headless run axf-watchdog-catches-lander-prs-stuck-ci--s2--sully: brief only · start 11.0K tokens ($0.04) · cost $2.67 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-25T04:46:39.981Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.67",
+     "at": "2026-11-25T04:46:44.720Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-watchdog-catches-lander-prs-stuck-ci--s3--gina, shared account login)",
+     "at": "2026-11-25T04:46:51.163Z"
+    },
+    {
+     "text": "Headless run axf-watchdog-catches-lander-prs-stuck-ci--s1--earl: brief only · start 11.3K tokens ($0.05) · cost $6.43 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-25T04:54:24.109Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $6.43",
+     "at": "2026-11-25T04:54:37.010Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on mossesx-max-.",
+     "at": "2026-11-25T04:57:01.356Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-watchdog-catches-lander-prs-stuck-ci--s1--rhonda, shared account login)",
+     "at": "2026-11-25T04:57:49.367Z"
+    },
+    {
+     "text": "Headless run axf-watchdog-catches-lander-prs-stuck-ci--s1--rhonda: brief only · start 11.6K tokens ($0.05) · cost $1.19 · 16 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:04:40.860Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.19",
+     "at": "2026-11-25T05:04:54.441Z"
+    },
+    {
+     "text": "Headless run axf-watchdog-catches-lander-prs-stuck-ci--s3--gina: brief only · start 11.1K tokens ($0.05) · cost $1.63 · 13 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:07:28.643Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $1.63",
+     "at": "2026-11-25T05:07:38.260Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 4 on mossesx-max-.",
+     "at": "2026-11-25T05:09:02.196Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-watchdog-catches-lander-prs-stuck-ci--s3--gina, shared account login)",
+     "at": "2026-11-25T05:10:22.242Z"
+    },
+    {
+     "text": "PR #921 is out of draft: the build is built, the lander takes it.",
+     "at": "2026-11-25T05:11:30.863Z"
+    },
+    {
+     "text": "PR #921 is out of draft: the build is built, the lander takes it.",
+     "at": "2026-11-25T05:11:34.714Z"
+    },
+    {
+     "text": "PR #921 is out of draft: the build is built, the lander takes it.",
+     "at": "2026-11-25T05:11:38.939Z"
+    },
+    {
+     "text": "Headless run axf-watchdog-catches-lander-prs-stuck-ci--s3--gina: brief only · start 11.1K tokens ($0.05) · cost $1.98 · 17 turns · 6 tools, MCP none",
+     "at": "2026-11-25T05:13:02.204Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $3.61",
+     "at": "2026-11-25T05:13:10.248Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "So what are we gonna do about this problem so it doesn't keep happening? Don't we have a watchdog for this?",
+    "at": "2026-11-24T21:25:18.141Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "watchdog-catches-lander-prs-stuck-ci--s2",
+    "brief": "# Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed: step s2\n\nBuild watchdog-catches-lander-prs-stuck-ci (Pipeline 2.0), step s2 of 3. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/watchdog-catches-lander-prs-stuck-ci--s2 (already cut from main) · branch claude/watchdog-catches-lander-prs-stuck-ci--s2.\n\n## Your step\nSo what are we gonna do about this problem so it doesn't keep happening? Don't we have a watchdog for this?\n\n## The build\nToday refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Today refresh-fix part 7 (PR 915) sat in running-ci with mergeable_state 'unstable' until the build was marked failed and had to be merged by hand; part 8 (PR 916) is doing the same. The 'Stuck statuses' watchdog only watches landing/fixing/merging (watching: 0 for running-ci), and the 'Build sessions' watch is off. Add running-ci and lander one-part PRs to the stale watch with a short limit (10-15 min, a setting): read the PR's checks; if green, merge it; if a check is stuck/pending, re-run it; if red, hand it to a Fable fix session (never fix CI by hand), and after a second failure mark the part for removal (ties to drop-failed-part-remove-feature-whose). Also fix the lander's merge call (the 3:55 PM job sent merge_method at the top level instead of inside body). Notify Brett on each catch. Also check why the watchdog cron file shows installed: false.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-25T05:03:27.092Z",
+     "note": "",
+     "uid": "st-mwv81l9a1lb12y",
+     "createdAt": "2026-11-24T21:27:16.468Z"
+    },
+    {
+     "id": "s2",
+     "text": "So what are we gonna do about this problem so it doesn't keep happening? Don't we have a watchdog for this?",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-25T04:46:00.970Z",
+     "note": "",
+     "uid": "st-mwv81l9a1m3owl",
+     "createdAt": "2026-11-24T21:27:16.468Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/watchdog-catches-lander-prs-stuck-ci.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/watchdog-catches-lander-prs-stuck-ci.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-25T05:12:15.441Z",
+     "note": "",
+     "uid": "st-mwv81l9a1nv8hg",
+     "createdAt": "2026-11-24T21:27:16.468Z"
+    }
+   ]
+  },
+  {
+   "id": "vps-writes-every-status-change-to-build",
+   "title": "VPS writes every status change to the build store first, before anything else",
+   "category": "",
+   "detail": "On the VPS (orchestrator, dispatcher, lander, watchdogs, sessions): the moment a build's or step's status changes (started, CI running, merged, failed, etc.), write it to the builds store first, before logging, notifying, retrying or finishing the step. The store is always the first thing updated so the console never shows an old status. Pairs with fast-stale-check-page-load-build-store (the page load check is the safety net).",
+   "status": "split",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-24T23:39:47.041Z",
+   "updatedAt": "2026-11-24T23:59:35.127Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: not JSON: Expected double-quoted property name in JSON at position 541): one step per line of the request, review the steps.",
+     "at": "2026-11-24T23:43:54.744Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-24T23:54:01.860Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-24T23:58:01.713Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-24T23:59:01.649Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Rejected: 1 step of 3 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md). Answers: Run all now (run-all), or Run 2 clean steps now, defer 1 (defer).",
+     "at": "2026-11-24T23:59:32.188Z",
+     "by": "orchestrator"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Any change in the status on the VPS needs to update the store immediately before anything else, before it even logs the fail. Before it even finishes the step, it needs to update the status in the build store.",
+    "at": "2026-11-24T23:39:47.041Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "On the VPS (orchestrator, dispatcher, lander, watchdogs, sessions): the moment a build's or step's status changes (started, CI running, merged, failed, etc.), write it to the builds store first, before logging, notifying, retrying or finishing the step. The store is always the first thing updated so the console never shows an old status. Pairs with fast-stale-check-page-load-build-store (the page load check is the safety net).",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcwl7m1sj14v",
+     "createdAt": "2026-11-24T23:43:54.744Z"
+    },
+    {
+     "id": "s2",
+     "text": "Any change in the status on the VPS needs to update the store immediately before anything else, before it even logs the fail. Before it even finishes the step, it needs to update the status in the build store.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcwl7n1txhuv",
+     "createdAt": "2026-11-24T23:43:54.744Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/vps-writes-every-status-change-to-build.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/vps-writes-every-status-change-to-build.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcwl7n1uooh1",
+     "createdAt": "2026-11-24T23:43:54.744Z"
+    }
+   ]
+  },
+  {
+   "id": "lander-marks-each-part-merged-when-pr",
+   "title": "Lander marks each part merged when its PR merges (steps stuck on 'in PR')",
+   "category": "",
+   "detail": "Cause found in deploy/lander/run.mjs: the only place the lander writes step statuses is the merging-pr phase, which sets each step to 'in-pr' with its prNumber. When the PR merges it only updates landing.merged and lastMerge, never the steps. That happens in merging-main (the lander's own merge), in syncPr (a PR merged by hand), and in the merge-together loop. So every part stays 'in PR' forever (B-0985 parts 1-8). Fix: in all three places, in the same store write as landing.merged, set every step in that PR (g.inFlight.steps, or the steps whose prNumber equals the PR) to status 'merged' with the merge sha. Write it to the store before logging or anything else. Add a test in the lander spec: after a merge (own and by hand) each step of that PR reads 'merged'. Also do a one-time repair: any step marked in-pr whose PR number is in the build's landing.merged gets set to merged (this fixes B-0985 parts 1-8 now).",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-24T23:41:39.513Z",
+   "updatedAt": "2026-11-24T23:46:32.492Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by Claude into 11 steps (11 Fable, 2 can run beside earlier steps).",
+     "at": "2026-11-24T23:44:34.120Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-24T23:46:32.492Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The lander can set the status for each step, right? Find out why, fix it.",
+    "at": "2026-11-24T23:41:39.513Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Trace every place deploy/lander/run.mjs writes step status or landing.merged (merging-pr, merging-main, syncPr, the merge-together loop). Check that 'merged' is an accepted step status in the builds store, its validator, the newer-wins merge (builds-live) and the step projections. If it is missing or treated as not done anywhere, add it there beside 'in-pr', keeping the status vocabulary the same in every reader. Commit the change, or the findings in the report draft if nothing is missing.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/cli/builds-store.mjs",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/core",
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs",
+      "_claude/builds/reports/lander-marks-each-part-merged-when-pr.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc9424mcq1",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": []
+    },
+    {
+     "id": "s2",
+     "text": "Add one pure helper in deploy/lander that takes a build, a PR number, a merge sha and an optional in-flight step list, and sets every matching step (in g.inFlight.steps, or with prNumber equal to the PR) to status 'merged' with the merge sha. It is idempotent: it never downgrades a step, changes an already merged one or touches another PR's steps. Export it for the lander and the tests.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/lander"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc9425f70b",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s1"
+     ]
+    },
+    {
+     "id": "s3",
+     "text": "merging-main in deploy/lander/run.mjs (the lander's own merge): call the helper inside the same store write that sets landing.merged and lastMerge, using g.inFlight.steps and the merge sha. Make that store write come before any logging or other side effect, and before g.inFlight is cleared.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/lander/run.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942614m7",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s2"
+     ]
+    },
+    {
+     "id": "s4",
+     "text": "syncPr in deploy/lander/run.mjs (a PR merged by hand): call the helper in the same store write as landing.merged, matching steps by prNumber and using the PR's merge commit sha. Write the store before logging or anything else.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/lander/run.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc94270nfe",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s3"
+     ]
+    },
+    {
+     "id": "s5",
+     "text": "Merge-together loop in deploy/lander/run.mjs: for each build in the group, call the helper in the same store write as that build's landing.merged, so every build's steps in the shared PR read 'merged'. Write the store before logging or anything else.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/lander/run.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc9428yi1r",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s4"
+     ]
+    },
+    {
+     "id": "s6",
+     "text": "Repair function in deploy/lander: for every build, set any step marked 'in-pr' whose PR number is in that build's landing.merged to 'merged' with that PR's sha (the recorded one, else the PR's merge commit). Reuse the helper and write through the builds store under its lock. It is idempotent and has a dry run that lists what would change. API part: this build adds no UI, so expose the repair as a lander CLI flag and confirm the step status reads 'merged' through the existing build reads (REST, MCP, CLI, voice).",
+     "model": "Fable",
+     "why": "Contracts: it says \"builds store\"",
+     "phase": "",
+     "group": "",
+     "estimate": "14 min",
+     "files": [
+      "deploy/lander"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc9429xfcf",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s5"
+     ]
+    },
+    {
+     "id": "s7",
+     "text": "Lander spec, own merge: test that after merging-main every step of that PR reads 'merged' with the merge sha, steps of other PRs and unfinished steps are unchanged, and the step statuses are in the same store write as landing.merged and before the first log line.",
+     "model": "Fable",
+     "why": "Contracts: it says \"spec\"",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/spec",
+      "deploy/lander"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942ai3vn",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s5"
+     ]
+    },
+    {
+     "id": "s8",
+     "text": "Lander spec, other merges: test that after a PR merged by hand (syncPr) and after a merge-together landing each step of that PR reads 'merged' with the sha, in every build of the group, and that a second run changes nothing.",
+     "model": "Fable",
+     "why": "Contracts: it says \"spec\"",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "framework/spec",
+      "deploy/lander"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942bqj7e",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s7"
+     ]
+    },
+    {
+     "id": "s9",
+     "text": "Lander spec, repair: test that a build with eight parts stuck 'in-pr' whose PRs are in landing.merged ends with all eight 'merged', an in-pr step whose PR is not merged stays 'in-pr', the dry run writes nothing and a second run changes nothing.",
+     "model": "Fable",
+     "why": "Contracts: it says \"spec\"",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec",
+      "deploy/lander"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942ckayz",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s6",
+      "s8"
+     ]
+    },
+    {
+     "id": "s10",
+     "text": "Run the repair once on the live builds store: dry run first, record the list, then apply. Confirm B-0985 parts 1-8 read 'merged' with their sha, run builds-store.mjs verify, and put the before and after counts per build in the report.",
+     "model": "Fable",
+     "why": "Contracts: it says \"builds store\"",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/lander-marks-each-part-merged-when-pr.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942dp9ex",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s9"
+     ]
+    },
+    {
+     "id": "s11",
+     "text": "Run the lander spec, check-landing-line.mjs, check-gate-rules.mjs, check-builds-store.mjs and check-build-steps.mjs and fix what fails. Finish _claude/builds/reports/lander-marks-each-part-merged-when-pr.md (cause, the three fixes, the repair and its counts, tests, how the step state is read through each API), the THREADS row and the PR.",
+     "model": "Fable",
+     "why": "Contracts: it says \"spec\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/lander-marks-each-part-merged-when-pr.md",
+      "_claude/THREADS.md",
+      "deploy/lander",
+      "framework/spec"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcdc942erinp",
+     "createdAt": "2026-11-24T23:44:34.120Z",
+     "after": [
+      "s10"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lander-updates-every-part-s-status-store",
+   "title": "Lander updates every part's status in the store on every change, including splits",
+   "category": "",
+   "detail": "Goes with the lander part-merged fix. In deploy/lander/run.mjs, every time the lander changes a PR it writes every affected part's status to the builds store in the same write: opening a PR (in-pr), CI running/red/green on that PR, merging (merged), closing a PR, and splitting (the split retry closes the combined PR and must set each of its parts back to waiting for its own PR, then in-pr with the new PR number when each one opens). Dropped parts get 'dropped'. No part status may be left behind after any lander action.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-24T23:42:21.656Z",
+   "updatedAt": "2026-11-24T23:53:09.611Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-24T23:46:26.683Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps.",
+     "at": "2026-11-24T23:53:09.611Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Anytime it has to put something up, it has to update everything. If a single build breaks and has to get split up, it needs to update the store accordingly.",
+    "at": "2026-11-24T23:42:21.656Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Goes with the lander part-merged fix. In deploy/lander/run.mjs, every time the lander changes a PR it writes every affected part's status to the builds store in the same write: opening a PR (in-pr), CI running/red/green on that PR, merging (merged), closing a PR, and splitting (the split retry closes the combined PR and must set each of its parts back to waiting for its own PR, then in-pr with the new PR number when each one opens). Dropped parts get 'dropped'. No part status may be left behind after any lander action.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcoe0b1luij3",
+     "createdAt": "2026-11-24T23:53:09.611Z"
+    },
+    {
+     "id": "s2",
+     "text": "Anytime it has to put something up, it has to update everything. If a single build breaks and has to get split up, it needs to update the store accordingly.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcoe0b1mj8iz",
+     "createdAt": "2026-11-24T23:53:09.611Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/lander-updates-every-part-s-status-store.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/lander-updates-every-part-s-status-store.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvcoe0b1ntm9s",
+     "createdAt": "2026-11-24T23:53:09.611Z"
+    }
+   ]
+  },
+  {
+   "id": "find-fix-why-ci-stalls-lander-one-part",
+   "title": "Find and fix why CI stalls on lander one-part PRs",
+   "category": "",
+   "detail": "Refresh-fix parts 7, 8 and 9 (PRs 915, 916, 917) all sat for 2+ hours with mergeable_state 'unstable' and never merged by themselves. Find the real cause: read the check runs on those heads and the lander's running-ci logic in deploy/lander/run.mjs (lightOnly -> dispatches the full run once per head; 'missing' required checks; ciTimedOut). Likely the full workflow_dispatch run never starts or never reports on lander/* branches, or a required check name doesn't match. Fix the cause so lander PRs go green and merge by themselves, and add a test. Pairs with watchdog-catches-lander-prs-stuck-ci (the safety net).",
+   "status": "running-ci",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/find-fix-why-ci-stalls-lander-one-part--s2",
+   "pr": "920",
+   "priority": "P0",
+   "createdAt": "2026-11-25T02:02:33.437Z",
+   "updatedAt": "2026-11-25T05:13:10.405Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by Claude into 12 steps (12 Fable, 5 can run beside earlier steps).",
+     "at": "2026-11-25T02:03:45.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T02:14:02.357Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-25T02:18:01.604Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-25T02:19:01.747Z"
+    },
+    {
+     "text": "Rejected: 2 steps of 2 touch files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (_claude/THREADS.md, apps/console-web/plugins/gate). Answers: Run all now (run-all), or Defer all 2 steps (defer).",
+     "at": "2026-11-25T02:19:23.749Z"
+    },
+    {
+     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
+     "at": "2026-11-25T04:23:20.702Z"
+    },
+    {
+     "text": "Draft PR #920 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/920.",
+     "at": "2026-11-25T04:24:12.086Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Splitter's suggestion: marked Fable when it was split); s2 Fable (Blast radius: 28 files depend on what it touches (limit 10)).",
+     "at": "2026-11-25T04:25:22.565Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-find-fix-why-ci-stalls-lander-one-part--s1--joey, shared account login)",
+     "at": "2026-11-25T04:26:32.575Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-find-fix-why-ci-stalls-lander-one-part--s2--paulie, shared account login)",
+     "at": "2026-11-25T04:26:41.785Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (95 min past budget): re-ran the transition (1), the tick exited 1.",
+     "at": "2026-11-25T04:24:01.924Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (95 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T04:24:01.924Z"
+    },
+    {
+     "text": "Headless run axf-find-fix-why-ci-stalls-lander-one-part--s1--joey: brief only · start 11.6K tokens ($0.08) · cost $3.98 · 45 turns · 6 tools, MCP none",
+     "at": "2026-11-25T04:36:22.556Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.98",
+     "at": "2026-11-25T04:36:28.577Z"
+    },
+    {
+     "text": "Headless run axf-find-fix-why-ci-stalls-lander-one-part--s2--paulie: brief only · start 12.1K tokens ($0.06) · cost $5.35 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-25T04:41:40.481Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $5.35",
+     "at": "2026-11-25T04:41:52.906Z"
+    },
+    {
+     "text": "Lander: PR 1 of 1 (s1, s2)",
+     "at": "2026-11-25T04:44:17.161Z"
+    },
+    {
+     "text": "PR #920 is out of draft: the build is built, the lander takes it.",
+     "at": "2026-11-25T04:44:57.061Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 1: CI is red on e8f803f69 (Build engine sweep (Node))",
+     "at": "2026-11-25T05:12:13.788Z"
+    },
+    {
+     "text": "Lander: attempt 1: re-running the failed CI jobs on e8f803f69 (flaky check)",
+     "at": "2026-11-25T05:13:10.405Z",
+     "by": "lander"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why is it getting stuck in CI if it's merging without conflicts? What are we gonna do about that to get the pipeline running smooth?",
+    "at": "2026-11-25T02:02:33.437Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "find-fix-why-ci-stalls-lander-one-part--s1",
+    "brief": "# Find and fix why CI stalls on lander one-part PRs: step s1\n\nBuild find-fix-why-ci-stalls-lander-one-part (Pipeline 2.0), step s1 of 2. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/find-fix-why-ci-stalls-lander-one-part--s1 (already cut from main) · branch claude/find-fix-why-ci-stalls-lander-one-part--s1.\n\n## Your step\n- Collect the evidence for PRs 915, 916 and 917 in the report, read-only through the token broker. For each head sha list the check runs, commit statuses and android.yml workflow runs (event, head_sha, status, conclusion, created/started/finished times). Add main's required checks from branch protection or rulesets, plus how and when each PR finally merged. Read other heads of these PRs too if the head moved. Commit as a table in the report.\n- Trace the running-ci path in deploy/lander/run.mjs and the modules it imports: lightOnly, the once-per-head dispatch and where its marker is stored, how 'missing' required checks are worked out, ciTimedOut, and what state each branch leads to. Compare it with the lander's log and stored state for parts 7, 8 and 9. Add the timeline to the report: what the lander saw and decided on each tick, and where it stopped moving.\n- Trace the workflow side in .github/workflows: which triggers, branch and path filters, job if-conditions and concurrency groups apply to lander/* branches for pull_request and workflow_dispatch; which check names each run reports and on which sha; whether a push by the app token starts a run at all; whether concurrency cancels the dispatched run. Compare the reported names with the lander's required list and main's protection. End with the proven root cause, the hypotheses ruled out with evidence, and the chosen fix, in the report.\n- Prove the fix on real data: run the new decision code read-only (no dispatch, no merge) against the recorded heads and any lander/* PR open now, and check that a workflow_dispatch run on a lander/* head reports every required name using runs that already exist. Write before and after per PR in the report, with what can only be confirmed by the next real landing and how to check it. Never merge or update a PR by hand.\n- Tests, report, THREADS row and PR: run the lander tests, check-landing-line.mjs, check-gate-rules.mjs and check-json-data-writes.mjs; finish _claude/builds/reports/\n\nFiles: _claude/builds/reports/find-fix-why-ci-stalls-lander-one-part.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nRefresh-fix parts 7, 8 and 9 (PRs 915, 916, 917) all sat for 2+ hours with mergeable_state 'unstable' and never merged by themselves. Find the real cause: read the check runs on those heads and the lander's running-ci logic in deploy/lander/run.mjs (lightOnly -> dispatches the full run once per head; 'missing' required checks; ciTimedOut). Likely the full workflow_dispatch run never starts or never reports on lander/* branches, or a required check name doesn't match. Fix the cause so lander PRs go green and merge by themselves, and add a test. Pairs with watchdog-catches-lander-prs-stuck-ci (the safety net).\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "- Collect the evidence for PRs 915, 916 and 917 in the report, read-only through the token broker. For each head sha list the check runs, commit statuses and android.yml workflow runs (event, head_sha, status, conclusion, created/started/finished times). Add main's required checks from branch protection or rulesets, plus how and when each PR finally merged. Read other heads of these PRs too if the head moved. Commit as a table in the report.\n- Trace the running-ci path in deploy/lander/run.mjs and the modules it imports: lightOnly, the once-per-head dispatch and where its marker is stored, how 'missing' required checks are worked out, ciTimedOut, and what state each branch leads to. Compare it with the lander's log and stored state for parts 7, 8 and 9. Add the timeline to the report: what the lander saw and decided on each tick, and where it stopped moving.\n- Trace the workflow side in .github/workflows: which triggers, branch and path filters, job if-conditions and concurrency groups apply to lander/* branches for pull_request and workflow_dispatch; which check names each run reports and on which sha; whether a push by the app token starts a run at all; whether concurrency cancels the dispatched run. Compare the reported names with the lander's required list and main's protection. End with the proven root cause, the hypotheses ruled out with evidence, and the chosen fix, in the report.\n- Prove the fix on real data: run the new decision code read-only (no dispatch, no merge) against the recorded heads and any lander/* PR open now, and check that a workflow_dispatch run on a lander/* head reports every required name using runs that already exist. Write before and after per PR in the report, with what can only be confirmed by the next real landing and how to check it. Never merge or update a PR by hand.\n- Tests, report, THREADS row and PR: run the lander tests, check-landing-line.mjs, check-gate-rules.mjs and check-json-data-writes.mjs; finish _claude/builds/reports/",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "69 min",
+     "files": [
+      "_claude/builds/reports/find-fix-why-ci-stalls-lander-one-part.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-25T04:35:22.093Z",
+     "note": "Part 1: 5 plan steps in one session (they touch the same files).",
+     "uid": "st-mwvhwg6j1l2kpw",
+     "createdAt": "2026-11-25T02:19:23.754Z"
+    },
+    {
+     "id": "s2",
+     "text": "- Add a regression test in deploy/lander that replays the recorded check runs, statuses and workflow runs of PRs 915, 916 and 917 as fixtures (no tokens or private data) through the lander's CI decision with a fake GitHub, and reproduces the stall. If the decision is inline in run.mjs, first move it unchanged into a pure function in deploy/lander/ci-state.mjs. Commit the stalled cases marked as known failing so CI stays green until the fix.\n- Fix the dispatch side in deploy/lander as the root cause requires: a dispatch counts as done for a head only once a workflow run for that exact sha is seen, a refused dispatch is recorded with its error, and a dispatch that never produced a run or was cancelled is sent again with a bounded retry and backoff instead of being blocked by the once-per-head marker. If the evidence shows this part already works, leave it unchanged, say so in the report and only add the test case.\n- Fix the required-check matching in deploy/lander as the root cause requires: one source for the required names, matched against what the jobs really report (check runs and commit statuses, latest run per name, skipped and neutral handled on purpose, dispatched runs read on the PR head sha). A required name no workflow can report must be a named failure, never an endless wait, and no required check may be dropped or loosened to get a merge. If names already match, only add the test case and say so in the report.\n- Fix the merge verdict and ciTimedOut in deploy/lander: mergeable_state 'unstable' alone never blocks when every required check is green on the pinned head, non-required or light-only checks are told apart from required ones, and the timeout is counted from the dispatch or run start of the current head and leads to the existing failed / attempt N retry path. Make clear in code comments where watchdog-catches-lander-prs-stuck-ci takes over, and do not build the watchdog here.\n- Finish the test: flip the PR 915, 916 and 917 cases to expect green and ",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "102 min",
+     "files": [
+      "deploy/lander/run.mjs",
+      "deploy/lander/ci-state.mjs",
+      "deploy/lander/test-ci-stall.mjs",
+      "deploy/lander/fixtures",
+      ".github/workflows",
+      "apps/console-web/plugins/gate"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-25T04:40:46.286Z",
+     "note": "Part 2: 7 plan steps in one session (they touch the same files).",
+     "uid": "st-mwvhwg6j1mrrcj",
+     "createdAt": "2026-11-25T02:19:23.755Z"
+    }
+   ]
+  },
+  {
+   "id": "tabs-console-app-more-than-one-console",
+   "title": "Tabs in the console app: more than one console page open at once",
+   "category": "",
+   "detail": "In the console app on Brett's phone (console-droid), add tabs so several console pages (e.g. Build orchestrator, Plan Studio 2.0, Settings) can be open at the same time and switched between without reloading or losing place. New tab, close tab, switch tab; each tab keeps its own screen and scroll. console_open/console_show can target a tab or open in a new one. Check first whether an existing plan already covers this and fold into it instead of duplicating.",
+   "status": "split",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-25T04:28:25.615Z",
+   "updatedAt": "2026-11-25T05:07:37.466Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T04:29:19.497Z"
+    },
+    {
+     "text": "Split by Claude into 22 steps (18 Fable, 13 can run beside earlier steps).",
+     "at": "2026-11-25T04:30:27.056Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T04:41:07.529Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T04:42:28.648Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T04:43:21.220Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-25T04:54:02.334Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (9 min past budget): re-ran the transition (2), the tick exited 1.",
+     "at": "2026-11-25T05:02:45.063Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (13 min past its budget).",
+     "at": "2026-11-25T05:06:02.047Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 2.",
+     "at": "2026-11-25T05:07:01.533Z"
+    },
+    {
+     "text": "Rejected: 2 steps of 6 touch files that B-1066 (Watchdog catches lander PRs stuck in CI (running-ci) and gets them landed), B-1073 (Find and fix why CI stalls on lander one-part PRs) have not landed yet (_claude/THREADS.md, .github/workflows). Answers: Run all now (run-all), or Run 4 clean steps now, defer 2 (defer).",
+     "at": "2026-11-25T05:07:26.179Z",
+     "by": "orchestrator"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to make tabs in the app so I can have more than one console page open at a time. I need tabs in the console app.",
+    "at": "2026-11-25T04:28:25.615Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "- Overlap check and file map, no code. Go through the builds store (`builds-store.mjs`, `pending.mjs`, `build-queue.mjs`) and Plan Studio 2.0 (`tree.mjs list`) for anything covering tabs or several pages open in the console app. Fold matches into this build: copy their requirements, mark them covered by it, and leave a note on anything that would clash. Read apps/console-droid and confirm how it hosts the console (one WebView or other), how it receives console_show/console_open, and how the console place API (#916) saves and restores a place. Record that Brett's request names this app against th\n- Tests, report, THREADS row and PR: run check-console-tabs, the plugin and server tests, the theme/controls/chrome/console-control checks and `axf validate --framework`. Finish _claude/builds/reports/tabs-console-app-more-than-one-console.md with what was folded in, how each action is reached over REST, MCP, CLI and voice, test results and what only Brett's phone can confirm. Update the STATUS line and THREADS row and have the PR ready through the build rules, saying the UI is waiting in UI Review.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/reports/tabs-console-app-more-than-one-console.md",
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 1: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mwvnwjv11l4stu",
+     "createdAt": "2026-11-25T05:07:26.221Z"
+    },
+    {
+     "id": "s2",
+     "text": "console-tabs@1 contract: framework/core/console-tabs.mjs plus framework/spec/CONSOLE-TABS.md. A device's tab set holds ordered tabs {id, target address (view:/tab:/row:), title, icon, place, pinned, lastActiveAt}, the active id and a max-live count. Pure operations: open, openIn (current | new | tab id, reuse a tab already on that target), close (active moves to a neighbour, the last tab is replaced by the home tab), switch, move, rename, reopenClosed. Define the bridge messages between page and app (list, open, close, switch, changed) and the rule that only the active tab answers console commands.",
+     "model": "Fable",
+     "why": "Contract shared by the console page, its server and the Android app",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/console-tabs.mjs",
+      "framework/spec/CONSOLE-TABS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnwjv11mdl3l",
+     "createdAt": "2026-11-25T04:30:27.056Z",
+     "after": [
+      "s1"
+     ]
+    },
+    {
+     "id": "s3",
+     "text": "- Golden fixture and check for console-tabs@1: framework/spec/fixtures/console-tabs.json and framework/spec/check-console-tabs.mjs (open, reuse, close the last one, close the active one, move, cap reached, reopen closed, bad target refused). Add the check to CI and record the Kotlin kernel twin as a deferred gap in framework/spec/PORTING.md.\n- App tests in apps/console-droid plus the CI build: open, close and switch, place kept after switching, sleep and wake, restore after a process kill, bridge refused for a foreign origin, Back order. CI is the compiler: push, read the build result, fix what it finds.\n- App side, tab host in apps/console-droid: hold one WebView per tab on the console-tabs@1 model, show the active one and keep the others attached but hidden, so switching never reloads and keeps screen, scroll and typed text. All tabs share the one sign-in/cookie session. No strip UI yet.\n- App side, page bridge in apps/console-droid: JavaScript bridge for the console-tabs@1 messages (list, open, close, switch, move, changed), accepted only from the console's own origin. Push every change to all tabs and report the tab set to the console server with the device id.\n- App side, links, back and notifications: Back goes back inside the tab first, then to the previously used tab, and only then leaves the app. Deep links and notification taps open in an existing tab on that target or a new one. A page's new-window request becomes a new tab instead of leaving the app.\n- App side, memory and restart: keep at most max-live WebViews and put the least recently used one to sleep, keeping its place. Restore a sleeping tab through the place API when it is opened. After a process kill or app update, bring back every tab with its screen and scroll, loading only the active one at start.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "87 min",
+     "files": [
+      "framework/spec/fixtures/console-tabs.json",
+      "framework/spec/check-console-tabs.mjs",
+      "framework/spec/PORTING.md",
+      ".github/workflows/",
+      "apps/console-droid/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 3: 6 plan steps in one session (they touch the same files).",
+     "uid": "st-mwvnwjv11nxakb",
+     "createdAt": "2026-11-25T05:07:26.221Z"
+    },
+    {
+     "id": "s4",
+     "text": "Storage: a console-tabs record table, one row per tab keyed by device, with order, active flag, target and place, in services/axf-data/tables.py. Add its namespace to framework/schemas/data-store-paths.json, with a migration and store tests. No JSON files (check-json-data-writes stays green).",
+     "model": "Fable",
+     "why": "Schema and migration design for a new data table",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "services/axf-data/",
+      "framework/schemas/data-store-paths.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnwjv21ohqiu",
+     "createdAt": "2026-11-25T04:30:27.056Z",
+     "after": [
+      "s2"
+     ]
+    },
+    {
+     "id": "s5",
+     "text": "- Scaffold the plugin apps/console-web/plugins/console-tabs: plugin.json (description, builtWith, lifecycle.dataDir), install.mjs, uninstall.mjs, README. Server part with the state-read routes: list a device's tabs, get one tab, list devices. Reads go through server/data_store.py. Server smoke test.\n- Tab actions as REST routes in the plugin server: open, close, switch, move, rename, pin, reopen closed, close others. Each runs the console-tabs@1 operation, saves it and notifies the connected device. A device that is offline gets a clear queued or unavailable answer. Tests.\n- Same actions over MCP, CLI and voice through the plugin's declared commands, each with a description and spoken phrases (\"open Settings in a new tab\", \"switch to Plan Studio\", \"close this tab\"). Destructive ones such as close others need confirm. Test that REST, MCP, CLI and voice list the same actions.\n- Console page side: plugin web part with the bridge client and a tabs store. It finds the app bridge (nothing is drawn in a plain browser), keeps the tab's title, icon and target in step with the screen it shows, and saves place per tab id instead of per device so two tabs never overwrite each other's place.\n- Only the active tab answers: background tabs ignore console_open/console_show and control commands meant for the device, don't repeat alerts, sounds or approval pop-ups, and pause polling. They refresh their data when switched to without losing scroll. Test with two pages on one device id.\n- Tab strip UI in the console page, shown inside the app: the framework TabGroup on the tab-group asset with a stable settings id, closable and reorderable tabs, a New tab button and overflow scroll. Theme tokens and framework controls only. Right-click / long-press gives Settings, Change and Move plus Close, Close others, Pin and Reopen closed. It attaches without overlapping the banner or toolbar. Run check-theme, check-controls, check-chrome-assets, check-toolbars.\n- New tab page picker: the New tab b",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "162 min",
+     "files": [
+      "apps/console-web/plugins/console-tabs/",
+      "apps/console-web/plugins/console-tabs/server/",
+      "apps/console-web/plugins/console-tabs/test.py",
+      "apps/console-web/plugins/console-tabs/plugin.json",
+      "apps/console-web/plugins/console-tabs/commands/",
+      "apps/console-web/plugins/console-tabs/web/",
+      "apps/console-web/src/",
+      "_claude/memory/docs/console-control.md",
+      "apps/console-web/plugins/console-tabs/assets/tab-group/",
+      "apps/console-web/plugins/console-tabs/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 5: 11 plan steps in one session (they touch the same files).",
+     "uid": "st-mwvnwjv21ppv8d",
+     "createdAt": "2026-11-25T05:07:26.222Z"
+    },
+    {
+     "id": "s6",
+     "text": "console_open and console_show take an optional tab: current (default), new, or a tab id. With new they reuse a tab already on that target unless forced. Carry it through the console server's open/show handling, REST /api/console-control, the MCP tool arguments, `axf console` and voice; calls without it behave exactly as today. Follow Amber stays navigate-only. Tests.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnwjv21qn466",
+     "createdAt": "2026-11-25T04:30:27.056Z",
+     "after": []
+    }
+   ]
+  },
+  {
+   "id": "run-more-than-one-build-time-when-they",
+   "title": "Run more than one build at a time when they don't conflict",
+   "category": "",
+   "detail": "Replace the single 'active build' place with: any number of builds can run at once (up to the slot limit) as long as they don't touch the same files. Before a build starts, compare its planned files against every running build (and main); if they overlap, it waits; if not, it starts. Landing stays one at a time. Show in the orchestrator why a build is waiting (which build it clashes with). Ties to the parked clash guard plan: fold into it if it covers this.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T04:31:14.625Z",
+   "updatedAt": "2026-11-25T04:34:54.447Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps.",
+     "at": "2026-11-25T04:32:21.663Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T04:34:54.447Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to be able to run more than one build at a time as long as they don't conflict.",
+    "at": "2026-11-25T04:31:14.625Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Replace the single 'active build' place with: any number of builds can run at once (up to the slot limit) as long as they don't touch the same files. Before a build starts, compare its planned files against every running build (and main); if they overlap, it waits; if not, it starts. Landing stays one at a time. Show in the orchestrator why a build is waiting (which build it clashes with). Ties to the parked clash guard plan: fold into it if it covers this.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvmnfz31lawku",
+     "createdAt": "2026-11-25T04:32:21.663Z"
+    },
+    {
+     "id": "s2",
+     "text": "I want to be able to run more than one build at a time as long as they don't conflict.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvmnfz31m8auf",
+     "createdAt": "2026-11-25T04:32:21.663Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/run-more-than-one-build-time-when-they.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/run-more-than-one-build-time-when-they.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvmnfz31nlbee",
+     "createdAt": "2026-11-25T04:32:21.663Z"
+    }
+   ]
+  },
+  {
+   "id": "console-app-tabs-small",
+   "title": "Console app tabs (small)",
+   "category": "",
+   "detail": "Small build, 3-4 steps max. In the console app (console-droid), add a simple tab strip: a + button opens a new tab with the console's normal start screen, tapping a tab switches to it, an x closes it. Each tab is its own console webview, so it keeps its own screen and scroll. Nothing else: no console_open changes, no settings, no new plugins.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T04:43:42.901Z",
+   "updatedAt": "2026-11-25T04:44:38.537Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T04:43:57.504Z"
+    },
+    {
+     "text": "Split by Claude into 4 steps (3 Fable).",
+     "at": "2026-11-25T04:44:38.537Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "It should not be 22 steps to add tabs.",
+    "at": "2026-11-25T04:43:42.901Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Tab model and per-tab webviews in apps/console-droid: a small tab list (id, title, active) where each tab owns its own console webview, created with the same setup as today's single one and opened on the console's normal start screen. Only the active webview is shown; the others stay alive so each keeps its own screen and scroll. Back, file picker and permission callbacks go to the active tab, and a closed tab's webview is destroyed. Find the current webview host in the app source first and reuse its setup. No settings, no console_open changes: console_open keeps going to the active tab exactly as now. Commit.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"permission\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-droid"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvn38jt1lpmw5",
+     "createdAt": "2026-11-25T04:44:38.537Z",
+     "after": []
+    },
+    {
+     "id": "s2",
+     "text": "Simple tab strip UI in apps/console-droid on the tab list from s1: one row of tabs with + (new tab on the start screen), tap to switch, x to close (closing the active tab shows its neighbour; closing the last one leaves one fresh start-screen tab). Scrolls sideways when full. Framework controls and Axf tokens only, with role/label ids like the app's other chrome. Commit. Its API part is s3.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-droid"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvn38jt1mtkx3",
+     "createdAt": "2026-11-25T04:44:38.537Z",
+     "after": [
+      "s1"
+     ]
+    },
+    {
+     "id": "s3",
+     "text": "API part of the strip, kept small: expose tab list (state) and open, switch and close (by tab id) through the control path console-droid already uses to take commands, as existing-style console actions so REST, MCP, CLI and voice all reach them the same way, with a deep link to a tab by id. No console_open changes, no settings, no new plugin, no new protocol; if the app has no command path that fits, write that gap in the report and PR instead of building one. Commit.",
+     "model": "Fable",
+     "why": "Contracts: it says \"protocol\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-droid"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvn38jt1nu44x",
+     "createdAt": "2026-11-25T04:44:38.537Z",
+     "after": [
+      "s2"
+     ]
+    },
+    {
+     "id": "s4",
+     "text": "Tests for the tab list (open, switch, close active, close last, each tab keeps its own webview), app build through CI, phone screenshots of the strip submitted to UI Review, report _claude/builds/reports/console-app-tabs-small.md (including how each action is reached over REST, MCP, CLI and voice, or the gap), THREADS row and PR.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"ci\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-droid",
+      "_claude/builds/reports/console-app-tabs-small.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvn38jt1op6qx",
+     "createdAt": "2026-11-25T04:44:38.537Z",
+     "after": [
+      "s3"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "clash-answer-run-all-defer-buttons-plus",
+   "title": "Clash answer: Run all / Defer buttons, plus an MCP and voice command",
+   "category": "",
+   "detail": "Small build, 2-3 steps. Builds 'rejected for a clash' (e.g. landing-frees-slot-autoqueue, watchdog-catches-lander-prs-stuck-ci) refuse queue/act with 'answer it first (run-all, or defer)', but there is no button in the Build orchestrator or Plan Studio and no command to answer it. Add: a Run all and a Defer button on every clash-rejected build row (orchestrator and Plan Studio), and a plugin command build-orchestrator/pipeline-clash-answer {id, answer: run-all|defer} reachable from REST, MCP, CLI and voice so Claude can answer it. Run all = queue it anyway; Defer = wait until the build it clashes with lands, then queue by itself.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T04:58:19.585Z",
+   "updatedAt": "2026-11-25T05:08:57.988Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T04:58:35.643Z"
+    },
+    {
+     "text": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps.",
+     "at": "2026-11-25T05:08:57.988Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a session that makes that button. You run it.",
+    "at": "2026-11-25T04:58:19.585Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Small build, 2-3 steps. Builds 'rejected for a clash' (e.g. landing-frees-slot-autoqueue, watchdog-catches-lander-prs-stuck-ci) refuse queue/act with 'answer it first (run-all, or defer)', but there is no button in the Build orchestrator or Plan Studio and no command to answer it. Add: a Run all and a Defer button on every clash-rejected build row (orchestrator and Plan Studio), and a plugin command build-orchestrator/pipeline-clash-answer {id, answer: run-all|defer} reachable from REST, MCP, CLI and voice so Claude can answer it. Run all = queue it anyway; Defer = wait until the build it clashes with lands, then queue by itself.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnyio51l3n2g",
+     "createdAt": "2026-11-25T05:08:57.988Z"
+    },
+    {
+     "id": "s2",
+     "text": "Make a session that makes that button. You run it.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnyio51m2iup",
+     "createdAt": "2026-11-25T05:08:57.988Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/clash-answer-run-all-defer-buttons-plus.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/clash-answer-run-all-defer-buttons-plus.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwvnyio51nbjsm",
+     "createdAt": "2026-11-25T05:08:57.988Z"
+    }
+   ]
   }
  ]
 }
