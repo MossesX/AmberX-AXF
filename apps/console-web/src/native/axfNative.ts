@@ -31,6 +31,7 @@ import { consoleAlertsTransport } from '../alertsTransport';
 import {
   APPROVALS_TARGET, approvalsOpenSpec, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
   DEEP_LINK_EVENT, DEEP_LINK_RETRY_MS, DEEP_LINK_WAIT_MS, DIALOG_ALERT_KEY, DIALOG_UNSEEN, PHONE_APP_ADDRESS, inPageLink, startView, dialogAlert, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  TABS_FEATURE, tabsLine,
 } from './nativeRules.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -44,6 +45,8 @@ export interface AxfNativeHost {
   overlayItems?(json: string): string;
   theme(json: string): string; insets(): string; insetsHandled(handled: boolean): string;
   recorder?(verb: string): string; update?(verb: string): string;
+  /** The app's tab strip (shell feature `tabs`): state, new [link], switch <id>, close <id>. */
+  tabs?(verb: string, arg: string): string;
 }
 
 export type NativeAnswer = { ok: boolean; error?: string; [k: string]: unknown };
@@ -77,7 +80,9 @@ export function nativeState(): NativeAnswer {
   const info = callNative('info');
   if (!info.ok) return info;
   const perms = callNative('permissions'), overlay = callNative('overlayState'), insets = callNative('insets'), update = callNative('update', 'state');
-  return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets, update: update.update };
+  // the tab strip (an app with the `tabs` feature): every tab with its id, title, link, and the one on screen
+  const tabs = Array.isArray(info.features) && info.features.includes(TABS_FEATURE) ? callNative('tabs', 'state', '').tabs : undefined;
+  return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets, update: update.update, ...(tabs ? { tabs } : {}) };
 }
 
 /**
@@ -233,6 +238,7 @@ function describeNative(id: string, r: NativeAnswer): string {
   switch (id) {
     case 'native.state': return `Console app ${String(r.version ?? '')}: overlay ${(r.overlay as { state?: string } | undefined)?.state ?? 'off'}`;
     case 'native.open': return `Opened ${String(r.opened ?? '')}`;
+    case 'native.tabs': return tabsLine(r);
     case 'native.update': { const u = (r.update ?? {}) as { loaded?: string; live?: string; pending?: boolean }; return u.pending ? `New console ${u.live ?? ''} ready: reloading` : `Console ${u.loaded || 'page'} is current (checking now)`; }
     default: return 'Done on the phone';
   }

@@ -245,6 +245,14 @@ export function normFields(o, kind = 'build') {
     // accounts this step already failed on (the watchdog's relaunch avoids them)
     const tried = [...new Set((Array.isArray(x.tried) ? x.tried : []).map((a) => str(a, 80)).filter(Boolean))].slice(-TRIED_MAX);
     if (tried.length) out.tried = tried;
+    // build-clash@1: the build a deferred step waits for, and the open clash with main its session resolves first
+    const ref = (r) => (r && typeof r === 'object' && str(r.buildId) ? { buildId: str(r.buildId, 80), number: str(r.number, 24), title: str(r.title, 300) } : null);
+    if (ref(x.waitsFor)) out.waitsFor = ref(x.waitsFor);
+    const also = (Array.isArray(x.alsoWaitsFor) ? x.alsoWaitsFor : []).map(ref).filter(Boolean);
+    if (also.length) out.alsoWaitsFor = also;
+    const fix = x.clashFix && typeof x.clashFix === 'object' ? x.clashFix : null;
+    const fixFiles = (Array.isArray(fix?.files) ? fix.files : []).map((f) => str(f, 300)).filter(Boolean).slice(0, 40);
+    if (fixFiles.length) out.clashFix = { at: str(fix.at, 40), with: str(fix.with, 80) || 'main', files: fixFiles };
   }
   return out;
 }
@@ -738,18 +746,21 @@ export function pipelineView(build, all = []) {
     if (['waiting-to-merge', 'merging', 'running-ci', 'build-complete'].includes(state) && mergeLine?.waitingFor) line = `${mergeLine.text}.`;
     const clash = obj(b.clash);
     const waits = state === 'split' || (state === FAILED && WAITING.includes(from));
-    if (waits && clash && clash.rejected !== false && !clash.answer) {
-      label = 'Rejected (clash)'; tone = 'danger'; icon = 'alert';
-      line = `${str(clash.reason, 500)} Choose: run all now, or run the clean steps and defer the rest.`;
-    } else if (waits && str(obj(b.pipeline)?.heldAt)) line = 'On hold: release it to give it its turn.';
+    // build-clash@1: a clash never blocks. The pipeline answers it itself (run all) and a conflict with main is fixed by a
+    // session; until a person answers, Run all / Defer may still be chosen by hand
+    const clashOpen = !!clash && !!str(clash.reason) && (!clash.answer || clash.auto === true);
+    const clashLine = clashOpen ? `${str(clash.reason, 500).replace(/^Rejected: /, 'Clash: ')} It carries on by itself: every step runs, and a conflict with main is fixed by a session. Run all or Defer answers it by hand.` : '';
+    if (waits && clashOpen && str(obj(b.pipeline)?.heldAt)) line = `On hold: release it to give it its turn. ${clashLine}`;
+    else if (waits && clashOpen && !(ctx.holder && ctx.holder.id !== b.id)) line = clashLine;
+    else if (waits && str(obj(b.pipeline)?.heldAt)) line = 'On hold: release it to give it its turn.';
     else if ((state === 'split' || state === 'ready') && !besideLine(b) && ctx.holder && ctx.holder.id !== b.id) {
       const r = refOf(ctx.holder);
       waitingOn = { ...r, reason: `Waiting: ${r.title || r.buildId} holds the active place` };
-      line = `${waitingOn.reason} (${labelOf(ctx.holder.status, ctx.holder.attempt)}).`;
+      line = `${waitingOn.reason} (${labelOf(ctx.holder.status, ctx.holder.attempt)}).${clashLine ? ` ${clashLine}` : ''}`;
     }
     const deferred = steps.filter((s) => obj(s.waitsFor) && s.status === 'pending');
     if (deferred.length && ['pulling-main', 'assigning-models', 'ready', 'sending', 'building'].includes(state)) line = `${line} ${stepsWord(deferred.length)} deferred, waiting for ${[...new Set(deferred.map((s) => nameOf({ buildId: str(s.waitsFor.buildId, 80), number: str(s.waitsFor.number, 24), title: str(s.waitsFor.title, 300) })))].join(', ')} to land.`;
-    return { state, label, tone, icon, line, attempt, waitingOn, mergeLine, split, ...(clash && str(clash.reason) ? { clash: { rejected: clash.rejected !== false && !clash.answer, reason: str(clash.reason, 600), answer: str(clash.answer, 20) } } : {}) };
+    return { state, label, tone, icon, line, attempt, waitingOn, mergeLine, split, ...(clash && str(clash.reason) ? { clash: { rejected: false, reason: str(clash.reason, 600).replace(/^Rejected: /, 'Clash: '), answer: str(clash.answer, 20), auto: clash.auto === true || !clash.answer, canAnswer: clashOpen } } : {}) };
   } catch {
     const raw = str(b.status, 40);
     return { state: raw, label: raw || 'Unknown', tone: 'muted', icon: 'circle', line: '', attempt: 1, waitingOn: null, mergeLine: null, split: null };

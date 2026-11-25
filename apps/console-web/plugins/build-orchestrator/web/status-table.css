@@ -60,4 +60,9 @@
 .st-state__line { margin: 0; white-space: normal; overflow-wrap: anywhere }
 .st-wait, .st-merge { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); margin: 0; white-space: normal }
 .st-wait > .fx-icon, .st-merge > .fx-icon { flex: none; color: var(--fx-warning) }
+/* build-clash@1: the clash line with Run all / Defer; the buttons wrap under the text, never over it */
+.st-clash { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); white-space: normal }
+.st-clash > .fx-icon { flex: none; color: var(--fx-warning) }
+.st-clash__text { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }
+.st-clash__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
 .st-merge__text, .st-wait > span { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }

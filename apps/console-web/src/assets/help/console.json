@@ -1083,6 +1083,13 @@
         "tryIt": "native.update:check"
       },
       {
+        "target": "action:native.tabs",
+        "title": "Phone: tabs",
+        "text": "The console app has a small tab strip under the page: + opens a new tab on the start screen, tapping a tab switches to it, x closes it. Each tab is its own console, so it keeps its own screen and scroll. state lists the tabs, new opens one (optionally on a console link), switch and close take a tab id. Closing the last tab leaves one fresh tab. Up to 8 tabs.",
+        "kind": "control",
+        "tryIt": "native.tabs:new"
+      },
+      {
         "target": "action:native.state",
         "title": "Phone: app state",
         "text": "Everything the console app knows: app version, permissions, the floating toolbar, the safe area (status bar, camera cutout, navigation bar, keyboard), web content updates and the axHub device link. The same answer is panel:phone-app's state over REST, MCP and the CLI.",

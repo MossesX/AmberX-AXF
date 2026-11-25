@@ -94,6 +94,7 @@ final class Insets {
             int[] p = SafeArea.rootPadding(i, dockPx, pageHandles); // the docked toolbar's strip is the shell's
             currentRoot.setPadding(p[0], p[1], p[2], p[3]);
         }
+        WebHost.stripInsets(i, pageHandles); // the tab strip under the page keeps clear of the bottom bar by itself
         push();
         if (OverlayService.running != null) OverlayService.running.restyle(); // the toolbar follows rotation and cutouts
     }
@@ -114,6 +115,7 @@ final class Insets {
     static void push() {
         if (!ShellRules.bridgeAllowed(NativeBridge.currentUrl)) return;
         int[] i = SafeArea.pageInsets(now(), dockPx, pageHandles);
+        if (WebHost.stripShown()) i = TabRules.pageInsets(i); // the bottom of the safe area is the tab strip's
         WebHost.js(InsetsCss.script(css(i[0]), css(i[1]), css(i[2]), css(i[3])));
         NativeBridge.emit("insets", json());
     }

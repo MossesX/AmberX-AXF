@@ -134,6 +134,7 @@ export function parseAnswer(s) {
  *   native.wake
  *   native.recorder:<start|stop|state>
  *   native.update:<check|reload|state>
+ *   native.tabs:<state|new|switch|close>[:<tab id, or for new a console link>]   (the app's tab strip; default state)
  *   native.state
  */
 export function nativeCall(id, args) {
@@ -158,9 +159,28 @@ export function nativeCall(id, args) {
     case 'native.wake': return { call: 'wake', args: [] };
     case 'native.recorder': return RECORDER_VERBS.includes(a[0]) ? { call: 'recorder', args: [a[0]] } : { error: `native.recorder takes ${RECORDER_VERBS.join(', ')}` };
     case 'native.update': return UPDATE_VERBS.includes(a[0] ?? 'check') ? { call: 'update', args: [a[0] ?? 'check'] } : { error: `native.update takes ${UPDATE_VERBS.join(', ')}` };
+    case 'native.tabs': {
+      const verb = a[0] ?? 'state';
+      const arg = a.slice(1).join(':').trim(); // a link carries its own colons
+      if (!TAB_VERBS.includes(verb)) return { error: `native.tabs takes ${TAB_VERBS.join(', ')}` };
+      if ((verb === 'switch' || verb === 'close') && !arg) return { error: `native.tabs:${verb}:<tab id> (native.tabs:state lists them)` };
+      return { call: 'tabs', args: [verb, verb === 'state' ? '' : arg] };
+    }
     case 'native.state': return { call: 'state', args: [] };
     default: return { error: `unknown native action ${id}` };
   }
+}
+
+/** The console app's tab strip (console-droid TabRules): what `native.tabs` may ask, and the bridge feature that says the app has tabs. */
+export const TAB_VERBS = ['state', 'new', 'switch', 'close'];
+export const TABS_FEATURE = 'tabs';
+/** One line for an answer of the host's `tabs` call: "3 tabs, Plan Studio on screen". */
+export function tabsLine(r) {
+  const t = r && typeof r === 'object' && r.tabs && typeof r.tabs === 'object' ? r.tabs : null;
+  const list = Array.isArray(t?.tabs) ? t.tabs : [];
+  if (!list.length) return 'No tabs';
+  const did = typeof r.opened === 'string' ? `Opened tab ${r.opened}. ` : typeof r.closed === 'string' ? `Closed tab ${r.closed}. ` : typeof r.shown === 'string' ? `Showing tab ${r.shown}. ` : '';
+  return `${did}${list.length} tab${list.length === 1 ? '' : 's'}: ${list.map((x) => `${x.id} ${x.title}${x.active ? ' (on screen)' : ''}`).join(', ')}`.replace(/\s+/g, ' ').trim();
 }
 
 /** Every native action, for registration and the docs (id, label, takes params). */
@@ -172,6 +192,7 @@ export const NATIVE_ACTIONS = [
   { id: 'native.wake', label: 'Bring the console to the front on the phone and turn the screen on', params: false },
   { id: 'native.recorder', label: 'Phone recorder: start, stop, state (native.recorder:<verb>; AmberX records until its capture service moves to the console app)', params: true },
   { id: 'native.update', label: 'Phone app web content: check for a new console, reload into it, or state (native.update:<verb>)', params: true },
+  { id: 'native.tabs', label: 'Phone app tabs: list them, open a new one, switch to one or close one (native.tabs:<state|new|switch|close>:<tab id>)', params: true },
   { id: 'native.state', label: 'Phone app state: shell version, permissions, overlay, insets', params: false },
 ];
 

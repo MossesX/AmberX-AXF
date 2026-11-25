@@ -42,6 +42,7 @@ const CASES = [
   ['split, nothing active', p2('x', 'split', { split: SPLIT }), [BUILT_1]],
   ['split, on hold', p2('x', 'split', { pipeline: { heldAt: '2026-11-24T00:00:00.000Z' } }), OTHERS],
   ['split, rejected for a clash', p2('x', 'split', { clash: { rejected: true, reason: 'Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).', options: [] } }), OTHERS],
+  ['split, clash answered by the pipeline', p2('x', 'split', { clash: { rejected: false, answer: 'run-all', auto: true, answeredBy: 'pipeline', reason: 'Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).', options: [] } }), [BUILT_1]],
   ['split, clash answered: waits its turn', p2('x', 'split', { clash: { rejected: false, answer: 'defer', reason: 'Rejected: 1 step of 2 touches files that B-0041 has not landed yet.' } }), OTHERS],
   ['hand build at split never waits', p2('x', 'split', { hand: { at: '2026-11-24T00:00:00.000Z', by: 'brett' } }), OTHERS],
   ['building with a deferred step', p2('x', 'building', { steps: [step('s1', 'building'), step('s2', 'pending', { waitsFor: { buildId: 'built-1', number: 'B-0038', title: 'Build built-1' } })] }), [BUILT_1]],
@@ -129,8 +130,11 @@ eq(P.pipelineView(ACTIVE, [ACTIVE, p2('x', 'split')]).waitingOn, null, 'the acti
 
 // ---- the clash badge
 const rj = view('split, rejected for a clash');
-eq([rj.state, rj.label, rj.tone], ['split', 'Rejected (clash)', 'danger'], 'a rejected build says so on its badge');
-ok(rj.clash.rejected && /Choose: run all now/.test(rj.line), 'and offers the answers');
+eq([rj.state, rj.label, rj.tone], ['split', 'Split', 'muted'], 'a clash never blocks: an older unanswered record shows an ordinary waiting build');
+ok(!rj.clash.rejected && rj.clash.auto && rj.clash.canAnswer && /^Clash: /.test(rj.clash.reason) && /It carries on by itself/.test(rj.line) && /Waiting: /.test(rj.line), 'that waits only for its turn and says it carries on by itself');
+const au = view('split, clash answered by the pipeline');
+ok(au.label === 'Split' && au.clash.auto && au.clash.canAnswer && au.clash.answer === 'run-all' && /Run all or Defer answers it by hand/.test(au.line), 'the pipeline\'s own answer leaves Run all / Defer open by hand');
+ok(view('split, clash answered: waits its turn').clash.canAnswer === false, 'a person\'s answer closes it');
 eq(view('split, clash answered: waits its turn').label, 'Split', 'an answered clash is an ordinary waiting build again');
 ok(/1 step deferred, waiting for B-0038 to land/.test(view('building with a deferred step').line), 'a deferred step names the build it waits for');
 
@@ -181,6 +185,11 @@ eq(rec.options[1].label, 'Run 1 clean step now, defer 2', 'the defer answer says
 eq(C.clashRecord({ ...CLASH_NEW, steps: [CLASH_NEW.steps[1]] }, CLASH_ALL), null, 'a clean build is not rejected');
 eq(C.clashRecord({ id: 'nofiles', steps: [{ id: 's1', text: 'no files named' }] }, CLASH_ALL), null, 'a build that names no files cannot be judged');
 ok(C.isRejected({ clash: rec }) && !C.isRejected({ clash: { ...rec, answer: 'run-all', rejected: false } }) && !C.isRejected({}), 'isRejected until answered');
+const auto = C.autoAnswer({ clash: rec }, { at: 'T' }).clash;
+eq([auto.rejected, auto.answer, auto.auto, auto.answeredBy, auto.reason.slice(0, 7)], [false, 'run-all', true, C.AUTO_BY, 'Clash: '], 'the pipeline answers a clash itself (run-all, auto): it never blocks');
+ok(C.canAnswer({ clash: auto }) && C.canAnswer({ clash: rec }) && !C.canAnswer({}) && C.autoAnswer({ clash: auto }) === null, 'a hand answer stays open after the pipeline\'s own');
+const hand = C.answerClash({ id: 'new', clash: auto }, 'defer', { by: 'brett', at: 'T' });
+ok(hand.clash.answer === 'defer' && !('auto' in hand.clash) && !C.canAnswer({ clash: hand.clash }) && hand.defer.length === 2, 'a hand answer replaces the pipeline\'s and stands');
 const d = C.answerClash({ id: 'new', clash: rec }, 'defer', { by: 'brett', at: 'T' });
 eq([d.clash.rejected, d.clash.answer, d.clash.answeredBy, d.defer.map((x) => x.step)], [false, 'defer', 'brett', ['s1', 's3']], 'defer: the clashing steps are the ones to mark');
 eq(C.answerClash({ id: 'new', clash: rec }, 'run-all').defer, [], 'run-all: nothing waits');

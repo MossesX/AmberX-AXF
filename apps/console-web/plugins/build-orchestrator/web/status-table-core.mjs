@@ -116,6 +116,22 @@ function common(values) {
  * One build as the table shows it (compact: what the toolbar filters and the columns draw, plus its steps). `all` is
  * every build read with it: the view names the build that holds the active place and the one ahead in the merge line.
  */
+/**
+ * The clash a build carries (build-clash@1), as the row draws it, or null. A clash never blocks: the pipeline answers
+ * it itself (`auto`), and Run all / Defer stay open (`canAnswer`) until a person answers.
+ * → { reason, answer, answeredBy, auto, canAnswer, runAllLabel, deferLabel, deferLine }
+ */
+export function clashOf(b) {
+  const c = b?.clash && typeof b.clash === 'object' ? b.clash : null;
+  if (!c || !str(c.reason)) return null;
+  const answer = ['run-all', 'defer'].includes(c.answer) ? c.answer : '';
+  const auto = !answer || c.auto === true;
+  const opt = (id) => (Array.isArray(c.options) ? c.options : []).find((o) => o && o.id === id) ?? {};
+  const over = ['landed', 'archived', 'complete', 'built'].includes(str(b.status));
+  return { reason: str(c.reason).replace(/^Rejected: /, 'Clash: '), answer, answeredBy: str(c.answeredBy), auto, canAnswer: auto && !over,
+    runAllLabel: 'Run all', deferLabel: 'Defer', runAllLine: str(opt('run-all').line), deferLine: str(opt('defer').line) };
+}
+
 export function buildRow(b, all = []) {
   const status = buildStatus(b);
   if (!status) return null;
@@ -136,6 +152,7 @@ export function buildRow(b, all = []) {
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
     // pipeline-status@1: the build number, what it is doing now (badge, line, waiting reason, merge line) and who split it
     number: buildNumber(b), view: viewOf(b, Array.isArray(all) ? all : []), split: normSplit(b.split), splitLabel: splitLabel(normSplit(b.split)),
+    clash: clashOf(b),
   };
 }
 

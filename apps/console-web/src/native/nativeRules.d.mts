@@ -24,6 +24,9 @@ export declare function themeTokens(read: (token: string) => string): Record<str
 export declare function pageHandlesInsets(read: (token: string) => string): boolean;
 export declare function parseAnswer(s: unknown): { ok: boolean; error?: string; [k: string]: unknown };
 export declare function nativeCall(id: string, args: readonly string[] | undefined): { call: string; args: unknown[] } | { error: string };
+export declare const TAB_VERBS: readonly string[];
+export declare const TABS_FEATURE: string;
+export declare function tabsLine(r: unknown): string;
 export declare const NATIVE_ACTIONS: ReadonlyArray<{ id: string; label: string; params: boolean }>;
 export declare const DIALOG_FEATURE: string;
 export declare const UNSEEN_MS: number;

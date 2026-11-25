@@ -794,6 +794,13 @@
         "text": "Goes to the previous skin.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "hide-this-notice",
+        "title": "Hide this notice",
+        "text": "Hides the \"New version of the console\" notice until the next load. Nothing reloads: part of the console may still fail to load until you press Reload.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

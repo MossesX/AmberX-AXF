@@ -470,7 +470,7 @@
         "id": "pipeline-act",
         "route": "POST /pipeline/act",
         "title": "One action on a Pipeline 2.0 build or step",
-        "description": "queue (move it on: split it and give it the active place when it is next), hold / release (a waiting build keeps its place and is skipped), retry (failed parts leave failed forward), rebuild (a failed step is built again; a build that failed while landing is recompiled), run-ci, land (the lander takes it now) or cancel (archived). The VPS decides; an action that does not fit where the build is gets refused with the reason. Say 'retry the plan studio build'.",
+        "description": "queue (move it on: split it and give it the active place when it is next), hold / release (a waiting build keeps its place and is skipped), retry (failed parts leave failed forward), rebuild (a failed step is built again; a build that failed while landing is recompiled), run-ci, land (the lander takes it now) or cancel (archived). run-all / defer answer a clash by hand (see pipeline-clash-answer). The VPS decides; an action that does not fit where the build is gets refused with the reason. Say 'retry the plan studio build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -480,7 +480,18 @@
             },
             "action": {
               "type": "string",
-              "enum": ["queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel"]
+              "enum": [
+                "queue",
+                "hold",
+                "release",
+                "retry",
+                "rebuild",
+                "run-ci",
+                "land",
+                "cancel",
+                "run-all",
+                "defer"
+              ]
             },
             "step": {
               "type": "string",
@@ -497,6 +508,44 @@
           ]
         },
         "output": "{ id, action, step, status, label, held, say }"
+      },
+      {
+        "id": "pipeline-clash-answer",
+        "route": "POST /pipeline/clash-answer",
+        "title": "Answer a build's clash by hand: run all, or defer",
+        "description": "A clash never blocks a build: the pipeline answers it itself (every step runs) and a conflict with main is fixed by a session. This answers by hand instead. run-all = every step runs now (also undoes a defer). defer = each clashing step that has not started waits for the build it clashes with and starts by itself when that build lands. Refused with the reason when the build has no clash or a person already answered. Say 'run all on the landing build' or 'defer the clashing steps of the watchdog build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "answer": {
+              "type": "string",
+              "enum": [
+                "run-all",
+                "defer"
+              ]
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason, kept on the build"
+            }
+          },
+          "required": [
+            "id",
+            "answer"
+          ]
+        },
+        "output": "{ id, action, status, label, say, clash, deferred: [step] }"
+      },
+      {
+        "id": "pipeline-clashes",
+        "route": "GET /pipeline/clashes",
+        "title": "Builds that carry a clash",
+        "description": "Every Pipeline 2.0 build with a clash record: what it clashes with, the answer and who gave it (the pipeline or a person), whether Run all / Defer may still be chosen, the deferred steps, and the steps whose session resolves a conflict with main first. Say 'which builds clash'.",
+        "output": "{ ok, clashes: [{ id, number, title, status, reason, with, answer, answeredBy, auto, canAnswer, options, deferred: [{ step, waitsFor }], fixing: [{ step, files }] }] }"
       },
       {
         "id": "pipeline-unqueue",

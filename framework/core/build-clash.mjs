@@ -21,6 +21,13 @@
  * Stored on the build as `clash`: { rejected, at, reason, with: [ref], options: [{ id, label, line, action, steps:
  * [{ step, uid, title, files, waitsFor: ref }] }], answer?, answeredBy?, answeredAt? } and, after a `defer` answer, on
  * each deferred step as `waitsFor: ref`. ref = { buildId, number, title }.
+ *
+ * A clash never blocks (Brett, Nov 25 2026: the pipeline "pulls main into the branch, runs a fix session, re-runs
+ * checks and carries on by itself"). The record is still made, so the build says what it clashes with, but the
+ * pipeline answers it at once (autoAnswer: `run-all`, `auto: true`, answeredBy `pipeline`) and the build takes its
+ * turn like any other; a conflict that really shows up when main is pulled in is fixed by a session, never by a
+ * person. `run-all` / `defer` stay as answers by hand: a hand answer replaces the pipeline's own (canAnswer), and
+ * `defer` then holds back only the steps that have not started.
  */
 
 export const SCHEMA = 'build-clash@1';
@@ -161,24 +168,40 @@ export function normClash(c) {
   return {
     $axf: SCHEMA, rejected: x.rejected !== false, at: str(x.at, 40), reason: str(x.reason, 600), with: list(x.with).map(ref).filter(Boolean),
     options: list(x.options).map((o) => (obj(o) && ANSWERS.includes(o.id) ? { id: o.id, action: o.id, label: str(o.label, 120), line: str(o.line, 600), steps: list(o.steps).map(step).filter(Boolean) } : null)).filter(Boolean),
-    ...(ANSWERS.includes(x.answer) ? { answer: x.answer, answeredBy: str(x.answeredBy, 80), answeredAt: str(x.answeredAt, 40) } : {}),
+    ...(ANSWERS.includes(x.answer) ? { answer: x.answer, answeredBy: str(x.answeredBy, 80), answeredAt: str(x.answeredAt, 40), ...(x.auto === true ? { auto: true } : {}) } : {}),
   };
 }
 
-/** Is the build rejected and still waiting for an answer? */
+/** Does the build carry a clash record nobody answered (one written before clashes stopped blocking)? The pipeline answers it itself: autoAnswer. */
 export const isRejected = (b) => { const c = obj(b?.clash); return !!c && c.rejected !== false && !ANSWERS.includes(c.answer); };
+/** Who answers when nobody does. */
+export const AUTO_BY = 'pipeline';
+/** May the clash be answered by hand: there is one, and no person answered it yet (the pipeline's own answer may be replaced). */
+export const canAnswer = (b) => { const c = normClash(b?.clash); return !!c && (!c.answer || c.auto === true); };
 
 /**
- * The build's clash record after an answer. `run-all`: nothing waits. `defer`: the option's steps are the ones to mark
- * (`waitsFor` on each). → { clash, defer: [{ step, uid, waitsFor, alsoWaitsFor? }] }; throws when there is nothing to answer.
+ * The pipeline's own answer, so a clash never waits for a person: `run-all`, marked `auto`. The reason no longer says
+ * "Rejected". → { clash }, or null when there is no record or it is answered already.
+ */
+export function autoAnswer(build, { at = '' } = {}) {
+  const c = normClash(build?.clash);
+  if (!c || c.answer) return null;
+  return { clash: { ...c, reason: c.reason.replace(/^Rejected: /, 'Clash: '), rejected: false, answer: 'run-all', answeredBy: AUTO_BY, answeredAt: str(at, 40), auto: true } };
+}
+
+/**
+ * The build's clash record after an answer by hand. `run-all`: nothing waits. `defer`: the option's steps are the ones
+ * to mark (`waitsFor` on each). The pipeline's own answer (`auto`) may be replaced; a person's stands.
+ * → { clash, defer: [{ step, uid, waitsFor, alsoWaitsFor? }] }; throws when there is nothing to answer.
  */
 export function answerClash(build, answer, { by = '', at = '' } = {}) {
   const c = normClash(build?.clash);
   if (!c) throw new Error(`${str(build?.id, 80) || 'the build'} has no clash to answer`);
   if (!ANSWERS.includes(answer)) throw new Error(`the answer is one of ${ANSWERS.join(', ')}`);
-  if (c.answer) throw new Error(`${str(build?.id, 80)} was already answered: ${c.answer}`);
+  if (c.answer && !c.auto) throw new Error(`${str(build?.id, 80)} was already answered: ${c.answer}`);
   const defer = answer === 'defer' ? (c.options.find((o) => o.id === 'defer')?.steps ?? []) : [];
-  return { clash: { ...c, rejected: false, answer, answeredBy: str(by, 80), answeredAt: str(at, 40) }, defer };
+  const { auto: _auto, ...rest } = c;
+  return { clash: { ...rest, rejected: false, answer, answeredBy: str(by, 80), answeredAt: str(at, 40) }, defer };
 }
 
 /** The builds a deferred step waits for (its `waitsFor`, plus `alsoWaitsFor`). */

@@ -17,7 +17,7 @@
     "waitingOn": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/waitingOn" }] },
     "mergeLine": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/mergeLine" }] },
     "split": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/split" }] },
-    "clash": { "type": "object", "required": ["rejected", "reason"], "properties": { "rejected": { "type": "boolean" }, "reason": { "type": "string", "maxLength": 600 }, "answer": { "enum": ["", "run-all", "defer"] } } }
+    "clash": { "type": "object", "required": ["rejected", "reason"], "properties": { "rejected": { "type": "boolean" }, "reason": { "type": "string", "maxLength": 600 }, "answer": { "enum": ["", "run-all", "defer"] }, "auto": { "type": "boolean", "description": "The pipeline answered it itself (a clash never blocks); a person has not." }, "canAnswer": { "type": "boolean", "description": "Run all / Defer may still be chosen by hand." } }, "description": "build-clash@1 as shown. `rejected` is always false: a clash never blocks a build (kept for older readers)." }
   },
   "$defs": {
     "state": { "enum": ["pending", "splitting", "split", "pulling-main", "assigning-models", "ready", "sending", "building", "build-complete", "failed", "waiting-to-merge", "merging", "running-ci", "landed"] },

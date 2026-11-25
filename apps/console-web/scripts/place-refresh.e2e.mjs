@@ -75,19 +75,19 @@ async function mockBackend(page) {
     if (u.pathname === '/api/me') return json(ME);
     if (u.pathname === '/api/plugins') return json(PLUGINS);
     if (req.method() === 'GET' && u.pathname === '/api/events') return r.abort();
-    if (u.pathname === '/api/plugins/console-commands/stream') {
+    if (u.pathname === '/api/plugins/console-commands/stream') { // a mocked route in this test, not a dependency: axf-not-plugin:console-commands
       const m = waiting.shift();
       if (m) return send(r, m).catch(() => undefined);
       held.push(r); // answered by the next push; a reload drops it
       return undefined;
     }
-    if (u.pathname === '/api/plugins/console-commands/ack') {
+    if (u.pathname === '/api/plugins/console-commands/ack') { // a mocked route in this test, not a dependency: axf-not-plugin:console-commands
       let body = {};
       try { body = req.postDataJSON() ?? {}; } catch { /* not JSON */ }
       acks.get(body.id)?.(body);
       return json({ ok: true });
     }
-    if (u.pathname.startsWith('/api/plugins/console-commands/')) return json({ ok: true });
+    if (u.pathname.startsWith('/api/plugins/console-commands/')) return json({ ok: true }); // a mocked route in this test, not a dependency: axf-not-plugin:console-commands
     // 404 = no backend: the views read dist/data at once. (A 5xx would put every read behind the console's back-off,
     // and data that takes longer than the restore's give-up time is, by design, not scrolled back to.)
     return json({ ok: false, detail: 'no backend (e2e)' }, 404);

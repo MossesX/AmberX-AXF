@@ -54,13 +54,15 @@
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
  *   … retry <build> [--why w] [--by who]   Brett's retry of a failed build: the attempt counts start again
+ *   … clashes [--json]                     every build that carries a clash: the answer, who gave it, what waits, what is being fixed
  *   … act <build> <queue|hold|release|retry|rebuild|run-ci|land|cancel|run-all|defer> [--step s] [--why w] [--by who]
  *                                          one tap on a build or a step (the console, Plan Studio 2.0, MCP): actBuild below
  *
  * pipeline-status@1 (framework/core/pipeline-status.mjs; Brett, Nov 23 and 24 2026): the split writes its provenance
  * to the build (`split: { by: 'vps', model, at, stepCount }`, `splitBy` on each step) and `modelBy: 'triage'` once the
  * models are assigned; one pass at a time splits a build (splitClaim); steps never share files, and a build that
- * touches what another build has not landed yet is rejected with two answers, run-all or defer (build-clash@1); a
+ * touches what another build has not landed yet carries a clash record but is never held for it (build-clash@1: the
+ * pipeline answers run-all itself; run-all / defer stay as answers by hand; a conflict with main is fixed by a session); a
  * build gets a draft PR the moment it starts (`pr`, `prUrl`); and after every store change this file makes, one update
  * command goes to the console (POST /api/builds/updated { build, state, rev, at }: notifyUpdated).
  *
@@ -262,7 +264,7 @@ function splitAll(store, env, out, only = '') {
     const rows = gated.steps.map((st, i) => Object.assign(storeCore.normStep(st, i), { splitBy }));
     // split provenance: where it ran, the model that really ran, when, how many steps
     const split = { by: 'vps', model: splitBy === 'vps-fable' ? SPLIT_MODEL : 'rules', at: when, stepCount: rows.length, host: hostname() };
-    // intake: a build that touches what another build has not landed yet is rejected as a whole (it keeps its steps and waits for an answer)
+    // intake: a build that touches what another build has not landed yet carries the clash on its record; it is never held for it
     const clash = intakeClash({ ...b, steps: rows }, when);
     let r = null;
     try {
@@ -273,7 +275,7 @@ function splitAll(store, env, out, only = '') {
           rec.steps = rows; rec.split = split; rec.splitClaim = null;
           if (clash) rec.clash = clash;
           if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' });
-          if (clash) rec.notes.push({ text: clip(`${clash.reason} Answers: ${clash.options.map((o) => `${o.label} (${o.id})`).join(', or ')}.`, 1500), at: when, by: 'orchestrator' });
+          if (clash) rec.notes.push({ text: clashNote(clash), at: when, by: 'orchestrator' });
         } });
     } catch (e) {
       if (!(e instanceof Claimed)) throw e;
@@ -282,7 +284,7 @@ function splitAll(store, env, out, only = '') {
     }
     if (r) triage.logSteps(b, gated.decisions);
     if (r) { out.split.push({ id: b.id, steps: parts.length, slots, by: split.by, model: split.model }); logLine({ event: 'split', build: b.id, steps: parts.length, slots, by: split.by, model: split.model, splitBy }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
-    if (r && clash) { out.rejected.push({ id: b.id, why: clash.reason }); logLine({ event: 'clash-rejected', build: b.id, with: clash.with.map((w) => w.buildId) }); say('orchestrator', 'blocked', clip(`${b.id}: ${clash.reason} Run all, or defer the clashing steps.`, 400), b.id); }
+    if (r && clash) saidClash(b, clash, out);
   }
 }
 
@@ -292,21 +294,39 @@ function splitAll(store, env, out, only = '') {
  * The clash record of a build against every build that is not on main yet (building, or built and waiting to merge),
  * or null: build-clash@1. Emergency builds and hand builds are never checked (they run beside the line by Brett's own
  * hand), and a build that already carries a record is not judged twice (its answer stands).
+ *
+ * A clash never blocks (Brett, Nov 25 2026): the record comes back already answered by the pipeline (run-all, `auto`),
+ * so the build takes its turn like any other. If main really conflicts when it is pulled in, the step's own session
+ * resolves it first (pullMain → clashFix) and the lander's fix session does the same on the PR. Run all / Defer are
+ * still there to answer by hand (actBuild).
  */
 function intakeClash(b, when = nowIso()) {
   if (P2.besideLine(b) || b.clash) return null;
-  try { return BC.clashRecord(b, p2Builds(loadStore()), { at: when }); }
+  try { const found = BC.clashRecord(b, p2Builds(loadStore()), { at: when }); return found ? BC.autoAnswer({ clash: found }, { at: when }).clash : null; }
   catch (e) { logLine({ event: 'clash-check-failed', build: b.id, error: str(e.message) }); return null; }
 }
-/** The same check when a waiting build is about to start (a hand build may have started since its split). → true when it was rejected now. */
-function rejectAtStart(b, out) {
+const clashNote = (clash) => clip(`${clash.reason} It carries on by itself: every step runs now, and a conflict with main is fixed by a session. To answer by hand: ${clash.options.map((o) => `${o.label} (${o.id})`).join(', or ')}.`, 1500);
+function saidClash(b, clash, out, where = '') {
+  out.clashes.push({ id: b.id, why: clash.reason, answer: clash.answer, auto: true });
+  logLine({ event: 'clash-carried-on', build: b.id, with: clash.with.map((w) => w.buildId), ...(where ? { at: where } : {}) });
+  say('orchestrator', 'start', clip(`${b.id}: ${clash.reason} Carrying on by itself; Run all or Defer answers it by hand.`, 400), b.id);
+}
+/** The same check when a waiting build is about to start (a hand build may have started since its split). The clash goes on its record; it starts all the same. */
+function clashAtStart(b, out) {
   const clash = intakeClash(b);
-  if (!clash) return false;
-  const r = move(b.id, b.status, { action: 'pipeline2:clash', mutate: (rec) => { rec.clash = clash; rec.notes.push({ text: clip(`${clash.reason} Answers: ${clash.options.map((o) => `${o.label} (${o.id})`).join(', or ')}.`, 1500), at: nowIso(), by: 'orchestrator' }); } });
-  if (!r) return false;
-  out.rejected.push({ id: b.id, why: clash.reason }); logLine({ event: 'clash-rejected', build: b.id, with: clash.with.map((w) => w.buildId), at: 'start' });
-  say('orchestrator', 'blocked', clip(`${b.id}: ${clash.reason} Run all, or defer the clashing steps.`, 400), b.id);
-  return true;
+  if (!clash) return;
+  if (move(b.id, b.status, { action: 'pipeline2:clash', mutate: (rec) => { rec.clash = clash; rec.notes.push({ text: clashNote(clash), at: nowIso(), by: 'orchestrator' }); } })) saidClash(b, clash, out, 'start');
+}
+/**
+ * Records written while a clash still stopped a build ("rejected", no answer): the pipeline answers each now, so the
+ * builds that were stuck that way take their turn on this very pass.
+ */
+function answerOldClashes(out, only = '') {
+  for (const b of p2Builds(loadStore()).filter((x) => BC.isRejected(x) && (!only || x.id === only))) {
+    const a = BC.autoAnswer(b, { at: nowIso() });
+    if (!a) continue;
+    if (move(b.id, b.status, { action: 'pipeline2:clash', mutate: (rec) => { rec.clash = a.clash; rec.notes.push({ text: 'Clashes no longer block: the pipeline answered this one itself (every step runs; a conflict with main is fixed by a session). Run all or Defer still answers it by hand.', at: nowIso(), by: 'orchestrator' }); } })) saidClash(b, a.clash, out, 'unblocked');
+  }
 }
 /** Is this step deferred right now: it waits for a build that has not landed (build-clash@1 stillDeferred)? → that build or null. */
 const deferredNow = (s, builds) => (s?.waitsFor ? BC.stillDeferred(s, builds) : null);
@@ -323,24 +343,37 @@ export const isHeld = (b) => !!str(b?.pipeline?.heldAt, 40);
 export const waitsTurn = (b, max = P2.MAX_ATTEMPTS) => P2.WAITING.includes(b.status) || (b.status === P2.FAILED && P2.WAITING.includes(b.failedFrom) && !P2.gaveUp(b, max));
 /**
  * The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their
- * own lane. A build rejected for a clash waits for its answer, and one whose every step is deferred waits for the build
- * they wait for: neither takes the place, and neither holds up the builds behind it.
+ * own lane. A clash never keeps a build out (build-clash@1); only one whose every step was deferred by hand waits, for
+ * the build they wait for: it does not take the place and does not hold up the builds behind it.
  */
 export function nextToActivate(builds, max = P2.MAX_ATTEMPTS) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b) && !BC.isRejected(b) && !allDeferred(b, builds)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b) && !isHeld(b) && !allDeferred(b, builds)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
-/** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
+/**
+ * Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch.
+ * → { dir, branch, conflicts? }: `conflicts` are the files main clashes with on the step's branch; the merge stays open.
+ */
 export function cutWorktree(b, s, env = process.env) {
   const name = stepName(b, s);
   const dir = join(worktreesRoot(env), name);
   if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return { dir, branch: `claude/${name}` }; }
   if (!existsSync(dir)) { PL.ensureWorktree(name, env); return { dir, branch: `claude/${name}` }; }
   const git = (...a) => spawnSync('git', a, { cwd: dir, encoding: 'utf8', timeout: 300e3 });
+  // a merge left open by an earlier pull (its fix session has not run yet) is still the same clash
+  const unmerged = () => (git('diff', '--name-only', '--diff-filter=U').stdout || '').split('\n').map((l) => l.trim()).filter(Boolean);
+  const open = unmerged();
+  if (open.length) return { dir, branch: `claude/${name}`, conflicts: open.slice(0, 40) };
   let r = git('fetch', '-q', 'origin', 'main');
   if (r.status === 0) r = git('merge', '--no-edit', '-q', 'origin/main');
-  if (r.status !== 0) throw new Error(`pull main into ${name}: ${str((r.stderr || r.stdout || '').trim(), 300)}`);
+  if (r.status !== 0) {
+    // main conflicts with the step's branch: the merge is left open in the worktree and the step's session resolves it
+    // first (a clash never fails a step). Anything else (no network, a broken worktree) is still an error.
+    const files = unmerged();
+    if (files.length) return { dir, branch: `claude/${name}`, conflicts: files.slice(0, 40) };
+    throw new Error(`pull main into ${name}: ${str((r.stderr || r.stdout || '').trim(), 300)}`);
+  }
   return { dir, branch: `claude/${name}` };
 }
 
@@ -359,14 +392,21 @@ function pullMain(b, env, out) {
     const name = stepName(b, s);
     const dir = join(worktreesRoot(env), name);
     if (s.status !== 'pulling-main' && !move(b.id, 'pulling-main', { step: s.id, why: 'cutting its worktree and pulling main', extra: { worktree: dir, branch: `claude/${name}` } })) return false;
-    try { cutWorktree(b, s, env); }
+    let cut;
+    try { cut = cutWorktree(b, s, env); }
     catch (e) {
       move(b.id, P2.FAILED, { step: s.id, why: str(e.message) });
       out.failed.push({ id: b.id, step: s.id, error: str(e.message) }); logLine({ event: 'pull-main-failed', build: b.id, step: s.id, error: str(e.message) });
       say('orchestrator', 'failed', `Couldn't pull main into ${name}: ${str(e.message, 160)}. Retrying on the next pass.`, b.id);
       return false; // one at a time: the next step waits for this one
     }
-    move(b.id, 'ready', { step: s.id, why: 'main is in' });
+    if (cut?.conflicts?.length) {
+      // the clash goes to the step's own session: it resolves the open merge, runs the checks, then does its step
+      move(b.id, 'ready', { step: s.id, why: `main is in with ${cut.conflicts.length} conflicting file${cut.conflicts.length === 1 ? '' : 's'}: its session resolves them first`, extra: { clashFix: { at: nowIso(), with: 'main', files: cut.conflicts } } });
+      out.clashFixes.push({ id: b.id, step: s.id, files: cut.conflicts });
+      logLine({ event: 'clash-fix', build: b.id, step: s.id, files: cut.conflicts });
+      say('orchestrator', 'start', clip(`${name}: main conflicts in ${cut.conflicts.slice(0, 4).join(', ')}. Its session resolves that first, then builds the step.`, 400), b.id);
+    } else move(b.id, 'ready', { step: s.id, why: 'main is in', ...(s.clashFix ? { extra: { clashFix: null } } : {}) });
     out.pulled.push({ id: b.id, step: s.id });
   }
   return true;
@@ -428,13 +468,19 @@ function freeSlots(env, pool = 'builds') {
   try { const sl = PL.slotsNow(); return Math.max(0, (pool === 'emergency' ? sl.emergency?.free : sl.free) ?? 0); } catch { return 0; }
 }
 
-function briefOf(b, s) {
+export function briefOf(b, s) {
   return [
     `# ${b.title}: step ${s.id}`,
     '',
     `Build ${b.id} (Pipeline 2.0), step ${s.id} of ${b.steps.length}. Model ${s.model}. You run headless; nobody is watching.`,
     `Worktree: ${s.worktree} (already cut from main) · branch ${s.branch}.`,
     '',
+    ...(s.clashFix?.files?.length ? [
+      '## First: the clash with main',
+      `main was merged into this branch and conflicts in: ${s.clashFix.files.join(', ')}. The merge is still open in this worktree (\`git status\`).`,
+      'Resolve every conflicted file (keep what main has and what this branch adds; never drop either side to make it merge), run the checks and tests of the files you touched until they pass, then commit the merge. If no merge is open any more, run `git fetch origin main && git merge origin/main` and resolve what it reports. Then go on with your step.',
+      '',
+    ] : []),
     '## Your step',
     s.text,
     ...(s.files?.length ? ['', `Files: ${s.files.join(', ')}. Other steps of this build work on other files at the same time: stay inside yours.`] : []),
@@ -616,7 +662,7 @@ function sweepEnded(b, env, out) {
  */
 export function advance({ env = process.env, launch = launchStep, build = '' } = {}) {
   if (!PL) throw new Error('pipeline2: pipeline.mjs is not bound (import it, or call ready() first)');
-  const out = { split: [], rejected: [], prs: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], hand: [], budget: null, ...(build ? { build } : {}) };
+  const out = { split: [], rejected: [], clashes: [], clashFixes: [], prs: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], hand: [], budget: null, ...(build ? { build } : {}) };
   let store = loadStore();
   // sessions, their meters and tmux are on the VPS host: the budgets and the hand builds are looked after there only
   // (a test harness, which names its accounts in AXF_P2_ACCOUNTS, takes part only when it brings its own meters folder)
@@ -637,26 +683,26 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
   const dayStop = out.budget?.daily?.reached ? out.budget.daily : null;
   // a built build's draft PR goes out of draft (on the host: git and the GitHub token are there)
   if (!build && (env.AXF_P2_ACCOUNTS || !PL.seesAccounts || PL.seesAccounts(env))) readyDraftPrs(env, out);
-  splitAll(store, env, out, build);
+  answerOldClashes(out, build);
+  splitAll(loadStore(), env, out, build);
   advanceEmergency(env, out, { launch, build });
   store = loadStore();
   let { active, others } = P2.activeBuild(p2Builds(store));
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
   if (!active && dayStop) out.waits.push({ id: '', why: `the daily budget is reached ($${dayStop.spentUsd} of $${dayStop.capUsd}): no build takes the active place until tomorrow, or until the cap is raised` });
   if (!active && !dayStop) {
-    // the next in line starts, unless it now clashes with a build that is not on main yet: then it is rejected and the one behind it is looked at
-    for (let i = 0; i < 20 && !active; i += 1) {
+    // the next in line starts; a clash with a build that is not on main yet goes on its record and never keeps it out
+    {
       const next = nextToActivate(p2Builds(loadStore()), attemptCap(env));
-      if (!next || (build && next.id !== build)) break;
-      if (rejectAtStart(next, out)) continue;
-      if (move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
-      break;
+      if (next && (!build || next.id === build)) {
+        clashAtStart(next, out);
+        if (move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
+      }
     }
     store = loadStore();
   }
   { const all = p2Builds(store);
     const whyWaits = (w) => (isHeld(w) ? 'on hold: release it to give it its turn'
-      : BC.isRejected(w) ? `rejected for a clash: ${str(w.clash.reason, 200)} Answer it: run-all or defer`
         : allDeferred(w, all) ? `every step is deferred: it starts by itself when ${BC.refName(deferredNow(P2.liveSteps(w).find((s) => deferredNow(s, all)), all))} lands`
           : `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)`);
     for (const w of all.filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: whyWaits(w) }); }
@@ -890,9 +936,10 @@ function requestLanderTick(by, env = process.env) {
  *   run-ci   a build that failed at CI (or after it) goes back to `running-ci`; one already there is checked now
  *   land     the lander takes a built build on its next pass; one that failed while landing is retried first
  *   cancel   out of the flow (archived), from any status; a session still running ends on its own and is not landed
- *   run-all  the answer to a clash rejection (build-clash@1): every step runs now; the build takes its turn
- *   defer    the other answer: the clean steps run now, each clashing step waits for the build it clashes with
- *            (`waitsFor` on the step) and starts by itself once that build has landed
+ *   run-all  a clash answered by hand (build-clash@1; the pipeline answers run-all itself, so this only undoes a defer
+ *            or puts a name on the answer): every step runs now; the build takes its turn
+ *   defer    the other answer by hand: the clean steps run now, each clashing step that has not started waits for the
+ *            build it clashes with (`waitsFor` on the step) and starts by itself once that build has landed
  * → { id, action, step, status, label, held, say }
  */
 export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', why = '', step = '', env = process.env, pass = passFor, landerTick = requestLanderTick } = {}) {
@@ -925,18 +972,23 @@ export function actBuild(id, action, { by = process.env.AXF_ACTOR || 'console', 
   };
   switch (action) {
     case 'run-all': case 'defer': {
-      if (!BC.isRejected(b)) refuse(`${b.id} has no clash waiting for an answer`);
+      // by hand: the pipeline's own answer (run-all) may be replaced, a person's stands
+      if (!b.clash) refuse(`${b.id} has no clash to answer`);
+      if (!BC.canAnswer(b)) refuse(`${b.id}: the clash was already answered (${b.clash.answer}, ${b.clash.answeredBy || 'by hand'})`);
       const a = BC.answerClash(b, action, { by, at: nowIso() });
+      // defer holds back only what has not started: a step already in its worktree or its slot carries on
+      const notStarted = (st) => !st.skip && !st.done && (!st.status || st.status === 'pending');
+      const held = [];
       flow(b.id, b.status, { by, action: `pipeline2:${action}`, mutate: (rec) => {
         rec.clash = a.clash;
-        for (const d of a.defer) { const st = rec.steps.find((x) => (d.uid && x.uid === d.uid) || x.id === d.step); if (st) { st.waitsFor = d.waitsFor; if (d.alsoWaitsFor) st.alsoWaitsFor = d.alsoWaitsFor; } }
-        rec.notes.push({ text: action === 'defer' ? `Clash answered (${by}): the clean steps run now; deferred: ${a.defer.map((d) => `${d.step} waits for ${BC.refName(d.waitsFor)}`).join('; ')}. Each starts by itself when that build lands.` : `Clash answered (${by}): every step runs now.`, at: nowIso(), by });
+        for (const d of a.defer) { const st = rec.steps.find((x) => (d.uid && x.uid === d.uid) || x.id === d.step); if (st && notStarted(st)) { st.waitsFor = d.waitsFor; if (d.alsoWaitsFor) st.alsoWaitsFor = d.alsoWaitsFor; held.push(d); } }
+        if (action === 'run-all') for (const st of rec.steps) { delete st.waitsFor; delete st.alsoWaitsFor; }
+        rec.notes.push({ text: action === 'defer' ? (held.length ? `Clash answered (${by}): the clean steps run now; deferred: ${held.map((d) => `${d.step} waits for ${BC.refName(d.waitsFor)}`).join('; ')}. Each starts by itself when that build lands.` : `Clash answered (${by}): defer, but every clashing step had already started, so nothing waits.`) : `Clash answered (${by}): every step runs now.`, at: nowIso(), by });
       } });
-      return done(`${action === 'defer' ? `${a.defer.length} step${a.defer.length === 1 ? '' : 's'} deferred` : 'Running all'}. ${where(pass(b.id, env))}`);
+      return done(`${action === 'defer' ? `${held.length} step${held.length === 1 ? '' : 's'} deferred` : 'Running all'}. ${where(pass(b.id, env))}`, { clash: a.clash, deferred: held.map((d) => d.step) });
     }
     case 'queue': {
       if (isHeld(b)) refuse(`${b.id} is on hold: release it first`);
-      if (BC.isRejected(b)) refuse(`${b.id} was rejected for a clash: answer it first (run-all, or defer)`);
       if (P2.gaveUp(b, attemptCap(env))) refuse(`${b.id} gave up (${label}): retry it first`);
       if (!beforeTheLine(b)) return done(`${b.id} is already past the line: ${label}.`);
       return done(where(pass(b.id, env)));
@@ -1021,7 +1073,23 @@ function advanceEmergency(env, out, { launch, build = '' }) {
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
   return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, number: b.number ?? '', title: b.title, pr: b.pr ?? '', prUrl: b.prUrl ?? '', split: P2.normSplit(b.split, b.steps), ...(b.clash ? { clash: b.clash } : {}), pipelineView: b.pipelineView ?? P2.pipelineView(b, builds), ...(P2.isEmergency(b) ? { emergency: true } : {}), ...(P2.isHand(b) ? { hand: true } : {}), ...(P2.isBudgetStopped(b) ? { budgetStop: b.budgetStop } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
-    steps: b.steps.map((s) => ({ id: s.id, uid: s.uid ?? '', splitBy: s.splitBy ?? '', modelBy: s.modelBy ?? '', ...(s.waitsFor ? { waitsFor: s.waitsFor } : {}), status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
+    steps: b.steps.map((s) => ({ id: s.id, uid: s.uid ?? '', splitBy: s.splitBy ?? '', modelBy: s.modelBy ?? '', ...(s.waitsFor ? { waitsFor: s.waitsFor } : {}), ...(s.clashFix ? { clashFix: s.clashFix } : {}), status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, ...(s.triage ? { triage: s.triage } : {}), ...(s.pin ? { pin: s.pin } : {}), account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
+}
+
+/**
+ * Every Pipeline 2.0 build that carries a clash (build-clash@1), as REST, MCP, the CLI and voice read it: what it
+ * clashes with, the answer and who gave it, whether Run all / Defer may still be chosen by hand, the steps a `defer`
+ * holds back, and the steps whose session resolves a conflict with main first.
+ */
+export function clashesView(store = loadStore()) {
+  const all = p2Builds(store);
+  return { ok: true, clashes: all.filter((b) => b.clash).map((b) => {
+    const c = BC.normClash(b.clash);
+    return { id: b.id, number: b.number ?? '', title: b.title, status: b.status, label: P2.labelOf(b.status, b.attempt), reason: c?.reason.replace(/^Rejected: /, 'Clash: ') ?? '', with: c?.with ?? [],
+      answer: c?.answer ?? '', answeredBy: c?.answeredBy ?? '', answeredAt: c?.answeredAt ?? '', auto: c?.auto === true || !c?.answer, canAnswer: BC.canAnswer(b), options: c?.options ?? [],
+      deferred: b.steps.filter((s) => deferredNow(s, all)).map((s) => ({ step: s.id, waitsFor: deferredNow(s, all) })),
+      fixing: b.steps.filter((s) => s.clashFix?.files?.length && !['completed', 'in-pr'].includes(s.status)).map((s) => ({ step: s.id, files: s.clashFix.files, status: s.status ?? '' })) };
+  }) };
 }
 
 async function main(argv) {
@@ -1053,7 +1121,8 @@ async function main(argv) {
       return json ? console.log(JSON.stringify({ ok: false, error: e.message })) : console.error(e.message);
     }
   }
+  if (cmd === 'clashes') { const v = clashesView(); return print(v, v.clashes.map((c) => `${c.id} (${c.label}): ${c.reason}\n  answer: ${c.answer || 'none yet'}${c.auto ? ' (the pipeline, by itself)' : c.answeredBy ? ` (${c.answeredBy})` : ''}${c.canAnswer ? ' · run-all or defer may still be chosen: act <build> run-all|defer' : ''}${c.deferred.length ? `\n  deferred: ${c.deferred.map((d) => `${d.step} waits for ${BC.refName(d.waitsFor)}`).join('; ')}` : ''}${c.fixing.length ? `\n  fixing a conflict with main: ${c.fixing.map((f) => `${f.step} (${f.files.slice(0, 3).join(', ')})`).join('; ')}` : ''}`).join('\n') || 'no build carries a clash'); }
   if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.triage ? ` [${s.triage.rule}]` : ''}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
-  console.error('usage: pipeline2.mjs advance | status | retry <build> | act <build> <action> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
+  console.error('usage: pipeline2.mjs advance | status | clashes | retry <build> | act <build> <action> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).catch((e) => { console.error(`pipeline2: ${e.message}`); process.exitCode = 1; });
