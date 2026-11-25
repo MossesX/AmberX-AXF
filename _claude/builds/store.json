@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10403,
- "updatedAt": "2026-11-25T06:22:56.328Z",
+ "rev": 10407,
+ "updatedAt": "2026-11-25T08:05:30.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271805,7 +271805,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "building",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271813,7 +271813,7 @@
    "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-25T06:22:50.935Z",
+   "updatedAt": "2026-11-25T07:59:45.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -272091,6 +272091,211 @@
     {
      "text": "Worker accounts: mossesx-max-: 1 run, $0.50",
      "at": "2026-11-25T06:22:01.705Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s11--earl, shared account login)",
+     "at": "2026-11-25T06:22:58.931Z"
+    },
+    {
+     "text": "Watchdog: step s8 failed at building, attempt 2: tmux session axf-rebuild-fresh-main-hide-any-asset--s8--lenny is gone while the step was building.",
+     "at": "2026-11-25T06:23:02.267Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 2: tmux session axf-rebuild-fresh-main-hide-any-asset--s5--paulie is gone while the step was building.",
+     "at": "2026-11-25T06:24:01.336Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s12--gina, shared account login)",
+     "at": "2026-11-25T06:24:30.484Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 3 on mossesx-max-.",
+     "at": "2026-11-25T06:25:01.679Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:25:25.047Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s10--sully: brief only · start 11.4K tokens ($0.05) · cost $2.62 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:27:14.766Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.62",
+     "at": "2026-11-25T06:27:21.586Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s9--joey: brief only · start 11.5K tokens ($0.05) · cost $5.84 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:28:02.752Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $5.84",
+     "at": "2026-11-25T06:28:12.470Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s5--rhonda, shared account login)",
+     "at": "2026-11-25T06:28:34.748Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s13--lenny, shared account login)",
+     "at": "2026-11-25T06:29:56.255Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s12--gina: brief only · start 11.5K tokens ($0.05) · cost $2.40 · 23 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:30:26.809Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.40",
+     "at": "2026-11-25T06:30:45.118Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:30:52.474Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--rhonda: brief only · start 11.5K tokens ($0.00) · cost $0.42 · 10 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:31:03.313Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.42",
+     "at": "2026-11-25T06:31:09.413Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s11--earl: brief only · start 11.5K tokens ($0.05) · cost $3.25 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:31:53.263Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $3.25",
+     "at": "2026-11-25T06:31:59.795Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s14--joey, shared account login)",
+     "at": "2026-11-25T06:32:19.002Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 3: tmux session axf-rebuild-fresh-main-hide-any-asset--s5--rhonda is gone while the step was building.",
+     "at": "2026-11-25T06:33:02.239Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s15--paulie, shared account login)",
+     "at": "2026-11-25T06:33:42.276Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 4 on mossesx-max-.",
+     "at": "2026-11-25T06:34:02.085Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s5--sully, shared account login)",
+     "at": "2026-11-25T06:35:03.469Z"
+    },
+    {
+     "text": "Watchdog: step s11 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T06:35:02.062Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:36:28.514Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--sully: brief only · start 11.5K tokens ($0.05) · cost $2.96 · 37 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:39:09.982Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $5.44",
+     "at": "2026-11-25T06:39:16.033Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s11--earl, shared account login)",
+     "at": "2026-11-25T06:40:15.222Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:41:36.590Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s15--paulie: brief only · start 11.6K tokens ($0.05) · cost $2.62 · 34 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:43:30.694Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.62",
+     "at": "2026-11-25T06:43:43.203Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s13--lenny: brief only · start 11.5K tokens ($0.05) · cost $2.11 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:44:41.401Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $2.11",
+     "at": "2026-11-25T06:44:49.141Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s16--gina, shared account login)",
+     "at": "2026-11-25T06:45:15.693Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s11--earl: brief only · start 11.5K tokens ($0.05) · cost $4.01 · 40 turns · 6 tools, MCP none",
+     "at": "2026-11-25T06:45:56.294Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $7.26",
+     "at": "2026-11-25T06:46:07.413Z"
+    },
+    {
+     "text": "Reconciler: PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-25T06:50:36.899Z"
+    },
+    {
+     "text": "Watchdog: step s16 failed at building, attempt 1: building 0 min past its budget with a silent log: session killed.",
+     "at": "2026-11-25T07:15:02.855Z"
+    },
+    {
+     "text": "Watchdog: step s16 retried at ready, attempt 2 on mossesx-max-.",
+     "at": "2026-11-25T07:16:01.975Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s16--rhonda, shared account login)",
+     "at": "2026-11-25T07:17:56.035Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s5--rhonda, shared account login)",
+     "at": "2026-11-25T07:26:17.961Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-hide-any-asset--s8--rhonda, shared account login)",
+     "at": "2026-11-25T07:26:54.028Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s8--rhonda: brief only · start 11.5K tokens ($0.05) · cost $0.25 · 2 turns · 6 tools, MCP none",
+     "at": "2026-11-25T07:28:38.476Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $0.25",
+     "at": "2026-11-25T07:28:53.655Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s5--rhonda: brief only · start 11.5K tokens ($0.00) · cost $0.74 · 21 turns · 6 tools, MCP none",
+     "at": "2026-11-25T07:30:43.973Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 2 runs, $1.16",
+     "at": "2026-11-25T07:30:55.416Z"
+    },
+    {
+     "text": "s14: UI Review item r-20261125-09b1e80c is waiting (4 Hidden-list dialog options, choice set hidden-list, assets in plugins/ui-review/assets/dialog on claude/rebuild-fresh-main-hide-any-asset--s14). Findings from the capture, for s15 / the lander: (1) Settings > Appearance shows no Hidden panel in the console: view:settings/tab:appearance#hidden opens Settings but anchorShown=false and #axf-hidden is not on the page. (2) The console only loads plugin assets of type card, toolbar and settings (src/main.tsx globs), so the four dialog options are not in the asset library until a dialog glob is added. (3) With an Assets menu open, a late-loading plugin menu (Axhub) inserted before it makes the open menu jump to that one. (4) Seen only with AXF_APPEARANCE_HUB=off: the hidden list empties about 15 s after load when the hub look read fails; not checked against a live hub.",
+     "at": "2026-11-25T07:33:52.604Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--s14--joey: brief only · start 13.4K tokens ($0.08) · cost $6.22 · 90 turns · 6 tools, MCP none",
+     "at": "2026-11-25T07:34:26.455Z"
+    },
+    {
+     "text": "Worker accounts: mossesx-max-: 1 run, $6.22",
+     "at": "2026-11-25T07:34:32.716Z"
+    },
+    {
+     "text": "Cancelled from Building (console). 1 step session still running end on their own; nothing of them is landed.",
+     "at": "2026-11-25T07:59:45.227Z",
+     "by": "console"
     }
    ],
    "approvals": [
@@ -272164,13 +272369,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-25T06:21:40.760Z",
+     "at": "2026-11-25T07:34:11.054Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "mossesx-max-",
-     "session": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie",
+     "session": "axf-rebuild-fresh-main-hide-any-asset--s14--joey",
      "phase": ""
     }
    },
@@ -272662,8 +272867,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T07:29:55.691Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -272680,12 +272885,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 12,
+     "rev": 23,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:19:07.153Z",
-     "statusAt": "2026-11-25T06:19:07.028Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-25T07:29:56.399Z",
+     "statusAt": "2026-11-25T06:41:06.342Z",
+     "statusBy": "headless",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -272749,13 +272954,79 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:24:01.336Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-rebuild-fresh-main-hide-any-asset--s5--paulie is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:25:01.679Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:27:56.238Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:28:28.499Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s5--rhonda on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:33:02.239Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "tmux session axf-rebuild-fresh-main-hide-any-asset--s5--rhonda is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:34:02.085Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at building, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:34:24.229Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:34:51.675Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s5--sully on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:41:06.342Z",
+       "by": "headless",
+       "attempt": 4,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s5",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s5",
-     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s5--paulie"
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s5--sully",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s6",
@@ -272968,8 +273239,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:23:17.371Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -272986,12 +273257,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 8,
+     "rev": 10,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:15:10.087Z",
-     "statusAt": "2026-11-25T06:15:09.982Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-25T06:23:17.447Z",
+     "statusAt": "2026-11-25T06:23:17.371Z",
+     "statusBy": "headless",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -273034,13 +273305,30 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "axf-rebuild-fresh-main-hide-any-asset--s8--lenny on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:23:02.267Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-rebuild-fresh-main-hide-any-asset--s8--lenny is gone while the step was building"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:23:17.371Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s8",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s8",
-     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s8--lenny"
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s8--lenny",
+     "tried": [
+      "mossesx-max-"
+     ]
     },
     {
      "id": "s9",
@@ -273061,8 +273349,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:27:28.090Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -273079,11 +273367,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:15:57.453Z",
-     "statusAt": "2026-11-25T06:15:57.379Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:30:14.318Z",
+     "statusAt": "2026-11-25T06:30:14.083Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -273120,9 +273408,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-rebuild-fresh-main-hide-any-asset--s9--joey on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:30:14.083Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s9",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s9",
@@ -273146,8 +273441,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:26:48.010Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -273163,11 +273458,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 11,
+     "rev": 13,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:21:36.678Z",
-     "statusAt": "2026-11-25T06:21:36.606Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:28:47.995Z",
+     "statusAt": "2026-11-25T06:28:47.910Z",
+     "statusBy": "headless",
      "attempt": 3,
      "statusLog": [
       {
@@ -273232,9 +273527,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "axf-rebuild-fresh-main-hide-any-asset--s10--sully on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:28:47.910Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s10",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s10",
@@ -273259,8 +273561,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-25T06:41:36.590Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273277,12 +273579,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 9,
+     "rev": 18,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:22:51.011Z",
-     "statusAt": "2026-11-25T06:22:50.935Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T06:47:52.730Z",
+     "statusAt": "2026-11-25T06:47:52.615Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -273318,9 +273620,44 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-rebuild-fresh-main-hide-any-asset--s11--earl on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:33:59.815Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T06:35:02.062Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:39:32.251Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:39:59.515Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s11--earl on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:47:52.615Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s11",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s11",
@@ -273346,7 +273683,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "doneAt": "2026-11-25T06:25:25.047Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273363,12 +273700,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 12,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:57:15.253Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-25T06:32:25.650Z",
+     "statusAt": "2026-11-25T06:32:25.573Z",
+     "statusBy": "headless",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -273390,11 +273727,41 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:23:50.974Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T06:24:03.227Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on mossesx-max-: refused: rebuild-fresh-main-hide-any-asset--s12 already has a live session: lock launching (heartbeat 2026-11-25T06:23:54.887Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:24:23.730Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s12--gina on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:32:25.573Z",
+       "by": "headless",
+       "attempt": 2,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s12",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s12"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s12",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s12--gina"
     },
     {
      "id": "s13",
@@ -273417,7 +273784,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "doneAt": "2026-11-25T06:30:52.474Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273434,11 +273801,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 11,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:57:33.219Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:46:45.976Z",
+     "statusAt": "2026-11-25T06:46:45.830Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -273461,11 +273828,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:29:27.575Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:29:49.042Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s13--lenny on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:46:45.830Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s13",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s13"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s13",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s13--lenny"
     },
     {
      "id": "s14",
@@ -273486,7 +273876,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "doneAt": "2026-11-25T07:32:49.254Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273502,11 +273892,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 12,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:57:48.871Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T07:35:29.838Z",
+     "statusAt": "2026-11-25T07:35:29.765Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -273529,11 +273919,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:31:36.469Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:32:10.828Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s14--joey on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T07:35:29.765Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s14",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s14"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s14",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s14--joey"
     },
     {
      "id": "s15",
@@ -273556,7 +273969,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "doneAt": "2026-11-25T06:42:35.199Z",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273573,11 +273986,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 12,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:58:09.006Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T06:45:30.650Z",
+     "statusAt": "2026-11-25T06:45:30.521Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -273600,11 +274013,34 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:33:11.524Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:33:33.850Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s15--paulie on mossesx-max-"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-25T06:45:30.521Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "ready",
+     "status": "completed",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s15",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s15"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s15",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s15--paulie"
     },
     {
      "id": "s16",
@@ -273621,8 +274057,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273638,12 +274074,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 14,
      "createdAt": "2026-11-22T01:25:27.959Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:58:26.985Z",
+     "updatedAt": "2026-11-25T07:17:45.163Z",
+     "statusAt": "2026-11-25T07:17:45.049Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -273665,11 +274101,58 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:44:17.035Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T06:44:58.644Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s16--gina on mossesx-max-"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T07:15:02.855Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "building 0 min past its budget with a silent log: session killed"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T07:16:01.975Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T07:17:16.484Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to mossesx-max-"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-25T07:17:45.049Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-rebuild-fresh-main-hide-any-asset--s16--rhonda on mossesx-max-"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s16",
-     "branch": "claude/rebuild-fresh-main-hide-any-asset--s16"
+     "branch": "claude/rebuild-fresh-main-hide-any-asset--s16",
+     "tmux": "axf-rebuild-fresh-main-hide-any-asset--s16--rhonda",
+     "tried": [
+      "mossesx-max-"
+     ]
     }
    ],
    "profiles": [
@@ -273680,7 +274163,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 227,
+   "rev": 329,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273718,9 +274201,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T06:00:48.537Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T07:59:45.226Z",
+   "statusBy": "console",
    "attempt": 2,
+   "archivedFrom": "building",
    "statusLog": [
     {
      "status": "failed",
@@ -273770,6 +274254,13 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "s2 is in a slot"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T07:59:45.226Z",
+     "by": "console",
+     "attempt": 2,
+     "why": "cancel by console"
     }
    ]
   },
@@ -292001,15 +292492,15 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "split",
+   "status": "pulling-main",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-main-tab-streaming-console-s",
-   "pr": "#819",
+   "pr": "924",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-24T12:40:34.724Z",
+   "updatedAt": "2026-11-25T08:05:22.807Z",
    "builtAt": "",
    "notes": [
     {
@@ -292135,6 +292626,16 @@
     {
      "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pending): its steps are fixed, none is removed or replaced); s8 step s8 was repla",
      "at": "2026-11-24T12:50:16.077Z"
+    },
+    {
+     "text": "Draft PR #924 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/924.",
+     "at": "2026-11-25T08:02:19.386Z",
+     "by": "orchestrator"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s4 step s4 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s5 step s5 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s6 step s6 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or replaced); s7 step s7 was replaced by another (terminal-main-tab-streaming-console-s is split (Pulling in main): its steps are fixed, none is removed or",
+     "at": "2026-11-25T08:04:46.236Z",
+     "by": "store"
     }
    ],
    "approvals": [],
@@ -292261,8 +292762,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-24T12:40:34.724Z",
+     "done": false,
+     "doneAt": "",
      "note": "Part 1: 2 plan steps in one session (they touch the same files).",
      "triage": {
       "model": "Fable",
@@ -292278,10 +292779,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-24T12:36:41.343Z",
-     "updatedAt": "2026-11-24T12:40:34.955Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "updatedAt": "2026-11-25T08:02:36.787Z",
+     "statusAt": "2026-11-25T08:02:36.718Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292291,9 +292792,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:02:26.970Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:02:36.718Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s1",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s1"
     },
     {
      "id": "s2",
@@ -292310,8 +292827,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-24T12:40:34.724Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
      "triage": {
       "model": "Fable",
@@ -292327,10 +292844,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-24T12:40:34.955Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "updatedAt": "2026-11-25T08:02:54.605Z",
+     "statusAt": "2026-11-25T08:02:54.529Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292340,9 +292857,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:02:43.738Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:02:54.529Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s2",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s2"
     },
     {
      "id": "s3",
@@ -292359,8 +292892,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-24T12:40:34.724Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #819 (claude/terminal-main-tab-streaming-console-s)",
      "triage": {
       "model": "Fable",
@@ -292376,10 +292909,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-24T12:40:34.955Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "updatedAt": "2026-11-25T08:03:17.027Z",
+     "statusAt": "2026-11-25T08:03:16.940Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292389,9 +292922,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:03:06.017Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:03:16.940Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s3",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s3"
     },
     {
      "id": "s4",
@@ -292414,7 +292963,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:03:36.820Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292424,9 +292973,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:03:26.302Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:03:36.820Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s4",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s4"
     },
     {
      "id": "s5",
@@ -292449,7 +293014,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:03:56.331Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292459,9 +293024,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:03:46.763Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:03:56.331Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s5",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s5"
     },
     {
      "id": "s6",
@@ -292484,7 +293065,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:04:18.310Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292494,9 +293075,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:04:09.875Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:04:18.310Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s6",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s6"
     },
     {
      "id": "s7",
@@ -292519,7 +293116,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:04:36.527Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292529,9 +293126,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:04:26.836Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:04:36.527Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s7",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s7"
     },
     {
      "id": "s8",
@@ -292554,7 +293167,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:05:02.927Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292564,9 +293177,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:04:52.176Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:05:02.927Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s8",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s8"
     },
     {
      "id": "s9",
@@ -292589,7 +293218,7 @@
      "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
      "updatedAt": "2026-11-18T00:16:35.271Z",
-     "statusAt": "2026-11-24T12:36:41.331Z",
+     "statusAt": "2026-11-25T08:05:22.807Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -292599,9 +293228,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T08:05:15.373Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T08:05:22.807Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/terminal-main-tab-streaming-console-s--s9",
+     "branch": "claude/terminal-main-tab-streaming-console-s--s9"
     },
     {
      "id": "s10",
@@ -292850,7 +293495,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297094,7 +297739,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T12:36:46.055Z",
+   "statusAt": "2026-11-25T08:02:08.438Z",
    "statusBy": "orchestrator",
    "attempt": 2,
    "statusLog": [
@@ -297125,6 +297770,13 @@
      "by": "orchestrator",
      "attempt": 2,
      "why": "15 steps for 6 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-25T08:02:08.438Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "no other build is active"
     }
    ]
   },
@@ -373966,14 +374618,14 @@
    "title": "Pipeline test 5: four docs edits + one planted failure",
    "category": "",
    "detail": "End-to-end pipeline test after PR 907: five steps run side by side in five slots; one step breaks a test on purpose so we see the lander catch it, run a fix session and land it by itself.\n\nRun through the orchestrator with 5 slots after PR 907 lands.\n\nSteps (each a separate step, no shared files, so all 5 run at once):\n1. Docs: add one line 'Pipeline test 5, step 1' to the end of framework/spec/README.md (create the section 'Pipeline tests' if missing).\n2. Docs: same, 'step 2', in apps/console-web/README.md.\n3. Docs: same, 'step 3', in deploy/README.md.\n4. Docs: same, 'step 4', in _claude/builds/README.md.\n5. PLANTED FAILURE: add a tiny test file framework/spec/check-pipeline-test5.mjs that asserts 1 === 2 and add it to CI's build engine sweep. This must turn CI red so the lander catches it, starts a fix session, the fix makes the assertion correct, and it lands with no human help.\n\nPass when: all 5 steps start together, the next starts the moment one finishes, the red CI is caught and fixed automatically, everything lands on main, and Plan Studio shows live status for each step.\n\nBrett: add a PLANTED MERGE CONFLICT to this test. After the build is split, push a commit straight to main that edits the same line one of the docs steps changes (e.g. the 'Pipeline tests' line in deploy/README.md), so that step's PR clashes with main. Pass only if the lander resolves the conflict b: Brett: add a PLANTED MERGE CONFLICT to this test. After the build is split, push a commit straight to main that edits the same line one of the docs steps changes (e.g. the 'Pipeline tests' line in deploy/README.md), so that step's PR clashes with main. Pass only if the lander resolves the conflict by itself (merges main, fixes the clash, reruns CI) and lands it with no human help.",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T12:31:10.497Z",
-   "updatedAt": "2026-11-24T21:03:47.841Z",
+   "updatedAt": "2026-11-25T07:48:45.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -373983,6 +374635,11 @@
     {
      "text": "Split by Fable into 5 steps (32 min). The triage gate assigns the models.",
      "at": "2026-11-24T12:31:45.548Z"
+    },
+    {
+     "text": "Cancelled from Pending (console).",
+     "at": "2026-11-25T07:48:45.311Z",
+     "by": "console"
     }
    ],
    "approvals": [
@@ -374269,7 +374926,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "pipeline-test-5-four-docs-edits--4i3u",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -374296,9 +374953,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T12:31:48.502Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T07:48:45.310Z",
+   "statusBy": "console",
    "attempt": 1,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -374320,6 +374978,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "5 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T07:48:45.310Z",
+     "by": "console",
+     "attempt": 1,
+     "why": "cancel by console"
     }
    ]
   },
@@ -378925,14 +379590,14 @@
    "title": "Orchestrator: a landing build never blocks the next build",
    "category": "",
    "detail": "Brett, Nov 24: test 5 sat waiting because the refresh build, already fully built and only landing its PRs, still held the one 'active build' place. Rule change: once a build's steps are all built it leaves the active place and its slots free up; landing/merging runs on the lander's side. The next build starts right away. Conflicts are handled by the clash guard (hold only builds that touch the same files) and the lander pulling main, not by blocking everything. Also: split goes straight to building (auto-queue actually works). P0.\n\nInclude in this same build: make the Auto-queue pending switch actually work (build-orchestrator/pipeline.mjs fillInputs() hardcodes autoQueuePending=false and pending=[]; pass the real setting and the real pending builds), so a split build goes straight to the queue and starts. Small, targeted chan: Include in this same build: make the Auto-queue pending switch actually work (build-orchestrator/pipeline.mjs fillInputs() hardcodes autoQueuePending=false and pending=[]; pass the real setting and the real pending builds), so a split build goes straight to the queue and starts. Small, targeted change; keep it under 10-minute steps.",
-   "status": "split",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-24T21:07:14.703Z",
-   "updatedAt": "2026-11-24T21:08:59.926Z",
+   "updatedAt": "2026-11-25T07:48:35.762Z",
    "builtAt": "",
    "notes": [
     {
@@ -378946,6 +379611,11 @@
     {
      "text": "Rejected: 1 step of 4 touches files that B-0985 (Fix: refreshing the console jumps back instead of staying put) has not landed yet (apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/test-pipeline.mjs). Answers: Run all now (run-all), or Run 3 clean steps now, defer 1 (defer).",
      "at": "2026-11-24T21:08:56.564Z"
+    },
+    {
+     "text": "Cancelled from Pending (console).",
+     "at": "2026-11-25T07:48:35.763Z",
+     "by": "console"
     }
    ],
    "approvals": [],
@@ -379178,7 +379848,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "orchestrator-a-landing-build-nev-jcg2",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -379189,9 +379859,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T21:08:59.926Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-25T07:48:35.762Z",
+   "statusBy": "console",
    "attempt": 1,
+   "archivedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -379213,6 +379884,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "4 steps for 6 slots"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-25T07:48:35.762Z",
+     "by": "console",
+     "attempt": 1,
+     "why": "cancel by console"
     }
    ]
   },
@@ -384289,7 +384967,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T04:43:42.901Z",
-   "updatedAt": "2026-11-25T05:54:55.978Z",
+   "updatedAt": "2026-11-25T07:50:25.523Z",
    "builtAt": "",
    "notes": [
     {
@@ -384307,6 +384985,10 @@
     {
      "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
      "at": "2026-11-25T05:54:55.978Z"
+    },
+    {
+     "text": "Deleted (console): Replaced by clash-fix-console-app-tabs. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T07:50:25.523Z"
     }
    ],
    "approvals": [],
@@ -384536,9 +385218,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 8,
+   "deleted": true,
+   "deletedAt": "2026-11-25T07:50:25.523Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T04:44:38.537Z",
@@ -384560,7 +385242,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-25T04:58:19.585Z",
-   "updatedAt": "2026-11-25T05:55:14.168Z",
+   "updatedAt": "2026-11-25T07:50:21.436Z",
    "builtAt": "",
    "notes": [
     {
@@ -384578,6 +385260,10 @@
     {
      "text": "Moved to the Archive from pending (console): Brett: everything out of the orchestrator; plans live in Plan Studio only.",
      "at": "2026-11-25T05:55:14.168Z"
+    },
+    {
+     "text": "Deleted (console): Replaced by clash-fix-console-app-tabs. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T07:50:21.436Z"
     }
    ],
    "approvals": [],
@@ -384754,9 +385440,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 8,
+   "deleted": true,
+   "deletedAt": "2026-11-25T07:50:21.436Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T05:08:57.988Z",
@@ -384846,6 +385532,1470 @@
    "pending": null,
    "queue": null,
    "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "clash-fix-console-app-tabs",
+   "title": "Clash fix + console app tabs",
+   "category": "",
+   "detail": "One build, split into parts that run in parallel slots. Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on. Also add Run all / Defer buttons in the orchestrator plus an MCP/voice command to answer a clash by hand. Remove the 'answer it first' gate. Part B: console app tabs. A small tab strip with + to add, tap to switch, x to close. Replaces the builds clash-answer-run-all-defer-buttons-plus, clashes-never-block-pull-main-fix and console-app-tabs-small.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T07:49:46.739Z",
+   "updatedAt": "2026-11-25T07:57:18.890Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T07:49:57.017Z"
+    },
+    {
+     "text": "Split by Claude into 27 steps (26 Fable, 9 can run beside earlier steps).",
+     "at": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-25T07:54:10.854Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T07:54:21.805Z"
+    },
+    {
+     "text": "Deleted (console): Pre-split; resend as one build so the VPS splits it at start. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-25T07:57:18.890Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Run the clash fix button and the tabs as one build, in multiple slots, through the pipeline.",
+    "at": "2026-11-25T07:49:46.739Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T07:51:25.064Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 27,
+     "note": "Split by Claude into 27 steps (26 Fable, 9 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-25T07:52:10.659Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwvtrfk81ldoqf",
+     "title": "",
+     "text": "Part A. Read the briefs, steps and verbatim words of clash-answer-run-all-defer-buttons-plus and clashes-never-block-pull-main-fix, find every place a clash rejects or holds a build (grep 'answer it first' and clash), then write the build-clash@1 contract as a pure core in framework/core/build-clash.mjs: clash kinds (overlap rejection, merge conflict, failed step on conflict), states (found, pulling-main, fixing, rechecking, cleared, deferred), attempts, and the hand answers run-all and defer; never a blocking state.",
+     "model": "Fable",
+     "why": "New shared contract that the pipeline, lander, console and CLI all read.",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/build-clash.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "merge-clash",
+      "why": "Merge clashes: it says \"merge conflict\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwvtrfk81mua4q",
+     "title": "",
+     "text": "Part A. Put the clash record on the builds@1 and build-pipeline@1 records: transitions in framework/core/build-pipeline.mjs, the field kept by the builds store's normBuild and migration (it drops unknown fields), and projections that carry it. Existing records load unchanged.",
+     "model": "Fable",
+     "why": "Schema and migration of the one builds store.",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/build-pipeline.mjs",
+      "framework/core/builds-store.mjs",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/build-pipeline.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwvtrfk81nz2bn",
+     "title": "",
+     "text": "Part A. Write framework/spec/BUILD-CLASH.md, the fixture framework/spec/fixtures/build-clash.json and framework/spec/check-build-clash.mjs covering every transition, both hand answers, retry attempts and the store round trip.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/BUILD-CLASH.md",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/BUILD-CLASH.md",
+      "framework/spec/fixtures/build-clash.json",
+      "framework/spec/check-build-clash.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/BUILD-CLASH.md",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwvtrfk81ocsb3",
+     "title": "",
+     "text": "Part A. Remove the 'answer it first' gate from apps/console-web/plugins/build-orchestrator/pipeline.mjs and orchestrator.mjs: a clash found at intake, queue or launch is recorded as a note plus a build-clash record and the build carries on; no code path waits for an answer any more.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"pipeline\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"pipeline\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwvtrfk81pbshk",
+     "title": "",
+     "text": "Part A. New deploy/lander/clash-fix.mjs, first half: for a build with a clash record, take its worktree and branch, fetch and merge origin/main in with the repo's store and THREADS merge drivers, list the conflicted files, and report clean or conflicted; a dirty or missing worktree is recreated, never forced over.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/lander/clash-fix.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"lander\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwvtrfk81qwpdc",
+     "title": "",
+     "text": "Part A. deploy/lander/clash-fix.mjs, second half: when the merge is conflicted, write a fix brief (conflicted files, both sides' builds, Brett's words for each) and launch the fix session through deploy/claude-headless.sh with the agent slot, account, model pin and budget caps respected; the same build never gets two fix sessions at once.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/lander/clash-fix.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"lander\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwvtrfk81r914v",
+     "title": "",
+     "text": "Part A. deploy/lander/clash-fix.mjs, finish: after a clean merge or a done fix session re-run the build's checks, push the branch, clear the clash record and hand the build back to where it stopped; a failed re-check becomes attempt N with a longer wait and one banner item, and the rest of the queue keeps moving.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"lander\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/lander/clash-fix.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"lander\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwvtrfk81s44i7",
+     "title": "",
+     "text": "Part A. Wire the dispatcher: pipeline.mjs tick sends a build rejected for a clash, or whose step failed on a conflict, to clash-fix.mjs and resumes it at the same step afterwards, instead of sending it back to Pending or counting it as a crash.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"dispatcher\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4",
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"dispatcher\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwvtrfk81tkp42",
+     "title": "",
+     "text": "Part A. Wire the lander: deploy/lander/run.mjs sends a landing that conflicts with main through clash-fix.mjs, then carries on with that landing with its head pinned again; extend framework/spec/check-landing-line.mjs and its fixture for it.",
+     "model": "Fable",
+     "why": "Merge clashes: it says \"conflicts with main\"",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/lander/run.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s7"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "merge-clash",
+      "why": "Merge clashes: it says \"conflicts with main\"",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwvtrfk81u3ptw",
+     "title": "",
+     "text": "Part A. CLI for answering a clash by hand in pipeline.mjs: clash list, clash get <build>, clash run-all [<build>], clash defer <build>. Run all starts every clashing build through the fix path; Defer moves the build behind the one it clashes with, keeping its steps and place in history.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"pipeline\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s8"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"pipeline\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwvtrfk81vfzwy",
+     "title": "",
+     "text": "Part A. REST routes and MCP plugin commands in the build-orchestrator plugin for clash list, get, run-all and defer, with a description on each in plugin.json so MCP and the glossary pick them up; server smoke test for each route.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwvtrfk91wxaw8",
+     "title": "",
+     "text": "Part A. Run all and Defer buttons in the Build orchestrator view: a clash row per build (what it clashes with, state, attempt) with framework Buttons and tokens only, plus Run all at the top of the list; live update from the store.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s11"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwvtrfk91xpv75",
+     "title": "",
+     "text": "Part A. API part of the buttons: console-control addresses and deep links for the clash list and each clash row (console_show / console_open), readable state, and console actions orchestrator.clash.run-all and orchestrator.clash.defer so voice, MCP, REST and CLI all do the same.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s12"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"orchestrator\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwvtrfk91ys8uu",
+     "title": "",
+     "text": "Part A. Tests for the whole clash path in apps/console-web/plugins/build-orchestrator/test-clash.mjs on throwaway git repos: overlap rejection carries on, conflicted merge gets a fix session (fake claude), failed re-check retries, run-all and defer answers, two builds at once; nothing ever waits for an answer.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"merge\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test-clash.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s9",
+      "s10"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"merge\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwvtrfk91z4nba",
+     "title": "",
+     "text": "Part B. Read the brief and verbatim words of console-app-tabs-small, check the plugin catalog for an existing app tabs plugin to extend, then scaffold apps/console-web/plugins/app-tabs: plugin.json (builtWith, lifecycle, opens, embed skipWhen), install.mjs, uninstall.mjs, README, with plugin-lifecycle check passing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/plugin.json",
+      "apps/console-web/plugins/app-tabs/install.mjs",
+      "apps/console-web/plugins/app-tabs/uninstall.mjs",
+      "apps/console-web/plugins/app-tabs/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"scaffold\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwvtrfk920zi8y",
+     "title": "",
+     "text": "Part B. Tab state core in apps/console-web/plugins/app-tabs/tabs.mjs: add, switch, close, reorder, active tab, what closing the active or last tab does, and a limit with clear errors; unit tests in test-tabs.mjs.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/tabs.mjs",
+      "apps/console-web/plugins/app-tabs/test-tabs.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s15"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwvtrfk921ramd",
+     "title": "",
+     "text": "Part B. Server for app-tabs: state in its data-store@1 namespace (Postgres table through axf-data, no JSON files), REST routes to read, add, switch, close and reorder tabs, and a smoke test.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/server"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s16"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwvtrfk9228mak",
+     "title": "",
+     "text": "Part B. The tab strip UI in apps/console-web/plugins/app-tabs/web: a small strip drawn by the framework TabGroup on a tab-group asset with a stable settings id, tap to switch, x to close, right-click Settings / Change / Move; tokens only, snaps beside its neighbours and scrolls sideways on a phone.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s17"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwvtrfk923xaqc",
+     "title": "",
+     "text": "Part B. The + button and its picker in apps/console-web/plugins/app-tabs/web: choose what opens in the new tab from the console's registered screens and apps, keyboard and touch both work, each tab keeps its own route and comes back where it was left after a reload.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s18"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwvtrfk9248krr",
+     "title": "",
+     "text": "Part B. API part of the tabs: deep link and console-control address for the strip and each tab, readable state, console actions app-tabs.add, switch, close, reorder and list, with the same commands in MCP, the CLI (apps/console-web/plugins/app-tabs/app-tabs.mjs) and voice.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/app-tabs.mjs",
+      "apps/console-web/plugins/app-tabs/plugin.json",
+      "apps/console-web/plugins/app-tabs/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s19"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwvtrfk92535jz",
+     "title": "",
+     "text": "Part B. Settings sub-tab under Settings → Plugins for app-tabs (show strip, position, what a new tab opens, reopen tabs on start, tab limit) with setting addresses, every setting also readable and settable through REST, MCP, CLI and voice.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/web",
+      "apps/console-web/plugins/app-tabs/server",
+      "apps/console-web/plugins/app-tabs/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s20"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s22",
+     "uid": "st-mwvtrfk926jl24",
+     "title": "",
+     "text": "Part B. Three tab strip looks as tab-group assets in apps/console-web/plugins/app-tabs/assets/tab-group (one choice set), desktop and phone screenshots of each, submitted to UI Review with review.mjs submit --choices.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs/assets"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s21"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s23",
+     "uid": "st-mwvtrfk92701p5",
+     "title": "",
+     "text": "Part A. Three looks for the clash row and its Run all / Defer buttons as assets in apps/console-web/plugins/build-orchestrator/assets (one choice set), desktop and phone screenshots of each, submitted to UI Review with review.mjs submit --choices.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s13"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwvtrfk928sjjv",
+     "title": "",
+     "text": "Join the parts: re-bake the framework into the console (framework/cli/rebake.mjs apply, hand-copied plan cores included), add check-build-clash.mjs and the two plugin tests to CI, then typecheck and build apps/console-web and fix what breaks.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"ci\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/src/axf",
+      "apps/console-web/axf.lock.json",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3",
+      "s14",
+      "s22",
+      "s23"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"ci\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s25",
+     "uid": "st-mwvtrfk92967st",
+     "title": "",
+     "text": "Run the conformance checks and fix findings: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, check-json-data-writes, plugin-lifecycle check for app-tabs and build-orchestrator, glossary catalog.mjs --check, tracker.mjs --check.",
+     "model": "Fable",
+     "why": "Cross-cutting or architectural: it spans 4 areas (limit 3)",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/app-tabs",
+      "apps/console-web/plugins/build-orchestrator",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s24"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "cross-cutting",
+      "why": "Cross-cutting or architectural: it spans 4 areas (limit 3)",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 4,
+       "areas": 4,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s26",
+     "uid": "st-mwvtrfk92amjcy",
+     "title": "",
+     "text": "Docs: _claude/memory/docs/build-clashes.md and _claude/memory/docs/app-tabs.md, the build-orchestrator README, STATUS.md lines and a decision line (clashes never block). Mark clash-answer-run-all-defer-buttons-plus, clashes-never-block-pull-main-fix and console-app-tabs-small as replaced by clash-fix-console-app-tabs through orchestrator.mjs, keeping their notes.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"decision\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "12 min",
+     "files": [
+      "_claude/memory/docs/build-clashes.md",
+      "_claude/memory/docs/app-tabs.md",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/decisions.md",
+      "apps/console-web/plugins/build-orchestrator/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s25"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"decision\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 5,
+       "areas": 2,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    },
+    {
+     "id": "s27",
+     "uid": "st-mwvtrfk92bk7i5",
+     "title": "",
+     "text": "Full test run (check-build-clash, check-landing-line, check-builds-store, check-build-steps, both plugin tests, console build), report _claude/builds/reports/clash-fix-console-app-tabs.md with test results and how each feature is reached by REST, MCP, CLI and voice, THREADS row, and the PR.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/clash-fix-console-app-tabs.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s26"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:51:23.023Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:51:25.064Z",
+     "updatedAt": "2026-11-25T07:51:25.064Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1077
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 8,
+   "deleted": true,
+   "deletedAt": "2026-11-25T07:57:18.890Z",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T07:51:25.064Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "clash-fix-console-app-tabs-2",
+   "title": "Clash fix + console app tabs",
+   "category": "",
+   "detail": "Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on by itself; remove the 'answer it first' gate; add Run all / Defer buttons plus an MCP/voice command to answer a clash by hand. Part B: console app tabs: small tab strip with + to add, tap to switch, x to close. Parts run in parallel slots, merge into one at the end and land together.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/clash-fix-console-app-tabs-2",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-25T07:58:13.409Z",
+   "updatedAt": "2026-11-25T08:00:59.948Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-25T07:58:27.226Z"
+    },
+    {
+     "text": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps.",
+     "at": "2026-11-25T07:59:17.208Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-clash-fix-console-app-tabs-2--lenny.",
+     "at": "2026-11-25T08:00:46.499Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-clash-fix-console-app-tabs-2--lenny, shared account login)",
+     "at": "2026-11-25T08:00:59.948Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Send the clash fix and the tabs as one build; the VPS splits it when it starts.",
+    "at": "2026-11-25T07:58:13.409Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "clash-fix-console-app-tabs-2",
+    "brief": "# Build: clash-fix-console-app-tabs-2\n\n## Brett said (verbatim)\nAt: 2026-11-25T07:58:13.409Z\n> Send the clash fix and the tabs as one build; the VPS splits it when it starts.\n\n## What to build\nContinue build \"Clash fix + console app tabs\" (clash-fix-console-app-tabs-2) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-25 07:58):\n\"Send the clash fix and the tabs as one build; the VPS splits it when it starts.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 15 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~45 min):\n[ ] s1 (~15 min) Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on by itself; remove the 'answer it first' gate; add Run all / Defer buttons plus an MCP/voice command to answer a clash by hand. Part B: console app tabs: small tab strip with + to add, tap to switch, x to close. Parts run in parallel slots, merge into one at the end and land together.\n[ ] s2 (~15 min) Send the clash fix and the tabs as one build; the VPS splits it when it starts.\n[ ] s3 (~15 min) Tests green, report _claude/builds/reports/clash-fix-console-app-tabs-2.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/clash-fix-console-app-tabs-2.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step clash-fix-console-app-tabs-2 <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nParallel steps: steps with a dependsOn list may run in step sessions beside you (Fill every slot). Before you start a step, run `node apps/console-web/plugins/build-orchestrator/pipeline.mjs fill status clash-fix-console-app-tabs-2`: skip any step it shows running elsewhere and every step waiting on one, and leave their files alone; their branches merge into yours by themselves.\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step clash-fix-console-app-tabs-2 <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note clash-fix-console-app-tabs-2 \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-25T07:58:25.425Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "axf-clash-fix-console-app-tabs-2--lenny",
+    "slot": "",
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-25T08:00:43.244Z",
+    "runs": 1,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-25T07:59:17.208Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: no JSON object in the answer): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-25T08:00:43.244Z",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-25T08:00:08.292Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-25T08:00:43.244Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwvu1jvc1lqxku",
+     "title": "",
+     "text": "Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on by itself; remove the 'answer it first' gate; add Run all / Defer buttons plus an MCP/voice command to answer a clash by hand. Part B: console app tabs: small tab strip with + to add, tap to switch, x to close. Parts run in parallel slots, merge into one at the end and land together.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "designer",
+      "why": "Splitter's suggestion: marked Fable when it was split",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:59:15.349Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:59:17.208Z",
+     "updatedAt": "2026-11-25T07:59:17.208Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwvu1jvc1m3rx2",
+     "title": "",
+     "text": "Send the clash fix and the tabs as one build; the VPS splits it when it starts.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "designer",
+      "why": "Splitter's suggestion: marked Fable when it was split",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:59:15.349Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:59:17.208Z",
+     "updatedAt": "2026-11-25T07:59:17.208Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwvu1jvc1nsfiw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/clash-fix-console-app-tabs-2.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/clash-fix-console-app-tabs-2.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-25T07:59:15.349Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-25T07:59:17.208Z",
+     "updatedAt": "2026-11-25T07:59:17.208Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1075
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 9,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-25T07:59:17.208Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
