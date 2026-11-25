@@ -365,8 +365,20 @@ export function directRunRows(e: LogEntryView): { key: string; label: string; va
     { key: 'result', label: 'Result', value: result },
     { key: 'why', label: 'Approval', value: txt(e.decidedBy) || 'no approval needed (policy allow)' },
     { key: 'pass', label: 'Pass', value: txt(e.passId) ? `${txt(e.passId)}${txt(e.passGrantedBy) ? ` · granted by ${txt(e.passGrantedBy)}` : ''}${txt(e.passExpiresAt) ? ` · ends ${txt(e.passExpiresAt)}` : ''}` : '', mono: true },
+    { key: 'skipped', label: 'Skipped', value: txt(e.ranUnder) || txt(e.passId) ? passSkippedLabel(e.policySkipped) : '' },
   ];
   return rows.filter((r) => r.value);
+}
+
+/**
+ * What a pass skipped for a covered run (pass@2 `policySkipped`), in the owner's words. Empty for a value this reader
+ * doesn't know, so an older or newer hub never shows a wrong line.
+ */
+export function passSkippedLabel(policySkipped: unknown): string {
+  if (policySkipped === 'veto') return 'the veto countdown (ran at once, no notice)';
+  if (policySkipped === 'confirm') return 'the approval prompt (ran at once)';
+  if (policySkipped === 'always-approve') return "the owner's own approval (ran at once)";
+  return '';
 }
 
 /* ─────────────────────────────────────────────────────────── timed passes (axHub decision 112) */

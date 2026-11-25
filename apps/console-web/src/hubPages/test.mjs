@@ -7,7 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './core.ts';
-import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './core.ts';
+import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, passSkippedLabel, patternList } from './core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../../../framework/libs/hub/apps.ts';
 
@@ -365,6 +365,11 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   const rows = Object.fromEntries(directRunRows(under).map((r) => [r.key, r.value]));
   eq(rows.pass, 'p1 · granted by web:brett · ends 2026-11-03T15:30:00.000Z', 'the pass is named on the row');
   eq(rows.why, 'pass p1 (web:brett)', 'why it ran: the pass');
+  eq(rows.skipped, undefined, 'a pass@1 entry names no skipped policy');
+  const vps = Object.fromEntries(directRunRows({ ...under, qualifiedTool: 'vps.run', ranUnder: 'p1', policySkipped: 'veto' }).map((r) => [r.key, r.value]));
+  eq(vps.skipped, 'the veto countdown (ran at once, no notice)', 'a covered vps.run says the countdown was skipped');
+  eq([passSkippedLabel('confirm'), passSkippedLabel('always-approve'), passSkippedLabel('deny'), passSkippedLabel(undefined)],
+    ['the approval prompt (ran at once)', "the owner's own approval (ran at once)", '', ''], 'the skipped policy in plain words; unknown values say nothing');
   eq(Object.fromEntries(directRunRows({ ...under, status: 'failed under pass', resultStatus: undefined }).map((r) => [r.key, r.value])).result.split(' · ')[0], 'error', 'failed under a pass reads as an error');
 }
 
