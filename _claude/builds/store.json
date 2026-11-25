@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10401,
- "updatedAt": "2026-11-25T06:22:21.809Z",
+ "rev": 10402,
+ "updatedAt": "2026-11-25T06:22:37.905Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271813,7 +271813,7 @@
    "pr": "#923",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-25T06:22:01.705Z",
+   "updatedAt": "2026-11-25T06:22:28.329Z",
    "builtAt": "",
    "notes": [
     {
@@ -273259,8 +273259,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-25T06:01:09.709Z",
+     "done": false,
+     "doneAt": "",
      "note": "PR #824 (claude/rebuild-fresh-main-hide-any-asset)",
      "triage": {
       "model": "Fable",
@@ -273277,10 +273277,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-25T06:01:09.875Z",
-     "statusAt": "2026-11-25T05:56:47.798Z",
+     "updatedAt": "2026-11-25T06:22:28.414Z",
+     "statusAt": "2026-11-25T06:22:28.329Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -273304,9 +273304,17 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-25T06:22:28.329Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to mossesx-max-"
       }
      ],
-     "status": "ready",
+     "status": "sending",
+     "account": "mossesx-max-",
      "worktree": "/root/axf-builds/rebuild-fresh-main-hide-any-asset--s11",
      "branch": "claude/rebuild-fresh-main-hide-any-asset--s11"
     },
@@ -273664,7 +273672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 225,
+   "rev": 226,
    "deleted": false,
    "deletedAt": "",
    "pending": {
