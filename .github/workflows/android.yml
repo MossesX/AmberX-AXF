@@ -223,6 +223,8 @@ jobs:
         run: node apps/console-web/plugins/project-wizard/test.mjs  # axf-plugin:project-wizard
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: Pass covers every call (walks every registered tool policy — veto, confirm, always-approve — and fails if an active covers-all pass lets one prompt, count down or notify)  # axf-plugin:token-control
+        run: node apps/console-web/plugins/token-control/pass-walk.test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Android console app, console side (deep links, native.* actions, bridge calls, tokens shared with the Java shell and axf.css)
