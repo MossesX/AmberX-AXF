@@ -281,6 +281,8 @@ export async function pass({ env = process.env, only = '', build = '', force = f
     await appendCaught(catches, env);
   }
   // lastTick is the heartbeat (every cron minute, whether or not a watch was due); lastPass is the last time one ran
+  // the cron's own minute also records the schedule file as the host sees it: the console container cannot read /etc/cron.d
+  if (by === 'cron' && env.AXF_WATCHDOG_IN_CONSOLE !== '1') { try { const c = (await import('./watchdog/cron.mjs')).status(); state.cron = { installed: c.installed, current: c.current, file: c.file, dir: c.dir, at }; } catch { /* no cron module */ } }
   await saveState({ ...state, lastTick: at, ...(ran.length ? { lastPass: at, lastBy: str(by, 80), passes: (state.passes ?? 0) + 1 } : {}), ...(catches.length ? { lastCatch: at } : {}) }, env);
   return { $axf: 'watchdogs-pass@1', at, by, ran, notRun, catches, alerts: sent };
 }
@@ -333,6 +335,11 @@ export async function status({ env = process.env, now = Date.now(), recent = 20 
       lastRun: st.lastRun ?? '', lastOk: st.lastOk ?? '', lastError: st.lastError ?? '', lastErrorAt: st.lastErrorAt ?? '', lastCatch: st.lastCatch ?? '', lastCaught: st.lastCaught ?? 0, caught: st.caught ?? 0, runs: st.runs ?? 0, watching: st.watching ?? 0, skipped: st.skipped ?? [] });
   }
   let cron = null; try { cron = (await import('./watchdog/cron.mjs')).status(); } catch { /* no cron module */ }
+  // Not installed as seen from here, but the host's cron ran the watchdog lately and recorded its own schedule file:
+  // that record is the truth (the console container has no /etc/cron.d, so it used to report installed: false while
+  // the cron ran every minute). A record older than the heartbeat limit is not trusted: the cron may be gone since.
+  const seen = state.cron;
+  if (seen && !cron?.installed && (now - (Date.parse(seen.at || '') || 0)) / MIN <= STALE_PASS_MIN) cron = { file: str(seen.file, 300), installed: seen.installed === true, current: seen.current === true, dir: str(seen.dir, 300), source: 'host', at: str(seen.at, 40) };
   const recentCaught = await caught({ limit: recent, env });
   return { $axf: 'watchdogs-status@1', ok: true, at: new Date(now).toISOString(), enabled: host.enabled, alerts: host.alerts, cron, lastTick: state.lastTick || '', lastPass: state.lastPass || '', lastBy: state.lastBy || '', ageMin,
     stale: host.enabled && (ageMin == null || ageMin > STALE_PASS_MIN), passes: state.passes ?? 0, lastCatch: state.lastCatch || '', watches,

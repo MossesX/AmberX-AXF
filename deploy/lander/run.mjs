@@ -660,7 +660,9 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
           act(`${why}: CI runs on it before the merge`);
           return 'pr-pulling-main';
         } else {
-          try { const m = await gh('PUT', `/repos/${s.slug}/pulls/${g.inFlight.pr}/merge`, { merge_method: cfg.mergeMethod, sha: head, commit_title: `Merge pull request #${g.inFlight.pr} from ${branch} (lander: ${b.id})`.slice(0, 250) }); mergeSha = String(m?.sha || ''); }
+          // merge_method, the pinned sha and the title go in the request body (lander-core mergeRequest: the one place the call is built)
+          const req = L.mergeRequest(s.slug, g.inFlight.pr, { method: cfg.mergeMethod, sha: head, title: `Merge pull request #${g.inFlight.pr} from ${branch} (lander: ${b.id})` });
+          try { const m = await gh(req.method, req.path, req.body); mergeSha = String(m?.sha || ''); }
           catch (e) {
             if (e.status === 405 || e.status === 409) return fail('merge', { why: `merging PR #${g.inFlight.pr} as it is was refused (${str(e.message, 200)}): main is pulled into the PR and CI runs again`, head, pr: g.inFlight.pr });
             return fail('infra', { why: `merging PR #${g.inFlight.pr}: ${e.message}`, head, pr: g.inFlight.pr });

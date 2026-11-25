@@ -24,9 +24,11 @@
  *   landing / merging, the PR open, closed or missing    → fail           a stalled failure (fixing); the next pass
  *                                                                         answers it with the ladder
  *
- * Never: a build with a live session or an attempt in flight, a build pushed less than cooldownMin ago, a Pipeline 2.0
- * build (deploy/watchdog is its watchdog), and a build whose PR state could not be read (no blind pushes).
+ * Never: a build with a live session or an attempt in flight, a build pushed less than cooldownMin ago, and a build
+ * whose PR state could not be read (no blind pushes). A Pipeline 2.0 build is not judged by this table (deploy/watchdog
+ * is its watchdog); its lander PR standing in CI is the stuck-CI lane's (./stuck-ci-core.mjs, `limit.running-ci`).
  */
+import * as CI from './stuck-ci-core.mjs';
 
 export const SCHEMA = 'stale-status@1';
 export const JOURNAL_ACTION = 'watchdog-stale';
@@ -40,23 +42,27 @@ export const STATUSES = Object.freeze({
   merging: Object.freeze({ limitMin: 30, owner: 'lander' }),
   fixing: Object.freeze({ limitMin: 60, owner: 'ladder' }),
 });
-export const ACTIONS = Object.freeze(['none', 'wait', 'record-merge', 'land', 'fail', 'ladder', 'to-landing', 'requeue', 'escalate']);
+export const ACTIONS = Object.freeze(['none', 'wait', 'record-merge', 'land', 'fail', 'ladder', 'to-landing', 'requeue', 'escalate', ...CI.ACTIONS]);
+/** Every `limit.<key>` setting: the builds@1 statuses, then the stuck-CI lane's (Pipeline 2.0 lander PRs). */
+export const LIMIT_KEYS = Object.freeze([...Object.keys(STATUSES), CI.LIMIT_KEY]);
 /**
  * Actions that lead to a session: `ladder` puts the build back in the Queue with a step for the rung, `fail` records a
  * failure the ladder answers next. Capped per pass on their own, so a backlog drains one build at a time and never
  * floods the Queue or the slots.
  */
-export const LAUNCHES = Object.freeze(['ladder', 'fail']);
+export const LAUNCHES = Object.freeze(['ladder', 'fail', ...CI.LAUNCHES]);
 
 export const DEFAULTS = Object.freeze({
   enabled: true,
-  intervalMin: 10,        // minutes between passes
+  intervalMin: 5,         // minutes between passes
   cooldownMin: 30,        // a build this watch pushed is left alone this long
   ciWaitMin: 120,         // a merged build waits this long for CI on its merge commit before it is escalated
   attemptTimeoutMin: 45,  // an open attempt younger than this is in flight
   maxPerPass: 5,          // pushes per pass
   maxLaunchPerPass: 1,    // of those, the ones that start a session
-  limits: Object.freeze(Object.fromEntries(Object.entries(STATUSES).map(([s, v]) => [s, v.limitMin]))),
+  ciStuckMin: CI.DEFAULTS.ciStuckMin, // stuck-CI lane: a check still running after this long is stuck
+  ciFixes: CI.DEFAULTS.ciFixes,       // stuck-CI lane: fix sessions for a stopped PR before a one-part PR is marked for removal
+  limits: Object.freeze({ ...Object.fromEntries(Object.entries(STATUSES).map(([s, v]) => [s, v.limitMin])), [CI.LIMIT_KEY]: CI.DEFAULTS.limitMin }),
 });
 
 const MIN = 60_000;
@@ -71,7 +77,8 @@ export function normSettings(raw = {}) {
   const limits = { ...DEFAULTS.limits };
   for (const [s, m] of Object.entries(r.limits ?? {})) if (Number(m) > 0) limits[s] = Math.min(10080, Math.round(Number(m)));
   return { enabled: r.enabled !== false && r.enabled !== 'off', intervalMin: num('intervalMin', 1, 1440), cooldownMin: num('cooldownMin', 0, 1440), ciWaitMin: num('ciWaitMin', 5, 10080),
-    attemptTimeoutMin: num('attemptTimeoutMin', 5, 1440), maxPerPass: num('maxPerPass', 1, 100), maxLaunchPerPass: num('maxLaunchPerPass', 0, 20), limits };
+    attemptTimeoutMin: num('attemptTimeoutMin', 5, 1440), maxPerPass: num('maxPerPass', 1, 100), maxLaunchPerPass: num('maxLaunchPerPass', 0, 20),
+    ciStuckMin: num('ciStuckMin', 10, 600), ciFixes: num('ciFixes', 0, 3), limits };
 }
 
 export const openSteps = (b) => list(b?.steps).filter((s) => !s?.done && !s?.skip);

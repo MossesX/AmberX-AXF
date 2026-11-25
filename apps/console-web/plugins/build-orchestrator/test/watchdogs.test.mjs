@@ -16,6 +16,10 @@ process.env.AXF_WATCHDOG_CRON = 'off';
 const H = await import('../watchdog.mjs');
 const C = await import('../watchdog/stale-core.mjs');
 const S = await import('../watchdog/stale.mjs');
+const CI = await import('../watchdog/stuck-ci-core.mjs');
+const P2 = await import('../../../../../framework/core/pipeline-status.mjs');
+const LC = await import('../../../../../deploy/lander/lander-core.mjs');
+const LS = await import('../../../../../deploy/lander/store.mjs');
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n += 1; console.log(`  ✓ ${name}`); } catch (e) { console.error(`  ✗ ${name}\n${e.stack}`); process.exitCode = 1; } };
@@ -152,10 +156,167 @@ await t('a second pass leaves what it just pushed alone (cooldown) and takes the
   assert.deepEqual(applied, ['fix-b:ladder']);
   assert.ok(r.skipped.some((s) => s.id === 'fix-a' && /pushed less than/.test(s.why)));
 });
+console.log('stuck-ci@1: lander PRs standing in CI');
+const HEAD = 'a'.repeat(40);
+const p2 = (o = {}) => ({ id: 'refresh', title: 'Refresh fix', flow: 'pipeline-2', status: 'running-ci', statusAt: ago(20), steps: [{ id: 's7', status: 'in-pr', prNumber: 915 }], landing: { split: true }, notes: [], ...o });
+const stopped = (o = {}) => p2({ status: 'failed', failedFrom: 'running-ci', attempt: 5, statusAt: ago(40), landing: { split: true, attempt: 5 }, failure: { kind: 'ci-red', status: 'running-ci', why: 'CI is red on aaaaaaaaa (Build engine sweep (Node))', head: HEAD, pr: 915, at: ago(40), attempt: 5, retry: 'hold', notBefore: '', needsBrett: true, stopped: 'attempt 5 of 5', resume: 'rerun', failing: ['Build engine sweep (Node)'] }, ...o });
+const open = (o = {}) => ({ state: 'open', head: HEAD, branch: 'lander/refresh-7', mergeable: true, ...o });
+const ci = (v, o = {}) => ({ ci: v, failing: v === 'failure' ? ['Build engine sweep (Node)'] : [], missing: [], runIds: v === 'failure' ? [42] : [], jobIds: v === 'failure' ? [7] : [], runningMin: null, ...o });
+const facts = (o = {}) => ({ inFlight: { pr: 915, steps: ['s7'] }, pr: open(), ci: ci('success'), fixTimeoutMin: 60, ...o });
+const act = (b, f, ctx = {}) => CI.decide(b, f, { now: NOW, settings: SET, ...ctx });
+await t('watched: Pipeline 2.0 in running-ci, failed there, or stopped by the lander; inside the limit is not stale', () => {
+  assert.equal(SET.limits['running-ci'], 15); assert.ok(S.SETTINGS_SCHEMA['limit.running-ci'].min <= 10 && S.SETTINGS_SCHEMA['limit.running-ci'].default === 15);
+  assert.ok(CI.watched(p2(), SET)); assert.ok(CI.watched(stopped(), SET));
+  assert.ok(CI.watched(stopped({ failure: { ...stopped().failure, status: 'pr-pulling-main', kind: 'clash-main' } }), SET), 'stopped in another landing phase');
+  assert.equal(CI.watched(p2({ status: 'building' }), SET), false); assert.equal(CI.watched(p2({ flow: '' }), SET), false);
+  assert.equal(CI.watched(p2({ status: 'failed', failedFrom: 'pr-pulling-main', failure: { kind: 'infra', status: 'pr-pulling-main', retry: 'same' } }), SET), false, 'the lander retries that one itself');
+  assert.equal(CI.watched(p2(), { ...SET, limits: { ...SET.limits, 'running-ci': 0 } }), false, 'limit 0: the lane is off');
+  assert.equal(act(p2({ statusAt: ago(10) }), facts()).stale, false);
+  assert.equal(C.watched(p2(), SET), false, 'the builds@1 table still leaves Pipeline 2.0 alone');
+});
+await t('green: merged when the rules passed or the lander stopped; the lander gets its tick for the rules', () => {
+  assert.equal(act(p2(), facts()).action, 'wait', 'rules not run yet');
+  const m = act(p2({ landing: { split: true, rules: { head: HEAD, ok: true } } }), facts());
+  assert.equal(m.action, 'merge-pr'); assert.equal(m.head, HEAD); assert.equal(m.pr, 915); assert.equal(m.branch, 'lander/refresh-7');
+  assert.equal(act(p2({ landing: { green: { head: HEAD, at: ago(18) } } }), facts()).action, 'merge-pr');
+  assert.equal(act(p2({ landing: { green: { head: 'b'.repeat(40) } } }), facts()).action, 'wait', 'green on another head proves nothing');
+  const held = act(stopped(), facts()); assert.equal(held.action, 'merge-pr'); assert.match(held.why, /attempt 5 of 5/);
+  assert.equal(act(stopped({ failure: { ...stopped().failure, retry: 'rerun', notBefore: ago(-5) } }), facts()).action, 'wait', 'failed with its own retry: the lander picks it up');
+});
+await t('pending: a running check waits, a stuck one and a CI that never started get a fresh run, twice per head at most', () => {
+  assert.equal(act(p2(), facts({ ci: ci('running', { runningMin: 20 }) })).action, 'wait');
+  const r = act(p2({ statusAt: ago(70) }), facts({ ci: ci('running', { runningMin: 61 }) }));
+  assert.equal(r.action, 'rerun-ci'); assert.equal(r.n, 1); assert.equal(r.branch, 'lander/refresh-7');
+  assert.equal(act(p2(), facts({ ci: ci('none') })).action, 'rerun-ci');
+  assert.equal(act(p2(), facts({ ci: ci('missing', { missing: ['Build engine sweep (Node)'] }) })).action, 'rerun-ci');
+  assert.equal(act(p2(), facts({ ci: ci('light') })).action, 'rerun-ci');
+  assert.equal(act(p2({ landing: { ciKick: { head: HEAD, at: ago(5) } } }), facts({ ci: ci('none') })).action, 'wait', 'the lander just started it');
+  assert.equal(act(p2(), facts({ ci: ci('none') }), { memory: { pr: 915, fixes: 0, reruns: { head: HEAD, n: 1, at: ago(20) } } }).action, 'wait', 'a fresh run gets its time');
+  assert.equal(act(p2({ statusAt: ago(200) }), facts({ ci: ci('none') }), { memory: { pr: 915, fixes: 0, reruns: { head: HEAD, n: 1, at: ago(90) } } }).n, 2);
+  assert.equal(act(p2({ statusAt: ago(300) }), facts({ ci: ci('none') }), { memory: { pr: 915, fixes: 0, reruns: { head: HEAD, n: 2, at: ago(90) } } }).action, 'wait', 'two fresh runs per head');
+  assert.equal(act(stopped(), facts({ ci: ci('running', { runningMin: 10 }) })).action, 'wait', 'a stopped build whose CI runs again waits for it');
+});
+await t('red: the lander keeps its own retries; stopped = one Fable fix session, then a one-part PR is marked for removal', () => {
+  const red = facts({ ci: ci('failure') });
+  assert.equal(act(p2(), red).action, 'wait', "the lander's tick records it");
+  assert.match(act(stopped({ failure: { ...stopped().failure, retry: 'fix', notBefore: ago(-8) } }), red).why, /retries by itself \(fix/);
+  const f = act(stopped(), red);
+  assert.equal(f.action, 'fix'); assert.equal(f.kind, 'ci-red'); assert.equal(f.rung, 'fix:Fable'); assert.equal(f.n, 1); assert.deepEqual(f.jobIds, [7]); assert.match(f.why, /Fable fix session/);
+  assert.ok(C.LAUNCHES.includes('fix'), 'a fix is a launch: capped per pass');
+  const again = act(stopped(), red, { memory: { pr: 915, fixes: 1 } });
+  assert.equal(again.action, 'mark-removal'); assert.deepEqual(again.steps, ['s7']); assert.match(again.why, /part s7\) failed again after its fix session/);
+  assert.equal(act(stopped(), red, { memory: { pr: 914, fixes: 1 } }).action, 'fix', 'the count is per PR: a new PR in flight starts clean');
+  assert.equal(act(stopped({ landing: { attempt: 5 } }), facts({ inFlight: { pr: 915, steps: ['s1', 's2'] }, ci: ci('failure') }), { memory: { pr: 915, fixes: 1 } }).action, 'wait', 'a PR of several steps is not removed: the lander splits those');
+  assert.equal(act(stopped(), red, { settings: { ...SET, ciFixes: 0 } }).action, 'mark-removal', 'ciFixes 0: no fix session of the watch');
+  // a conflict with main and failing gate rules are red too
+  const clash = act(stopped({ failure: { ...stopped().failure, kind: 'clash-main', status: 'pr-pulling-main' } }), facts({ pr: open({ mergeable: false }) }));
+  assert.equal(clash.action, 'fix'); assert.equal(clash.kind, 'clash-main');
+  assert.equal(act(stopped({ landing: { rules: { head: HEAD, ok: false, failing: ['one-builds-store'] } } }), facts()).kind, 'rules');
+});
+await t('never blind, never twice: unread PR or CI, a fix in flight, a cooldown, a mark already set, a stop that is Brett`s', () => {
+  const red = facts({ ci: ci('failure') });
+  assert.match(act(p2(), facts({ pr: null })).why, /could not be read/); assert.match(act(p2(), facts({ ci: null })).why, /could not be read/);
+  assert.match(act(p2(), facts({ pr: open({ state: 'merged' }) })).why, /lander records it/);
+  assert.match(act(p2(), facts({ inFlight: null })).why, /no PR in flight/);
+  assert.equal(act(stopped(), red, { pushedAt: ago(5) }).action, 'wait');
+  assert.match(act(p2({ status: 'failed', failedFrom: 'running-ci', failure: { kind: 'ci-red', status: 'running-ci', retry: 'fix', fix: { at: ago(30), session: 'axf-lander-fix-pr915-1', n: 1 } } }), red).why, /fix session axf-lander-fix-pr915-1 is working/);
+  assert.match(act(stopped({ landing: { removal: { pr: 915, steps: ['s7'], at: ago(10) } } }), red, { memory: { pr: 915, fixes: 1 } }).why, /marked for removal/);
+  assert.equal(act(stopped({ statusAt: ago(40), landing: { removal: { pr: 915, steps: ['s7'], at: ago(90) } } }), red, { memory: { pr: 915, fixes: 1 } }).action, 'mark-removal', 're-sent since the mark: looked at again');
+  for (const kind of ['pr-closed', 'hand-merge']) assert.match(act(stopped({ failure: { ...stopped().failure, kind } }), red).why, /Brett's to answer/);
+});
+await t('a fix is the lander`s own retry, due now, on a fresh attempt count; the removal mark survives the store', () => {
+  const b = stopped(); const d = act(b, facts({ ci: ci('failure') }));
+  const store = LS.memoryStore([b], { by: 'watchdog' });
+  const w = store.write(b.id, { attempt: 1, failure: CI.fixFailure(b, d, ago(0)), landing: { attempt: 0 }, note: 'Watchdog: fix' });
+  assert.ok(w.ok, w.why);
+  const after = { ...w.build, failure: P2.normLandFailure(w.build.failure), landing: P2.normLanding(w.build.landing) };
+  assert.equal(after.status, 'failed'); assert.equal(after.attempt, 1); assert.equal(after.failure.retry, 'fix'); assert.equal(after.failure.kind, 'ci-red'); assert.deepEqual(after.failure.jobIds, [7]);
+  assert.equal(LC.isHeld(after), false, 'the hold is released'); assert.ok(LC.retryDue(after, ago(0)), 'due on the next lander tick'); assert.equal(LC.landingAttempt(after), 0);
+  assert.equal(P2.gaveUp(after), false, 'the status contract lets it out of failed again');
+  assert.equal(LC.retryStatus(after.failure), 'running-ci');
+  const clash = stopped({ failure: { ...stopped().failure, kind: 'clash-main', status: 'pr-pulling-main', why: 'merging main conflicts in code (a.ts)' } });
+  const cf = CI.fixFailure(clash, act(clash, facts({ pr: open({ mergeable: false }) })), ago(0));
+  assert.equal(cf.kind, 'clash-main'); assert.equal(cf.status, 'pr-pulling-main'); assert.match(cf.why, /conflicts in code/);
+  const m = store.write(b.id, { landing: { removal: { pr: 915, steps: ['s7'], at: ago(0), by: 'watchdog', why: 'CI is red' } } });
+  assert.deepEqual(P2.normLanding(m.build.landing).removal, { pr: 915, steps: ['s7'], at: ago(0), by: 'watchdog', why: 'CI is red' });
+  assert.ok(LC.groupState(m.build).inFlight, 'the mark removes nothing by itself');
+});
+await t('the checks of a head, read by the lander`s rules: the newest run per name decides how long CI has been running', () => {
+  const run = (name, o = {}) => ({ name, status: 'completed', conclusion: 'success', started_at: ago(50), app: { slug: 'github-actions' }, ...o });
+  const cfg = { requiredChecks: ['tests'] };
+  assert.equal(S.ciFactsOf(LC, [run('tests')], cfg, NOW).ci, 'success');
+  assert.deepEqual(S.ciFactsOf(LC, [run('lint')], cfg, NOW).missing, ['tests']);
+  const stuck = S.ciFactsOf(LC, [run('tests', { status: 'in_progress', conclusion: null, started_at: ago(70) }), run('lint')], cfg, NOW);
+  assert.equal(stuck.ci, 'running'); assert.equal(stuck.runningMin, 70);
+  const rerun = S.ciFactsOf(LC, [run('tests', { status: 'in_progress', conclusion: null, started_at: ago(70) }), run('tests', { status: 'in_progress', conclusion: null, started_at: ago(4), id: 2 })], cfg, NOW);
+  assert.equal(rerun.runningMin, 4, 'a fresh run replaces the stuck one');
+  assert.equal(S.ciFactsOf(LC, [run('Light PR checks (full run happens once, in the merge queue)'), run('scope')], cfg, NOW).ci, 'light');
+  const red = S.ciFactsOf(LC, [run('tests', { id: 7, conclusion: 'failure', details_url: 'https://github.com/o/r/actions/runs/42/job/7' })], cfg, NOW);
+  assert.deepEqual([red.ci, red.runIds, red.jobIds], ['failure', [42], [7]]);
+});
+const ciStore = { builds: [
+  p2({ id: 'ci-green', landing: { split: true, rules: { head: HEAD, ok: true } } }),
+  stopped({ id: 'ci-red' }),
+  stopped({ id: 'ci-red-2', steps: [{ id: 's8', status: 'in-pr', prNumber: 916 }], statusAt: ago(30) }),
+  p2({ id: 'ci-none', steps: [{ id: 's9', status: 'in-pr', prNumber: 917 }] }),
+  p2({ id: 'ci-running', steps: [{ id: 's10', status: 'in-pr', prNumber: 918 }] }),
+  p2({ id: 'ci-young', statusAt: ago(3) }),
+] };
+const ciSources = {
+  loadStore: () => ciStore, prFacts: () => ({ errors: [] }), ciOn: () => null, landerLive: () => false, nextRung: () => null,
+  ciFacts: (bs) => ({ errors: [], ...Object.fromEntries(bs.map((b) => [b.id, facts({ inFlight: { pr: b.steps[0].prNumber, steps: [b.steps[0].id] }, ci: b.id === 'ci-green' ? ci('success') : b.id === 'ci-none' ? ci('none') : b.id === 'ci-running' ? ci('running', { runningMin: 12 }) : ci('failure') })])) }),
+};
+await t('one pass: merged, CI restarted, one fix handed over (one launch a pass), every catch its own alert', async () => {
+  const sc = await S.scan({ now: NOW, sources: ciSources, settings: SET });
+  assert.equal(sc.watching, 6, 'running-ci is watched now'); assert.equal(sc.decisions.length, 5, 'only the late ones have their checks read');
+  const did = []; const told = [];
+  const ap = Object.fromEntries(C.ACTIONS.map((a) => [a, (d) => { did.push(`${d.id}:${a}`); return d.id === 'ci-none' ? { ok: false, note: 'GitHub 422' } : { ok: true, note: 'ok', ...(a === 'mark-removal' ? { gaveUp: true } : {}) }; }]));
+  const before = alerts().length;
+  const r = await S.run({ now: NOW, sources: ciSources, apply: ap, settings: SET, notify: async (a) => { told.push(a); return true; } });
+  assert.deepEqual(did.sort(), ['ci-green:merge-pr', 'ci-none:rerun-ci', 'ci-red:fix']);
+  assert.ok(r.skipped.some((x) => x.id === 'ci-red-2' && /one launch at a time/.test(x.why))); assert.ok(r.skipped.some((x) => x.id === 'ci-running' && /CI is running/.test(x.why)));
+  assert.equal(told.length, 3, 'one alert per catch, the one that could not be done too');
+  assert.ok(r.catches.every((c) => c.notified && c.pr), 'told already: the watchdog`s batch does not tell it again');
+  const g = told.find((a) => a.meta.build === 'ci-green'); assert.equal(g.title, 'PR #915 stuck in CI: merged it'); assert.equal(g.severity, 'info'); assert.match(g.key, /^watchdog:stuck-ci:ci-green:915:merge-pr:/);
+  const bad = told.find((a) => a.meta.build === 'ci-none'); assert.equal(bad.severity, 'error'); assert.match(bad.title, /could not restart CI/); assert.match(bad.body, /Not done: GitHub 422/);
+  assert.equal(alerts().length, before, 'the injected notify took them');
+  const mem = JSON.parse(readFileSync(join(tmp, 'watchdogs-stale.json'), 'utf8'));
+  assert.deepEqual(mem.ci['ci-red'], { pr: 915, fixes: 1 }); assert.equal(mem.ci['ci-none'].reruns.n, 1); assert.deepEqual(mem.ci['ci-green'], { pr: 915, fixes: 0 });
+  assert.ok(mem.lastScan.stale.some((x) => x.id === 'ci-running' && x.action === 'wait'));
+});
+await t('the next passes: the cooldown holds, then the second stopped PR gets its fix and a part that fails again is marked', async () => {
+  const did = []; const told = [];
+  const ap = Object.fromEntries(C.ACTIONS.map((a) => [a, (d) => { did.push(`${d.id}:${a}`); return { ok: true, note: 'ok', ...(a === 'mark-removal' ? { gaveUp: true } : {}) }; }]));
+  const soon = await S.run({ now: Date.now() + 60000, sources: ciSources, apply: ap, settings: SET, notify: async () => true });
+  assert.deepEqual(did, ['ci-red-2:fix']); assert.ok(soon.skipped.some((x) => x.id === 'ci-red' && /pushed less than 15 min ago/.test(x.why)));
+  did.length = 0;
+  // 20 minutes on, the fix session of ci-red has pushed and the lander stopped on it again (still red): the second failure
+  const later = Date.now() + 20 * 60000;
+  ciStore.builds = ciStore.builds.filter((b) => b.id === 'ci-red').map((b) => ({ ...b, statusAt: new Date(later - 16 * 60000).toISOString() }));
+  const r = await S.run({ now: later, sources: ciSources, apply: ap, settings: SET, notify: async (a) => { told.push(a); return true; } });
+  assert.deepEqual(did, ['ci-red:mark-removal']);
+  assert.equal(r.catches[0].gaveUp, true); assert.equal(told[0].severity, 'error'); assert.equal(told[0].title, 'PR #915 stuck in CI: marked the part for removal');
+  assert.match(told[0].body, /Nothing was removed\. Remove the part, or re-send the build: node deploy\/lander\/run\.mjs retry ci-red/);
+  assert.equal(told[0].meta.kind, 'marked-removal');
+});
+await t('with no notify handed in, the alert goes the watchdog`s own way', async () => {
+  const before = alerts().length;
+  ciStore.builds = [p2({ id: 'ci-own', landing: { green: { head: HEAD, at: ago(18) } } })];
+  const own = { ...ciSources, ciFacts: (bs) => ({ errors: [], ...Object.fromEntries(bs.map((b) => [b.id, facts()])) }) };
+  const r = await S.run({ now: NOW, sources: own, apply: { 'merge-pr': () => ({ ok: true, note: 'PR #915 merged' }) }, settings: SET });
+  assert.equal(r.catches.length, 1); assert.ok(r.catches[0].notified);
+  const a = alerts().slice(before); assert.equal(a.length, 1); assert.equal(a[0].source, 'watchdog'); assert.equal(a[0].title, 'PR #915 stuck in CI: merged it'); assert.equal('catches' in a[0], false);
+});
+
 await t('settings: flat keys, unknown refused, saved and read back', async () => {
   await assert.rejects(() => S.saveSettings({ nope: 1 }), /unknown setting/);
   const s = await S.saveSettings({ 'limit.fixing': 15, maxLaunchPerPass: 0 }, { by: 'test' });
   assert.equal(s['limit.fixing'], 15); assert.equal((await S.loadSettings()).limits.fixing, 15); assert.equal((await S.loadSettings()).maxLaunchPerPass, 0);
+  // the stuck-CI lane's settings ride the same flat map
+  assert.deepEqual([s['limit.running-ci'], s.ciStuckMin, s.ciFixes], [15, 45, 1]);
+  const c = await S.saveSettings({ 'limit.running-ci': 10, ciStuckMin: 60, ciFixes: 2 }, { by: 'test' });
+  assert.deepEqual([c['limit.running-ci'], c.ciStuckMin, c.ciFixes], [10, 60, 2]); assert.equal((await S.loadSettings()).limits['running-ci'], 10);
+  assert.equal(c['limit.fixing'], 15, 'the other settings stay');
 });
 
 console.log('watchdog.mjs: the host');
@@ -244,6 +405,31 @@ await t('status: per watch on/off, last run, caught, last error; stale without a
   assert.equal(idle.ran.length, 0); const after = await H.status();
   assert.equal(after.lastPass, before, 'lastPass is the last time a watch ran'); assert.ok(after.lastTick >= before && after.stale === false);
   assert.ok(alerts().length >= 2, 'alerts were written');
+});
+await t('cron: the console container cannot see /etc/cron.d, so status takes the host`s own record of the schedule file', async () => {
+  const { mkdtempSync: mk } = await import('node:fs');
+  const dir = mk(join(tmpdir(), 'axf-wd-cron2-'));
+  const keep = { d: process.env.AXF_CRON_DIR, w: process.env.AXF_WATCHDOG_CRON, c: process.env.AXF_WATCHDOG_IN_CONSOLE };
+  const cron = await import('../watchdog/cron.mjs');
+  try {
+    // the host: the schedule file is there, and the cron's own minute records it with the heartbeat
+    process.env.AXF_CRON_DIR = dir; delete process.env.AXF_WATCHDOG_CRON; delete process.env.AXF_WATCHDOG_IN_CONSOLE;
+    assert.ok(cron.install().installed);
+    await H.pass({ only: 'wa', by: 'cron' });
+    const onHost = await H.status(); assert.equal(onHost.cron.installed, true); assert.equal(onHost.cron.source, undefined, 'read straight from the file');
+    // the console container: no schedule file in sight
+    process.env.AXF_CRON_DIR = join(dir, 'not-here'); process.env.AXF_WATCHDOG_IN_CONSOLE = '1';
+    assert.equal(cron.status().installed, false);
+    const inConsole = await H.status();
+    assert.deepEqual([inConsole.cron.installed, inConsole.cron.current, inConsole.cron.source], [true, true, 'host']);
+    // a pass asked for from the console never overwrites the host's record
+    await H.pass({ only: 'wa', by: 'cron' }); assert.equal((await H.status()).cron.installed, true);
+    // the record ages out with the heartbeat: a cron that is really gone shows as not installed
+    assert.equal((await H.status({ now: Date.now() + 30 * 60000 })).cron.installed, false);
+  } finally {
+    for (const [k, v] of [['AXF_CRON_DIR', keep.d], ['AXF_WATCHDOG_CRON', keep.w], ['AXF_WATCHDOG_IN_CONSOLE', keep.c]]) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 await t('scan: every watch`s dry run in one answer; a watch without one says so', async () => {
   wa.scan = () => ({ watching: 2, items: [{ build: 'x', cause: 'stuck', action: 'retry' }] });
