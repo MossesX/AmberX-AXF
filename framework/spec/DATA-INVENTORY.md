@@ -302,6 +302,14 @@ whole-record operations only); a status write is a patch of one row (`ifRev` on 
 into a checkout file or onto main. `store.json` on main is the same projection and goes with it in s8 (builds-live
 publishes shipped manifests, origins and the THREADS live log only).
 
+Done in s5 (`framework/cli/builds-store.mjs`): `readBuild(id)` and `withBuild(id, fn)` read and patch the one row
+(`data-item@1`, which also carries the record's scalar head fields so the writer has the store rev; `data-patch@1`
+with that build's `ifRev`), `pipelineSummary()` asks `:summary`, and `setFlowStatus` goes through `withBuild`.
+`orchestrator.json` is no export target any more: never written, never read back as a foreign write, in any mode.
+The pending and queue exports catch up at the next whole read after a one-row write. Still on the whole record: a
+write that touches several builds, a `mutate` that asks for the store, and an archived Pipeline 2.0 build coming back
+(its rule looks at the other builds).
+
 ## Not data (stays where it is)
 
 Asset@1 assets, `framework/schemas/*.json` (contracts), `plugin.json` manifests, `project.manifest.json` in the repo,

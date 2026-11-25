@@ -417,6 +417,19 @@ def list_row(cur, table: 'DocTable', lkey: str, key: str) -> dict | None:
     return item
 
 
+def head_scalars(head: Any) -> dict:
+    """The head fields a row writer needs beside its row (rev, updatedAt, storeVersion, counters): the scalar ones only,
+    so maps and lists of the head (meta, rules, drafts) never ride along with one build."""
+    return {k: v for k, v in (head.items() if isinstance(head, dict) else []) if isinstance(v, (str, int, float, bool)) or v is None}
+
+
+def list_head(cur, ns: str, path: str) -> dict:
+    """The scalar head fields of a table-backed record: one row of store_heads."""
+    cur.execute('SELECT head FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+    r = cur.fetchone()
+    return head_scalars(r['head'] if r else None)
+
+
 def list_row_doc(doc: Any, table: 'DocTable', lkey: str, key: str) -> dict | None:
     spec = table.lists[lkey]
     for it in (doc.get(lkey) if isinstance(doc, dict) else None) or []:

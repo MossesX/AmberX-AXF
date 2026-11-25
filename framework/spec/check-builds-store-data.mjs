@@ -231,6 +231,49 @@ process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT,
     assert.equal(readFileSync(orch, 'utf8'), sentinel, 'orchestrator.json is untouched');
     assert.ok(existsSync(`${process.env.AXF_BUILDS_STORE}.exports.json`), 'the export pass did run');
   });
+  await t('pipeline status: one build is read and written as its row, the summary comes from the rows, the document is never read', async () => {
+    const whole = io.loadStore();
+    const before = whole.builds.find((b) => b.id === 'b2');
+    const log = join(dir, 'row-calls.jsonl'); const spy = join(dir, 'spy-row-call.mjs');
+    writeFileSync(spy, `import { appendFileSync } from 'node:fs'; import { execFileSync } from 'node:child_process';
+const chunks = []; for await (const c of process.stdin) chunks.push(c); const input = Buffer.concat(chunks).toString('utf8');
+appendFileSync(${JSON.stringify(log)}, input + '\\n');
+process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT, 'framework/cli/data-call.mjs'))}], { input, maxBuffer: 1 << 30 }));`);
+    process.env.AXF_DATA_CALL_SYNC = spy;
+    let one, sum, w, again, missing;
+    try {
+      one = io.readBuild('b2'); missing = io.readBuild('no-such-build');
+      w = io.withBuild('b2', (b) => { b.status = 'queued'; b.pipeline = { ...(b.pipeline ?? {}), queuedAt: '2026-11-25T10:00:00.000Z', queuedBy: 'test' }; }, { by: 'test', action: 'queue' });
+      again = io.withBuild('b2', (b) => b, { by: 'test', action: 'nothing' });
+      sum = io.pipelineSummary();
+    } finally { delete process.env.AXF_DATA_CALL_SYNC; }
+    const calls = readFileSync(log, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+    assert.deepEqual([...new Set(calls.map((c) => c.op))].sort(), ['item', 'patch', 'summary'], 'row calls only');
+    assert.ok(!calls.some((c) => c.op === 'get'), 'the whole record is never read');
+    const { pipelineView, ...plain } = before;
+    assert.deepEqual(JSON.parse(JSON.stringify(one)), JSON.parse(JSON.stringify(plain)), 'readBuild gives the record a whole read gives');
+    assert.equal(missing, null);
+    const patches = calls.filter((c) => c.op === 'patch');
+    assert.equal(patches.length, 1, 'a write that changes nothing sends nothing');
+    assert.deepEqual(patches[0].body.lists.builds.map((x) => [x.key, x.ifRev]), [['b2', before.rev]], 'one row, checked against the rev it was read at');
+    assert.equal(patches[0].body.head.rev, whole.rev + 1, 'the store rev moves by one');
+    assert.deepEqual(Object.keys(patches[0].body.head).sort(), ['rev', 'updatedAt'], 'no other head field rides along');
+    assert.equal(w.row, true); assert.equal(w.build.status, 'queued'); assert.equal(w.build.rev, before.rev + 1); assert.equal(again.changes.length, 0);
+    const after = await remote('builds/store.json');
+    assert.equal(after.rev, whole.rev + 1);
+    assert.equal(after.builds.find((b) => b.id === 'b2').status, 'queued');
+    assert.deepEqual(ids(after), ids(whole), 'no other build moved');
+    assert.equal(io.journalOf('b2').at(-1).after.status, 'queued', 'the journal line went with the row');
+    assert.equal(sum.$axf, 'pipeline-summary@1'); assert.equal(sum.queued.id, 'b2'); assert.equal(sum.queued.queuedBy, 'test'); assert.equal(sum.rev > 0, true);
+    const local = io.summaryOf(io.loadStore().builds);
+    for (const k of ['total', 'counts', 'queued', 'queuedAll', 'running']) assert.deepEqual(local[k], sum[k], `summaryOf agrees with axf-data on ${k}`);
+    // a conflict on the row: someone else changed the build between the read and the write; the write is re-applied on the new row
+    let n = 0;
+    const c = io.withBuild('b2', (b) => { n += 1; if (n === 1) io.withStore((s) => { s.builds.find((x) => x.id === 'b2').title = 'b2 by someone else'; return s; }, { by: 'other', action: 'retitle' }); b.status = 'pending'; b.pipeline = { ...b.pipeline, queuedAt: '', queuedBy: '' }; }, { by: 'test', action: 'unqueue' });
+    assert.equal(n, 2, 'read again after the conflict'); assert.equal(c.build.title, 'b2 by someone else'); assert.equal(c.build.status, 'pending');
+    assert.equal(io.pipelineSummary().queued, null);
+    assert.throws(() => io.withBuild('no-such-build', (b) => b, { by: 'test' }), (e) => e.code === 'not_found');
+  });
   await t('rollback: writes refused (read_only)', async () => {
     setMode('rollback');
     assert.throws(() => add('b4'), (e) => e.code === 'read_only');

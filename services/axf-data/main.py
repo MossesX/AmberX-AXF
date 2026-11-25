@@ -12,7 +12,7 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   GET    /v1/<ns>                           data-list@1 (?prefix= &after= &limit= &deleted=1); `plugins/<folder>` too
   POST   /v1/<key>:append                   { entries } ; Idempotency-Key
   GET    /v1/<key>:summary                  pipeline-summary@1: counts by status, the queued build, running builds (builds/store.json)
-  GET    /v1/<key>:item?key=<id>            data-item@1: one row of a keyed list by its key (one build), no document read
+  GET    /v1/<key>:item?key=<id>            data-item@1: one row of a keyed list by its key (one build) + the scalar head fields, no document read
   POST   /v1/<key>:patch                    data-patch@1: { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? } on a
                                             table-backed record (the builds store): only the named rows are locked and rewritten
   GET    /v1/<ns>:manifest                  one namespace of data-manifest@1

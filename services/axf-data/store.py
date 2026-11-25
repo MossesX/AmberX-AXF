@@ -377,10 +377,11 @@ class Store:
             T.row_query(t, lkey, key)
         except ValueError as e:
             raise DataError('invalid_body', str(e), ns=ns, path=path) from e
-        item = T.list_row_doc(json.loads(self.body_of(cur) or b'{}'), t, lkey, key)
+        doc = json.loads(self.body_of(cur) or b'{}')
+        item = T.list_row_doc(doc, t, lkey, key)
         if item is None:
             raise DataError('not_found', f'{ns}/{path}: no {lkey} item "{key}"', ns=ns, path=path)
-        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'item': item}
+        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'head': T.head_scalars(doc), 'item': item}
 
     def summary(self, ns: str, path: str, lkey: str = 'builds') -> dict:
         """pipeline-summary@1 on the SQLite engine: the document twin of pg.PgStore.summary."""
