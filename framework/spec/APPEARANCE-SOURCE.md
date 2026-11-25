@@ -139,6 +139,34 @@ is not added again). It is the same three parts the undo record keeps, so a rest
 back as they were, the list kept, one undo left (`action: 'restore-backup'`). `normalizeAppLook` keeps the list through
 every writer; a document without one has no `backups` field.
 
+**Hidden assets per app: `hiddenAssets`** (app-look@1, hidden-assets@1, build rebuild-fresh-main-hide-any-asset; Brett,
+Nov 17 2026: "hide toolbars and tab groups and all that and be able to see what's hidden"). `hidden` above hides a whole
+slot (`{ <type>: true }`); `hiddenAssets` hides one piece: this toolbar, that tab row, a banner, a nav or application
+menu, a widget. It is a list on a look part, and the one that is in force is the app's own picks, `own.hiddenAssets`:
+
+```json
+"own": { "hiddenAssets": [ { "kind": "toolbar", "id": "builds", "assetRef": "toolbar-compact", "hiddenAt": "2026-11-25T14:02:11Z", "by": "console-web" } ] }
+```
+
+- `kind`: a hideable kind, `tab-group | toolbar | banner | nav-menu | app-menu | widget`: the chrome-settings@1 kinds
+  that have a region on the page (a context menu has none) plus `widget`. Read from the chrome kind list, never an app
+  list. An unknown kind is refused by the writers and dropped by the reader.
+- `id`: the instance id, the slug the chrome context menu gives the piece (`axf.chrome.<kind>.<id>`,
+  `^[a-z0-9][a-z0-9._:/-]{0,119}$`). One entry per `kind` + `id`; hiding a hidden piece changes nothing.
+- `assetRef` (optional): the asset id the piece was drawn with when it was hidden, so the Hidden list can name it.
+- `hiddenAt`: ISO time. `by`: who hid it (the app id, a plugin, or an API caller).
+- Oldest first, at most 500 (the oldest fall off).
+
+**Old documents need no migration:** a look saved before the list has no `hiddenAssets` field and reads as nothing
+hidden; an empty list is not written, so a document with nothing hidden is byte-for-byte what it was. Entries that are
+not well formed are dropped on read, never an error. The same part shape is kept wherever a look part is (`default`,
+`undo.own`, `backups[].own`), so undo and Restore from backup bring the list back with the rest of the look, and
+Restore to default (`own` cleared) shows everything again. The list is per app only: a skin never carries it and it is
+not in the shared appearance@1 document, so hiding a toolbar in one app hides nothing in another.
+
+Registry: `framework/schemas/asset-types.json` → `hiddenAssets` (field, entry, max). JSON Schema of the whole
+document: `framework/schemas/json/app-look.schema.json` (`axf schemas`).
+
 **Not changed:** `skin-switch@1` (its scopes stay hub / app / ui / plugin; the hub default is set through the shared
 document, s7+ gives it CLI, REST, MCP and voice), the Default skin of skin-config@1 (`default-<app>`: each app's own saved
 look, still what Restore to default goes back to), hub-only mode (`hubOnlyLook` follows the hub-wide skin and, with none,
