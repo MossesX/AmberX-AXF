@@ -60,7 +60,7 @@ const BUILD_LABEL = Object.freeze({
 const STEP_LABEL = Object.freeze({ pending: 'Pending', 'pulling-main': 'Pulling in main', ready: 'Ready', sending: 'Sending to slot', building: 'Building', completed: 'Completed', 'in-pr': 'In PR' });
 /** What the orchestrator may be asked to do with a sent plan or one of its steps (the server decides each one). */
 export const ACTIONS = Object.freeze(['queue', 'hold', 'release', 'retry', 'rebuild', 'run-ci', 'land', 'cancel']);
-/** The answers to a clash (a build rejected because it touches what is not on main yet): the orchestrator decides each. */
+/** The answers to a clash by hand (a build that touches what is not on main yet; it is never held for it): the orchestrator decides each. */
 export const CLASH_ACTIONS = Object.freeze(['run-all', 'defer']);
 export const ACTION_LABEL = Object.freeze({ queue: 'Queue', hold: 'Hold', release: 'Release', retry: 'Retry', rebuild: 'Rebuild', 'run-ci': 'Run CI', land: 'Land', cancel: 'Cancel' });
 
@@ -203,8 +203,8 @@ export function waitingText(w) {
 }
 const PV_TONES = ['accent', 'success', 'warning', 'danger', 'info', 'muted'];
 /**
- * A clash with builds that are not on main yet (the store's `clash`), or null. The build was rejected as a whole; the
- * options are what may be done instead: run everything, or run the clean steps and defer the clashing ones, each
+ * A clash with builds that are not on main yet (the store's `clash`), or null. It never blocks the build (the pipeline
+ * answers run-all itself; `rejected` is always false); the options are what may be chosen by hand instead: run everything, or run the clean steps and defer the clashing ones, each
  * deferred step naming the build it waits for. → { rejected, reason, with: Ref[], options: [{ id, label, line,
  * action, steps: [{ step, uid, title, waitsFor: Ref | null }] }] }
  */
@@ -221,7 +221,11 @@ export function clashOf(b) {
   }).filter((o) => o.id || o.label);
   if (!options.length && deferred.length) options = [{ id: 'defer', label: `Run the clean steps now, defer ${deferred.length} step${deferred.length === 1 ? '' : 's'}`, line: '', action: 'defer', steps: deferred }];
   if (!options.length && c.runAll === true) options = [{ id: 'run-all', label: 'Run all now', line: '', action: 'run-all', steps: [] }];
-  return { rejected: c.rejected !== false, reason: str(c.reason ?? c.why ?? c.line, 600), with: list(c.with ?? c.builds ?? c.clashesWith).map(buildRef).filter(Boolean), options };
+  // a clash never blocks: the pipeline answers it itself (`auto`); Run all / Defer stay open until a person answers
+  const answer = CLASH_ACTIONS.includes(c.answer) ? c.answer : '';
+  const auto = !answer || c.auto === true;
+  if (!auto) options = options.map((o) => ({ ...o, action: '' }));
+  return { rejected: false, answer, auto, canAnswer: auto, answeredBy: str(c.answeredBy, 80), reason: str(c.reason ?? c.why ?? c.line, 600).replace(/^(Rejected|Clash): /, ''), with: list(c.with ?? c.builds ?? c.clashesWith).map(buildRef).filter(Boolean), options };
 }
 /** The line under a deferred step: "Deferred, waiting for build #41". */
 export const deferLine = (waitsFor) => (waitsFor ? `Deferred, waiting for ${refName(waitsFor)}` : '');

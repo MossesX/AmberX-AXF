@@ -1045,18 +1045,81 @@
    ],
    "view": {
     "state": "split",
-    "label": "Rejected (clash)",
-    "tone": "danger",
-    "icon": "alert",
-    "line": "Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs). Choose: run all now, or run the clean steps and defer the rest.",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Waiting: Build active holds the active place (Building). Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs). It carries on by itself: every step runs, and a conflict with main is fixed by a session. Run all or Defer answers it by hand.",
+    "attempt": 1,
+    "waitingOn": {
+     "buildId": "active",
+     "number": "B-0041",
+     "title": "Build active",
+     "reason": "Waiting: Build active holds the active place"
+    },
+    "mergeLine": null,
+    "split": null,
+    "clash": {
+     "rejected": false,
+     "reason": "Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
+     "answer": "",
+     "auto": true,
+     "canAnswer": true
+    }
+   }
+  },
+  {
+   "name": "split, clash answered by the pipeline",
+   "build": {
+    "id": "x",
+    "title": "Build x",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "2026-11-24T00:00:00.000Z",
+    "attempt": 1,
+    "steps": [
+     {
+      "id": "s1",
+      "uid": "st-s1",
+      "text": "Step s1",
+      "model": "Opus",
+      "status": "pending"
+     },
+     {
+      "id": "s2",
+      "uid": "st-s2",
+      "text": "Step s2",
+      "model": "Opus",
+      "status": "pending"
+     }
+    ],
+    "clash": {
+     "rejected": false,
+     "answer": "run-all",
+     "auto": true,
+     "answeredBy": "pipeline",
+     "reason": "Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
+     "options": []
+    }
+   },
+   "all": [
+    "built-1"
+   ],
+   "view": {
+    "state": "split",
+    "label": "Split",
+    "tone": "muted",
+    "icon": "list",
+    "line": "Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs). It carries on by itself: every step runs, and a conflict with main is fixed by a session. Run all or Defer answers it by hand.",
     "attempt": 1,
     "waitingOn": null,
     "mergeLine": null,
     "split": null,
     "clash": {
-     "rejected": true,
-     "reason": "Rejected: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
-     "answer": ""
+     "rejected": false,
+     "reason": "Clash: 1 step of 2 touches files that B-0041 (Build active) has not landed yet (framework/core/x.mjs).",
+     "answer": "run-all",
+     "auto": true,
+     "canAnswer": true
     }
    }
   },
@@ -1113,8 +1176,10 @@
     "split": null,
     "clash": {
      "rejected": false,
-     "reason": "Rejected: 1 step of 2 touches files that B-0041 has not landed yet.",
-     "answer": "defer"
+     "reason": "Clash: 1 step of 2 touches files that B-0041 has not landed yet.",
+     "answer": "defer",
+     "auto": false,
+     "canAnswer": false
     }
    }
   },

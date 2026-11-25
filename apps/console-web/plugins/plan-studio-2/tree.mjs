@@ -383,7 +383,7 @@ export async function main(argv = process.argv.slice(2)) {
         const r = api({ op: 'plan-build', id: a[0] });
         if (!r.build) return out(r, r.say);
         const sum = live.buildSummary(r.build);
-        return out(r, [`build ${sum.name} (${r.build.id}) · ${sum.label}${sum.split ? ` · ${sum.split}` : ''}`, sum.line, sum.waiting, sum.merge, ...(r.build.clash ? [`Rejected: ${r.build.clash.reason}`, ...r.build.clash.options.map((o) => `  option: ${o.label}${o.steps.map((x) => `\n    ${x.step || x.uid}: ${live.deferLine(x.waitsFor)}`).join('')}`)] : []),
+        return out(r, [`build ${sum.name} (${r.build.id}) · ${sum.label}${sum.split ? ` · ${sum.split}` : ''}`, sum.line, sum.waiting, sum.merge, ...(r.build.clash ? [`Clash: ${r.build.clash.reason}${r.build.clash.auto ? " (carrying on by itself)" : ""}`, ...r.build.clash.options.map((o) => `  option: ${o.label}${o.steps.map((x) => `\n    ${x.step || x.uid}: ${live.deferLine(x.waitsFor)}`).join('')}`)] : []),
           ...r.steps.map((x) => `  ${(x.uid || '-').padEnd(20)} ${x.id.padEnd(5)} ${(x.model || 'no model yet').padEnd(13)} ${x.label.padEnd(18)} ${x.title.slice(0, 80)}`)].filter(Boolean).join('\n'));
       }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }

@@ -243,7 +243,7 @@ async def emergency(request: Request) -> dict[str, Any]:
 
 
 ORCH_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
-CLASH_ACTIONS = ("run-all", "defer")  # the answers to a build rejected for a clash; the orchestrator decides each
+CLASH_ACTIONS = ("run-all", "defer")  # a clash answered by hand (it never blocks: the pipeline answers run-all itself); the orchestrator decides each
 DISPATCH_CAP = "axf.build-dispatch@1"
 
 

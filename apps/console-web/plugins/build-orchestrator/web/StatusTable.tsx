@@ -328,6 +328,39 @@ function MergeLineRow({ r, api, waiting, onChanged }: { r: TableRow; api: Api; w
 }
 
 /**
+ * The clash a build carries (build-clash@1). It never blocks: the pipeline answers it itself and carries on, and a
+ * conflict with main is fixed by a session. Run all / Defer answer it by hand (POST pipeline/clash-answer, the same call
+ * as MCP, the CLI and voice) until a person has answered.
+ */
+function ClashRow({ r, api, onChanged }: { r: TableRow; api: Api; onChanged: () => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState('');
+  const c = r.clash;
+  if (!c) return null;
+  const answer = async (a: 'run-all' | 'defer') => {
+    setBusy(a);
+    try {
+      const res = await api.post<{ ok?: boolean; error?: string; say?: string }>('pipeline/clash-answer', { id: r.id, answer: a });
+      if (res.ok === false) throw new Error(res.error || 'The orchestrator refused.');
+      rt.toast(res.say || (a === 'defer' ? 'Deferred.' : 'Running all.'), 'success', 'Build orchestrator'); onChanged();
+    } catch (e) { rt.toast((e as Error).message, 'danger', 'Build orchestrator'); } finally { setBusy(''); }
+  };
+  const answered = c.auto ? 'Carrying on by itself: every step runs, and a conflict with main is fixed by a session.' : `Answered${c.answeredBy ? ` by ${c.answeredBy}` : ''}: ${c.answer === 'defer' ? 'the clashing steps wait for that build to land' : 'every step runs'}.`;
+  return (
+    <div className="st-clash fx-small" data-clash={r.id} data-clash-answer={c.answer || 'none'} role="group" aria-label={`Clash of ${r.title}`}>
+      <Icon name="alert" size={14} />
+      <span className="st-clash__text">{c.reason} {answered}</span>
+      {c.canAnswer && (
+        <span className="st-clash__actions" role="toolbar" aria-label={`Answer the clash of ${r.title}`}>
+          <Button id={`clash-run-all-${r.id}`} size="sm" icon="play" disabled={!!busy} title={c.runAllLine || 'Every step runs now'} onClick={() => void answer('run-all')}>{c.runAllLabel}</Button>
+          <Button id={`clash-defer-${r.id}`} size="sm" icon="clock" disabled={!!busy} title={c.deferLine || 'The clashing steps wait for the build they clash with'} onClick={() => void answer('defer')}>{c.deferLabel}</Button>
+        </span>
+      )}
+    </div>
+  );
+}
+
+/**
  * An expanded row: the state badge with the plain line, why it waits (with the build holding the active place), its
  * place in the merge line, who split it, what the phone hides, then every step with its own unique id, status, split
  * badge, triage model, account, slot and timer.
@@ -373,6 +406,7 @@ function BuildDetail({ r, phone, api, canSend, waiting, onChanged }: { r: TableR
             {v.waitingOn.buildId && <Button id={`open-holder-${r.id}`} size="sm" tone="quiet" icon="arrow-right" onClick={() => focusBuild(v.waitingOn?.buildId ?? '')}>{`Open ${v.waitingOn.number || v.waitingOn.title || v.waitingOn.buildId}`}</Button>}
           </p>
         )}
+        <ClashRow r={r} api={api} onChanged={onChanged} />
         <MergeLineRow r={r} api={api} waiting={waiting} onChanged={onChanged} />
       </div>
       <dl className="st-facts fx-small">

@@ -3,7 +3,8 @@
  * pipeline-status@1 in the Pipeline 2.0 flow, on a scratch store (no git, no tmux, a fake launcher, a fake Fable):
  * the split's provenance (`split`, `splitBy`, `modelBy`), build numbers and step uids in the read, `pipelineView` on
  * every read and never stored, one update command per store change, one splitter per build (no refused write after a
- * split), steps that never share files, the clash rejection with its two answers and deferred steps, and the draft PR
+ * split), steps that never share files, the clash that never blocks (answered by the pipeline, Run all / Defer by hand, deferred
+ * steps), and the draft PR
  * a build gets the moment it starts.
  *   node apps/console-web/plugins/build-orchestrator/test/p2-sync.test.mjs
  */
@@ -142,7 +143,7 @@ console.log('two passes at the same moment (two processes, a slow Fable): one sp
   eq([log.filter((l) => l.event === 'design').length, log.filter((l) => l.event === 'refused').length], [1, 0], 'Fable was asked once and the store refused nothing');
   BS.setFlowStatus('race', 'archived', { by: 't' }); }
 
-console.log('intake: a build that clashes with one not on main yet is rejected, with answers');
+console.log('intake: a build that clashes with one not on main yet is never held for it');
 // finish alpha and take it out of the line, then a hand build that is still building
 for (const s of get('alpha').steps) F.stepExit('alpha', s.id, { exit: 0 });
 eq(get('alpha').status, 'build-complete', 'alpha is built');
@@ -153,32 +154,39 @@ land('alpha', 90210);
 BS.setFlowStatus('beta', 'archived', { by: 't' });
 sendSteps('hand-x', [{ text: 'By hand', files: ['apps/ui/web/'] }], { hand: { at: new Date().toISOString(), by: 'brett' } });
 BS.setFlowStatus('hand-x', 'building', { by: 'hand' });
+// a clean build takes the active place first, so the clashing one is seen while it waits its turn
+sendSteps('delta', [{ text: 'Docs only', files: ['docs/d.md'] }]);
+r = adv();
+eq([get('delta').status, r.active], ['building', 'delta'], 'a clean build starts');
 sendSteps('gamma', [{ text: 'UI change', files: ['apps/ui/web/page.tsx'] }, { text: 'Server change', files: ['apps/server/x.py'] }]);
 r = adv();
 let G = get('gamma');
-eq([G.status, G.clash?.rejected, G.steps.length], ['split', true, 2], 'the whole build is rejected: split, not started');
-ok(/^Rejected: 1 step of 2 touches files that B-\d{4} \(Build hand-x\) has not landed yet \(apps\/ui\/web\/page\.tsx\)/.test(G.clash.reason), `with a plain reason (${G.clash.reason})`);
-eq(G.clash.options.map((o) => o.id), ['run-all', 'defer'], 'and two answers');
+eq([G.status, G.clash?.rejected, G.clash?.answer, G.clash?.auto, G.clash?.answeredBy, G.steps.length], ['split', false, 'run-all', true, 'pipeline', 2], 'the clash is on its record, answered by the pipeline itself: nothing waits for a person');
+ok(/^Clash: 1 step of 2 touches files that B-\d{4} \(Build hand-x\) has not landed yet \(apps\/ui\/web\/page\.tsx\)/.test(G.clash.reason), `with a plain reason that no longer says rejected (${G.clash.reason})`);
+eq(G.clash.options.map((o) => o.id), ['run-all', 'defer'], 'and the two answers that may be given by hand');
 eq(G.clash.options[1].steps.map((d) => [d.step, d.waitsFor.buildId]), [['s1', 'hand-x']], 'the defer answer names the step and the build it waits for');
-ok(r.rejected.some((x) => x.id === 'gamma') && r.waits.some((w) => w.id === 'gamma' && /rejected for a clash/.test(w.why)), 'the pass reports the rejection');
-eq([G.pipelineView.label, G.pipelineView.tone, G.pipelineView.clash.rejected], ['Rejected (clash)', 'danger', true], 'the view shows it as rejected');
-ok(G.notes.some((x) => /Rejected: 1 step of 2/.test(x.text) && /run-all/.test(x.text)), 'a note carries the reason and the answers');
-// a clean build behind it is not held up
-sendSteps('delta', [{ text: 'Docs only', files: ['docs/d.md'] }]);
-r = adv();
-eq([get('delta').status, r.active], ['building', 'delta'], 'a clean build behind the rejected one starts');
-let refused = null; try { F.actBuild('gamma', 'queue', { pass: () => ({}) }); } catch (e) { refused = e; }
-ok(refused?.code === 2 && /answer it first/.test(refused.message), 'Queue on a rejected build says to answer the clash first');
+ok(r.clashes.some((x) => x.id === 'gamma' && x.auto) && !r.rejected.length, 'the pass reports the clash, and rejects nothing');
+ok(r.waits.some((w) => w.id === 'gamma' && /waiting for delta to land/.test(w.why)) && !r.waits.some((w) => /rejected for a clash/.test(w.why)), 'it waits only for its turn, like any other build');
+eq([G.pipelineView.label, G.pipelineView.clash.rejected, G.pipelineView.clash.auto, G.pipelineView.clash.canAnswer], ['Split', false, true, true], 'the view shows an ordinary waiting build whose clash may still be answered by hand');
+ok(/It carries on by itself/.test(G.pipelineView.line), `and says it carries on by itself (${G.pipelineView.line})`);
+ok(G.notes.some((x) => /Clash: 1 step of 2/.test(x.text) && /carries on by itself/.test(x.text) && /run-all/.test(x.text)), 'a note carries the reason, that it carries on, and the answers');
+let refused = null; let queued = null; try { queued = F.actBuild('gamma', 'queue', { pass: () => ({}) }); } catch (e) { refused = e; }
+ok(!refused && queued?.id === 'gamma', 'Queue on a build with a clash is never refused (no "answer it first" gate)');
 refused = null; try { F.actBuild('delta', 'defer', { pass: () => ({}) }); } catch (e) { refused = e; }
 ok(refused?.code === 2, 'an answer on a build with no clash is refused');
-F.stepExit('delta', 's1', { exit: 0 }); land('delta', 11);
+eq(F.clashesView().clashes.filter((c) => c.id === 'gamma').map((c) => [c.answer, c.auto, c.canAnswer]), [['run-all', true, true]], 'the clashes read lists it with its answer');
 
-console.log('defer: the clean steps run now, the clashing step starts by itself when that build lands');
+console.log('defer by hand: the clean steps run now, the clashing step starts by itself when that build lands');
 const ans = F.actBuild('gamma', 'defer', { by: 'brett', pass: (id) => adv({ build: id }) });
 G = get('gamma');
-eq([G.clash.rejected, G.clash.answer, G.clash.answeredBy], [false, 'defer', 'brett'], 'the answer is on the record');
+eq([G.clash.rejected, G.clash.answer, G.clash.answeredBy, G.clash.auto ?? false], [false, 'defer', 'brett', false], 'the hand answer replaces the pipeline\'s own');
 eq(G.steps.map((s) => s.waitsFor?.buildId ?? ''), ['hand-x', ''], 'the clashing step carries the build it waits for');
-ok(/1 step deferred/.test(ans.say), `the tap answers in words (${ans.say})`);
+ok(/1 step deferred/.test(ans.say) && ans.deferred.join() === 's1', `the tap answers in words (${ans.say})`);
+refused = null; try { F.actBuild('gamma', 'run-all', { by: 'someone', pass: () => ({}) }); } catch (e) { refused = e; }
+ok(refused?.code === 2 && /already answered/.test(refused.message), 'a person\'s answer stands: a second one is refused');
+F.stepExit('delta', 's1', { exit: 0 }); land('delta', 11);
+adv();
+G = get('gamma');
 eq([G.status, G.steps.map((s) => s.status)], ['building', ['pending', 'building']], 'the clean step is building; the deferred one has not started');
 ok(/1 step deferred, waiting for B-\d{4} to land/.test(G.pipelineView.line), `the view says what it waits for (${G.pipelineView.line})`);
 F.stepExit('gamma', 's2', { exit: 0 });
@@ -196,23 +204,33 @@ F.stepExit('gamma', 's1', { exit: 0 });
 eq(get('gamma').status, 'build-complete', 'and the build completes');
 land('gamma', 13);
 
-console.log('run-all: every step runs now; a build whose every step is deferred waits without holding the place');
+console.log('carrying on: a clashing build starts by itself; one whose every step was deferred by hand waits without holding the place');
 sendSteps('hand-y', [{ text: 'By hand', files: ['framework/z/'] }], { hand: { at: new Date().toISOString(), by: 'brett' } });
 BS.setFlowStatus('hand-y', 'building', { by: 'hand' });
 sendSteps('eps', [{ text: 'Touches z', files: ['framework/z/a.mjs'] }]);
 sendSteps('zeta', [{ text: 'Touches z too', files: ['framework/z/b.mjs'] }]);
-adv();
-eq([get('eps').clash?.rejected, get('zeta').clash?.rejected], [true, true], 'both are rejected');
+r = adv();
+eq([get('eps').clash?.answer, get('eps').clash?.auto, get('eps').status, r.active], ['run-all', true, 'building', 'eps'], 'the first clashing build starts by itself, with every step');
+eq([get('zeta').clash?.auto, get('zeta').status], [true, 'split'], 'the second waits only for its turn');
 F.actBuild('zeta', 'defer', { by: 'brett', pass: (id) => adv({ build: id }) });
-eq(get('zeta').status, 'split', 'every step deferred: the build waits at split, it does not take the active place');
+eq(get('zeta').status, 'split', 'every step deferred by hand: the build waits at split, it does not take the active place');
 F.actBuild('eps', 'run-all', { by: 'brett', pass: (id) => adv({ build: id }) });
-eq([get('eps').clash.answer, get('eps').status, get('eps').steps[0].waitsFor ?? null], ['run-all', 'building', null], 'run-all: it starts with every step');
+eq([get('eps').clash.answer, get('eps').clash.answeredBy, get('eps').status, get('eps').steps[0].waitsFor ?? null], ['run-all', 'brett', 'building', null], 'run-all by hand puts a name on the answer; a step that already started carries on');
 F.stepExit('eps', 's1', { exit: 0 }); land('eps', 14);
 r = adv();
 ok(get('zeta').status === 'split' && r.waits.some((w) => w.id === 'zeta' && /every step is deferred/.test(w.why)), 'the deferred build still waits, and says for what');
 BS.setFlowStatus('hand-y', 'build-complete', { by: 'hand' }); land('hand-y', 15);
 adv();
 eq(get('zeta').status, 'building', 'it starts by itself when that build lands');
+F.stepExit('zeta', 's1', { exit: 0 }); land('zeta', 16);
+
+console.log('a record from before (rejected, no answer) is answered by the pipeline on the next pass');
+sendSteps('old', [{ text: 'Was stuck', files: ['docs/old.md'] }]);
+BS.withStore((st) => { const b = st.builds.find((x) => x.id === 'old'); b.clash = { $axf: 'build-clash@1', rejected: true, at: 'T', reason: 'Rejected: 1 step of 1 touches files that B-0001 (Gone) has not landed yet (docs/old.md).', with: [{ buildId: 'gone', number: 'B-0001', title: 'Gone' }], options: [{ id: 'run-all', action: 'run-all', label: 'Run all now', line: '', steps: [] }, { id: 'defer', action: 'defer', label: 'Defer the step', line: '', steps: [{ step: 's1', uid: '', title: '', files: ['docs/old.md'], waitsFor: { buildId: 'gone', number: 'B-0001', title: 'Gone' } }] }] }; return st; });
+ok(BC.isRejected(get('old')), 'the old record is unanswered');
+r = adv();
+eq([get('old').clash.answer, get('old').clash.auto, get('old').clash.rejected, /^Clash: /.test(get('old').clash.reason)], ['run-all', true, false, true], 'answered by the pipeline');
+ok(['building', 'split', 'pulling-main', 'ready', 'sending'].includes(get('old').status) && r.clashes.some((x) => x.id === 'old'), `and it takes its turn (${get('old').status})`);
 
 console.log('the merge line, read from the one store');
 sendSteps('m1', [{ text: 'a', files: ['m/1'] }], { hand: { at: '2026-11-24T00:00:00.000Z', by: 'brett' } });

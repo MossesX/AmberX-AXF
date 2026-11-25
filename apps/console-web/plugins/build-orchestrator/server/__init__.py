@@ -1158,13 +1158,15 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
 
 P2_CLI = CLI.parent / "pipeline2.mjs"
 P2_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+CLASH_ANSWERS = ("run-all", "defer")  # build-clash@1: a clash answered by hand (the pipeline answers run-all itself)
 
 
 def build_act(build_id: str, action: str, *, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
     """One tap on a Pipeline 2.0 build or one of its steps (pipeline2.mjs actBuild decides everything): queue, hold,
-    release, retry, rebuild, run-ci, land, cancel. A tap that does not fit where the build is → 400 with the reason."""
-    if action not in P2_ACTIONS:
-        raise HTTPException(400, f"action is one of {', '.join(P2_ACTIONS)}")
+    release, retry, rebuild, run-ci, land, cancel, or a clash answered by hand (run-all, defer). A tap that does not fit
+    where the build is → 400 with the reason."""
+    if action not in P2_ACTIONS + CLASH_ANSWERS:
+        raise HTTPException(400, f"action is one of {', '.join(P2_ACTIONS + CLASH_ANSWERS)}")
     args = ["node", str(P2_CLI), "act", _build_id(build_id), action, "--by", (by or "console")[:80], "--json"]
     if step:
         if not ID_RE.match(step):
@@ -1199,6 +1201,31 @@ async def pipeline_act(request: Request) -> dict[str, Any]:
     body = await _json_body(request)
     return build_act(str(body.get("id") or ""), str(body.get("action") or ""), by=(brett_click(request) or "console"),
                      why=str(body.get("why") or ""), step=str(body.get("step") or ""))
+
+
+@router.post("/pipeline/clash-answer")
+async def pipeline_clash_answer(request: Request) -> dict[str, Any]:
+    """{id, answer: run-all | defer, why?}: answer a build's clash by hand (build-clash@1). A clash never blocks: the
+    pipeline answers run-all itself and a conflict with main is fixed by a session. run-all = every step runs (also
+    undoes a defer); defer = each clashing step that has not started waits for the build it clashes with and starts by
+    itself when that build lands. Refused with the reason when the build has no clash or a person already answered."""
+    body = await _json_body(request)
+    answer = str(body.get("answer") or body.get("action") or "")
+    if answer not in CLASH_ANSWERS:
+        raise HTTPException(400, f"answer is one of {', '.join(CLASH_ANSWERS)}")
+    return build_act(str(body.get("id") or ""), answer, by=(brett_click(request) or "console"), why=str(body.get("why") or ""))
+
+
+@router.get("/pipeline/clashes")
+def pipeline_clashes() -> dict[str, Any]:
+    """Every Pipeline 2.0 build that carries a clash: what it clashes with, the answer (the pipeline's own or a
+    person's), whether Run all / Defer may still be chosen, and the steps whose session resolves a conflict with main."""
+    try:
+        proc = subprocess.run(["node", str(P2_CLI), "clashes", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        out = proc.stdout.strip().splitlines()
+        return json.loads(out[-1]) if out else {"ok": False, "clashes": [], "error": proc.stderr.strip()[-400:] or "no output"}
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        raise HTTPException(500, f"the orchestrator could not run: {str(e)[:200]}") from None
 
 
 class DispatchService:

@@ -44,7 +44,7 @@ export function SplitBadge({ by, model = '' }: { by: string; model?: string }) {
   return <span className={`${B}__splitmark`} data-ps2-split={by} title="The VPS splitting stage designed these steps so that none touches another's files"><Chip tone="accent">{text}</Chip></span>;
 }
 
-/** What may be done with a build that was rejected for a clash: each option is one tap sent to the orchestrator, which decides. */
+/** A clash answered by hand (it never blocks; the pipeline answers run-all itself): each option is one tap sent to the orchestrator, which decides. */
 function ClashOptions({ planId, options }: { planId: string; options: ClashOption[] }) {
   const rt = useRuntime();
   const pick = (o: ClashOption) => void orchestrate(planId, o.action as OrchAction).then((r) => rt.toast(r.say ?? (r.ok ? 'Done.' : r.error ?? 'That did not work.'), r.ok ? 'success' : 'danger', T), (e: Error) => rt.toast(e.message, 'warning', T));
@@ -100,7 +100,7 @@ export function BuildPanel({ item, rows, open, depth, selected, looks }: { item:
         {sum.merge && <p className={`${B}__buildline is-merge`} data-ps2-line="merge"><Icon name="branch" size={14} /> {sum.merge.charAt(0).toUpperCase()}{sum.merge.slice(1)}</p>}
         {build.clash && (
           <div className={`${B}__clashbox`} data-ps2-clash>
-            <Note tone="danger" icon="alert">{build.clash.rejected ? 'Rejected: ' : 'Clash: '}{build.clash.reason || 'it touches work that is not on main yet'}{build.clash.with.length ? ` (${build.clash.with.map(live.refName).join(', ')})` : ''}</Note>
+            <Note tone="warning" icon="alert">Clash: {build.clash.reason || 'it touches work that is not on main yet'}{build.clash.with.length ? ` (${build.clash.with.map(live.refName).join(', ')})` : ''} {build.clash.auto ? 'It carries on by itself: every step runs, and a conflict with main is fixed by a session.' : `Answered${build.clash.answeredBy ? ` by ${build.clash.answeredBy}` : ''}: ${build.clash.answer === 'defer' ? 'the clashing steps wait' : 'every step runs'}.`}</Note>
             {build.clash.options.length > 0 && <ClashOptions planId={item.id} options={build.clash.options} />}
           </div>
         )}

@@ -368,11 +368,16 @@ await t('the build as the page shows it: number, pipeline view, waiting reason, 
   assert.deepEqual([raw.name, raw.state, raw.label, raw.tone, raw.raw, raw.line, raw.merge, raw.split], ['old', 'assigning-models', 'Assigning models', '', true, '', '', '']);
   assert.equal(live.buildSummary({ id: 'x', status: 'brand-new-state' }).label, 'brand-new-state', 'a status nobody knows shows as it is, and never throws');
   assert.equal(live.buildSummary(null).label, 'Unknown');
-  // a rejected build: the reason and the options, each deferred step naming the build it waits for
+  // a build with a clash (it never blocks): the reason and the options by hand, each deferred step naming the build it waits for
   const c = live.clashOf({ id: 'r', clash: { reason: 'Touches files build #40 has not merged yet', with: [{ number: 40, title: 'Other build' }], options: [{ id: 'run-all', label: 'Run all now' }, { id: 'defer', steps: [{ step: 's2', uid: 'st-bbb', waitsFor: { number: 40 } }] }] } });
-  assert.equal(c.rejected, true); assert.equal(c.reason, 'Touches files build #40 has not merged yet'); assert.deepEqual(c.with.map(live.refName), ['build #40']);
+  assert.deepEqual([c.rejected, c.auto, c.canAnswer, c.answer], [false, true, true, '']); assert.equal(c.reason, 'Touches files build #40 has not merged yet'); assert.deepEqual(c.with.map(live.refName), ['build #40']);
   assert.deepEqual(c.options.map((o) => [o.id, o.label, o.action]), [['run-all', 'Run all now', 'run-all'], ['defer', 'Run the clean steps now, defer 1 step', 'defer']]);
   assert.equal(live.deferLine(c.options[1].steps[0].waitsFor), 'Deferred, waiting for build #40');
+  // the pipeline's own answer leaves the options open; a person's answer closes them
+  const byPipe = live.clashOf({ clash: { reason: 'Clash: 1 step of 2 touches files', answer: 'run-all', auto: true, answeredBy: 'pipeline', options: [{ id: 'run-all' }, { id: 'defer', steps: [{ step: 's2' }] }] } });
+  assert.deepEqual([byPipe.auto, byPipe.canAnswer, byPipe.reason, byPipe.options.map((o) => o.action)], [true, true, '1 step of 2 touches files', ['run-all', 'defer']]);
+  const byHand = live.clashOf({ clash: { reason: 'Rejected: x', answer: 'defer', answeredBy: 'brett', options: [{ id: 'run-all' }, { id: 'defer', steps: [{ step: 's2' }] }] } });
+  assert.deepEqual([byHand.auto, byHand.canAnswer, byHand.answeredBy, byHand.reason, byHand.options.map((o) => o.action)], [false, false, 'brett', 'x', ['', '']]);
   assert.deepEqual(live.clashOf({ clash: { reason: 'x', deferred: [{ step: 's3', waitsFor: 'other-build' }] } }).options.map((o) => [o.id, o.steps[0].step, live.deferLine(o.steps[0].waitsFor)]), [['defer', 's3', 'Deferred, waiting for build other-build']]);
   assert.equal(live.clashOf({ id: 'fine' }), null);
   assert.deepEqual(live.CLASH_ACTIONS, ['run-all', 'defer']);

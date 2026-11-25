@@ -3,7 +3,8 @@ import type { PipelineView, SplitInfo } from './pipeline-view-core.mjs';
 export type BuildStatus = 'pending' | 'splitting' | 'split' | 'pulling-main' | 'assigning-models' | 'ready' | 'sending' | 'building' | 'build-complete' | 'merging-pr' | 'pr-pulling-main' | 'running-ci' | 'merging-main' | 'landed' | 'failed';
 export type StepStatus = 'pending' | 'pulling-main' | 'ready' | 'sending' | 'building' | 'completed' | 'in-pr' | 'failed';
 export type StepRow = { id: string; title: string; status: StepStatus; attempt: number; model: string; account: string; slot: string; prNumber: number; at: string; by: string; uid: string; splitBy: string; split: string; modelBy: string };
-export type TableRow = { id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; number: string; view: PipelineView; split: SplitInfo | null; splitLabel: string };
+export type RowClash = { reason: string; answer: '' | 'run-all' | 'defer'; answeredBy: string; auto: boolean; canAnswer: boolean; runAllLabel: string; deferLabel: string; runAllLine: string; deferLine: string };
+export type TableRow = { clash?: RowClash | null; id: string; title: string; status: BuildStatus; attempt: number; flow: string; emergency: boolean; emergencyBy: string; steps: StepRow[]; done: number; total: number; model: string; account: string; slot: string; prNumber: number; pr: string; branch: string; at: string; by: string; createdAt: string; updatedAt: string; number: string; view: PipelineView; split: SplitInfo | null; splitLabel: string };
 export type TableFilter = { status?: string | string[]; queue?: boolean; landed?: boolean; account?: string; model?: string; date?: string; text?: string };
 export const BUILD_STATUSES: readonly BuildStatus[];
 export const STEP_STATUSES: readonly StepStatus[];
@@ -28,3 +29,4 @@ export function filterOptions(rows: TableRow[]): { counts: Record<BuildStatus, n
 export function filterRows(rows: TableRow[], f?: TableFilter, now?: number): TableRow[];
 export function formatElapsed(ms: number | null): string;
 export function timers(r: { status: string; at: string; createdAt: string }, now?: number): { inStatus: number | null; total: number | null };
+export function clashOf(b: unknown): RowClash | null;

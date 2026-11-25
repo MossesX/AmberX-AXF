@@ -23,7 +23,7 @@ export interface PipelineView {
 export interface SplitInfo { by: string; model: string; at: string; stepCount: number }
 export interface ClashStep { step: string; uid: string; title: string; waitsFor: BuildRef | null }
 export interface ClashOption { id: string; label: string; line: string; action: string; steps: ClashStep[] }
-export interface Clash { rejected: boolean; reason: string; with: BuildRef[]; options: ClashOption[] }
+export interface Clash { rejected: boolean; answer: string; auto: boolean; canAnswer: boolean; answeredBy: string; reason: string; with: BuildRef[]; options: ClashOption[] }
 /** The build a plan was sent as (GET plans/<id>/build → build). */
 export interface BuildInfo {
   id: string; number: string; title: string; status: string; label: string; state: LiveState; stateLabel: string; attempt: number; at: string;
