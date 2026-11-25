@@ -24,6 +24,10 @@ test('every step lands in ONE PR: merging-pr → pr-pulling-main → running-ci 
   assert.ok(b.statusLog.every((x) => x.at && x.by === 'lander'), 'every change records at and by');
   for (const f of ['a.txt', 'b.txt', 'c.txt']) assert.ok(onMain(r, f), `${f} on main`);
   assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 1, 'one merge');
+  // the merge request carries merge_method and the pinned head inside its body (never beside it)
+  assert.equal(gh.merges.length, 1);
+  assert.deepEqual(Object.keys(gh.merges[0]).sort(), ['commit_title', 'merge_method', 'sha']);
+  assert.equal(gh.merges[0].merge_method, 'merge'); assert.match(gh.merges[0].sha, /^[0-9a-f]{40}$/); assert.match(gh.merges[0].commit_title, /^Merge pull request #1 from /);
 });
 
 test('over the size cap: steps grouped in order into 2 PRs that land one at a time', async () => {

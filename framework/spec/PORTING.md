@@ -526,3 +526,11 @@ work): no Android app talks to the VPS host directly; AmberX only receives the h
 Kotlin reader is needed (a Host services card in AmberX), it ports `serviceState`, `toHostError` and `summary` and replays
 the `states`, `calls`, `healthItems` and `adopted` blocks of the fixture (adopted schedules: `adopted`, `cron`,
 `health.freshness`).
+
+## Deferred: landing.removal in pipeline-2@1 (Nov 25 2026)
+
+Build watchdog-catches-lander-prs-stuck-ci adds `removal { pr, steps, at, by, why }` to the landing record
+(`normLanding` in `framework/core/pipeline-status.mjs`): the watchdog's mark on a one-part lander PR that failed again
+after its fix session. Checker `framework/spec/check-pipeline-2.mjs`; the fixture `framework/spec/fixtures/pipeline-2.json`
+is unchanged. Kotlin twin deferred (no new Android work): a Kotlin reader of the landing record ports the field with
+the rest of `normLanding`. The stuck-CI lane itself (`watchdog/stuck-ci-core.mjs`) is plugin-local Node code: no twin.

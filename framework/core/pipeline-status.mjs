@@ -264,7 +264,9 @@ const headAt = (v) => { const x = obj(v); return x ? { head: str(x.head, 64), at
  * moved after CI went green: the newest main was pulled into the PR again and CI runs on that head), green { head, at }
  * (the head CI and the rules passed on: the only head that merges), fixes { pr, n } (fix sessions the PR in flight has
  * had), lastMerge { pr, sha, head, at } (the last PR merged: the evidence `landed` carries; a PR merged by hand also
- * has `byHand`, `by` and what GitHub says about its CI, `ci`) }. A cleared part (null) is left out.
+ * has `byHand`, `by` and what GitHub says about its CI, `ci`), removal { pr, steps[id], at, by, why } (the watchdog's
+ * mark on the PR in flight: one part's own PR failed again after its fix session, so the part is marked for removal;
+ * nothing is removed by the mark itself) }. A cleared part (null) is left out.
  * → the record, or null when there is nothing to keep.
  */
 export function normLanding(l) {
@@ -289,6 +291,8 @@ export function normLanding(l) {
   const fx = obj(x.fixes); if (fx && nums([fx.pr]).length && count(fx.n)) out.fixes = { pr: nums([fx.pr])[0], n: count(fx.n) };
   const lm = obj(x.lastMerge);
   if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40), ...(lm.byHand === true ? { byHand: true, ci: LAND_CI.includes(lm.ci) ? lm.ci : 'unknown', by: str(lm.by, 80) } : {}) };
+  const rm = obj(x.removal);
+  if (rm && nums([rm.pr]).length) out.removal = { pr: nums([rm.pr])[0], steps: strs(rm.steps, 80, 50), at: str(rm.at, 40), by: str(rm.by, 80), why: str(rm.why, 400) };
   // pipeline-status@1: the lander's display state and its merge line (the place in line and the build it waits for)
   if (['waiting-to-merge', 'merging', 'running-ci', 'landed'].includes(x.state)) out.state = x.state;
   const ml = obj(x.mergeLine);

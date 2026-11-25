@@ -212,3 +212,13 @@ test('merge queue rows: read-only projection of the same builds, live status', (
   assert.deepEqual(rows.map((r) => r.build), ['x', 'y']);
   assert.deepEqual(rows[0].prs, [{ pr: 5, steps: ['s1', 's2'], state: 'open' }]);
 });
+
+test('the merge request: merge_method, the pinned sha and the title are in the body', () => {
+  const r = L.mergeRequest('o/r', 915, { method: 'squash', sha: 'a'.repeat(40), title: 'Merge pull request #915' });
+  assert.deepEqual(r, { method: 'PUT', path: '/repos/o/r/pulls/915/merge', body: { merge_method: 'squash', sha: 'a'.repeat(40), commit_title: 'Merge pull request #915' } });
+  assert.deepEqual(Object.keys(r).sort(), ['body', 'method', 'path'], 'nothing rides beside the body');
+  assert.equal(L.mergeRequest('o/r', '916', { method: 'fast' }).body.merge_method, 'merge', 'an unknown method falls back to the default');
+  assert.deepEqual(L.mergeRequest('o/r', 7).body, { merge_method: 'merge' });
+  assert.throws(() => L.mergeRequest('o/r', 0), /PR number/);
+  assert.throws(() => L.mergeRequest('', 5), /slug/);
+});

@@ -277,6 +277,8 @@ eq([fixture.emergency.active, fixture.emergency.others], ['active', []], 'emerge
 eq(fixture.emergency.emergency, ['e-first', 'e-late'], 'emergency: split or past the main pull, oldest tag first; pending and landed ones left out');
 ok(!P.isEmergency({ emergency: { by: 'someone' } }) && !P.isEmergency({ emergency: true }) && P.isEmergency({ emergency: { at: 'T', by: 'Brett' } }), 'emergency: the tag needs its at');
 eq(P.normLanding({ mainPull: { head: 'abc', at: 'T' }, bogus: 1 }), { mainPull: { head: 'abc', at: 'T' } }, 'landing: the re-pull of main before a merge is kept');
+eq(P.normLanding({ removal: { pr: 919, steps: ['s11'], at: 'T', by: 'watchdog', why: 'red twice', junk: 1 } }), { removal: { pr: 919, steps: ['s11'], at: 'T', by: 'watchdog', why: 'red twice' } }, 'landing: a part marked for removal is kept');
+eq(P.normLanding({ removal: { steps: ['s1'] } }), null, 'landing: a removal mark names its PR');
 
 // ---- the account pick
 const now = Date.parse('2026-11-19T12:00:00Z');

@@ -68,11 +68,12 @@ export function github(r, ci = () => 'success') {
       if (c === 'light') return { check_runs: [{ status: 'completed', conclusion: 'success', name: 'scope' }, { status: 'completed', conclusion: 'success', name: 'Light PR checks (full run happens once, in the merge queue)' }] };
       return { check_runs: [{ id: 7, status: 'completed', conclusion: c, name: 'tests', details_url: 'https://github.com/o/r/actions/runs/42/job/7' }] };
     }
-    if (method === 'PUT' && (m = path.match(/\/pulls\/(\d+)\/merge$/))) { const p = mergeInGit(prs.get(Number(m[1])), body.sha); return { merged: true, sha: p.merge_commit_sha }; }
+    if (method === 'PUT' && (m = path.match(/\/pulls\/(\d+)\/merge$/))) { gh.merges.push(body); const p = mergeInGit(prs.get(Number(m[1])), body.sha); return { merged: true, sha: p.merge_commit_sha }; }
     if (method === 'POST' && /rerun-failed-jobs|dispatches/.test(path)) return null;
     throw new Error(`fake GitHub: ${method} ${path}`);
   };
   gh.logs = {};
+  gh.merges = []; // the body of every merge request, as sent
   gh.text = async (path) => { calls.push(`TEXT ${path.replace(/^\/repos\/o\/r/, '')}`); return gh.logs[path.match(/\/jobs\/(\d+)\/logs$/)?.[1]] || ''; };
   gh.mergeByHand = (n) => mergeInGit(prs.get(n), '');
   gh.prs = prs; gh.calls = calls;

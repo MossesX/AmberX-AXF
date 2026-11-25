@@ -14,10 +14,18 @@
  *     ladder's next rung, requeue, or escalate (pipeline.mjs escalateBuild: banner item + one push). Each write is one
  *     journalled store write (action watchdog-stale) with a note on the build.
  *
+ * The stuck-CI lane (stuck-ci@1, ./stuck-ci-core.mjs) rides the same pass for Pipeline 2.0 builds: a lander PR standing
+ * in `running-ci`, or stopped by the lander, past `limit.running-ci` minutes has its checks read (the lander's own
+ * rules for green: deploy/lander/lander-core.mjs ciOf). Green: the PR is merged, pinned to that head. A check stuck or
+ * never started: a fresh CI run. Red and the lander stopped: the hold is released into one Fable fix session, which the
+ * lander starts; red again after it: a one-part PR is marked for removal (`landing.removal`). Every catch of this lane
+ * is its own alert to Brett.
+ *
  *   node apps/console-web/plugins/build-orchestrator/watchdog/stale.mjs scan [--json]       what it would do; nothing changes
  *   … run [--build id] [--json]      one pass now
  *   … settings [--json] · set key=value…   enabled, intervalMin, cooldownMin, ciWaitMin, maxPerPass, maxLaunchPerPass,
- *                                          limit.landing, limit.fixing, limit.merging (minutes)
+ *                                          limit.landing, limit.fixing, limit.merging, limit.running-ci (minutes),
+ *                                          ciStuckMin, ciFixes
  *
  * Files (the watchdog's folder): watchdogs-stale-settings.json, watchdogs-stale.json (the last push per build: the
  * cooldown's memory, and the last scan).
@@ -26,6 +34,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as DF from '../../../../../framework/core/data-files.mjs';
 import * as C from './stale-core.mjs';
+import * as CI from './stuck-ci-core.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const str = (v, n = 400) => (typeof v === 'string' ? v : v == null ? '' : String(v)).slice(0, n);
@@ -47,12 +56,15 @@ export const SETTINGS_SCHEMA = Object.freeze({
   'limit.landing': { type: 'integer', min: 5, max: 10080, default: C.DEFAULTS.limits.landing, title: 'Landing with nothing moving: stale after (minutes)' },
   'limit.fixing': { type: 'integer', min: 5, max: 10080, default: C.DEFAULTS.limits.fixing, title: 'Fixing with nothing tried: stale after (minutes)' },
   'limit.merging': { type: 'integer', min: 5, max: 10080, default: C.DEFAULTS.limits.merging, title: 'Merging with nothing moving: stale after (minutes)' },
+  'limit.running-ci': { type: 'integer', min: 5, max: 240, default: C.DEFAULTS.limits[CI.LIMIT_KEY], title: 'A lander PR in CI, or stopped by the lander: read its checks after (minutes)' },
+  ciStuckMin: { type: 'integer', min: 10, max: 600, default: C.DEFAULTS.ciStuckMin, title: 'A check still running after this long is stuck: start a fresh run (minutes)' },
+  ciFixes: { type: 'integer', min: 0, max: 3, default: C.DEFAULTS.ciFixes, title: 'Fable fix sessions for a stopped PR before a one-part PR is marked for removal' },
   ciWaitMin: { type: 'integer', min: 5, max: 10080, default: C.DEFAULTS.ciWaitMin, title: 'Wait for CI on a merge commit for (minutes)' },
   cooldownMin: { type: 'integer', min: 0, max: 1440, default: C.DEFAULTS.cooldownMin, title: 'Leave a build it pushed alone for (minutes)' },
   maxPerPass: { type: 'integer', min: 1, max: 100, default: C.DEFAULTS.maxPerPass, title: 'Builds pushed per pass, at most' },
   maxLaunchPerPass: { type: 'integer', min: 0, max: 20, default: C.DEFAULTS.maxLaunchPerPass, title: 'Sessions started per pass, at most (0: never start one)' },
 });
-const flat = (s) => ({ enabled: s.enabled, intervalMin: s.intervalMin, ...Object.fromEntries(Object.keys(C.STATUSES).map((k) => [`limit.${k}`, s.limits[k]])), ciWaitMin: s.ciWaitMin, cooldownMin: s.cooldownMin, maxPerPass: s.maxPerPass, maxLaunchPerPass: s.maxLaunchPerPass });
+const flat = (s) => ({ enabled: s.enabled, intervalMin: s.intervalMin, ...Object.fromEntries(C.LIMIT_KEYS.map((k) => [`limit.${k}`, s.limits[k]])), ciStuckMin: s.ciStuckMin, ciFixes: s.ciFixes, ciWaitMin: s.ciWaitMin, cooldownMin: s.cooldownMin, maxPerPass: s.maxPerPass, maxLaunchPerPass: s.maxLaunchPerPass });
 const nested = (f) => { const o = { limits: {} }; for (const [k, v] of Object.entries(f ?? {})) { if (k.startsWith('limit.')) o.limits[k.slice(6)] = v; else if (k === 'limits' && v && typeof v === 'object') Object.assign(o.limits, v); else o[k] = v; } return o; };
 
 /** The settings as stale-core reads them: defaults, the saved file, then AXF_WATCHDOG_STALE_SETTINGS (tests). */
@@ -71,10 +83,11 @@ export async function saveSettings(patch = {}, { by = process.env.AXF_ACTOR || '
   return next;
 }
 
-const loadMemory = async (env) => ({ $axf: 'stale-status-memory@1', pushes: {}, lastScan: null, ...(await readJson(await fileOf('watchdogs-stale.json', env), {}) ?? {}) });
+const loadMemory = async (env) => ({ $axf: 'stale-status-memory@1', pushes: {}, ci: {}, lastScan: null, ...(await readJson(await fileOf('watchdogs-stale.json', env), {}) ?? {}) });
 async function saveMemory(m, env) {
   const ids = Object.keys(m.pushes);
   if (ids.length > PUSHES_KEPT) for (const id of ids.sort((a, b) => String(m.pushes[a].at).localeCompare(String(m.pushes[b].at))).slice(0, ids.length - PUSHES_KEPT)) delete m.pushes[id];
+  for (const id of Object.keys(m.ci ?? {})) if (!m.pushes[id]) delete m.ci[id]; // the lane's memory goes with the push it belongs to
   await writeJson(await fileOf('watchdogs-stale.json', env), m);
 }
 
@@ -87,6 +100,7 @@ async function saveMemory(m, env) {
  *   ciOn(sha)                          → 'success' | 'failure' | 'pending' | 'none' | null
  *   landerLive(build)                  a lander fix agent is on it right now
  *   nextRung(build)                    the retry ladder's decision for a fixing build
+ *   ciFacts(builds)                    the stuck-CI lane: → { [buildId]: { inFlight, pr, ci, fixTimeoutMin }, errors }
  */
 export async function realSources(env = process.env) {
   const root = resolve(dirname(SELF), '../../../../..');
@@ -100,6 +114,7 @@ export async function realSources(env = process.env) {
   const pipeline = async () => (pipe ??= await import('../pipeline.mjs'));
   return {
     loadStore: () => store.loadStore(),
+    ciFacts: async (builds) => (await landerSide(env)).facts(builds),
     async prFacts(builds) {
       const prs = builds.map((b) => Number(String(b.pr || '').replace(/\D/g, '')) || 0).filter(Boolean);
       const f = await SF.gatherFacts({ root, wantPrs: prs, builds });
@@ -129,6 +144,83 @@ export async function realSources(env = process.env) {
       return RL.nextStrategy(b.attempts, f, p.retryPolicy(), { pinnedModel: pinned, model: b.pipeline?.model || pinned, account: b.pipeline?.account || '', accounts: usable });
     },
   };
+}
+
+// ------------------------------------------------------------------ the lander's side (the stuck-CI lane, host only)
+
+const LANDER = '../../../../../deploy/lander';
+let landerMemo = null;
+/**
+ * The lander's own modules, settings and GitHub client (deploy/lander, on the VPS host): the lane reads CI by the
+ * lander's rules for green and acts through the lander's store seam, so the two can never disagree about a PR.
+ * → { facts(builds), merge(d), rerun(d), write(id, change), cfg }
+ */
+export async function landerSide(env = process.env) {
+  if (landerMemo) return landerMemo;
+  const [L, R, G, ST] = await Promise.all([import(`${LANDER}/lander-core.mjs`), import(`${LANDER}/run.mjs`), import(`${LANDER}/git.mjs`), import(`${LANDER}/store.mjs`)]);
+  const s = R.settings(); const cfg = R.readConfig(s); const gh = G.makeGitHub(s);
+  let st = null;
+  const checksOf = async (sha) => {
+    const runs = [];
+    for (let page = 1; page <= 50; page += 1) {
+      const r = await gh('GET', `/repos/${s.slug}/commits/${sha}/check-runs?per_page=100&page=${page}`);
+      const got = Array.isArray(r?.check_runs) ? r.check_runs : [];
+      runs.push(...got);
+      if (got.length < 100 || runs.length >= (Number(r?.total_count) || Infinity)) break;
+    }
+    return runs;
+  };
+  landerMemo = {
+    cfg,
+    async facts(builds, { now = Date.now() } = {}) {
+      const out = { errors: [] };
+      for (const b of builds) {
+        const g = L.groupState(b);
+        const f = { inFlight: g.inFlight ? { pr: g.inFlight.pr, steps: g.inFlight.steps.map((x) => x.id) } : null, pr: null, ci: null, fixTimeoutMin: cfg.fixTimeoutMin };
+        out[b.id] = f;
+        if (!f.inFlight) continue;
+        try {
+          const p = await gh('GET', `/repos/${s.slug}/pulls/${f.inFlight.pr}`);
+          f.pr = { state: p.merged || p.merged_at ? 'merged' : p.state === 'closed' ? 'closed' : 'open', head: str(p.head?.sha, 64), branch: str(p.head?.ref, 250), mergeable: typeof p.mergeable === 'boolean' ? p.mergeable : null, mergeableState: str(p.mergeable_state, 40) };
+          if (f.pr.state === 'open' && f.pr.head) f.ci = ciFactsOf(L, await checksOf(f.pr.head), cfg, now);
+        } catch (e) { out.errors.push(`${b.id}: PR #${f.inFlight.pr}: ${str(e.message, 160)}`); }
+      }
+      try { gh.save(); } catch { /* the cache is an optimisation only */ }
+      return out;
+    },
+    /** Merge the PR, pinned to the head CI is green on. The PR is read again first: a head that moved is never merged. */
+    async merge(d) {
+      const p = await gh('GET', `/repos/${s.slug}/pulls/${d.pr}`);
+      if (p.merged || p.merged_at) return { ok: true, note: `PR #${d.pr} is merged already` };
+      if (p.state !== 'open') return { ok: false, note: `PR #${d.pr} is ${p.state}` };
+      if (str(p.head?.sha, 64) !== d.head) return { ok: false, note: `PR #${d.pr} moved to ${str(p.head?.sha, 9)} since its checks were read` };
+      const req = L.mergeRequest(s.slug, d.pr, { method: cfg.mergeMethod, sha: d.head, title: `Merge pull request #${d.pr} from ${d.branch} (watchdog: ${d.id})` });
+      const m = await gh(req.method, req.path, req.body);
+      return { ok: true, sha: str(m?.sha, 64), note: `PR #${d.pr} merged at ${d.head.slice(0, 9)}${m?.sha ? ` (${str(m.sha, 9)})` : ''}; the lander records it on its next tick` };
+    },
+    /** A fresh CI run on the PR branch (workflow_dispatch: always the full run). */
+    async rerun(d) {
+      await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: d.branch });
+      return { ok: true, note: `fresh CI run ${d.n} started on ${d.branch}` };
+    },
+    async write(id, change) { st ??= await ST.makeStore({ by: 'watchdog' }); return st.write(id, change); },
+  };
+  return landerMemo;
+}
+
+/** The check runs on a PR head as the lane reads them: the lander's verdict, plus the age of the oldest check still running. */
+export function ciFactsOf(L, runs, cfg, now = Date.now()) {
+  if (L.lightOnly(runs)) return { ci: 'light', failing: [], missing: [], runIds: [], jobIds: [], runningMin: null };
+  const c = L.ciOf(runs, { required: cfg.requiredChecks });
+  let runningMin = null;
+  if (c.ci === 'running') {
+    // the newest run per check name is the one that counts (a re-run replaces the older one)
+    const newest = new Map();
+    for (const r of runs) { const cur = newest.get(r?.name); if (!cur || String(r?.started_at || '') >= String(cur?.started_at || '')) newest.set(r?.name, r); }
+    const ages = [...newest.values()].filter((r) => r?.status !== 'completed').map((r) => Date.parse(r.started_at || r.created_at || '')).filter(Number.isFinite).map((t) => (now - t) / 60000);
+    runningMin = ages.length ? Math.round(Math.max(...ages)) : null;
+  }
+  return { ci: c.ci, failing: c.failing, missing: c.missing, runIds: c.runIds, jobIds: c.jobIds, runningMin };
 }
 
 /**
@@ -163,7 +255,19 @@ export async function scan({ env = process.env, now = Date.now(), sources = null
       decisions.push({ id: b.id, title: str(b.title, 120), ...C.decide(b, f, { now, settings: S, pushedAt, next }) });
     } catch (e) { errors.push(`${b.id}: ${str(e.message, 200)}`); }
   }
-  return { $axf: 'stale-status-scan@1', at: new Date(now).toISOString(), settings: S, watching: all.length, decisions, errors };
+  // the stuck-CI lane: Pipeline 2.0 lander PRs standing in CI, or stopped by the lander
+  const ciAll = (store?.builds ?? []).filter((b) => CI.watched(b, S));
+  const ciLate = ciAll.filter((b) => CI.overBy(b, { now, settings: S }) > 0);
+  if (ciLate.length && src.ciFacts) {
+    let cf = { errors: [] };
+    try { cf = await src.ciFacts(ciLate, { now }); } catch (e) { errors.push(`ci facts: ${str(e.message, 200)}`); cf = { errors: [] }; }
+    errors.push(...(cf.errors ?? []));
+    for (const b of ciLate) {
+      try { decisions.push({ id: b.id, title: str(b.title, 120), ...CI.decide(b, cf[b.id] ?? {}, { now, settings: S, pushedAt: memory.pushes[b.id]?.at ?? '', memory: memory.ci?.[b.id] ?? null }) }); }
+      catch (e) { errors.push(`${b.id}: ${str(e.message, 200)}`); }
+    }
+  }
+  return { $axf: 'stale-status-scan@1', at: new Date(now).toISOString(), settings: S, watching: all.length + ciAll.length, decisions, errors };
 }
 
 // ------------------------------------------------------------------ apply
@@ -222,6 +326,33 @@ export async function realApply(env = process.env) {
       note(b, `${d.why}. Added ${step.id} (${st.model}) and moved it back to the Queue: attempt ${n}.`, at);
       return { ok: true, note: `${step.id} added (${st.model}), back in the Queue as attempt ${n}` };
     }),
+    // ---- the stuck-CI lane (Pipeline 2.0): GitHub through the lander's client, the store through the lander's seam
+    'merge-pr': async (d) => {
+      const LS = await landerSide(env);
+      const r = await LS.merge(d);
+      if (r.ok) await LS.write(d.id, { note: `Watchdog: ${d.why}.` });
+      return r;
+    },
+    'rerun-ci': async (d) => {
+      const LS = await landerSide(env);
+      const r = await LS.rerun(d);
+      if (r.ok) await LS.write(d.id, { note: `Watchdog: ${d.why}.` });
+      return r;
+    },
+    fix: async (d, b) => {
+      if (!CI.isHeld(b)) return { ok: false, note: `moved on since the scan (${b.status ?? 'gone'})` };
+      const LS = await landerSide(env); const at = new Date().toISOString();
+      // the hold is released into the lander's own `fix` retry, due now: its next tick cuts the worktree and starts the
+      // session on the model the triage gate gives CI failures and merge clashes (Fable). A new landing run: attempt 1.
+      const r = await LS.write(d.id, { attempt: 1, failure: CI.fixFailure(b, d, at), landing: { attempt: 0 }, note: `Watchdog: ${d.why}. The lander starts it on its next tick.` });
+      return r.ok ? { ok: true, note: `fix session ${d.n} handed to the lander for PR #${d.pr}` } : { ok: false, note: str(r.why, 300) || 'the store refused the write' };
+    },
+    'mark-removal': async (d, b) => {
+      if (!CI.isHeld(b)) return { ok: false, note: `moved on since the scan (${b.status ?? 'gone'})` };
+      const LS = await landerSide(env); const at = new Date().toISOString();
+      const r = await LS.write(d.id, { landing: { removal: { pr: d.pr, steps: d.steps, at, by: 'watchdog', why: str(d.what, 400) } }, note: `Watchdog: ${d.why}. Nothing was removed: the mark is on the build (landing.removal).` });
+      return r.ok ? { ok: true, gaveUp: true, note: `PR #${d.pr} marked for removal` } : { ok: false, note: str(r.why, 300) || 'the store refused the write' };
+    },
     escalate: (d, b) => {
       const f = BP.normFailure(b.failure) ?? BP.normFailure(C.failureOf(d, new Date().toISOString()));
       p.escalateBuild(d.id, f, { by: 'watchdog', alert });
@@ -234,7 +365,7 @@ export async function realApply(env = process.env) {
  * One pass: scan, pick, apply. → { at, watching, catches: [watchdog-catch@1…], skipped: [{ id, why }], errors }.
  * `only` = one build (its cooldown still holds). `sources` / `apply` replace the real ones (tests).
  */
-export async function run({ env = process.env, only = '', now = Date.now(), sources = null, apply = null, settings = null } = {}) {
+export async function run({ env = process.env, only = '', now = Date.now(), sources = null, apply = null, settings = null, notify = null } = {}) {
   const sc = await scan({ env, now, sources, settings });
   const S = sc.settings;
   const decisions = sc.decisions.filter((d) => !only || d.id === only);
@@ -251,29 +382,39 @@ export async function run({ env = process.env, only = '', now = Date.now(), sour
     catch (e) { res = { ok: false, note: str(e?.message ?? e, 300) }; errors.push(`${d.id}: ${res.note}`); }
     // the cooldown starts on every try, worked or not: a build that cannot be pushed is not hammered every pass
     memory.pushes[d.id] = { at, action: d.action, ok: !!res.ok, n: (memory.pushes[d.id]?.n ?? 0) + 1 };
-    catches.push({ at, watch: 'stale', build: d.id, title: d.title, status: d.status, cause: d.cause, action: d.action, rung: d.rung ?? '', minutes: d.minutes, attempt: memory.pushes[d.id].n,
-      ok: !!res.ok, gaveUp: d.action === 'escalate' || res.gaveUp === true, notified: res.notified ? at : '', note: `${d.why}. ${res.ok ? 'Done' : 'Not done'}: ${res.note}` });
+    const c = { at, watch: 'stale', build: d.id, title: d.title, status: d.status, cause: d.cause, action: d.action, rung: d.rung ?? '', minutes: d.minutes, attempt: memory.pushes[d.id].n,
+      ok: !!res.ok, gaveUp: d.action === 'escalate' || res.gaveUp === true, notified: res.notified ? at : '', note: `${d.why}. ${res.ok ? 'Done' : 'Not done'}: ${res.note}`, ...(d.pr ? { pr: d.pr } : {}) };
+    if (d.lane === 'ci') {
+      // a fix counts once it was handed over; a fresh CI run counts as soon as it was tried (never one a pass for ever)
+      if (res.ok || d.action === 'rerun-ci') memory.ci[d.id] = CI.nextMemory(memory.ci[d.id], d, at);
+      // every catch of this lane tells Brett by itself, done or not done (the watchdog's batch only covers the ones that worked)
+      try { if (await (notify ?? realNotify(env))(CI.alertOf(c, { link: `build-orchestrator.focus:watchdog?build=${encodeURIComponent(d.id)}` }))) c.notified = at; } catch { /* the catch is in the log either way */ }
+    }
+    catches.push(c);
   }
   memory.lastScan = { at: sc.at, watching: sc.watching, stale: sc.decisions.filter((d) => d.stale).map((d) => ({ id: d.id, title: d.title, status: d.status, minutes: d.minutes, action: d.action, rung: d.rung ?? '', why: d.why })) };
   await saveMemory(memory, env);
   return { $axf: 'stale-status-pass@1', at: sc.at, watching: sc.watching, catches, skipped, errors };
 }
 
+/** Send one alert the way the watchdog does (the console's alerts API; AXF_WATCHDOG_NOTIFY_LOG in tests). */
+const realNotify = (env) => async (alert) => (await import('../watchdog.mjs')).sendAlert({ ...alert, catches: [] }, env);
+
 // ------------------------------------------------------------------ the watch (build-watchdogs@1, ../watchdog.mjs)
 
 export const WATCH = Object.freeze({
   id: 'stale',
   label: 'Stuck statuses',
-  what: 'Builds standing in landing, fixing or merging too long: the merge recorded, landed once CI is green, or pushed to the next rung of their retry ladder.',
+  what: 'Builds standing in landing, fixing or merging too long: the merge recorded, landed once CI is green, or pushed to the next rung of their retry ladder. Lander PRs standing in CI (running-ci) or stopped by the lander: merged when green, CI restarted when a check is stuck, sent to a Fable fix session when red, and a one-part PR that fails again marked for removal.',
   schema: SETTINGS_SCHEMA,
   hostOnly: true, // the PR facts need the host's checkout and GitHub token; the cron runs it there
   settings: async (env = process.env) => flat(await loadSettings(env)),
   set: (patch, { by, env = process.env } = {}) => saveSettings(patch, { by, env }),
   async scan({ env = process.env, ...opts } = {}) {
     const sc = await scan({ env, ...opts });
-    return { at: sc.at, watching: sc.watching, items: sc.decisions.filter((d) => d.stale).map((d) => ({ at: sc.at, watch: 'stale', build: d.id, title: d.title, status: d.status, cause: d.cause, action: d.action, rung: d.rung ?? '', minutes: d.minutes, note: d.why })), errors: sc.errors };
+    return { at: sc.at, watching: sc.watching, items: sc.decisions.filter((d) => d.stale).map((d) => ({ at: sc.at, watch: 'stale', build: d.id, title: d.title, status: d.status, cause: d.cause, action: d.action, rung: d.rung ?? '', minutes: d.minutes, note: d.why, ...(d.pr ? { pr: d.pr } : {}) })), errors: sc.errors };
   },
-  run: ({ env = process.env, only = '', ...opts } = {}) => run({ env, only, sources: opts.sources ?? null, apply: opts.apply ?? null, settings: opts.settings ?? null, ...(opts.now ? { now: opts.now } : {}) }),
+  run: ({ env = process.env, only = '', ...opts } = {}) => run({ env, only, sources: opts.sources ?? null, apply: opts.apply ?? null, settings: opts.settings ?? null, notify: opts.notify ?? null, ...(opts.now ? { now: opts.now } : {}) }),
   /** The last scan the host kept (the console container cannot launch, and reads this instead of scanning live). */
   lastScan: async (env = process.env) => (await loadMemory(env)).lastScan,
 });

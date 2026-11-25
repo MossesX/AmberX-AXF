@@ -358,6 +358,24 @@ export function numstatLines(text, isTracking = () => false) {
 /** The PR branch of one group: lander/<build> for the first, lander/<build>-<k> after it. */
 export const groupBranch = (buildId, k = 1) => `lander/${buildId}${k > 1 ? `-${k}` : ''}`;
 
+// ------------------------------------------------------------------ the merge call
+
+/** The merge methods GitHub takes. */
+export const MERGE_METHODS = Object.freeze(['merge', 'squash', 'rebase']);
+/**
+ * The one merge request (GitHub REST: PUT /repos/{slug}/pulls/{pr}/merge). `merge_method`, the pinned `sha` and the
+ * commit title all go INSIDE the request body: sent anywhere else GitHub ignores them and merges with its default,
+ * unpinned. The lander and the watchdog both build the call here. → { method, path, body }
+ */
+export function mergeRequest(slug, pr, { method = DEFAULTS.mergeMethod, sha = '', title = '' } = {}) {
+  const n = Math.floor(num(pr));
+  if (!str(slug) || n <= 0) throw new Error('mergeRequest: a repo slug and a PR number are needed');
+  const body = { merge_method: MERGE_METHODS.includes(method) ? method : DEFAULTS.mergeMethod };
+  if (str(sha)) body.sha = str(sha, 64);
+  if (str(title)) body.commit_title = str(title, 250);
+  return { method: 'PUT', path: `/repos/${slug}/pulls/${n}/merge`, body };
+}
+
 // ------------------------------------------------------------------ CI
 
 const actions = (r) => (r?.app?.slug || 'github-actions') === 'github-actions';
