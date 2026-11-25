@@ -2,7 +2,7 @@
 
 The console adds the console-token check (every method) and the 404 while disabled. Every read and change goes
 through the plugin's CLI (orchestrator.mjs --json), so the console, the CLI and other sessions share one set of
-rules and one tracker file (_claude/builds/orchestrator.json). Never exposed on the console MCP.
+rules and one builds store (framework/cli/builds-store.mjs; no status file). Never exposed on the console MCP.
 
 Model upgrades (framework/core/model-switch.mjs, Brett, Nov 3 2026): approving an upgrade (or answering an upgrade
 request) counts only as Brett's own click: a browser signed in to axHub as an admin (wall session), with no
@@ -667,6 +667,34 @@ def pipeline_status() -> dict[str, Any]:
     the agent slots, what the dispatcher's next tick would start and why the rest waits, and the last tick's state."""
     ensure_health()
     return _pipeline("status")
+
+
+@router.get("/pipeline/summary")
+def pipeline_summary() -> dict[str, Any]:
+    """pipeline-summary@1: counts by status, the one queued build, the running builds with slot and account. Read from
+    the builds store's rows (axf-data's summary query); no Node run, no whole-store read, no status file."""
+    import builds_store  # server/builds_store.py
+    import data_store
+    try:
+        return builds_store.pipeline_summary()
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the builds store can't be read: {e}") from e
+
+
+@router.get("/pipeline/build/{build_id}")
+def pipeline_build(build_id: str) -> dict[str, Any]:
+    """One build's status row by its id (pipeline-summary@1 row shape plus its step counts), from its own row."""
+    import builds_store
+    import data_store
+    bid = _build_id(build_id)
+    try:
+        b = builds_store.build(bid)
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the builds store can't be read: {e}") from e
+    if b is None or b.get("deleted") is True:
+        raise HTTPException(404, f"no build {bid}")
+    steps = [s for s in b.get("steps") or [] if isinstance(s, dict)]
+    return {"$axf": "pipeline-build@1", **builds_store.summary_row(b), "steps": {"total": len(steps), "done": sum(1 for s in steps if s.get("done") is True)}}
 
 
 SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
