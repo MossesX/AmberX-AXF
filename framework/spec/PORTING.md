@@ -253,6 +253,13 @@ Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transit
 crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
 Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
 
+Nov 25 2026 (build `pipeline-fixes-drop-7-mb-status-file`): single Queued. `QUEUE_MAX = 1`, `queueOne` / `canQueueNow`
+(a second queued build is refused, the holder named), `promote` (the next Pending build moves up when the queued one
+goes live), `settleQueue` (repairs an older Queue), and Brett's stops `pipeline.stop { kind: hold | cancel | unqueue }`
+with `stopBuild`, `releaseStop`, `stoppedExit`, `guardStop`, `keepStops` (no automatic actor reverses one;
+`speaksForBrett` names his surfaces). Golden scenarios in `spec/fixtures/build-pipeline.json`, replayed op by op by
+`check-build-pipeline.mjs`. Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:
