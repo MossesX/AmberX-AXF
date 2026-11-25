@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-centered-modal",
+ "name": "hidden-list: Centered modal",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A compact modal in the middle over a dimmed page: the list has the full attention, one tap outside closes it. Same shape as the other pick-something dialogs.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list",
+  "choice-option:centered-modal"
+ ],
+ "data": {
+  "variant": "modal",
+  "width": 520,
+  "backdrop": "dim",
+  "animation": "scale",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}

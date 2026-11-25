@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-wide-blur",
+ "name": "hidden-list: Wide modal, blurred page",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A wide modal with an accent bar over a blurred page: room for long piece names and many hidden pieces without scrolling, at the cost of covering the page while it is open.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list",
+  "choice-option:wide-blur"
+ ],
+ "data": {
+  "variant": "modal",
+  "width": 720,
+  "backdrop": "blur",
+  "animation": "fade",
+  "header": "accent-bar",
+  "closeOnBackdrop": true
+ }
+}

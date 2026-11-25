@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-bottom-sheet",
+ "name": "hidden-list: Bottom sheet",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A sheet that slides up from the bottom with a filled header: Unhide and Unhide all sit in thumb reach on a phone, the top of the page stays visible above it.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list",
+  "choice-option:bottom-sheet"
+ ],
+ "data": {
+  "variant": "sheet",
+  "width": 680,
+  "backdrop": "dim",
+  "animation": "slide",
+  "header": "filled",
+  "closeOnBackdrop": true
+ }
+}

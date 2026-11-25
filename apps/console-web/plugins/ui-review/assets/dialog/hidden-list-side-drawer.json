@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-side-drawer",
+ "name": "hidden-list: Side drawer",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A narrow drawer from the right with no backdrop: the page stays in view and usable, so a piece is seen coming back the moment Unhide is pressed. What the build ships today.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list",
+  "choice-option:side-drawer"
+ ],
+ "data": {
+  "variant": "drawer",
+  "width": 420,
+  "backdrop": "none",
+  "animation": "slide",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}
