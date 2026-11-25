@@ -4,7 +4,8 @@
  * model-gate audit and the build-origin check used to run as build rules (one-builds-store, model-upgrade-approval,
  * fable-auto-upgrade, build-origin-verbatim) before every dispatch, in each build's worktree, fired by the old pipeline
  * tick through the gate's build-rules-runner. With old builds piling up they ran over and over from stale worktrees and
- * hogged the box. Now they run here, and only here:
+ * hogged the box. Now they run here, and only here (with the watch coverage check, coverage.mjs: a status nobody
+ * watches, a watch switched off or a schedule not installed is one alert):
  *
  *   - every 30 minutes (cron axf-watchdog-audits), under one flock: ONE audit at a time, one after the other
  *   - low priority: nice 19 + ionice idle, each with a timeout
@@ -33,6 +34,8 @@ export const AUDITS = Object.freeze([
   { id: 'verify', cmd: ['node', 'framework/cli/builds-store.mjs', 'verify'], rules: ['one-builds-store'] },
   { id: 'model-gate', cmd: ['node', 'framework/cli/model-gate.mjs', 'audit'], rules: ['model-upgrade-approval', 'fable-auto-upgrade'] },
   { id: 'build-origin', cmd: ['node', 'framework/cli/build-origin.mjs', 'missing'], rules: ['build-origin-verbatim'] },
+  // every status has a watcher inside its limit, every watch is on and scheduled (watch-coverage@1); no build rule points here
+  { id: 'coverage', cmd: ['node', 'deploy/watchdog/coverage.mjs', 'check'], rules: [] },
 ]);
 export const checkerOf = (id) => `watchdog:${id}`;
 export const TIMEOUT_MS = 10 * 60_000;
