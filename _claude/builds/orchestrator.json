@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T23:32:28.028Z",
+ "updatedAt": "2026-11-25T23:33:16.580Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67,7 +67,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-25T23:31:04.442Z",
+   "updatedAt": "2026-11-25T23:32:02.769Z",
    "builtAt": "",
    "notes": [
     {
@@ -136,6 +136,11 @@
     {
      "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
      "at": "2026-11-25T23:31:04.442Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:32:02.769Z",
      "by": "watchdog"
     }
    ],
@@ -537,7 +542,7 @@
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-25T23:31:52.871Z",
+   "updatedAt": "2026-11-25T23:32:02.769Z",
    "builtAt": "",
    "notes": [
     {
@@ -614,6 +619,11 @@
     {
      "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-25T23:30:02.885Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 4: tmux session axf-emergency-check-can-these-plugins---s2--sully is gone while the step was building.",
+     "at": "2026-11-25T23:32:02.769Z",
      "by": "watchdog"
     }
    ],

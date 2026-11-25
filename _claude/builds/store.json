@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10419,
- "updatedAt": "2026-11-25T23:32:28.028Z",
+ "rev": 10420,
+ "updatedAt": "2026-11-25T23:33:16.580Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -395617,7 +395617,7 @@
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-25T23:31:52.871Z",
+   "updatedAt": "2026-11-25T23:32:02.769Z",
    "builtAt": "",
    "notes": [
     {
@@ -395694,6 +395694,11 @@
     {
      "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-25T23:30:02.885Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 4: tmux session axf-emergency-check-can-these-plugins---s2--sully is gone while the step was building.",
+     "at": "2026-11-25T23:32:02.769Z",
      "by": "watchdog"
     }
    ],
@@ -395995,12 +396000,13 @@
        "priorFailures": 0
       }
      },
-     "rev": 14,
+     "rev": 15,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T23:21:58.217Z",
-     "statusAt": "2026-11-25T23:21:58.102Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-25T23:32:22.285Z",
+     "statusAt": "2026-11-25T23:32:02.769Z",
+     "statusBy": "watchdog",
      "attempt": 4,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -396071,13 +396077,23 @@
        "by": "orchestrator",
        "attempt": 4,
        "why": "axf-emergency-check-can-these-plugins---s2--sully on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-25T23:32:02.769Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "tmux session axf-emergency-check-can-these-plugins---s2--sully is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s2",
      "branch": "claude/emergency-check-can-these-plugins---s2",
-     "tmux": "axf-emergency-check-can-these-plugins---s2--sully"
+     "tmux": "axf-emergency-check-can-these-plugins---s2--sully",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s3",
@@ -396701,7 +396717,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -396786,7 +396802,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-25T23:31:04.442Z",
+   "updatedAt": "2026-11-25T23:32:02.769Z",
    "builtAt": "",
    "notes": [
     {
@@ -396855,6 +396871,11 @@
     {
      "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
      "at": "2026-11-25T23:31:04.442Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:32:02.769Z",
      "by": "watchdog"
     }
    ],
@@ -396956,13 +396977,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 11,
+     "rev": 12,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-25T23:31:21.546Z",
-     "statusAt": "2026-11-25T23:31:04.442Z",
+     "updatedAt": "2026-11-25T23:32:22.285Z",
+     "statusAt": "2026-11-25T23:32:02.769Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "building",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -397033,9 +397053,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:32:02.769Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at building, attempt 4"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s1",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
@@ -397595,7 +397622,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
