@@ -362,6 +362,35 @@ class Store:
         return {'$axf': 'data-list@1', 'ns': ns, 'prefix': prefix, 'items': [_frame(r) for r in page],
                 'next': page[-1]['path'] if len(rows) > limit else '', 'total': total}
 
+    def _doc_table(self, ns: str, path: str):
+        import tables as T  # noqa: WPS433 (tables imports this module)
+        cur = self._row(ns, path)
+        if not cur or cur['deleted']:
+            raise DataError('not_found', f'{ns}/{path} not found', ns=ns, path=path)
+        t = T.table_for(ns, path, 'record', 'application/json', b'{}') if cur['kind'] == 'record' else None
+        return T, cur, t
+
+    def item(self, ns: str, path: str, key: str, lkey: str = 'builds') -> dict:
+        """data-item@1 on the SQLite engine: the document twin of pg.PgStore.item."""
+        T, cur, t = self._doc_table(ns, path)
+        try:
+            T.row_query(t, lkey, key)
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        item = T.list_row_doc(json.loads(self.body_of(cur) or b'{}'), t, lkey, key)
+        if item is None:
+            raise DataError('not_found', f'{ns}/{path}: no {lkey} item "{key}"', ns=ns, path=path)
+        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'item': item}
+
+    def summary(self, ns: str, path: str, lkey: str = 'builds') -> dict:
+        """pipeline-summary@1 on the SQLite engine: the document twin of pg.PgStore.summary."""
+        T, cur, t = self._doc_table(ns, path)
+        try:
+            T.row_query(t, lkey, '-')
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        return {**T.pipeline_summary_doc(json.loads(self.body_of(cur) or b'{}'), lkey), 'ns': ns, 'path': path, 'rev': cur['rev'], 'at': cur['at']}
+
     def patch(self, ns: str, path: str, body: dict, caller: Caller) -> dict:
         """data-patch@1 on the SQLite engine: the document twin of pg.PgStore.patch. The record is read, the named items
         replaced or added (ifRev checked against each item's `rev`), the head fields set, then written with the etag read;

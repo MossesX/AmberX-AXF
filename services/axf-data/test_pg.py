@@ -85,6 +85,7 @@ test_read_only_in_rollback = T.test_read_only_in_rollback
 test_backup_routes = T.test_backup_routes
 test_mcp_tools = T.test_mcp_tools
 test_patch_document = T.test_patch_document
+test_pipeline_summary = T.test_pipeline_summary
 
 
 def test_journal_append_only():

@@ -55,6 +55,52 @@ def code(r) -> str:
     return r.json().get('code', 'ok') if r.status_code >= 400 else 'ok'
 
 
+def test_pipeline_summary():
+    """pipeline-summary@1 and data-item@1: a build is read and updated as one row by its id, and the pipeline's status
+    (counts, the queued build, running builds with slot and account) never needs the document. Both engines agree."""
+    with Env() as c:
+        pl = lambda **k: {'slot': '', 'account': '', 'queuedAt': '', **k}  # noqa: E731
+        doc = {'$axf': 'builds@1', 'rev': 1, 'meta': {}, 'builds': [
+            {'id': 'a', 'title': 'A', 'status': 'pending', 'rev': 1, 'steps': [{'id': 's1', 'done': False}], 'notes': []},
+            {'id': 'b', 'title': 'B', 'status': 'queued', 'rev': 1, 'priority': 'P0', 'pipeline': pl(queuedAt='2026-11-25T10:00:00Z'), 'steps': [], 'notes': []},
+            {'id': 'c', 'title': 'C', 'status': 'running', 'rev': 4, 'number': 'B-0007', 'pipeline': pl(slot='2', account='acct-one', session='axf-c'), 'steps': [], 'notes': [{'text': 'n'}]},
+            {'id': 'd', 'title': 'D', 'status': 'building', 'rev': 1, 'pipeline': pl(slot='1', account='acct-two'), 'steps': []},
+            {'id': 'e', 'title': 'E', 'status': 'complete', 'rev': 1},
+            {'id': 'f', 'title': 'F', 'status': 'queued', 'rev': 1, 'deleted': True},
+            {'id': 'g', 'title': 'G', 'status': 'queued', 'rev': 1, 'pipeline': pl(queuedAt='2026-11-25T09:00:00Z')}]}
+        c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        s = c.get('/v1/builds/store.json:summary', headers=H()).json()
+        assert s['$axf'] == 'pipeline-summary@1' and s['rev'] == 1 and s['total'] == 6
+        assert s['counts'] == {'building': 1, 'complete': 1, 'pending': 1, 'queued': 2, 'running': 1}, 'a deleted build is not counted'
+        assert s['queued']['id'] == 'g' and [q['id'] for q in s['queuedAll']] == ['g', 'b'], 'queued: oldest queuedAt first'
+        assert [(r['id'], r['status'], r['slot'], r['account']) for r in s['running']] == [('d', 'building', '1', 'acct-two'), ('c', 'running', '2', 'acct-one')]
+        assert s['running'][1]['number'] == 'B-0007' and s['running'][1]['session'] == 'axf-c' and s['queuedAll'][1]['priority'] == 'P0'
+        assert 'steps' not in s['running'][0] and 'notes' not in s['running'][1], 'a summary row never carries steps or notes'
+        # one build by id: its row with steps and notes
+        it = c.get('/v1/builds/store.json:item?key=c', headers=H()).json()
+        assert it['$axf'] == 'data-item@1' and it['key'] == 'c' and it['item'] == json.loads(canonical(doc['builds'][2]))
+        assert code(c.get('/v1/builds/store.json:item?key=nope', headers=H())) == 'not_found'
+        assert code(c.get('/v1/builds/store.json:item', headers=H())) == 'invalid_body'
+        # single-row update by id (ifRev of that build only): the summary follows, the other rows are untouched
+        g2 = {**doc['builds'][6], 'rev': 2, 'status': 'running', 'pipeline': pl(slot='3', account='acct-one')}
+        p = c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'g', 'ifRev': 1, 'item': g2}]}}, headers=H()).json()
+        assert p['applied'] == 1 and p['added'] == 0
+        s2 = c.get('/v1/builds/store.json:summary', headers=H()).json()
+        assert s2['rev'] == 2 and s2['counts']['queued'] == 1 and s2['counts']['running'] == 2 and s2['queued']['id'] == 'b'
+        assert [r['id'] for r in s2['running']] == ['d', 'c', 'g'] and s2['running'][2]['slot'] == '3'
+        assert c.get('/v1/builds/store.json:item?key=g', headers=H()).json()['item']['status'] == 'running'
+        assert c.get('/v1/builds/store.json:item?key=c', headers=H()).json()['item'] == it['item']
+        assert code(c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'g', 'ifRev': 1, 'item': g2}]}}, headers=H())) == 'conflict'
+        # no queued build: null, never a missing key; a record no table claims has no summary; a reader may read it
+        b2 = {**doc['builds'][1], 'rev': 2, 'status': 'pending'}
+        c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'b', 'ifRev': 1, 'item': b2}]}}, headers=H())
+        s3 = c.get('/v1/builds/store.json:summary', headers=H('reader')).json()
+        assert s3['queued'] is None and s3['queuedAll'] == [] and 'queued' not in s3['counts']
+        c.put('/v1/builds/other.json', content='{"builds":[]}', headers=J(**{'if-none-match': '*'}))
+        assert code(c.get('/v1/builds/other.json:summary', headers=H())) == 'invalid_body'
+        assert code(c.get('/v1/builds/missing.json:summary', headers=H())) == 'not_found'
+
+
 def test_patch_document():
     """data-patch@1 on the document engine (SQLite): the same answers as the row engine, item by item."""
     with Env() as c:
