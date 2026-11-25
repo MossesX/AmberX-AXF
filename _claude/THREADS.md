@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 05:11 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` s3 done (all) · headless
 - 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` → build-complete (all) · headless
 - 2026-11-25 05:11 UTC · `watchdog-catches-lander-prs-stuck-ci` note (all) · orchestrator
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · foreign-write
 - 2026-11-25 23:09 UTC · `emergency-rip-out-the-7-mb-status-` added (7 steps) (all) · foreign-write
 - 2026-11-25 23:09 UTC · `fast-stale-check-page-load-build-store` added (7 steps) (all) · foreign-write
+- 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 

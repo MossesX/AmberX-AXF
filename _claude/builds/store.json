@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10416,
- "updatedAt": "2026-11-25T23:09:30.464Z",
+ "rev": 10417,
+ "updatedAt": "2026-11-25T23:10:21.755Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -395373,14 +395373,14 @@
    "title": "EMERGENCY CHECK: Can these plugins go? (report only, no deletes)",
    "category": "",
    "detail": "Fable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.",
-   "status": "pulling-main",
+   "status": "ready",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-25T23:09:11.685Z",
+   "updatedAt": "2026-11-25T23:09:55.377Z",
    "builtAt": "",
    "notes": [
     {
@@ -395393,46 +395393,51 @@
     },
     {
      "text": "Split by Fable into 11 steps (165 min). The triage gate assigns the models.",
-     "at": "2026-11-25T12:16:48.411Z",
-     "by": "orchestrator"
+     "at": "2026-11-25T12:16:48.411Z"
     },
     {
      "text": "Draft PR #929 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/929.",
-     "at": "2026-11-25T12:17:32.583Z",
-     "by": "orchestrator"
+     "at": "2026-11-25T12:17:32.583Z"
     },
     {
      "text": "Draft PR #930 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/930.",
-     "at": "2026-11-25T12:17:37.628Z",
-     "by": "orchestrator"
+     "at": "2026-11-25T12:17:37.628Z"
     },
     {
      "text": "Watchdog: step s1 retried at pulling-main, attempt 3.",
-     "at": "2026-11-25T12:19:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-25T12:19:01.350Z"
     },
     {
      "text": "Watchdog: step s1 retried at pulling-main, attempt 4.",
-     "at": "2026-11-25T12:21:01.934Z",
-     "by": "watchdog"
+     "at": "2026-11-25T12:21:01.934Z"
     },
     {
      "text": "Watchdog: step s1 retried at pulling-main, attempt 5.",
-     "at": "2026-11-25T12:23:01.452Z",
-     "by": "watchdog"
+     "at": "2026-11-25T12:23:01.452Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at pulling-main. Alerted Brett.",
-     "at": "2026-11-25T12:24:02.526Z",
-     "by": "watchdog"
+     "at": "2026-11-25T12:24:02.526Z"
     },
     {
      "text": "Retry by console: Brett Nov 25: stuck pulling main since disk filled this morning. Steps s1 start again at attempt 1.",
-     "at": "2026-11-25T22:57:36.400Z"
+     "at": "2026-11-25T22:57:36.400Z",
+     "by": "console"
     },
     {
      "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"schemas\"); s2 Fable (Splitter's suggestion: marked Fable when it was split); s3 Fable (Splitter's suggestion: marked Fable when it was split); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Splitter's suggestion: marked Fable when it was split); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Splitter's suggestion: marked Fable when it was split); s8 Fable (Contracts: it says \"engines\"); s9 Fable (Contracts: it says \"engine\"); s10 Fable (Splitter's suggestion: marked Fable when it was split); s11 Opus (Splitter's suggestion: the splitting stage judged it Opus work).",
-     "at": "2026-11-25T23:09:11.686Z"
+     "at": "2026-11-25T23:09:11.686Z",
+     "by": "triage-gate"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"schemas\"); s2 Fable (Splitter's suggestion: marked Fable when it was split); s3 Fable (Splitter's suggestion: marked Fable when it was split); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Splitter's suggestion: marked Fable when it was split); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Splitter's suggestion: marked Fable when it was split); s8 Fable (Contracts: it says \"engines\"); s9 Fable (Contracts: it says \"engine\"); s10 Fable (Splitter's suggestion: marked Fable when it was split); s11 Opus (Splitter's suggestion: the splitting stage judged it Opus work).",
+     "at": "2026-11-25T23:09:19.653Z",
+     "by": "triage-gate"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"schemas\"); s2 Fable (Splitter's suggestion: marked Fable when it was split); s3 Fable (Splitter's suggestion: marked Fable when it was split); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Splitter's suggestion: marked Fable when it was split); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Splitter's suggestion: marked Fable when it was split); s8 Fable (Contracts: it says \"engines\"); s9 Fable (Contracts: it says \"engine\"); s10 Fable (Splitter's suggestion: marked Fable when it was split); s11 Opus (Splitter's suggestion: the splitting stage judged it Opus work).",
+     "at": "2026-11-25T23:09:55.377Z",
+     "by": "triage-gate"
     }
    ],
    "approvals": [],
@@ -395467,7 +395472,7 @@
       "rule": "contracts",
       "why": "Contracts: it says \"schemas\"",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395477,13 +395482,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 11,
+     "rev": 16,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:23:44.798Z",
-     "statusAt": "2026-11-25T12:23:44.721Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:04:49.025Z",
      "statusBy": "orchestrator",
-     "attempt": 5,
-     "failedFrom": "pulling-main",
+     "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
@@ -395561,9 +395565,24 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "worktree for emergency-check-can-these-plugins---s1: Preparing worktree (resetting branch 'claude/emergency-check-can-these-plugins---s1'; was at 8cdc516cc)\nerror: unable to write file _claude/builds/store.json\nerror: unable to write file _claude/fuck-you.md\nUpdating files:   8% (1280/15034)\rfatal: "
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T22:57:29.070Z",
+       "by": "console",
+       "attempt": 1,
+       "why": "Retry by console: Brett Nov 25: stuck pulling main since disk filled this morning",
+       "reset": true
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:04:49.025Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s1",
      "branch": "claude/emergency-check-can-these-plugins---s1"
     },
@@ -395592,7 +395611,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395602,10 +395621,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:05:15.148Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395615,9 +395634,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:04:58.756Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:05:15.148Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s2",
+     "branch": "claude/emergency-check-can-these-plugins---s2"
     },
     {
      "id": "s3",
@@ -395644,7 +395679,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395654,10 +395689,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:05:37.148Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395667,9 +395702,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:05:25.784Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:05:37.148Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s3",
+     "branch": "claude/emergency-check-can-these-plugins---s3"
     },
     {
      "id": "s4",
@@ -395696,7 +395747,7 @@
       "rule": "contracts",
       "why": "Contracts: it says \"builds store\"",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395706,10 +395757,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:05:54.767Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395719,9 +395770,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:05:46.375Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:05:54.767Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
+     "branch": "claude/emergency-check-can-these-plugins---s4"
     },
     {
      "id": "s5",
@@ -395748,7 +395815,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395758,10 +395825,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:06:16.765Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395771,9 +395838,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:06:06.788Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:06:16.765Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s5",
+     "branch": "claude/emergency-check-can-these-plugins---s5"
     },
     {
      "id": "s6",
@@ -395800,7 +395883,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395810,10 +395893,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:06:38.245Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395823,9 +395906,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:06:27.700Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:06:38.245Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s6",
+     "branch": "claude/emergency-check-can-these-plugins---s6"
     },
     {
      "id": "s7",
@@ -395852,7 +395951,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395862,10 +395961,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:06:55.771Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395875,9 +395974,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:06:46.669Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:06:55.771Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s7",
+     "branch": "claude/emergency-check-can-these-plugins---s7"
     },
     {
      "id": "s8",
@@ -395904,7 +396019,7 @@
       "rule": "contracts",
       "why": "Contracts: it says \"engines\"",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395914,10 +396029,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:07:16.991Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395927,9 +396042,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:07:07.250Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:07:16.991Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s8",
+     "branch": "claude/emergency-check-can-these-plugins---s8"
     },
     {
      "id": "s9",
@@ -395956,7 +396087,7 @@
       "rule": "contracts",
       "why": "Contracts: it says \"engine\"",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -395966,10 +396097,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:07:36.871Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -395979,9 +396110,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:07:29.113Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:07:36.871Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s9",
+     "branch": "claude/emergency-check-can-these-plugins---s9"
     },
     {
      "id": "s10",
@@ -396008,7 +396155,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: marked Fable when it was split",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Fable",
       "suggestedBy": "splitter",
       "facts": {
@@ -396018,10 +396165,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:08:04.740Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -396031,9 +396178,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:07:46.867Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:08:04.740Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s10",
+     "branch": "claude/emergency-check-can-these-plugins---s10"
     },
     {
      "id": "s11",
@@ -396061,7 +396224,7 @@
       "rule": "designer",
       "why": "Splitter's suggestion: the splitting stage judged it Opus work",
       "lane": "emergency",
-      "at": "2026-11-25T12:16:48.411Z",
+      "at": "2026-11-25T23:09:12.293Z",
       "suggested": "Opus",
       "suggestedBy": "splitter",
       "facts": {
@@ -396071,10 +396234,10 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 6,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-25T12:16:48.420Z",
-     "statusAt": "2026-11-25T12:16:48.411Z",
+     "updatedAt": "2026-11-25T23:09:55.507Z",
+     "statusAt": "2026-11-25T23:08:37.348Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -396084,9 +396247,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-25T23:08:21.876Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-25T23:08:37.348Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s11",
+     "branch": "claude/emergency-check-can-these-plugins---s11"
     }
    ],
    "profiles": [
@@ -396097,32 +396276,10 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 20,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Fable",
-    "status": "pending",
-    "estimate": "",
-    "source": "plan-studio-2",
-    "planId": "emergency-check-can-these-plugin-hjqr",
-    "createdAt": "2026-11-25T12:13:57.933Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mww38q3o1lgvjq": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1mibak": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1nja8o": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1omxlb": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1po13q": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1qbce5": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1rc2df": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1s33jt": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1trxx1": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1u163g": "2026-11-25T12:16:48.420Z",
-     "st-mww38q3o1v9d4n": "2026-11-25T12:16:48.420Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T12:16:50.556Z",
    "rearranged": false,
@@ -396130,7 +396287,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-25T12:17:22.135Z",
+   "statusAt": "2026-11-25T23:09:11.685Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -396161,6 +396318,20 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "emergency build: skips the line"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-25T23:08:51.067Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-25T23:09:11.685Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "models assigned by the triage gate"
     }
    ]
   },
