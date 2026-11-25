@@ -231,6 +231,77 @@ table through the same rule.
 
 s4 is ~2–3 h of work as listed; the orchestrator should split it into one step per line above (each ≤ 30 min).
 
+## Pipeline status (build `pipeline-fixes-drop-7-mb-status-file`, s1, Nov 25 2026, Fable)
+
+Brett, Nov 25 2026: "The status change is only supposed to exist in the build store. We don't need that file. All the
+status states exist in the database. We haven't needed it for like two weeks."
+
+### The file
+
+`_claude/builds/orchestrator.json` (`orchestrator@1`, 7.6 MB at the Nov 18 inventory, 12.4 MB on Nov 25): the
+pre-store tracker, since Oct 31 a generated projection of the builds store (`core.projectOrchestrator`), one whole
+document holding every build with its steps, notes and origin. Since the cutover of Nov 18 the store is the Postgres
+tables `builds`, `build_steps`, `build_notes` (axf-data key `builds/store.json`), and every screen reads those. The
+file is still rewritten whole and committed to main by every status-only publish ("Builds live: …" commits carry a
+12 MB file for a one-line status change), and its twin `_claude/builds/store.json` (17 MB) rides in the same commit.
+Per-profile twins (`_claude/builds/profiles/<id>/orchestrator.json`) follow the same code paths; none is on main.
+
+### Writers (all go in s5, s7, s8)
+
+| Where | What it does |
+|---|---|
+| `framework/cli/builds-live.mjs` `publish` (`orchestratorExports(merged)` → `files[rel]`) | rewrites the whole file on main with every publish that changes a build |
+| `framework/cli/builds-live.mjs` `toConsole` | rewrites it in the console checkout (`/opt/axf`) after a publish (skipped in cutover) |
+| `framework/cli/builds-live.mjs` `mergeFile` (`merge=axf-builds` driver, `.gitattributes`) | merges two copies of it in a branch merge (`mergeOrchestratorDocs`) |
+| `framework/cli/builds-store.mjs` `exportAll` / `exportNow` (`export` command) | writes it in local and shadow mode; "seen, never written" in cutover (B4-09) |
+| `apps/console-web/plugins/agent-swarm/swarm.mjs` `writeJson(trackerFile(), …)` | writes merged steps straight into the file (a foreign write the store then absorbs) |
+| `apps/console-web/plugins/feature-matrix/matrix.mjs` (line 116) | writes a build back into the file |
+
+### Readers
+
+| Where | What it reads |
+|---|---|
+| `framework/cli/builds-store.mjs` `foreignWrites` / `absorbForeign` | the whole file on every store read when its size or mtime moved (a 12 MB parse) |
+| `framework/cli/builds-store.mjs` `gatherSources` (`migrate`, `verify`) | the pre-migration data set (one-off; `verify` still parses it) |
+| `framework/cli/builds-live.mjs` `allFiles`, `staleProfileExports` | lists and reads it from main after each publish |
+| `framework/cli/persist.mjs` `ORCHESTRATOR_REL`, `orchestratorPath`, `hasRepoExport` | the path helpers every reader above uses |
+| `framework/cli/profiles.mjs` `profileFiles`, `pruneRetiredFolders` | path only |
+| `apps/console-web/plugins/feature-matrix/matrix.mjs`, `agent-swarm/swarm.mjs` (`trackerFile`) | builds and steps from the file instead of the store |
+| `framework/core/tracking-paths.mjs` (+ baked `apps/console-web/src/axf/core/`) | path class `orchestrator` (tracking-only diffs, lander size cap) |
+| `framework/cli/land-resolve.py` | resolves merge conflicts on the per-profile twin |
+| `framework/spec/check-builds-live.mjs`, `check-builds-store-data.mjs`, `check-profiles.mjs`, plugin tests | assert the export behaviour above |
+
+Not readers: the console server (`apps/console-web/server`, `build-orchestrator/server`) and the MCP tools read the
+store through `orchestrator.mjs` / `builds-store.mjs`; `services/axf-data` and `deploy/` never name the file. It is
+not in `framework/schemas/data-store-paths.json` by name (the catch-all `^_claude/builds/(.+)$ → builds/{1}` maps it)
+and not in the manifest's `data.shared`; s7 adds an explicit `to: null` rule so no client ever uploads it again.
+
+### What replaces it: one row per build, one indexed summary query
+
+The status of a build is its row in `builds` (key = build id). No new table: the columns exist.
+
+| Column | From | Use |
+|---|---|---|
+| `rid` (= `id`) | build id | row key: read and update one build by id (`data-patch@1`, `SELECT … FOR UPDATE` on that row only) |
+| `status` | `status` | indexed (`builds_status`): the summary filters and groups on it |
+| `title`, `priority`, `pr`, `branch`, `rev`, `updated_at`, `created_at`, `deleted`, `hidden` | lifted columns | the row a list shows |
+| `extra->'pipeline'` (`slot`, `account`, `session`, `model`, `queuedAt`, `heldAt`, `heldBy`, `heldWhy`) | `pipeline` | who runs it and where; read only for the few live rows |
+| `extra->>'number'`, `extra->>'statusAt'`, `extra->>'statusBy'` | pipeline-status@1 | build number, when and who |
+
+Summary (`pipeline-summary@1`, s2, `GET /v1/builds/store.json:summary`): one statement.
+
+- counts: `SELECT status, COUNT(*) FROM builds WHERE section='builds' AND deleted IS NOT TRUE GROUP BY status`
+  (index-only on `builds_status`);
+- live rows: `SELECT rid, title, status, …, extra->'pipeline' FROM builds WHERE section='builds' AND status = ANY(%s)`
+  for the live statuses (queued, running, the Pipeline 2.0 active statuses, landing, fixing), a few dozen rows at
+  most, found through `builds_status`; from them the one queued build (oldest `queuedAt`) and the running builds
+  with slot and account.
+
+Rules: no reader assembles the whole document to learn a status (the 17 MB `store.json` read is for the store's own
+whole-record operations only); a status write is a patch of one row (`ifRev` on that build); nothing writes a status
+into a checkout file or onto main. `store.json` on main is the same projection and goes with it in s8 (builds-live
+publishes shipped manifests, origins and the THREADS live log only).
+
 ## Not data (stays where it is)
 
 Asset@1 assets, `framework/schemas/*.json` (contracts), `plugin.json` manifests, `project.manifest.json` in the repo,
