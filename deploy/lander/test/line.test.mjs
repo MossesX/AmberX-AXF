@@ -200,7 +200,7 @@ test('the lander writes each waiting build\'s place and the build it waits for i
   const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z', number: 41 }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z', number: 42 }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z', number: 43 })], { now });
   const notify = recorder();
-  const opts = base(r, gh, store, now, { notify });
+  const opts = base(r, gh, store, now, { notify, cfg: L.normConfig({ landsPerTick: 1 }) });
   await tick(opts);
   assert.deepEqual(byId(store, 'a').mergeLine, { position: 1, waitingFor: null });
   assert.deepEqual(byId(store, 'b').mergeLine, { position: 2, waitingFor: { buildId: 'a', id: 'a', number: '41', title: 'Build a' } });
@@ -266,7 +266,7 @@ test('merge together: a build that clashes is named, left out and lands by itsel
   const r = repo({ 'claude/a': { 'shared.txt': 'one\nTWO from a\nthree\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'shared.txt': 'one\nTWO from c\nthree\n' } });
   const gh = github(r); const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
-  const opts = base(r, gh, store, now);
+  const opts = base(r, gh, store, now, { cfg: L.normConfig({ landsPerTick: 1 }) });
   askTogether(r);
   const out = await tick(opts);
   assert.equal(out.error, '');
@@ -287,7 +287,7 @@ test('merge together waits for a build that is already landing, and with fewer t
   const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'c.txt': 'c\n' } });
   let ci = 'running'; const gh = github(r, () => ci); const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
-  const opts = base(r, gh, store, now);
+  const opts = base(r, gh, store, now, { cfg: L.normConfig({ landsPerTick: 1 }) });
   await tick(opts); // a is landing by itself, CI running
   askTogether(r); now.add(1);
   await tick(opts);
@@ -301,7 +301,7 @@ test('merge together waits for a build that is already landing, and with fewer t
   const r2 = repo({ 'claude/x': { 'x.txt': 'x\n' } });
   const gh2 = github(r2); const store2 = memoryStore([one('x', 'claude/x')], { now });
   askTogether(r2);
-  const out2 = await tick(base(r2, gh2, store2, now));
+  const out2 = await tick(base(r2, gh2, store2, now, { cfg: L.normConfig({ landsPerTick: 1 }) }));
   assert.equal(store2.list[0].status, 'landed'); assert.equal(gh2.prs.get(1).head.ref, 'lander/x'); assert.equal(readControl(r2.s).mergeTogether, undefined);
   assert.ok(out2.actions.some((a) => /fewer than two builds/.test(a)));
 });
@@ -332,7 +332,50 @@ test('merge together for the builds the press named only: the rest of the line s
   const gh = github(r); const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
   G.writeJson(files(r.s).control, { mergeTogether: { at: '2026-11-24T02:00:00.000Z', by: 'Brett', builds: ['a', 'c'] } });
-  await tick(base(r, gh, store, now));
+  await tick(base(r, gh, store, now, { cfg: L.normConfig({ landsPerTick: 1 }) }));
   assert.match(gh.prs.get(1).title, /Merge together: 2 builds \(a, c\)/);
   assert.deepEqual(['a', 'b', 'c'].map((id) => byId(store, id).status), ['landed', 'build-complete', 'landed']);
+});
+
+test('clean green PRs land at once: when the build in front lands, the next one takes its turn in the same tick, one merge after the other', async () => {
+  const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'c.txt': 'c\n' } });
+  const gh = github(r); const now = clock();
+  const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
+  const out = await tick(base(r, gh, store, now));
+  assert.equal(out.error, ''); assert.equal(out.build, 'a'); assert.deepEqual(out.landed, ['a', 'b', 'c'], 'all three in one tick, in line order');
+  for (const id of ['a', 'b', 'c']) { assert.equal(byId(store, id).status, 'landed'); assert.ok(onMain(r, `${id}.txt`)); assert.equal(byId(store, id).mergeLine, undefined); }
+  const merges = gh.calls.filter((c) => c.startsWith('PUT'));
+  assert.deepEqual(merges, ['PUT /pulls/1/merge', 'PUT /pulls/2/merge', 'PUT /pulls/3/merge'], 'one merge after the other, never two at once');
+  // each merge was pinned to the head CI went green on (the fake GitHub asserts the sha), and each build has its own evidence
+  for (const id of ['a', 'b', 'c']) { const b = byId(store, id); assert.equal(b.landing.lastMerge.head.length, 40); assert.ok(b.landing.lastMerge.sha); }
+  assert.equal(new Set(['a', 'b', 'c'].map((id) => byId(store, id).landing.lastMerge.head)).size, 3);
+});
+
+test('the pass ends at the first build that does not land now: it has started its work, the ones behind it wait their turn', async () => {
+  const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'c.txt': 'c\n' } });
+  // b's CI is still running; a and c are green
+  let hold = true;
+  const headOfB = () => { try { sh(r.work, 'fetch', '-q', 'origin'); return sh(r.work, 'rev-parse', 'origin/lander/b'); } catch { return ''; } };
+  const gh = github(r, (head) => (hold && head === headOfB() ? 'running' : 'success'));
+  const now = clock();
+  const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
+  const opts = base(r, gh, store, now);
+  let out = await tick(opts);
+  assert.deepEqual(out.landed, ['a']); assert.deepEqual(out.next, { build: 'b', status: 'running-ci' }); assert.match(out.waiting, /CI is running/);
+  assert.equal(byId(store, 'b').status, 'running-ci', 'b did not wait a timer cycle to start: its PR is up and CI is being watched');
+  assert.equal(byId(store, 'c').status, 'build-complete', 'c is behind b: one at a time, the line is not jumped');
+  assert.deepEqual(byId(store, 'c').mergeLine?.waitingFor?.id, 'b');
+  assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 1);
+  // b goes green: b and then c land in the next tick
+  hold = false; now.add(1);
+  out = await tick(opts);
+  assert.deepEqual(out.landed, ['b', 'c']); assert.ok(onMain(r, 'b.txt') && onMain(r, 'c.txt'));
+});
+
+test('landsPerTick 1 is the old pace: one build a tick', async () => {
+  const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' } });
+  const gh = github(r); const now = clock();
+  const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' })], { now });
+  const out = await tick(base(r, gh, store, now, { cfg: L.normConfig({ landsPerTick: 1 }) }));
+  assert.deepEqual(out.landed, ['a']); assert.equal(out.next, undefined); assert.equal(byId(store, 'b').status, 'build-complete');
 });

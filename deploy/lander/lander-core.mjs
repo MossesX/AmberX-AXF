@@ -85,6 +85,11 @@ export const DEFAULTS = Object.freeze({
   /** Ticks in a row a fix session may fail to start before that counts as a failed attempt. */
   fixStartTries: 5,
   /**
+   * Builds one tick may land, one after the other (land clean green PRs at once, Brett Nov 25 2026): when the build in
+   * front lands, the next one takes its turn in the same tick. 1 = one build a tick, as before.
+   */
+  landsPerTick: 8,
+  /**
    * Checks that must have reported on the head before CI counts as green (each success, or skipped by the CI scope).
    * Without them "every check present is done" is green while a second workflow has not posted yet.
    */
@@ -94,7 +99,7 @@ export const DEFAULTS = Object.freeze({
   workflow: 'android.yml',
   mergeMethod: 'merge',
 });
-const RANGES = { sizeCapLines: [50, 1e7], flakyReruns: [0, 5], backoffBaseMin: [0, 600], backoffFactor: [1, 10], backoffMaxMin: [0, 1440], ciNoneKickMin: [0, 600], ciTimeoutMin: [5, 1440], fixTimeoutMin: [5, 1440], notifyAfterAttempts: [1, 100], maxAttempts: [1, 5], maxFixes: [0, 10], fixStartTries: [1, 100] };
+const RANGES = { sizeCapLines: [50, 1e7], flakyReruns: [0, 5], backoffBaseMin: [0, 600], backoffFactor: [1, 10], backoffMaxMin: [0, 1440], ciNoneKickMin: [0, 600], ciTimeoutMin: [5, 1440], fixTimeoutMin: [5, 1440], notifyAfterAttempts: [1, 100], maxAttempts: [1, 5], maxFixes: [0, 10], fixStartTries: [1, 100], landsPerTick: [1, 50] };
 
 const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : v == null ? '' : String(v).slice(0, n));
 const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});

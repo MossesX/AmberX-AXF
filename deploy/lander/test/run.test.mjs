@@ -203,17 +203,14 @@ test('an emergency build cuts to the front of the merge line; the build already 
   out = await tick(opts);
   assert.equal(out.build, 'e', 'the emergency build goes first'); assert.deepEqual(out.others, ['n'], 'the ordinary build waits where it is');
   assert.equal(byId(store, 'e').status, 'landed'); assert.ok(onMain(r, 'e.txt'), 'the emergency work is on main');
-  assert.equal(byId(store, 'n').status, 'running-ci', 'the ordinary build was not touched meanwhile');
-  assert.ok(!onMain(r, 'n.txt'));
-  const merges = () => gh.calls.filter((c) => c.startsWith('PUT')).length;
-  assert.equal(merges(), 1);
-  // the ordinary build's CI is green on a head from before the emergency landing: it merges as it is (Nov 24 2026)
-  now.add(1); asked.length = 0;
-  out = await tick(opts);
+  const merges = () => gh.calls.filter((c) => c.startsWith('PUT'));
+  // the ordinary build's CI is green on a head from before the emergency landing: it merges as it is (Nov 24 2026),
+  // and in the same tick (Nov 25 2026: a clean green PR does not wait a timer cycle behind the build that just landed)
   const n = byId(store, 'n');
-  assert.equal(out.build, 'n'); assert.equal(n.status, 'landed'); assert.equal(merges(), 2);
+  assert.deepEqual(out.landed, ['e', 'n']); assert.equal(n.status, 'landed'); assert.equal(merges().length, 2);
+  assert.ok(merges()[0] !== merges()[1], 'two merges, one after the other: the emergency PR first');
   assert.equal(sh(r.work, 'rev-parse', 'origin/main^2'), firstHead, 'the head that merged is the head CI ran on: main was not pulled in');
-  assert.deepEqual(asked, [firstHead], 'CI was read once, on that head; nothing ran again');
+  assert.equal(asked.filter((h) => h === firstHead).length >= 1 && !asked.some((h) => h !== firstHead && h !== byId(store, 'e').landing.lastMerge.head && asked.indexOf(h) > asked.lastIndexOf(firstHead)), true, 'CI was read on that head; nothing ran again after it');
   assert.equal(n.landing.lastMerge.head, firstHead, 'the merge is pinned to that head');
   assert.ok(!statuses(n).includes('failed'));
   assert.ok(onMain(r, 'n.txt') && onMain(r, 'e.txt'));

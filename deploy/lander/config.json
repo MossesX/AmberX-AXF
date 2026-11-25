@@ -12,12 +12,13 @@
   "maxAttempts": 5,
   "maxFixes": 2,
   "fixStartTries": 5,
+  "landsPerTick": 8,
   "cleanup": true,
   "requiredChecks": [
     "CI scope (what changed)",
     "Build engine sweep (Node)",
     "Web Dev Console (React/TS) + Python API",
-    "Gradle — framework modules, kernel tests, console APK"
+    "Gradle \u2014 framework modules, kernel tests, console APK"
   ],
   "workflow": "android.yml",
   "mergeMethod": "merge"

@@ -23,6 +23,9 @@
  *   on. Main having moved is no reason to pull it in or to run CI again; only a merge GitHub refuses (a conflict, a
  *   head that changed) makes the lander pull main into the PR and run CI again, by itself. A build that already has
  *   its own open PR (a hand build's session opened it) lands on that PR: no second PR, no second CI run.
+ *   Clean green PRs land at once (Brett, Nov 25 2026): when the build in front lands, the next one takes its turn in
+ *   the same tick (config landsPerTick, 8), so a PR that is green and mergeable never waits a timer cycle behind a build
+ *   that just landed. Still one merge after the other, each pinned to the head CI went green on.
  *   The merge line is written to the builds store (`mergeLine: { position, waitingFor }` on every build in it), and
  *   every landing state the lander writes (waiting-to-merge, merging, running-ci, landed, failed attempt N) is followed
  *   by one best-effort update command to the console (POST /api/builds/updated { build, state, rev, at }).
@@ -822,13 +825,38 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
   if (ctl.mergeTogether && !dry && !only) await together();
   // builds that share one PR (merge together): the one with the lowest id carries it, whichever the line shows first,
   // so the PR's own records (the green head, the attempt and fix counts) stay on one build
-  const sharing = L.togetherWith([...known.values()], known.get(pick.build.id) || pick.build);
-  if (sharing.length) {
-    const lead = [known.get(pick.build.id) || pick.build, ...sharing].filter((x) => !L.isHeld(x)).sort((x, y) => x.id.localeCompare(y.id))[0];
-    if (lead && lead.id !== pick.build.id) { pick = { build: lead, others: [pick.build.id, ...pick.others.filter((id) => id !== lead.id)] }; out.build = lead.id; out.others = pick.others; }
-  }
-  const b = await run(known.get(pick.build.id) || pick.build);
+  const leadOf = (p) => {
+    const sharing = L.togetherWith([...known.values()], known.get(p.build.id) || p.build);
+    if (!sharing.length) return p;
+    const lead = [known.get(p.build.id) || p.build, ...sharing].filter((x) => !L.isHeld(x)).sort((x, y) => x.id.localeCompare(y.id))[0];
+    return lead && lead.id !== p.build.id ? { build: lead, others: [p.build.id, ...p.others.filter((id) => id !== lead.id)] } : p;
+  };
+  pick = leadOf(pick); out.build = pick.build.id; out.others = pick.others;
+  let b = await run(known.get(pick.build.id) || pick.build);
   out.status = b.status;
+  /*
+   * Land clean green PRs at once (Brett, Nov 25 2026). One build at a time, but not one build a tick: when the build
+   * in front lands in this tick, the next one in the line takes its turn in the same tick instead of waiting a timer
+   * cycle. A PR that is green on its head and that GitHub merges as it is goes through merging-pr → running-ci →
+   * merging-main → landed right here, still pinned to the head CI went green on, still one merge after the other.
+   * The pass ends at the first build that does not land now (its CI runs, a fix session works, it stopped for Brett).
+   */
+  out.landed = b.status === 'landed' ? [b.id] : [];
+  for (let k = 1; k < cfg.landsPerTick && b.status === 'landed' && !out.error && !dry && !only; k++) {
+    syncLine();
+    const nextUp = L.pickBuild(store.read());
+    if (!nextUp.build || L.isHeld(nextUp.build)) break;
+    for (const x of store.read()) known.set(x.id, x);
+    const np = leadOf(nextUp);
+    // main moved with the merge just made: what the next build's phases read is fetched again
+    const f2 = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
+    if (f2.code) log(`fetch: ${f2.err.slice(-200)}`);
+    log(`lander: ${b.id} landed: ${np.build.id} takes its turn in the same tick`);
+    out.waiting = '';
+    b = await run(known.get(np.build.id) || np.build);
+    out.next = { build: b.id, status: b.status };
+    if (b.status === 'landed') out.landed.push(b.id);
+  }
   syncLine();
   return done();
 }
