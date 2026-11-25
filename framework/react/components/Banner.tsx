@@ -17,6 +17,7 @@ import { Icon } from './Icon';
 import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
 import { Tap, WidgetView } from './Widgets';
 import { controlSlug } from '../controlTargets';
+import { HIDDEN_WIDGET_KIND, pieceHidden, useHidden } from '../hidden';
 import { CHROME_INSTANCE_KEY } from '../../core/engines/chrome-settings-rules.mjs';
 
 /**
@@ -117,7 +118,11 @@ export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
   useAxfState();
   useBannerOverrides();
-  const { data, placed } = rt.banner();
+  // hidden-assets@1: the bar hidden as a piece (banner `app`) draws nothing; a widget hidden as a piece leaves its side,
+  // so the others close up and the ⋯ menu never lists it. The Widgets picker's preview always draws the bar.
+  const hiddenBar = useHidden('banner', 'app') && !preview;
+  const { data, placed: every } = rt.banner();
+  const placed = Object.fromEntries(BANNER_SIDES.map((s) => [s, every[s].filter((a) => !pieceHidden(rt, HIDDEN_WIDGET_KIND, a.key))])) as typeof every;
   const arrange = useArrange('banner', placed);
   const root = useRef<HTMLDivElement>(null);
   const all = BANNER_SIDES.flatMap((s) => placed[s]);
@@ -125,7 +130,7 @@ export function Banner({ preview = false }: { preview?: boolean }) {
   // branding@1: the banner's brand slot replaces the built-in mark (lockup by default); accent-edge / watermark mark the host
   const brand = useBrandPlace('banner');
   const host = brandHostProps(brand);
-  if (!data) return null;
+  if (!data || hiddenBar) return null;
   // a banner that names the app draws its own name, never a lockup that carries the brand's
   const namesApp = data.logo?.text === BANNER_APP_NAME;
   const drawsMark = !!brand?.svg && (!namesApp || brand.mode === 'mark' || brand.mode === 'animated');
