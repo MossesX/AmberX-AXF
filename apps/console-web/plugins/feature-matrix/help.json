@@ -88,6 +88,13 @@
         "text": "Where you set “Minutes”. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "view:feature-matrix",
+        "title": "Feature matrix",
+        "text": "Every build gets a feature matrix (feature-matrix@1): grouped items, each with its minutes, model (Fable / Opus) and why; tick = keep, untick = skip; items can be added any time and are never deleted.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []
