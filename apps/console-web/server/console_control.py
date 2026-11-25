@@ -554,6 +554,23 @@ def place_command(restore: bool = False, source: Any = None) -> dict[str, Any]:
     return {"verb": "press", "address": PLACE_ADDRESS, **({"value": src} if src else {})}
 
 
+# Hidden assets by voice (hidden-assets@1; same words, order and addresses as console-control-voice.mjs).
+VOICE_HIDE_KINDS = {"toolbar": "toolbar", "tool bar": "toolbar", "menu bar": "app-menu", "menubar": "app-menu", "app menu": "app-menu", "application menu": "app-menu", "nav": "nav-menu",
+                    "nav menu": "nav-menu", "navigation": "nav-menu", "navigation menu": "nav-menu", "sidebar": "nav-menu", "side bar": "nav-menu", "banner": "banner"}
+VOICE_HIDE_INSTANCE = "app"
+HIDE_ADDRESS = "function:chrome.hide"
+UNHIDE_ADDRESS = "function:chrome.unhide"
+UNHIDE_ALL_ADDRESS = "function:chrome.unhideAll"
+HIDDEN_LIST_ADDRESS = "function:dialog"
+HIDDEN_LIST_DIALOG = "axf.hidden-assets"
+_HIDE_SAY = {"toolbar": "toolbar", "app-menu": "menu bar", "nav-menu": "navigation", "banner": "banner"}
+_HIDE_WORDS = "|".join(sorted(VOICE_HIDE_KINDS, key=lambda w: (-len(w), w)))
+_HIDE_RE = re.compile(rf"^hide (?:the |my )?({_HIDE_WORDS})$")
+_UNHIDE_RE = re.compile(rf"^(?:unhide (?:the |my )?({_HIDE_WORDS})(?: again| back)?|(?:show|bring back|restore) (?:the |my )?({_HIDE_WORDS})(?: again| back)?|bring (?:the |my )?({_HIDE_WORDS}) back)$")
+_HIDDEN_LIST_RE = re.compile(r"^(?:(?:show|tell|list|open)(?: me)? )?(?:what (?:is|s) |whats )?(?:the |all )?hidden(?: items| things| stuff| assets| pieces| list)?$")
+_UNHIDE_ALL_RE = re.compile(r"^(?:(?:unhide|bring back|restore) (?:everything|all|it all|all of it|all hidden(?: items| things)?)(?: again| back)?|show (?:everything|all hidden(?: items| things)?) (?:again|back)|show all hidden(?: items| things)?)$")
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
@@ -585,6 +602,15 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    # hidden assets (hidden-assets@1)
+    if _UNHIDE_ALL_RE.match(p):
+        return {"verb": "press", "address": UNHIDE_ALL_ADDRESS}
+    if _HIDDEN_LIST_RE.match(p):
+        return {"verb": "press", "address": HIDDEN_LIST_ADDRESS, "value": HIDDEN_LIST_DIALOG}
+    if m := _HIDE_RE.match(p):
+        return {"verb": "press", "address": HIDE_ADDRESS, "value": f"{VOICE_HIDE_KINDS[m.group(1)]}:{VOICE_HIDE_INSTANCE}"}
+    if m := _UNHIDE_RE.match(p):
+        return {"verb": "press", "address": UNHIDE_ADDRESS, "value": f"{VOICE_HIDE_KINDS[m.group(1) or m.group(2) or m.group(3)]}:{VOICE_HIDE_INSTANCE}"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
@@ -646,6 +672,15 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
     if v == "focus":
         return f"Showing {what}."
     if v == "press":
+        piece = _HIDE_SAY.get(str(intent.get("value") or "").split(":")[0], "piece")
+        if intent.get("address") == HIDE_ADDRESS:
+            return f"The {piece} is hidden. Say unhide everything to bring it back."
+        if intent.get("address") == UNHIDE_ADDRESS:
+            return f"The {piece} is back."
+        if intent.get("address") == UNHIDE_ALL_ADDRESS:
+            return "Everything is back."
+        if intent.get("address") == HIDDEN_LIST_ADDRESS and intent.get("value") == HIDDEN_LIST_DIALOG:
+            return "Here is what is hidden."
         if PLACE_ADDRESS in (answer.get("address"), intent.get("address")):
             return "Back where you were."
         return f"Pressed {what}."

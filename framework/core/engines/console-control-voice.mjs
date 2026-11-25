@@ -16,6 +16,9 @@
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
  *   "override the axHub skin" · "stop overriding the axHub skin" (the Override switch under it)
+ *   "hide the toolbar" · "unhide the menu bar" · "bring the banner back" · "show what's hidden" · "unhide everything"
+ *   (hidden-assets@1: the actions chrome.hide / chrome.unhide / chrome.unhideAll and the Hidden list's dialog, the same
+ *   ones right-click → Hide, the Assets menu and `axf hidden` use)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -42,6 +45,26 @@ export function cleanPhrase(text) {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+/**
+ * Hidden assets by voice (hidden-assets@1). The pieces a phrase can name: the chrome the shell draws once per app
+ * (instance `app`), spoken words → kind. Any other piece is hidden on screen (right-click → Hide) or by id (`axf hidden`).
+ */
+export const VOICE_HIDE_KINDS = { toolbar: 'toolbar', 'tool bar': 'toolbar', 'menu bar': 'app-menu', menubar: 'app-menu', 'app menu': 'app-menu', 'application menu': 'app-menu', nav: 'nav-menu', 'nav menu': 'nav-menu', navigation: 'nav-menu', 'navigation menu': 'nav-menu', sidebar: 'nav-menu', 'side bar': 'nav-menu', banner: 'banner' };
+/** The instance id of the app-wide chrome. */
+export const VOICE_HIDE_INSTANCE = 'app';
+/** The actions the phrases press (react/components/ChromeContext.tsx) and the Hidden list's dialog (libs/settings/HiddenAssetsPanel.tsx). */
+export const HIDE_ADDRESS = 'function:chrome.hide';
+export const UNHIDE_ADDRESS = 'function:chrome.unhide';
+export const UNHIDE_ALL_ADDRESS = 'function:chrome.unhideAll';
+export const HIDDEN_LIST_ADDRESS = 'function:dialog';
+export const HIDDEN_LIST_DIALOG = 'axf.hidden-assets';
+const HIDE_SAY = { toolbar: 'toolbar', 'app-menu': 'menu bar', 'nav-menu': 'navigation', banner: 'banner' };
+const HIDE_WORDS = Object.keys(VOICE_HIDE_KINDS).sort((a, b) => b.length - a.length || (a < b ? -1 : 1)).join('|');
+const HIDE_RE = new RegExp(`^hide (?:the |my )?(${HIDE_WORDS})$`);
+const UNHIDE_RE = new RegExp(`^(?:unhide (?:the |my )?(${HIDE_WORDS})(?: again| back)?|(?:show|bring back|restore) (?:the |my )?(${HIDE_WORDS})(?: again| back)?|bring (?:the |my )?(${HIDE_WORDS}) back)$`);
+const HIDDEN_LIST_RE = /^(?:(?:show|tell|list|open)(?: me)? )?(?:what (?:is|s) |whats )?(?:the |all )?hidden(?: items| things| stuff| assets| pieces| list)?$/;
+const UNHIDE_ALL_RE = /^(?:(?:unhide|bring back|restore) (?:everything|all|it all|all of it|all hidden(?: items| things)?)(?: again| back)?|show (?:everything|all hidden(?: items| things)?) (?:again|back)|show all hidden(?: items| things)?)$/;
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
@@ -93,6 +116,12 @@ export function voiceIntent(text) {
   if ((m = /^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$/.exec(p))) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
+
+  // hidden assets (hidden-assets@1): the same actions as right-click → Hide, the Assets menu and `axf hidden`
+  if (UNHIDE_ALL_RE.test(p)) return { verb: 'press', address: UNHIDE_ALL_ADDRESS };
+  if (HIDDEN_LIST_RE.test(p)) return { verb: 'press', address: HIDDEN_LIST_ADDRESS, value: HIDDEN_LIST_DIALOG };
+  if ((m = HIDE_RE.exec(p))) return { verb: 'press', address: HIDE_ADDRESS, value: `${VOICE_HIDE_KINDS[m[1]]}:${VOICE_HIDE_INSTANCE}` };
+  if ((m = UNHIDE_RE.exec(p))) return { verb: 'press', address: UNHIDE_ADDRESS, value: `${VOICE_HIDE_KINDS[m[1] ?? m[2] ?? m[3]]}:${VOICE_HIDE_INSTANCE}` };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
@@ -147,7 +176,15 @@ export function voiceReply(intent, answer, label = '') {
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
-    case 'press': return answer.address === PLACE_ADDRESS || intent.address === PLACE_ADDRESS ? 'Back where you were.' : `Pressed ${what}.`;
+    case 'press': {
+      // hidden assets: say what happened to the piece, not the action's address
+      const piece = HIDE_SAY[String(intent.value ?? '').split(':')[0]] ?? 'piece';
+      if (intent.address === HIDE_ADDRESS) return `The ${piece} is hidden. Say unhide everything to bring it back.`;
+      if (intent.address === UNHIDE_ADDRESS) return `The ${piece} is back.`;
+      if (intent.address === UNHIDE_ALL_ADDRESS) return 'Everything is back.';
+      if (intent.address === HIDDEN_LIST_ADDRESS && intent.value === HIDDEN_LIST_DIALOG) return 'Here is what is hidden.';
+      return answer.address === PLACE_ADDRESS || intent.address === PLACE_ADDRESS ? 'Back where you were.' : `Pressed ${what}.`;
+    }
     case 'list': { const n = answer.targets?.length ?? 0; return n ? `${n} item${n === 1 ? '' : 's'}: ${answer.targets.slice(0, 6).map((t) => t.label).join(', ')}.` : `Nothing on ${what || 'it'}.`; }
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;

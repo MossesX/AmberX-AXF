@@ -2517,7 +2517,9 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'press run now on the auto-lander toolbar', 'tap the retry button in the auto lander toolbar', "what's on the auto-lander toolbar", 'list the gate rules toolbar', 'show me the builds toolbar',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place',
+    'hide the toolbar', 'Amber, hide the menu bar please', 'hide the navigation menu', 'hide my banner', "show what's hidden", "what's hidden", 'show me the hidden items', 'unhide everything', 'bring back all hidden items', 'show everything again',
+    'unhide the toolbar', 'bring the banner back', 'show the nav again', 'show the toolbar', 'hide the plan studio', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2534,6 +2536,10 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+      hide: voiceReply(voiceIntent('hide the menu bar')!, { ok: true, address: 'function:chrome.hide' }),
+      unhide: voiceReply(voiceIntent('bring the banner back')!, { ok: true, address: 'function:chrome.unhide' }),
+      unhideAll: voiceReply(voiceIntent('unhide everything')!, { ok: true, address: 'function:chrome.unhideAll' }),
+      hiddenList: voiceReply(voiceIntent("show what's hidden")!, { ok: true, address: 'function:dialog' }),
       place: voiceReply({ verb: 'press', address: 'panel:console-place' }, { ok: true, address: 'panel:console-place' }),
     },
   });

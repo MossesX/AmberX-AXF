@@ -21,6 +21,16 @@ export const HUB_SKIN_OVERRIDE_SETTING: string;
 /** The console's saved place: pressing it puts the place back. */
 export const PLACE_ADDRESS: string;
 export const PLACE_RESTORE_RE: RegExp;
+/** Hidden assets by voice (hidden-assets@1): the app-wide chrome a phrase can name, spoken words → kind. */
+export const VOICE_HIDE_KINDS: Record<string, string>;
+/** The instance id of the app-wide chrome. */
+export const VOICE_HIDE_INSTANCE: string;
+/** The actions the hide phrases press, and the Hidden list's dialog. */
+export const HIDE_ADDRESS: string;
+export const UNHIDE_ADDRESS: string;
+export const UNHIDE_ALL_ADDRESS: string;
+export const HIDDEN_LIST_ADDRESS: string;
+export const HIDDEN_LIST_DIALOG: string;
 export function cleanPhrase(text: unknown): string;
 export function voiceIntent(text: unknown): VoiceIntent | null;
 export function intentAddress(intent: VoiceIntent, hit?: string | null): string;
