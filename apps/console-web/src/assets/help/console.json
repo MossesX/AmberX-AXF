@@ -1118,6 +1118,13 @@
         "title": "Remove link",
         "text": "Takes this link off the item. The page it points to is not touched.",
         "kind": "button"
+      },
+      {
+        "target": "hide-this-notice",
+        "title": "Hide this notice",
+        "text": "Puts the \"new version\" notice away so you can keep using and scrolling the page under it. It only hides the notice: the console is still on the old version until you reload.",
+        "tryIt": "Tap Reload when you are ready; you come back to the same place.",
+        "kind": "button"
       }
     ],
     "intros": [
