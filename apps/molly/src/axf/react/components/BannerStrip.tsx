@@ -15,6 +15,7 @@ import { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, parseBannerStripChannel, pa
 import { BannerWidgetBody } from './Banner';
 import { bannerLabel, bannerPrefs, setBannerPrefs, useBannerPrefsTick, useKnownBanners } from './BannerSettings';
 import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
+import { HIDDEN_WIDGET_KIND, pieceHidden, useHidden } from '../hidden';
 import { FrameBanners } from './Slots';
 
 /** Anything the strip opened that draws outside it (the framework's dialogs, menus, toasts, windows; a plugin's portal). */
@@ -51,9 +52,12 @@ function StripWidgets() {
   const list = rt.hostAttachments('banner')
     .filter((a) => rt.registry.has(a.type as never, a.id))
     .map((a) => ({ ...a, key: `${a.type}:${a.id}` }))
-    .filter((a) => rt.bannerWidgetShown(a.key));
-  const overflow = useBannerOverflow(root, list, true);
-  if (!list.length) return null;
+    .filter((a) => rt.bannerWidgetShown(a.key))
+    // hidden-assets@1: a widget hidden as a piece is off the strip too; the bar hidden as a piece hides the strip's widgets
+    .filter((a) => !pieceHidden(rt, HIDDEN_WIDGET_KIND, a.key));
+  const hiddenBar = useHidden('banner', 'app');
+  const overflow = useBannerOverflow(root, list, !hiddenBar);
+  if (!list.length || hiddenBar) return null;
   const typed = (k: string) => { const a = list.find((x) => x.key === k); return a ? <span data-axf-banner-item={k} {...bannerItemAttrs(rt, k)}><BannerWidgetBody type={a.type} id={a.id} /></span> : null; };
   return (
     <div ref={root} className="fx-banner fx-banner-strip__widgets" role="toolbar" aria-label="Banner widgets" data-fx-ctx-target="banner">

@@ -152,7 +152,15 @@ export function skinChromeSettings(chrome) {
   return out;
 }
 
-/** Keep what a look holds: slots, spacing, chrome and look settings. */
+/** The hidden-assets@1 list of a look part (`hiddenAssets`): the field and its cap, as in engines/hidden-assets.ts. */
+const HIDDEN_ASSETS_FIELD = 'hiddenAssets';
+const HIDDEN_ASSETS_MAX = 500;
+
+/**
+ * Keep what a look holds: slots, spacing, chrome, look settings and the hidden pieces (hidden-assets@1). The hidden list is
+ * carried through every writer as saved (entries with a kind and an id, newest 500); engines/hidden-assets.ts checks the
+ * kinds and ids when it reads. An empty list is not written, so a document with nothing hidden stays as it was.
+ */
 export function normalizeLookPart(raw) {
   const d = isObj(raw) ? raw : {};
   const out = {};
@@ -160,6 +168,10 @@ export function normalizeLookPart(raw) {
   if (SPACINGS.includes(d.spacing)) out.spacing = d.spacing;
   if (isObj(d.hidden)) out.hidden = boolMap(d.hidden);
   if (isObj(d.settings)) out.settings = { ...d.settings };
+  if (Array.isArray(d[HIDDEN_ASSETS_FIELD])) {
+    const list = d[HIDDEN_ASSETS_FIELD].filter((e) => isObj(e) && typeof e.kind === 'string' && typeof e.id === 'string').slice(-HIDDEN_ASSETS_MAX).map((e) => ({ ...e }));
+    if (list.length) out[HIDDEN_ASSETS_FIELD] = list;
+  }
   return out;
 }
 /** The app level: `use` (the Use skin switch), `inherit` (follow the hub-wide skin while off), the skin, its overrides and the colour theme picked inside it. */

@@ -27,6 +27,7 @@ export * from './engines/behavior';
 export * from './engines/swatches';
 export * from './engines/tapconfirm';
 export * from './engines/chrome-settings-rules.mjs';
+export * from './engines/hidden-assets';
 export * from './engines/settings-iface-rules.mjs';
 export * from './engines/app-menus-rules.mjs';
 export * from './engines/scale';

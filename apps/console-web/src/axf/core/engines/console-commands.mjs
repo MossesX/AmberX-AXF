@@ -58,7 +58,7 @@ export const CONSOLE_SHOT_TTL_MS = 120_000;
 export const CONSOLE_SHOT_MIME = 'image/png';
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
-const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
+const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|chrome\.hidden|views?\.[A-Za-z.]+)$/;
 /** Words in an action id that mean it deletes or throws away something. */
 const DESTRUCTIVE = /(^|[.:_-])(delete|remove|reset|restore|clear|wipe|purge|uninstall|discard|drop|kill|destroy)([.:_-]|$)/i;
 

@@ -98,7 +98,8 @@
         "target": "menu:assets",
         "title": "Assets menu",
         "text": "Every part of the look is a swappable asset. This menu cycles them, randomizes them or puts them back.",
-        "kind": "menu"
+        "kind": "menu",
+        "more": "It also holds Hidden items… (with a count of what is hidden), Unhide all, and Hide ▸ with every tab group, toolbar, banner, navigation menu, menu bar and widget on screen."
       },
       {
         "target": "menu:window",
@@ -516,7 +517,10 @@
       {
         "target": "unhide",
         "title": "Unhide",
-        "text": "Brings this banner back."
+        "text": "Shows this hidden piece again, right where it was.",
+        "more": "Works on anything in the Hidden list (tab groups, toolbars, banners, navigation, the menu bar, widgets) and on a hidden banner in its own settings.",
+        "tryIt": "Say \"unhide the toolbar\", or run axf hidden unhide toolbar app.",
+        "kind": "button"
       },
       {
         "target": "action:banner.widgets",
@@ -1706,6 +1710,68 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
+      },
+      {
+        "target": "action:chrome.hide",
+        "title": "Hide",
+        "text": "Hides this tab group, toolbar, banner, navigation menu, menu bar or widget in this app. The rest of the screen closes up around it.",
+        "more": "Right-click (or long-press) the piece and pick Hide, or pick it under Assets ▸ Hide. Nothing is deleted: it sits in the Hidden list (Assets ▸ Hidden items…, or Settings → Appearance → Hidden) until you bring it back, and the toast after a Hide has Undo. What is hidden is saved with this app's look on axHub, so it stays hidden after a reload and on your other devices. Each app keeps its own list.",
+        "tryIt": "Say \"hide the toolbar\", or run axf hidden hide toolbar app.",
+        "related": [
+          "action:chrome.hidden",
+          "unhide",
+          "unhide-all"
+        ]
+      },
+      {
+        "target": "action:chrome.unhide",
+        "title": "Unhide",
+        "text": "Shows one hidden piece again, right where it was.",
+        "tryIt": "Say \"unhide the toolbar\", or run axf hidden unhide toolbar app.",
+        "related": [
+          "action:chrome.hidden"
+        ]
+      },
+      {
+        "target": "unhide-all",
+        "title": "Unhide all",
+        "text": "Shows everything hidden in this app again. In the Hidden list it asks first: tap it twice.",
+        "more": "Also under the Assets menu. Only this app's list is cleared; other apps keep theirs.",
+        "tryIt": "Say \"unhide everything\", or run axf hidden unhide-all.",
+        "related": [
+          "action:chrome.hidden"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "action:chrome.hidden",
+        "title": "Hidden items",
+        "text": "Everything hidden in this app, grouped by kind (tab groups, toolbars, banners, navigation, menu bar, widgets), with Unhide on each row and Unhide all.",
+        "more": "Open it from Assets ▸ Hidden items…, from Settings → Appearance → Hidden, or from the page's own right-click menu, so you can still reach it with the menu bar hidden. An empty list means nothing is hidden. The list is part of this app's look on axHub: it survives reloads and follows you to your other devices.",
+        "tryIt": "Say \"what's hidden\", or run axf hidden list.",
+        "related": [
+          "action:chrome.hide",
+          "unhide",
+          "unhide-all"
+        ]
+      },
+      {
+        "target": "hidden-items",
+        "title": "Hidden items…",
+        "text": "Opens the list of what is hidden in this app. The badge is how many pieces are hidden right now.",
+        "related": [
+          "action:chrome.hidden"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "hidden",
+        "title": "Hidden",
+        "text": "The Hidden list: every tab group, toolbar, banner, navigation menu, menu bar and widget you have hidden in this app, each with Unhide.",
+        "related": [
+          "action:chrome.hidden"
+        ],
+        "kind": "tab"
       }
     ],
     "intros": [

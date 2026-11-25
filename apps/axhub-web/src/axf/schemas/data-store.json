@@ -23,6 +23,7 @@
   "ops": [
     "get",
     "put",
+    "patch",
     "delete",
     "list",
     "append",
@@ -819,6 +820,38 @@
               },
               "lastDriftAt": {
                 "type": "string"
+              },
+              "keys": {
+                "description": "Key-level modes: one record ('store.json') or one prefix ('journal/') of the namespace moved ahead of the rest. Paths are relative to the namespace id; the longest match wins.",
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "mode",
+                    "since"
+                  ],
+                  "properties": {
+                    "mode": {
+                      "enum": [
+                        "local",
+                        "shadow",
+                        "cutover"
+                      ]
+                    },
+                    "since": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "by": {
+                      "type": "string"
+                    },
+                    "verified": {
+                      "type": "object",
+                      "description": "What the caller checked under its write lock before the move: { at, how, counts }"
+                    }
+                  },
+                  "additionalProperties": false
+                }
               }
             },
             "additionalProperties": false

@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/host-service-state.schema.json",
+  "title": "host-service-state@1 (host-services@1) — what the console reads",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "$axf",
+    "id",
+    "status",
+    "since",
+    "at",
+    "reachable"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "host-service-state@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "tick",
+        "daemon"
+      ]
+    },
+    "plugin": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "up",
+        "degraded",
+        "down",
+        "unknown"
+      ]
+    },
+    "since": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "code": {
+      "enum": [
+        "",
+        "host_service_down",
+        "unknown_service",
+        "unknown_action",
+        "unknown_setting",
+        "invalid_body",
+        "invalid_manifest",
+        "unauthorized",
+        "confirm_required",
+        "forbidden_command",
+        "mode_refused",
+        "busy",
+        "timeout",
+        "internal"
+      ],
+      "description": "the error behind down / unknown, when there is one"
+    },
+    "unitState": {
+      "enum": [
+        "active",
+        "reloading",
+        "inactive",
+        "failed",
+        "activating",
+        "deactivating",
+        "unknown"
+      ]
+    },
+    "timerState": {
+      "enum": [
+        "active",
+        "reloading",
+        "inactive",
+        "failed",
+        "activating",
+        "deactivating",
+        "unknown"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "cron": {
+      "type": "string",
+      "pattern": "^axf-[a-z0-9][a-z0-9-]{0,60}$",
+      "description": "set when cron starts it: timerState then says whether the cron file is there"
+    },
+    "adopted": {
+      "type": "boolean"
+    },
+    "pid": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "restarts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "activeSince": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "health": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "ok",
+        "at"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "latencyMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "lastRun": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "at",
+        "result"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "enum": [
+            "ok",
+            "error",
+            "skipped",
+            "timeout"
+          ]
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "container",
+        "shadow",
+        "host"
+      ]
+    },
+    "reachable": {
+      "type": "boolean",
+      "description": "false only when the host API could not be reached"
+    }
+  }
+}

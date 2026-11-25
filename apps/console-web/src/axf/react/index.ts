@@ -17,6 +17,7 @@ export { usePageToolbar, usePageState, usePublishPageState, publishPageState, pa
 export { NavTree } from './components/NavTree';
 export { NavStyleSettings, NavStyleGroup, NavStylePreview, useNavStyle, setNavStyleField, NAV_STYLE_GROUP_IDS, NAV_STYLE_GROUP_TITLES, NAV_STYLE_GROUP_ICONS, type NavStyleGroupId, type NavStyleItem } from './components/NavStyleSettings';
 export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY, registerMenuRowDetails, menuRowOpen, type MenuRowDetails } from './components/AppMenu';
+export { AssetsMenu, installAssetsMenu, hideablePieces, hideableMenuItems, pieceLabel, assetsRowId, assetsButtonId, ASSETS_MENU_ID, ASSETS_MENU_MODULE, ASSETS_MENU_ITEMS, ASSETS_MENU_ITEM_IDS, HIDEABLE_PROVIDER, HIDDEN_ASSETS_COUNTER, HIDDEN_ASSETS_DIALOG_ID, type HideablePiece } from './components/AssetsMenu';
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
@@ -47,6 +48,7 @@ export { BannerStripPage, useBannerStripFollower } from './components/BannerStri
 export { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, BANNER_STRIP_PAGE, BANNER_STRIP_VIEW, bannerStripUrl, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripEntry, type BannerStripMessage } from './bannerStrip';
 export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
+export { Hideable, useHidden, useHiddenList, installHiddenChrome, chromePieceOf, chromeTargetOf, widgetPieceOf, pieceOf, pieceHidden, hiddenPieces, hiddenPieceCount, CHROME_PIECE_SELECTOR, WIDGET_PIECE_SELECTOR, HIDDEN_PIECE_ATTR, HIDDEN_WIDGET_KIND, type HiddenPiece, type HiddenPieceTarget } from './hidden';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';

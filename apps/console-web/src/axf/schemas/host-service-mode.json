@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/host-service-mode.json",
+  "title": "host-service-mode@1 (host-services@1) — where each host service runs today",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "rev",
+    "at",
+    "default",
+    "services"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "host-service-mode@1"
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "by": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "default": {
+      "const": "container",
+      "description": "a service with no entry is in the container; the default never moves (every cut-over is per service, by hand or by the migration CLI)"
+    },
+    "services": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "mode",
+          "since"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "enum": [
+              "container",
+              "shadow",
+              "host"
+            ]
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "by": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "runs": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "shadow: clean host dry-runs since the mode changed"
+          },
+          "drift": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "shadow: host-shadow-drift@1 entries since the mode changed"
+          },
+          "lastDriftAt": {
+            "type": "string"
+          },
+          "rollbackOf": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "from",
+              "at"
+            ],
+            "properties": {
+              "from": {
+                "enum": [
+                  "container",
+                  "shadow",
+                  "host"
+                ]
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "by": {
+                "type": "string"
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 600
+              }
+            },
+            "description": "set by roll-back, step-back and back-to-container; cleared by the next forward move"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "events": {
+      "enum": [
+        "start-shadow",
+        "back-to-container",
+        "cut-over",
+        "step-back",
+        "roll-back"
+      ]
+    },
+    "transitions": {
+      "const": {
+        "start-shadow": [
+          "container",
+          "shadow"
+        ],
+        "back-to-container": [
+          "shadow",
+          "container"
+        ],
+        "cut-over": [
+          "shadow",
+          "host"
+        ],
+        "step-back": [
+          "host",
+          "shadow"
+        ],
+        "roll-back": [
+          "host",
+          "container"
+        ]
+      }
+    },
+    "guards": {
+      "const": {
+        "minShadowMs": 1800000,
+        "minRuns": 3,
+        "maxDrift": 0
+      }
+    },
+    "tiers": {
+      "const": [
+        {
+          "tier": 1,
+          "name": "gateway",
+          "services": [
+            "host-api"
+          ]
+        },
+        {
+          "tier": 2,
+          "name": "publishers",
+          "services": [
+            "builds-live",
+            "hub-sync"
+          ]
+        },
+        {
+          "tier": 3,
+          "name": "independent loops",
+          "services": [
+            "maintenance",
+            "shipped-features"
+          ]
+        },
+        {
+          "tier": 4,
+          "name": "host actions",
+          "services": [
+            "systems-check",
+            "agent-swarm"
+          ]
+        },
+        {
+          "tier": 5,
+          "name": "rest",
+          "services": []
+        }
+      ]
+    }
+  }
+}

@@ -18,6 +18,10 @@ import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
 import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
+/** The chrome the shell draws once per app (instance `app`); hiding one as a piece drops its layout region (hiddenAppChrome). */
+const APP_CHROME_KINDS: readonly AssetType[] = ['toolbar', 'nav-menu', 'app-menu', 'banner'];
+/** The instance id of the app-wide chrome (chrome-settings@1). */
+const APP_CHROME_INSTANCE = 'app';
 /** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 
@@ -55,7 +59,8 @@ import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, res
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
-import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { HIDDEN_ASSET_WIDGET_KIND, hide as hideAsset, hiddenAssetKinds, hiddenAssetTarget, hiddenAssetTargetError, hiddenCount, isHidden as isAssetHidden, isHiddenAssetId, listHidden, unhide as unhideAsset, unhideAll as unhideAllAssets, type HiddenAsset, type HiddenAssetRef } from './engines/hidden-assets';
 import { OutputTerminal } from './terminal';
 import { appOfDefaults, menuAllowed, menuKindOf } from './engines/app-menus-rules.mjs';
 import {
@@ -111,6 +116,8 @@ export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
 export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
 /** Hidden slot override (Settings → Appearance → Assets → Hidden); only hideable types (core/engines/hide.ts). */
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
+/** The counter (`rt.badge`) that is the number of pieces hidden in this app (hidden-assets@1): the Hidden items… badge. */
+export const HIDDEN_ASSETS_BADGE = 'hidden-assets.count';
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
 /** Per-device state of a nav that opts in to nav-style@1: collapsed to its icons, the width it was dragged to, the open sub menus (JSON id list). */
@@ -722,13 +729,14 @@ export class AxfRuntime {
 
   /* ---------------- skins and each app's own look (engines/skin.ts) ---------------- */
 
-  private lookStoreRef: AppLookStore | null = null;
+  /** The store may re-read on demand (`refresh`, optional: the hub store has it, fresh on focus). */
+  private lookStoreRef: (AppLookStore & { refresh?(): void }) | null = null;
   private lookStoreOff: (() => void) | null = null;
   private localLookStore: AppLookStore | null = null;
   /** The skin the picker is showing; drawn only, never saved. */
   private lookPreview: string | null = null;
 
-  private useLookStore(store: AppLookStore | null): void {
+  private useLookStore(store: (AppLookStore & { refresh?(): void }) | null): void {
     this.lookStoreOff?.();
     this.lookStoreOff = store?.subscribe(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); }) ?? null;
     this.lookStoreRef = store;
@@ -814,16 +822,98 @@ export class AxfRuntime {
 
   private bumpLook(): void { this.set({ swaps: this.state.swaps + 1 }); }
 
-  /** Save a look change and draw it. */
-  private changeLook(next: (cur: AppLookDocument) => AppLookDocument): boolean {
+  /** Save a look change and draw it (`fx` false: a plain repaint with no skin-switch sweep; hiding a toolbar is not a skin switch). */
+  private changeLook(next: (cur: AppLookDocument) => AppLookDocument, fx = true): boolean {
     if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const cur = this.ensureLook();
     if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
     this.lookPreview = null;
     this.saveLook(next(cur));
-    this.withSkinSwitchFx(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); });
+    const paint = () => { this.applyAppearance(this.lastAppearance); this.bumpLook(); };
+    if (fx) this.withSkinSwitchFx(paint); else paint();
     return true;
+  }
+
+  /* ---- hidden assets (hidden-assets@1, engines/hidden-assets.ts; Brett, Nov 17 2026: "hide toolbars and tab groups and all
+     that and be able to see what's hidden"): one chrome piece at a time, kept in this app's look document (`own.hiddenAssets`),
+     so it is saved through the look writer, lives on axHub for a developer app and survives reloads. React, REST, MCP, CLI
+     and voice are all callers of hidden / hide / unhide / unhideAll; nothing else owns the state. ---- */
+
+  /** The saved look document, read only: render paths read it on every pass, so this never snapshots or saves one (ensureLook may). */
+  private readLook(): AppLookDocument | null { return this.lookLayerOn() ? this.lookStore().get() : null; }
+
+  /** What is hidden in this app, oldest first (empty while the look document can't be read). */
+  hidden(): HiddenAsset[] { return listHidden(this.readLook()); }
+
+  /** How many pieces are hidden in this app. */
+  hiddenCount(): number { return hiddenCount(this.readLook()); }
+
+  /** Is this piece (`{ kind, id }` or `<kind>:<id>`) hidden in this app? A kind that can't be hidden is never hidden. */
+  isHidden(ref: HiddenAssetRef): boolean { return isAssetHidden(this.readLook(), ref); }
+
+  /** The kinds a piece can be hidden as (the chrome-settings kinds with a region on the page, plus widget). */
+  hideableKinds(): string[] { return hiddenAssetKinds(); }
+
+  /**
+   * Hide a piece in this app. The entry records who (`by`, default this app) and the asset the piece is drawn with
+   * (`assetRef`, default its own pick or the kind's slot). Refused with a toast for a kind that can't be hidden or a bad
+   * id; hiding what is already hidden changes nothing and is fine.
+   */
+  hide(ref: HiddenAssetRef, opts: { by?: string; assetRef?: string } = {}): boolean {
+    const err = hiddenAssetTargetError(ref);
+    if (err) { this.toast(err, 'warning', 'Hide'); return false; }
+    const t = hiddenAssetTarget(ref)!;
+    if (isAssetHidden(this.readLook(), t)) return true;
+    const assetRef = opts.assetRef ?? this.chromeAssetOf(t.kind, t.id);
+    if (!this.changeLook((cur) => hideAsset(cur, t, { by: opts.by ?? this.manifest.app.id, ...(assetRef ? { assetRef } : {}) }), false)) return false;
+    this.terminal.ok('appearance', `${t.kind} ${t.id} hidden (${this.hiddenCount()} hidden in this app)`);
+    return true;
+  }
+
+  /** Show a hidden piece again. Refused with a toast for a kind that can't be hidden; showing what isn't hidden is fine. */
+  unhide(ref: HiddenAssetRef): boolean {
+    const err = hiddenAssetTargetError(ref);
+    if (err) { this.toast(err, 'warning', 'Unhide'); return false; }
+    const t = hiddenAssetTarget(ref)!;
+    if (!isAssetHidden(this.readLook(), t)) return true;
+    if (!this.changeLook((cur) => unhideAsset(cur, t), false)) return false;
+    this.terminal.ok('appearance', `${t.kind} ${t.id} shown again (${this.hiddenCount()} hidden in this app)`);
+    return true;
+  }
+
+  /** Show every hidden piece again. Nothing hidden = nothing to do. */
+  unhideAll(): boolean {
+    const n = this.hiddenCount();
+    if (!n) return true;
+    if (!this.changeLook((cur) => unhideAllAssets(cur), false)) return false;
+    this.terminal.ok('appearance', `${n} hidden piece(s) shown again`);
+    return true;
+  }
+
+  /** Hide or show, as asked. */
+  setHidden(ref: HiddenAssetRef, on: boolean, opts: { by?: string; assetRef?: string } = {}): boolean {
+    return on ? this.hide(ref, opts) : this.unhide(ref);
+  }
+
+  /** The asset a chrome piece is drawn with: its own pick (`axf.chrome.<kind>.<id>.asset`), else the kind's slot, else none. */
+  private chromeAssetOf(kind: string, id: string): string {
+    const own = this.settings.get(CHROME_INSTANCE_ASSET_KEY(kind, id));
+    if (typeof own === 'string' && own) return own;
+    return (ASSET_TYPES as readonly string[]).includes(kind) ? this.state.active[kind as AssetType] ?? '' : '';
+  }
+
+  /** Is a banner / toolbar widget (`<type>:<id>`) hidden as a piece (hidden-assets@1 `widget:<type>:<id>`)? Read only. */
+  widgetHidden(key: string): boolean { return isAssetHidden(this.readLook(), { kind: HIDDEN_ASSET_WIDGET_KIND, id: key }); }
+
+  /**
+   * The app-wide chrome hidden as a piece (instance `app`: the toolbar, nav, menu bar and banner the shell draws once).
+   * They leave the layout the way a hidden slot does, so the neighbours take the room (no gap, no overlap); the slot
+   * choice itself (`axf.hide.<type>`) is untouched, and Unhide brings the piece back.
+   */
+  hiddenAppChrome(): AssetType[] {
+    const look = this.readLook();
+    return look ? APP_CHROME_KINDS.filter((k) => isAssetHidden(look, { kind: k, id: APP_CHROME_INSTANCE })) : [];
   }
 
   /* ---------------- skin animations (engines/behavior.ts, engines/swatches.ts) ---------------- */
@@ -1136,7 +1226,10 @@ export class AxfRuntime {
   /* ---------------- badges ---------------- */
 
   /** A named counter's value (0 when unset). */
-  badge(name: string): number { return this.badgeCounts.get(name) ?? 0; }
+  badge(name: string): number {
+    if (name === HIDDEN_ASSETS_BADGE) return this.hiddenCount(); // read live from the look document, never set
+    return this.badgeCounts.get(name) ?? 0;
+  }
 
   /** Set a named counter; toolbar items with `badge: name` show it (0 hides it). */
   setBadge(name: string, count: number): void {
@@ -1387,12 +1480,16 @@ export class AxfRuntime {
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
+    // and so does this app's look document (skin state, hidden assets): a change there repaints through its subscription
+    if (this.appearanceRunning) this.lookStoreRef?.refresh?.();
     return this.reloadSaved();
   }
 
   /** refreshFromSaved without asking the appearance source (another frame of this app saved in this browser). */
   private reloadSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     const settings = this.settings.reload();
+    // a look kept in a setting (no hub): another tab changed it (a skin, a hidden piece), so draw it
+    if (!this.lookStoreRef && settings.includes(APP_LOOK_KEY)) { this.applyAppearance(this.lastAppearance); this.bumpLook(); }
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
     const active = { ...this.state.active };
@@ -1502,6 +1599,8 @@ export class AxfRuntime {
   /** Everything that ever attached itself to the banner while this page ran. */
   /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
   contextBannerWidget: string | null = null;
+  /** The widget under the last right-click on any widget host (`{ host, key }`), set by the context menu host for its Hide (hidden-assets@1). */
+  contextWidget: { host: string; key: string } | null = null;
   private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
 
   /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */
@@ -1529,7 +1628,7 @@ export class AxfRuntime {
   /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
   bannerWidgetShown(key: string): boolean {
     const v = this.bannerWidgetView(key);
-    if (v.hidden) return false;
+    if (v.hidden || this.widgetHidden(key)) return false;
     if (!v.hideWhenEmpty) return true;
     const i = key.indexOf(':');
     const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
@@ -1587,7 +1686,10 @@ export class AxfRuntime {
   /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
   toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
     const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+    const placed = placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+    // a widget hidden as a piece (hidden-assets@1 `widget:<type>:<id>`) leaves the row; its neighbours close up
+    const shown = (list: PlacedAttachment[]) => list.filter((p) => !this.widgetHidden(p.key));
+    return { start: shown(placed.start), end: shown(placed.end) };
   }
 
   /* ---------------- arranging widgets on hosts (drag + snap; core/engines/widgets.ts) ---------------- */
@@ -1908,7 +2010,7 @@ export class AxfRuntime {
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
-    return hiddenSlots(o, this.defaultHiddenSlots(), this.embedHiddenSlots()) as AssetType[];
+    return hiddenSlots(o, this.defaultHiddenSlots(), [...this.embedHiddenSlots(), ...this.hiddenAppChrome()]) as AssetType[];
   }
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
@@ -3014,7 +3116,7 @@ export class AxfRuntime {
       }, set: () => { /* writes go through set(), which the base owns */ } },
       getState: { value: () => view.state },
       set: { value: (patch: Partial<AxfState>, persist = false) => (base as unknown as { set(p: Partial<AxfState>, persist?: boolean): void }).set(patch, persist) },
-      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
+      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), [...base.embedHiddenSlots(), ...base.hiddenAppChrome()]) as AssetType[] },
       slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
       spacing: { value: () => spacingOf(resolved().spacing) },
       appliedInterface: { value: () => (skinScope ? base.appliedInterface() : interfaceId) },
@@ -3345,7 +3447,9 @@ export class AxfRuntime {
         const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
         if (hit) items.push(
           { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
-          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
+          // hidden-assets@1: with the Hide action on hand the widget is listed under Hidden with the rest; without it the
+          // Widgets dialog's own per-device switch is used, as before
+          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: this.actions.get('chrome.hide') && isHiddenAssetId(hit.key) ? `chrome.hide:widget:${hit.key}` : `banner.widget:${hit.key}:hide` },
         );
       }
       items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });

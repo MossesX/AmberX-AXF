@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "axf-hidden-assets",
+  "name": "Hidden items",
+  "version": "1.0.0",
+  "description": "The Hidden list's dialog (axf.hidden-assets): a narrow side drawer, so the page stays in view while a hidden toolbar, tab group, banner, menu or widget is brought back.",
+  "author": "AmberX AXF",
+  "tags": ["hidden-assets"],
+  "roll": false,
+  "data": {
+    "variant": "drawer",
+    "width": 420,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

@@ -141,6 +141,7 @@ button:disabled { cursor: not-allowed; }
 :focus-visible { outline: 2px solid var(--fx-focus); outline-offset: 2px; }
 code, .fx-mono { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
 h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight, 650); letter-spacing: var(--fx-tracking, 0); margin: 0; line-height: 1.2; }
+h4 { margin: 0; line-height: 1.2; } /* same reset as the larger headings: a layout's gap spaces it, not the browser's default margin (.fx-md keeps its own document margins) */
 
 /* Smooth hot-swap: colors, radii and shadows glide between assets */
 .fx-shell, .fx-shell *, .fx-popover, .fx-popover *, .fx-dialog, .fx-toast {
@@ -150,6 +151,20 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 }
 
 /* ---------------- shell / layout engine ---------------- */
+
+/* hidden-assets@1 (react/hidden.tsx): a piece hidden in this app (a toolbar, a tab row, a nav, the menu bar, a banner, a
+   widget) takes no room, so its neighbours close up; framework components hidden this way are not rendered at all.
+   The layout region around the app's own hidden toolbar, nav or menu bar goes with it: the toolbar, top nav and menu
+   bar rows are `auto`, so they collapse; a side nav's column keeps its width token, so the main area takes that column
+   and the gap beside it (not past an inspector docked on the same side). */
+[data-axf-hidden-piece] { display: none !important; }
+.fx-region--toolbar:has([data-axf-hidden-piece='toolbar:app']), .fx-region--nav:has([data-axf-hidden-piece='nav-menu:app']), .fx-frame__menubar:has([data-axf-hidden-piece='app-menu:app']) { display: none; }
+.fx-shell:has(> .fx-region--nav[data-side='left'] [data-axf-hidden-piece='nav-menu:app']):not(:has(> .fx-region--inspector[data-side='left'])) > .fx-main { margin-left: calc((var(--fx-layout-nav-width) + var(--fx-layout-region-gap)) * -1); }
+.fx-shell:has(> .fx-region--nav[data-side='right'] [data-axf-hidden-piece='nav-menu:app']):not(:has(> .fx-region--inspector[data-side='right'])) > .fx-main { margin-right: calc((var(--fx-layout-nav-width) + var(--fx-layout-region-gap)) * -1); }
+/* the phone grid is one column (the nav is a bottom row there): nothing to take over */
+[data-fx-narrow] .fx-shell:has(> .fx-region--nav [data-axf-hidden-piece='nav-menu:app']) > .fx-main.fx-main { margin-inline: 0; }
+/* a tab frame whose row is hidden is its panel alone, whichever side the row sat on */
+.fx-tabframe[data-axf-hidden-row] { flex-direction: column; }
 
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
@@ -598,6 +613,20 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-ctx='compact'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); }
 [data-fx-ctx='roomy'] .fx-ctx { padding: var(--fx-dens-gap-lg); min-width: 250px; }
 [data-fx-ctx='roomy'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); }
+/* context-menu rebuild (Nov 20 2026): the quick-action icon strip on top (items with place: toolbar) and Search
+   anywhere pinned at the bottom; both stay put while the list between them scrolls */
+.fx-ctx__bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs);
+  padding: 0 0 var(--fx-dens-gap-md); margin-bottom: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border);
+}
+.fx-ctx__tool { width: var(--fx-row-h); height: var(--fx-row-h); }
+.fx-ctx__tool:disabled { opacity: var(--fx-opacity-disabled); }
+.fx-ctx > .fx-search.fx-ctx__search {
+  margin: var(--fx-dens-gap-md) 0 0; flex: none; min-width: 0; width: auto;
+}
+.fx-ctx .fx-menu__item.is-active { background: var(--fx-accent-soft); }
+.fx-ctx .fx-menu__item .fx-search__kind { margin-inline-start: auto; }
+:where([data-fx-narrow]) .fx-ctx__tool { width: max(calc(var(--fx-space) * 5.5), 2.75rem); height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
 [data-fx-ctx='glass'] .fx-ctx, [data-fx-ctx='glass'] .fx-ctx .fx-popover {
   background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent);
   backdrop-filter: blur(var(--fx-blur)) saturate(1.4); -webkit-backdrop-filter: blur(var(--fx-blur)) saturate(1.4);
@@ -679,6 +708,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text);
   font-size: var(--fx-type-root-2xs); font-weight: 700; line-height: 16px; text-align: center; pointer-events: none;
 }
+/* a labelled button keeps its counter in the flow after the label (a corner badge drew over the label's last letters);
+   icon-only buttons keep the corner badge */
+.fx-toolbtn:has(> .fx-toolbtn__label) > .fx-toolbtn__badge { position: static; margin-inline-start: calc(var(--fx-dens-gap-sm) * -1); }
 .fx-search {
   display: flex; align-items: center; gap: var(--fx-dens-gap-lg); margin-left: auto; flex: 0 1 260px; min-width: 150px;
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border);
@@ -888,11 +920,18 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-small { font-size: var(--fx-type-scale-sm); }
 .fx-stack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
 .fx-stack--lg { gap: var(--fx-dens-gap-4xl); }
+.fx-stack--sm { gap: var(--fx-dens-gap-md); }
+.fx-stack--xs { gap: var(--fx-dens-gap-xs); }
 .fx-row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
 .fx-row--wrap { flex-wrap: wrap; }
 .fx-row--end { justify-content: flex-end; flex-wrap: wrap; }
+.fx-row--between { justify-content: space-between; }
 .fx-row--tight { gap: var(--fx-dens-gap-lg); }
 .fx-grow { flex: 1; }
+.fx-link { color: var(--fx-accent); text-decoration: none; }
+.fx-link:hover, .fx-link:focus-visible { text-decoration: underline; }
+.fx-error { margin: 0; color: var(--fx-danger); }
+.fx-input--sm { min-height: 0; padding-block: var(--fx-dens-gap-2xs); font-size: var(--fx-type-scale-xs); }
 .fx-grid { display: grid; gap: var(--fx-dens-gap-3xl); grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
 .fx-rot--90 { transform: rotate(-90deg); }
 
@@ -1726,6 +1765,7 @@ h2 { line-height: var(--fx-type-line-tight); }
 code, .fx-mono { font-size: var(--fx-type-mono-size); }
 .fx-stack { gap: var(--fx-dens-gap-2xl); }
 .fx-stack--lg { gap: var(--fx-dens-gap-3xl); }
+.fx-stack--sm { gap: var(--fx-dens-gap-md); }
 .fx-grid { gap: var(--fx-dens-gap-xl); }
 .fx-btn { min-height: var(--fx-size-button-height); padding: var(--fx-dens-pad-control) var(--fx-size-button-pad-x); font-size: var(--fx-size-button-font); font-weight: var(--fx-type-weights-medium); gap: var(--fx-dens-gap-md); }
 .fx-btn--sm { min-height: 0; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-xs); gap: var(--fx-dens-gap-xs); }

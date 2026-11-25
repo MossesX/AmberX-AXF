@@ -4,8 +4,8 @@
  * asset, and we can get to their settings by right-clicking all of them.").
  *
  * One block of items on the context menu of every tab group, toolbar, banner, navigation menu and application menu
- * bar, the same for all four (five) kinds: **Settings…**, **Change <kind>…** (an asset picker) and **Move ▸**
- * (where the kind can go). The targets each kind reports and the fields each settings dialog edits are the
+ * bar, the same for all four (five) kinds: **Settings…**, **Change <kind>…** (an asset picker), **Move ▸**
+ * (where the kind can go) and **Hide <kind>** (hidden-assets@1: this one piece, in this app; the toast undoes it). The targets each kind reports and the fields each settings dialog edits are the
  * registry in core/engines/chrome-settings-rules.mjs; this file is the web host of it.
  *
  * The settings dialog renders through a `settings` asset (settings-ui@1) whose data.for names the chrome type: the
@@ -29,6 +29,10 @@
  *                                                per-instance-settings-window-picker)
  *   chrome.unset:<type>:<instance>:<field>       reset one field: it inherits from the app's asset again
  *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
+ *   chrome.hide:<kind>:<instance>                hide one piece in this app (hidden-assets@1; a widget's instance is
+ *                                                <type>:<id>); the toast undoes it
+ *   chrome.unhide:<kind>:<instance>              show it again
+ *   chrome.unhideAll                             show every hidden piece again
  *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
  *   tapconfirm.item:<type>:<instance>:<inherit|on|off>    one item's Tap to confirm (= chrome.set …:tapConfirm:…)
  *   tapconfirm.kind:<type>:<on|off>               Tap to confirm for a whole kind (every toolbar, tab group, nav, …)
@@ -174,6 +178,103 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   return rt.swap(type as AssetType, id);
 }
 
+/* ================================================================== Hide (hidden-assets@1) */
+
+/** A piece in words: "Toolbar page.tools", "Menu bar", "Tab group settings.tabs", "Widget clock:main". */
+export function hiddenPieceLabel(kind: string, id: string): string {
+  const name = kind === 'widget' ? 'Widget' : kind === 'app-menu' ? 'Menu bar' : isChromeType(kind) ? chromeLabel(kind) : kind;
+  return id === CHROME_APP_INSTANCE ? name : `${name} ${id}`;
+}
+
+/** The widget attributes its hosts stamp (`<type>:<id>`): the banner's items and the toolbar's widgets. */
+const WIDGET_SELECTOR = '[data-axf-banner-item], [data-axf-toolbar-widget]';
+/** The widget under the last right-click / long-press / menu key, so the menu of its host can offer to hide just it. */
+let contextWidget: { host: 'banner' | 'toolbar'; key: string } | null = null;
+let widgetWatch = false;
+
+/** Remember which widget a context menu is about to open on (capture phase: before the menu host reads the event). */
+function watchContextWidget(): void {
+  if (widgetWatch || typeof document === 'undefined') return;
+  widgetWatch = true;
+  const note = (e: Event) => {
+    const el = e.target instanceof Element ? e.target.closest(WIDGET_SELECTOR) : null;
+    const banner = el?.getAttribute('data-axf-banner-item');
+    const key = banner ?? el?.getAttribute('data-axf-toolbar-widget') ?? '';
+    contextWidget = key ? { host: banner ? 'banner' : 'toolbar', key } : null;
+  };
+  document.addEventListener('pointerdown', note, true);
+  document.addEventListener('contextmenu', note, true);
+}
+
+/** The toasts that undo a hide: toast id → the action that shows the piece again. */
+const undoToasts = new WeakMap<AxfRuntime, Map<number, string>>();
+const UNDO_TOAST_ATTR = 'data-axf-toast-undo';
+const UNDO_HINT = 'Tap here to undo.';
+
+/** Hide one piece and raise the toast that undoes it. False when the hide was refused (the runtime says why). */
+export function hideChrome(rt: AxfRuntime, kind: string, id: string): boolean {
+  if (rt.isHidden({ kind, id })) return true;
+  if (!rt.hide({ kind, id })) return false;
+  rt.toast(`${hiddenPieceLabel(kind, id)} is hidden. ${UNDO_HINT}`, 'info', 'Hidden');
+  const toast = rt.getState().toasts.at(-1);
+  if (toast) {
+    let map = undoToasts.get(rt);
+    if (!map) undoToasts.set(rt, (map = new Map()));
+    map.set(toast.id, `chrome.unhide:${kind}:${id}`);
+    markUndoToasts(rt);
+  }
+  return true;
+}
+
+/** The undo action of a toast element (matched by its text: the toast host draws the message, nothing else), or null. */
+function undoOfToast(rt: AxfRuntime, el: Element): { id: number; action: string } | null {
+  const map = undoToasts.get(rt);
+  if (!map?.size) return null;
+  const text = el.querySelector('.fx-toast__text span')?.textContent ?? '';
+  for (const t of rt.getState().toasts) { const action = map.get(t.id); if (action && t.message === text) return { id: t.id, action }; }
+  return null;
+}
+
+/** Make the undo toasts on screen reachable: a button to assistive tech and the keyboard (one frame later, once drawn). */
+function markUndoToasts(rt: AxfRuntime): void {
+  if (typeof document === 'undefined' || typeof requestAnimationFrame !== 'function') return;
+  requestAnimationFrame(() => {
+    for (const el of Array.from(document.querySelectorAll<HTMLElement>('.fx-toast'))) {
+      if (el.hasAttribute(UNDO_TOAST_ATTR) || !undoOfToast(rt, el)) continue;
+      el.setAttribute(UNDO_TOAST_ATTR, '');
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.style.cursor = 'pointer';
+    }
+  });
+}
+
+/** One listener per runtime: pressing an undo toast (anywhere but its Dismiss) shows the piece again and closes it. */
+function installUndoToasts(rt: AxfRuntime): void {
+  if (typeof document === 'undefined') return;
+  const press = (e: Event) => {
+    const target = e.target instanceof Element ? e.target : null;
+    const el = target?.closest('.fx-toast');
+    if (!el || target?.closest('button')) return;
+    if (e instanceof KeyboardEvent && (target !== el || (e.key !== 'Enter' && e.key !== ' '))) return;
+    const hit = undoOfToast(rt, el);
+    if (!hit) return;
+    e.preventDefault();
+    undoToasts.get(rt)?.delete(hit.id);
+    rt.dismissToast(hit.id);
+    rt.dispatch(hit.action);
+  };
+  document.addEventListener('click', press);
+  document.addEventListener('keydown', press);
+  // forget the toasts that timed out or were dismissed
+  rt.subscribe(() => {
+    const map = undoToasts.get(rt);
+    if (!map?.size) return;
+    const live = new Set(rt.getState().toasts.map((t) => t.id));
+    for (const id of [...map.keys()]) if (!live.has(id)) map.delete(id);
+  });
+}
+
 /** The context-menu block every chrome kind shares. */
 export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): MenuEntry[] {
   const label = chromeLabel(type);
@@ -186,6 +287,11 @@ export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): 
     const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
     items.push({ id: `chrome-move-${type}`, label: 'Move', icon: 'move', items: m.positions.map((p) => ({ id: `chrome-move-${type}-${p}`, label: `${POSITION_LABELS[p]}${cur === p ? ' ✓' : ''}`, action: `chrome.move:${type}:${instance}:${p}` })) });
   }
+  // hidden-assets@1: hide this one piece in this app (the Hidden list and the Assets menu bring it back)
+  if (rt.hideableKinds().includes(type) && !rt.isHidden({ kind: type, id: instance })) items.push({ id: `chrome-hide-${type}`, label: `Hide ${type === 'app-menu' ? 'menu bar' : label.toLowerCase()}`, icon: 'eye', action: `chrome.hide:${type}:${instance}` });
+  // a toolbar widget under the pointer: hide just that widget (a banner widget's own menu block carries its Hide)
+  const w = contextWidget;
+  if (type === 'toolbar' && w?.host === 'toolbar' && rt.hideableKinds().includes('widget') && !rt.isHidden({ kind: 'widget', id: w.key })) items.push({ id: 'chrome-hide-widget', label: `Hide widget ${w.key.slice(w.key.indexOf(':') + 1)}`, icon: 'eye', action: `chrome.hide:widget:${w.key}` });
   // every chrome kind leads to this app's own look; the action asks first (lib-settings)
   if (rt.actions.list().some(({ id }) => id === 'skin.restore.ask')) items.push({ id: `chrome-restore-${type}`, label: 'Restore to default…', icon: 'refresh', action: 'skin.restore.ask' });
   return items;
@@ -211,6 +317,17 @@ export function installChrome(rt: AxfRuntime): void {
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
+    // hidden-assets@1: one piece at a time; the id is everything after the kind (a widget's is <type>:<id>)
+    const piece = (rest: string[], ctx?: { payload?: unknown }) => rest.join(':') || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
+    rt.actions.register('chrome.hide', ([kind = '', ...rest], ctx) => { hideChrome(rt, kind, piece(rest, ctx)); }, { label: 'Hide one tab group, toolbar, banner, nav, menu bar or widget in this app (chrome.hide:<kind>:<id>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.unhide', ([kind = '', ...rest], ctx) => {
+      const id = piece(rest, ctx);
+      if (rt.isHidden({ kind, id }) && rt.unhide({ kind, id })) rt.toast(`${hiddenPieceLabel(kind, id)} is back.`, 'success', 'Shown');
+    }, { label: 'Show a hidden piece again (chrome.unhide:<kind>:<id>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.unhideAll', () => {
+      const n = rt.hiddenCount();
+      if (n && rt.unhideAll()) rt.toast(`${n} hidden piece${n === 1 ? ' is' : 's are'} back.`, 'success', 'Shown');
+    }, { label: 'Show every hidden piece in this app again', requires: 'assets.swap' });
     // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
     const fam = (v: unknown): ComponentTokenFamily | null => (isComponentTokenFamily(v) ? v : null);
     rt.actions.register('chrome.token', ([family, instance, key = '', ...rest], ctx) => {
@@ -260,6 +377,8 @@ export function installChrome(rt: AxfRuntime): void {
     }, { label: 'How many rows a tab group stacks its tabs on (tabs.rows:<tab group id or name>:<1-6|auto>)', params: true });
     rt.actions.register('tapconfirm.window', ([ms = '']) => { rt.settings.set(TAP_KEYS.armMs, String(tapArmMs(ms))); }, { label: 'Tap to confirm: how long an armed item waits (tapconfirm.window:<ms>)', params: true });
   });
+  watchContextWidget();
+  installUndoToasts(rt);
   // console-control@1: every chrome instance's Interface settings are addressable (REST, MCP, CLI, voice, Ctrl+K)
   addDerivedTargets(rt, (hint) => chromeSettingTargets(rt, hint));
   // The shared block, after the kind's own items (window tab groups: Undock / Split…; banners: Hide…).
@@ -640,7 +759,7 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits', 'chrome.hide', 'chrome.unhide', 'chrome.unhideAll'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**
