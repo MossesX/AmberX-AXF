@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 05:19 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:20 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-25 05:21 UTC · `approval-pass-covers-every-call` s5 done (all) · headless
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-25 23:30 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
 - 2026-11-25 23:30 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 - 2026-11-25 23:31 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-25 23:31 UTC · `clash-fix-console-app-tabs-2` → landed, note (all) · watchdog
 
 ## Token passes (log)
 

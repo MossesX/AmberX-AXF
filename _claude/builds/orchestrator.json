@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-25T23:31:35.403Z",
+ "updatedAt": "2026-11-25T23:32:28.028Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -537,7 +537,7 @@
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-25T23:31:21.119Z",
+   "updatedAt": "2026-11-25T23:31:52.871Z",
    "builtAt": "",
    "notes": [
     {
@@ -214399,7 +214399,7 @@
    "title": "Clash fix + console app tabs",
    "category": "",
    "detail": "Part A: clashes never block. When a build is rejected for a clash or a step fails on a conflict, the pipeline pulls main into the branch, runs a fix session, re-runs checks and carries on by itself; remove the 'answer it first' gate; add Run all / Defer buttons plus an MCP/voice command to answer a clash by hand. Part B: console app tabs: small tab strip with + to add, tap to switch, x to close. Parts run in parallel slots, merge into one at the end and land together.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214408,7 +214408,7 @@
    "mergedAt": "2026-11-25T11:06:50Z",
    "priority": "P0",
    "createdAt": "2026-11-25T07:58:13.409Z",
-   "updatedAt": "2026-11-25T12:15:32.879Z",
+   "updatedAt": "2026-11-25T23:31:38.292Z",
    "builtAt": "",
    "notes": [
     {
@@ -214474,6 +214474,10 @@
     {
      "text": "Watchdog: PR #925 merged 2026-11-25 11:06 and the build never heard: the merge is recorded, CI on 6cbe01ac31 is next. The failure from before the merge is cleared.",
      "at": "2026-11-25T12:15:32.879Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 6cbe01ac31: landed.",
+     "at": "2026-11-25T23:31:38.292Z"
     }
    ],
    "approvals": [],
