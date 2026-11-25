@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  NATIVE_ACTIONS, SAFE_TOKENS, UPDATE_VERBS, THEME_TOKENS, DEEP_LINK_EVENT, inPageLink, isAddress, startView, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  NATIVE_ACTIONS, tabsLine, SAFE_TOKENS, UPDATE_VERBS, THEME_TOKENS, DEEP_LINK_EVENT, inPageLink, isAddress, startView, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -89,6 +89,18 @@ t('native.* actions → host calls', () => {
   assert.deepEqual(nativeCall('native.update', ['reload']), { call: 'update', args: ['reload'] });
   assert.deepEqual(nativeCall('native.update', []), { call: 'update', args: ['check'] });
   assert.ok('error' in nativeCall('native.update', ['install']));
+  // the app's tab strip: state by default, new takes an optional link (with its own colons), switch / close need a tab id
+  assert.deepEqual(nativeCall('native.tabs', []), { call: 'tabs', args: ['state', ''] });
+  assert.deepEqual(nativeCall('native.tabs', ['new']), { call: 'tabs', args: ['new', ''] });
+  assert.deepEqual(nativeCall('native.tabs', ['new', 'axf-console', '//open/settings.plugins']), { call: 'tabs', args: ['new', 'axf-console://open/settings.plugins'] });
+  assert.deepEqual(nativeCall('native.tabs', ['switch', 't2']), { call: 'tabs', args: ['switch', 't2'] });
+  assert.deepEqual(nativeCall('native.tabs', ['close', 't2']), { call: 'tabs', args: ['close', 't2'] });
+  assert.ok('error' in nativeCall('native.tabs', ['close']));
+  assert.ok('error' in nativeCall('native.tabs', ['switch', ' ']));
+  assert.ok('error' in nativeCall('native.tabs', ['reload']));
+  assert.ok(NATIVE_ACTIONS.some((x) => x.id === 'native.tabs' && x.params));
+  assert.equal(tabsLine({ ok: true, opened: 't2', tabs: { active: 't2', tabs: [{ id: 't1', title: 'AXF Console', active: false }, { id: 't2', title: 'Plan Studio', active: true }] } }), 'Opened tab t2. 2 tabs: t1 AXF Console, t2 Plan Studio (on screen)');
+  assert.equal(tabsLine({ ok: true }), 'No tabs');
   assert.ok('error' in nativeCall('native.nothing', []));
   for (const a of NATIVE_ACTIONS) assert.ok(a.id.startsWith('native.') && a.label);
 });

@@ -18,7 +18,30 @@ Native code exists only where Android requires it:
 | The page's own questions (`alert()`, `confirm()`, `prompt()`): the WebView draws them only in an activity, so in the expanded overlay the shell draws them in an overlay window; bridge feature `dialogs` (0.2.0) | `JsDialogs`, `DialogRules` |
 | Notifications, permissions (mic, notifications, overlay), wake, native look from the console's `--fx-*` tokens | `Notifier`, `Perms`, `Wake`, `ShellTheme` |
 | Web content updates: a newer console deploy reloads the page off screen, or shows the console's reload bar on screen (`native.update:<check\|reload\|state>`) | `ContentUpdate`, `UpdateRules` |
+| Tabs: a small strip under the page (+ to add, tap to switch, x to close); each tab is its own console WebView, so it keeps its own screen and scroll; bridge feature `tabs` | `TabRules`, `TabStrip`, `WebHost` |
 | axHub's `amberx` device service: `amberx.open_url` (`browser.open`, `open-url@1`) over AXPP, with the WebView's hub sign-in; `?axf-overlay=expand\|collapse` verbs, pages open in the expanded overlay (overlay off: the app) | `DeviceLink`, `DeviceRules` |
+
+## Tabs
+
+Brett, Nov 25 2026: "small tab strip with + to add, tap to switch, x to close". The strip sits under the page, in the
+app and in the expanded overlay (the floating toolbar docks top-left, so the two never overlap). Rules (`TabRules`,
+tested in `TabRulesTest`): + opens a new tab on the console's start screen and shows it (at most 8, each is a live
+page); tapping a tab shows it and the others keep running; x closes a tab, the one on screen hands over to its
+neighbour, and closing the last one leaves one fresh start-screen tab. A tab's label is its screen's name. Colours and
+sizes are the console's tokens (`ShellTheme`). The strip keeps itself clear of the navigation bar and the keyboard;
+the page above it gets `--fx-safe-bottom: 0`.
+
+Every action has the same four ways in as the rest of the console (the console action `native.tabs`, so REST and MCP
+`console_control`, the CLI `axf console`, and voice):
+
+| What | Action | Bridge (`window.axfNativeHost`) | Deep link |
+| --- | --- | --- | --- |
+| Read the tabs (id, title, url, link, which is on screen) | `native.tabs:state` (also in `native.state`) | `tabs("state", "")` | |
+| New tab (start screen, or a console link) | `native.tabs:new[:<link>]` | `tabs("new", link)` | `axf-console://tab/new` |
+| Switch to a tab | `native.tabs:switch:<id>` | `tabs("switch", id)` | `axf-console://tab/<id>` |
+| Close a tab | `native.tabs:close:<id>` | `tabs("close", id)` | |
+
+The page on screen gets a `tabs` event (`axf-native`, the state above) after every change.
 
 Deep links: `axf-console://open/<console-control address>` (e.g. `axf-console://open/settings.plugins`),
 `axf-console://search/<words>`, and any `https://console.amberxai.com/…` link.

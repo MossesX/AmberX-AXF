@@ -8,4 +8,10 @@
     <string name="overlay_open_approvals">Open approvals</string>
     <string name="overlay_dismiss">Hide until a new approval arrives</string>
     <string name="overlay_dismiss_glyph">×</string>
+    <string name="tabs_strip">Console tabs</string>
+    <string name="tabs_new">New tab</string>
+    <string name="tabs_new_glyph">+</string>
+    <string name="tabs_close">Close %1$s</string>
+    <string name="tabs_close_glyph">×</string>
+    <string name="tabs_full">%1$d tabs are open: close one to open another</string>
 </resources>

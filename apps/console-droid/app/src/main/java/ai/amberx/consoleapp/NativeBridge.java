@@ -50,7 +50,7 @@ final class NativeBridge {
     @JavascriptInterface public String info() {
         if (!allowed()) return DENIED;
         return ok("\"shell\":\"console-droid\",\"version\":" + JSONObject.quote(BuildConfigInfo.version(app))
-            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\",\"" + DialogRules.FEATURE + "\"]"
+            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\",\"" + DialogRules.FEATURE + "\",\"" + TabRules.FEATURE + "\"]"
             + ",\"device\":" + DeviceLink.stateJson());
     }
 
@@ -122,6 +122,38 @@ final class NativeBridge {
         return ok("\"update\":" + ContentUpdate.stateJson());
     }
 
+    // ---- tabs ----
+    /**
+     * The app's tabs ({@link TabRules}): {@code state} answers the list; {@code new} opens a tab ({@code arg}: a console
+     * link, default the start screen) and shows it; {@code switch} shows tab {@code arg}; {@code close} closes tab
+     * {@code arg}. Every answer carries the list as it is after the call.
+     */
+    @JavascriptInterface public String tabs(String verb, String arg) {
+        if (!allowed()) return DENIED;
+        if (!TabRules.verb(verb)) return fail(TabRules.verbsHelp());
+        String a = arg == null ? "" : arg.trim();
+        if (TabRules.STATE.equals(verb)) return ok("\"tabs\":" + onUi(WebHost::tabsJson));
+        if (TabRules.NEW.equals(verb)) {
+            if (!a.isEmpty() && !a.startsWith(ShellRules.SCHEME + "://") && !ShellRules.staysInside(a)) return fail("only Brett's own sites open in a tab");
+            String id = onUi(() -> WebHost.openTab(a.isEmpty() ? null : ShellRules.deepLink(a)));
+            return id == null ? fail(TabRules.MAX_TABS + " tabs are open: close one first") : ok("\"opened\":" + JSONObject.quote(id) + ",\"tabs\":" + onUi(WebHost::tabsJson));
+        }
+        if (a.isEmpty()) return fail("tabs " + verb + " needs a tab id (tabs state lists them)");
+        Boolean done = onUi(() -> TabRules.SWITCH.equals(verb) ? WebHost.selectTab(a) : WebHost.closeTab(a));
+        if (done == null || !done) return fail("no tab \"" + a + "\" (tabs state lists them)");
+        return ok("\"" + (TabRules.SWITCH.equals(verb) ? "shown" : "closed") + "\":" + JSONObject.quote(a) + ",\"tabs\":" + onUi(WebHost::tabsJson));
+    }
+
+    /** Runs {@code work} on the UI thread (the tabs and their WebViews live there) and waits for its answer; null when it took too long. */
+    private <T> T onUi(java.util.concurrent.Callable<T> work) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            try { return work.call(); } catch (Exception e) { return null; }
+        }
+        java.util.concurrent.FutureTask<T> task = new java.util.concurrent.FutureTask<>(work);
+        ui.post(task);
+        try { return task.get(3, java.util.concurrent.TimeUnit.SECONDS); } catch (Exception e) { return null; }
+    }
+
     // ---- overlay ----
     @JavascriptInterface public String overlay(String verb) {
         if (!allowed()) return DENIED;
@@ -176,7 +208,7 @@ final class NativeBridge {
             JSONObject o = new JSONObject(json);
             Map<String, String> m = new HashMap<>();
             for (Iterator<String> k = o.keys(); k.hasNext(); ) { String key = k.next(); m.put(key, o.optString(key)); }
-            ui.post(() -> { ShellTheme.init(app); ShellTheme.apply(m); if (OverlayService.running != null) OverlayService.running.restyle(); });
+            ui.post(() -> { ShellTheme.init(app); ShellTheme.apply(m); if (OverlayService.running != null) OverlayService.running.restyle(); WebHost.restyle(); });
             return ok(null);
         } catch (Exception e) { return fail("bad theme: " + e.getMessage()); }
     }
