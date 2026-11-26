@@ -2,7 +2,15 @@
 
 The console adds the console-token check (every method) and the 404 while disabled. Every read and change goes
 through the plugin's CLI (orchestrator.mjs --json), so the console, the CLI and other sessions share one set of
-rules and one tracker file (_claude/builds/orchestrator.json). Never exposed on the console MCP.
+rules and one home for build status: the builds store (builds@1, rows on Postgres after the cut). Never exposed on the
+console MCP.
+
+No status file (Brett, Nov 25 2026): no route here opens, serves or writes a pipeline status file, and no answer
+carries every build. The lists (GET /state, /table, /pipeline, /pipeline/tab/{name}, /pipeline/fill) go out one page
+at a time: ?status= (one or a comma list) and ?project= filter, ?limit= (50 by default, 200 at most) and ?offset= page,
+and the answer says limit, offset and total beside the rows (server/paging.py). The server's own reads and writes of
+a build are rows through the data layer (paging.store_build / store_page → data_store); every status change is one
+build's row, written by the orchestrator CLIs under the store lock.
 
 Model upgrades (framework/core/model-switch.mjs, Brett, Nov 3 2026): approving an upgrade (or answering an upgrade
 request) counts only as Brett's own click: a browser signed in to axHub as an admin (wall session), with no
@@ -31,6 +39,8 @@ from fastapi import APIRouter, HTTPException, Request
 
 import plugin_services
 import readcache  # server/readcache.py: one shared, single-flight read per source + the cap on node spawns
+
+from . import paging
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "orchestrator.mjs"
@@ -83,10 +93,23 @@ def brett_click(request: Request) -> str:
     return str(getattr(c, "name", "") or "")[:120]
 
 
+STATE_KEY = "build-orchestrator:state"
+STATE_CACHE_S = 4  # a screen paging through the builds costs one CLI read, not one per page
+
+
 @router.get("/state")
-def state() -> dict[str, Any]:
+def state(status: str = "", project: str = "", limit: int | None = None, offset: int | None = None) -> dict[str, Any]:
+    """The orchestrator's rules and upgrade policy with one page of its builds (state.builds): the builds still being
+    worked on first, hidden and settled ones after. ?status= / ?project= filter; limit, offset and total say where the
+    page sits. Never every build in one answer."""
     ensure_health()
-    return _run("state")
+    lim, off = paging.window(limit, offset)
+    res = readcache.cached(STATE_KEY, lambda: _run("state"), ttl=STATE_CACHE_S)
+    st = res.get("state") if isinstance(res, dict) else None
+    if not res.get("ok") or not isinstance(st, dict):
+        return res
+    builds, total = paging.cut(paging.live_first(st.get("builds")), lim, off, paging.Filter(status, project))
+    return {**res, "state": {**st, "builds": builds}, "limit": lim, "offset": off, "total": total}
 
 
 # ---- the one status-driven table (status-table@1, Pipeline 2.0): compact rows from the builds store on axf-data
@@ -95,9 +118,12 @@ TABLE_CACHE_S = 4  # every open console polls; one store read serves them all
 
 
 @router.get("/table")
-def status_table(queue: bool = False, landed: bool = False, since: int | None = None) -> dict[str, Any]:
+def status_table(queue: bool = False, landed: bool = False, since: int | None = None, status: str = "", project: str = "",
+                 limit: int | None = None, offset: int | None = None) -> dict[str, Any]:
     """Builds as rows (status, steps done/total, model, account, slot, PR, status `at`), the merge queue with queue=1.
-    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new."""
+    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new.
+    One page per answer: ?status= / ?project= filter, ?limit= / ?offset= page, `total` = the rows that match."""
+    lim, off = paging.window(limit, offset)
     # Shared and single-flight: every console and tab polling at once costs one node process per cache miss, and a
     # stale table is served at once while it refreshes in the background (refresh no longer waits on the CLI).
     args = [*(["--queue"] if queue else []), *(["--landed"] if landed else [])]
@@ -107,7 +133,7 @@ def status_table(queue: bool = False, landed: bool = False, since: int | None = 
         raise HTTPException(503, res["error"])
     if res.get("ok") and since is not None and res.get("rev") == since:
         return {"ok": True, "unchanged": True, "rev": since}
-    return res
+    return paging.paged(res, "rows", lim, off, paging.Filter(status, project)) if res.get("ok") else res
 
 
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
@@ -219,6 +245,7 @@ async def act(request: Request) -> dict[str, Any]:
     change.pop("approver", None)  # who approves comes from the sign-in, never from the body
     res = _run("act", json.dumps(change), approver=brett_click(request))
     readcache.invalidate("build-orchestrator:table:")  # the next table read shows the change, not a stale copy
+    readcache.invalidate(STATE_KEY)
     return res
 
 
@@ -661,12 +688,36 @@ def _build_id(v: Any) -> str:
     return s
 
 
+PIPELINE_LISTS = ("table", "tabs")  # the two maps of build lists in the pipeline status: each list goes out as one page
+
+
+def _pipeline_paged(res: dict[str, Any], lim: int, off: int, flt: paging.Filter) -> dict[str, Any]:
+    """The pipeline status with every build list cut to one page. `totals` = rows that match per list
+    ({table: {pending…}, tabs: {pending, queue, active…}}), `total` = the builds that match over all tabs."""
+    out = dict(res)
+    totals: dict[str, dict[str, int]] = {}
+    for group in PIPELINE_LISTS:
+        lists = res.get(group)
+        if not isinstance(lists, dict):
+            continue
+        out[group], totals[group] = {}, {}
+        for name, rows in lists.items():
+            if isinstance(rows, list):
+                out[group][name], totals[group][name] = paging.cut(rows, lim, off, flt)
+            else:
+                out[group][name] = rows
+    return {**out, "limit": lim, "offset": off, "total": sum(totals.get("tabs", {}).values()), "totals": totals}
+
+
 @router.get("/pipeline")
-def pipeline_status() -> dict[str, Any]:
+def pipeline_status(status: str = "", project: str = "", limit: int | None = None, offset: int | None = None) -> dict[str, Any]:
     """The pipeline table (Pending / Queue / Building), every Claude account with Fable yes / no and its parallel cap,
-    the agent slots, what the dispatcher's next tick would start and why the rest waits, and the last tick's state."""
+    the agent slots, what the dispatcher's next tick would start and why the rest waits, and the last tick's state.
+    Every build list (table.*, tabs.*) is one page: ?status= / ?project= filter, ?limit= / ?offset= page, `totals` has
+    the full count per list. The rest of a long tab comes from GET /pipeline/tab/{name}?offset=."""
     ensure_health()
-    return _pipeline("status")
+    lim, off = paging.window(limit, offset)
+    return _pipeline_paged(_pipeline("status"), lim, off, paging.Filter(status, project))
 
 
 SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
@@ -704,13 +755,16 @@ PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors
 
 
 @router.get("/pipeline/tab/{name}")
-def pipeline_tab(name: str) -> dict[str, Any]:
-    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors, archive, deleted): every build
-    in it, with its steps, the planned model + account, the account that took it, whether it is on hold and the actions
-    it offers."""
+def pipeline_tab(name: str, status: str = "", project: str = "", limit: int | None = None, offset: int | None = None) -> dict[str, Any]:
+    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors, archive, deleted): one page
+    of the builds in it, each with its steps, the planned model + account, the account that took it, whether it is on
+    hold and the actions it offers. ?status= / ?project= filter, ?limit= / ?offset= page, `total` = the builds that
+    match. Read from the same shared pipeline read as GET /pipeline, so paging a tab starts no process per page."""
     if name not in PIPELINE_TABS:
         raise HTTPException(400, f"tab is one of {', '.join(PIPELINE_TABS)}")
-    return _pipeline("tab", name)
+    lim, off = paging.window(limit, offset)
+    rows = (_pipeline("status").get("tabs") or {}).get(name)
+    return paging.paged({"ok": True, "tab": name, "rows": rows if isinstance(rows, list) else []}, "rows", lim, off, paging.Filter(status, project))
 
 
 @router.get("/pipeline/health")
@@ -942,12 +996,28 @@ def fill_settings_set(request: Request, body: dict[str, Any]) -> dict[str, Any]:
     return {"changed": r.get("changed", [])}
 
 
+FILL_LISTS = ("ready", "builds", "sessions")  # the lists that grow with the builds; slots.rows is one row per slot
+
+
 @router.get("/pipeline/fill")
-def pipeline_fill(build: str = "") -> dict[str, Any]:
+def pipeline_fill(build: str = "", status: str = "", project: str = "", limit: int | None = None, offset: int | None = None) -> dict[str, Any]:
     """Fill every slot, read-only: the slots (one row per slot: which build and step, or free), the ready steps, what the
     next round would launch (planFill dry run, with why the rest waits), the settings; ?build=<id> adds that build's
-    steps with their dependency state (done / running in slot N / ready / waiting on …)."""
-    return _pipeline("fill", "status", *([_build_id(build)] if build else []))
+    steps with their dependency state (done / running in slot N / ready / waiting on …). The ready steps, the running
+    builds and the step sessions are one page each (?limit= / ?offset=, ?project= filter); `total` = the ready steps,
+    `totals` the count per list. ?status= keeps the slots in that state (running, free …)."""
+    lim, off = paging.window(limit, offset)
+    res = _pipeline("fill", "status", *([_build_id(build)] if build else []))
+    flt = paging.Filter(None, project)
+    out, totals = dict(res), {}
+    for key in FILL_LISTS:
+        if isinstance(res.get(key), list):
+            out[key], totals[key] = paging.cut(res[key], lim, off, flt)
+    want = set(paging.statuses(status))
+    slots = res.get("slots")
+    if want and isinstance(slots, dict) and isinstance(slots.get("rows"), list):
+        out["slots"] = {**slots, "rows": [r for r in slots["rows"] if isinstance(r, dict) and str(r.get("state") or "") in want]}
+    return {**out, "limit": lim, "offset": off, "total": totals.get("ready", 0), "totals": totals}
 
 
 @router.post("/pipeline/fill/run")
@@ -1259,21 +1329,26 @@ class ConsoleFocus:
     SCREEN = "build-orchestrator"
     ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{1,120}$")
 
-    def __init__(self) -> None:
-        self._mtime = -1.0
-        self._ids: set[str] = set()
-
     REMOTE_TTL_S = 30.0
+    KNOWN_MAX = 500
 
-    def ids(self) -> set[str]:
-        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
-        # projection), at most every REMOTE_TTL_S seconds
-        import builds_store
-        if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
-            return self._ids
-        self._ids = {str(b.get("id")) for b in builds_store.builds() if b.get("id")}
-        self._mtime = time.monotonic()
-        return self._ids
+    def __init__(self) -> None:
+        self._known: dict[str, tuple[float, bool]] = {}  # id → (when asked, is a build)
+
+    def has(self, build_id: str) -> bool:
+        """Is this id a build? One row asked of the builds store (paging.store_build: never the whole set, never a
+        status file), remembered for REMOTE_TTL_S seconds. A store that can't be read answers no."""
+        hit = self._known.get(build_id)
+        if hit and time.monotonic() - hit[0] < self.REMOTE_TTL_S:
+            return hit[1]
+        try:
+            found = paging.store_build(build_id) is not None
+        except Exception:  # noqa: BLE001 - no store, no build: the command falls through to the other screens
+            return False
+        if len(self._known) >= self.KNOWN_MAX:
+            self._known.clear()
+        self._known[build_id] = (time.monotonic(), found)
+        return found
 
     def resolve(self, path: str) -> dict[str, Any] | None:
         p = str(path or "").strip()
@@ -1281,7 +1356,7 @@ class ConsoleFocus:
         for prefix in ("build:", "builds:"):
             if low.startswith(prefix) and p[len(prefix):].strip():
                 return {"screen": self.SCREEN, "focus": p[len(prefix):].strip(), "explicit": True}
-        if self.ID_RE.match(low) and low in self.ids():
+        if self.ID_RE.match(low) and self.has(low):
             return {"screen": self.SCREEN, "focus": low, "explicit": False}
         return None
 
