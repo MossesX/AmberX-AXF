@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:17 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 - 2026-11-25 11:17 UTC · `postgres-audit` note (all) · orchestrator
 - 2026-11-25 11:17 UTC · `plan-tree-multi-select` note (all) · orchestrator
 - 2026-11-25 11:18 UTC · `x-search-library` note (all) · orchestrator
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 23:16 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-26 23:16 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 - 2026-11-26 23:17 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 23:18 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 

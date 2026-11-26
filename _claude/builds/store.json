@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10434,
- "updatedAt": "2026-11-26T23:18:14.387Z",
+ "rev": 10435,
+ "updatedAt": "2026-11-26T23:18:58.405Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -383004,7 +383004,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:14:37.224Z",
+   "updatedAt": "2026-11-26T23:18:44.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -383318,12 +383318,13 @@
      "done": false,
      "doneAt": "",
      "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "rev": 15,
+     "rev": 17,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T23:15:30.354Z",
-     "statusAt": "2026-11-26T23:14:37.224Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-26T23:18:44.437Z",
+     "statusAt": "2026-11-26T23:18:44.317Z",
+     "statusBy": "orchestrator",
      "attempt": 5,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -383407,9 +383408,23 @@
        "by": "watchdog",
        "attempt": 5,
        "why": "retry forward at sending, attempt 5"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:18:31.348Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:18:44.317Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s2 already has a live session: tmux axf-emergency-remove-every-leftover-js--s2--joey; claude pid 4037520"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s2",
      "branch": "claude/emergency-remove-every-leftover-js--s2",
@@ -383717,7 +383732,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -383802,7 +383817,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s1",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:17:54.653Z",
+   "updatedAt": "2026-11-26T23:18:31.923Z",
    "builtAt": "",
    "notes": [
     {
@@ -383928,6 +383943,10 @@
     {
      "text": "Headless run axf-emergency-check-can-these-plugins---s2--gina: brief only · start 12.6K tokens ($0.07) · cost $0.82 · 9 turns · 6 tools, MCP none",
      "at": "2026-11-26T23:17:54.653Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.82",
+     "at": "2026-11-26T23:18:20.650Z"
     }
    ],
    "approvals": [],
@@ -383938,7 +383957,7 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Snap Sully",
+    "by": "Greenlight Gina",
     "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s4\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s4 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s4 (already cut from main) · branch claude/emergency-check-can-these-plugins---s4.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins builds-page, main-build-status, merge-queue-view and fable-rebuilds (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, dataDir, routes, commands, nav, banner chips or status widgets, settings tab, notify.json) and grep the whole repo outside its own folder for its folder name, ids, view addresses (e.g. view:merge-queue), capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/ (builds store, landing line, console-control registry, check scripts), apps/, deploy/ (lander), services/axf-data, .github/workflows, CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/04-builds.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/04-builds.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
@@ -384309,13 +384328,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:17:11.774Z",
-     "statusAt": "2026-11-26T23:17:11.302Z",
+     "updatedAt": "2026-11-26T23:18:14.034Z",
+     "statusAt": "2026-11-26T23:18:13.882Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
-     "failedFrom": "sending",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -384350,9 +384368,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (7/6 builds running). Nothing started. Running: axf-emergency-check-can-these-plugins---s2--gina, axf-emergency-check-can-these-plugins---s3--gina, axf-emergency-rip-out-the-7-mb-status---s5--paulie, a"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:18:13.882Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
      "branch": "claude/emergency-check-can-these-plugins---s4"
@@ -384731,7 +384756,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 79,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
