@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10436,
- "updatedAt": "2026-11-26T23:19:27.415Z",
+ "rev": 10437,
+ "updatedAt": "2026-11-26T23:20:52.095Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209837,7 +209837,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-26T23:14:37.224Z",
+   "updatedAt": "2026-11-26T23:19:37.607Z",
    "builtAt": "",
    "notes": [
     {
@@ -209999,6 +209999,11 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -210090,7 +210095,7 @@
     "all"
    ],
    "order": {
-    "all": 930
+    "all": 939
    },
    "kind": "build",
    "planRef": "",
@@ -212336,7 +212341,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-26T23:14:37.224Z",
+   "updatedAt": "2026-11-26T23:19:37.607Z",
    "builtAt": "",
    "notes": [
     {
@@ -212498,6 +212503,11 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -212699,7 +212709,7 @@
     "all"
    ],
    "order": {
-    "all": 940
+    "all": 943
    },
    "kind": "build",
    "planRef": "",
@@ -370721,12 +370731,12 @@
     "all"
    ],
    "order": {
-    "all": 169
+    "all": 172
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -383004,7 +383014,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:18:44.317Z",
+   "updatedAt": "2026-11-26T23:19:37.607Z",
    "builtAt": "",
    "notes": [
     {
@@ -383098,6 +383108,16 @@
     {
      "text": "Watchdog: step s2 retried at ready, attempt 5 on hulu0241.",
      "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -383728,11 +383748,11 @@
     "all"
    ],
    "order": {
-    "all": 59
+    "all": 72
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 65,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -383817,7 +383837,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s1",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:19:08.787Z",
+   "updatedAt": "2026-11-26T23:19:42.204Z",
    "builtAt": "",
    "notes": [
     {
@@ -383947,6 +383967,20 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.82",
      "at": "2026-11-26T23:18:20.650Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s4--gina, shared account login)",
+     "at": "2026-11-26T23:19:16.632Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: usage limit on hulu0241: \"out of credits\".",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -383990,13 +384024,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-26T23:17:36.212Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
+     "at": "2026-11-26T23:19:42.204Z",
+     "exit": 129,
+     "signal": "HUP",
+     "kind": "crash",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s2--gina",
+     "session": "axf-emergency-check-can-these-plugins---s4--gina",
      "phase": ""
     }
    },
@@ -384260,12 +384294,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:14:32.849Z",
-     "statusAt": "2026-11-26T23:14:32.696Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-26T23:19:44.211Z",
+     "statusAt": "2026-11-26T23:19:37.607Z",
+     "statusBy": "watchdog",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -384300,13 +384335,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-emergency-check-can-these-plugins---s3--gina on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:19:37.607Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "usage limit on hulu0241: \"out of credits\""
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s3",
      "branch": "claude/emergency-check-can-these-plugins---s3",
-     "tmux": "axf-emergency-check-can-these-plugins---s3--gina"
+     "tmux": "axf-emergency-check-can-these-plugins---s3--gina",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s4",
@@ -384760,11 +384805,11 @@
     "all"
    ],
    "order": {
-    "all": 72
+    "all": 90
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 83,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -384849,7 +384894,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-26T23:16:53.009Z",
+   "updatedAt": "2026-11-26T23:19:37.607Z",
    "builtAt": "",
    "notes": [
     {
@@ -384995,6 +385040,21 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.50",
      "at": "2026-11-26T23:16:53.009Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-26T23:19:37.607Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -385349,13 +385409,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 9,
+     "rev": 11,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T23:14:47.065Z",
-     "statusAt": "2026-11-26T23:14:37.224Z",
+     "updatedAt": "2026-11-26T23:19:55.184Z",
+     "statusAt": "2026-11-26T23:19:37.607Z",
      "statusBy": "watchdog",
-     "attempt": 1,
-     "failedFrom": "building",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -385397,9 +385456,16 @@
        "by": "watchdog",
        "attempt": 1,
        "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s3--gina is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:19:37.607Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s3",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s3",
@@ -385661,11 +385727,11 @@
     "all"
    ],
    "order": {
-    "all": 108
+    "all": 125
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 88,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
