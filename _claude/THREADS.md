@@ -845,68 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 06:23 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:23 UTC · `rebuild-fresh-main-hide-any-asset` s8 done (all) · headless
-- 2026-11-25 06:23 UTC · `rebuild-fresh-main-hide-any-asset` s12 undone (all) · orchestrator
-- 2026-11-25 06:24 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:24 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:25 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:27 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:28 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:28 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:28 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:29 UTC · `rebuild-fresh-main-hide-any-asset` s13 undone (all) · orchestrator
-- 2026-11-25 06:29 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:30 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:30 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:30 UTC · `rebuild-fresh-main-hide-any-asset` s13 done, note (all) · reconciler
-- 2026-11-25 06:31 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:31 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:31 UTC · `rebuild-fresh-main-hide-any-asset` s14 undone (all) · orchestrator
-- 2026-11-25 06:31 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:32 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:32 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:33 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:33 UTC · `rebuild-fresh-main-hide-any-asset` s15 undone (all) · orchestrator
-- 2026-11-25 06:33 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:33 UTC · `rebuild-fresh-main-hide-any-asset` s11 undone (all) · orchestrator
-- 2026-11-25 06:34 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:35 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 06:39 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:39 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:39 UTC · `rebuild-fresh-main-hide-any-asset` s11 undone (all) · orchestrator
-- 2026-11-25 06:43 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:44 UTC · `rebuild-fresh-main-hide-any-asset` s16 undone (all) · orchestrator
-- 2026-11-25 06:44 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:45 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:45 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:46 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 06:50 UTC · `rebuild-fresh-main-hide-any-asset` s16 done, note (all) · reconciler
-- 2026-11-25 07:15 UTC · `rebuild-fresh-main-hide-any-asset` s16 undone, note (all) · watchdog
-- 2026-11-25 07:16 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
-- 2026-11-25 07:17 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:26 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:28 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:28 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:30 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:30 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:34 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:34 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-25 07:48 UTC · `landing-frees-slot-autoqueue` → archived, note (all) · console
-- 2026-11-25 07:48 UTC · `pipeline-test-5` → archived, note (all) · console
-- 2026-11-25 07:49 UTC · `clash-fix-console-app-tabs` added (0 steps) (all) · console
-- 2026-11-25 07:49 UTC · `clash-fix-console-app-tabs` → queued, note (all) · console
-- 2026-11-25 07:50 UTC · `clash-answer-run-all-defer-buttons-plus` note, removed (all) · console
-- 2026-11-25 07:50 UTC · `console-app-tabs-small` note, removed (all) · console
-- 2026-11-25 07:51 UTC · `clash-fix-console-app-tabs` note (all) · orchestrator
-- 2026-11-25 07:54 UTC · `clash-fix-console-app-tabs` → pending, note (all) · console
-- 2026-11-25 07:54 UTC · `clash-fix-console-app-tabs` → queued, note (all) · console
-- 2026-11-25 07:57 UTC · `clash-fix-console-app-tabs` → pending, note, removed (all) · console
-- 2026-11-25 07:58 UTC · `clash-fix-console-app-tabs-2` added (0 steps) (all) · console
-- 2026-11-25 07:58 UTC · `clash-fix-console-app-tabs-2` → queued, note (all) · console
-- 2026-11-25 07:59 UTC · `clash-fix-console-app-tabs-2` note (all) · orchestrator
-- 2026-11-25 07:59 UTC · `rebuild-fresh-main-hide-any-asset` → archived, note (all) · console
 - 2026-11-25 08:00 UTC · `clash-fix-console-app-tabs-2` → running, note (all) · pipeline
 - 2026-11-25 08:00 UTC · `clash-fix-console-app-tabs-2` branch claude/clash-fix-console-app-tabs-2 (all) · pipeline
 - 2026-11-25 08:01 UTC · `clash-fix-console-app-tabs-2` note (all) · orchestrator
@@ -1245,6 +1183,68 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 22:41 UTC · `plan-studio-collapse-all-expand-all` added (2 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `toolbar-widgets-in-any-banner-style` added (19 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `pipeline-fixes-drop-7-mb-status-file` added (21 steps) (all) · foreign-write
+- 2026-11-26 22:42 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `plan-blueprints` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `blueprint-notes-tasks` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `land-project-create-mcp-resolve-clash` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `skin-animations-animated-colour-swatches` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `grid-token-set-colours-hover-selected` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `picker-dialog-plugin-replaces-all` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `gate-auto-lander-tab-and-controls` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `shrink-git-history-drop-old-builds` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `builds-keep-their-slot-across-phases` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `settings-opened-banners-nav-menu` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `edit-ui-mode-inline-edit-anything-active` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `live-hot-refresh-every-grid-list-re` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `grids-layout-control-voice-controlled` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `change-asset-only-assets-built-screen` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `nothing-saved-browser-all-console` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `merge-queue-view-every-build-s-fully` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `grid-filter-plugin-one-filter-search` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `ci-run-only-what-changed-no-second-run` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `pending-optimizer-ai-finds-pending` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `notify-phone-when-queue-starts-building` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `right-click-running-build-open-headless` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `right-click-running-build-pop-open` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `auto-lander-settings-log-placeholder` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `land-pr-730-reset-all-button-far-right` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `flagship-professional-skin-covering` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `dispatcher-split-builds-evenly-across` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `api-fully-drives-every-field-type-forms` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `active-tab-add-stop-button-per-running` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `active-tab-stop-button-grid-alignment` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `axhub-routes-for-console-hub` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `vps-frees-stale-build-slots-every-2` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `watchdog-plugin-owns-every-vps` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `one-landing-line-pull-main-merge-one` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `server-gate-reject-any-build-without` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `out-credits-account-failover-flag-dead` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `orchestrator-master-pause-switch-stop` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `host-phone-connect-apk-axhub-browser` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
+- 2026-11-26 22:42 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
 
 ## Token passes (log)
 
