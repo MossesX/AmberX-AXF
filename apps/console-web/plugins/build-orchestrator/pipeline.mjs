@@ -103,7 +103,8 @@ import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../fram
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
-import { loadStore, migrateStepDepsNow, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { loadStore, migrateStepDepsNow } from '../../../../framework/cli/builds-store.mjs';
+import { OPEN_STATUSES, readBuild, rowsByStatus, updateBuild } from './build-rows.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
@@ -390,8 +391,8 @@ export function status() {
  */
 export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline', mutate = null } = {}) {
   let out = null;
-  withStore((s) => {
-    const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  updateBuild(id, (b) => {
+    if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
     const now = nowIso();
     b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined;
     if (!b.pipeline) delete b.pipeline;
@@ -400,16 +401,15 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     if (note && b.notes.at(-1)?.text !== str(note, 2000)) b.notes.push({ text: str(note, 2000), at: now });
     if (typeof mutate === 'function') mutate(b, now);
     b.updatedAt = now; out = b;
-    return s;
   }, { by, action, note: id });
   return out;
 }
 
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const b = readBuild(id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   // a Pipeline 2.0 build has no Queue of its own: its split moves it on by itself, and Queue gives that a push now
   // (split it, give it the active place when it is next) instead of refusing a build that shows as Pending
-  if (b.flow === P2.FLOW && !b.deleted) { const r = P2F.actBuild(b.id, 'queue', { by }); return { ...storeCore.findBuild(loadStore(), b.id), say: r.say }; }
+  if (b.flow === P2.FLOW && !b.deleted) { const r = P2F.actBuild(b.id, 'queue', { by }); return { ...readBuild(b.id), say: r.say }; }
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
   const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
@@ -423,11 +423,11 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
  * The same function behind the CLI (requeue-stuck), REST, MCP and voice, and builds-reconcile.mjs --apply.
  */
 export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli' } = {}) {
-  const found = live(loadStore()).map((b) => P.stuckAfterPhase(b)).filter(Boolean);
+  const found = rowsByStatus(['pending']).builds.map((b) => P.stuckAfterPhase(b)).filter(Boolean);
   const moved = [];
   if (apply) {
     for (const f of found) {
-      const b = storeCore.findBuild(loadStore(), f.id);
+      const b = readBuild(f.id);
       if (!P.stuckAfterPhase(b)) continue; // changed meanwhile
       const lr = b.pipeline?.lastRun ?? {};
       const note = `phase ${f.phase || '?'} done, requeued for ${f.next || '?'}: back in the Queue (requeue-stuck by ${by}; ${f.why}).`;
@@ -442,7 +442,7 @@ export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli
 }
 
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const b = readBuild(id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
   const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', heldAt: '', heldBy: '', heldWhy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
@@ -470,8 +470,8 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
     try {
       if (action === 'unqueue') { const b = unqueue(id, { by }); done.push({ id: b.id, status: b.status, tab: BP.tabOf(b) }); continue; }
       let out = null;
-      withStore((s) => {
-        const b = storeCore.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+      updateBuild(id, (b) => {
+        if (!b) throw new Error(`no build "${id}"`);
         const now = nowIso();
         const pipe = (patch) => { b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined; if (!b.pipeline) delete b.pipeline; };
         const unq = { queuedAt: '', queuedBy: '', heldAt: '', heldBy: '', heldWhy: '' };
@@ -497,7 +497,6 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
           b.deleted = false; b.deletedAt = ''; note = `Restored from Deleted (${by}): back in ${BP.TAB_LABEL[BP.tabOf(b)] || b.status}.`;
         }
         b.notes.push({ text: note, at: now }); b.updatedAt = now; out = b;
-        return s;
       }, { by, action: `pipeline:${action}`, note: id });
       logLine({ event: action, build: out.id, by });
       done.push({ id: out.id, status: out.status, tab: BP.tabOf(out) });
@@ -563,8 +562,8 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   catch (e) { logLine({ event: 'triage-failed', build: b.id, error: str(e.message, 200) }); }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
-  withStore((s) => {
-    const rec = storeCore.findBuild(s, b.id); const now = nowIso();
+  updateBuild(b.id, (rec) => {
+    const now = nowIso();
     const next = steps.map((st, i) => { const old = done.get(st.text.trim().toLowerCase()); return storeCore.normStep({ ...st, id: `s${i + 1}`, done: !!old, doneAt: old?.doneAt ?? '', uid: old?.uid }, i, { now }); });
     // a done step the new split dropped is kept at the top so nothing done is lost
     const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}` }));
@@ -575,7 +574,6 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now; }
     rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '' });
     rec.notes.push({ text: note, at: now }); rec.updatedAt = now; out = rec;
-    return s;
   }, { by, action: 'pipeline:split', note: b.id });
   if (gated) modelTriage.logSteps(b, gated.decisions);
   logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error });
@@ -585,7 +583,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
 /** Every build that needs the orchestrator's split gets one (a few per round); auto-queue when the Claude setting says so. */
 export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  const store = rowsByStatus(['pending', 'queued']); const settings = loadSettings(); const rules = rulesOf(store);
   const out = { split: [], queued: [], skipped: [] };
   if (settings.splitProvider !== 'off' || process.env.AXF_PIPELINE_SPLITTER) {
     // only a build with no steps at all is split by itself: steps someone wrote by hand (even with a missing estimate) are
@@ -602,7 +600,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
   }
   if (settings.autoQueue) {
-    const fresh = loadStore();
+    const fresh = rowsByStatus(['pending']);
     for (const b of legacyLive(fresh)) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
@@ -701,14 +699,14 @@ export function dropStepWorktree(b, stepId, env = process.env) {
  */
 export function mergeStepBack(id, stepId, { env = process.env, by = 'dispatcher' } = {}) {
   let out = { ok: false, merged: false, deferred: false, conflict: false, files: [], why: '' };
-  withStore((s) => {
-    const rec = storeCore.findBuild(s, id); const step = rec?.steps.find((x) => x.id === stepId);
-    if (!rec || !step) { out.why = `no step ${id}/${stepId}`; return s; }
+  updateBuild(id, (rec) => {
+    const step = rec?.steps.find((x) => x.id === stepId);
+    if (!rec || !step) { out.why = `no step ${id}/${stepId}`; return; }
     const branch = BP.stepBranch(rec, step, { parallel: true }); const buildBranch = BP.stepBranch(rec, step);
     if (gitMode(env)) {
       const wt = join(worktreesRoot(env), rec.id);
-      if (!existsSync(wt)) { out.why = `no build worktree ${wt}`; out.deferred = true; return s; }
-      if (git(wt, 'status', '--porcelain', '-uno').stdout.trim()) { out = { ...out, deferred: true, why: 'the build worktree has uncommitted changes: merge on a later tick' }; return s; }
+      if (!existsSync(wt)) { out.why = `no build worktree ${wt}`; out.deferred = true; return; }
+      if (git(wt, 'status', '--porcelain', '-uno').stdout.trim()) { out = { ...out, deferred: true, why: 'the build worktree has uncommitted changes: merge on a later tick' }; return; }
       git(wt, 'fetch', '-q', 'origin', branch);
       const src = git(wt, 'rev-parse', '--verify', '-q', `origin/${branch}`).status === 0 ? `origin/${branch}` : branch;
       const m = git(wt, 'merge', '--no-ff', '--no-edit', '-m', `Merge ${branch} (${rec.id} ${stepId}) into ${buildBranch}`, src);
@@ -718,7 +716,7 @@ export function mergeStepBack(id, stepId, { env = process.env, by = 'dispatcher'
         const c = P.conflictBack(rec, stepId, { files, branch });
         if (c.ok) { Object.assign(rec, c.build); rec.notes.push({ text: `${stepId}: ${c.note}`, at: nowIso() }); }
         out = { ...out, ok: true, conflict: true, files, why: c.ok ? c.note : c.why };
-        return s;
+        return;
       }
       git(wt, 'push', '-q', 'origin', `HEAD:${buildBranch}`);
     }
@@ -726,9 +724,8 @@ export function mergeStepBack(id, stepId, { env = process.env, by = 'dispatcher'
     const now = nowIso(); delete step.claim; step.updatedAt = now;
     rec.notes.push({ text: `${stepId}: ${branch} merged into ${buildBranch}`, at: now }); rec.updatedAt = now;
     out = { ...out, ok: true, merged: true };
-    return s;
   }, { by, action: 'pipeline:step-merge', note: `${id}/${stepId}` });
-  if (out.merged) { try { dropStepWorktree(storeCore.findBuild(loadStore(), id), stepId, env); } catch { /* best effort */ } }
+  if (out.merged) { try { dropStepWorktree(readBuild(id), stepId, env); } catch { /* best effort */ } }
   logLine({ event: 'step-merge', build: id, step: stepId, merged: out.merged, conflict: out.conflict, deferred: out.deferred, files: out.files, why: out.why });
   return out;
 }
@@ -746,7 +743,7 @@ export function assignAliases({ apply = true, all = false, only = '', by = proce
   const want = (b) => (only ? b.id === only : b.kind !== 'epic' && (all || (!b.deleted && !['complete', 'archived'].includes(b.status))));
   const plan = planAliases(builds).filter((x) => want(builds.find((b) => b.id === x.id)));
   if (!apply || !plan.length) return plan;
-  withStore((s) => { for (const { id, alias } of plan) { const rec = s.builds.find((x) => x.id === id); if (rec && !isBuildId(rec.alias ?? '')) rec.alias = alias; } return s; }, { by, action: 'pipeline:alias', note: plan.map((x) => `${x.id} → ${x.alias}`).join(', ').slice(0, 500) });
+  for (const { id, alias } of plan) updateBuild(id, (rec) => { if (rec && rec.id === id && !isBuildId(rec.alias ?? '')) rec.alias = alias; }, { by, action: 'pipeline:alias', note: `${id} → ${alias}` });
   for (const x of plan) logLine({ event: 'aliased', build: x.id, alias: x.alias });
   return plan;
 }
@@ -760,10 +757,10 @@ export function assignAliases({ apply = true, all = false, only = '', by = proce
 export function landAlias(ref, { env = process.env, by = process.env.AXF_ACTOR || 'cli' } = {}) {
   const name = basename(String(ref || '').replace(/\/+$/, ''));
   if (!name) throw Object.assign(new Error('give a build id, alias or worktree folder'), { code: 2 });
-  let b = storeCore.findBuild(loadStore(), name);
+  let b = readBuild(name);
   if (!b) throw Object.assign(new Error(`no build "${name}"`), { code: 2 });
   if (isBuildId(b.id)) return { id: b.id, alias: b.id, name: b.id, dir: join(worktreesRoot(env), b.id), branch: `claude/${b.id}`, linked: false, note: 'its id is a valid build name already' };
-  if (!isBuildId(b.alias ?? '')) { assignAliases({ by, only: b.id }); b = storeCore.findBuild(loadStore(), b.id); }
+  if (!isBuildId(b.alias ?? '')) { assignAliases({ by, only: b.id }); b = readBuild(b.id); }
   const alias = b.alias; const root = worktreesRoot(env);
   const dir = join(root, b.id); const link = join(root, alias);
   let linked = false;
@@ -912,7 +909,7 @@ export function launch(b, { account, model, kind = '', phase = '', retry = '' },
     const why = `Launch brief trimmed to ${fit.bytes} bytes (cap ${fit.maxBytes}, builds.briefMaxBytes): ${fit.trimmed.join(', ')}.`;
     logLine({ event: 'brief-trimmed', build: b.id, bytes: fit.bytes, cap: fit.maxBytes, trimmed: fit.trimmed });
     process.stderr.write(`pipeline: ${b.id}: ${why}\n`);
-    try { withStore((s) => { const r = storeCore.findBuild(s, b.id); if (r) { r.notes.push({ text: why, at: nowIso() }); r.updatedAt = nowIso(); } return s; }, { by: 'pipeline', action: 'pipeline:brief-trimmed', note: b.id }); } catch { /* the note is best effort */ }
+    try { updateBuild(b.id, (r) => { if (r) { r.notes.push({ text: why, at: nowIso() }); r.updatedAt = nowIso(); } }, { by: 'pipeline', action: 'pipeline:brief-trimmed', note: b.id }); } catch { /* the note is best effort */ }
   }
   writeFileSync(briefFile, `${fit.text}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
@@ -1005,7 +1002,7 @@ export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = fa
   let gaveUp = null;
   if (!settled) {
     const lc = launchCrashFor(b, { exit, kind, log, env });
-    if (lc) { const rq = requeueLaunchCrash(b, lc.why, { alert, env }); if (rq) return rq; b = storeCore.findBuild(loadStore(), b.id) ?? b; gaveUp = b.pipeline?.launchRetry ?? null; }
+    if (lc) { const rq = requeueLaunchCrash(b, lc.why, { alert, env }); if (rq) return rq; b = readBuild(b.id) ?? b; gaveUp = b.pipeline?.launchRetry ?? null; }
   }
   // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
   // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
@@ -1053,7 +1050,7 @@ export function buildLive(id, { env = process.env, useLock = true } = {}) {
 
 /** Running builds whose session ended: { id, outcome, status, reason, exit, auth? }. */
 export function checkEnds({ alert = () => {}, env = process.env } = {}) {
-  const store = loadStore(); const settings = loadSettings();
+  const store = rowsByStatus(['running', 'waiting', 'fixing', ...SETTLED]); const settings = loadSettings();
   const events = readEvents(env);
   const out = [];
   for (const b of live(store)) {
@@ -1112,7 +1109,7 @@ export function fillSettings(env = process.env) {
  * `build`, that build's steps with their dependency state.
  */
 export function fillStatus({ env = process.env, build = '', now = Date.now() } = {}) {
-  const store = loadStore(); const state = loadState(); const fill = fillSettings(env); const sl = slotsNow();
+  const store = rowsByStatus(OPEN_STATUSES); const state = loadState(); const fill = fillSettings(env); const sl = slotsNow();
   const inputs = fillInputs({ store, state, env, fill, sl, now });
   const plan = BP.planFill(inputs);
   plan.waits.push(...P.clashWaits(inputs.running, now));
@@ -1159,8 +1156,8 @@ export function fillRun({ env = process.env, by = process.env.AXF_ACTOR || 'cons
  */
 export function setStepDeps(id, stepId, deps, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   let out = null;
-  withStore((s) => {
-    const rec = storeCore.findBuild(s, id); if (!rec) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  updateBuild(id, (rec) => {
+    if (!rec) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
     const st = rec.steps.find((x) => x.id === stepId); if (!st) throw Object.assign(new Error(`${id} has no step ${stepId}`), { code: 2 });
     if (st.done || st.skip) throw Object.assign(new Error(`${id} ${stepId} is ${st.done ? 'done' : 'skipped'}: its dependencies no longer matter`), { code: 2 });
     const seq = deps == null || deps === 'sequential';
@@ -1177,7 +1174,6 @@ export function setStepDeps(id, stepId, deps, { by = process.env.AXF_ACTOR || 'c
     const after = BP.dependsOn(rec, st);
     rec.notes.push({ text: `${stepId} dependencies set by ${str(by, 80)}: ${seq ? `sequential (after ${after.join(', ') || 'nothing'})` : after.length ? `after ${after.join(', ')}` : 'independent'} (was ${before.join(', ') || 'none'})`, at: now });
     out = { ok: true, id: rec.id, step: stepId, dependsOn: after, explicit: seq ? null : st.after, parallel: BP.isParallelStep(st) };
-    return s;
   }, { by, action: 'pipeline:step-deps', note: `${id}/${stepId}` });
   return out;
 }
@@ -1217,16 +1213,15 @@ export function fillInputs({ store, state, env = process.env, settings = loadSet
 export function launchStep(b, item, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const runId = `step-${str(b.id, 40)}-${item.step}-${Date.now().toString(36)}`;
   let claimed = null;
-  withStore((s) => {
-    const rec = storeCore.findBuild(s, b.id); if (!rec) { claimed = { ok: false, why: `no build ${b.id}` }; return s; }
+  updateBuild(b.id, (rec) => {
+    if (!rec) { claimed = { ok: false, why: `no build ${b.id}` }; return; }
     claimed = BP.claimStep(rec, item.step, { runId, account: item.account, branch: item.branch, model: item.model });
     if (claimed.ok) Object.assign(rec, claimed.build);
-    return s;
   }, { by: 'dispatcher', action: 'pipeline:step-claim', note: `${b.id}/${item.step}` });
   if (!claimed?.ok) throw new Error(`claim refused: ${claimed?.why ?? 'unknown'}`);
-  const release = (why) => withStore((s) => { const rec = storeCore.findBuild(s, b.id); const r = rec && BP.releaseStep(rec, item.step, { runId, note: why }); if (r?.ok) Object.assign(rec, r.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-release', note: `${b.id}/${item.step}` });
+  const release = (why) => updateBuild(b.id, (rec) => { const r = rec && BP.releaseStep(rec, item.step, { runId, note: why }); if (r?.ok) Object.assign(rec, r.build); }, { by: 'dispatcher', action: 'pipeline:step-release', note: `${b.id}/${item.step}` });
   try {
-    const fresh = storeCore.findBuild(loadStore(), b.id);
+    const fresh = readBuild(b.id);
     const w = ensureStepWorktree(fresh, item.step, env);
     writeFileSync(join(w.dir, '.axf-brief.md'), `${stepBriefFor(fresh, item.step, rules, { account: item.account, model: item.model })}\n`);
     const token = issueDispatch(b.id, { account: item.account, model: item.model, env });
@@ -1238,7 +1233,7 @@ export function launchStep(b, item, { rules, env = process.env, launcher = env.A
     const session = /started (axf-\S+) in/.exec(text)?.[1] ?? '';
     const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
     if (r.status !== 0 || (!session && !/queued at position/.test(text))) throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
-    if (slot) withStore((s) => { const st = storeCore.findBuild(s, b.id)?.steps.find((x) => x.id === item.step); if (st?.claim?.runId === runId) st.claim.slot = slot; return s; }, { by: 'dispatcher', action: 'pipeline:step-slot', note: `${b.id}/${item.step}` });
+    if (slot) updateBuild(b.id, (rec) => { const st = rec?.steps.find((x) => x.id === item.step); if (st?.claim?.runId === runId) st.claim.slot = slot; }, { by: 'dispatcher', action: 'pipeline:step-slot', note: `${b.id}/${item.step}` });
     return { runId, session, slot, dir: w.dir, branch: w.branch, queuedInSlots: /queued at position/.test(text) };
   } catch (err) { release(`launch failed: ${str(err.message, 200)}`); throw err; }
 }
@@ -1253,7 +1248,7 @@ export function checkStepEnds({ state, env = process.env, alert = () => {}, now 
   const recs = stepRecs(state); const events = readEvents(env); const out = [];
   state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
   for (const [runId, r] of Object.entries(recs)) {
-    const b = storeCore.findBuild(loadStore(), r.id); const st = b?.steps.find((x) => x.id === r.step);
+    const b = readBuild(r.id); const st = b?.steps.find((x) => x.id === r.step);
     if (!b || !st || b.deleted) { delete recs[runId]; continue; }
     if (r.merging || (st.done && !r.session)) {
       const m = mergeStepBack(r.id, r.step, { env });
@@ -1268,7 +1263,7 @@ export function checkStepEnds({ state, env = process.env, alert = () => {}, now 
       const alive = r.session ? tmuxHas(r.session) : null;
       if (alive !== false || now - Date.parse(r.launchedAt || 0) < GONE_GRACE_MS) {
         // still working: keep its claim alive past the TTL
-        if (!st.done) withStore((s) => { const rec = storeCore.findBuild(s, r.id); const c = rec && BP.claimStep(rec, r.step, { runId, slot: r.slot, account: r.account, branch: r.branch, model: r.model, now }); if (c?.ok) Object.assign(rec, c.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-renew', note: `${r.id}/${r.step}` });
+        if (!st.done) updateBuild(r.id, (rec) => { const c = rec && BP.claimStep(rec, r.step, { runId, slot: r.slot, account: r.account, branch: r.branch, model: r.model, now }); if (c?.ok) Object.assign(rec, c.build); }, { by: 'dispatcher', action: 'pipeline:step-renew', note: `${r.id}/${r.step}` });
         continue;
       }
       exit = 1;
@@ -1277,12 +1272,11 @@ export function checkStepEnds({ state, env = process.env, alert = () => {}, now 
     const k = runKey(r.id, r.step); const runs = (state.stepRuns[k] ?? 0);
     const last = runs >= P.STEP_MAX_RUNS;
     const note = last ? `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ${runs} runs, left to the build's own session` : `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ready again (run ${runs} of ${P.STEP_MAX_RUNS})`;
-    withStore((s) => {
-      const rec = storeCore.findBuild(s, r.id); if (!rec) return s;
+    updateBuild(r.id, (rec) => {
+      if (!rec) return;
       const rel = BP.releaseStep(rec, r.step, { runId, note }); if (rel.ok) Object.assign(rec, rel.build);
       if (last) { const x = rec.steps.find((y) => y.id === r.step); if (x) x.parallel = 'never'; }
       rec.notes.push({ text: `${r.step}: ${note}`, at: nowIso() }); rec.updatedAt = nowIso();
-      return s;
     }, { by: 'dispatcher', action: 'pipeline:step-end', note: `${r.id}/${r.step}` });
     delete recs[runId];
     if (last) delete state.stepRuns[k];
@@ -1332,14 +1326,14 @@ export function beatOf(b, env = process.env) {
  * { at, why, head, files, step, count }. Returns { id, step, status } or null when there is nothing to add.
  */
 export function bounceClash(id, { files = [], head = '', why = '', now = Date.now(), by = 'pipeline' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const b = readBuild(id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   const st = P.clashBounceStep(b, { files, head });
   if (!st) return null;
   const at = new Date(now).toISOString();
   let added = null;
-  withStore((s) => {
-    const r = storeCore.findBuild(s, id); if (!r) return s;
-    const again = P.clashBounceStep(r, { files, head }); if (!again) return s; // a writer got there first
+  updateBuild(id, (r) => {
+    if (!r) return;
+    const again = P.clashBounceStep(r, { files, head }); if (!again) return; // a writer got there first
     const taken = new Set(r.steps.map((x) => x.id)); let k = r.steps.length + 1; while (taken.has(`s${k}`)) k += 1;
     added = storeCore.normStep({ ...again, id: `s${k}`, createdAt: at }, r.steps.length, { now: at });
     r.steps.push(added);
@@ -1348,7 +1342,6 @@ export function bounceClash(id, { files = [], head = '', why = '', now = Date.no
       bounce: { at, why: str(why || `merging main in conflicts in ${files.join(', ') || 'code'}`, 300), head, files, step: added.id, count: (r.pipeline?.bounce?.count ?? 0) + 1 } }) ?? r.pipeline;
     r.notes.push({ text: `Clashes with main${files.length ? ` in ${files.slice(0, 6).join(', ')}` : ''}: added ${added.id} (merge main in, resolve, push) and moved it back to the Queue.`, at });
     r.updatedAt = at;
-    return s;
   }, { by, action: 'pipeline:clash-bounce', note: id });
   if (!added) return null;
   logLine({ event: 'clash-bounce', build: id, step: added.id, head, files });
@@ -1373,7 +1366,7 @@ export function clashOf(b, { cwd = REPO_ROOT } = {}) {
 
 /** Clear a build's launch-retry record (a given-up one too) and put it back in the Queue now: the hand's Retry. */
 export function requeueLaunch(id, { by = 'cli' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const b = readBuild(id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (SETTLED.includes(b.status) || ['running', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to requeue`), { code: 2 });
   setPipeline(b.id, { launchRetry: null, session: '', slot: '', queuedAt: b.pipeline?.queuedAt || nowIso() }, { status: 'queued', note: `Requeued by ${by}: launch retries reset${b.pipeline?.launchRetry?.lastError ? ` (last launch error: ${b.pipeline.launchRetry.lastError})` : ''}.`, by, action: 'pipeline:requeue-launch' });
   return { id: b.id, status: 'queued' };
@@ -1389,11 +1382,11 @@ export function launchState(b) {
 
 /**
  * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
- * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
+ * that failed, a stalled run, a build that fell back to Pending. Each one found is written on its build in its own journalled
  * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
  */
 export function detectFailures({ ended = [], env = process.env, now = Date.now(), policy = retryPolicy(), land = landItems(env) } = {}) {
-  const store = loadStore();
+  const store = rowsByStatus([...P.WATCHED, 'pending']); // every status classifyFailure looks at
   const endedBy = new Map(ended.map((e) => [e.id, e]));
   const found = [];
   for (const b of store.builds) {
@@ -1414,10 +1407,7 @@ export function detectFailures({ ended = [], env = process.env, now = Date.now()
   }
   if (!found.length) return [];
   const at = new Date(now).toISOString();
-  withStore((s) => {
-    for (const { id, failure } of found) { const b = storeCore.findBuild(s, id); if (b) { P.recordFailure(b, failure, { at }); b.updatedAt = at; } }
-    return s;
-  }, { by: 'pipeline', action: 'pipeline:failure', note: found.map((x) => `${x.id}:${x.failure.kind}`).join(' ') });
+  for (const { id, failure } of found) updateBuild(id, (b) => { if (b) { P.recordFailure(b, failure, { at }); b.updatedAt = at; } }, { by: 'pipeline', action: 'pipeline:failure', note: `${id}:${failure.kind}` });
   for (const { id, failure } of found) {
     logLine({ event: 'failure', build: id, kind: failure.kind, why: failure.why, step: failure.step, head: failure.head });
     crewSay('dispatcher', 'blocked', `${id}: ${failure.kind} (${str(failure.why, 160)}). Fixing it.`, { ref: id });
@@ -1435,8 +1425,8 @@ export function detectFailures({ ended = [], env = process.env, now = Date.now()
  * in flight and a backoff are waits; a ladder that ran out escalates (status escalated + the escalation record).
  * → [{ id, action: launched | wait | lander | escalated | failed, strategy?, account?, model?, why? }]
  */
-export function retryFixing({ env = process.env, accounts = [], settings = loadSettings(), rules = rulesOf(loadStore()), policy = retryPolicy(), land = landItems(env), now = Date.now(), alert = () => {}, only = '', force = '' } = {}) {
-  const store = loadStore(); const at = new Date(now).toISOString();
+export function retryFixing({ env = process.env, accounts = [], settings = loadSettings(), rules = rulesOf(rowsByStatus(['fixing'])), policy = retryPolicy(), land = landItems(env), now = Date.now(), alert = () => {}, only = '', force = '' } = {}) {
+  const store = rowsByStatus(['fixing']); const at = new Date(now).toISOString();
   const out = [];
   for (const b of store.builds) {
     if (b.deleted || b.status !== 'fixing' || (only && b.id !== only)) continue;
@@ -1471,14 +1461,13 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
       continue;
     }
     const attempt = P.attemptOf(d, f, { at, account: used.account, model, session: r.session, pr: Number(String(b.pr || '').replace(/\D/g, '')) || 0 });
-    withStore((s) => {
-      const rec = storeCore.findBuild(s, b.id); if (!rec) return s;
+    updateBuild(b.id, (rec) => {
+      if (!rec) return;
       rec.attempts = BP.normAttempts([...(rec.attempts ?? []), attempt]);
       const n = rec.attempts.length;
       rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), account: used.account, session: r.session, slot: r.slot, model, launchedAt: at, dispatchedAt: at, runs: (rec.pipeline?.runs ?? 0) + 1, note: `attempt ${n}: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''}` }) ?? rec.pipeline;
       rec.notes.push({ text: `Attempt ${n}: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''} on ${used.account} (${model}): ${r.session || 'queued in agent slots'}. ${d.reason}`, at });
       rec.updatedAt = at;
-      return s;
     }, { by: 'pipeline', action: 'pipeline:retry', note: `${b.id} ${d.strategy}` });
     logLine({ event: 'retry', build: b.id, kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session, n: d.n });
     try {
@@ -1494,15 +1483,14 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
 
 /** Close a build's open attempt (result ok clears the open failure too). */
 export function closeAttempt(id, result, note = '', { at = nowIso(), by = 'pipeline' } = {}) {
-  withStore((s) => {
-    const b = storeCore.findBuild(s, id); if (!b) return s;
+  updateBuild(id, (b) => {
+    if (!b) return;
     const list = BP.normAttempts(b.attempts); const a = list.find((x) => x.result === 'started');
-    if (!a) return s;
+    if (!a) return;
     a.result = result; a.endedAt = at; a.note = str(`${a.note ? `${a.note} ` : ''}${result === 'ok' ? 'Ok' : 'Ended'}: ${note}`, 600);
     b.attempts = list;
     if (result === 'ok') { b.failure = null; b.notes.push({ text: `Attempt ${a.n} (${a.strategy}) worked: ${str(note, 300)}`, at }); }
     b.updatedAt = at;
-    return s;
   }, { by, action: 'pipeline:attempt', note: `${id} ${result}` });
 }
 
@@ -1516,22 +1504,21 @@ export const ESCALATION_BANNER = 'builds-escalated';
  */
 export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by = 'pipeline', alert = () => {} } = {}) {
   let esc = null; let fresh = false; let title = id; let since = '';
-  withStore((s) => {
-    const b = storeCore.findBuild(s, id); if (!b) return s;
+  updateBuild(id, (b) => {
+    if (!b) return;
     title = b.title || id;
-    if (b.status === 'escalated' && b.escalation) { esc = b.escalation; return s; }
+    if (b.status === 'escalated' && b.escalation) { esc = b.escalation; return; }
     esc = { ...RL.escalationOf(b.attempts, f, { at, policy, head: f.head }), bannerId: ESCALATION_BANNER };
     since = BP.normAttempts(b.attempts).find((a) => a.kind === esc.kind && a.result !== 'skipped')?.startedAt || BP.normFailure(b.failure)?.at || at;
     b.escalation = esc; b.status = 'escalated'; b.updatedAt = at; fresh = true;
     b.notes.push({ text: `Failed: every option was used up (${esc.tried.join(', ') || 'nothing left to try'}). ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
-    return s;
   }, { by, action: 'pipeline:escalate', note: id });
   if (fresh && esc && !esc.pushedAt) {
     // exactly one push per escalation: the first escalated build turns the systems check item red, and that red episode
     // is the push (health@1 pushes once per episode); while it is already red, a new escalation pushes on its own
     const others = escalated().filter((x) => x.id !== id);
     if (others.length) alert('escalated', { id, title, at: esc.at, why: esc.why, tried: esc.tried, since });
-    withStore((s) => { const b = storeCore.findBuild(s, id); if (b?.escalation && b.escalation.at === esc.at) { b.escalation = { ...b.escalation, pushedAt: nowIso() }; } return s; }, { by, action: 'pipeline:escalate-pushed', note: id });
+    updateBuild(id, (b) => { if (b?.escalation && b.escalation.at === esc.at) { b.escalation = { ...b.escalation, pushedAt: nowIso() }; } }, { by, action: 'pipeline:escalate-pushed', note: id });
     crewSay('dispatcher', 'failed', `${id} failed: every option used up after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
   }
   logLine({ event: 'escalated', build: id, kind: esc?.kind, attempts: esc?.attempts, tried: esc?.tried, pushed: fresh ? 'once' : 'already' });
@@ -1539,7 +1526,7 @@ export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by
 }
 
 /** Every escalated build, for the systems check item and the API: [{ id, title, kind, why, tried, attempts, since, pushedAt }]. */
-export function escalated(store = loadStore()) {
+export function escalated(store = rowsByStatus(['escalated'])) {
   return store.builds.filter((b) => !b.deleted && b.status === 'escalated').map((b) => ({ id: b.id, title: b.title, kind: b.escalation?.kind || b.failure?.kind || '', why: b.escalation?.why || '', tried: b.escalation?.tried ?? [], attempts: BP.normAttempts(b.attempts).length, since: b.escalation?.at || b.updatedAt, pushedAt: b.escalation?.pushedAt || '' }));
 }
 
@@ -1551,11 +1538,11 @@ export function escalated(store = loadStore()) {
  */
 export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'console', why = '', noLaunch = false } = {}) {
   // pipeline-2@1: a Pipeline 2.0 build has no ladder: its retry is the contract's reset (pipeline2.mjs retryBuild)
-  { const p2 = storeCore.findBuild(loadStore(), id); if (p2?.flow === P2.FLOW) return P2F.retryBuild(p2.id, { by, why }); }
+  { const p2 = readBuild(id); if (p2?.flow === P2.FLOW) return P2F.retryBuild(p2.id, { by, why }); }
   if (strategy && !(RL.isRung(strategy) && strategy !== 'escalate')) throw Object.assign(new Error(`strategy is one of ${[...BP.STRATEGIES.filter((x) => x !== 'escalate' && x !== 'fix'), ...BP.FIX_STRATEGIES.map((x) => `fix:${x}`)].join(', ')}`), { code: 2 });
   let out = null;
-  withStore((s) => {
-    const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  updateBuild(id, (b) => {
+    if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
     if (BP.isLive(b) && b.pipeline?.session) throw Object.assign(new Error(`${b.id} has a session running (${b.pipeline.session}): it is already being worked on`), { code: 2 });
     const at = nowIso();
     const f = BP.normFailure(b.failure) ?? (b.escalation ? BP.normFailure({ kind: b.escalation.kind, at, why: b.escalation.why, head: b.escalation.head }) : null);
@@ -1566,12 +1553,11 @@ export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'c
     if (!f && b.pipeline) b.pipeline = BP.normPipeline({ ...b.pipeline, queuedAt: b.pipeline.queuedAt || at, queuedBy: by }) ?? b.pipeline;
     b.notes.push({ text: `Retry by ${by}${strategy ? ` (${strategy})` : ''}${why ? `: ${why}` : ''}. The ladder starts over${f ? ` for ${f.kind}` : ''}.`, at });
     out = { id: b.id, status: b.status, strategy };
-    return s;
   }, { by, action: 'pipeline:retry-hand', note: id });
   logLine({ event: 'retry-hand', build: id, by, strategy });
   // a strategy picked by hand runs now (not on the ladder's first rung at the next tick)
   if (strategy && out.status === 'fixing' && !noLaunch) {
-    const store = loadStore(); const settings = loadSettings();
+    const store = rowsByStatus(OPEN_STATUSES); const settings = loadSettings();
     out.launch = retryFixing({ only: id, force: strategy, accounts: accountsNow(store, settings), settings, rules: rulesOf(store) })[0] ?? null;
   }
   return out;
@@ -1586,19 +1572,19 @@ export function fillRound({ state, env = process.env, alert = () => {}, rules, l
   const fill = fillSettings(env);
   const ended = checkStepEnds({ state, env, alert, now });
   if (!fill.fillSlots) return { launched: [], failed: [], plan: null, ended, settings: fill };
-  const store = loadStore();
+  const store = rowsByStatus(OPEN_STATUSES);
   const inputs = fillInputs({ store, state, env, fill, launchedNow, now });
   const plan = BP.planFill(inputs);
   plan.waits.push(...P.clashWaits(inputs.running, now));
   const launched = []; const failed = [];
   state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
   for (const item of plan.launches.filter((l) => l.kind === 'step')) {
-    const b = storeCore.findBuild(loadStore(), item.id);
+    const b = readBuild(item.id);
     try {
       const r = launchStep(b, item, { rules, env });
       const k = runKey(item.id, item.step); state.stepRuns[k] = (state.stepRuns[k] ?? 0) + 1;
       stepRecs(state)[r.runId] = { id: item.id, step: item.step, session: r.session, slot: r.slot, account: item.account, model: item.model, dir: r.dir, branch: r.branch, launchedAt: nowIso(), runs: state.stepRuns[k] };
-      withStore((s) => { const rec = storeCore.findBuild(s, item.id); if (rec) { rec.notes.push({ text: `${item.step}: started in parallel on ${item.account} (${item.model}), ${r.session || 'queued in agent slots'}, worktree ${r.dir}, branch ${r.branch} (run ${state.stepRuns[k]} of ${P.STEP_MAX_RUNS})`, at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:step-launch', note: `${item.id}/${item.step}` });
+      updateBuild(item.id, (rec) => { if (rec) { rec.notes.push({ text: `${item.step}: started in parallel on ${item.account} (${item.model}), ${r.session || 'queued in agent slots'}, worktree ${r.dir}, branch ${r.branch} (run ${state.stepRuns[k]} of ${P.STEP_MAX_RUNS})`, at: nowIso() }); rec.updatedAt = nowIso(); } }, { by: 'dispatcher', action: 'pipeline:step-launch', note: `${item.id}/${item.step}` });
       launched.push({ ...item, session: r.session, slot: r.slot, dir: r.dir, runId: r.runId });
       logLine({ event: 'step-launched', build: item.id, step: item.step, account: item.account, model: item.model, session: r.session, dir: r.dir });
       crewSay('dispatcher', 'start', `Started ${item.id} ${item.step} in parallel on ${item.account}, ${item.model}.`, { ref: item.id });
@@ -1621,7 +1607,7 @@ export function fillRound({ state, env = process.env, alert = () => {}, rules, l
  */
 export function autoQueuePending({ state, env = process.env, alert = () => {}, fill = fillSettings(env), launchedNow = 0, now = Date.now() } = {}) {
   if (!fill.autoQueuePending) return [];
-  const store = loadStore(); const rules = rulesOf(store);
+  const store = rowsByStatus(OPEN_STATUSES); const rules = rulesOf(store);
   const builds = runnable(store);
   const queueWaits = builds.filter((b) => b.status === 'queued' && !BP.isHeld(b) && BP.openSteps(b).length);
   if (queueWaits.length) return [];
@@ -1635,7 +1621,7 @@ export function autoQueuePending({ state, env = process.env, alert = () => {}, f
   for (const l of take) {
     try {
       queue(l.id, { by: 'auto-queue (slots free)' });
-      withStore((s) => { const rec = storeCore.findBuild(s, l.id); if (rec) { rec.notes.push({ text: 'auto-queued: slots free', at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:auto-queue', note: l.id });
+      updateBuild(l.id, (rec) => { if (rec) { rec.notes.push({ text: 'auto-queued: slots free', at: nowIso() }); rec.updatedAt = nowIso(); } }, { by: 'dispatcher', action: 'pipeline:auto-queue', note: l.id });
       moved.push(l.id);
     } catch (e) { logLine({ event: 'auto-queue-failed', build: l.id, error: str(e.message, 300) }); }
   }
@@ -1654,7 +1640,7 @@ export function autoQueuePending({ state, env = process.env, alert = () => {}, f
  */
 export function requeueAfterParallel({ now = Date.now() } = {}) {
   const out = [];
-  for (const b of live(loadStore())) {
+  for (const b of rowsByStatus(['running']).builds) {
     if (b.status !== 'running' || b.pipeline?.session || b.pipeline?.note !== 'waiting on parallel steps') continue;
     if (b.steps.some((x) => !x.done && !x.skip && BP.claimLive(x.claim, now))) continue;
     const left = BP.openSteps(b).length;
@@ -1678,7 +1664,7 @@ export const pipelineLock = (env = process.env) => env.AXF_PIPELINE_LOCK || '/ru
  */
 export function onExit(id, { session = '', exit = 0, kind = '', phase = '', step = '', hit = '', account = '', env = process.env, runTick = true } = {}) {
   if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
-  const b = storeCore.findBuild(loadStore(), id);
+  const b = readBuild(id);
   if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   // pipeline-2@1: a step's session ended: written to the store now, then one pass (the retry or the next step goes out at once)
   if (b.flow === P2.FLOW) {
@@ -1729,10 +1715,10 @@ export function authWait(id, { account = '', error = '', session = '' } = {}) {
 export function authWaitsTick({ alert = () => {}, by = 'dispatcher' } = {}) {
   const all = loadAuthWaits(); const ids = Object.keys(all);
   if (!ids.length) return [];
-  const store = loadStore(); const own = loadOwnAccounts();
+  const own = loadOwnAccounts();
   const done = []; let changed = false;
   for (const id of ids) {
-    const w = all[id]; const b = storeCore.findBuild(store, id);
+    const w = all[id]; const b = readBuild(id);
     if (!b || b.deleted || (b.status !== 'pending' && !w.requeued)) { delete all[id]; changed = true; continue; }
     if (w.requeued) { if (Date.now() - Date.parse(w.requeuedAt || 0) > 7 * 86400e3) { delete all[id]; changed = true; } continue; }
     if (!P.authRecovered(w, own[w.account]?.health)) continue;
@@ -1773,7 +1759,7 @@ export function reapBuilds({ sl = slotsNow(), now = Date.now(), env = process.en
   if (sl.unavailable) return [];
   const held = new Set([...(sl.running ?? []), ...(sl.queue ?? [])].flatMap((x) => [x.id, x.session].filter(Boolean)));
   const out = [];
-  for (const b of live(loadStore())) {
+  for (const b of rowsByStatus(['running', 'waiting']).builds) {
     const p = b.pipeline;
     if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
     if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
@@ -1821,7 +1807,7 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
   for (const b of reapBuilds({ env })) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
   migrateOnHost(env);
-  const store = loadStore(); const settings = loadSettings();
+  const store = rowsByStatus(OPEN_STATUSES); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
   const findings = read.accounts.map((v) => P.checkAccount(v, read.rows.find((r) => r.name === v.name)));
@@ -1862,9 +1848,10 @@ export function tick({ env = process.env } = {}) {
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   migrateOnHost(env);
-  let store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  // the tick plans over the rows that wait or run (by status), never the settled history
+  let store = rowsByStatus(OPEN_STATUSES); const settings = loadSettings(); const rules = rulesOf(store);
   // the step-dependency migration (BUILD-PARALLEL §1): once, journalled; older builds keep no dependsOn
-  if (!store.meta?.versions?.stepDeps) { try { migrateStepDepsNow('dispatcher'); store = loadStore(); } catch (e) { logLine({ event: 'migrate-step-deps-failed', error: str(e.message, 300) }); } }
+  if (!store.meta?.versions?.stepDeps) { try { migrateStepDepsNow('dispatcher'); store = rowsByStatus(OPEN_STATUSES); } catch (e) { logLine({ event: 'migrate-step-deps-failed', error: str(e.message, 300) }); } }
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
@@ -1879,7 +1866,7 @@ export function tick({ env = process.env } = {}) {
   const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
   // one active build at a time (Brett, Nov 19 2026): while a Pipeline 2.0 build is active nothing else starts (a start
   // pulls main into its worktree); builds@1 builds already running carry on
-  { const act = P2.activeBuild(live(loadStore())).active;
+  { const act = P2.activeBuild(rowsByStatus(OPEN_STATUSES).builds).active;
     if (act && plan.launches.length) { for (const l of plan.launches) plan.waits.push({ id: l.id, why: `one active build at a time: ${act.id} is ${P2.labelOf(act.status, act.attempt)}` }); plan.launches = []; } }
   // the builds@1 planner runs only while a builds@1 build is in the Queue or being built (with none it planned, and
   // logged, builds this dispatcher will never start)
@@ -1916,7 +1903,7 @@ export function tick({ env = process.env } = {}) {
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, phase: l.phase || '', launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
-      if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
+      if (!b.branch) updateBuild(b.id, (rec) => { if (rec && !rec.branch) rec.branch = `claude/${b.id}`; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
@@ -1981,7 +1968,7 @@ const MAX_PICK_TRIES = 4;
 
 /**
  * The orchestrator's plan for every split build that waits (Pending, Queue): its next model and the account it expects
- * to take it (pipeline.planned). Written only when it changed, in one store write.
+ * to take it (pipeline.planned). Written only when it changed: one row update per build.
  */
 export function planAhead(store, accounts, settings = loadSettings()) {
   const want = new Map();
@@ -1993,10 +1980,7 @@ export function planAhead(store, accounts, settings = loadSettings()) {
     want.set(b.id, p);
   }
   if (!want.size) return [];
-  withStore((s) => {
-    for (const [id, p] of want) { const rec = storeCore.findBuild(s, id); if (rec) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), planned: p }) ?? undefined; }
-    return s;
-  }, { by: 'pipeline', action: 'pipeline:plan', note: [...want.keys()].join(', ').slice(0, 300) });
+  for (const [id, p] of want) updateBuild(id, (rec) => { if (rec) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), planned: p }) ?? undefined; }, { by: 'pipeline', action: 'pipeline:plan', note: id });
   for (const [id, p] of want) logLine({ event: 'planned', build: id, model: p.model, account: p.account, kind: p.kind });
   return [...want.keys()];
 }
@@ -2035,9 +2019,9 @@ export function request({ title, detail = '', said = '', priority = '', route = 
   const id = uniqueBuildId(t, new Set(loadStore().builds.flatMap(namesOf)));
   orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
   const p = normPriority(priority);
-  if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
+  if (p || route) updateBuild(id, (rec) => { if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } }, { by, action: 'pipeline:request', note: id });
   logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
-  return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+  return toQueue ? queue(id, { by }) : readBuild(id);
 }
 
 /** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
@@ -2119,7 +2103,7 @@ export function kickHealth({ env = process.env, settings = loadSettings(env), no
 /** Start verify.mjs run in the background when a landed build waits for its verify and none runs (AXF_PIPELINE_VERIFY=off skips). */
 export function kickVerify({ env = process.env } = {}) {
   if (env.AXF_PIPELINE_VERIFY === 'off' || (env.AXF_PIPELINE_LAUNCHER && env.AXF_PIPELINE_VERIFY !== 'on')) return null;
-  const waiting = V.waiting(loadStore().builds);
+  const waiting = V.waiting(rowsByStatus(['landed', 'built']).builds);
   if (!waiting.length) return null;
   if (V.locked(env)) return { started: false, why: 'a verify is running', waiting: waiting.map((b) => b.id) };
   const child = spawn(process.execPath, [join(HERE, 'verify.mjs'), 'run'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
@@ -2236,7 +2220,7 @@ async function main(argv) {
   if (cmd === 'land-alias') { const r = landAlias(rest[0], { by }); return out({ ok: true, ...r }, `${r.id} → ${r.alias}${r.dir ? `\nfolder ${r.dir}` : ''}${r.branch ? `\nbranch ${r.branch}` : ''}\n${r.note}`); }
   // done-means-merged@1: what is stuck, and the hand's Retry (the banner, the Attempts tab, REST / MCP / voice reach the same)
   if (cmd === 'attempts') {
-    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`no build "${rest[0] || ''}"`), { code: 2 });
+    const b = readBuild(rest[0] || ''); if (!b) throw Object.assign(new Error(`no build "${rest[0] || ''}"`), { code: 2 });
     const v = attemptsView(b);
     return out({ ok: true, id: b.id, status: b.status, ...v }, [`${b.id}: ${b.status}${v.failure ? ` · fixing ${v.failure.kind}${v.failure.step ? ` on ${v.failure.step}` : ''}: ${v.failure.why}` : ''}${v.escalation ? ` · escalated: ${v.escalation.why}` : ''}`,
       ...v.attempts.map((a) => `  ${String(a.n).padStart(2)} ${a.kind.padEnd(15)} ${(a.strategy + (a.fixStrategy ? `:${a.fixStrategy}` : '')).padEnd(18)} ${(a.model || '-').padEnd(5)} ${(a.account || a.source).padEnd(12)} ${a.result.padEnd(8)} ${a.startedAt} ${a.note.slice(0, 80)}`),
@@ -2252,7 +2236,7 @@ async function main(argv) {
   }
   // launch-retry / land-clash bounce / step-dedupe: the same calls as REST, MCP and voice (pipeline-requeue, pipeline-dedupe)
   if (cmd === 'launch-state') {
-    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`launch-state <build>: no build "${rest[0] || ''}"`), { code: 2 });
+    const b = readBuild(rest[0] || ''); if (!b) throw Object.assign(new Error(`launch-state <build>: no build "${rest[0] || ''}"`), { code: 2 });
     const v = launchState(b);
     return out({ ok: true, ...v }, `${v.id}: ${v.status} · run ${v.runs} · launch retries ${v.retries}${v.gaveUp ? ' (gave up)' : ''}${v.lastLaunchError ? ` · last launch error: ${v.lastLaunchError}` : ''}${v.retryAt ? ` · next try ${v.retryAt}` : ''}${v.bounce ? ` · bounced ${v.bounce.count}× (${v.bounce.step}): ${v.bounceReason}` : ''}`);
   }
@@ -2267,7 +2251,7 @@ async function main(argv) {
   }
   if (cmd === 'clash-bounce') {
     if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('clash-bounce <build> [--files a,b] [--head sha]'), { code: 2 });
-    const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const b = readBuild(rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
     const given = flag('files') ? flag('files').split(',').map((x) => x.trim()).filter(Boolean) : null;
     const c = given ? { files: given, head: flag('head') || '', clash: true } : clashOf(b);
     if (!c.clash) return out({ ok: true, id: b.id, bounced: null, clash: false }, `${b.id}: merges clean with main, nothing to bounce`);
@@ -2281,7 +2265,7 @@ async function main(argv) {
     return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s), ${r.total.before} → ${r.total.after} steps`);
   }
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
-  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'show') { const b = readBuild(rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'requeue-stuck') {
@@ -2315,7 +2299,7 @@ async function main(argv) {
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
-  if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
+  if (cmd === 'accounts') { const a = accountsNow(rowsByStatus(OPEN_STATUSES)); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
     if (has('fable')) patch.fable = flag('fable') === 'auto' ? undefined : flag('fable') === 'on';

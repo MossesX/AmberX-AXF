@@ -4,8 +4,8 @@
  * the axf-data Postgres tables once cut over (Pipeline 2.0: no store.json projection), so any session on any machine or
  * account reads it and carries the build on. Each build profile (build-profiles@1) is a field on the builds, and
  * this CLI reads and writes the active profile's view of the store (orchestrator@1). Every write is versioned in
- * `_claude/builds/journal/`. The per-profile orchestrator.json files are the read-only pre-migration snapshots.
- * AXF_ORCH_FILE points at a plain orchestrator@1 file instead (old-style tests).
+ * the store's journal. There is no orchestrator.json status file (Nov 25 2026): a build's status is its row in the store.
+ * AXF_ORCH_FILE points at a scratch orchestrator@1 file instead (tests only; never set on a host).
  *
  *   node apps/console-web/plugins/build-orchestrator/orchestrator.mjs            list (one line per build)
  *   … next [id]                       what to do next (default: the first build with work left)
@@ -28,7 +28,7 @@
  *   … retry <id> [strategy] [--why w] Retry by hand: the ladder starts over (a strategy given runs at once, never above the pin).
  *                                     A Pipeline 2.0 build: the build and its failed steps leave `failed` forward with
  *                                     their attempt counts reset (the one way on after a give-up; no strategy)
- *   … where                           the tracker file in use
+ *   … where                           where the builds are (the store, or the AXF_ORCH_FILE scratch file of a test)
  *   … tick [--build <id>]             Pipeline 2.0 layer 1 (the cron every minute, deploy/watchdog/cron.mjs): one
  *                                     dispatcher round, under the dispatcher's lock. Without --build: the full round
  *                                     (pipeline.mjs tick: builds@1 work, then pipeline2.mjs advance() for every
