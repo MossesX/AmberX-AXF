@@ -353,6 +353,184 @@ def test_other_domain_tables():
         assert code(c.get('/v1/_meta/tables', headers=H('console'))) == 'forbidden'
 
 
+def test_plugin_documents_are_rows():
+    """Plugin documents (build emergency-remove-every-leftover-js): lists and `id → object` maps are rows of the plugin's
+    table; one item is read, written and removed on its own (data-patch@1 with `item` / `delete`, and at cursor level)."""
+    import tables as TB
+    with PgEnv() as c:
+        st = c.app.state.store
+        state = {'$axf': 'crew@1', 'rules': {'r': 1}, 'notices': [{'at': 't', 'text': 'n'}], 'updatedAt': 't0',
+                 'agents': {'joey': {'status': 'on', 'salary': 5, 'history': [1]}, 'gina': {'status': 'off'}},
+                 'messages': [{'id': 'm1', 'at': 't1', 'from': 'joey', 'kind': 'say', 'text': 'hi'}, {'id': 'm2', 'at': 't2', 'text': 'yo'}]}
+        c.put('/v1/plugins/agent-swarm/state.json', content=json.dumps(state), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/agent-swarm/state.json', headers=H()).json() == json.loads(canonical(state))
+        rows = st.fetchall('SELECT section, rid, status, at FROM plugin_agent_swarm ORDER BY section, pos')
+        assert [(r['section'], r['rid']) for r in rows] == [('state.json#agents', 'gina'), ('state.json#agents', 'joey'), ('state.json#messages', 'm1'), ('state.json#messages', 'm2')], rows
+        assert rows[1]['status'] == 'on' and rows[2]['at'] == 't1'
+        assert st.fetchone("SELECT head, lists FROM store_heads WHERE ns='plugins' AND path='agent-swarm/state.json'")['head'].keys() == {'$axf', 'rules', 'notices', 'updatedAt'}
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='agent-swarm/state.json'")['table_name'] == 'plugin_agent_swarm__state'
+        # one message changed, one added, one agent (a map entry) removed: the other rows keep their hash
+        before = {r['rid']: r['doc_hash'] for r in st.fetchall('SELECT rid, doc_hash FROM plugin_agent_swarm')}
+        p = c.post('/v1/plugins/agent-swarm/state.json:patch', json={'head': {'updatedAt': 't3'}, 'lists': {
+            'messages': [{'key': 'm2', 'item': {'id': 'm2', 'at': 't2', 'text': 'edited'}}, {'key': 'm3', 'ifRev': None, 'item': {'id': 'm3', 'text': 'new'}}],
+            'agents': [{'key': 'gina', 'delete': True}, {'key': 'ross', 'item': {'status': 'on'}}]}}, headers=H()).json()
+        assert (p['applied'], p['added'], p['record']['rev']) == (4, 2, 2), p
+        got = c.get('/v1/plugins/agent-swarm/state.json', headers=H()).json()
+        assert got['updatedAt'] == 't3' and [m['id'] for m in got['messages']] == ['m1', 'm2', 'm3'] and got['messages'][1]['text'] == 'edited'
+        assert got['agents'] == {'joey': state['agents']['joey'], 'ross': {'status': 'on'}} and got['notices'] == state['notices']
+        after = {r['rid']: r['doc_hash'] for r in st.fetchall('SELECT rid, doc_hash FROM plugin_agent_swarm')}
+        assert after['m1'] == before['m1'] and after['joey'] == before['joey'] and after['m2'] != before['m2'] and 'gina' not in after
+        assert c.get('/v1/plugins/agent-swarm/state.json?meta=1', headers=H()).json()['etag'] == etag_of(2, canonical(got).encode())
+        # a row delete is one change: removing a row that is not there changes nothing; delete with an item is refused
+        c.post('/v1/plugins/agent-swarm/state.json:patch', json={'lists': {'messages': [{'key': 'm1', 'delete': True}, {'key': 'nope', 'delete': True}]}}, headers=H())
+        assert [m['id'] for m in c.get('/v1/plugins/agent-swarm/state.json', headers=H()).json()['messages']] == ['m2', 'm3']
+        assert code(c.post('/v1/plugins/agent-swarm/state.json:patch', json={'lists': {'messages': [{'key': 'm2', 'delete': True, 'item': {'id': 'm2'}}]}}, headers=H())) == 'invalid_body'
+        assert code(c.post('/v1/plugins/agent-swarm/state.json:patch', json={'lists': {'messages': [{'key': 'm2', 'item': {'id': 'other'}}]}}, headers=H())) == 'invalid_body'
+        assert code(c.post('/v1/plugins/agent-swarm/state.json:patch', json={'lists': {'notices': [{'key': 'x', 'delete': True}]}}, headers=H())) == 'invalid_body'
+        # cursor level: one row by its key, the document never assembled
+        t = TB.by_name('plugin_agent_swarm__state')
+        with st.tx() as cur:
+            assert t.row_ids(cur, 'messages') == ['m2', 'm3'] and t.row_ids(cur, 'agents') == ['joey', 'ross']
+            assert t.get_row(cur, 'agents', 'joey') == state['agents']['joey'] and t.get_row(cur, 'messages', 'm1') is None
+            assert t.put_row(cur, 'plugins', 'agent-swarm/state.json', 'messages', {'id': 'm4', 'text': 'row'})['added'] == 1
+            assert t.put_row(cur, 'plugins', 'agent-swarm/state.json', 'agents', {'status': 'off'}, 'joey')['added'] == 0
+            assert t.delete_row(cur, 'plugins', 'agent-swarm/state.json', 'messages', 'm2') is True
+            assert t.delete_row(cur, 'plugins', 'agent-swarm/state.json', 'messages', 'm2') is False
+            assert json.loads(t.read(cur, 'plugins', 'agent-swarm/state.json'))['messages'] == [{'id': 'm3', 'text': 'new'}, {'id': 'm4', 'text': 'row'}]
+            try:
+                t.get_row(cur, 'notices', 'x')
+                raise AssertionError('notices is not a keyed list')
+            except ValueError:
+                pass
+        # a list that does not have the shape stays in the head; the document still reads back as written
+        odd = {'agents': {'a': 1}, 'messages': ['text'], 'x': 1}
+        c.put('/v1/plugins/agent-swarm/state.json', content=json.dumps(odd), headers=J(**{'if-match': '3'}))
+        assert c.get('/v1/plugins/agent-swarm/state.json', headers=H()).json() == odd
+        assert st.fetchone("SELECT COUNT(*) AS n FROM plugin_agent_swarm WHERE section LIKE 'state.json#%%'")['n'] == 0
+
+        # a document that is an array: rows keyed by id, the same patch; a second document of the plugin shares the table
+        walks = [{'id': 'w1', 'title': 'One', 'steps': [1]}, {'id': 'w2', 'title': 'Two'}]
+        c.put('/v1/plugins/molly-guide/walkthroughs.json', content=json.dumps(walks), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/molly-guide/walkthroughs.json', headers=H()).json() == walks
+        c.post('/v1/plugins/molly-guide/walkthroughs.json:patch', json={'lists': {'': [{'key': 'w1', 'delete': True}, {'key': 'w3', 'item': {'id': 'w3', 'title': 'Three'}}]}}, headers=H())
+        assert c.get('/v1/plugins/molly-guide/walkthroughs.json', headers=H()).json() == [walks[1], {'id': 'w3', 'title': 'Three'}]
+        assert code(c.post('/v1/plugins/molly-guide/walkthroughs.json:patch', json={'head': {'x': 1}}, headers=H())) == 'invalid_body'
+        m = TB.by_name('plugin_molly_guide__walkthroughs')
+        with st.tx() as cur:
+            assert m.get_row(cur, '', 'w3') == {'id': 'w3', 'title': 'Three'}
+        # a row can be put before the document exists: the head is made
+        runs = TB.by_name('plugin_agent_swarm__runs')
+        with st.tx() as cur:
+            runs.put_row(cur, 'plugins', 'agent-swarm/runs.json', 'runs', {'jobId': 'j1', 'status': 'done'})
+            assert json.loads(runs.read(cur, 'plugins', 'agent-swarm/runs.json')) == {'runs': [{'jobId': 'j1', 'status': 'done'}]}
+            assert runs.delete_row(cur, 'plugins', 'agent-swarm/runs.json', 'runs', 'j1') is True
+        # a whole-number key (a PR number) names its row
+        mq = {'on': True, 'waiting': [{'pr': 12, 'title': 'a'}, {'pr': 15, 'title': 'b'}], 'merged': [], 'kicked': []}
+        c.put('/v1/plugins/push-banner/merge-queue.json', content=json.dumps(mq), headers=J(**{'if-none-match': '*'}))
+        assert [r['rid'] for r in st.fetchall("SELECT rid FROM plugin_push_banner WHERE section='merge-queue.json#waiting' ORDER BY pos")] == ['12', '15']
+        c.post('/v1/plugins/push-banner/merge-queue.json:patch', json={'lists': {'waiting': [{'key': '12', 'delete': True}], 'merged': [{'key': '12', 'item': {'pr': 12, 'sha': 'x'}}]}}, headers=H())
+        assert c.get('/v1/plugins/push-banner/merge-queue.json', headers=H()).json() == {'on': True, 'waiting': [{'pr': 15, 'title': 'b'}], 'merged': [{'pr': 12, 'sha': 'x'}], 'kicked': []}
+        # documents of other namespaces: the builds area and phone
+        adv = {'$axf': 'advice@1', 'builds': {'b1': {'tips': ['x']}, 'b2': {'tips': []}}}
+        c.put('/v1/builds/advice.json', content=json.dumps(adv), headers=J(**{'if-none-match': '*'}))
+        c.post('/v1/builds/advice.json:patch', json={'lists': {'builds': [{'key': 'b2', 'delete': True}]}}, headers=H())
+        assert c.get('/v1/builds/advice.json', headers=H()).json() == {'$axf': 'advice@1', 'builds': {'b1': {'tips': ['x']}}}
+        names = {t['name']: t for t in c.get('/v1/_meta/tables', headers=H()).json()['tables']}
+        assert 'agent-swarm' in names['plugin_agent_swarm']['holds'] and names['plugin_molly_guide']['rows'] == 2, names['plugin_agent_swarm']
+        # every plugin document has a keyed list: a single row can always be read, put and removed
+        for t in TB.PLUGIN_DOCS:
+            assert t.patchable() and all(s.table.startswith('plugin_') for s in t.lists.values()), t.name
+
+
+def test_plugin_families_and_key_rows():
+    """Families of documents (one per agent, chat, user…) are rows reached by the item's id; every other JSON object
+    under plugins/ and console/ (and the per-item collections of builds/, ui-review/, sessions/) is one row per key.
+    The pipeline status file (orchestrator.json) is claimed by none of them."""
+    import tables as TB
+    with PgEnv() as c:
+        st = c.app.state.store
+        mem = {'$axf': 'agent-memory@1', 'scope': 'x', 'items': [{'id': 'a', 'kind': 'fact', 'text': 'one', 'hits': 2}, {'id': 'b', 'text': 'two'}]}
+        c.put('/v1/plugins/agent-manager/memory/joey.json', content=json.dumps(mem), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/agent-manager/memory/joey.json', headers=H()).json() == mem
+        assert [(r['rid'], r['hits']) for r in st.fetchall('SELECT rid, hits FROM plugin_agent_memory ORDER BY pos')] == [('a', 2), ('b', None)]
+        t = TB.AGENT_MEMORY
+        with st.tx() as cur:
+            assert t.get_row(cur, 'plugins', 'agent-manager/memory/joey.json', 'items', 'b') == {'id': 'b', 'text': 'two'}
+            assert t.put_row(cur, 'plugins', 'agent-manager/memory/joey.json', 'items', {'id': 'b', 'text': 'TWO'})['added'] == 0
+            assert t.put_row(cur, 'plugins', 'agent-manager/memory/joey.json', 'items', {'id': 'c', 'text': 'three'})['added'] == 1
+            assert t.delete_row(cur, 'plugins', 'agent-manager/memory/joey.json', 'items', 'a') is True
+            assert json.loads(t.read(cur, 'plugins', 'agent-manager/memory/joey.json'))['items'] == [{'id': 'b', 'text': 'TWO'}, {'id': 'c', 'text': 'three'}]
+            # a row of a document that does not exist yet
+            t.put_row(cur, 'plugins', 'agent-manager/memory/gina.json', 'items', {'id': 'z', 'text': 'first'})
+            assert json.loads(t.read(cur, 'plugins', 'agent-manager/memory/gina.json')) == {'items': [{'id': 'z', 'text': 'first'}]}
+        # a document that is a map id → object (the GitHub cache): one row per entry
+        gh = {'/repos/x/pulls/1': {'at': 5, 'etag': 'e1', 'data': {'n': 1}}, '/repos/x/pulls/2': {'at': 6, 'etag': 'e2', 'data': {'n': 2}}}
+        c.put('/v1/plugins/push-banner/gh-cache.json', content=json.dumps(gh), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/push-banner/gh-cache.json', headers=H()).json() == gh
+        with st.tx() as cur:
+            assert TB.GH_CACHE.get_row(cur, 'plugins', 'push-banner/gh-cache.json', TB.MAP, '/repos/x/pulls/2') == gh['/repos/x/pulls/2']
+            TB.GH_CACHE.put_row(cur, 'plugins', 'push-banner/gh-cache.json', TB.MAP, {'at': 7, 'etag': 'e3'}, '/repos/x/pulls/3')
+            assert TB.GH_CACHE.delete_row(cur, 'plugins', 'push-banner/gh-cache.json', TB.MAP, '/repos/x/pulls/1') is True
+            assert sorted(json.loads(TB.GH_CACHE.read(cur, 'plugins', 'push-banner/gh-cache.json'))) == ['/repos/x/pulls/2', '/repos/x/pulls/3']
+        # crew chats, assistant sessions (rid = the event's seq), conversations
+        chat = {'id': 'group', 'title': 'Crew', 'agents': {'joey': {}}, 'messages': [{'id': 'm1', 'at': 't', 'from': 'joey', 'text': 'hi'}]}
+        c.put('/v1/console/agent-swarm/chats/group.json', content=json.dumps(chat), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/console/agent-swarm/chats/group.json', headers=H()).json() == chat
+        assert st.fetchone('SELECT rid, sender, text FROM crew_chat_messages') == {'rid': 'm1', 'sender': 'joey', 'text': 'hi'}
+        sess = {'id': 's', 'lastSeq': 2, 'events': [{'seq': 1, 'at': 1.5, 'kind': 'user', 'data': {}}, {'seq': 2, 'at': 2, 'kind': 'done'}]}
+        c.put('/v1/plugins/ai-assistant/sessions/s.json', content=json.dumps(sess), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/ai-assistant/sessions/s.json', headers=H()).json() == json.loads(canonical(sess))
+        with st.tx() as cur:
+            assert TB.AI_SESSIONS.get_row(cur, 'plugins', 'ai-assistant/sessions/s.json', 'events', '2')['kind'] == 'done'
+        # an item kept as its own key is one row: plain GET / PUT / DELETE of the key
+        job = {'$axf': 'job@1', 'id': 'j1', 'title': 'Job', 'status': 'open', 'steps': [1, 2]}
+        c.put('/v1/plugins/some-plugin/jobs/j1.json', content=json.dumps(job), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/some-plugin/jobs/j1.json', headers=H()).json() == job
+        assert st.fetchone('SELECT folder, item, schema, id, status, extra FROM plugin_docs') == {'folder': 'some-plugin', 'item': 'j1', 'schema': 'job@1', 'id': 'j1', 'status': 'open', 'extra': {'steps': [1, 2]}}
+        with st.tx() as cur:
+            assert TB.PLUGIN_KEY_ROWS.get_row(cur, 'plugins', 'some-plugin/jobs/j1.json') == job
+            TB.PLUGIN_KEY_ROWS.put_row(cur, 'plugins', 'some-plugin/jobs/j1.json', {**job, 'status': 'done'})
+            assert TB.PLUGIN_KEY_ROWS.get_row(cur, 'plugins', 'some-plugin/jobs/j1.json')['status'] == 'done'
+        assert c.delete('/v1/plugins/some-plugin/jobs/j1.json', headers=H(**{'if-match': '1'})).status_code == 200
+        assert st.fetchone('SELECT COUNT(*) AS n FROM plugin_docs')['n'] == 0
+        puts = {'console/nightly.json': 'console_docs', 'builds/shipped/b1.json': 'build_docs', 'builds/pipeline/state.json': 'build_docs', 'builds/profiles/all/matrices.json': 'build_profile_matrices',
+                'ui-review/predictions/p.json': 'ui_review_docs', 'sessions/archive-inbox/i.json': 'session_inbox', 'phone/aliases.json': 'plugin_phone_connect__aliases',
+                'builds/pipeline/accounts.json': 'pipeline_accounts', 'plugins/maintenance/held.json': 'plugin_maps',
+                # not claimed: the pipeline status file and its copies, other builds/ records, arrays with no table, \u0000
+                'builds/orchestrator.json': '', 'console/framework/plan/profiles/p/_claude/builds/orchestrator.json': '', 'builds/profiles/p/orchestrator.json': '',
+                'builds/reconcile/x.json': '', 'builds/journal-large/x.json': ''}
+        for key, table in puts.items():
+            body = {'id': key, 'matrices': [{'id': 'm'}], 'a': {'x': 1}}
+            assert c.put(f'/v1/{key}', content=json.dumps(body), headers=J(**{'if-none-match': '*'})).status_code == 200, key
+            ns, _, path = key.partition('/')
+            assert st.fetchone('SELECT table_name FROM keys WHERE ns=%s AND path=%s', (ns, path))['table_name'] == table, key
+            assert c.get(f'/v1/{key}', headers=H()).json() == body, key
+        c.put('/v1/plugins/some-plugin/list.json', content='[1,2]', headers=J(**{'if-none-match': '*'}))
+        c.put('/v1/plugins/some-plugin/nul.json', content=json.dumps({'s': 'a\u0000b'}), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/some-plugin/nul.json', headers=H()).json() == {'s': 'a\u0000b'} and c.get('/v1/plugins/some-plugin/list.json', headers=H()).json() == [1, 2]
+        assert st.fetchone("SELECT COUNT(*) AS n FROM keys WHERE path LIKE 'some-plugin/%%' AND table_name = '' AND NOT deleted")['n'] == 2
+
+        # backfill: records written before these tables existed move in, byte for byte, rev and etag unchanged
+        old = {'plugins/agent-swarm/state.json': {'agents': {'a': {'status': 'on'}}, 'messages': [{'id': 'm', 'text': 't'}], 'rules': {}},
+               'plugins/molly-guide/walkthroughs.json': [{'id': 'w', 'steps': []}],
+               'plugins/other/items/x.json': {'id': 'x', 'n': 1},
+               'console/agent-swarm/chats/c2.json': {'id': 'c2', 'messages': [{'id': 'm', 'text': 't'}]},
+               'builds/shipped/old.json': {'id': 'old', 'files': ['a']},
+               'builds/orchestrator.json.bak.json': {'builds': []}}
+        for key, doc in old.items():
+            ns, _, path = key.partition('/')
+            st.q('INSERT INTO records (ns, path, data) VALUES (%s, %s, %s)', (ns, path, json.dumps(doc)))
+            st.q("INSERT INTO keys (ns, path, kind, rev, etag, at, actor, size, content_type, deleted, entries, table_name) VALUES (%s, %s, 'record', 3, %s, 't', 'x', 1, 'application/json', false, 0, '')", (ns, path, 'e-' + path))
+        rep = st.backfill()
+        assert rep['failed'] == [] and rep['moved'] == {'plugin_agent_swarm__state': 1, 'plugin_molly_guide__walkthroughs': 1, 'plugin_docs': 1, 'crew_chat_messages': 1, 'build_docs': 1}, rep
+        for key, doc in old.items():
+            r = c.get(f'/v1/{key}', headers=H())
+            assert r.json() == doc and r.headers['etag'].strip('"') == 'e-' + key.partition('/')[2], key
+        assert st.fetchone("SELECT COUNT(*) AS n FROM records WHERE path IN ('agent-swarm/state.json', 'other/items/x.json', 'shipped/old.json')")['n'] == 0
+        again = st.backfill()   # idempotent; the two bodies no table can hold (an array, \u0000) are looked at and left in records
+        assert again['moved'] == {} and again['failed'] == [] and again['checked'] == 2, again
+
+
 def test_plan_tables_and_backfill():
     """s4.2: plan, profiles, projects, plan media and Plan Studio documents are rows; keys stored before the tables
     existed (records, plain blobs) move in on connect with rev and etag unchanged."""
