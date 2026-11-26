@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10432,
- "updatedAt": "2026-11-26T23:07:55.163Z",
+ "rev": 10433,
+ "updatedAt": "2026-11-26T23:08:24.877Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -382927,7 +382927,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:07:36.720Z",
+   "updatedAt": "2026-11-26T23:08:12.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -383233,13 +383233,12 @@
      "done": false,
      "doneAt": "",
      "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T23:07:36.809Z",
-     "statusAt": "2026-11-26T23:07:36.720Z",
+     "updatedAt": "2026-11-26T23:08:12.777Z",
+     "statusAt": "2026-11-26T23:08:12.613Z",
      "statusBy": "orchestrator",
-     "attempt": 2,
-     "failedFrom": "sending",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -383288,9 +383287,16 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s2 already has a live session: tmux axf-emergency-remove-every-leftover-js--s2--joey; claude pid 4037520"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:08:12.613Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s2",
      "branch": "claude/emergency-remove-every-leftover-js--s2",
@@ -383683,7 +383689,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s1",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:07:42.262Z",
+   "updatedAt": "2026-11-26T23:07:56.721Z",
    "builtAt": "",
    "notes": [
     {
@@ -383871,12 +383877,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 17,
+     "rev": 18,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:07:42.351Z",
-     "statusAt": "2026-11-26T23:07:42.262Z",
+     "updatedAt": "2026-11-26T23:07:56.804Z",
+     "statusAt": "2026-11-26T23:07:56.721Z",
      "statusBy": "orchestrator",
      "attempt": 5,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -383967,9 +383974,16 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:07:56.721Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s1 already has a live session: lock axf-emergency-check-can-these-plugins---s1--joey (heartbeat 2026-11-26T22:48:47.309Z)"
       }
      ],
-     "status": "sending",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s1",
      "branch": "claude/emergency-check-can-these-plugins---s1",
