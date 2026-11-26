@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-26T22:50:21.420Z",
+ "updatedAt": "2026-11-26T22:50:51.459Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9834,7 +9834,7 @@
    "branch": "lander/emergency-check-can-these-plugins-",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T22:50:00.844Z",
+   "updatedAt": "2026-11-26T22:50:33.967Z",
    "builtAt": "",
    "notes": [
     {
@@ -9916,6 +9916,10 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--joey, shared account login)",
      "at": "2026-11-26T22:50:00.844Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--joey, shared account login)",
+     "at": "2026-11-26T22:50:33.967Z"
     }
    ],
    "approvals": [],
