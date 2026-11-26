@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10427,
- "updatedAt": "2026-11-26T22:50:51.459Z",
+ "rev": 10428,
+ "updatedAt": "2026-11-26T22:51:25.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -382568,7 +382568,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T22:49:45.763Z",
+   "updatedAt": "2026-11-26T22:51:12.189Z",
    "builtAt": "",
    "notes": [
     {
@@ -382971,11 +382971,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:51:12.261Z",
+     "statusAt": "2026-11-26T22:51:12.189Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -382983,9 +382983,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:50:55.918Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:51:12.189Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s6",
      "branch": "claude/emergency-remove-every-leftover-js--s6"
     },
