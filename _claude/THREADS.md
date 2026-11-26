@@ -845,24 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:09 UTC · `orchestrator-dropdowns-open-theme` added (0 steps) (all) · console
-- 2026-11-25 11:09 UTC · `orchestrator-dropdowns-open-theme` → queued, note (all) · console
-- 2026-11-25 11:10 UTC · `orchestrator-dropdowns-open-theme` → pending, note, removed (all) · console
-- 2026-11-25 11:10 UTC · `orchestrator-fix-dead-dropdowns-tap-slot` note (all) · orchestrator
-- 2026-11-25 11:10 UTC · `themed-picker-library-dropdowns` added (0 steps) (all) · console
-- 2026-11-25 11:10 UTC · `themed-picker-library-dropdowns` → queued, note (all) · console
-- 2026-11-25 11:11 UTC · `clash-fix-console-app-tabs-2` merged, note (all) · reconciler
-- 2026-11-25 11:12 UTC · `clash-fix-console-app-tabs-2` note (all) · orchestrator
-- 2026-11-25 11:12 UTC · `themed-picker-library-dropdowns-2` added (0 steps) (all) · console
-- 2026-11-25 11:12 UTC · `themed-picker-library-dropdowns-2` → queued, note (all) · console
-- 2026-11-25 11:13 UTC · `themed-picker-library-dropdowns` → pending, note, removed (all) · console
-- 2026-11-25 11:14 UTC · `themed-picker-library-dropdowns` note (all) · orchestrator
-- 2026-11-25 11:14 UTC · `newest-first-orchestrator-plan-studio` added (0 steps) (all) · console
-- 2026-11-25 11:15 UTC · `themed-picker-library-dropdowns-2` note (all) · orchestrator
-- 2026-11-25 11:15 UTC · `newest-first-orchestrator-plan-studio` → queued, note (all) · console
-- 2026-11-25 11:17 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · orchestrator
-- 2026-11-25 11:17 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
-- 2026-11-25 11:17 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
 - 2026-11-25 11:17 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 - 2026-11-25 11:17 UTC · `postgres-audit` note (all) · orchestrator
 - 2026-11-25 11:17 UTC · `plan-tree-multi-select` note (all) · orchestrator
@@ -1245,6 +1227,24 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 23:05 UTC · `claude-emergency-access` → assigning-models (all) · orchestrator
 - 2026-11-26 23:05 UTC · `claude-emergency-access` → ready, note (all) · orchestrator
 - 2026-11-26 23:06 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-26 23:09 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:11 UTC · `bugs-board` → fixing, note (all) · watchdog
+- 2026-11-26 23:12 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-26 23:12 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-26 23:12 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:12 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:12 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 23:13 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:13 UTC · `claude-emergency-access` → sending (all) · orchestrator
+- 2026-11-26 23:14 UTC · `emergency-rip-out-the-7-mb-status-` s3 undone, note (all) · watchdog
+- 2026-11-26 23:14 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-26 23:14 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-26 23:14 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-26 23:15 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:16 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:16 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 23:16 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:17 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 
