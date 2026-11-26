@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10435,
- "updatedAt": "2026-11-26T23:18:58.405Z",
+ "rev": 10436,
+ "updatedAt": "2026-11-26T23:19:27.415Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -383817,7 +383817,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s1",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:18:31.923Z",
+   "updatedAt": "2026-11-26T23:19:08.787Z",
    "builtAt": "",
    "notes": [
     {
@@ -384328,10 +384328,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:18:14.034Z",
-     "statusAt": "2026-11-26T23:18:13.882Z",
+     "updatedAt": "2026-11-26T23:19:08.937Z",
+     "statusAt": "2026-11-26T23:19:08.787Z",
      "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
@@ -384375,12 +384375,20 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T23:19:08.787Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-check-can-these-plugins---s4--gina on hulu0241"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
-     "branch": "claude/emergency-check-can-these-plugins---s4"
+     "branch": "claude/emergency-check-can-these-plugins---s4",
+     "tmux": "axf-emergency-check-can-these-plugins---s4--gina"
     },
     {
      "id": "s5",
@@ -384756,7 +384764,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
