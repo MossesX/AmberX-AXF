@@ -37,8 +37,7 @@ export const registryFile = () => baseDataPath(PROJECTS_REL);
 
 /** The registry (base project always there). Never throws. */
 export function readProjects() {
-  let raw = null;
-  raw = dataFiles.readJsonSync(registryFile(), null); // missing or damaged → base only
+  const raw = dataFiles.readJsonSync(registryFile(), null); // missing or damaged → base only
   return core.normalizeRegistry(raw, { baseProfile: BASE_PROFILE });
 }
 
