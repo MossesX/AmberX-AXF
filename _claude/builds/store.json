@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10429,
- "updatedAt": "2026-11-26T22:51:59.941Z",
+ "rev": 10430,
+ "updatedAt": "2026-11-26T23:06:28.715Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -78285,19 +78285,27 @@
    "title": "Requests ledger: every single thing Brett asked for, in one list",
    "category": "Console > Builds",
    "detail": "Upgrade the Build Breaker plugin into the requests ledger: request@1 record per ask (builds, addenda, plans, bugs, follow-ups, crew), backfill, expandable rows with verbatim words, queue position, status and hooks; capture going forward via REST/MCP/CLI.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/requests-ledger",
    "pr": "#310",
    "createdAt": "2026-11-04T12:44:14.620Z",
-   "updatedAt": "2026-11-15T00:45:56.376Z",
-   "builtAt": "2026-11-04T13:19:14.882Z",
+   "updatedAt": "2026-11-26T23:01:31.197Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #310 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-26T23:01:31.197Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #310 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-26T23:01:31.197Z"
     }
    ],
    "approvals": [],
@@ -78313,6 +78321,14 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-26T23:01:31.197Z",
+    "why": "landing for 22 days: PR #310 was closed without merging and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -78430,7 +78446,7 @@
     "all"
    ],
    "order": {
-    "all": 168
+    "all": 179
    },
    "kind": "build",
    "planRef": "",
@@ -112667,7 +112683,7 @@
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -112789,6 +112805,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [
@@ -112974,7 +113002,7 @@
     "all"
    ],
    "order": {
-    "all": 573
+    "all": 616
    },
    "kind": "build",
    "planRef": "",
@@ -113835,7 +113863,7 @@
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -113957,6 +113985,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -114133,7 +114173,7 @@
     "all"
    ],
    "order": {
-    "all": 579
+    "all": 620
    },
    "kind": "build",
    "planRef": "",
@@ -209773,7 +209813,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -209919,6 +209959,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -210010,7 +210062,7 @@
     "all"
    ],
    "order": {
-    "all": 885
+    "all": 920
    },
    "kind": "build",
    "planRef": "",
@@ -212256,7 +212308,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -212402,6 +212454,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -212603,7 +212667,7 @@
     "all"
    ],
    "order": {
-    "all": 895
+    "all": 935
    },
    "kind": "build",
    "planRef": "",
@@ -213957,7 +214021,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -214099,6 +214163,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -214190,7 +214266,7 @@
     "all"
    ],
    "order": {
-    "all": 900
+    "all": 943
    },
    "kind": "build",
    "planRef": "",
@@ -226249,7 +226325,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -226423,6 +226499,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [
@@ -227015,7 +227103,7 @@
     "all"
    ],
    "order": {
-    "all": 925
+    "all": 954
    },
    "kind": "build",
    "planRef": "",
@@ -262447,7 +262535,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T22:59:01.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -262597,6 +262685,14 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
     }
    ],
    "approvals": [],
@@ -263390,7 +263486,7 @@
     "all"
    ],
    "order": {
-    "all": 958
+    "all": 961
    },
    "kind": "build",
    "planRef": "",
@@ -330663,7 +330759,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:36:53.146Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T22:59:01.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -330777,6 +330873,14 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
     }
    ],
    "approvals": [],
@@ -331107,7 +331211,7 @@
     "all"
    ],
    "order": {
-    "all": 1010
+    "all": 1012
    },
    "kind": "build",
    "planRef": "",
@@ -342560,7 +342664,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:16:59.516Z",
-   "updatedAt": "2026-11-26T22:48:02.234Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -342682,6 +342786,18 @@
     {
      "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
      "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -342915,7 +343031,7 @@
     "all"
    ],
    "order": {
-    "all": 1029
+    "all": 1038
    },
    "kind": "build",
    "planRef": "",
@@ -370065,14 +370181,14 @@
    "title": "Let Claude send builds to emergency",
    "category": "",
    "detail": "Brett, Nov 24: he wants Claude (the console token through MCP, REST, CLI, voice) to be able to send a build to an emergency slot when he says so. Today build-orchestrator/pipeline-emergency is Brett-only from his own signed-in console and refuses the console token with 403. Change that rule as Brett decides (e.g. allow it, logged with who asked and why, with an FYI to his phone).",
-   "status": "split",
+   "status": "ready",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "lander/claude-emergency-access",
-   "pr": "#933",
+   "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-26T22:46:51.143Z",
+   "updatedAt": "2026-11-26T23:05:34.627Z",
    "builtAt": "",
    "notes": [
     {
@@ -370094,6 +370210,30 @@
     {
      "text": "Reconciler: branch lander/claude-emergency-access (PR #933); PR #933",
      "at": "2026-11-26T22:46:51.143Z"
+    },
+    {
+     "text": "Clash: 6 steps of 6 touch files that B-1102 (EMERGENCY: rip out the 7 MB status file), B-1100 (EMERGENCY: Remove every leftover JSON data file and everything that uses it) have not landed yet (apps/console-web/plugins/build-orchestrator/server, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/claude-settings, +6 more). It carries on by itself: every step runs now, and a conflict with main is fixed by a session. To answer by hand: Run all now (run-all), or Defer all 6 steps (defer).",
+     "at": "2026-11-26T22:58:36.564Z"
+    },
+    {
+     "text": "Clash: 6 steps of 6 touch files that B-1102 (EMERGENCY: rip out the 7 MB status file), B-1100 (EMERGENCY: Remove every leftover JSON data file and everything that uses it) have not landed yet (apps/console-web/plugins/build-orchestrator/server, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/claude-settings, +6 more). It carries on by itself: every step runs now, and a conflict with main is fixed by a session. To answer by hand: Run all now (run-all), or Defer all 6 steps (defer).",
+     "at": "2026-11-26T22:58:49.316Z"
+    },
+    {
+     "text": "Draft PR #933 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/933.",
+     "at": "2026-11-26T22:59:23.832Z"
+    },
+    {
+     "text": "Draft PR #933 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/933.",
+     "at": "2026-11-26T22:59:28.935Z"
+    },
+    {
+     "text": "Draft PR #933 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/933.",
+     "at": "2026-11-26T22:59:42.556Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it says \"contract\"); s2 Fable (Contracts: it says \"contract\"); s3 Fable (Contracts: it says \"schema\"); s4 Fable (Contracts: it touches framework/spec/fixtures/console-control.json); s5 Fable (Contracts: it says \"contract\"); s6 Fable (Contracts: it says \"contract\").",
+     "at": "2026-11-26T23:05:34.628Z"
     }
    ],
    "approvals": [],
@@ -370120,11 +370260,26 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"contract\"",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "dependents": 14,
+       "priorFailures": 0
+      }
+     },
+     "rev": 6,
      "createdAt": "2026-11-24T21:10:08.425Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T22:59:50.095Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370132,9 +370287,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:59:34.094Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:59:50.095Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/claude-emergency-access--s1",
      "branch": "claude/claude-emergency-access--s1"
     },
@@ -370158,11 +370327,26 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"contract\"",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "dependents": 56,
+       "priorFailures": 0
+      }
+     },
+     "rev": 5,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-26T22:41:39.564Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T23:00:28.621Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370170,9 +370354,25 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T23:00:16.916Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:00:28.621Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/claude-emergency-access--s2",
+     "branch": "claude/claude-emergency-access--s2"
     },
     {
      "id": "s3",
@@ -370194,11 +370394,25 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"schema\"",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 12,
+       "priorFailures": 0
+      }
+     },
+     "rev": 5,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-26T22:41:39.564Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T23:00:54.573Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370206,9 +370420,25 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T23:00:39.445Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:00:54.573Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/claude-emergency-access--s3",
+     "branch": "claude/claude-emergency-access--s3"
     },
     {
      "id": "s4",
@@ -370232,11 +370462,26 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/fixtures/console-control.json",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "dependents": 5,
+       "priorFailures": 0
+      }
+     },
+     "rev": 5,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-26T22:41:39.564Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T23:01:22.025Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370244,9 +370489,25 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T23:01:07.730Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:01:22.025Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/claude-emergency-access--s4",
+     "branch": "claude/claude-emergency-access--s4"
     },
     {
      "id": "s5",
@@ -370271,11 +370532,25 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"contract\"",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 4,
+       "areas": 2,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 5,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-26T22:41:39.564Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T23:01:49.338Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370283,9 +370558,25 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T23:01:32.493Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:01:49.338Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/claude-emergency-access--s5",
+     "branch": "claude/claude-emergency-access--s5"
     },
     {
      "id": "s6",
@@ -370308,11 +370599,26 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it says \"contract\"",
+      "lane": "orchestrator",
+      "at": "2026-11-26T23:05:30.684Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "dependents": 0,
+       "priorFailures": 0
+      }
+     },
+     "rev": 5,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-26T22:41:39.564Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T23:05:34.719Z",
+     "statusAt": "2026-11-26T23:02:13.038Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -370320,21 +370626,37 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T23:02:00.555Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:02:13.038Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/claude-emergency-access--s6",
+     "branch": "claude/claude-emergency-access--s6"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 56
+    "all": 122
    },
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 12,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -370362,7 +370684,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-24T21:10:14.727Z",
+   "statusAt": "2026-11-26T23:05:34.627Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -370386,6 +370708,27 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "6 steps for 6 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-26T22:58:58.113Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "no other build is active"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-26T23:05:25.839Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-26T23:05:34.627Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "models assigned by the triage gate"
     }
    ]
   },
@@ -382584,7 +382927,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T22:51:43.710Z",
+   "updatedAt": "2026-11-26T23:06:07.901Z",
    "builtAt": "",
    "notes": [
     {
@@ -382650,6 +382993,22 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s2--joey, shared account login)",
      "at": "2026-11-26T22:47:18.663Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s1--joey: brief only · start 14.2K tokens ($0.08) · cost $6.46 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:06:07.901Z"
     }
    ],
    "approvals": [],
@@ -382665,6 +383024,43 @@
     "verbatim": false,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-26T23:05:34.371Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-emergency-remove-every-leftover-js--s1--joey",
+     "phase": ""
+    }
    },
    "emergency": {
     "at": "2026-11-25T12:01:17.901Z",
@@ -382692,12 +383088,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 19,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:47:59.080Z",
-     "statusAt": "2026-11-26T22:47:58.945Z",
+     "updatedAt": "2026-11-26T23:00:37.002Z",
+     "statusAt": "2026-11-26T23:00:36.919Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 5,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -382718,9 +383115,93 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:52:20.900Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:52:33.334Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s1 already has a live session: tmux axf-emergency-remove-every-leftover-js--s1--joey; claude pid 4033930; lock axf-emergency-remove-every-leftover-js--s1--joey (heartbeat 2026-11-26T22:46:40.972Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:53:08.963Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:53:17.952Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s1 already has a live session: tmux axf-emergency-remove-every-leftover-js--s1--joey; claude pid 4033930; lock axf-emergency-remove-every-leftover-js--s1--joey (heartbeat 2026-11-26T22:46:40.972Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:54:01.635Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at sending, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:55:06.547Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:55:18.245Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s1 already has a live session: tmux axf-emergency-remove-every-leftover-js--s1--joey; claude pid 4033930; lock axf-emergency-remove-every-leftover-js--s1--joey (heartbeat 2026-11-26T22:46:40.972Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:57:19.546Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:57:36.250Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s1 already has a live session: tmux axf-emergency-remove-every-leftover-js--s1--joey; claude pid 4033930; lock axf-emergency-remove-every-leftover-js--s1--joey (heartbeat 2026-11-26T22:46:40.972Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:59:01.470Z",
+       "by": "watchdog",
+       "attempt": 5,
+       "why": "retry forward at sending, attempt 5"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:00:26.249Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:00:36.919Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s1 already has a live session: tmux axf-emergency-remove-every-leftover-js--s1--joey; claude pid 4033930; lock axf-emergency-remove-every-leftover-js--s1--joey (heartbeat 2026-11-26T22:46:40.972Z)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s1",
      "branch": "claude/emergency-remove-every-leftover-js--s1",
@@ -383080,7 +383561,7 @@
     "all"
    ],
    "order": {
-    "all": 12
+    "all": 35
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
@@ -383166,10 +383647,10 @@
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "lander/emergency-check-can-these-plugins-",
+   "branch": "claude/emergency-check-can-these-plugins---s1",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T22:50:33.967Z",
+   "updatedAt": "2026-11-26T23:04:36.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -383255,6 +383736,30 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--joey, shared account login)",
      "at": "2026-11-26T22:50:33.967Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s2--joey: brief only · start 12.7K tokens ($0.07) · cost $0.74 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-26T22:52:45.311Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.74",
+     "at": "2026-11-26T22:53:01.317Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.30",
+     "at": "2026-11-26T22:54:56.984Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s1--joey: brief only · start 12.7K tokens ($0.07) · cost $2.30 · 24 turns · 6 tools, MCP none",
+     "at": "2026-11-26T22:55:30.277Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-26T23:04:36.682Z"
     }
    ],
    "approvals": [],
@@ -383298,13 +383803,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-25T23:29:08.521Z",
+     "at": "2026-11-26T22:54:14.485Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s2--sully",
+     "session": "axf-emergency-check-can-these-plugins---s1--joey",
      "phase": ""
     }
    },
@@ -383333,12 +383838,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 16,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:45:54.413Z",
-     "statusAt": "2026-11-26T22:45:54.332Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-26T23:05:30.866Z",
+     "statusAt": "2026-11-26T23:04:36.682Z",
+     "statusBy": "watchdog",
+     "attempt": 5,
      "statusLog": [
       {
        "status": "pending",
@@ -383359,6 +383864,69 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:56:38.258Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:56:47.186Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s1 already has a live session: lock axf-emergency-check-can-these-plugins---s1--joey (heartbeat 2026-11-26T22:48:47.309Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:58:16.987Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:58:33.332Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s1 already has a live session: lock axf-emergency-check-can-these-plugins---s1--joey (heartbeat 2026-11-26T22:48:47.309Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:01:23.981Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:01:32.464Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s1 already has a live session: lock axf-emergency-check-can-these-plugins---s1--joey (heartbeat 2026-11-26T22:48:47.309Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:02:54.483Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:03:05.466Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s1 already has a live session: lock axf-emergency-check-can-these-plugins---s1--joey (heartbeat 2026-11-26T22:48:47.309Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T23:04:36.682Z",
+       "by": "watchdog",
+       "attempt": 5,
+       "why": "retry forward at sending, attempt 5"
       }
      ],
      "status": "ready",
@@ -383387,12 +383955,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 9,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:46:09.205Z",
-     "statusAt": "2026-11-26T22:46:09.126Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-26T22:59:33.811Z",
+     "statusAt": "2026-11-26T22:59:01.470Z",
+     "statusBy": "watchdog",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -383413,6 +383981,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T22:57:00.445Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:57:13.173Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: emergency-check-can-these-plugins---s2 already has a live session: lock axf-emergency-check-can-these-plugins---s2--joey (heartbeat 2026-11-26T22:49:18.562Z)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:59:01.470Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at sending, attempt 2"
       }
      ],
      "status": "ready",
@@ -383597,11 +384186,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:53:31.980Z",
+     "statusAt": "2026-11-26T22:53:31.907Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383609,9 +384198,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:53:24.546Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:53:31.907Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s6",
      "branch": "claude/emergency-check-can-these-plugins---s6"
     },
@@ -383635,11 +384238,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:54:14.683Z",
+     "statusAt": "2026-11-26T22:54:14.582Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383647,9 +384250,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:54:03.070Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:54:14.582Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s7",
      "branch": "claude/emergency-check-can-these-plugins---s7"
     },
@@ -383673,11 +384290,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:54:48.655Z",
+     "statusAt": "2026-11-26T22:54:48.564Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383685,9 +384302,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:54:39.452Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:54:48.564Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s8",
      "branch": "claude/emergency-check-can-these-plugins---s8"
     },
@@ -383711,11 +384342,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:55:24.045Z",
+     "statusAt": "2026-11-26T22:55:23.969Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383723,9 +384354,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:55:11.391Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:55:23.969Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s9",
      "branch": "claude/emergency-check-can-these-plugins---s9"
     },
@@ -383749,11 +384394,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:55:51.143Z",
+     "statusAt": "2026-11-26T22:55:51.067Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383761,9 +384406,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:55:40.946Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:55:51.067Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s10",
      "branch": "claude/emergency-check-can-these-plugins---s10"
     },
@@ -383788,11 +384447,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:56:12.665Z",
+     "statusAt": "2026-11-26T22:56:12.567Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383800,9 +384459,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:56:01.706Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:56:12.567Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s11",
      "branch": "claude/emergency-check-can-these-plugins---s11"
     }
@@ -383811,7 +384484,7 @@
     "all"
    ],
    "order": {
-    "all": 15
+    "all": 43
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
@@ -383900,7 +384573,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-26T22:47:37.187Z",
+   "updatedAt": "2026-11-26T23:04:59.901Z",
    "builtAt": "",
    "notes": [
     {
@@ -383970,6 +384643,38 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--paulie, shared account login)",
      "at": "2026-11-26T22:45:25.349Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--sully, shared account login)",
+     "at": "2026-11-26T22:58:23.150Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--earl: brief only · start 11.7K tokens ($0.05) · cost $0.72 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:03:21.695Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.72",
+     "at": "2026-11-26T23:03:43.629Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--gina, shared account login)",
+     "at": "2026-11-26T23:04:17.441Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--rhonda, shared account login)",
+     "at": "2026-11-26T23:04:59.901Z"
     }
    ],
    "approvals": [],
@@ -383980,8 +384685,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s2",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s2\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s2 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s2 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s2.\n\n## Your step\nRemove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.\n\nFiles: apps/console-web/server/data_store.py. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-rip-out-the-7-mb-status---s4",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s4\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s4 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s4.\n\n## Your step\nDispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/pipeline.mjs. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -384013,13 +384718,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-26T22:47:37.187Z",
+     "at": "2026-11-26T23:03:06.000Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-rip-out-the-7-mb-status---s1--joey",
+     "session": "axf-emergency-rip-out-the-7-mb-status---s2--earl",
      "phase": ""
     }
    },
@@ -384051,15 +384756,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-26T22:47:21.281Z",
+     "done": false,
+     "doneAt": "",
      "note": "Part 1: 3 plan steps in one session (they touch the same files).",
-     "rev": 8,
+     "rev": 17,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T22:47:21.766Z",
-     "statusAt": "2026-11-26T22:44:25.057Z",
+     "updatedAt": "2026-11-26T23:02:12.340Z",
+     "statusAt": "2026-11-26T23:02:12.223Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 5,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -384094,13 +384800,79 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-emergency-rip-out-the-7-mb-status---s1--joey on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:54:01.635Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:57:19.312Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:57:53.846Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:58:16.626Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-emergency-rip-out-the-7-mb-status---s1--sully on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:58:35.265Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: refused: emergency-rip-out-the-7-mb-status---s1 already has a live session: tmux axf-emergency-rip-out-the-7-mb-status---s1--sully; lock axf-emergency-rip-out-the-7-mb-status---s1--sully (heartbeat 2026-11-26T22:58:06.547Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:59:42.282Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:59:57.129Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: refused: emergency-rip-out-the-7-mb-status---s1 already has a live session: tmux axf-emergency-rip-out-the-7-mb-status---s1--sully; claude pid 4117636; lock axf-emergency-rip-out-the-7-mb-status---s1--sully (heartbeat 2026-11-26T22:58:06.547Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T23:02:00.134Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:02:12.223Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "launch on hulu0241: refused: emergency-rip-out-the-7-mb-status---s1 already has a live session: tmux axf-emergency-rip-out-the-7-mb-status---s1--sully; claude pid 4117636; lock axf-emergency-rip-out-the-7-mb-status---s1--sully (heartbeat 2026-11-26T22:58:06.547Z)"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s1",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s1--joey"
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s1--sully",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s2",
@@ -384122,12 +384894,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 13,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T22:45:19.024Z",
-     "statusAt": "2026-11-26T22:45:18.949Z",
+     "updatedAt": "2026-11-26T22:59:33.053Z",
+     "statusAt": "2026-11-26T22:59:32.981Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -384162,13 +384934,58 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-emergency-rip-out-the-7-mb-status---s2--paulie on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:54:01.635Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:57:44.851Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:58:07.462Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: emergency-rip-out-the-7-mb-status---s2 already has a live session: lock launching (heartbeat 2026-11-26T22:57:51.841Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:58:48.571Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T22:58:59.399Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T22:59:32.981Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "axf-emergency-rip-out-the-7-mb-status---s2--earl on hulu0241"
       }
      ],
      "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s2",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s2",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s2--paulie"
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s2--earl",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s3",
@@ -384190,10 +385007,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T22:43:04.260Z",
-     "statusAt": "2026-11-26T22:43:04.189Z",
+     "updatedAt": "2026-11-26T23:04:11.141Z",
+     "statusAt": "2026-11-26T23:04:11.056Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -384216,13 +385033,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:03:37.583Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T23:04:11.056Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-emergency-rip-out-the-7-mb-status---s3--gina on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s3",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s3",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s3--paulie"
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s3--gina"
     },
     {
      "id": "s4",
@@ -384244,10 +385075,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T22:43:19.729Z",
-     "statusAt": "2026-11-26T22:43:19.670Z",
+     "updatedAt": "2026-11-26T23:04:54.463Z",
+     "statusAt": "2026-11-26T23:04:54.355Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -384270,12 +385101,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:04:22.067Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-26T23:04:54.355Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-emergency-rip-out-the-7-mb-status---s4--rhonda on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s4",
-     "branch": "claude/emergency-rip-out-the-7-mb-status---s4"
+     "branch": "claude/emergency-rip-out-the-7-mb-status---s4",
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s4--rhonda"
     },
     {
      "id": "s5",
@@ -384446,11 +385292,11 @@
     "all"
    ],
    "order": {
-    "all": 21
+    "all": 61
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 61,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
