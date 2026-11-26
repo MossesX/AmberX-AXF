@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10424,
- "updatedAt": "2026-11-26T22:43:11.854Z",
+ "rev": 10425,
+ "updatedAt": "2026-11-26T22:43:31.359Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -383571,7 +383571,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s1",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-26T22:43:04.189Z",
+   "updatedAt": "2026-11-26T22:43:19.670Z",
    "builtAt": "",
    "notes": [
     {
@@ -383891,11 +383891,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:43:19.729Z",
+     "statusAt": "2026-11-26T22:43:19.670Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383903,9 +383903,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:43:13.047Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:43:19.670Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s4",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s4"
