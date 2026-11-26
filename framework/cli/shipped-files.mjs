@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFile
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normManifest } from '../core/shipped-manifest.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const REPO_ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 export const SHIPPED_REL = '_claude/builds/shipped';
@@ -26,19 +27,19 @@ export const manifestFile = (buildId, env = process.env) => join(shippedDir(env)
 /** The stored manifest of a build (normalised), or null. */
 export function readManifest(buildId, env = process.env) {
   const id = safe(buildId); if (!id) return null;
-  try { return normManifest(JSON.parse(readFileSync(manifestFile(id, env), 'utf8'))); } catch { return null; }
+  try { return normManifest(dataFiles.readJsonSync(manifestFile(id, env), null)); } catch { return null; }
 }
 /** Write a manifest (atomic). Returns its path. */
 export function writeManifest(manifest, env = process.env) {
   const m = normManifest(manifest); if (!m) throw new Error('not a shipped-manifest@1 (no build id)');
   const f = manifestFile(m.build.id, env); mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(m, null, 1)}\n`); renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, m, 1);
   return f;
 }
 /** Every stored manifest (normalised), newest landing first. */
 export function listManifests(env = process.env) {
-  const d = shippedDir(env); if (!existsSync(d)) return [];
+  const d = shippedDir(env);
   const out = [];
-  for (const f of readdirSync(d).filter((x) => x.endsWith('.json')).sort()) { try { const m = normManifest(JSON.parse(readFileSync(join(d, f), 'utf8'))); if (m) out.push(m); } catch { /* a torn file is skipped */ } }
+  for (const f of dataFiles.listSync(d).filter((x) => x.endsWith('.json'))) { try { const m = normManifest(dataFiles.readJsonSync(join(d, f), null)); if (m) out.push(m); } catch { /* a torn file is skipped */ } }
   return out.sort((a, b) => (b.landedAt || b.shippedAt).localeCompare(a.landedAt || a.shippedAt) || a.build.id.localeCompare(b.build.id));
 }

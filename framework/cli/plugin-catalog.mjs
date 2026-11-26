@@ -579,6 +579,7 @@ export async function main(argv) {
     if (cmd === 'show') return out(entry(a1, a2));
     if (cmd === 'pack') {
       const p = pack(a1, flags.kind || 'console');
+      // axf-data: not data (export: --out <file> writes the packed plugin for the caller)
       if (flags.out) { writeFileSync(flags.out, JSON.stringify(p)); return out({ written: flags.out, id: p.id, version: p.version, sha256: p.sha256 }); }
       return console.log(JSON.stringify(p));
     }

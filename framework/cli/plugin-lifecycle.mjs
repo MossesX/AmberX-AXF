@@ -32,6 +32,7 @@ import { gitAuthEnv, scrub } from './github.mjs';
 import { applyToPluginFile } from './build-defaults.mjs';
 import { installClash } from './plugin-instances.mjs';
 import { coverage as commandCoverage } from './plugin-commands.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 // An app's own plugins folder (e.g. apps/molly/plugins) instead of the console's: AXF_PLUGINS_DIR, relative to the root.
@@ -104,13 +105,13 @@ function sizeOf(path) {
 }
 
 function readState() {
-  try { return JSON.parse(readFileSync(STATE, 'utf8')); } catch { return {}; }
+  return dataFiles.readJsonSync(STATE, {}) ?? {};
 }
 function writeState(mut) {
   const s = readState();
   mut(s);
   mkdirSync(dirname(STATE), { recursive: true });
-  writeFileSync(STATE, JSON.stringify(s, null, 2));
+  dataFiles.writeJsonSync(STATE, s);
 }
 
 /* ------------------------------------------------------------------ stale reference scan */

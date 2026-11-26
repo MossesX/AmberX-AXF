@@ -74,6 +74,7 @@ export function applyOptions(assetsDir, values, log = () => {}) {
       if (a.type !== assetType || typeof a.data !== 'object' || a.data === null) continue;
       if (a.data[field] === value) continue;
       a.data[field] = value;
+      // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
       writeFileSync(file, JSON.stringify(a, null, 2) + '\n');
       changed.push(file);
     }

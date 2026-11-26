@@ -53,6 +53,7 @@ export function apply(dir) {
     mkdirSync(shotDir, { recursive: true });
     for (const s of good) copyFileSync(join(dir, id, s.file), join(shotDir, s.file));
     bp.screenshots = good.map((s) => ({ screen: s.screen, file: s.file, caption: screens.get(s.screen).label }));
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(bpFile, JSON.stringify(bp, null, 2) + '\n');
     const missed = (res.shots ?? []).filter((s) => !good.includes(s)).map((s) => s.screen);
     report.push(`${id}: ${good.length} screenshot(s)${missed.length ? `, not verified: ${missed.join(', ')}` : ''}`);

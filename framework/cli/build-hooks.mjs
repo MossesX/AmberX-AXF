@@ -27,6 +27,7 @@ import { eventsFromChange, eventsFromJournal, normEvent } from '../core/build-ho
 import { journalReadDirs } from './persist.mjs';
 import { gunzipSync } from 'node:zlib';
 import { expandJournal } from '../plan/builds-journal-core.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 const REPO_ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const PLUGINS = join(REPO_ROOT, 'apps/console-web/plugins');
@@ -61,17 +62,17 @@ export function listeners() {
 }
 
 export function readOutbox() {
-  try { return readFileSync(outbox(), 'utf8').split('\n').filter(Boolean).map((l) => { try { return normEvent(JSON.parse(l)); } catch { return null; } }); } catch { return []; }
+  try { return dataFiles.readTextSync(outbox(), '').split('\n').filter(Boolean).map((l) => { try { return normEvent(JSON.parse(l)); } catch { return null; } }); } catch { return []; }
 }
-const readCursors = () => { try { return JSON.parse(readFileSync(cursors(), 'utf8')); } catch { return {}; } };
-const writeCursors = (c) => { mkdirSync(hooksDir(), { recursive: true }); writeFileSync(cursors(), `${JSON.stringify(c, null, 1)}\n`); };
+const readCursors = () => dataFiles.readJsonSync(cursors(), {}) ?? {};
+const writeCursors = (c) => dataFiles.writeJsonSync(cursors(), c, 1);
 
 /** Append events to the outbox (`dir`: another checkout's outbox, e.g. the console's). Returns the events written. */
 export function appendEvents(events, { dir = '' } = {}) {
   const ev = events.map(normEvent).filter(Boolean); if (!ev.length || off()) return ev;
   const d = dir || hooksDir();
   mkdirSync(d, { recursive: true });
-  appendFileSync(join(d, 'events.jsonl'), ev.map((e) => `${JSON.stringify(e)}\n`).join(''));
+  for (const e of ev) dataFiles.appendJsonlSync(join(d, 'events.jsonl'), e);
   return ev;
 }
 /** A builds store change list → events in another checkout's outbox (its own listeners deliver them). */

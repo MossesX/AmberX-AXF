@@ -2,7 +2,7 @@
 /**
  * agent-slots on data-store@1 (s4.1 of urgent-all-data-to-postgres-builds-store): the slots state in local mode, the cut
  * (`agent-slots.mjs data cutover --apply`: copy, verify, flip the key), cutover writes (rev check instead of the mkdir lock,
- * a racing writer re-read and both kept) and the way back (`data local --apply`), against a real axf-data
+ * a racing writer re-read and both kept) and that there is no way back to the file, against a real axf-data
  * (services/axf-data started on a free port). Skipped with a note when Python or FastAPI is missing.
  *   node framework/spec/check-agent-slots-data.mjs
  */
@@ -89,13 +89,19 @@ try {
     assert.deepEqual(ids(after), ['a', 'b', 'c', 'mine']);
     assert.deepEqual(ids(after, 'heavy'), ['h1']);
   });
-  await t('data local --apply: axf-data written back to the file, the key local again', async () => {
+  await t('one way: data local is refused, the key stays on axf-data and the file is never written again', async () => {
+    const before = readFileSync(join(slots, 'state.json'), 'utf8');
     const r = await slotsMod.dataCut('local', { apply: true });
-    assert.equal(r.ok, true, r.problems.join('; '));
-    assert.equal(slotsMod.stateMode(), 'local');
-    assert.deepEqual(ids(JSON.parse(readFileSync(join(slots, 'state.json'), 'utf8'))), ['a', 'b', 'c', 'mine']);
+    assert.equal(r.ok, false); assert.match(r.problems.join('; '), /one way/); assert.deepEqual(r.flipped, []);
+    assert.equal(slotsMod.stateMode(), 'cutover');
     push('d');
-    assert.deepEqual(ids(JSON.parse(readFileSync(join(slots, 'state.json'), 'utf8'))), ['a', 'b', 'c', 'd', 'mine']);
+    assert.equal(readFileSync(join(slots, 'state.json'), 'utf8'), before);
+    assert.deepEqual(ids(await remote(KEY)), ['a', 'b', 'c', 'd', 'mine']);
+  });
+  await t('run status goes through data-files under its own key (console/agent-slots/runs/<build>.json)', async () => {
+    assert.equal(files.keyFor(join(slots, 'runs', 'b1.json')), 'console/agent-slots/runs/b1.json');
+    slotsMod.writeRunStatus('', { build: 'b1', exit: 0 });
+    assert.equal(slotsMod.readRunStatus('b1').exit, 0);
   });
   console.log(`agent-slots on data-store: ${n} checks ok`);
 } finally {

@@ -47,6 +47,8 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// axf-data: not data (build-time generator: schemas, assets, manifests and lock files written into the repo and committed)
+const writeGenerated = (file, value) => writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
 export const spec = readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json'));
@@ -617,7 +619,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     for (const a of designed) {
       const d = join(dest, tpl.assetsDir, a.type);
       mkdirSync(d, { recursive: true });
-      writeFileSync(join(d, `${a.id}.json`), JSON.stringify(a, null, 2) + '\n');
+      writeGenerated(join(d, `${a.id}.json`), a);
     }
   }
 
@@ -656,6 +658,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   Object.assign(manifest, appDefaults.value);
   for (const f of appDefaults.filled) log(`  build default: ${f.field} = ${JSON.stringify(f.value)} (${f.rule})`);
   const manifestText = JSON.stringify(manifest, null, 2) + '\n';
+  // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
   writeFileSync(join(dest, 'axf.manifest.json'), manifestText);
   // Android apps also carry the manifest inside the APK assets so the kernel can read it at runtime.
   if (tpl.kind === 'android-app') {
@@ -679,7 +682,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   }
 
   log('• writing axf.lock.json');
-  writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, template, files }, null, 2) + '\n');
+  writeGenerated(join(dest, 'axf.lock.json'), { framework: FRAMEWORK_VERSION, template, files });
   if (tpl.kind !== 'android-app') mkdirSync(join(dest, 'public'), { recursive: true });
 
   const report = validateApp(dest);
@@ -737,7 +740,7 @@ export function writeProjectManifest(dest, { name, appId, template, targets = []
   m.data = { shared: project.shared ?? m.data?.shared ?? [] };
   m.owners = m.owners?.length ? m.owners : [owner];
   m.created = new Date().toISOString().slice(0, 10);
-  writeFileSync(file, JSON.stringify(m, null, 2) + '\n');
+  writeGenerated(file, m);
   return m;
 }
 
@@ -762,7 +765,7 @@ export function appOptions({ dir = '.', framework = false, options = {}, log = (
       if (!existsSync(mPath)) continue;
       const m = readJson(mPath);
       m.options = { ...(m.options ?? {}), ...values };
-      writeFileSync(mPath, JSON.stringify(m, null, 2) + '\n');
+      writeGenerated(mPath, m);
     }
   }
   return { options: values, changed: changed.map((f) => relative(framework ? FRAMEWORK_DIR : resolve(dir), f)) };
@@ -854,7 +857,7 @@ export function newAsset({ dir, type, id, from, name }) {
   if (!r.ok) throw new Error(r.errors.join('; '));
   const target = join(assetsDir, type, `${id}.json`);
   if (existsSync(target)) throw new Error(`${relative(process.cwd(), target)} already exists`);
-  writeFileSync(target, JSON.stringify(asset, null, 2) + '\n');
+  writeGenerated(target, asset);
   return target;
 }
 
@@ -912,67 +915,67 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
       },
     };
     const f = join(outDir, `${type}.schema.json`);
-    writeFileSync(f, JSON.stringify(schema, null, 2) + '\n');
+    writeGenerated(f, schema);
     written.push(f);
   }
   // ui-review-item@1 / ui-review-group@1: JSON Schemas + the registry snapshot the Python server reads
-  for (const [n, schema] of Object.entries(uiReviewJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  for (const [n, schema] of Object.entries(uiReviewJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
   const reg = join(FRAMEWORK_DIR, 'schemas/ui-review.json');
-  writeFileSync(reg, JSON.stringify(UI_REVIEW_REGISTRY, null, 2) + '\n'); written.push(reg);
+  writeGenerated(reg, UI_REVIEW_REGISTRY); written.push(reg);
   // session@1 (Chat viewer): JSON Schema + the registry snapshot (redaction patterns included) the Python server reads
-  for (const [n, schema] of Object.entries(sessionJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  for (const [n, schema] of Object.entries(sessionJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
   const sreg = join(FRAMEWORK_DIR, 'schemas/session.json');
-  writeFileSync(sreg, JSON.stringify(SESSION_REGISTRY, null, 2) + '\n'); written.push(sreg);
+  writeGenerated(sreg, SESSION_REGISTRY); written.push(sreg);
   // model-policy@1: which models work may run on (Opus or Fable, never Sonnet), the snapshot Python readers use
   const mreg = join(FRAMEWORK_DIR, 'schemas/model-policy.json');
-  writeFileSync(mreg, JSON.stringify(MODEL_POLICY, null, 2) + '\n'); written.push(mreg);
+  writeGenerated(mreg, MODEL_POLICY); written.push(mreg);
   // agent swarm contracts (agent@1 … swarm-run@1): JSON Schemas + the registry snapshot (core/engines/swarm-rules.mjs)
-  for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
   const swreg = join(FRAMEWORK_DIR, 'schemas/swarm.json');
-  writeFileSync(swreg, JSON.stringify(SWARM, null, 2) + '\n'); written.push(swreg);
+  writeGenerated(swreg, SWARM); written.push(swreg);
   // feature-ledger@1 (Shipped features) + deploy-log@1: JSON Schemas + the registry snapshots the plugin's server and Python readers use
-  for (const [n, schema] of Object.entries({ ...ledgerJsonSchemas(), ...deployLogJsonSchemas() })) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const lreg = join(FRAMEWORK_DIR, 'schemas/feature-ledger.json'); writeFileSync(lreg, JSON.stringify(LEDGER_REGISTRY, null, 2) + '\n'); written.push(lreg);
-  const dreg = join(FRAMEWORK_DIR, 'schemas/deploy-log.json'); writeFileSync(dreg, JSON.stringify(DEPLOY_LOG_REGISTRY, null, 2) + '\n'); written.push(dreg);
+  for (const [n, schema] of Object.entries({ ...ledgerJsonSchemas(), ...deployLogJsonSchemas() })) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const lreg = join(FRAMEWORK_DIR, 'schemas/feature-ledger.json'); writeGenerated(lreg, LEDGER_REGISTRY); written.push(lreg);
+  const dreg = join(FRAMEWORK_DIR, 'schemas/deploy-log.json'); writeGenerated(dreg, DEPLOY_LOG_REGISTRY); written.push(dreg);
   // build-hook@1: the one event every build creator fires (builds store writes → listeners)
-  for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
-  const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeFileSync(rlreg, JSON.stringify(RETRY_LADDER_REGISTRY, null, 2) + '\n'); written.push(rlreg); // done-means-merged@1 retry ladder
+  for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeGenerated(hreg, BUILD_HOOK_REGISTRY); written.push(hreg);
+  const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeGenerated(rlreg, RETRY_LADDER_REGISTRY); written.push(rlreg); // done-means-merged@1 retry ladder
   // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
-  const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
+  const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeGenerated(wreg, buildWatchdogJsonSchema()); written.push(wreg);
   // demo-run@1: the guided live demo of the orchestrator (acts demo-act@1, results act-result@1, the state machine's events and summary)
-  const ldreg = join(FRAMEWORK_DIR, 'schemas/live-demo.json'); writeFileSync(ldreg, JSON.stringify(liveDemoJsonSchema(), null, 2) + '\n'); written.push(ldreg);
+  const ldreg = join(FRAMEWORK_DIR, 'schemas/live-demo.json'); writeGenerated(ldreg, liveDemoJsonSchema()); written.push(ldreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
-  for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeGenerated(smreg, SHIPPED_MANIFEST_REGISTRY); written.push(smreg);
   // gate-rules@1: the gate a PR passes before it lands (gate-rule@1, gate-rule-set@1) and the lander's state (lander-state@1) + the registry snapshot
-  for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeFileSync(greg, JSON.stringify(GATE_RULES_REGISTRY, null, 2) + '\n'); written.push(greg);
+  for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeGenerated(greg, GATE_RULES_REGISTRY); written.push(greg);
   // auto-lander@1: the server fixes and lands every build on its own (attempt, build, policy, action, state) + the registry snapshot
-  for (const [n, schema] of Object.entries(autoLanderJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const alreg = join(FRAMEWORK_DIR, 'schemas/auto-lander.json'); writeFileSync(alreg, JSON.stringify(AUTO_LANDER_REGISTRY, null, 2) + '\n'); written.push(alreg);
+  for (const [n, schema] of Object.entries(autoLanderJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const alreg = join(FRAMEWORK_DIR, 'schemas/auto-lander.json'); writeGenerated(alreg, AUTO_LANDER_REGISTRY); written.push(alreg);
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
-  for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);
+  for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeGenerated(breg, BUILD_RULES_REGISTRY); written.push(breg);
   // host-services@1: the console's server-side parts as systemd services on the VPS host (host-service@1 manifest, host-service-state@1, host-error@1) + the registry snapshot
   // axf-data: not data (build-time generator: the JSON Schemas)
-  for (const [n, schema] of Object.entries(hostServicesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  for (const [n, schema] of Object.entries(hostServicesJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
   // axf-data: not data (build-time generator: the registry snapshot)
-  const hsreg = join(FRAMEWORK_DIR, 'schemas/host-service.json'); writeFileSync(hsreg, JSON.stringify(HOST_SERVICES_REGISTRY, null, 2) + '\n'); written.push(hsreg);
+  const hsreg = join(FRAMEWORK_DIR, 'schemas/host-service.json'); writeGenerated(hsreg, HOST_SERVICES_REGISTRY); written.push(hsreg);
   // host-service-mode@1: the mode file (container / shadow / host per service) the console and every host runner read before a tick
   // axf-data: not data (build-time generator: the mode file schema)
-  const hsmode = join(FRAMEWORK_DIR, 'schemas/host-service-mode.json'); writeFileSync(hsmode, JSON.stringify(hostServiceModeJsonSchema(), null, 2) + '\n'); written.push(hsmode);
+  const hsmode = join(FRAMEWORK_DIR, 'schemas/host-service-mode.json'); writeGenerated(hsmode, hostServiceModeJsonSchema()); written.push(hsmode);
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
-  for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeGenerated(ccreg, consoleControlRegistry()); written.push(ccreg);
   // phone-connect@1: the phone as a paired device (phone-device, phone-pairing, phone-command, phone-result) + the registry snapshot the plugin's Python server reads
-  for (const [n, schema] of Object.entries(phoneConnectJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
-  const pcreg = join(FRAMEWORK_DIR, 'schemas/phone-connect.json'); writeFileSync(pcreg, JSON.stringify(PHONE_CONNECT_REGISTRY, null, 2) + '\n'); written.push(pcreg);
+  for (const [n, schema] of Object.entries(phoneConnectJsonSchemas())) { const f = join(outDir, n); writeGenerated(f, schema); written.push(f); }
+  const pcreg = join(FRAMEWORK_DIR, 'schemas/phone-connect.json'); writeGenerated(pcreg, PHONE_CONNECT_REGISTRY); written.push(pcreg);
   // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
   // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);
-  const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
-  const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
+  const scf = join(outDir, 'skin-config.schema.json'); writeGenerated(scf, skinConfigSchema(skinTree)); written.push(scf);
+  const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeGenerated(screg, skinConfigSnapshot(skinTree)); written.push(screg);
   return written;
 }
 
@@ -1064,12 +1067,14 @@ function applyBoilerplate(dest, tpl, bp, log) {
   };
   const navDir = join(dest, tpl.assetsDir, 'nav-menu');
   mkdirSync(navDir, { recursive: true });
-  writeFileSync(join(navDir, `${nav.id}.json`), JSON.stringify(nav, null, 2) + '\n');
+  writeGenerated(join(navDir, `${nav.id}.json`), nav);
   const m = readJson(join(dest, 'axf.manifest.json'));
   m.defaults['nav-menu'] = nav.id;
-  writeFileSync(join(dest, 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
+  // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
+  writeGenerated(join(dest, 'axf.manifest.json'), m);
   if (tpl.kind === 'android-app') {
-    writeFileSync(join(dest, dirname(tpl.assetsDir), 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
+    writeGenerated(join(dest, dirname(tpl.assetsDir), 'axf.manifest.json'), m);
     const viewsDir = join(dest, pkgPath(dest, 'app/src/main/kotlin/app/views'));
     mkdirSync(viewsDir, { recursive: true });
     const pkg = m.android?.applicationId ?? 'app';

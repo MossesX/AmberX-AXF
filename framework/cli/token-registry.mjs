@@ -218,6 +218,7 @@ export function sync({ used = usage() } = {}) {
 
 export function writeRegistry(doc) {
   const out = { ...doc, updatedAt: new Date().toISOString().slice(0, 10) };
+  // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
   writeFileSync(REGISTRY_FILE, `${JSON.stringify(out, null, 2)}\n`);
   return out;
 }
@@ -356,6 +357,7 @@ export async function main(argv = process.argv.slice(2)) {
       const uses = folderUses(m.dir);
       if (f.write) {
         const block = { $axf: TOKEN_REGISTRY_FRAME, uses, ...(Array.isArray(m.manifest.tokens?.defines) ? { defines: m.manifest.tokens.defines } : {}) };
+        // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
         writeFileSync(join(ROOT, m.file), `${JSON.stringify({ ...m.manifest, tokens: block }, null, 2)}\n`);
         console.log(`written ${m.file}: ${uses.length} token(s)`);
       } else console.log(json ? JSON.stringify(uses) : uses.join('\n') || '(no tokens read)');
@@ -371,6 +373,7 @@ export async function main(argv = process.argv.slice(2)) {
     case 'voice': { console.log(JSON.stringify(skinVoiceIntent(rest.join(' ')), null, 2)); return 0; }
     case 'fixture': {
       const fx = fixture();
+      // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
       if (f.write) { writeFileSync(FIXTURE_FILE, `${JSON.stringify(fx, null, 2)}\n`); console.log(`written ${relative(ROOT, FIXTURE_FILE)}`); } else console.log(JSON.stringify(fx, null, 2));
       return 0;
     }

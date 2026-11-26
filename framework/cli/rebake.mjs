@@ -91,6 +91,7 @@ export function apply(dir, root = ROOT, { force = false } = {}) {
   const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !all.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
   for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR), all))) files[`${BAKE_DIR}/${rel}`] = h;
   lock.files = Object.fromEntries(Object.entries(files).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
+  // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
   writeFileSync(lockPath, JSON.stringify(lock, null, 2) + '\n');
   return { ...s, rebaked: true };
 }

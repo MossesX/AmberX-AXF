@@ -433,6 +433,7 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     const v = validateProjectManifest(m, loadRules(), { exists: (rel) => existsSync(join(dir, rel)) });
     if (!v.ok) throw new Error(`project.manifest.json fails validation:\n${formatProjectValidation(v, PROJECT_MANIFEST_FILE)}`);
     assertInside(dir, mfile);
+    // axf-data: not data (the project manifest: a repo config file, committed)
     writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     ensureIdentity(me ? { name: me.name || me.login, email: `${me.id}+${me.login}@users.noreply.github.com` } : null);
     const ours = ['project.manifest.json', '_claude', 'CLAUDE.md', 'docs/FIRST_SESSION.md', '.gitignore'].filter((f) => existsSync(join(dir, f)));
@@ -502,6 +503,7 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     const v2 = validateProjectManifest(m, loadRules(), { exists: (rel) => existsSync(join(dir, rel)) });
     if (!v2.ok) throw new Error(`project.manifest.json fails validation:\n${formatProjectValidation(v2, PROJECT_MANIFEST_FILE)}`);
     assertInside(dir, mfile);
+    // axf-data: not data (the project manifest: a repo config file, committed)
     writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     if (git(dir, ['status', '--porcelain', '--', PROJECT_MANIFEST_FILE])) {
       git(dir, ['add', '--', PROJECT_MANIFEST_FILE]);

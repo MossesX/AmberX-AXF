@@ -35,6 +35,7 @@ const LEGACY = process.env.AXF_QUEUE_FILE || '';
 const profile = () => activeProfile().id;
 export const loadQueueState = () => (LEGACY ? (existsSync(LEGACY) ? JSON.parse(readFileSync(LEGACY, 'utf8')) : null) : projectQueue(loadStore(), profile()));
 const saveQueueState = (q, by = 'build-queue') => {
+  // axf-data: not data (test seam: AXF_QUEUE_FILE points a test at a scratch file; the queue lives in the builds store)
   if (LEGACY) { writeFileSync(LEGACY, JSON.stringify(q, null, 1) + '\n'); return; }
   const p = profile(); const features = loadPlan().features;
   withStore((s) => absorbQueue(s, p, q, features), { by, action: 'build-queue' });

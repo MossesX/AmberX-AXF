@@ -260,6 +260,7 @@ def main() -> int:
         shots.append({"screen": s["id"], "label": s["label"], "kind": s.get("kind", ""), "file": file, "verified": bool(verified)})
         print(f"{'✓' if verified else '?'} {bp.get('id')}/{s['id']} ({s['label']})")
 
+    # axf-data: not data (capture result handed back to boilerplate-shots.mjs in its scratch folder)
     (out / "result.json").write_text(json.dumps({"$axf": "boilerplate-shots@1", "boilerplate": bp.get("id"), "package": a.package, "shots": shots, "debug": debug}, indent=2) + "\n")
     adb("shell", "am", "force-stop", a.package)
     return 0

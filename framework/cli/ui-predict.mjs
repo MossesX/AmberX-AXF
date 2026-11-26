@@ -119,6 +119,7 @@ async function api(path, body, method) {
 /** rebuild-shots with the plan; returns the picture files. Under the agent cap's heavy lock. */
 function capture(plan, repo) {
   const tmp = mkdtempSync(join(tmpdir(), 'axf-predict-'));
+  // axf-data: not data (scratch input for the screenshot child process, in a temp folder)
   const shotsFile = join(tmp, 'shots.json'); writeFileSync(shotsFile, JSON.stringify(plan));
   const cmd = [join(REPO, 'framework/cli/rebuild-shots.mjs'), '--repo', repo, '--out', join(tmp, 'out'), '--shots', shotsFile, '--label', 'shots', '--env', 'AXF_APPEARANCE_HUB=off', '--nav-timeout', '180000'];
   const slots = join(REPO, 'framework/cli/agent-slots.mjs');
@@ -166,6 +167,7 @@ async function predict(id, { worktree = val(flags.worktree), force = !!flags.for
   try { res = await api('predict', body); }
   catch (e) { if (![404, 405].includes(e.status)) throw e; }
   if (!res?.item) { res = await api('submit', body); res.legacy = true; } // a console without the predict route yet: a plain item carrying the prediction
+  // axf-data: not data (cache of a prediction by input hash: rebuilt when missing)
   mkdirSync(cacheDir(), { recursive: true }); writeFileSync(cacheFile, JSON.stringify({ hash, at: new Date().toISOString(), item: res.item?.id, spec }, null, 1));
   rmSync(tmp, { recursive: true, force: true });
   if (!quiet) console.error(`ui-predict: ${b.id} → ${res.item?.id} (${pics.length} pictures${res.refreshed ? ', refreshed' : ''})`);

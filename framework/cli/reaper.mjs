@@ -45,6 +45,7 @@ import { hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const SCHEMA = 'vps-reaper@1';
 export const DEFAULTS = {
@@ -298,7 +299,7 @@ export function summarize(actions, { at = new Date().toISOString(), by = 'cron' 
 export const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
 export const headlessDir = (env = process.env) => env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless';
 const readText = (f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } };
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
+const readJson = (f, d = null) => dataFiles.readJsonSync(f, d);
 const mtime = (f) => { try { return statSync(f).mtimeMs; } catch { return 0; } };
 
 let clk = 0;
@@ -480,7 +481,7 @@ async function slotsDirOf() { return (await import('./agent-slots.mjs')).slotsDi
 const settingsFile = (dir) => join(dir, 'reaper.json');
 const stateFile = (dir) => join(dir, 'reaper-state.json');
 export const logFile = (dir) => join(dir, 'reaper.jsonl');
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
+function writeJson(f, v) { dataFiles.writeJsonSync(f, v); }
 
 export async function loadSettings() { return normSettings(readJson(settingsFile(await slotsDirOf()), {}) ?? {}); }
 export async function saveSettings(patch) { const f = settingsFile(await slotsDirOf()); const next = normSettings({ ...(readJson(f, {}) ?? {}), ...patch }); writeJson(f, next); return next; }
@@ -493,6 +494,7 @@ function killProc(a) {
   const start = procStart(a.pid);
   if (!start || (a.startMs && Math.abs(start - a.startMs) > 2000)) return 'gone before the kill';
   // a finished run: its wrapper (deploy/claude-headless.sh) reads this and records the end as a clean finish, not a crash
+  // axf-data: not data (process marker in the run worktree, read once by deploy/claude-headless.sh)
   if (a.marker && existsSync(a.marker)) { try { writeFileSync(join(a.marker, '.axf-reaped.json'), `${JSON.stringify({ $axf: SCHEMA, kind: 'phase-done', pid: a.pid, at: new Date().toISOString(), why: a.why })}\n`); } catch { /* the kill still goes ahead */ } }
   try { process.kill(a.pid, 'SIGTERM'); } catch (e) { return e.code === 'ESRCH' ? '' : e.message; }
   for (let i = 0; i < 100 && pidAlive(a.pid); i++) sleep(100);
@@ -503,7 +505,7 @@ function killProc(a) {
 function appendEvent(a, env) {
   const hdir = headlessDir(env);
   mkdirSync(hdir, { recursive: true });
-  appendFileSync(join(hdir, 'events.jsonl'), `${JSON.stringify({ event: 'session-end', session: a.session, name: a.build, cwd: a.cwd || '', log: a.cwd ? join(a.cwd, `${a.build}.log`) : '', surface: 'reaper', at: new Date().toISOString(), exit: a.exit, kind: a.kind, by: 'reaper' })}\n`);
+  dataFiles.appendJsonlSync(join(hdir, 'events.jsonl'), { event: 'session-end', session: a.session, name: a.build, cwd: a.cwd || '', log: a.cwd ? join(a.cwd, `${a.build}.log`) : '', surface: 'reaper', at: new Date().toISOString(), exit: a.exit, kind: a.kind, by: 'reaper' });
 }
 
 /** Carry out a plan. Returns the actions with { applied, error }. */
@@ -581,7 +583,7 @@ export async function run({ by = 'cli', dry = false, env = process.env, facts = 
   const res = { $axf: SCHEMA, ran: true, at, by, dry: isDry, actions, summary, notified: false, note: '' };
   if (!isDry) {
     mkdirSync(dir, { recursive: true });
-    for (const a of actions) appendFileSync(logFile(dir), `${JSON.stringify({ at, by, type: a.type, what: a.what, why: a.why, build: a.build ?? '', applied: !!a.applied, ...(a.error ? { error: a.error } : {}) })}\n`);
+    for (const a of actions) dataFiles.appendJsonlSync(logFile(dir), { at, by, type: a.type, what: a.what, why: a.why, build: a.build ?? '', applied: !!a.applied, ...(a.error ? { error: a.error } : {}) });
     if (done.length && settings.notes) { try { res.note = await (note ?? writeNote)(summary); } catch (e) { res.noteError = String(e.message).slice(0, 200); } }
     if (done.some(isKill) && settings.notify) { try { res.notified = !!(notify ?? ((s) => sendAlert(s, env)))(summary); } catch (e) { res.notifyError = String(e.message).slice(0, 200); } }
     writeJson(stateFile(dir), { $axf: 'vps-reaper-state@1', lastRun: at, by, actions: actions.length, kills: done.filter(isKill).length });

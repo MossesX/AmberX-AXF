@@ -209,6 +209,7 @@ function main(argv) {
   const errs = B.storeErrors(store);
   if (errs.length) { console.error(`seed invalid: ${errs.join('; ')}`); process.exit(1); }
   mkdirSync(dirname(out), { recursive: true });
+  // axf-data: not data (one-time seed generator: writes the build-rules seed that is committed)
   writeFileSync(out, `${JSON.stringify(store, null, 2)}\n`);
   const n = (f) => store.rules.filter(f).length;
   console.log(`wrote ${out}: ${store.rules.length} rules (vps ${n((r) => r.doer === 'vps')}, session ${n((r) => r.doer === 'session')}; before ${n((r) => r.phase === 'before')}, dispatch ${n((r) => r.phase === 'dispatch')}, after ${n((r) => r.phase === 'after')}, gate ${n((r) => r.phase === 'gate')}; ${n((r) => r.check)} with a check, ${n((r) => r.autofix)} with a fixer)`);

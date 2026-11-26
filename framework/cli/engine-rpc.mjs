@@ -22,6 +22,7 @@ import { buildsSummary, queueView, reorderQueue, reprocessQueue, stepQueue, step
 import { actPending, loadPending } from './pending.mjs';
 import { baseDataPath, dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -69,9 +70,9 @@ function run() {
     case 'status': { // { id, status, wave?, module?, notes? } → status.json + regenerate tracker.json + libraries.json
       // the feature tracker is the framework's one tracker (every profile references it), so its status is the base one
       const f = baseDataPath('framework/catalog/status.json');
-      const s = existsSync(f) ? readJson(f) : {};
+      const s = dataFiles.readJsonSync(f, {}) ?? {};
       s[b.id] = { ...(s[b.id] ?? {}), status: b.status, ...(b.wave ? { wave: b.wave } : {}), ...(b.module ? { module: b.module } : {}), ...(b.notes != null ? { notes: b.notes } : {}) };
-      writeFileSync(f, JSON.stringify(s, null, 2) + '\n');
+      dataFiles.writeJsonSync(f, s);
       execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' });
       log(`status.json: ${b.id} → ${b.status}; tracker.json regenerated`);
       syncAfter();
@@ -81,6 +82,7 @@ function run() {
       const dir = join(FRAMEWORK_DIR, 'boilerplates', String(b.boilerplate?.id ?? b.id));
       mkdirSync(dir, { recursive: true });
       const data = { $axf: 'boilerplate@1', ...(b.boilerplate ?? b) }; delete data.op;
+      // axf-data: not data (repo asset: a boilerplate saved from the console is a source file, committed)
       writeFileSync(join(dir, 'boilerplate.json'), JSON.stringify(data, null, 2) + '\n');
       execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/boilerplates.mjs')], { stdio: 'pipe' });
       log(`boilerplate ${data.id} saved; index regenerated`);
@@ -101,7 +103,7 @@ function run() {
       const problems = validateProjectRules(b.rules);
       if (problems.length) throw new Error(`rules refused: ${problems.join('; ')}`);
       const out = { ...b.rules, updatedAt: new Date().toISOString() };
-      writeFileSync(dataPath(RULES_REL), JSON.stringify(out, null, 2) + '\n');
+      dataFiles.writeJsonSync(dataPath(RULES_REL), out);
       log(`project rules saved (${out.rules.length} rules) → ${dataPath(RULES_REL)}`);
       return { rules: out };
     }

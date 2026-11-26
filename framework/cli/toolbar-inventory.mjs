@@ -280,6 +280,7 @@ if (isMain) {
   if (args.includes('--json')) console.log(JSON.stringify(inv, null, 2));
   else {
     mkdirSync(dirname(OUT), { recursive: true });
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(OUT, JSON.stringify(inv, null, 2) + '\n');
     const c = inv.counts;
     console.log(`✓ ${c.toolbars} toolbar(s) in ${c.files} file(s) → ${rel(OUT)}`);

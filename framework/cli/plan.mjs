@@ -17,11 +17,12 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { activeProfile, dataPath } from './persist.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLAN_DIR = join(FRAMEWORK_DIR, 'plan');
 const PLAN = dataPath('framework/plan/plan.json');
-const readJson = (f, d) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d);
+const readJson = (f, d) => { const t = dataFiles.readTextSync(f, null); return t === null ? d : JSON.parse(t); };
 const today = () => new Date().toISOString().slice(0, 10);
 export const STATUSES = ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'];
 
@@ -109,11 +110,11 @@ export function buildPlan() {
   for (const old of prev.features) if (!seen.has(old.id) && old.source === 'user') features.push(withModel(old));
   const plan = { $axf: 'plan@1', generatedAt: new Date().toISOString(), statuses: STATUSES, features };
   mkdirSync(PLAN_DIR, { recursive: true });
-  writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
+  dataFiles.writeJsonSync(PLAN, plan, 1);
   return plan;
 }
 
-export function loadPlan() { return existsSync(PLAN) ? readJson(PLAN) : buildPlan(); }
+export function loadPlan() { return readJson(PLAN, null) ?? buildPlan(); }
 
 /** Insert or replace one feature (from the console); catalog status edits also update status.json + tracker.json. */
 export function upsertFeature(feature, note) {
@@ -128,12 +129,12 @@ export function upsertFeature(feature, note) {
   if (old && old.status !== f.status) f.statusEdited = true;
   f.history = [...(feature.history ?? old?.history ?? []), { at: new Date().toISOString(), text: note || (old ? 'Edited in the console' : 'Added in the console') }].slice(-100);
   if (i >= 0) plan.features[i] = f; else plan.features.push(f);
-  writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
+  dataFiles.writeJsonSync(PLAN, plan, 1);
   if (f.source === 'catalog' && old && old.status !== f.status && CATALOG_STATUSES.has(f.status)) {
     const sf = dataPath('framework/catalog/status.json');
     const s = readJson(sf, {});
     s[f.id] = { ...(s[f.id] ?? {}), status: f.status };
-    writeFileSync(sf, JSON.stringify(s, null, 2) + '\n');
+    dataFiles.writeJsonSync(sf, s);
     try { execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' }); } catch { /* tracker is best effort */ }
   }
   return f;
@@ -159,12 +160,12 @@ export function setStatuses(changes) {
     if (old.source === 'catalog' && CATALOG_STATUSES.has(c.status)) catalog[c.id] = c.status;
     done.push({ id: c.id, from: old.status, to: c.status });
   }
-  writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
+  dataFiles.writeJsonSync(PLAN, plan, 1);
   if (Object.keys(catalog).length) {
     const sf = dataPath('framework/catalog/status.json');
     const s = readJson(sf, {});
     for (const [id, st] of Object.entries(catalog)) s[id] = { ...(s[id] ?? {}), status: st };
-    writeFileSync(sf, JSON.stringify(s, null, 2) + '\n');
+    dataFiles.writeJsonSync(sf, s);
     try { execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' }); } catch { /* tracker is best effort */ }
   }
   return done;
@@ -176,7 +177,7 @@ export function deleteFeature(id) {
   if (!f) throw new Error(`no feature ${id}`);
   if (f.source !== 'user') throw new Error('only features added in the console can be deleted; set status "dropped" instead');
   plan.features = plan.features.filter((x) => x.id !== id);
-  writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
+  dataFiles.writeJsonSync(PLAN, plan, 1);
   return { id };
 }
 

@@ -19,11 +19,12 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CONDITIONS, compose, launchContext, normBrief, normDoc } from '../core/rules-brief.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(process.env.AXF_ROOT || join(HERE, '..', '..'));
 const SEED = join(HERE, '..', 'schemas', 'rules-briefs.json');
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+const readJson = (f) => dataFiles.readJsonSync(f, null);
 
 export function storeFile() {
   if (process.env.AXF_RULES_BRIEFS_FILE) return process.env.AXF_RULES_BRIEFS_FILE;
@@ -33,11 +34,8 @@ export function storeFile() {
 export const load = () => normDoc(readJson(storeFile()), readJson(SEED));
 function store(doc, by) {
   const file = storeFile();
-  mkdirSync(dirname(file), { recursive: true });
   const out = { ...doc, updatedAt: new Date().toISOString(), updatedBy: String(by || process.env.AXF_SESSION || 'cli').slice(0, 80) };
-  const tmp = `${file}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(out, null, 1)}\n`);
-  renameSync(tmp, file);
+  dataFiles.writeJsonSync(file, out, 1);
   return out;
 }
 const readRel = (p) => { try { return readFileSync(join(ROOT, p), 'utf8'); } catch { return null; } };

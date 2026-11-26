@@ -252,6 +252,7 @@ for f in files:
     if mode == "union-json" or ext == ".json":
         try:
             m = merge3(json.loads(b) if b else None, json.loads(o), json.loads(t), MAIN if mode == "union-json" else prefer)
+            # axf-data: not data (merge resolver: rewrites the repo manifest in the landing worktree)
             open(f, "w").write(json.dumps(m, indent=2, ensure_ascii=False) + "\n")
             git("add", "--", f); resolved.append(f)
             if mode == "union-json": touched_additive.append(f)

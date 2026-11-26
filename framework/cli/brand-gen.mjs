@@ -150,6 +150,7 @@ function writeAll(out, assets) {
   for (const a of assets) {
     const errs = assetErrors(a);
     if (errs.length) { bad++; console.error(`✗ ${a.id}: ${errs.join('; ')}`); continue; }
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(join(out, `${a.id}.json`), JSON.stringify(a, null, 2) + '\n');
   }
   console.log(`${assets.length - bad} written to ${out}${bad ? `, ${bad} refused` : ''}`);

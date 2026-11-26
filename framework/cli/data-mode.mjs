@@ -40,6 +40,7 @@ export function readState(env = process.env) {
 }
 export function writeState(state, env = process.env) {
   const f = modeFile(env); mkdirSync(dirname(f), { recursive: true });
+  // axf-data: not data (the data layer's own mode switch: read before every call, must not depend on axf-data)
   const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(state, null, 1)}\n`); renameSync(tmp, f);
 }
 /** The drift entries logged for `ns` since `since` (ISO), oldest first. */

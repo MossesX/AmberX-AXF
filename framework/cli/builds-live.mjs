@@ -55,6 +55,7 @@ import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
 import { containerRuns } from './host-mode.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -107,7 +108,7 @@ const dueFile = () => `${outboxFile()}.due`;
 /** When the oldest line still in the outbox was queued (the daily snapshot counts from here). */
 const sinceFile = () => `${outboxFile()}.since`;
 const statusFile = () => `${storeFile()}.live.json`;
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+const readJson = (f) => dataFiles.readJsonSync(f, null);
 /**
  * Where the snapshot is pushed when main is protected (deploy/branch-protection.mjs status-key): a deploy key that is
  * the ruleset's only bypass, so the status-only commit still reaches main while every other change needs a green PR.
@@ -139,6 +140,7 @@ export function enqueueLive(entry) {
   entry = merge.realEntry(entry);
   if (!entry) return;
   try {
+    // axf-data: not data (publish spool: journal lines waiting for the next push to main; the builds journal has them)
     appendFileSync(outboxFile(), `${JSON.stringify(entry)}\n`);
     if (!existsSync(sinceFile())) writeFileSync(sinceFile(), `${new Date().toISOString()}\n`, { flag: 'wx' });
   } catch { /* the journal has it; status shows the outbox */ }
@@ -177,7 +179,7 @@ export function outboxDue() {
 }
 function setStatus(patch) {
   const s = { ...(readJson(statusFile()) ?? {}), ...patch };
-  try { writeFileSync(statusFile(), `${JSON.stringify(s, null, 1)}\n`); } catch { /* best effort */ }
+  try { dataFiles.writeJsonSync(statusFile(), s, 1); } catch { /* best effort */ }
   return s;
 }
 export function liveStatus() {
@@ -589,6 +591,7 @@ export function install() {
 /** Merge one builds file in place (git's %A). Returns true when merged cleanly. */
 export function mergeFile(oursPath, theirsPath, path) {
   const ours = readFileSync(oursPath, 'utf8'); const theirs = readFileSync(theirsPath, 'utf8');
+  // axf-data: not data (git merge driver: the merged file git asked for, in its working tree)
   if (path.endsWith('.jsonl')) { writeFileSync(oursPath, merge.mergeJournalText(ours, theirs)); return true; }
   if (path.endsWith(ORIGINS_REL)) { writeFileSync(oursPath, mergeOriginsText(theirs, ours)); return true; }
   if (path.endsWith(STORE_REL.split('/').pop()) && path.includes('_claude/builds/') && !path.includes('/profiles/')) {
@@ -597,6 +600,7 @@ export function mergeFile(oursPath, theirsPath, path) {
   if (path.endsWith('orchestrator.json')) {
     const a = JSON.parse(ours); const b = JSON.parse(theirs);
     const m = merge.mergeOrchestratorDocs(a, b);
+    // axf-data: not data (git merge driver: the merged file git asked for, in its working tree)
     writeFileSync(oursPath, `${JSON.stringify(m, null, 1)}\n`); return true;
   }
   return false;

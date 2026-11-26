@@ -37,6 +37,7 @@ import {
 } from './persist.mjs';
 import { MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
 import { mergeRetiredNow } from './builds-store.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const SCHEMA = 'build-profiles@1';
 const now = () => new Date().toISOString();
@@ -44,10 +45,7 @@ const str = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : 
 export const slugId = (s) => str(s, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
 
 function writeJson(f, data) {
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(data, null, 1)}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, data, 1);
 }
 
 function saveRegistry(reg) {

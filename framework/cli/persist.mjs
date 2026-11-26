@@ -220,7 +220,7 @@ export function dataPath(rel) {
     const snapshot = join(REPO_ROOT, prel);
     mkdirSync(rel.endsWith('/') ? p : dirname(p), { recursive: true });
     if (root && existsSync(snapshot)) cpSync(snapshot, p, { recursive: true });
-    else if (!rel.endsWith('/')) { const empty = emptyProfileFile(rel); if (empty) writeFileSync(p, JSON.stringify(empty, null, 1) + '\n'); }
+    else if (!rel.endsWith('/')) { const empty = emptyProfileFile(rel); if (empty) files.writeJsonSync(p, empty, 1); }
   }
   return p;
 }

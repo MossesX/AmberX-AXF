@@ -26,6 +26,7 @@ const PY = join(FRAMEWORK_DIR, 'python');
 const VERSION = JSON.parse(readFileSync(join(FRAMEWORK_DIR, 'schemas/asset-types.json'), 'utf8')).frameworkVersion ?? '0.2.0';
 export const LIBRARY_PORTS = ['android', 'web', 'python'];
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+// axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
 const writeJson = (f, o) => { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, JSON.stringify(o, null, 2) + '\n'); };
 const slugify = (s) => String(s).toLowerCase().replace(/^lib-/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const pascal = (slug) => slug.split('-').filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join('');

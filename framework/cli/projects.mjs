@@ -28,6 +28,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/projects-core.mjs';
 import { BASE_PROFILE, activeProfile, baseDataPath, readProfiles } from './persist.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const { PROJECTS_REL, BASE_PROJECT, SCHEMA } = core;
 const now = () => new Date().toISOString();
@@ -37,16 +38,13 @@ export const registryFile = () => baseDataPath(PROJECTS_REL);
 /** The registry (base project always there). Never throws. */
 export function readProjects() {
   let raw = null;
-  try { raw = JSON.parse(readFileSync(registryFile(), 'utf8')); } catch { /* missing or damaged → base only */ }
+  raw = dataFiles.readJsonSync(registryFile(), null); // missing or damaged → base only
   return core.normalizeRegistry(raw, { baseProfile: BASE_PROFILE });
 }
 
 function save(reg) {
   const f = registryFile();
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(core.registryOut(reg, now()), null, 1)}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, core.registryOut(reg, now()), 1);
 }
 
 /** The project in force: the one owning the active build profile (AXF_BUILD_PROFILE pins it for one process). */
