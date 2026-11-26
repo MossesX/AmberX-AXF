@@ -845,17 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 08:00 UTC · `clash-fix-console-app-tabs-2` → running, note (all) · pipeline
-- 2026-11-25 08:00 UTC · `clash-fix-console-app-tabs-2` branch claude/clash-fix-console-app-tabs-2 (all) · pipeline
-- 2026-11-25 08:01 UTC · `clash-fix-console-app-tabs-2` note (all) · orchestrator
-- 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` → pulling-main (all) · orchestrator
-- 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` PR 924, note (all) · orchestrator
-- 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` s1 undone (all) · orchestrator
-- 2026-11-25 08:02 UTC · `terminal-main-tab-streaming-console-s` s2 undone (all) · orchestrator
-- 2026-11-25 08:03 UTC · `terminal-main-tab-streaming-console-s` s3 undone (all) · orchestrator
-- 2026-11-25 08:04 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
-- 2026-11-25 08:06 UTC · `terminal-main-tab-streaming-console-s` s14 undone (all) · orchestrator
-- 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` → assigning-models (all) · orchestrator
 - 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` → ready, note (all) · orchestrator
 - 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
 - 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` → sending (all) · orchestrator
@@ -1245,6 +1234,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 22:42 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
+- 2026-11-26 22:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 22:45 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 22:45 UTC · `clash-fix-console-app-tabs-2` → complete, note (all) · verify
+- 2026-11-26 22:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-26 22:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-26 22:47 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` → fixing, note (all) · pipeline
+- 2026-11-26 22:47 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` → fixing, note (all) · pipeline
+- 2026-11-26 22:47 UTC · `pending-banner-list-every-pending-build` → fixing, note (all) · pipeline
+- 2026-11-26 22:47 UTC · `toolbars-moved-to-side-become-vertical` → fixing, note (all) · pipeline
+- 2026-11-26 22:47 UTC · `plan-studio-collapse-all-expand-all` → fixing, note (all) · pipeline
+- 2026-11-26 22:50 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 
