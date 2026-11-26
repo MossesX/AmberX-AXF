@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10430,
- "updatedAt": "2026-11-26T23:06:28.715Z",
+ "rev": 10431,
+ "updatedAt": "2026-11-26T23:07:21.888Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -382927,7 +382927,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:06:07.901Z",
+   "updatedAt": "2026-11-26T23:06:43.349Z",
    "builtAt": "",
    "notes": [
     {
@@ -383009,6 +383009,10 @@
     {
      "text": "Headless run axf-emergency-remove-every-leftover-js--s1--joey: brief only · start 14.2K tokens ($0.08) · cost $6.46 · 50 turns · 6 tools, MCP none",
      "at": "2026-11-26T23:06:07.901Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $6.46",
+     "at": "2026-11-26T23:06:35.093Z"
     }
    ],
    "approvals": [],
@@ -383229,12 +383233,13 @@
      "done": false,
      "doneAt": "",
      "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:48:27.455Z",
-     "statusAt": "2026-11-26T22:48:27.390Z",
+     "updatedAt": "2026-11-26T23:06:43.436Z",
+     "statusAt": "2026-11-26T23:06:43.349Z",
      "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -383255,9 +383260,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-26T23:06:26.821Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-26T23:06:43.349Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s2 already has a live session: tmux axf-emergency-remove-every-leftover-js--s2--joey; claude pid 4037520; lock axf-emergency-remove-every-leftover-js--s2--joey (heartbeat 2026-11-26T22:46:56.831Z)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s2",
      "branch": "claude/emergency-remove-every-leftover-js--s2",
