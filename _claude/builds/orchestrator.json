@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-26T22:51:25.956Z",
+ "updatedAt": "2026-11-26T22:51:59.941Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9277,7 +9277,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T22:51:12.189Z",
+   "updatedAt": "2026-11-26T22:51:43.710Z",
    "builtAt": "",
    "notes": [
     {
@@ -20327,15 +20327,15 @@
    "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-15T00:46:05.867Z",
-   "builtAt": "2026-11-03T22:08:49.404Z",
+   "updatedAt": "2026-11-26T22:51:45.079Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
@@ -20356,6 +20356,14 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 23 days: PR #329 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-26T22:51:45.079Z"
+    },
+    {
+     "text": "Watchdog: landing for 23 days: PR #329 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-26T22:51:45.079Z"
     }
    ],
    "approvals": [],

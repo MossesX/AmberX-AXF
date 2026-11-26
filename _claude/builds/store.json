@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10428,
- "updatedAt": "2026-11-26T22:51:25.956Z",
+ "rev": 10429,
+ "updatedAt": "2026-11-26T22:51:59.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -62678,15 +62678,15 @@
    "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-15T00:46:05.867Z",
-   "builtAt": "2026-11-03T22:08:49.404Z",
+   "updatedAt": "2026-11-26T22:51:45.079Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
@@ -62707,10 +62707,26 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 23 days: PR #329 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-26T22:51:45.079Z"
+    },
+    {
+     "text": "Watchdog: landing for 23 days: PR #329 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-26T22:51:45.079Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-26T22:51:45.079Z",
+    "why": "landing for 23 days: PR #329 was closed without merging and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
    "steps": [
     {
      "id": "s1",
@@ -382568,7 +382584,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T22:51:12.189Z",
+   "updatedAt": "2026-11-26T22:51:43.710Z",
    "builtAt": "",
    "notes": [
     {
@@ -383027,11 +383043,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 5,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:42:25.128Z",
-     "statusAt": "2026-11-26T22:41:39.362Z",
-     "statusBy": "foreign-write",
+     "updatedAt": "2026-11-26T22:51:43.824Z",
+     "statusAt": "2026-11-26T22:51:43.710Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -383039,9 +383055,23 @@
        "at": "2026-11-26T22:41:39.362Z",
        "by": "foreign-write",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-26T22:51:30.325Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-26T22:51:43.710Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending",
+     "status": "ready",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s7",
      "branch": "claude/emergency-remove-every-leftover-js--s7"
     }

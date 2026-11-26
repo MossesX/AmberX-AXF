@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` → ready, note (all) · orchestrator
 - 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
 - 2026-11-25 08:07 UTC · `terminal-main-tab-streaming-console-s` → sending (all) · orchestrator
 - 2026-11-25 08:08 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 22:47 UTC · `toolbars-moved-to-side-become-vertical` → fixing, note (all) · pipeline
 - 2026-11-26 22:47 UTC · `plan-studio-collapse-all-expand-all` → fixing, note (all) · pipeline
 - 2026-11-26 22:50 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 22:51 UTC · `plugin-settings-placement` → fixing, note (all) · watchdog
 
 ## Token passes (log)
 
