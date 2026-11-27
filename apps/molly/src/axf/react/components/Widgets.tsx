@@ -47,7 +47,7 @@ export function LogoWidget({ data }: WidgetRenderProps<LogoData>) {
   const img = data.kind === 'image' ? imageSrc(data.image) : null;
   const body = data.kind === 'image' && img ? <img src={img} alt={data.text} style={{ height: size.px }} />
     : data.kind === 'icon' && data.icon ? <Icon name={data.icon} size={Math.round(size.px * 0.8)} />
-    : <span className="fx-widget-logo__text" style={{ fontSize: `${size.scale}em`, fontWeight: data.bold === false ? 500 : 700 }}>{data.text}</span>;
+    : <span className="fx-widget-logo__text" style={{ fontSize: `${size.scale}em`, fontWeight: data.bold === false ? 'calc(var(--fx-type-weights-medium) - 50)' : 'calc(var(--fx-type-weights-strong) + 100)' }}>{data.text}</span>;
   return <Tap action={data.link} className="fx-widget-logo" title={data.tooltip ?? data.text}>{body}</Tap>;
 }
 

@@ -1,5 +1,5 @@
 /** Customize engine (core/engines/customize.ts) + tab-group asset: tokens, 100 icon sets, apply-to-all, CSS. Run: npx -y tsx framework/spec/check-customize.mts */
-import { CUSTOM_TOKENS, ICON_SETS, customizableTypes, customTokensFor, customizeCss, customizeSheet, customEditable, effectiveCustom, normalizeCustomSlot, normalizeCustomValues, setApplyAll, setCustomToken } from '../core/engines/customize';
+import { CUSTOM_TARGETS, CUSTOM_TOKENS, ICON_SETS, customizableTypes, customTokensFor, customizeCss, customizeSheet, customEditable, effectiveCustom, normalizeCustomSlot, normalizeCustomValues, setApplyAll, setCustomToken } from '../core/engines/customize';
 import { normalizeTabGroup, tabGroupStyle } from '../core/engines/components';
 import { hideable } from '../core/engines/hide';
 import { ASSET_TYPES } from '../core/types';
@@ -33,7 +33,34 @@ ok(customizeCss('toolbar', {}) === '', 'no values, no css');
 const css = customizeCss('toolbar', { fontSize: 120, textColor: 'accent', iconSet: 'badge-bold', hover: 'lift', click: 'press', location: 'pinned-top', animation: 'fade' });
 for (const frag of ['.fx-toolbar', 'var(--fx-accent)', '.fx-toolbtn:hover', ':active', '.fx-icon', 'position:sticky', 'axf-cu-fade', 'stroke-width:2.7']) ok(css.includes(frag), `css has ${frag}`);
 ok(!/#[0-9a-f]{3,6}\b|rgb\(/i.test(customizeSheet({ toolbar: { background: 'surface2', hover: 'glow' }, 'tab-group': { iconSet: 'duotone-thin' } })), 'no hard-coded colours');
+// text children (customize.json targets[].text, build skins-restyle-everything): the type's text parts reach them, all but the size
+const banner = customizeCss('banner', { fontWeight: '300', fontFamily: 'mono', textColor: 'accent', fontSize: 120 });
+ok(banner.includes(':root body .fx-banner .fx-banner__logo{font-weight:300;font-family:var(--fx-font-mono);color:var(--fx-accent)}'), 'banner text parts reach the logo, size left to its own step');
+ok(banner.includes(':root body .fx-banner .fx-banner__item{font-weight:300;font-family:var(--fx-font-mono);color:var(--fx-accent);font-size:calc(var(--fx-font-size) * 1.2)}'), 'items still take every text part');
+ok(!customizeCss('banner', { fontSize: 120 }).includes('.fx-banner__logo'), 'size alone writes nothing on a text child');
+ok(!customizeCss('banner', { radius: 'sm', hover: 'lift', background: 'surface2' }).includes('.fx-banner__logo'), 'box and hover parts never touch a text child');
+const nav = customizeCss('nav-menu', { textTransform: 'uppercase', letterSpacing: 'tight' });
+ok(nav.includes(':root body .fx-nav .fx-nav__header, :root body .fx-nav .fx-nav__label{text-transform:uppercase;letter-spacing:-0.02em}'), 'nav headers and labels follow the nav text parts');
+ok(customizeCss('container', { textColor: 'text' }).includes('.fx-card .fx-card__head{color:var(--fx-text)}'), 'card headers follow the container text colour');
+ok(customizeCss('counter', { fontWeight: '600' }).includes('.fx-widget-counter .fx-widget-counter__num, :root body .fx-widget-counter .fx-widget-counter__label{font-weight:600}'), 'counter number and label follow the counter weight');
+ok(customizeCss('meter', { textColor: 'accent' }).split('\n').length === 1, 'a target without text children writes one rule');
+ok(customizeSheet({}) === '' && customizeSheet({ banner: {}, 'nav-menu': {} }) === '', 'no parts (the default look) = an empty sheet, before and after text children');
+for (const [type, t] of Object.entries(CUSTOM_TARGETS)) if (t.text) for (const sel of t.text.split(',').map((s) => s.trim())) ok(t.root.split(',').some((r) => sel.startsWith(r.trim().replace(/^\.(fx-[a-z-]+).*$/, '.$1'))) || type === 'tab-group', `${type}: text child ${sel} is an element of the root block`);
 for (const s of ICON_SETS.filter((x) => x.id !== 'outline-regular')) ok(customizeCss('button', { iconSet: s.id }).includes('stroke-width'), `icon set ${s.id} compiles`);
+/* text children, the rest: italic, case and spacing flow; a target without any draws none; every selector is one class axf.css styles */
+{
+  const nav = customizeCss('nav-menu', { textColor: 'accent', textTransform: 'lowercase', italic: true, letterSpacing: 'wide' });
+  const header = nav.split('\n').find((l) => l.startsWith(':root body .fx-nav .fx-nav__header, :root body .fx-nav .fx-nav__label{')) ?? '';
+  for (const frag of ['color:var(--fx-accent)', 'text-transform:lowercase', 'font-style:italic', 'letter-spacing:0.04em']) ok(header.includes(frag), `a nav text child takes ${frag}`);
+  ok(customizeCss('container', { fontFamily: 'serif' }).includes(':root body .fx-card .fx-card__head{font-family:ui-serif, Georgia, serif}'), 'card heads follow the container font');
+  ok(customizeCss('progress', { textColor: 'info' }).includes(':root body .fx-widget-progress .fx-widget-progress__label, :root body .fx-widget-progress .fx-widget-progress__value{'), 'progress label and value follow the widget');
+  ok(!customizeCss('button', { textColor: 'accent' }).includes(' .fx-btn .'), 'a target without text children draws none');
+  const axfCss = readFileSync(new URL('../ui/axf.css', import.meta.url), 'utf8');
+  for (const [type, t] of Object.entries(CUSTOM_TARGETS)) for (const sel of (t.text ?? '').split(',').map((x) => x.trim()).filter(Boolean)) {
+    ok(/^\.fx-[a-z0-9_-]+$/.test(sel), `${type}: text target ${sel} is one class`);
+    ok(axfCss.includes(`${sel} {`) || axfCss.includes(`${sel},`), `${type}: text target ${sel} is styled in axf.css`);
+  }
+}
 ok(tabGroupStyle(null).attrs['data-fx-tabs'] === 'underline', 'missing tab-group = underline');
 ok(normalizeTabGroup({ style: 'x' as never, align: 'center' }).align === 'center', 'tab-group normalize');
 ok(tabGroupStyle({ style: 'pills', align: 'start' }, true).attrs['data-fx-tabs-hidden'] === 'on', 'hidden attr');

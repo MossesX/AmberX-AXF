@@ -9,7 +9,7 @@
 .axf-approvals__count {
   display: inline-flex; align-items: center; justify-content: center; min-width: calc(var(--fx-space) * 2.25);
   height: calc(var(--fx-space) * 2.25); padding: 0 var(--fx-dens-gap-md); border-radius: 999px;
-  background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-root-xs); font-weight: 700;
+  background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-root-xs); font-weight: calc(var(--fx-type-weights-strong) + 100);
   font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap
 }
 .axf-approvals__count[data-held='1'] { background: var(--fx-warning); color: var(--fx-bg) }
@@ -29,7 +29,7 @@
 .axf-approvals__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
 .axf-approvals__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axf-approvals__line { color: var(--fx-muted); font-variant-numeric: tabular-nums }
-.axf-approvals__item.is-held .axf-approvals__line { color: var(--fx-warning); font-weight: 600 }
+.axf-approvals__item.is-held .axf-approvals__line { color: var(--fx-warning); font-weight: var(--fx-type-weights-strong) }
 .axf-approvals__line.is-urgent, .axf-approvals__item.is-held .axf-approvals__line.is-urgent { color: var(--fx-danger) }
 .axf-approvals__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
 .axf-approvals__cmd { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted) }
@@ -53,7 +53,7 @@
 .axf-apx.is-held { border-color: var(--fx-warning) }
 .axf-apx__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0 }
 .axf-apx__sum { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-xs); padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer }
-.axf-apx__sum:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm) }
+.axf-apx__sum:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm) }
 .axf-apx__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axf-apx__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axf-apx__src { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
@@ -70,7 +70,7 @@
 .axf-apx__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); border-top: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
 .axf-apx__sec { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
 .axf-apx__sec > .fx-eyebrow { margin: 0 !important }
-.axf-apx__title-full { margin: 0; font-weight: 600; overflow-wrap: anywhere }
+.axf-apx__title-full { margin: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
 .axf-apx__text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere }
 .axf-apx__code { margin: 0; padding: var(--fx-dens-gap-md); max-height: calc(var(--fx-row-h) * 8); overflow: auto; white-space: pre; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); font-size: var(--fx-type-root-xs) }
 .axf-apx__out { max-height: calc(var(--fx-row-h) * 10) }
@@ -82,12 +82,12 @@
 .axf-apx__dl dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
 .axf-apx__timeline .axf-apx__step { display: contents }
 .axf-apx__timeline dd { font-variant-numeric: tabular-nums }
-.axf-apx__exit { margin: 0; font-weight: 600 }
+.axf-apx__exit { margin: 0; font-weight: var(--fx-type-weights-strong) }
 .axf-apx__exit.is-good { color: var(--fx-success) }
 .axf-apx__exit.is-bad { color: var(--fx-danger) }
 .axf-apx__foot { justify-content: space-between }
 .axf-apx__link { color: var(--fx-accent); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
-.axf-apx__count { font-weight: 600; color: var(--fx-warning); font-variant-numeric: tabular-nums }
+.axf-apx__count { font-weight: var(--fx-type-weights-strong); color: var(--fx-warning); font-variant-numeric: tabular-nums }
 /* Deny / Approve inside: big targets sharing the width (about 32 px, 44 px on a phone). */
 .axf-apx__decide { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axf-apx__decide > .fx-btn { flex: 1 1 0; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); justify-content: center }

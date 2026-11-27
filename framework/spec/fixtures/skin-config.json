@@ -23,6 +23,12 @@
        "light",
        "dark"
       ]
+     },
+     "skin": {
+      "by": "slot",
+      "ingredient": true,
+      "via": "colorTheme",
+      "why": "the skin's colour theme"
      }
     },
     "menu": {
@@ -45,6 +51,11 @@
         "default": 2
        }
       }
+     },
+     "skin": {
+      "by": "slot",
+      "parts": true,
+      "why": "picked and styled"
      }
     },
     "context-menu": {
@@ -69,6 +80,11 @@
         "default": 1
        }
       }
+     },
+     "skin": {
+      "by": "slot",
+      "parts": true,
+      "why": "picked and styled"
      }
     },
     "toolbar": {
@@ -88,6 +104,11 @@
         "default": 3
        }
       }
+     },
+     "skin": {
+      "by": "slot",
+      "parts": true,
+      "why": "picked and styled"
      }
     },
     "button": {
@@ -101,6 +122,11 @@
        "solid",
        "outline"
       ]
+     },
+     "skin": {
+      "by": "slot",
+      "parts": true,
+      "why": "picked and styled"
      }
     },
     "badge": {
@@ -109,7 +135,11 @@
      "widget": true,
      "required": [
       "tone"
-     ]
+     ],
+     "skin": {
+      "by": "parts",
+      "why": "many copies, styled with parts"
+     }
     },
     "icon-pack": {
      "label": "Icon pack",
@@ -138,7 +168,11 @@
      "group": "Brand",
      "required": [
       "name"
-     ]
+     ],
+     "skin": {
+      "by": "slot",
+      "why": "picked"
+     }
     },
     "skin": {
      "label": "Skin",

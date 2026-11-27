@@ -27,7 +27,7 @@
 .axp-basic-filter__attach-row { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-height: var(--fx-row-h); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); }
 .axp-basic-filter__attach-row + .axp-basic-filter__attach-row { border-top: var(--fx-border-w) solid var(--fx-border); }
 .axp-basic-filter__attach-text { display: flex; flex-direction: column; min-width: 0; }
-.axp-basic-filter__attach-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-basic-filter__attach-name { font-weight: var(--fx-type-weights-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-basic-filter__attach-row:not(.is-active) .axp-basic-filter__attach-name { color: var(--fx-muted); }
 .axp-basic-filter__attach.is-compact .axp-basic-filter__attach-list { max-height: 30vh; }
 .axp-basic-filter__byid { display: flex; align-items: end; gap: var(--fx-dens-gap-xl); margin-top: var(--fx-dens-gap-xl); }

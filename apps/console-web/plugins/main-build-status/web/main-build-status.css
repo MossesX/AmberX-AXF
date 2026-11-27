@@ -4,7 +4,7 @@
 .axp-main-build-status__dot[data-tone='success'] { background: var(--fx-success) }
 .axp-main-build-status__dot[data-tone='danger'] { background: var(--fx-danger) }
 .axp-main-build-status__dot[data-tone='accent'] { background: var(--fx-accent) }
-.axp-main-build-status__title { margin: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-main-build-status__title { margin: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
 .axp-main-build-status__meta { margin: 0; overflow-wrap: anywhere }
 .axp-main-build-status__jobs { margin: 0; padding-left: var(--fx-dens-gap-2xl) }
 .axp-main-build-status__go { align-self: flex-start; text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }

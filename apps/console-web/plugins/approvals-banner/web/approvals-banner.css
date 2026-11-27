@@ -2,11 +2,11 @@
 .axp-approvals-banner { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axp-approvals-banner__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); flex-wrap: wrap }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
-button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: 600; cursor: pointer; flex-wrap: wrap }
-.axp-approvals-banner__text:focus-visible, .axp-approvals-banner__more:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
-.axp-approvals-banner__sum { font-weight: 400; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: var(--fx-type-weights-strong); cursor: pointer; flex-wrap: wrap }
+.axp-approvals-banner__text:focus-visible, .axp-approvals-banner__more:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-approvals-banner__sum { font-weight: var(--fx-type-weights-body); color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
 .axp-approvals-banner__go { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
-.axp-approvals-banner__tool { font-weight: 600; white-space: nowrap }
+.axp-approvals-banner__tool { font-weight: var(--fx-type-weights-strong); white-space: nowrap }
 .axp-approvals-review__foot { justify-content: space-between; align-items: center }
 
 /* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
@@ -33,14 +33,14 @@ button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; over
 .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-width: calc(var(--fx-space) * 10); justify-content: center }
 .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-width: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem) }
 .axp-approvals-banner__row > .fx-iconbtn { flex: 0 0 auto }
-.axp-approvals-banner__pending .axp-approvals-banner__text { font-weight: 400 }
+.axp-approvals-banner__pending .axp-approvals-banner__text { font-weight: var(--fx-type-weights-body) }
 button.axp-approvals-banner__more { all: unset; cursor: pointer; padding-left: var(--fx-dens-gap-4xl) }
 :where([data-fx-narrow]) .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn, :where([data-fx-narrow]) .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
 :where([data-fx-narrow]) .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem) }
 :where([data-fx-tiny]) .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-width: calc(var(--fx-space) * 9) }
 :where([data-fx-tiny]) .axp-approvals-banner__runs { display: none }
 .axp-veto-screen__time { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xl); flex-wrap: wrap; }
-.axp-veto-screen__count { font-size: calc(var(--fx-font-size) * 2.4); font-variant-numeric: tabular-nums; font-weight: 700; }
+.axp-veto-screen__count { font-size: calc(var(--fx-font-size) * 2.4); font-variant-numeric: tabular-nums; font-weight: calc(var(--fx-type-weights-strong) + 100); }
 .axp-veto-screen__count.is-urgent { color: var(--fx-danger); }
 .axp-veto-screen__cmd { display: block; white-space: pre-wrap; word-break: break-word; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .axp-approvals-banner > .axf-apx { background: var(--fx-surface) }

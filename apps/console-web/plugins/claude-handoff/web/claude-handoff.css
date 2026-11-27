@@ -14,7 +14,7 @@
 .axp-claude-handoff-banner { --axf-banner-tone: var(--fx-warning); display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .axp-claude-handoff-banner__icon { display: inline-flex; color: var(--fx-warning); flex: none }
 .axp-claude-handoff-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); cursor: pointer }
-.axp-claude-handoff-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-claude-handoff-banner__main:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-claude-handoff-banner__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
 .axp-claude-handoff-banner__acts { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
 
@@ -28,7 +28,7 @@
 .is-done .axp-claude-handoff-inst__logo { color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-claude-handoff-inst__title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-claude-handoff-inst__now { color: var(--fx-muted); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.axp-claude-handoff-inst__pct { flex: none; font-size: var(--fx-type-root-2xl); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--fx-accent); line-height: 1 }
+.axp-claude-handoff-inst__pct { flex: none; font-size: var(--fx-type-root-2xl); font-weight: calc(var(--fx-type-weights-strong) + 100); font-variant-numeric: tabular-nums; color: var(--fx-accent); line-height: 1 }
 .axp-claude-handoff-inst__pct small { font-size: var(--fx-type-root-md); color: var(--fx-muted) }
 .is-done .axp-claude-handoff-inst__pct { color: var(--fx-success) }
 .axp-claude-handoff-inst__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--fx-dens-gap-md); color: var(--fx-muted); font-size: var(--fx-type-root-sm); font-variant-numeric: tabular-nums }
@@ -102,7 +102,7 @@
 .axp-claude-handoff-look__toggle { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axp-claude-handoff-look__chev { display: inline-flex; color: var(--fx-muted) }
 .axp-claude-handoff-look__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.is-branch > .axp-claude-handoff-look__row .axp-claude-handoff-look__label { font-weight: 700 }
+.is-branch > .axp-claude-handoff-look__row .axp-claude-handoff-look__label { font-weight: calc(var(--fx-type-weights-strong) + 100) }
 .axp-claude-handoff-look__count { color: var(--fx-muted); font-size: var(--fx-type-root-xs); font-variant-numeric: tabular-nums }
 .axp-claude-handoff-look__row .fx-field { margin: 0; width: calc(var(--fx-space) * 9); flex: none }
 .axp-claude-handoff-look__row .fx-field :is(select, input), .axp-claude-handoff-look__toggles .fx-field :is(select, input) { width: 100% }
@@ -132,7 +132,7 @@
 .axp-claude-handoff-files__row.is-open { border-color: var(--fx-accent) }
 .axp-claude-handoff-files__row.is-missing { color: var(--fx-muted) }
 .axp-claude-handoff-files__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
-.axp-claude-handoff-files__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-files__name { font-weight: var(--fx-type-weights-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-claude-handoff-files__path { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); color: var(--fx-muted); overflow-wrap: anywhere }
 .axp-claude-handoff-files__by { font-size: var(--fx-type-root-xs); color: var(--fx-muted) }
 .axp-claude-handoff-files__side { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: var(--fx-dens-gap-xs) }

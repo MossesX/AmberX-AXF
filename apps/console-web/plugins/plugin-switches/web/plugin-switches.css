@@ -10,7 +10,7 @@
 .axp-plugin-switches__row + .axp-plugin-switches__row { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-plugin-switches__row.is-self { opacity: var(--fx-opacity-disabled) }
 .axp-plugin-switches__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0 }
-.axp-plugin-switches__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600 }
+.axp-plugin-switches__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--fx-type-weights-strong) }
 .axp-plugin-switches__row:not(.is-active) .axp-plugin-switches__name { color: var(--fx-muted) }
 .axp-plugin-switches__note { color: var(--fx-muted); font-size: var(--fx-type-root-xs) }
 .axp-plugin-switches__note.is-warn { color: var(--fx-warning) }

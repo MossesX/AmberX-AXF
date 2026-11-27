@@ -723,7 +723,8 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   t('sections: the repo passes the owner check (crew-say.mjs check)', () => {
     const r = spawnSync(process.execPath, [say, 'check', '--json'], { encoding: 'utf8' });
     const j = JSON.parse(r.stdout); assert.equal(r.status, 0, j.problems?.join('\n')); assert.ok(j.usages.length >= 20);
-    for (const id of ['orchestrator', 'dispatcher', 'watchdog', 'landing', 'merge-queue', 'accounts', 'nightly-deploy', 'backups', 'health-monitor', 'notifications', 'shipped']) assert.ok(j.usages.some((u) => u.section === id), `nothing posts for ${id}`);
+    // merge-queue left this list with Pipeline 2.0 (485dd0566): the merge queue is a read-only view and no longer posts.
+    for (const id of ['orchestrator', 'dispatcher', 'watchdog', 'landing', 'accounts', 'nightly-deploy', 'backups', 'health-monitor', 'notifications', 'shipped']) assert.ok(j.usages.some((u) => u.section === id), `nothing posts for ${id}`);
   });
 }
 

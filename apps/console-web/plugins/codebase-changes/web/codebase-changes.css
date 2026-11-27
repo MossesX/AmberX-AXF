@@ -1,7 +1,7 @@
 /* Codebase changes: banner + log browser. Same look as the other console banners; phone first. Theme tokens only. */
 
 /* badges + small actions */
-.axp-codebase-changes__kind, .axp-codebase-changes__state { box-sizing: border-box; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: none; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); border-radius: 999px; font-size: var(--fx-type-root-xs); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2) }
+.axp-codebase-changes__kind, .axp-codebase-changes__state { box-sizing: border-box; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: none; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); border-radius: 999px; font-size: var(--fx-type-root-xs); font-weight: var(--fx-type-weights-strong); line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2) }
 .axp-codebase-changes__kind.is-build { color: var(--fx-accent); background: var(--fx-accent-soft); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-codebase-changes__kind.is-edit { color: var(--fx-info); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-codebase-changes__kind.is-remove { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
@@ -12,7 +12,7 @@
 .axp-codebase-changes__state.is-partial { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-codebase-changes__state.is-cancelled { color: var(--fx-muted) }
 a.axp-codebase-changes__act { text-decoration: none }
-.axp-codebase-changes__act:focus-visible, .axp-codebase-changes__head:focus-visible, .axp-codebase-changes-banner__main:focus-visible, .axp-codebase-changes-banner__entry:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-codebase-changes__act:focus-visible, .axp-codebase-changes__head:focus-visible, .axp-codebase-changes-banner__main:focus-visible, .axp-codebase-changes-banner__entry:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-codebase-changes__meta { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted); font-size: var(--fx-type-root-sm); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__meta.is-danger { color: var(--fx-danger) }
 .axp-codebase-changes__meta.is-accent { color: var(--fx-accent) }
@@ -34,7 +34,7 @@ button.axp-codebase-changes-banner__main { all: unset; flex: 1; min-width: 0; di
 button.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; flex: 1; min-width: 0; cursor: pointer; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
 .axp-codebase-changes-banner__entry:hover { background: var(--fx-surface2) }
 .axp-codebase-changes-banner__line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); min-width: 0 }
-.axp-codebase-changes-banner__title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-codebase-changes-banner__title { flex: 1; min-width: 0; font-weight: var(--fx-type-weights-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-codebase-changes-banner__sub { color: var(--fx-muted); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-codebase-changes-banner__foot { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 
@@ -58,7 +58,7 @@ button.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; 
 button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-md); min-width: 0 }
 .axp-codebase-changes__head:hover { background: var(--fx-surface2) }
 .axp-codebase-changes__line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); min-width: 0 }
-.axp-codebase-changes__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-codebase-changes__title { flex: 1; min-width: 0; font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
 .axp-codebase-changes__line--title { flex-wrap: nowrap }
 .axp-codebase-changes__line--title > .axp-codebase-changes__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-codebase-changes__line--meta { flex-wrap: nowrap; overflow: hidden; gap: var(--fx-dens-gap-xl) }
@@ -85,7 +85,7 @@ button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 1
 .axp-codebase-changes__commits a { color: var(--fx-accent) }
 .axp-codebase-changes__tests { border-collapse: collapse; font-size: var(--fx-type-root-md); width: 100% }
 .axp-codebase-changes__tests th, .axp-codebase-changes__tests td { text-align: left; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-wrap: anywhere }
-.axp-codebase-changes__tests th { color: var(--fx-muted); font-weight: 600 }
+.axp-codebase-changes__tests th { color: var(--fx-muted); font-weight: var(--fx-type-weights-strong) }
 .axp-codebase-changes__tests tr.is-fail td { color: var(--fx-danger) }
 .axp-codebase-changes__none, .axp-codebase-changes__err { margin: 0 }
 .axp-codebase-changes__err { color: var(--fx-danger) }

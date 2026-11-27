@@ -1,7 +1,7 @@
 /* Crew — layout only; every colour, size and space is a theme token (framework/spec/THEMING.md). */
 .axp-crew { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; position: relative; }
 .axp-crew__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); }
-.axp-crew__total b { font-weight: 700; }
+.axp-crew__total b { font-weight: calc(var(--fx-type-weights-strong) + 100); }
 .axp-crew__live { margin-inline-start: auto; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm); color: var(--fx-muted); }
 .axp-crew__tools-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
 .axp-crew__search { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; }
@@ -20,11 +20,11 @@
 .axp-crew__whoText, .axp-crew__doing { contain: inline-size; flex: 1 1 auto; }
 .axp-crew__who { width: 100%; }
 .axp-crew__who { max-width: 100%; overflow: hidden; }
-.axp-crew__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.axp-crew__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-weight: var(--fx-type-weights-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .axp-crew__role, .axp-crew__step1, .axp-crew__now1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .axp-crew__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; min-width: 0; }
-.axp-crew__now { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600; }
+.axp-crew__now { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: var(--fx-type-weights-strong); }
 .axp-crew__said { margin: 0; white-space: pre-wrap; }
 .axp-crew__links { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
 .axp-crew__sec { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
@@ -33,7 +33,7 @@
 .axp-crew__steps, .axp-crew__files, .axp-crew__tools, .axp-crew__offList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
 .axp-crew__step { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
 .axp-crew__step.is-done { color: var(--fx-muted); }
-.axp-crew__step.is-now { font-weight: 600; }
+.axp-crew__step.is-now { font-weight: var(--fx-type-weights-strong); }
 .axp-crew__step.is-now .axp-crew__stepMark { color: var(--fx-accent); }
 .axp-crew__step.is-done .axp-crew__stepMark { color: var(--fx-success); }
 .axp-crew__stepMark { display: inline-flex; flex: none; }
@@ -58,7 +58,7 @@
 .axp-crew__no { color: var(--fx-muted); text-align: end; padding-inline-end: var(--fx-dens-gap-sm); user-select: none; }
 .axp-crew__sign { color: var(--fx-muted); user-select: none; }
 .axp-crew__src { white-space: pre; padding-inline-end: var(--fx-dens-gap-md); }
-.axp-crew__tok.is-kw { color: var(--fx-accent); font-weight: 600; }
+.axp-crew__tok.is-kw { color: var(--fx-accent); font-weight: var(--fx-type-weights-strong); }
 .axp-crew__tok.is-str { color: var(--fx-success); }
 .axp-crew__tok.is-com { color: var(--fx-muted); font-style: italic; }
 .axp-crew__tok.is-num { color: var(--fx-warning); }
@@ -71,7 +71,7 @@
 .axp-crew__toolCmd { font-size: var(--fx-type-root-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .axp-crew__off { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
-.axp-crew__offHead { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs) 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 600; cursor: pointer; text-align: start; }
+.axp-crew__offHead { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs) 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: var(--fx-type-weights-strong); cursor: pointer; text-align: start; }
 .axp-crew__offList { flex-direction: row; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); }
 .axp-crew__offItem { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
 

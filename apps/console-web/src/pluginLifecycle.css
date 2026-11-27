@@ -4,7 +4,7 @@
 .cl-life__facts dt { color: var(--fx-muted) }
 .cl-life__facts dd { margin: 0; overflow-wrap: anywhere }
 .cl-life__box { padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
-.cl-life__box summary { cursor: pointer; font-weight: 600 }
+.cl-life__box summary { cursor: pointer; font-weight: var(--fx-type-weights-strong) }
 .cl-life__danger { border-color: var(--fx-danger) }
 .cl-life__opt { display: flex; gap: var(--fx-dens-gap-xl); align-items: flex-start; font-size: var(--fx-type-root-md) }
 .cl-life__confirm { max-width: 240px }

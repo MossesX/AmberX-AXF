@@ -3,14 +3,14 @@
 .axp-project-wizard__error { color: var(--fx-danger); margin: 0; overflow-wrap: anywhere }
 .axp-project-wizard__steps { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); margin: 0; padding: 0; list-style: none }
 .axp-project-wizard__fieldset { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); margin: 0; padding: 0; border: 0; min-width: 0 }
-.axp-project-wizard__fieldset legend { display: flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: 600; margin-bottom: var(--fx-dens-gap-md) }
+.axp-project-wizard__fieldset legend { display: flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: var(--fx-type-weights-strong); margin-bottom: var(--fx-dens-gap-md) }
 .axp-project-wizard__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }
 .axp-project-wizard__card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
 .axp-project-wizard__card span { font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
 .axp-project-wizard__card:hover { background: var(--fx-surface2) }
 .axp-project-wizard__card.is-selected { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
 .axp-project-wizard__card:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
-.axp-project-wizard__card:focus-visible, .axp-project-wizard__row:focus-visible, .axp-project-wizard__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-project-wizard__card:focus-visible, .axp-project-wizard__row:focus-visible, .axp-project-wizard__item:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
 .axp-project-wizard__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }
 .axp-project-wizard__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted); min-width: 0 }
 .axp-project-wizard__field .fx-input { color: var(--fx-text) }
@@ -34,7 +34,7 @@
 .axp-project-wizard__details > .fx-row { margin-top: var(--fx-dens-gap-md) }
 .axp-project-wizard__pre { margin: var(--fx-dens-gap-md) 0 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 14); overflow: auto }
 .axp-project-wizard__kit { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-surface) }
-.axp-project-wizard__kit-title { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0; font-weight: 600 }
+.axp-project-wizard__kit-title { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0; font-weight: var(--fx-type-weights-strong) }
 .axp-project-wizard__howto { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-md) }
 .axp-project-wizard__files { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axp-project-wizard__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
@@ -43,7 +43,7 @@
 .axp-project-wizard__row:hover { background: var(--fx-surface2) }
 .axp-project-wizard__row.is-selected { background: var(--fx-accent-soft); box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
 .axp-project-wizard__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
-.axp-project-wizard__name { font-weight: 600 }
+.axp-project-wizard__name { font-weight: var(--fx-type-weights-strong) }
 .axp-project-wizard__sub { font-size: var(--fx-type-root-sm); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-project-wizard__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow-wrap: anywhere }
 .axp-project-wizard__detail th { white-space: nowrap; vertical-align: top }

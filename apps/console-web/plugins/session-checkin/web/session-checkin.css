@@ -7,7 +7,7 @@
 .axp-session-checkin__tile strong.is-warning { color: var(--fx-warning) }
 .axp-session-checkin__tile span { font-size: var(--fx-type-root-sm); color: var(--fx-muted); overflow-wrap: anywhere }
 .axp-session-checkin__filters { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
-.axp-session-checkin__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-session-checkin__row:focus-visible { outline: max(calc(var(--fx-border-w) * 2), 2px) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
 .axp-session-checkin__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
 .axp-session-checkin__list > [role='listitem'] + [role='listitem'] { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-session-checkin__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); width: 100%; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
@@ -15,7 +15,7 @@
 .axp-session-checkin__row.is-selected { background: var(--fx-accent-soft); box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
 .axp-session-checkin__when { flex: none; width: calc(var(--fx-space) * 9); font-size: var(--fx-type-root-sm); color: var(--fx-muted); font-variant-numeric: tabular-nums }
 .axp-session-checkin__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
-.axp-session-checkin__where { font-weight: 600 }
+.axp-session-checkin__where { font-weight: var(--fx-type-weights-strong) }
 .axp-session-checkin__sub { font-size: var(--fx-type-root-sm); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-session-checkin__effort { font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
 .axp-session-checkin__mark { display: inline-flex; flex: none }
@@ -24,13 +24,13 @@
 .axp-session-checkin__mark.is-mismatch { color: var(--fx-danger) }
 .axp-session-checkin__mark.is-none { color: var(--fx-muted) }
 .axp-session-checkin__detail { padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow-wrap: anywhere }
-.axp-session-checkin__detail th { white-space: nowrap; vertical-align: top; color: var(--fx-muted); font-weight: 500 }
+.axp-session-checkin__detail th { white-space: nowrap; vertical-align: top; color: var(--fx-muted); font-weight: calc(var(--fx-type-weights-medium) - 50) }
 .axp-session-checkin__flag { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: var(--fx-dens-gap-lg) 0 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: var(--fx-type-root-md) }
 .axp-session-checkin__device { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-session-checkin__cmd { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); overflow-wrap: anywhere; min-width: 0 }
 .axp-session-checkin__steps { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); margin: 0; padding: 0; list-style: none }
 .axp-session-checkin__fieldset { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); margin: 0; padding: 0; border: 0; min-width: 0 }
-.axp-session-checkin__fieldset legend { font-weight: 600; margin-bottom: var(--fx-dens-gap-md) }
+.axp-session-checkin__fieldset legend { font-weight: var(--fx-type-weights-strong); margin-bottom: var(--fx-dens-gap-md) }
 .axp-session-checkin__choice { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-xl); cursor: pointer }
 .axp-session-checkin__choice input { margin-top: var(--fx-dens-gap-xs) }
 .axp-session-checkin__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted); min-width: 0 }
