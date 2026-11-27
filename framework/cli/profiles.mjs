@@ -77,13 +77,8 @@ function seedProfile(id, from) {
     const empty = emptyProfileFile(rel);
     if (empty) writeJson(to, empty);
   }
-  if (!existsSync(dst.orchestrator)) {
-    let rules = null;
-    try { rules = JSON.parse(readFileSync(profileFiles(from ?? BASE_PROFILE).orchestrator, 'utf8')).rules; } catch { /* defaults */ }
-    let builds = [];
-    if (src) { try { builds = JSON.parse(readFileSync(src.orchestrator, 'utf8')).builds ?? []; } catch { /* none */ } }
-    writeJson(dst.orchestrator, { $axf: 'orchestrator@1', updatedAt: now(), ...(rules ? { rules } : {}), builds });
-  }
+  // No status file (Nov 25 2026): a profile's builds and rules are in the builds store, so nothing is seeded for them.
+  // This used to write an empty tracker export whenever it was missing, which brought the deleted file back.
 }
 
 /**
