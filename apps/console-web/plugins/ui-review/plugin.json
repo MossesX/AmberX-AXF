@@ -233,5 +233,6 @@
       "ai.amberx.axf.console.design-packs"
     ]
   },
-  "opens": "main"
+  "opens": "main",
+  "settingsTab": { "default": true }
 }

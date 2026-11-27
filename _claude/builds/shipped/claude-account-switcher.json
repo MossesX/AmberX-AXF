@@ -1,0 +1,199 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-claude-account-switcher",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:19Z",
+ "build": {
+  "id": "claude-account-switcher",
+  "title": "Claude account switcher",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
+  "verbatim": true,
+  "at": "2026-11-04T23:57:00.641Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-claude-account-switcher--paulie",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T23:54:23.532Z",
+   "endedAt": "2026-11-05T00:21:16.379Z",
+   "exit": 0,
+   "costUsd": 8.1128
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plugin skeleton + server: list/who over the Terminal's ssh, use/save as one held axHub vps.run, name validation",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T00:11:25.510Z",
+   "doneAt": "2026-11-05T00:11:47.527Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Web: settings tab, banner chip with switch menu, help box, action for voice",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T00:11:47.527Z",
+   "doneAt": "2026-11-05T00:11:48.705Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Commands (MCP/CLI), help.json, README, docs marks",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T00:11:48.705Z",
+   "doneAt": "2026-11-05T00:11:49.727Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests + plugin checks",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T23:54:23.532Z",
+   "doneAt": "2026-11-05T00:11:25.510Z",
+   "actualMin": 17,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Screenshots, report, PR into the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T00:11:49.727Z",
+   "doneAt": "2026-11-05T00:13:31.433Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/claude-account-switcher",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 351,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/351"
+ },
+ "landedCommit": "544e8d5c64ec768c9933e1158d237498eda4f590",
+ "commits": [
+  "e4c6893e039e9ddd6d5d37c94dd494c2a54bc16e"
+ ],
+ "mergedAt": "2026-11-05T19:58:36Z",
+ "landedAt": "2026-11-05T19:58:31Z",
+ "files": [
+  "_claude/builds/reports/claude-account-switcher.md",
+  "apps/console-web/plugins/claude-accounts/README.md",
+  "apps/console-web/plugins/claude-accounts/help.json",
+  "apps/console-web/plugins/claude-accounts/hooks.mjs",
+  "apps/console-web/plugins/claude-accounts/install.mjs",
+  "apps/console-web/plugins/claude-accounts/plugin.json",
+  "apps/console-web/plugins/claude-accounts/server/__init__.py",
+  "apps/console-web/plugins/claude-accounts/test.py",
+  "apps/console-web/plugins/claude-accounts/uninstall.mjs",
+  "apps/console-web/plugins/claude-accounts/web/claude-accounts.css",
+  "apps/console-web/plugins/claude-accounts/web/index.tsx",
+  "apps/console-web/plugins/claude-accounts/web/menu.ts",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/src/lazyEngine.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/README.md",
+    "apps/console-web/plugins/claude-accounts/help.json",
+    "apps/console-web/plugins/claude-accounts/hooks.mjs",
+    "apps/console-web/plugins/claude-accounts/install.mjs",
+    "apps/console-web/plugins/claude-accounts/plugin.json",
+    "apps/console-web/plugins/claude-accounts/server/__init__.py",
+    "apps/console-web/plugins/claude-accounts/test.py",
+    "apps/console-web/plugins/claude-accounts/uninstall.mjs",
+    "apps/console-web/plugins/claude-accounts/web/claude-accounts.css",
+    "apps/console-web/plugins/claude-accounts/web/index.tsx",
+    "apps/console-web/plugins/claude-accounts/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/lazyEngine.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/claude-account-switcher.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "claude-accounts/test.py: 47 checks (names, fixed commands, held call, repeat asks, overwrite guard, owner only, no token in any answer or in the data file). Fake host and hub.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Real read command run against the real script on the VPS: parsed account-2, active, plan.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Passing locally: console-terminal test (139), plugin-commands, plugin-lifecycle, check-theme, check-controls, check-toolbars, check-chrome-assets, help coverage, plugins catalog, menu-reach, lazy-loader-check, tsc, vite build.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 8.1128,
+  "estimated": false,
+  "tokens": {
+   "input": 88,
+   "output": 352,
+   "cacheRead": 6712005,
+   "cacheWrite": 200730
+  }
+ },
+ "report": "_claude/builds/reports/claude-account-switcher.md",
+ "open": []
+}

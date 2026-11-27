@@ -1,0 +1,532 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-gizmo-companion",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:52Z",
+ "build": {
+  "id": "gizmo-companion",
+  "title": "Gizmo: full Claude companion plugin in AmberX",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-gizmo-companion",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T22:17:27.670Z",
+   "endedAt": "2026-11-04T01:18:49.440Z",
+   "exit": 0,
+   "costUsd": 13.9182
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1a Harvest: shared framework lib claude-session (session model, conversation store, stream parsing, cost counters, persona/rules chain) from AmberX assistant + console Terminal session code",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T22:17:27.670Z",
+   "doneAt": "2026-11-03T22:26:18.873Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s1b Tests for claude-session; console Terminal migrated onto it with no behaviour change",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T22:26:18.873Z",
+   "doneAt": "2026-11-03T22:26:30.544Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s2a Chat: companion plugin in AmberX, full-screen chat with Gizmo, streaming replies, markdown + code blocks with copy",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T22:26:30.544Z",
+   "doneAt": "2026-11-03T23:21:17.735Z",
+   "actualMin": 55,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s2b Chat: attach images/files/photos, stop/regenerate/edit message",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:21:17.735Z",
+   "doneAt": "2026-11-03T23:22:06.848Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s2c Chat: conversation list with search, rename, pin, delete, new chat; history stored on axHub",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:22:06.848Z",
+   "doneAt": "2026-11-03T23:22:57.049Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "s2d Chat: server side on the VPS (Claude Code session per chat, reached through axHub; no keys in the APK)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:22:57.049Z",
+   "doneAt": "2026-11-03T23:24:21.333Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "s3a Voice: talk mode (push-to-talk + hands-free on the existing listener), spoken replies",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:24:21.333Z",
+   "doneAt": "2026-11-03T23:25:42.552Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "s3b Voice: interrupt-to-stop, voice picker + speed",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T23:25:42.552Z",
+   "doneAt": "2026-11-03T23:26:46.439Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "s4a Connectors + tools: axHub services with the same approvals/veto flow",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "s4b Tool calls as collapsible cards; Follow Amber / console_show hooks",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s11",
+   "text": "s5a Crew link: queue/stop builds, status, slot queue from the chat",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s12",
+   "text": "s5b Crew link: UI Review approve/deny, banners, handoff to Amber",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s13",
+   "text": "s6a Projects with instructions + files; memory read/write on axHub (Amber's files)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s14",
+   "text": "s6b Per-chat model choice (policy: Opus/Fable, Sonnet/Haiku coerced up), budget caps",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T23:26:46.439Z",
+   "doneAt": "2026-11-03T23:28:19.444Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "s7a Companion settings screen: model, voice, persona field, notifications, approvals, connectors on/off, memory on/off, privacy, export/delete chats",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:28:19.444Z",
+   "doneAt": "2026-11-03T23:46:13.434Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "s7b Overlay bubble to summon Gizmo anywhere on the phone",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s17",
+   "text": "s8 Companion commands via REST + MCP + CLI; other plugins can add tools to Gizmo",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s18",
+   "text": "s9 Gizmo agent card; Molly -> Gizmo in AmberX assistant texts",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T23:46:13.434Z",
+   "doneAt": "2026-11-03T23:48:25.923Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "s10 Tests/type-check, phone screenshots, UI Review item, report _claude/builds/reports/gizmo-companion.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:48:25.923Z",
+   "doneAt": "2026-11-04T01:15:50.561Z",
+   "actualMin": 87,
+   "done": true
+  }
+ ],
+ "branch": "claude/gizmo-companion",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 296,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/296"
+ },
+ "landedCommit": "471e66fe2703937e990fb5e1d0ef6bf89bbc93f0",
+ "commits": [
+  "f6862f0346f82993a1ab298f1c5266b59e496690",
+  "efe58a9d752c11701a38de52ddd9f267d7511b56",
+  "f0af582611d175a5120b5a3eb607395a011044cd",
+  "4793e06a149e7daff0e1f0e1cbae7a7abb216608",
+  "1354f6cc8e17c273076e3754d4297cf9c9c50daa",
+  "e8fb328768e8280f0def364b33cf196e93b62fa5",
+  "7c15b4398c46f08e2847e3ef8054b0150383c4cd",
+  "1a7e2352cc193b5502cdfc60a95eff718d815dcc",
+  "e3f9903eafd2aba3d52f9b7e41dbea7c2d739964",
+  "894dc99f4bccbb3c12b2a44217a87a2a25626bcd",
+  "8616ea05a92de5bb65bf3b60cc7f98447c679f89",
+  "62aa97753b7b05767173df055af56f4be19bc8a1"
+ ],
+ "mergedAt": "2026-11-04T15:24:48Z",
+ "landedAt": "2026-11-04T15:24:48Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/gizmo-companion.md",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-phone.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-phone.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-phone.png",
+  "_claude/builds/reports/urgent-land-gizmo-chat.md",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+  "apps/amberx-droid/src/miclease.ts",
+  "apps/amberx-droid/src/plugins/ai/web/client.ts",
+  "apps/amberx-droid/src/plugins/ai/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/plugin.json",
+  "apps/amberx-droid/src/plugins/commands/web/core.ts",
+  "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+  "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+  "apps/amberx-droid/src/plugins/commands/web/runner.ts",
+  "apps/amberx-droid/src/plugins/companion/plugin.json",
+  "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/api.ts",
+  "apps/amberx-droid/src/plugins/companion/web/companion.css",
+  "apps/amberx-droid/src/plugins/companion/web/core.ts",
+  "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+  "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/libs/claude-session/core.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-manager/addons/gizmo/addon.json",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/agent-swarm/agents/roster.json",
+  "apps/console-web/plugins/agent-swarm/agents/skills/companion.md",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/console-terminal/web/headless-core.ts",
+  "apps/console-web/src/axf/libs/claude-session/core.ts",
+  "apps/console-web/src/axf/libs/claude-session/index.ts",
+  "apps/console-web/src/axf/libs/claude-session/library.json",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/libs/claude-session/core.ts",
+  "framework/libs/claude-session/core.ts",
+  "framework/libs/claude-session/index.ts",
+  "framework/libs/claude-session/library.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-claude-session.mts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/gizmo-companion.md",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-phone.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-phone.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-phone.png",
+    "_claude/builds/reports/urgent-land-gizmo-chat.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/plugin.json",
+    "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/api.ts",
+    "apps/amberx-droid/src/plugins/companion/web/companion.css",
+    "apps/amberx-droid/src/plugins/companion/web/core.ts",
+    "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+    "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/plugin.json",
+    "apps/amberx-droid/src/plugins/commands/web/core.ts",
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+    "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+    "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+    "apps/amberx-droid/src/plugins/commands/web/runner.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+    "apps/amberx-droid/src/miclease.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/libs/claude-session/core.ts",
+    "apps/console-web/src/axf/libs/claude-session/index.ts",
+    "apps/console-web/src/axf/libs/claude-session/library.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/addons/gizmo/addon.json",
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/agents/roster.json",
+    "apps/console-web/plugins/agent-swarm/agents/skills/companion.md",
+    "apps/console-web/plugins/agent-swarm/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/claude-session/core.ts",
+    "framework/libs/claude-session/index.ts",
+    "framework/libs/claude-session/library.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai/web/client.ts",
+    "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/libs/claude-session/core.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/libs/claude-session/core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-claude-session.mts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/web/headless-core.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261104-4db7efaa",
+   "name": "Gizmo companion (AmberX): chat, chats drawer, welcome",
+   "status": "approved",
+   "group": "g-20261104-387a2635",
+   "url": "/review/r-20261104-4db7efaa"
+  }
+ ],
+ "cost": {
+  "usd": 13.9182,
+  "estimated": false,
+  "tokens": {
+   "input": 388,
+   "output": 3253,
+   "cacheRead": 43967382,
+   "cacheWrite": 339770
+  }
+ },
+ "report": "_claude/builds/reports/gizmo-companion.md",
+ "open": [
+  "s9: s4a Connectors + tools: axHub services with the same approvals/veto flow",
+  "s10: s4b Tool calls as collapsible cards; Follow Amber / console_show hooks",
+  "s11: s5a Crew link: queue/stop builds, status, slot queue from the chat",
+  "s12: s5b Crew link: UI Review approve/deny, banners, handoff to Amber",
+  "s13: s6a Projects with instructions + files; memory read/write on axHub (Amber's files)",
+  "s16: s7b Overlay bubble to summon Gizmo anywhere on the phone",
+  "s17: s8 Companion commands via REST + MCP + CLI; other plugins can add tools to Gizmo",
+  "s4a Connectors: the chat already gets Gizmo's tools (axhub_call, repo read/search …) with the usual approvals and veto flow; a per-connector on/off list (github, vps, hostinger …) and Follow Amber / `console_show` hooks are not built.",
+  "s5 Crew link: queue/stop builds, slot queue, UI Review approve/deny, banners and handoff to Amber as buttons (today only through what Gizmo's tools can do when asked in chat).",
+  "s6a Projects + memory: projects with instructions + files, memory read/write on Amber's axHub files.",
+  "s7b Overlay bubble to summon Gizmo anywhere on the phone (needs native Android code: AmberX is the allowed Android exception, but it needs an APK build).",
+  "s8: companion commands via REST + MCP + CLI (plugin-commands@1 `auto: true` is set, so the automatic pass covers its actions once `plugin-commands-auto` #263 is on main); other plugins adding tools to Gizmo.",
+  "Developer voice commands still go through `/api/ai/molly` → the console's `molly-guide` → agent Molly; point them at agent Gizmo in a follow-up (server-side, molly-guide plugin).",
+  "Chat history itself lives in the console's assistant store on the VPS; axHub keeps the text copy. Moving the primary store onto axHub is a server change in the assistant (not done)."
+ ]
+}

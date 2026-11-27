@@ -1,0 +1,210 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-audio-extract",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:37Z",
+ "build": {
+  "id": "audio-extract",
+  "title": "Audio Extract plugin for AmberX: pull the audio out of screen recordings (lossless .m4a, optional MP3/WAV), plus a built-in screen recorder with playback audio (no mic)",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plugin skeleton audio-extract (amberx-plugin@1, lifecycle install/uninstall, enabled by default) + bridge contract",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-10-30T22:16:02.117Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Extractor core: job queue, batch, progress, cancel, trim, track pick, naming, settings model + fake bridge",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T22:16:02.117Z",
+   "doneAt": "2026-10-30T22:16:02.224Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Recorder state machine idle/countdown/recording/paused/extracting/done + voice commands",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T22:16:02.224Z",
+   "doneAt": "2026-10-30T22:16:02.378Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "UI: Extract page (pick, share-in, new-recording card, results list play/rename/share/delete), Record panel, settings",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T22:16:02.378Z",
+   "doneAt": "2026-10-30T22:16:02.456Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Native: AudioExtractPlugin.java (MediaExtractor+MediaMuxer lossless, MediaCodec MP3-less WAV/re-encode, MediaStore out, SAF pick, watcher)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T22:16:02.456Z",
+   "doneAt": "2026-10-30T22:16:02.587Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Native: ScreenRecordService (MediaProjection, MediaRecorder video + AudioPlaybackCapture, notification Pause/Stop, chip) + manifest + share intent",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T22:16:02.587Z",
+   "doneAt": "2026-10-30T22:16:02.668Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Tests: tsc, test.mjs, plugin-lifecycle check; THREADS, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T22:16:02.668Z",
+   "doneAt": "2026-11-01T02:36:25.826Z",
+   "actualMin": 1700,
+   "done": true
+  }
+ ],
+ "branch": "claude/audio-extract",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 187,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/187"
+ },
+ "landedCommit": "faccf9b02e0b268b9ad4fa250478f93f8575ddc6",
+ "commits": [
+  "888fd096ea0ae942fcf01da7f94e03569e8c2ff9"
+ ],
+ "mergedAt": "2026-10-31T07:26:36Z",
+ "landedAt": "2026-10-31T07:26:29Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractPlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractor.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ScreenRecordService.java",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/test.mjs",
+  "apps/console-web/plugins/audio-extract/README.md",
+  "apps/console-web/plugins/audio-extract/hooks.mjs",
+  "apps/console-web/plugins/audio-extract/install.mjs",
+  "apps/console-web/plugins/audio-extract/plugin.json",
+  "apps/console-web/plugins/audio-extract/test.mts",
+  "apps/console-web/plugins/audio-extract/uninstall.mjs",
+  "apps/console-web/plugins/audio-extract/web/audio-extract.css",
+  "apps/console-web/plugins/audio-extract/web/bridge.ts",
+  "apps/console-web/plugins/audio-extract/web/core.ts",
+  "apps/console-web/plugins/audio-extract/web/fake.ts",
+  "apps/console-web/plugins/audio-extract/web/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "audio-extract",
+   "files": [
+    "apps/console-web/plugins/audio-extract/README.md",
+    "apps/console-web/plugins/audio-extract/hooks.mjs",
+    "apps/console-web/plugins/audio-extract/install.mjs",
+    "apps/console-web/plugins/audio-extract/plugin.json",
+    "apps/console-web/plugins/audio-extract/test.mts",
+    "apps/console-web/plugins/audio-extract/uninstall.mjs",
+    "apps/console-web/plugins/audio-extract/web/audio-extract.css",
+    "apps/console-web/plugins/audio-extract/web/bridge.ts",
+    "apps/console-web/plugins/audio-extract/web/core.ts",
+    "apps/console-web/plugins/audio-extract/web/fake.ts",
+    "apps/console-web/plugins/audio-extract/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractPlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractor.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ScreenRecordService.java",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

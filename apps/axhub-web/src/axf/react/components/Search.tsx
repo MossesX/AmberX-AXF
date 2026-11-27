@@ -11,6 +11,7 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
 import type { DialogMap } from './Overlays';
 import { Icon } from './Icon';
+import { controlRegistry } from '../controlTargets';
 
 /* ---------------- words on pages ---------------- */
 
@@ -145,6 +146,10 @@ function focusEntry(rt: AxfRuntime, entry: SearchEntry, views: ViewMap): boolean
     case 'text':
       if (rt.getState().view !== f.view) rt.navigate(f.view!);
       flashWhenReady(() => findText(f.tag!, f.text!));
+      return true;
+    case 'control':
+      // a console-control@1 target (controlTargets.ts): open its screen and tab, scroll to it, highlight it
+      void controlRegistry(rt).run({ verb: 'focus', address: f.address! });
       return true;
     default:
       return false;

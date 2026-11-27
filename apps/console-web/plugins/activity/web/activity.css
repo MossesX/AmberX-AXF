@@ -54,8 +54,8 @@ button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; a
 .axp-activity__settings .fx-section { margin: 0 }
 
 /* On hold: the item's buttons (Continue first) under its row, and the group heading. Layout only: the buttons are framework controls. */
-.axp-activity__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) 0 0 var(--fx-dens-gap-4xl); }
-.axp-activity__group { margin: var(--fx-dens-gap-xl) 0 calc(var(--fx-space) / 2); font-weight: var(--fx-type-weights-strong); }
+.axp-activity__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) 0 0 var(--fx-dens-gap-4xl); }
+.axp-activity__group { margin: var(--fx-dens-gap-xl) 0 var(--fx-dens-gap-md); font-weight: var(--fx-type-weights-strong); }
 .axp-activity__item--held .axp-activity__time { color: var(--fx-muted); }
 
 /* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an

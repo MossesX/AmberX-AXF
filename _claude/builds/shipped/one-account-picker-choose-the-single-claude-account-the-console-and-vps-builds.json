@@ -1,0 +1,142 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
+ "rev": 2,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:08:20Z",
+ "build": {
+  "id": "one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
+  "title": "One account picker: choose the single Claude account the console and VPS builds use",
+  "profile": "all",
+  "category": "accounts",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"One account picker: choose the single Claude account the console and VPS builds use\" (one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds) [accounts] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30m) One dropdown in the console (banner and Settings): pick the single Claude account used by the console and by every VPS build; all other accounts are off for builds\n[ ] s2 (~30m) Dispatcher and console session honor that one account only; switching it takes effect for the next build; same via REST, MCP, CLI and voice\n[ ] s3 (~20m) Tests, report, PR\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "One dropdown in the console (banner and Settings): pick the single Claude account used by the console and by every VPS build; all other accounts are off for builds",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T01:52:11.782Z",
+   "doneAt": "2026-11-13T01:58:06.297Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Dispatcher and console session honor that one account only; switching it takes effect for the next build; same via REST, MCP, CLI and voice",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T01:58:06.297Z",
+   "doneAt": "2026-11-13T01:58:29.250Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, report, PR",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-13T01:58:29.250Z",
+   "doneAt": "2026-11-13T02:05:42.152Z",
+   "actualMin": 7,
+   "done": true
+  }
+ ],
+ "branch": "claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 549,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+ },
+ "landedCommit": "4d917727c90d9d7ce91f01b9b549727d004ea963",
+ "commits": [
+  "4d917727c90d9d7ce91f01b9b549727d004ea963"
+ ],
+ "mergedAt": "2026-11-13T06:36:36Z",
+ "landedAt": "2026-11-13T06:27:44Z",
+ "files": [
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/claude-accounts/README.md",
+  "apps/console-web/plugins/claude-accounts/plugin.json",
+  "apps/console-web/plugins/claude-accounts/server/__init__.py",
+  "apps/console-web/plugins/claude-accounts/test.py",
+  "apps/console-web/plugins/claude-accounts/web/claude-accounts.css",
+  "apps/console-web/plugins/claude-accounts/web/index.tsx",
+  "deploy/claude-headless.sh",
+  "deploy/claude-workers.mjs",
+  "deploy/claude-workers.test.mjs",
+  "deploy/worker-routing.mjs",
+  "deploy/worker-routing.test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/README.md",
+    "apps/console-web/plugins/claude-accounts/plugin.json",
+    "apps/console-web/plugins/claude-accounts/server/__init__.py",
+    "apps/console-web/plugins/claude-accounts/test.py",
+    "apps/console-web/plugins/claude-accounts/web/claude-accounts.css",
+    "apps/console-web/plugins/claude-accounts/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh",
+    "deploy/claude-workers.mjs",
+    "deploy/claude-workers.test.mjs",
+    "deploy/worker-routing.mjs",
+    "deploy/worker-routing.test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

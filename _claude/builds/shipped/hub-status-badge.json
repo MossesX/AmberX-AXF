@@ -1,0 +1,92 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hub-status-badge",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:09Z",
+ "build": {
+  "id": "hub-status-badge",
+  "title": "axHub status badge: red until settings come live from axHub, green only while they do (any app)",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Framework web library framework/libs/hubstatus (ai.amberx.axf.hubstatus), no dependencies: a status widget asset status/axhub on the banner. Red from the start and whenever the app is not reading settings live from axHub (appearance source not ready, hub unreachable, signed out, last live read too old); green only while it is. Tap = details panel (state, why, hub, last live read, latency, Check now, open hub). Pop-up note on change (on/off, seconds). Settings group. Console installs it.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Pure core: live/not-live rule + status asset + tests",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-10-24T12:46:13.270Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Library: probe, banner widget, details dialog, pop-up, settings",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-24T12:46:13.270Z",
+   "doneAt": "2026-10-24T12:46:13.345Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Console install, catalog, rule in _claude, docs, PR",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-24T12:46:13.345Z",
+   "doneAt": "2026-10-24T12:46:13.418Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-24T12:46:13.128Z",
+ "landedAt": "2026-10-24T12:46:13.128Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

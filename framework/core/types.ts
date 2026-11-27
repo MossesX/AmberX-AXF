@@ -100,6 +100,8 @@ export interface MenuItem {
   separator?: boolean;
   /** with `separator`: an empty gap instead of a rule */
   spacer?: boolean;
+  /** context menus: `toolbar` puts a top-level item in the icon strip above the list instead of the list itself */
+  place?: 'toolbar';
   /* ---- optional fields (asset-types.json → menuItems; engines/appmenu.ts) ---- */
   /** id of a live-list provider (`rt.registerAppMenuProvider`): the item becomes a submenu filled on open */
   provider?: string;
@@ -205,9 +207,27 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- surface transparency (0..1, default 1 = opaque; engines/theme.ts SURFACE_KINDS). Lower = see-through + frosted. ---- */
+  /** dialogs (.fx-dialog) */
+  opacityDialog?: number;
+  /** floating windows: settings interfaces and tool windows (.fx-window) */
+  opacitySettings?: number;
+  /** panels, containers, groups (.fx-card) */
+  opacityPanel?: number;
+  /** popovers, dropdowns, context menus */
+  opacityMenu?: number;
+  /** toolbars and the app menubar */
+  opacityToolbar?: number;
+  /** the top banner */
+  opacityBanner?: number;
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
+  /* ---- component-tokens@1 (engines/component-tokens.mjs): the grid and tab-group token families, optional ---- */
+  /** grid / table tokens by key (headerBg, hoverBg, selectedBg, lineColor, radius, opacity, …) → --fx-grid-*; a colour-theme token name, a CSS value or a number */
+  grid?: Record<string, string | number>;
+  /** tab-group tokens by key (barBg, text, hoverText, activeText, indicator, pillsActiveBg, radiusPills, opacity, …) → --fx-tab-* */
+  tabs?: Record<string, string | number>;
   /** 'thin' = thin themed scrollbars; unset = the browser's own. */
   scrollbar?: 'thin';
 }
@@ -285,16 +305,36 @@ export interface AppMenuData {
   surface?: ChromeSurface;
 }
 
+/** A `when` gate (page-toolbar@1): a term or a list of terms that must all hold over the page state (engines/toolbar-rules.mjs). */
+export type ToolbarWhen = string | string[];
+export type ToolbarOverflowMode = 'auto' | 'never' | 'always';
+
 export interface ToolbarItem {
   id: string;
   icon: string;
   label: string;
+  /** a console action id (the old shape), or an action ref: `action:<id>` · `command:<plugin>/<command>` · `control:<address>` · `handler:<id>` */
   action: string;
+  /** arguments passed with the action ref (a command's input, an action's params) */
+  args?: Record<string, unknown>;
   requires?: string;
-  /** name of a runtime counter to show as a badge on the button (e.g. `alerts.unread`); hidden at 0 */
+  /** a runtime counter name (e.g. `alerts.unread`), `counter:<name>` or `state:<key>`; shown as a badge, hidden at 0 */
   badge?: string;
-  /** toggle state, same bindings as app-menu `checked`: `setting:<key>` · `counter:<name>` · `slot:<type>` · `hidden:<type>`; drawn pressed when true */
+  /** toggle state, the app-menu `checked` bindings (`setting:` · `counter:` · `slot:` · `hidden:`) plus `state:<key>`; drawn pressed when true */
   checked?: string;
+  /** enabled only while every term holds over the page state */
+  enabledWhen?: ToolbarWhen;
+  /** drawn only while every term holds over the page state */
+  visibleWhen?: ToolbarWhen;
+  /** danger tone; an API press needs confirm */
+  destructive?: boolean;
+  /** ask before running: true for the default question, or the question */
+  confirm?: boolean | string;
+  /** overflow order (default 100): lower goes into More first */
+  priority?: number;
+  overflow?: ToolbarOverflowMode;
+  /** keyboard shortcut shown in the tip (reserved for the shortcut engine) */
+  shortcut?: string;
 }
 
 /** A toolbar group: fixed `items`, or a live list from a registered provider (`rt.registerAppMenuProvider`, the same registry the application menu uses). */
@@ -307,13 +347,28 @@ export interface ToolbarGroup {
   max?: number;
   /** optional label for screen readers (and labels variants) */
   label?: string;
+  /** gates the whole group (page-toolbar@1) */
+  enabledWhen?: ToolbarWhen;
+  visibleWhen?: ToolbarWhen;
+  /** default priority / overflow for the group's items */
+  priority?: number;
+  overflow?: ToolbarOverflowMode;
 }
+
+/** Overflow rule of a toolbar (page-toolbar@1): what happens when the bar is too narrow. */
+export interface ToolbarOverflowRule { when?: ToolbarOverflowMode; keep?: number; label?: string }
 
 export interface ToolbarData {
   variant: 'icons' | 'icons-labels' | 'labels';
   align: 'start' | 'center' | 'spread';
   groups: ToolbarGroup[];
   showSearch: boolean;
+  /** page-toolbar@1: `app` (default, the frame toolbar) · `view:<view id>` · `plugin:<plugin id>` */
+  scope?: string;
+  /** page-toolbar@1: the place on its page this toolbar fills when the page has several (default `main`) */
+  slot?: string;
+  /** page-toolbar@1 overflow rule (default auto: lowest priority folds into More) */
+  overflow?: ToolbarOverflowMode | ToolbarOverflowRule;
   window?: string;
   density?: ChromeDensity;
   surface?: ChromeSurface;
@@ -373,6 +428,8 @@ export interface ContextMenuData {
   showShortcuts: boolean;
   /** false = the asset's own targets show only its own items (no plugin contributions or everywhere items); default true */
   contributions?: boolean;
+  /** a search box pinned at the bottom of every menu (true or a placeholder); results replace the list as you type */
+  search?: boolean | string;
   /** target name -> items. "default" is required and used as fallback. */
   targets: Record<string, MenuItem[]>;
 }
@@ -537,7 +594,7 @@ export interface ContainerData {
 /** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
 /** behavior-theme@1 (engines/behavior.ts): how an app behaves. Every field has a default, so any subset is valid. */
 export interface BehaviorThemeData {
-  motion: { speed: string; easing: string; reduced: string; entrance: string };
+  motion: { speed: string; easing: string; reduced: string; entrance: string; swatches: string; skinSwitch: string; picker: string; animSpeed: number; animIntensity: number };
   interaction: { hover: string; press: string; focusRing: string; cursor: string; longPressMs: number; doubleTapMs: number; dragThreshold: number };
   windows: { dialogOpen: string; backdrop: string; popupOpen: string; drawerOpen: string; snap: boolean; snapGrid: number; stack: string; minimize: string; closeOnBackdrop: boolean; closeOnEscape: boolean };
   feedback: { toastPosition: string; toastMs: number; sound: string; vibration: string; confirmDelete: string; busyCursor: boolean };

@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/feature.schema.json",
+  "title": "feature@1 (feature-ledger@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "status"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "feature@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "new-feature",
+        "fix",
+        "ui",
+        "framework-contract",
+        "infra",
+        "docs",
+        "perf",
+        "refactor",
+        "test",
+        "chore",
+        "removal"
+      ]
+    },
+    "app": {
+      "type": "string"
+    },
+    "plugin": {
+      "type": "string"
+    },
+    "repo": {
+      "type": "string"
+    },
+    "originRepo": {
+      "type": "string"
+    },
+    "movedIntoAxf": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "queued",
+        "building",
+        "in-pr",
+        "merged",
+        "live",
+        "cancelled",
+        "removed"
+      ]
+    },
+    "stalled": {
+      "type": "boolean"
+    },
+    "plannedAt": {
+      "type": "string"
+    },
+    "mergedAt": {
+      "type": "string"
+    },
+    "mergedAtGuessed": {
+      "type": "boolean"
+    },
+    "liveAt": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "at"
+        ],
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "guessed": {
+            "type": "boolean"
+          },
+          "deploy": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "firstLiveAt": {
+      "type": "string"
+    },
+    "lastChangedAt": {
+      "type": "string"
+    },
+    "builds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "added",
+              "changed",
+              "fixed",
+              "removed"
+            ]
+          }
+        }
+      }
+    },
+    "prs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "number"
+        ],
+        "properties": {
+          "repo": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "role": {
+            "enum": [
+              "added",
+              "changed",
+              "fixed",
+              "removed"
+            ]
+          }
+        }
+      }
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mergeCommit": {
+      "type": "string"
+    },
+    "prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "passage": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "model": {
+      "type": "string"
+    },
+    "thinking": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "edits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "editCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lastEditAt": {
+      "type": "string"
+    },
+    "beingEdited": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "enum": [
+        "live",
+        "import",
+        "manual"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "exact",
+        "guessed"
+      ]
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

@@ -143,9 +143,10 @@ export function FollowHubSwitch({ locked }: { locked: boolean }) {
   const global = rt.globalSkin();
   const name = global ? rt.skinList().find((s) => s.id === global.id)?.name ?? global.id : '';
   const skinOn = !!look?.skin.use;
+  const following = rt.appearanceLockReason() === 'hub';
   return (
-    <Switch label="Follow the hub-wide skin" checked={!!look?.skin.inherit} disabled={locked || skinOn}
-      hint={skinOn ? 'Use skin is on: this app\'s own skin wins.' : global ? `axHub's skin is ${name}. On = this app takes it, off = this app keeps its own look.` : 'axHub has no hub-wide skin yet (set one with skins.mjs use --global).'}
+    <Switch label="Follow the hub-wide skin" checked={following || !!look?.skin.inherit} disabled={locked || skinOn}
+      hint={following ? 'Following axHub.' : skinOn ? 'Use skin is on: this app\'s own skin wins.' : global ? `axHub's skin is ${name}. On = this app takes it, off = this app keeps its own look.` : 'axHub has no hub-wide skin yet (set one with skins.mjs use --global).'}
       onChange={(on) => { rt.skinInherit(on); }} />
   );
 }

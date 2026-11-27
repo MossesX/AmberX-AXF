@@ -78,6 +78,11 @@ check_all() {
   # axHub projects volume
   if have docker && docker volume ls -q 2>/dev/null | grep -Eq '(^|[-_])axhub-projects$'; then put host-axhub-volume ok "axhub-projects volume exists"
   else put host-axhub-volume warn "no axhub-projects volume: shared data stays in the legacy folder"; fi
+  # axHub web app retired (Nov 20 2026: its pages are console plugins now, module axHub). Its container, update script
+  # and cron stay until Brett removes them, after he has used the console's axHub pages once.
+  if [ -f /etc/cron.d/axhub-web ] || [ -x /usr/local/bin/axhub-web-update ] || { have docker && docker ps -a --format '{{.Names}}' 2>/dev/null | grep -qx axhub-web; }; then
+    put host-axhub-web-retired warn "the retired axHub web app still runs here (container axhub-web / its cron): its pages are console plugins now"
+  else put host-axhub-web-retired ok "axHub web app retired: no container, update script or cron left"; fi
 }
 
 fix() {
@@ -111,6 +116,8 @@ fix() {
         install -d -m 700 /root/.ssh; touch /root/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys
         case "$k" in *" "*" "*) printf '%s\n' "$k" ;; *) printf '%s moshi\n' "$k" ;; esac >> /root/.ssh/authorized_keys && echo "  Added."
       fi ;;
+    host-axhub-web-retired) ask "Remove the retired axHub web app (container axhub-web, its update script and cron)?" && {
+        docker rm -f axhub-web >/dev/null 2>&1; rm -f /etc/cron.d/axhub-web /usr/local/bin/axhub-web-update; echo "  Removed. The hub's own container answers https://axhub.amberxai.com/ again."; } ;;
     host-axhub-volume) echo "  Coolify → axHub → Persistent Storage: add volume axhub-projects at /projects, redeploy axHub, then: bash $DIR/deploy/install-console.sh" ;;
     *) echo "  unknown check id $id" ;;
   esac

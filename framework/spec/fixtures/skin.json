@@ -680,11 +680,13 @@
         "plugin:notes",
         "ui:home",
         "app",
-        "global"
+        "global",
+        "default"
       ],
       "app": [
         "app",
-        "global"
+        "global",
+        "default"
       ],
       "keys": [
         "plugin:notes",
@@ -1138,6 +1140,173 @@
       },
       "none": null,
       "junk": null
+    },
+    "hubOnly": {
+      "mine": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "button": "terminal"
+          },
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      },
+      "drawn": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": true,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "composed": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "aurora-night",
+            "style-theme": "windows",
+            "button": "global-button",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "aurora-night"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "from": "global"
+        },
+        "scopeKey": "app"
+      },
+      "inPlugin": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "aurora-night",
+            "style-theme": "windows",
+            "button": "global-button",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "aurora-night"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "from": "global"
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "noHubSkin": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "",
+          "overrides": {},
+          "from": "global"
+        },
+        "scopeKey": "app"
+      },
+      "none": null
     }
   },
   "colour": {
@@ -2002,6 +2171,1200 @@
         }
       },
       "undo": null
+    }
+  },
+  "hubDefault": {
+    "chain": [
+      "plugin:notes",
+      "ui:home",
+      "app",
+      "global",
+      "default"
+    ],
+    "pointer": {
+      "good": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        }
+      },
+      "none": null,
+      "junk": null,
+      "legacyColour": {
+        "id": "console",
+        "overrides": {
+          "dialog": "d"
+        },
+        "colorTheme": "harbor"
+      }
+    },
+    "chrome": {
+      "normalized": {
+        "toolbar": {
+          "interface": "chrome-toolbar"
+        },
+        "tab-group": {
+          "instances": {
+            "builds": {
+              "style": "pills",
+              "position": "left"
+            }
+          }
+        }
+      },
+      "errors": [
+        "data.chrome.toolbar.interface must be a settings asset id",
+        "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
+        "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
+        "data.chrome.tab-group.instances must be an object (instance → fields)",
+        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+      ],
+      "skinErrors": [
+        "data.chrome.toolbar.interface must be a settings asset id",
+        "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
+        "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
+        "data.chrome.tab-group.instances must be an object (instance → fields)",
+        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+      ],
+      "settings": {
+        "axf.chrome.settings.toolbar": "chrome-toolbar",
+        "axf.chrome.tab-group.builds": {
+          "style": "pills",
+          "position": "left"
+        }
+      }
+    },
+    "resolve": {
+      "noOverride": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        },
+        "from": "default"
+      },
+      "noDefault": {
+        "id": "",
+        "overrides": {},
+        "from": "app"
+      },
+      "ownSkinOn": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "pluginOff": {
+        "id": "",
+        "overrides": {},
+        "from": "plugin:notes"
+      },
+      "pluginOverride": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog",
+          "button": "plugin-button"
+        },
+        "from": "default"
+      },
+      "followingHub": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global"
+      },
+      "followingNoHub": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        },
+        "from": "default"
+      },
+      "notFollowingHub": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        },
+        "from": "default"
+      },
+      "noDocument": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        },
+        "from": "default"
+      },
+      "offSkinColourStays": {
+        "id": "console",
+        "overrides": {
+          "dialog": "hub-dialog"
+        },
+        "from": "default"
+      }
+    },
+    "composed": {
+      "noOverride": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "classic-ide",
+            "color-theme": "arctic-daylight",
+            "style-theme": "soft-studio",
+            "button": "rounded-solid",
+            "design-package": "hub-default",
+            "nav-menu": "amber-signature",
+            "toolbar": "standard-icons",
+            "dialog": "hub-dialog"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.tokens.layout": {
+              "*": {
+                "toolbarPosition": "bottom"
+              }
+            },
+            "axf.chrome.settings.toolbar": "chrome-toolbar",
+            "axf.chrome.tab-group.builds": {
+              "style": "pills",
+              "position": "left"
+            },
+            "axf.appearance.overrides": {
+              "style-theme": "soft-studio",
+              "color-theme": "arctic-daylight"
+            }
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "console",
+          "overrides": {
+            "dialog": "hub-dialog"
+          },
+          "from": "default"
+        },
+        "scopeKey": "app"
+      },
+      "partialOverride": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "classic-ide",
+            "color-theme": "arctic-daylight",
+            "style-theme": "soft-studio",
+            "button": "terminal",
+            "design-package": "hub-default",
+            "nav-menu": "amber-signature",
+            "toolbar": "standard-icons",
+            "dialog": "hub-dialog"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.tokens.layout": {
+              "*": {
+                "toolbarPosition": "bottom"
+              }
+            },
+            "axf.chrome.settings.toolbar": "chrome-toolbar",
+            "axf.chrome.tab-group.builds": {
+              "style": "pills",
+              "position": "left"
+            },
+            "axf.appearance.overrides": {
+              "style-theme": "soft-studio",
+              "color-theme": "arctic-daylight"
+            }
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "console",
+          "overrides": {
+            "dialog": "hub-dialog"
+          },
+          "from": "default"
+        },
+        "scopeKey": "app"
+      },
+      "pluginOverride": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "classic-ide",
+            "color-theme": "arctic-daylight",
+            "style-theme": "soft-studio",
+            "button": "plugin-button",
+            "design-package": "hub-default",
+            "nav-menu": "amber-signature",
+            "toolbar": "standard-icons",
+            "dialog": "hub-dialog"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.tokens.layout": {
+              "*": {
+                "toolbarPosition": "bottom"
+              }
+            },
+            "axf.chrome.settings.toolbar": "chrome-toolbar",
+            "axf.chrome.tab-group.builds": {
+              "style": "pills",
+              "position": "left"
+            },
+            "axf.appearance.overrides": {
+              "style-theme": "soft-studio",
+              "color-theme": "arctic-daylight"
+            }
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "console",
+          "overrides": {
+            "dialog": "hub-dialog",
+            "button": "plugin-button"
+          },
+          "from": "default"
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "pluginOff": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "ownSkinOn": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "windows-light",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "windows-light"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "scopeKey": "app"
+      },
+      "followingHub": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "aurora-night",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "aurora-night"
+            }
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "skin": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "scopeKey": "app"
+      },
+      "unknownDefault": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "",
+          "overrides": {},
+          "from": "default"
+        },
+        "scopeKey": "app"
+      },
+      "hubOnly": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "classic-ide",
+            "color-theme": "arctic-daylight",
+            "style-theme": "soft-studio",
+            "button": "rounded-solid",
+            "design-package": "hub-default",
+            "nav-menu": "amber-signature",
+            "toolbar": "standard-icons",
+            "dialog": "hub-dialog"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.tokens.layout": {
+              "*": {
+                "toolbarPosition": "bottom"
+              }
+            },
+            "axf.chrome.settings.toolbar": "chrome-toolbar",
+            "axf.chrome.tab-group.builds": {
+              "style": "pills",
+              "position": "left"
+            },
+            "axf.appearance.overrides": {
+              "style-theme": "soft-studio",
+              "color-theme": "arctic-daylight"
+            }
+          },
+          "spacing": "tight"
+        },
+        "parts": {},
+        "skin": {
+          "id": "console",
+          "overrides": {
+            "dialog": "hub-dialog"
+          },
+          "from": "default"
+        },
+        "scopeKey": "app"
+      }
+    },
+    "adopt": {
+      "mine": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      },
+      "adopted": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog",
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {
+            "slots": {
+              "dialog": "my-dialog"
+            }
+          },
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-14T23:00:00Z",
+          "action": "adopt-default",
+          "scope": "app:app"
+        },
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "adoptedTwice": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog",
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {
+            "slots": {
+              "dialog": "my-dialog"
+            }
+          },
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-14T23:00:00Z",
+          "action": "adopt-default",
+          "scope": "app:app"
+        },
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "alreadyOnFloor": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "composed": {
+        "layout": "classic-ide",
+        "color-theme": "plum-noir",
+        "style-theme": "soft-studio",
+        "button": "rounded-solid",
+        "design-package": "hub-default",
+        "nav-menu": "amber-signature",
+        "toolbar": "standard-icons",
+        "dialog": "my-dialog"
+      },
+      "undone": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null,
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "restored": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {
+            "slots": {
+              "dialog": "my-dialog",
+              "color-theme": "plum-noir"
+            }
+          },
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "at": "2026-11-14T23:30:00Z",
+          "action": "restore-backup",
+          "scope": "app:app"
+        },
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "restoredUndone": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog",
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "nothingToRestore": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {
+          "slots": {
+            "dialog": "my-dialog",
+            "color-theme": "plum-noir"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {
+            "slots": {
+              "dialog": "my-dialog"
+            }
+          },
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-14T23:00:00Z",
+          "action": "adopt-default",
+          "scope": "app:app"
+        },
+        "backups": [
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ]
+      },
+      "backups": {
+        "twice": [
+          {
+            "id": "b2",
+            "at": "b2",
+            "by": "",
+            "reason": "twice",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog",
+                "color-theme": "plum-noir"
+              }
+            },
+            "skin": {
+              "use": false,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {}
+          },
+          {
+            "id": "2026-11-14T23:00:00Z",
+            "at": "2026-11-14T23:00:00Z",
+            "by": "skins-cli",
+            "reason": "console look becomes the hub default",
+            "own": {
+              "slots": {
+                "dialog": "my-dialog"
+              }
+            },
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {},
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            }
+          }
+        ],
+        "cap": [
+          "t6",
+          "t5",
+          "t4",
+          "t3",
+          "t2"
+        ],
+        "newest": {
+          "id": "2026-11-14T23:00:00Z",
+          "at": "2026-11-14T23:00:00Z",
+          "by": "skins-cli",
+          "reason": "console look becomes the hub default",
+          "own": {
+            "slots": {
+              "dialog": "my-dialog"
+            }
+          },
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {},
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          }
+        },
+        "byId": {
+          "id": "b2",
+          "at": "b2",
+          "by": "",
+          "reason": "twice",
+          "own": {
+            "slots": {
+              "dialog": "my-dialog",
+              "color-theme": "plum-noir"
+            }
+          },
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {}
+        },
+        "missing": null
+      }
+    },
+    "shared": {
+      "parsed": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        },
+        "defaultSkin": {
+          "id": "console",
+          "overrides": {
+            "dialog": "hub-dialog"
+          }
+        }
+      },
+      "merged": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        },
+        "skin": {
+          "id": "aurora"
+        },
+        "defaultSkin": {
+          "id": "windows"
+        },
+        "updatedBy": "skins-cli",
+        "updatedAt": "2026-11-14T23:00:00Z"
+      },
+      "cleared": {
+        "$axf": "appearance@1",
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid",
+          "design-package": "hub-default"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        },
+        "settings": {
+          "axf.banners.group": "a",
+          "axf.tokens.button": "x"
+        },
+        "updatedBy": "skins-cli",
+        "updatedAt": "2026-11-14T23:00:00Z"
+      },
+      "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"button\": \"rounded-solid\",\n    \"color-theme\": \"arctic-daylight\",\n    \"design-package\": \"hub-default\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"hub\"\n  },\n  \"spacing\": \"tight\",\n  \"hidden\": {\n    \"toolbar\": true\n  },\n  \"settings\": {\n    \"axf.banners.group\": \"a\",\n    \"axf.tokens.button\": \"x\"\n  },\n  \"skin\": {\n    \"id\": \"aurora\"\n  },\n  \"defaultSkin\": {\n    \"id\": \"console\",\n    \"overrides\": {\n      \"dialog\": \"hub-dialog\"\n    }\n  }\n}",
+      "combined": {
+        "skin": null,
+        "defaultSkin": {
+          "id": "a"
+        }
+      }
     }
   }
 }

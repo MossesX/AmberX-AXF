@@ -1,0 +1,248 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-console-perf",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:16Z",
+ "build": {
+  "id": "urgent-console-perf",
+  "title": "Console loads slowly: node process per read, /api/build-queue 500",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "How come console is taking forever to load? I thought lazy loader was in. ... Can we dig into it? ... (after the diagnosis) Yes.",
+  "verbatim": true,
+  "at": "2026-11-04T16:13:00Z",
+  "source": "voice",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-urgent-console-perf--sully",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T16:41:22.590Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 4.2448
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Fix GET /api/build-queue 500 (store read never fails on the lock; empty exports recorded) + regression test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T16:41:22.590Z",
+   "doneAt": "2026-11-04T17:04:26.008Z",
+   "actualMin": 23,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Server read cache: single-flight, file-change aware, shared by every client; node spawn cap; tini reaps zombies",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T17:04:26.008Z",
+   "doneAt": "2026-11-04T17:04:26.833Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Client: shared in-flight /api GETs, hidden tab quiet, 5xx exponential backoff, no stale static fallback on a 5xx",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-04T17:04:26.833Z",
+   "doneAt": "2026-11-04T17:04:27.556Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "builds-reconcile at most every 5 min, never in a request path",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-04T17:04:27.556Z",
+   "doneAt": "2026-11-04T17:04:28.209Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Measure before/after, report, PR, redeploy the console",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T17:04:28.209Z",
+   "doneAt": "2026-11-04T20:42:52.547Z",
+   "actualMin": 218,
+   "done": true
+  }
+ ],
+ "branch": "claude/urgent-console-perf",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 330,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/330"
+ },
+ "landedCommit": "d500990ed6c0189d3e2076a11b6354f64a256525",
+ "commits": [
+  "231d7bc1fc4a4950fcf1eed7967a3c7e124e52a5",
+  "b2557939dae1a6897314b3bce7ebfe18c5ad7a11"
+ ],
+ "mergedAt": "2026-11-04T20:36:28Z",
+ "landedAt": "2026-11-04T20:36:28Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/jobs/land-build/2026-11-04-1754.md",
+  "_claude/builds/reports/urgent-console-perf.md",
+  "apps/console-web/plugins/builds-page/server/__init__.py",
+  "apps/console-web/plugins/ref-links/server/__init__.py",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "apps/console-web/scripts/fetch-share-check.mts",
+  "apps/console-web/server/Dockerfile",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/readcache.py",
+  "apps/console-web/server/test_readcache.py",
+  "apps/console-web/src/api.ts",
+  "apps/console-web/src/fetchShare.ts",
+  "apps/console-web/src/main.tsx",
+  "framework/cli/builds-reconcile.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/spec/check-builds-store-lock.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/scripts/fetch-share-check.mts",
+    "apps/console-web/server/Dockerfile",
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/readcache.py",
+    "apps/console-web/server/test_readcache.py",
+    "apps/console-web/src/api.ts",
+    "apps/console-web/src/fetchShare.ts",
+    "apps/console-web/src/main.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/builds-reconcile.mjs",
+    "framework/cli/builds-store.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/jobs/land-build/2026-11-04-1754.md",
+    "_claude/builds/reports/urgent-console-perf.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ref-links",
+   "files": [
+    "apps/console-web/plugins/ref-links/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-builds-store-lock.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "node framework/spec/check-builds-store-lock.mjs (new, CI): a read with a foreign write and a held lock answers (it fails on the old code with the exact production error); the build-queue read answers; writes still refuse a held lock; a file with nothing to export stops reads from writing (it fails o",
+   "command": "node framework/spec/check-builds-store-lock.mjs",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "python apps/console-web/server/test_readcache.py (new, CI, 14 checks): hits, single-flight with 12 threads, stale-while-revalidate, max_stale=0, file-change, error ttl, invalidate, spawn cap, non-node untouched, overflow without deadlock.",
+   "command": "python apps/console-web/server/test_readcache.py",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx tsx apps/console-web/scripts/fetch-share-check.mts (new, CI, 8 checks): sharing, no client cache, abort signals, pass-through, hidden tab, abort while hidden, backoff 1/2/4 s and reset, 60 s cap.",
+   "command": "npx tsx apps/console-web/scripts/fetch-share-check.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Still green: check-builds-store.mjs 37, check-builds-live.mjs 47, builds-page 14, systems-check 228, agent-slots 19, build-orchestrator 5, ref-links 17, console tsc --noEmit.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 4.2448,
+  "estimated": true,
+  "tokens": {
+   "input": 226,
+   "output": 1365,
+   "cacheRead": 16100381,
+   "cacheWrite": 199309
+  }
+ },
+ "report": "_claude/builds/reports/urgent-console-perf.md",
+ "open": [
+  "Other plugin endpoints still spawn per request when they aren't cached, but at most 4 run at once now. `crew-live` already had its own single-flight cache. The `console-commands` runs come from commands, not reads.",
+  "The client layer shares in-flight reads; it does not merge polling timers. Cards still keep their own intervals, but identical requests collapse into one and the server answers repeats from memory.",
+  "A console inside a hidden Molly tab (an iframe in a `display:none` panel) still counts as visible to the browser."
+ ]
+}

@@ -40,6 +40,7 @@
  *
  * Warm resin over near-black, with a cool teal as the harmony partner — the
  * "inclusion", the one cold thing suspended in a warm material. Measured
+ * (theme-ok-begin: measured palette values, documentation)
  * against `page` (#100c07) before it was written down, not after:
  *
  * | role | hex | on page | needs |
@@ -49,6 +50,7 @@
  * | accent | `#f0982e` | 8.57:1 | 3 |
  * | ok / warn / err | | 8.4 / 13.49 / 5.34 | 3 |
  * | edge | `#453521` | 1.66:1 | 1.5–3 (a border, not a design element) |
+ * (theme-ok-end)
  *
  * `edge` was lifted from a first draft at 1.28:1, which is below the point a
  * hairline is actually visible. Nothing gates it — `paletteLegibility()` does
@@ -61,6 +63,7 @@ import type { Voice } from "./glyph-kit";
 
 /** Exported for the axs-studio-brand merge, whose base recolours to Amber. */
 export const AMBER_PALETTE: BrandPalette = {
+  // theme-ok-begin: the Amber branding package palette is an asset definition
   accent: "#f0982e",
   accent2: "#4ec3cf",
   accent3: "#ffcf6b",
@@ -71,6 +74,7 @@ export const AMBER_PALETTE: BrandPalette = {
   ok: "#57bd8a",
   warn: "#ffd23f",
   err: "#e5545b"
+  // theme-ok-end
 };
 
 /**

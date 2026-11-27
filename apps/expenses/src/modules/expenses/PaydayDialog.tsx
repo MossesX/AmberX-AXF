@@ -171,9 +171,9 @@ export default function PaydayDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>Paydays</DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.4 }}>
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>Paydays</DialogTitle>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           A payday is an income entry the ledger writes for you. Say what day it lands on; &ldquo;Add missing
           paydays&rdquo; then fills in every payday from the ledger&apos;s first entry through today that it
           does not already have. Each generated payday has a fixed id per date, so running it again never
@@ -189,13 +189,13 @@ export default function PaydayDialog({
             onChange={(e) => setAmount(e.target.value)}
             error={amount.trim() !== "" && draftCents === null}
             helperText={amount.trim() !== "" && draftCents === null ? "Not an amount" : " "}
-            sx={{ width: 180, "& input": { ...MONO, fontSize: 12.5 } }}
+            sx={{ width: 180, "& input": { ...MONO, fontSize: 'var(--fx-type-root-md)' } }}
           />
           {/* The frequency as a SWITCH, not a dropdown (owner, 2026-10-16):
               four choices that are always on view and one tap apart, and the
               fields underneath change with the one that is pressed. */}
           <Box>
-            <Typography sx={{ fontSize: 11, color: token("dim"), mb: 0.5 }}>Paid every</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mb: 0.5 }}>Paid every</Typography>
             <ToggleButtonGroup
               size="small"
               exclusive
@@ -205,7 +205,7 @@ export default function PaydayDialog({
               }}
               aria-label="Pay frequency"
               data-axf-payday-frequency={every}
-              sx={{ "& .MuiToggleButton-root": { textTransform: "none", fontSize: 12.5, px: 1.4, py: 0.55, whiteSpace: "nowrap" } }}
+              sx={{ "& .MuiToggleButton-root": { textTransform: "none", fontSize: 'var(--fx-type-root-md)', px: 1.4, py: 0.55, whiteSpace: "nowrap" } }}
             >
               <ToggleButton value="weekly">Week</ToggleButton>
               <ToggleButton value="biweekly">Two weeks</ToggleButton>
@@ -227,7 +227,7 @@ export default function PaydayDialog({
               sx={{ width: 180 }}
             >
               {WEEKDAYS.map((d) => (
-                <MenuItem key={d.value} value={String(d.value)} sx={{ fontSize: 12.5 }}>
+                <MenuItem key={d.value} value={String(d.value)} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   {d.label}
                 </MenuItem>
               ))}
@@ -244,7 +244,7 @@ export default function PaydayDialog({
               sx={{ width: 220 }}
             >
               {recent.map((d) => (
-                <MenuItem key={d} value={d} sx={{ fontSize: 12.5 }}>
+                <MenuItem key={d} value={d} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   {prettyDate(d)}
                   {d === recent[0] ? " (this week)" : " (last week)"}
                 </MenuItem>
@@ -259,11 +259,11 @@ export default function PaydayDialog({
               onChange={(e) => setDayOfMonth(e.target.value.replace(/[^0-9]/g, "").slice(0, 2))}
               error={!domOk}
               helperText={domOk ? "Short months use their last day" : "1 to 31"}
-              sx={{ width: 180, "& input": { ...MONO, fontSize: 12.5 } }}
+              sx={{ width: 180, "& input": { ...MONO, fontSize: 'var(--fx-type-root-md)' } }}
             />
           )}
           {every === "semimonthly" && (
-            <Typography sx={{ fontSize: 12, color: token("dim"), alignSelf: "center" }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), alignSelf: "center" }}>
               Lands on the 1st and the 15th.
             </Typography>
           )}
@@ -287,11 +287,11 @@ export default function PaydayDialog({
             onChange={(e) => setSince(autoDashIso(e.target.value) || e.target.value)}
             error={!sinceOk}
             helperText={!sinceOk ? "Use YYYY-MM-DD" : `Blank = the ledger's first entry (${start})`}
-            sx={{ width: 220, "& input": { ...MONO, fontSize: 12.5 } }}
+            sx={{ width: 220, "& input": { ...MONO, fontSize: 'var(--fx-type-root-md)' } }}
           />
         </Stack>
 
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+        <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
           <StatTile value={ready ? money(draft.amount) : "—"} label="per payday" />
           <StatTile value={next ?? "—"} label="next payday" />
           <StatTile value={String(present)} label="in the ledger" sub={present ? `ids ${paydayId("…")}` : undefined} />

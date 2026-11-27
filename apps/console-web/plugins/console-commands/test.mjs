@@ -6,13 +6,13 @@
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 process.env.AXF_CONSOLE_COMMANDS_DATA_DIR = mkdtempSync(join(tmpdir(), 'cc-'));
-const { commandFromArgv, formatAnswer, runConsole, sendToConsole, confirmSalt } = await import('./console.mjs');
+const { commandFromArgv, formatAnswer, formatShotState, runConsole, saveShots, sendOverlay, sendToConsole, confirmSalt } = await import('./console.mjs');
 
 let n = 0;
 const t = (name, fn) => { fn(); n++; };
@@ -28,6 +28,14 @@ t('CLI words', () => {
   assert.deepEqual(commandFromArgv(['clients']).command, { op: 'list', target: 'console.clients' });
   assert.ok(commandFromArgv(['open']).error, 'open without a screen is a usage error');
   assert.ok(commandFromArgv(['explode']).error, 'unknown verb');
+});
+
+t('CLI overlay verbs (AmberX overlay on the phone)', () => {
+  assert.deepEqual(commandFromArgv(['console', 'overlay', 'expand']).overlay, { verb: 'expand' });
+  assert.deepEqual(commandFromArgv(['overlay', 'collapse']).overlay, { verb: 'collapse' });
+  assert.deepEqual(commandFromArgv(['overlay', 'open', 'https://console.amberxai.com/?axf-view=builds']).overlay, { verb: 'open', url: 'https://console.amberxai.com/?axf-view=builds' });
+  assert.ok(commandFromArgv(['overlay', 'open']).error, 'open needs a page');
+  assert.ok(commandFromArgv(['overlay', 'spin']).error, 'unknown overlay verb');
 });
 
 const NOW = Date.now();
@@ -83,6 +91,18 @@ t('answers as text', () => {
 let sent = null;
 const fakeFetch = async (url, init) => { sent = { url, init }; return { status: 200, text: async () => JSON.stringify({ ok: true, op: 'act', echoed: JSON.parse(init.body) }) }; };
 const r = await sendToConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'home' }, { base: 'https://c.example/', token: 'tok', fetch: fakeFetch });
+{
+  let seen = null;
+  const o = await sendOverlay({ verb: 'expand' }, { base: 'https://c.example/', token: 'tok', fetch: async (url, init) => { seen = { url, init }; return { status: 200, text: async () => JSON.stringify({ ok: true, verb: 'expand', message: 'AmberX opened it full screen in its overlay' }) }; } });
+  t('sendOverlay', () => {
+    assert.equal(seen.url, 'https://c.example/api/console/overlay');
+    assert.equal(seen.init.headers.authorization, 'Bearer tok');
+    assert.deepEqual(JSON.parse(seen.init.body), { verb: 'expand' });
+    assert.ok(o.ok);
+  });
+  const down = await sendOverlay({ verb: 'collapse' }, { base: 'https://c.example', fetch: async () => { throw new Error('offline'); } });
+  t('sendOverlay never throws', () => assert.ok(!down.ok && /offline/.test(down.message)));
+}
 t('sendToConsole', () => {
   assert.equal(sent.url, 'https://c.example/api/console');
   assert.equal(sent.init.headers.authorization, 'Bearer tok');
@@ -95,6 +115,25 @@ t('run on stdin (what the server calls)', () => {
   const p = spawnSync(process.execPath, [fileURLToPath(new URL('./console.mjs', import.meta.url)), 'run'], { input: JSON.stringify({ command: { op: 'act', target: 'console.screens', path: 'home', action: 'open' }, grants: ['*'], by: 'mcp', clients }), encoding: 'utf8', env: process.env });
   const j = JSON.parse(p.stdout.trim().split('\n').pop());
   assert.ok(j.ok && j.deliver.message.target === 'home', p.stderr || p.stdout);
+});
+
+t('screenshot: CLI words, saved image, one-line state', () => {
+  assert.deepEqual(commandFromArgv(['screenshot']).command, { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' });
+  const p = commandFromArgv(['console', 'screenshot', '--address', 'view:settings', '--to', 'all', '--out', 'x.png']);
+  assert.deepEqual(p.command, { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', input: { to: 'all', address: 'view:settings' } });
+  assert.equal(p.out, 'x.png');
+  assert.deepEqual(commandFromArgv(['shot', '--selector', '.fx-dialog']).command.input, { selector: '.fx-dialog' });
+  const dir = mkdtempSync(join(tmpdir(), 'cc-shot-'));
+  const r = { ok: true, op: 'act', target: 'console.nav', action: 'screenshot', status: 'delivered', images: [{ client: 'cc-1', mime: 'image/png', data: Buffer.from('png').toString('base64'), width: 800, height: 600 }],
+    state: { screen: 'settings', screenLabel: 'Settings', tabs: { 'view:settings/tab:settings.tabs': 'appearance' }, dialog: 'asset-json', selection: 'grid:q/row:b1', scroll: { fraction: 0.5 } } };
+  const [file] = saveShots(r, join(dir, 'shot.png'));
+  assert.equal(readFileSync(file, 'utf8'), 'png');
+  assert.ok(!('data' in r.images[0]), 'the image data is dropped from what is printed');
+  const line = formatAnswer(r);
+  assert.ok(line.startsWith('✓ screenshot →') && line.includes('800×600'), line);
+  assert.equal(formatShotState(r.state), 'screen Settings (settings) · tabs settings.tabs=appearance · dialog asset-json · selection grid:q/row:b1 · scroll 50%');
+  assert.ok(formatAnswer({ ...r, images: [], status: 'failed', message: 'not on the screen' }).startsWith('✗ screenshot: not on the screen'));
+  assert.ok(formatAnswer({ ...r, images: [], status: 'pending', queued: true }).startsWith('pending: screenshot'));
 });
 
 console.log(`✓ console-commands: ${n} tests passed`);

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { usePlaceSet } from './placeRestore';
 import { Button, Chip, Container, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
@@ -137,7 +138,7 @@ export function BuildManager() {
   const log: Log = (t, l = 'info') => rt.terminal.log('build', t, l);
   const [showDone, setShowDone] = useState(false);
   const [model, setModel] = useState<'' | api.ModelId>('');
-  const [open, setOpen] = useState<Set<string>>(new Set());
+  const [open, setOpen] = usePlaceSet('view:build/list:build.open');
   const [drag, setDrag] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -239,9 +240,9 @@ export function BuildManager() {
         </Container>
       </div>
 
-      <div className="fx-row fx-row--wrap">
-        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
-        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+      <div className="fx-row fx-row--wrap bm-filters">
+        <label className="fx-row"><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
+        <label className="fx-row">Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
       </div>
 
       <div className="bm-queue" role="list">

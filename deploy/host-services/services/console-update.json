@@ -1,0 +1,17 @@
+{
+  "$axf": "host-service@1",
+  "id": "console-update",
+  "title": "Console self-update",
+  "description": "Pulls main into /opt/axf and rebuilds the console when main moved (every 5 minutes). Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-console",
+  "adopted": true,
+  "plugin": "console",
+  "runner": "deploy/install-console.sh",
+  "health": {
+    "intervalSec": 300,
+    "staleSec": 3600,
+    "freshness": false
+  },
+  "log": "/var/log/axf-console-update.log"
+}

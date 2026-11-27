@@ -1,4 +1,5 @@
 // Self-test: node apps/console-web/plugins/agent-swarm/test.mjs
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import assert from 'node:assert/strict';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -436,7 +437,7 @@ t('book: a Claude session on an agent card grows, then closes once (agent-pick)'
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1', 'service:crew-sections@1', 'service:axf.crew-sections@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo
@@ -644,6 +645,85 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const g = JSON.parse(readFileSync(join(hub, 'group.json'), 'utf8')); assert.equal(g.messages.at(-1).text, 'hi crew');
     const m = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'mentions', '--negative', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d }, encoding: 'utf8' });
     assert.equal(JSON.parse(m.stdout).count, 1);
+  });
+}
+
+// section owners (crew-sections@1): every section that acts on its own has an owner who posts its events in the chat
+{
+  const sc = await import('./web/sections-core.mjs');
+  const cat = sc.normSections(JSON.parse(readFileSync(here('./agents/sections.json'), 'utf8')));
+  const cli = new URL('./sections.mjs', import.meta.url).pathname;
+  const say = new URL('../../../../framework/cli/crew-say.mjs', import.meta.url).pathname;
+  t('sections: every section has an owner on the crew and declares its events', () => {
+    assert.deepEqual(sc.sectionErrors(cat, roster), []);
+    assert.ok(cat.sections.length >= 10);
+    for (const id of ['orchestrator', 'dispatcher', 'watchdog', 'landing', 'merge-queue', 'accounts', 'nightly-deploy', 'backups', 'health-monitor', 'notifications']) assert.ok(cat.sections.some((x) => x.id === id), id);
+    assert.equal(cat.sections.find((x) => x.id === 'merge-queue').owner, 'lenny');
+  });
+  t('sections: one owner per section, unknown owners and missing owners are flagged', () => {
+    const bad = sc.normSections({ sections: [{ id: 'a', owner: 'nobody', events: ['done'] }, { id: 'b', events: ['done'] }, { id: 'a', owner: 'kat' }] });
+    assert.equal(bad.sections.length, 2);
+    const p = sc.sectionErrors(bad, roster); assert.ok(p.some((x) => /not on the crew/.test(x)) && p.some((x) => /no owner/.test(x)));
+  });
+  t('sections: Brett reassigns, history kept, back to default drops the override, a gone agent falls back', () => {
+    const at = '2026-11-12T10:00:00.000Z';
+    let r = sc.assign(cat, sc.normOverrides({}), roster, 'merge-queue', 'Merge Max', at);
+    assert.equal(r.agent.id, 'max'); assert.ok(r.changed); assert.equal(sc.owners(cat, r.overrides, roster)['merge-queue'], 'max');
+    assert.equal(r.overrides.history.at(-1).from, 'lenny');
+    r = sc.assign(cat, r.overrides, roster, 'merge-queue', 'lenny', at);
+    assert.deepEqual(r.overrides.owners, {}); assert.equal(r.overrides.history.length, 2);
+    assert.equal(sc.owners(cat, { owners: { 'merge-queue': 'ghost' }, history: [] }, roster)['merge-queue'], 'lenny');
+    assert.throws(() => sc.assign(cat, sc.normOverrides({}), roster, 'nope', 'kat', at), /no section/);
+    assert.throws(() => sc.assign(cat, sc.normOverrides({}), roster, 'backups', 'ghost', at), /no agent/);
+  });
+  t('sections: a post is a report from the owner naming the section (and the build), checked against the registry', () => {
+    const m = sc.sectionLine('dispatcher', 'py', 'start', 'Started  x\n on hulu.', 'x');
+    assert.deepEqual([m.from, m.kind, m.jobId, m.text], ['py', 'report', 'dispatcher:x', 'Started x on hulu.']);
+    assert.deepEqual(c.messageErrors(m, roster.agents.map((a) => a.id)), []);
+    assert.deepEqual(sc.postErrors(cat, roster, sc.normOverrides({}), 'dispatcher', 'start', 'x'), []);
+    assert.match(sc.postErrors(cat, roster, sc.normOverrides({}), 'ghost-section', 'start', 'x')[0], /no section/);
+    assert.match(sc.postErrors(cat, roster, sc.normOverrides({}), 'dispatcher', 'exploded', 'x')[0], /event/);
+  });
+  t('sections: the same line is posted once per window', () => {
+    const k = sc.sayKey('watchdog', 'blocked', 'hulu: limit'); const at = '2026-11-12T10:00:00.000Z';
+    const said = sc.remember({}, k, at);
+    assert.ok(sc.recentlySaid(said, k, '2026-11-12T10:10:00.000Z'));
+    assert.ok(!sc.recentlySaid(said, k, '2026-11-12T11:00:00.000Z'));
+    assert.ok(!sc.recentlySaid(said, k, '2026-11-12T10:10:00.000Z', 5));
+  });
+  t('sections: the CI check fails code that posts for an unowned section, an undeclared event or a section in a variable', () => {
+    const ov = sc.normOverrides({});
+    assert.deepEqual(sc.checkUsages(cat, roster, ov, [{ file: 'a.mjs', line: 1, section: 'dispatcher', event: 'start' }, { file: 'b.mjs', line: 2, section: 'merge-queue', event: '' }]), []);
+    const p = sc.checkUsages(cat, roster, ov, [{ file: 'a.mjs', line: 3, section: 'rogue', event: 'done' }, { file: 'a.mjs', line: 4, section: 'backups', event: 'waiting' }], [{ file: 'c.py', line: 9 }]);
+    assert.equal(p.length, 3); assert.match(p[0], /a\.mjs:3.*no owner/); assert.match(p[1], /doesn't declare/); assert.match(p[2], /c\.py:9.*literal/);
+  });
+  t('sections: crew-say posts as the owner, once, and nothing while the chat is off', () => {
+    const d = mkdtempSync(join(tmpdir(), 'axf-sections-'));
+    const env = { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: 'off' }; delete env.AXF_CREW_SAY;
+    const run = (...a) => JSON.parse(spawnSync(process.execPath, [say, ...a, '--json'], { env, encoding: 'utf8' }).stdout.trim().split('\n').pop());
+    let r = run('landing', 'waiting', 'Brett, build-x: its screenshots wait in UI Review.', '--ref', 'build-x');
+    assert.equal(r.posted, true); assert.equal(r.owner, 'max');
+    const st = JSON.parse(readFileSync(join(d, 'state.json'), 'utf8')); const m = st.messages.at(-1);
+    assert.deepEqual([m.from, m.kind, m.jobId], ['max', 'report', 'landing:build-x']);
+    assert.equal(run('landing', 'waiting', 'Brett, build-x: its screenshots wait in UI Review.', '--ref', 'build-x').why, 'said already');
+    spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'act', 'chat', 'off'], { env, encoding: 'utf8' });
+    r = run('backups', 'done', 'Backups done.'); assert.equal(r.posted, false); assert.match(r.why, /off/);
+    assert.equal(run('ghost', 'done', 'x').posted, false); // an unknown section never posts and never fails the caller
+    const off = JSON.parse(spawnSync(process.execPath, [say, 'backups', 'done', 'x', '--json'], { env: { ...env, AXF_CREW_SAY: 'off' }, encoding: 'utf8' }).stdout);
+    assert.match(off.why, /AXF_CREW_SAY/);
+  });
+  t('sections: assign through the CLI is saved in the data folder and announced by Boss', () => {
+    const d = mkdtempSync(join(tmpdir(), 'axf-sections-'));
+    const env = { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: 'off' };
+    const r = JSON.parse(spawnSync(process.execPath, [cli, 'assign', 'backups', 'joey', '--json'], { env, encoding: 'utf8' }).stdout);
+    assert.equal(r.owner, 'joey'); assert.equal(r.board.sections.find((x) => x.id === 'backups').reassigned, true);
+    assert.equal(JSON.parse(readFileSync(join(d, 'sections.json'), 'utf8')).owners.backups, 'joey');
+    assert.match(JSON.parse(readFileSync(join(d, 'state.json'), 'utf8')).messages.at(-1).text, /Janitor Joey now owns AXP backups/);
+  });
+  t('sections: the repo passes the owner check (crew-say.mjs check)', () => {
+    const r = spawnSync(process.execPath, [say, 'check', '--json'], { encoding: 'utf8' });
+    const j = JSON.parse(r.stdout); assert.equal(r.status, 0, j.problems?.join('\n')); assert.ok(j.usages.length >= 20);
+    for (const id of ['orchestrator', 'dispatcher', 'watchdog', 'landing', 'merge-queue', 'accounts', 'nightly-deploy', 'backups', 'health-monitor', 'notifications', 'shipped']) assert.ok(j.usages.some((u) => u.section === id), `nothing posts for ${id}`);
   });
 }
 

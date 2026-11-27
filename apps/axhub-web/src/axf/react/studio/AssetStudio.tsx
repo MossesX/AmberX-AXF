@@ -4,6 +4,7 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip } from '../components/Controls';
 import { Icon } from '../components/Icon';
 import { TabGroup } from '../components/TabGroup';
+import { HubSkinLockArea } from '../components/HubSkinLock';
 import { AssetPreview } from './AssetPreview';
 
 const GROUPS = [...new Set(ASSET_TYPES.map((t) => assetTypeSpecs[t].group))];
@@ -29,6 +30,7 @@ export function AssetStudio() {
   const types = ASSET_TYPES.filter((t) => filter === 'all' || assetTypeSpecs[t].group === filter);
 
   return (
+    <HubSkinLockArea>
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
@@ -55,13 +57,14 @@ export function AssetStudio() {
         <Slot key={t} type={t} activeId={state.active[t] ?? ''} />
       ))}
     </div>
+    </HubSkinLockArea>
   );
 }
 
 function Slot({ type, activeId }: { type: AssetType; activeId: string }) {
   const rt = useRuntime();
   const spec = assetTypeSpecs[type];
-  const assets = rt.registry.list(type);
+  const assets = rt.registry.list(type).filter((a) => rt.slotOk(type, a.id)); // app-menus@1: only this app's menus
   const need = type === 'uac-policy' ? 'uac.manage' : 'assets.swap';
   const locked = !rt.can(need);
   return (

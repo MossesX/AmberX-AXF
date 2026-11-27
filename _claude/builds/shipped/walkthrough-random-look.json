@@ -1,0 +1,137 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-random-look",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:55Z",
+ "build": {
+  "id": "walkthrough-random-look",
+  "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
+  "verbatim": false,
+  "at": "2026-11-02T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "RANDOM_LOOK=<chapter ids> in rebuild.sh + record.mjs: design-package pool, random pack per chapter, appearance GET rewritten in the recorder browser only, look recorded in segments",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-11-02T19:41:23.513Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Re-record cli, console, plugins, builds, guardrails, agents on the VPS with RANDOM_LOOK; publish",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/walkthrough-random-look",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 240,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/240"
+ },
+ "landedCommit": "4c8c0d524d3f437c25a20463d5aefd32e4312987",
+ "commits": [
+  "de967120519793b345b6685e5f1abcadd0d12eed"
+ ],
+ "mergedAt": "2026-11-02T19:54:16Z",
+ "landedAt": "2026-11-02T19:54:16Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/walkthrough/rebuild.sh",
+  "apps/amberx-droid/walkthrough/record.mjs",
+  "framework/plan/profiles/big-dog/framework/plan/pending.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/walkthrough/rebuild.sh",
+    "apps/amberx-droid/walkthrough/record.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/big-dog/framework/plan/pending.json",
+    "framework/plan/profiles/refactor/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s2: Re-record cli, console, plugins, builds, guardrails, agents on the VPS with RANDOM_LOOK; publish"
+ ]
+}

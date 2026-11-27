@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "merge-queue-help",
+  "name": "Merge queue help",
+  "version": "2.0.0",
+  "description": "Help mode entries of the merge queue (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:merge-queue",
+    "entries": [
+      { "target": "view:merge-queue", "title": "Merge queue", "text": "Every build waiting to land, live from the builds store. It is read-only: the lander merges each build's steps into one PR, pulls main, runs CI once and merges it by itself.", "kind": "screen" },
+      { "target": "grid:merge-queue", "title": "Waiting to land", "text": "One row a build: its status and how long it has been in it, its PRs, and what happens next. Failed shows the attempt; the lander retries by itself. Open a row to see its steps and the PR each one was added to." },
+      { "target": "merge-queue", "title": "Merge queue settings", "text": "Install and uninstall. The merge queue keeps no data and has no settings of its own; the lander's settings (the one-PR size cap) are under Gate → Server auto-lander." }
+    ],
+    "intros": [
+      { "screen": "merge-queue", "title": "Merge queue", "steps": [ { "say": "Everything waiting to land, with its live status. Nothing to press: it all lands by itself.", "target": "" } ] }
+    ]
+  }
+}

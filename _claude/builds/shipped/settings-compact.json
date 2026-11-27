@@ -1,0 +1,247 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-settings-compact",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:24Z",
+ "build": {
+  "id": "settings-compact",
+  "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Before screenshots of every Settings page (phone + desktop) and a list of what wastes space",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-10-30T13:06:41.715Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Settings home = a short list of sections you tap into (phone: one list, back arrow; desktop: list left, page right); plugin settings as one list under Plugins",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T13:06:41.715Z",
+   "doneAt": "2026-10-30T13:06:41.761Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Choices with more than 3 options become one dropdown; 2–3 options stay a small segmented control; toggles are compact rows",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T13:06:41.761Z",
+   "doneAt": "2026-10-30T13:06:41.810Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tight rows: label and control on one line, description under an info tap; groups are plain headed lists, not big cards",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T13:06:41.810Z",
+   "doneAt": "2026-10-30T13:06:41.867Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Appearance: every asset picker (design pack, style pack, themes, layout…) becomes a compact dropdown row with a small preview instead of a wall of cards/buttons",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T13:06:41.867Z",
+   "doneAt": "2026-10-30T13:06:41.915Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Level toolbar shrinks to one dropdown; checks (tsc, controls, theme, theme-swap, menu-reach); after screenshots; report + LOG; PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T13:06:41.915Z",
+   "doneAt": "2026-10-30T13:06:41.971Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/angel-settings",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 175,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/175"
+ },
+ "landedCommit": "6a8ec6e954c2ff3b044dc9d1a639a63e8ac8f8a7",
+ "commits": [
+  "bd90205991688859c1675c86f8cb92276790a359",
+  "2b895f1bf9d9af1c5efba9d0873df92f19651461",
+  "3eb78859fb5b90e202338b5dbd0714b2b4e10daa"
+ ],
+ "mergedAt": "2026-10-30T16:37:18Z",
+ "landedAt": "2026-10-30T16:37:17Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/memory/docs/rebuilds/LOG.md",
+  "_claude/memory/docs/rebuilds/settings-compact.md",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-appearance-desktop.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-appearance-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-everything-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-home-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugin-sub-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugins-desktop.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugins-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-appearance-desktop.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-appearance-phone.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-plugins-desktop.png",
+  "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-plugins-phone.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/assets/settings/console.json",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/assets/settings/console.json",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/scripts/theme-swap.mjs",
+  "apps/console-web/src/assets/settings/console.json",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/assets/settings/console.json",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "framework/assets/settings/console.json",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/libs/settings/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/rebuilds/LOG.md",
+    "_claude/memory/docs/rebuilds/settings-compact.md",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-appearance-desktop.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-appearance-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-everything-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-home-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugin-sub-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugins-desktop.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/after/settings-plugins-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-appearance-desktop.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-appearance-phone.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-plugins-desktop.png",
+    "_claude/memory/docs/rebuilds/settings-compact/shots/before/settings-plugins-phone.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/scripts/theme-swap.mjs",
+    "apps/console-web/src/assets/settings/console.json",
+    "apps/console-web/src/axf/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/assets/settings/console.json",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/assets/settings/console.json",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/assets/settings/console.json",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/settings/console.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, PageToolbar, Segmented, SelectField, TextField, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
@@ -68,19 +68,20 @@ export function FeatureMatrixPage() {
     finally { setBusy(false); }
   };
 
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/feature-matrix.json); the grid adds Collapse all
+  useToolbarHandlers(VIEW, {
+    'feature-matrix.reload': async () => { await load(); log('reloaded', 'ok'); return { matrices: data?.rows.length ?? 0 }; },
+    'feature-matrix.import': async () => (data ? act('import', { profile: data.active }) : null),
+  });
   if (!data) return <LoadingSkeleton rows={4} label="Loading the feature matrices" />;
   const dirty = data.rows.filter((r) => r.dirty).length;
   return (
-    <div className="fx-stack axp-feature-matrix">
+    <div className="fx-stack fx-stack--lg axp-feature-matrix">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds · {data.rows.length} matrices{dirty ? ` · ${dirty} need apply` : ''}{data.state.updatedAt ? ` · updated ${fmtTime(data.state.updatedAt)}` : ''}</p>
           <h1>Feature matrix</h1>
           <p className="fx-muted axp-feature-matrix__lede" title="Every build's features in one list: tick to keep, untick to skip; nothing is ever deleted, and Apply pushes the result to every table the build lives in.">Tick to keep, untick to skip; Apply pushes it everywhere.</p>
-        </div>
-        <div className="fx-row axp-feature-matrix__headacts">
-          <IconButton icon="refresh" label="Reload" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))} />
-          <Button icon="download" disabled={busy} title="The draft matrix and a matrix for every open build of the active profile (only adds)" onClick={() => act('import', { profile: data.active })}>Import open builds</Button>
         </div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
@@ -122,12 +123,14 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
   ];
   const toggle = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
   const missing = wanted && !byId.has(wanted) && focus?.ref ? focus : null;
+  usePublishPageState(VIEW, { busy, expanded: open.length });
+  useToolbarHandlers(VIEW, { 'feature-matrix.collapse': () => { const n = open.length; setOpen([]); return { collapsed: n }; } });
   return (
     <>
-      <div className="fx-row fx-row--wrap axp-feature-matrix__bar" role="toolbar" aria-label="Show">
+      <PageToolbar view="feature-matrix" className="axp-feature-matrix__bar">
         <Segmented size="sm" label="Show" value={show} onChange={setShow} options={[{ value: 'all', label: 'All' }, { value: 'dirty', label: 'Needs apply' }, { value: 'applied', label: 'Applied' }]} />
         {data.profiles.length > 1 && <select className="fx-input axp-feature-matrix__profile" aria-label="Profile" value={profile} onChange={(e) => setProfile(e.target.value)}><option value="">Every profile</option>{data.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>}
-      </div>
+      </PageToolbar>
       {missing && (
         <div className="pl-note axp-feature-matrix__missing">
           <Icon name="info" size={14} />

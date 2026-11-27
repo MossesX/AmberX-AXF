@@ -141,7 +141,7 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
 
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>
         AI credits — “{username}”
         {statement && (
           <Chip
@@ -149,7 +149,7 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
             size="small"
             sx={{
               ml: 1.25,
-              fontSize: 11.5,
+              fontSize: 'var(--fx-type-root-sm)',
               height: 22,
               fontFamily: token("mono"),
               color: token("accent"),
@@ -160,15 +160,15 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
         )}
       </DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           {loadError && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {loadError}
             </Alert>
           )}
 
           {/* ── the one signed control ─────────────────────────────────────── */}
-          <Stack direction="row" sx={{ gap: 1.5, alignItems: "flex-start" }}>
+          <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-2xl)', alignItems: "flex-start" }}>
             <TextField
               label="Credits"
               size="small"
@@ -190,7 +190,7 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
           </Stack>
 
           {valid && statement && (
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               {statement.balance} → {Math.max(0, statement.balance + Math.round(amount))}
               {Math.round(amount) < 0 && statement.balance + Math.round(amount) < 0
                 ? " — the revoke is larger than the balance, so it will stop at zero"
@@ -199,19 +199,19 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
           )}
 
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
           {note && (
-            <Alert severity="success" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="success" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {note}
             </Alert>
           )}
 
           {/* ── the ledger ─────────────────────────────────────────────────── */}
           <Box>
-            <Typography sx={{ fontSize: 11.5, color: token("dim"), mb: 0.5 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mb: 0.5 }}>
               {statement
                 ? statement.total === 0
                   ? "No credit has ever moved for this member."
@@ -219,41 +219,41 @@ export default function CreditsDialog({ username, onClose }: CreditsDialogProps)
                 : "Reading the ledger…"}
             </Typography>
             {statement && statement.entries.length > 0 && (
-              <Box sx={{ maxHeight: 260, overflowY: "auto", border: `1px solid ${token("edge")}` }}>
+              <Box sx={{ maxHeight: 260, overflowY: "auto", border: `var(--fx-border-w) solid ${token("edge")}` }}>
                 <Table size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontSize: 11, color: token("dim") }}>When</TableCell>
-                      <TableCell sx={{ fontSize: 11, color: token("dim") }}>Kind</TableCell>
-                      <TableCell sx={{ fontSize: 11, color: token("dim") }} align="right">
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>When</TableCell>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>Kind</TableCell>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }} align="right">
                         Δ
                       </TableCell>
-                      <TableCell sx={{ fontSize: 11, color: token("dim") }}>Reference</TableCell>
-                      <TableCell sx={{ fontSize: 11, color: token("dim") }}>By</TableCell>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>Reference</TableCell>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>By</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {statement.entries.map((e) => (
                       <TableRow key={e.id} hover>
-                        <TableCell sx={{ fontSize: 11.5, color: token("dim"), whiteSpace: "nowrap" }}>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), whiteSpace: "nowrap" }}>
                           {new Date(e.at).toLocaleString()}
                         </TableCell>
-                        <TableCell sx={{ fontSize: 11.5, color: token(KIND_COLOR[e.kind]) }}>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token(KIND_COLOR[e.kind]) }}>
                           {e.kind}
                         </TableCell>
                         <TableCell
                           align="right"
                           sx={{
                             fontFamily: token("mono"),
-                            fontSize: 12,
+                            fontSize: 'var(--fx-type-root-sm)',
                             fontVariantNumeric: "tabular-nums",
                             color: e.delta > 0 ? token("ok") : token("ink"),
                           }}
                         >
                           {fmtDelta(e.delta)}
                         </TableCell>
-                        <TableCell sx={{ fontSize: 11.5 }}>{e.ref}</TableCell>
-                        <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>{e.actor}</TableCell>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)' }}>{e.ref}</TableCell>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{e.actor}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

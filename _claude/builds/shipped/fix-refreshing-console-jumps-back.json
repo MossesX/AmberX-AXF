@@ -1,0 +1,505 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-refreshing-console-jumps-back",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-24T23:42:19Z",
+ "build": {
+  "id": "fix-refreshing-console-jumps-back",
+  "title": "Fix: refreshing the console jumps back instead of staying put",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "when are we fixing the refresh bug",
+  "verbatim": true,
+  "at": "2026-11-17T21:36:54.206Z",
+  "source": "",
+  "by": "fix-refreshing-console-jumps-back",
+  "addenda": []
+ },
+ "brief": "# Build: fix-refreshing-console-jumps-back\n\n## Brett said (verbatim)\nAt: 2026-11-17T21:36:54.206Z\n> when are we fixing the refresh bug\n\n## What to build\nContinue build \"Fix: refreshing the console jumps back instead of staying put\" (fix-refreshing-console-jumps-back) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 21:36):\n\"when are we fixing the refresh bug\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-refreshing-console-jumps-back · PR #825\nSteps in this phase (1 left, ~15 min):\n[x] s1 (~10 min) Reproduce and find the cause: trace how the console restores its place on load (view/route state in apps/console-web/src, URL hash/query, sessionStorage/localStorage keys, console.refresh handler, service worker/hot reload, pull-to-refresh). Write findings (which state is lost: view, tab, scroll, selection; and the scroll-lock cause after an update) to _claude/builds/reports/fix-refreshing-console-jumps-back.md as a draft\n[x] s2 (~10 min) Check the scroll lock after an update: find what leaves body/root overflow hidden or a scrim/pointer-events overlay after an update or refresh banner (update toast, dialog close, pull-to-refresh handler, overscroll-behavior) and note the exact file:line in the draft report\n[x] s3 (~10 min) Add a console place store: one small module (apps/console-web/src/place/placeState.ts) that saves the current view address, active tab per tab group, selection and scroll offsets of the main scroller and named panes to sessionStorage (debounced, on pagehide/visibilitychange too), keyed by console-control addresses (view:/tab:/row:)\n[x] s4 (~10 min) Restore view + tab on load: wire the place store into the console's router/app shell so a reload reopens the saved view and tabs before the first paint, and URL deep links still win over the saved place\n[x] s5 (~10 min) Restore scroll + selection: after the restored view mounts and its data loads, reapply scroll offsets (retry until content is tall enough, give up after a short timeout) and the selected row/item; stop any default scroll-to-top or default-tab reset that fires after load\n[x] s6 (~10 min) Server-pushed console.refresh keeps the place: make the refresh handler (soft and --hard) save the place right before reloading and the soft refresh re-render without resetting view/tab/scroll\n[x] s7 (~8 min) Pull-down refresh keeps the place: make the pull-to-refresh path save and restore the same state as reload, and leave scroll unlocked when it finishes\n[x] s8 (~10 min) Fix the scroll lock after an update: clear any leftover overflow/pointer-events lock or stale overlay when the update/refresh flow ends (and on load as a safety net), using the cause found in step 2\n[x] s9 (~10 min) API part: expose the saved place read-only and the restore action through the console API, keeping all four drivers the same: REST GET/POST /api/console-control place (read state, restore), MCP console tool, axf console place [get|restore], and an AmberX voice action; register targets with control@1 (append-only)\n[x] s10 (~10 min) Tests: a unit test for placeState save/restore/deep-link precedence and a Playwright check against vite preview: open a tab deep in a view, scroll, select a row, reload, pull-refresh and server-push refresh; assert the same place is restored and the page still scrolls\n[x] s11 (~10 min) Run the checks (typecheck, check-theme, check-controls, check-console-control, check-toolbars), finish the report _claude/builds/reports/fix-refreshing-console-jumps-back.md (cause, fix, before/after), update the THREADS row and open the PR naming how each part is reached (REST, MCP, CLI, voice)\n[ ] s12 (~15 min) Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #825 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/fix-refreshing-console-jumps-back, get every check green and push; the PR is #825.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-refreshing-console-jumps-back <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-refreshing-console-jumps-back --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-refreshing-console-jumps-back <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-refreshing-console-jumps-back \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix-refreshing-console-jumps-back--rhonda",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T21:43:26.202Z",
+   "endedAt": "2026-11-17T22:16:44.139Z",
+   "exit": 0,
+   "costUsd": 5.1636
+  }
+ ],
+ "steps": [
+  {
+   "id": "s2",
+   "text": "Check the scroll lock after an update: find what leaves body/root overflow hidden or a scrim/pointer-events overlay after an update or refresh banner (update toast, dialog close, pull-to-refresh handler, overscroll-behavior) and note the exact file:line in the draft report",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T21:43:26.202Z",
+   "doneAt": "2026-11-24T13:33:24.225Z",
+   "actualMin": 9590,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add a console place store: one small module (apps/console-web/src/place/placeState.ts) that saves the current view address, active tab per tab group, selection and scroll offsets of the main scroller and named panes to sessionStorage (debounced, on pagehide/visibilitychange too), keyed by console-control addresses (view:/tab:/row:)",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T13:33:24.225Z",
+   "doneAt": "2026-11-24T13:37:45.898Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Restore view + tab on load: wire the place store into the console's router/app shell so a reload reopens the saved view and tabs before the first paint, and URL deep links still win over the saved place",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T13:37:45.898Z",
+   "doneAt": "2026-11-24T13:49:17.113Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Restore scroll + selection: after the restored view mounts and its data loads, reapply scroll offsets (retry until content is tall enough, give up after a short timeout) and the selected row/item; stop any default scroll-to-top or default-tab reset that fires after load",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T13:58:09.364Z",
+   "doneAt": "2026-11-24T14:01:15.925Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Server-pushed console.refresh keeps the place: make the refresh handler (soft and --hard) save the place right before reloading and the soft refresh re-render without resetting view/tab/scroll",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T14:07:56.310Z",
+   "doneAt": "2026-11-24T14:08:11.908Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Pull-down refresh keeps the place: make the pull-to-refresh path save and restore the same state as reload, and leave scroll unlocked when it finishes",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-24T13:49:17.113Z",
+   "doneAt": "2026-11-24T13:51:29.141Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Fix the scroll lock after an update: clear any leftover overflow/pointer-events lock or stale overlay when the update/refresh flow ends (and on load as a safety net), using the cause found in step 2",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T14:08:11.908Z",
+   "doneAt": "2026-11-24T14:09:18.479Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "API part: expose the saved place read-only and the restore action through the console API, keeping all four drivers the same: REST GET/POST /api/console-control place (read state, restore), MCP console tool, axf console place [get|restore], and an AmberX voice action; register targets with control@1 (append-only)",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T13:51:29.141Z",
+   "doneAt": "2026-11-24T13:58:09.364Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Tests: a unit test for placeState save/restore/deep-link precedence and a Playwright check against vite preview: open a tab deep in a view, scroll, select a row, reload, pull-refresh and server-push refresh; assert the same place is restored and the page still scrolls",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T14:09:18.479Z",
+   "doneAt": "2026-11-24T16:45:17.741Z",
+   "actualMin": 156,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Run the checks (typecheck, check-theme, check-controls, check-console-control, check-toolbars), finish the report _claude/builds/reports/fix-refreshing-console-jumps-back.md (cause, fix, before/after), update the THREADS row and open the PR naming how each part is reached (REST, MCP, CLI, voice)",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-24T14:01:15.925Z",
+   "doneAt": "2026-11-24T14:05:54.218Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Land this build (watchdog, attempt 1: fresh-session). It stood still with its PR open (landing for 4 days: PR #825 is still open and nothing moved it). Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did. Merge origin/main into claude/fix-refreshing-console-jumps-back, get every check green and push; the PR is #825.",
+   "model": "Fable",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-24T14:05:54.218Z",
+   "doneAt": "2026-11-24T14:07:56.310Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix-refreshing-console-jumps-back",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 916,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/916"
+ },
+ "landedCommit": "",
+ "commits": [
+  "867def73e0852cd0387ead142d45ea55915b12bb",
+  "2e1edc199fd7eb7794811fc181317856ee04046f",
+  "9faa6ee852544c883547e7709a5c7ef6a4eba6c5",
+  "ff92d73090284dcbd8385fcef1f1f17cbf7b896e",
+  "ea902fb4569d35568c85122ec346a54ec9a5098e",
+  "5f14f05c714d080e5ffe5d98f4b98e0e236f42c1",
+  "754246e9b35e99b2dcc896b0017e564cdf665949",
+  "31ade1b73dcdabc2a189901e80d7528d28fcf850",
+  "005b8d172771e67792ecd60133d1cb05f3c61480",
+  "c88558d265825f4e2e4e59c97315eb448be91e02",
+  "27446cf4fa490cb3e489687e89ebe01de3652bbb",
+  "4065eb1b263262c7273fcbd6763f77910921d7f6",
+  "377f3ba40e8404129f5d73b4323f55df8314f63a",
+  "2029d93f247b638da1f624e9e426c5f54303141a",
+  "7dc0b200aff1c581e33c08278894f32b96a08f71",
+  "f1ec6e2a4c7971cc010dc130f4cb861884b88376",
+  "d3c0b678396586723f63eb77f74bb0047dc87b72",
+  "c3ec51bde53f3627a1b2811ffb50837d9d88582c",
+  "128d274723af796a950a924049340a8a96f388ee",
+  "e5cc408fe04458ba8dba7d902b5292a6a3abfd40",
+  "ad415309b1b4407b3f24ef9ffd8e5a95b4fad7ac",
+  "4685681a5b3063d7c0a18e84715dd71764c20692",
+  "cfe1398c6858fa0f825a1915bab2a8e3fd6d31d2"
+ ],
+ "mergedAt": "2026-11-24T23:33:59Z",
+ "landedAt": "2026-11-24T23:33:59Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/fix-refreshing-console-jumps-back.md",
+  "_claude/memory/docs/auto-lander.md",
+  "_claude/memory/docs/console-control.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+  "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+  "apps/console-web/plugins/console-commands/web/index.tsx",
+  "apps/console-web/plugins/gate/plugin.json",
+  "apps/console-web/plugins/gate/server/routes.py",
+  "apps/console-web/plugins/maintenance/engine/profiles.test.mjs",
+  "apps/console-web/plugins/maintenance/test.py",
+  "apps/console-web/plugins/notify-control/plugin.json",
+  "apps/console-web/plugins/orchestrator-demo/deps.mjs",
+  "apps/console-web/plugins/orchestrator-demo/help.json",
+  "apps/console-web/plugins/orchestrator-demo/plugin.json",
+  "apps/console-web/plugins/orchestrator-demo/test.mjs",
+  "apps/console-web/plugins/orchestrator-demo/web/DemoView.tsx",
+  "apps/console-web/plugins/orchestrator-demo/web/index.tsx",
+  "apps/console-web/plugins/orchestrator-demo/web/menu.ts",
+  "apps/console-web/plugins/phone-connect/plugin.json",
+  "apps/console-web/plugins/phone-connect/server/service.py",
+  "apps/console-web/plugins/phone-connect/shots.mjs",
+  "apps/console-web/plugins/phone-connect/web/index.tsx",
+  "apps/console-web/plugins/phone-connect/web/menu.ts",
+  "apps/console-web/plugins/phone-connect/web/settings.tsx",
+  "apps/console-web/plugins/plan-studio-2/plugin.json",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/scripts/auto-lander-shots.mjs",
+  "apps/console-web/scripts/place-refresh.e2e.mjs",
+  "apps/console-web/scripts/place-state-check.mts",
+  "apps/console-web/server/console_control.py",
+  "apps/console-web/src/actions.ts",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/src/axf/core/engines/console-control-voice.d.mts",
+  "apps/console-web/src/axf/core/engines/console-control-voice.mjs",
+  "apps/console-web/src/main.tsx",
+  "apps/console-web/src/place/index.ts",
+  "apps/console-web/src/place/placeApi.ts",
+  "apps/console-web/src/place/placeCore.ts",
+  "apps/console-web/src/place/placeRestore.ts",
+  "apps/console-web/src/place/placeScroll.ts",
+  "apps/console-web/src/place/placeState.ts",
+  "apps/console-web/src/place/pullRefresh.ts",
+  "apps/console-web/src/place/scrollLock.ts",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "deploy/auto-lander/auto-lander.mjs",
+  "deploy/auto-lander/ci-status.mjs",
+  "deploy/auto-lander/escalate.mjs",
+  "deploy/auto-lander/fix-session.mjs",
+  "deploy/auto-lander/merge-main.mjs",
+  "deploy/auto-lander/test/loop.test.mjs",
+  "framework/assets/help/framework-drafts.json",
+  "framework/cli/axf.mjs",
+  "framework/cli/console-control.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/engines/console-control-voice.d.mts",
+  "framework/core/engines/console-control-voice.mjs",
+  "framework/spec/AUTO-LANDER.md",
+  "framework/spec/DONE-MEANS-MERGED.md",
+  "framework/spec/LIVE-DEMO.md",
+  "framework/spec/fixtures/console-control-voice.json",
+  "framework/spec/fixtures/page-toolbar-voice.json",
+  "framework/spec/gen-fixtures.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/scripts/auto-lander-shots.mjs",
+    "apps/console-web/scripts/place-refresh.e2e.mjs",
+    "apps/console-web/scripts/place-state-check.mts",
+    "apps/console-web/server/console_control.py",
+    "apps/console-web/src/actions.ts",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json",
+    "apps/console-web/src/axf/core/engines/console-control-voice.d.mts",
+    "apps/console-web/src/axf/core/engines/console-control-voice.mjs",
+    "apps/console-web/src/main.tsx",
+    "apps/console-web/src/place/index.ts",
+    "apps/console-web/src/place/placeApi.ts",
+    "apps/console-web/src/place/placeCore.ts",
+    "apps/console-web/src/place/placeRestore.ts",
+    "apps/console-web/src/place/placeScroll.ts",
+    "apps/console-web/src/place/placeState.ts",
+    "apps/console-web/src/place/pullRefresh.ts",
+    "apps/console-web/src/place/scrollLock.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "orchestrator-demo",
+   "files": [
+    "apps/console-web/plugins/orchestrator-demo/deps.mjs",
+    "apps/console-web/plugins/orchestrator-demo/help.json",
+    "apps/console-web/plugins/orchestrator-demo/plugin.json",
+    "apps/console-web/plugins/orchestrator-demo/test.mjs",
+    "apps/console-web/plugins/orchestrator-demo/web/DemoView.tsx",
+    "apps/console-web/plugins/orchestrator-demo/web/index.tsx",
+    "apps/console-web/plugins/orchestrator-demo/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "phone-connect",
+   "files": [
+    "apps/console-web/plugins/phone-connect/plugin.json",
+    "apps/console-web/plugins/phone-connect/server/service.py",
+    "apps/console-web/plugins/phone-connect/shots.mjs",
+    "apps/console-web/plugins/phone-connect/web/index.tsx",
+    "apps/console-web/plugins/phone-connect/web/menu.ts",
+    "apps/console-web/plugins/phone-connect/web/settings.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/AUTO-LANDER.md",
+    "framework/spec/DONE-MEANS-MERGED.md",
+    "framework/spec/LIVE-DEMO.md",
+    "framework/spec/fixtures/console-control-voice.json",
+    "framework/spec/fixtures/page-toolbar-voice.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/auto-lander/auto-lander.mjs",
+    "deploy/auto-lander/ci-status.mjs",
+    "deploy/auto-lander/escalate.mjs",
+    "deploy/auto-lander/fix-session.mjs",
+    "deploy/auto-lander/merge-main.mjs",
+    "deploy/auto-lander/test/loop.test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/server/recovery_watchdog.py",
+    "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/console-control.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/auto-lander.md",
+    "_claude/memory/docs/console-control.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "gate",
+   "files": [
+    "apps/console-web/plugins/gate/plugin.json",
+    "apps/console-web/plugins/gate/server/routes.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "maintenance",
+   "files": [
+    "apps/console-web/plugins/maintenance/engine/profiles.test.mjs",
+    "apps/console-web/plugins/maintenance/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/console-control-voice.d.mts",
+    "framework/core/engines/console-control-voice.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-commands",
+   "files": [
+    "apps/console-web/plugins/console-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notify-control",
+   "files": [
+    "apps/console-web/plugins/notify-control/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio-2",
+   "files": [
+    "apps/console-web/plugins/plan-studio-2/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/fix-refreshing-console-jumps-back.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 5.1636,
+  "estimated": false,
+  "tokens": {
+   "input": 216,
+   "output": 1457,
+   "cacheRead": 11716284,
+   "cacheWrite": 169987
+  }
+ },
+ "report": "_claude/builds/reports/fix-refreshing-console-jumps-back.md",
+ "open": []
+}

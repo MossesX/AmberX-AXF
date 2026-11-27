@@ -6,7 +6,7 @@
  * Theme tokens only.
  */
 import type { ComponentType, ReactNode } from 'react';
-import { avatarInitials, avatarSize, counterText, imageSrc, linkHref, logoSize, progressPercent, progressWidth, searchBarConfig, spacerUnits, statusOn, themeSwitchNext, widgetTone } from '../../core/engines/widgets';
+import { avatarInitials, avatarSize, counterText, imageSrc, linkHref, logoSize, progressPercent, progressWidth, searchBarConfig, spacerUnits, statusOn, themeSwitchNext, themeSwitchPair, widgetTone } from '../../core/engines/widgets';
 import type { ActionButtonData, AvatarData, ClockData, CounterData, DividerData, LabelData, LinkData, LogoData, ProgressData, SearchBarData, SpacerData, StatusData, ThemeSwitchData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { BannerClock } from './Banner';
@@ -47,7 +47,7 @@ export function LogoWidget({ data }: WidgetRenderProps<LogoData>) {
   const img = data.kind === 'image' ? imageSrc(data.image) : null;
   const body = data.kind === 'image' && img ? <img src={img} alt={data.text} style={{ height: size.px }} />
     : data.kind === 'icon' && data.icon ? <Icon name={data.icon} size={Math.round(size.px * 0.8)} />
-    : <span className="fx-widget-logo__text" style={{ fontSize: `${size.scale}em`, fontWeight: data.bold === false ? 500 : 700 }}>{data.text}</span>;
+    : <span className="fx-widget-logo__text" style={{ fontSize: `${size.scale}em`, fontWeight: data.bold === false ? 'calc(var(--fx-type-weights-medium) - 50)' : 'calc(var(--fx-type-weights-strong) + 100)' }}>{data.text}</span>;
   return <Tap action={data.link} className="fx-widget-logo" title={data.tooltip ?? data.text}>{body}</Tap>;
 }
 
@@ -138,8 +138,9 @@ export function ThemeSwitchWidget({ data }: WidgetRenderProps<ThemeSwitchData>) 
   const rt = useRuntime();
   const state = useAxfState();
   const active = state.active['color-theme'];
-  const dark = active === data.dark;
-  const next = themeSwitchNext(active, data.light, data.dark);
+  const pair = themeSwitchPair(active, data, rt.registry.list('theme-switch').map((a) => a.data as ThemeSwitchData));
+  const dark = active === pair.dark;
+  const next = themeSwitchNext(active, pair.light, pair.dark);
   const label = dark ? (data.lightLabel ?? 'Light') : (data.darkLabel ?? 'Dark');
   return (
     <button type="button" className={`fx-widget-theme is-${data.show}`} title={data.tooltip ?? `Switch to ${label.toLowerCase()} theme`} aria-label={`Switch to ${label} theme`} aria-pressed={dark} disabled={rt.lockedByAppearance('assets.swap')} onClick={() => rt.swap('color-theme', next)}>

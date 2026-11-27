@@ -58,7 +58,7 @@ export const BADGES: Record<BadgeKind, BadgeDef> = {
   },
   amberx: {
     id: 'amberx-phone', label: 'AmberX', title: 'AmberX (phone app)', icon: 'smartphone', order: 7, side: 'left', aliases: ['amberx', 'phone'],
-    tap: 'dropdown', target: '', about: 'Whether the AmberX app on the phone is connected to axHub, and when it was last seen.',
+    tap: 'dropdown', target: '', about: 'Whether the paired phone (Phone Connect) is connected, and when it was last seen.',
     states: {
       ok: { label: 'connected', icon: 'smartphone', setting: 'Phone connected' },
       warn: { label: 'seen lately', icon: 'clock', setting: 'Offline, seen in the last hour' },
@@ -96,6 +96,18 @@ export const shapeOf = (read: Read, kind: BadgeKind): 'pill' | 'icon' => (read(k
 export const labelOf = (read: Read, kind: BadgeKind) => { const v = read(keyOf(kind, 'label')); return typeof v === 'string' && v.trim() ? v.trim().slice(0, 40) : ''; };
 export const orderOf = (read: Read, kind: BadgeKind) => { const v = Number(read(keyOf(kind, 'order'))); return Number.isFinite(v) && read(keyOf(kind, 'order')) !== undefined ? v : BADGES[kind].order; };
 export const sideOf = (read: Read, kind: BadgeKind) => { const v = read(keyOf(kind, 'side')); return v === 'left' || v === 'right' ? v : BADGES[kind].side; };
+
+/** The connection badges (everything but the usage meter). The banner guard test requires them on the bar by default. */
+export const CONNECTION_KINDS: BadgeKind[] = ['console', 'vps', 'axhub', 'amberx'];
+
+/** What one badge attaches to the banner (rt.attachToBanner), from its settings. One source for the plugin and its tests. */
+export function badgeAttachment(read: Read, kind: BadgeKind, origin: string) {
+  const d = BADGES[kind];
+  return {
+    type: 'badge' as const, id: d.id, at: sideOf(read, kind), order: orderOf(read, kind), origin,
+    widget: { label: d.title, priority: 8, aliases: d.aliases, ...(kind === 'usage' ? { size: 'wide' as const } : {}) },
+  };
+}
 
 export interface TapPlan { do: 'drop' | 'dispatch' | 'toggle' | 'none'; spec?: string; key?: string }
 /** What a tap does right now. A screen is an action (`x.open`, `settings.open:x`) or a view id; a bad setting does nothing. */

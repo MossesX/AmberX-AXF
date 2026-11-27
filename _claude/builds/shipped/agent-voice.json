@@ -1,0 +1,292 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-agent-voice",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:18Z",
+ "build": {
+  "id": "agent-voice",
+  "title": "Agent voice plugin: agents speak + per-agent narrator console, live status light, Assistant mic",
+  "profile": "all",
+  "category": "Voice",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Build a plugin giving agents the ability to speak, with a full powerful per-agent configuration console and every bell and whistle a narrator should have. When a voice agent is selected a live status icon lights up on the main application and the Assistant window. A microphone in the Assistant window: when selected, a tooltip notes the selected agent's name is missing permission — unless the plugin isn't installed, then it says so with links to install, or a hook to install it with the agent. Powerful microphone configuration with integrated features and settings that never conflict with other listening (AmberX notes/dictation and voice/wake). Voices: both device + cloud, with hooks to its settings in multiple places. Profile: Refactor. Model: Opus (web console plugin + AmberX native seam).",
+  "verbatim": false,
+  "at": "2026-10-29T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Contract + pure core (agent-voice@1): per-agent voice profiles, narration engine (pronunciation dictionary, pauses, emphasis, number/code/URL reading modes, chunking, markdown stripping), presets; self-test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-30T11:40:27.320Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Server: profiles store (0600 in dataDir), cloud TTS proxy (OpenAI, ElevenLabs) with keys server-side, voice lists, audio cache, test.py",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T11:40:27.320Z",
+   "doneAt": "2026-10-30T11:42:13.158Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Speech engines: device (AmberX native TTS / Web Speech) + cloud audio player, queue, pause/resume/skip/stop, barge-in",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T11:42:13.158Z",
+   "doneAt": "2026-10-30T11:43:59.748Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Mic broker + mic settings that never conflict with AmberX hands-free wake, dictation and notes listening",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T11:43:59.748Z",
+   "doneAt": "2026-10-30T11:43:59.788Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Per-agent configuration console (agents list, voice picker + test, narrator controls, permissions, pronunciation, presets, import/export)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T11:43:59.788Z",
+   "doneAt": "2026-10-30T11:51:30.556Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Assistant integration: ai-assistant slots + events, fallback mic with 'not installed' tooltip + install links / install-with-agent hook, plugin mic with missing-permission tooltip, live light in the title bar, auto-speak replies",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T11:51:30.556Z",
+   "doneAt": "2026-10-30T11:51:30.597Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Banner live status light + settings hooks in app menu, context menu, assistant, banner",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-30T11:51:30.597Z",
+   "doneAt": "2026-10-30T11:51:30.637Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "AmberX native: speak with voice/rate/pitch/volume, voice list, speaking events, hands-free yields while speaking",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T11:51:30.637Z",
+   "doneAt": "2026-10-30T12:04:43.792Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Lifecycle (install/uninstall/hooks), docs, checks, PR + merge approval",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T12:04:43.792Z",
+   "doneAt": "2026-11-01T02:31:46.110Z",
+   "actualMin": 2307,
+   "done": true
+  }
+ ],
+ "branch": "feat/agent-voice",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 177,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/177"
+ },
+ "landedCommit": "ed7aa480ada78ba4d70135f7f8426642d22dafa7",
+ "commits": [
+  "025cc256eaf01bc7ee15f9c0df89ab8e664bef7d",
+  "804ed3f42735ddd8b9bd428ee1a0efb1bb1eca19",
+  "41efe348bb34d948f18148707ea6d78b54a897ff",
+  "4848cea9d53d44e184515755dc93968e945740d6",
+  "87e37a171c85bf670e3d13ca43b8001dfc4fc868",
+  "ffee21fd6bf5cde62ca7761d71242cf0e788f2b3",
+  "3a5e91efefeb5d6b22bf401d84adc214cc43e536"
+ ],
+ "mergedAt": "2026-10-31T07:26:37Z",
+ "landedAt": "2026-10-31T07:26:24Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/src/miclease.ts",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+  "apps/amberx-droid/src/plugins/dictation/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/agent-voice/README.md",
+  "apps/console-web/plugins/agent-voice/hooks.mjs",
+  "apps/console-web/plugins/agent-voice/install.mjs",
+  "apps/console-web/plugins/agent-voice/plugin.json",
+  "apps/console-web/plugins/agent-voice/server/__init__.py",
+  "apps/console-web/plugins/agent-voice/test.mts",
+  "apps/console-web/plugins/agent-voice/test.py",
+  "apps/console-web/plugins/agent-voice/uninstall.mjs",
+  "apps/console-web/plugins/agent-voice/web/agent-voice.css",
+  "apps/console-web/plugins/agent-voice/web/assistant.tsx",
+  "apps/console-web/plugins/agent-voice/web/bridge.ts",
+  "apps/console-web/plugins/agent-voice/web/console.tsx",
+  "apps/console-web/plugins/agent-voice/web/core.ts",
+  "apps/console-web/plugins/agent-voice/web/engine.ts",
+  "apps/console-web/plugins/agent-voice/web/index.tsx",
+  "apps/console-web/plugins/agent-voice/web/lease.ts",
+  "apps/console-web/plugins/agent-voice/web/light.ts",
+  "apps/console-web/plugins/agent-voice/web/menu.ts",
+  "apps/console-web/plugins/agent-voice/web/mic.ts",
+  "apps/console-web/plugins/agent-voice/web/store.ts",
+  "apps/console-web/plugins/ai-assistant/plugin.json",
+  "apps/console-web/plugins/ai-assistant/web/ai-assistant.css",
+  "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+  "apps/console-web/plugins/ai-assistant/web/index.tsx",
+  "apps/console-web/plugins/ai-assistant/web/voicemic.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "agent-voice",
+   "files": [
+    "apps/console-web/plugins/agent-voice/README.md",
+    "apps/console-web/plugins/agent-voice/hooks.mjs",
+    "apps/console-web/plugins/agent-voice/install.mjs",
+    "apps/console-web/plugins/agent-voice/plugin.json",
+    "apps/console-web/plugins/agent-voice/server/__init__.py",
+    "apps/console-web/plugins/agent-voice/test.mts",
+    "apps/console-web/plugins/agent-voice/test.py",
+    "apps/console-web/plugins/agent-voice/uninstall.mjs",
+    "apps/console-web/plugins/agent-voice/web/agent-voice.css",
+    "apps/console-web/plugins/agent-voice/web/assistant.tsx",
+    "apps/console-web/plugins/agent-voice/web/bridge.ts",
+    "apps/console-web/plugins/agent-voice/web/console.tsx",
+    "apps/console-web/plugins/agent-voice/web/core.ts",
+    "apps/console-web/plugins/agent-voice/web/engine.ts",
+    "apps/console-web/plugins/agent-voice/web/index.tsx",
+    "apps/console-web/plugins/agent-voice/web/lease.ts",
+    "apps/console-web/plugins/agent-voice/web/light.ts",
+    "apps/console-web/plugins/agent-voice/web/menu.ts",
+    "apps/console-web/plugins/agent-voice/web/mic.ts",
+    "apps/console-web/plugins/agent-voice/web/store.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/plugin.json",
+    "apps/console-web/plugins/ai-assistant/web/ai-assistant.css",
+    "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+    "apps/console-web/plugins/ai-assistant/web/index.tsx",
+    "apps/console-web/plugins/ai-assistant/web/voicemic.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/src/miclease.ts",
+    "apps/amberx-droid/src/native.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "dictation",
+   "files": [
+    "apps/amberx-droid/src/plugins/dictation/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

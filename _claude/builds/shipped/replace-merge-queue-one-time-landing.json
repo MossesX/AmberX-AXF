@@ -1,0 +1,407 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-replace-merge-queue-one-time-landing",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-14T23:32:12Z",
+ "build": {
+  "id": "replace-merge-queue-one-time-landing",
+  "title": "Replace merge queue with one-at-a-time landing",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "We gotta get rid of that merge tier and start landing them one at a time",
+  "verbatim": true,
+  "at": "2026-11-14T22:15:48.311Z",
+  "source": "",
+  "by": "replace-merge-queue-one-time-landing",
+  "addenda": []
+ },
+ "brief": "# Build: replace-merge-queue-one-time-landing\n\n## Brett said (verbatim)\nAt: 2026-11-14T22:15:48.311Z\n> We gotta get rid of that merge tier and start landing them one at a time\n\n## What to build\nContinue build \"Replace merge queue with one-at-a-time landing\" (replace-merge-queue-one-time-landing) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 22:15):\n\"We gotta get rid of that merge tier and start landing them one at a time\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Design the landing-line@1 record and state machine: one ordered list of finished builds/PRs; states waiting → merging-main → regenerating → checking → landing → landed | fix-filed | skipped | paused; per-entry attempt log; CI conclusion mapping where cancelled/superseded = not a result (re-run, never a failure); one entry in flight at a time; no stacking. Write it as framework/core/landing-line.mjs (pure functions: next, transition, classifyCheckRun) plus a JSON Schema\n[ ] s2 (~10 min) Migration design: convert the current merge queue (stacks, entries, queue/pr-* refs) into landing-line@1 entries in their old order, keep history, drop stack fields; write the migration as a pure function with a fixture (before/after JSON)\n[ ] s3 (~10 min) Engine checks for landing-line@1: transitions, cancelled-run classification (cancelled / superseded / stale head = retry, failure / timed_out = red), red → fix-file + advance, pause / skip / move-up ordering, migration fixture\nRead first: framework/core/landing-line.mjs, framework/schemas/landing-line.json, framework/spec/fixtures/landing-line-migrate.json, framework/spec/check-landing-line.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step replace-merge-queue-one-time-landing <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link replace-merge-queue-one-time-landing --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step replace-merge-queue-one-time-landing <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note replace-merge-queue-one-time-landing \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-replace-merge-queue-one-time-landing--sully",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-14T22:18:10.711Z",
+   "endedAt": "2026-11-14T22:32:28.580Z",
+   "exit": 0,
+   "costUsd": 5.9143
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Design the landing-line@1 record and state machine: one ordered list of finished builds/PRs; states waiting → merging-main → regenerating → checking → landing → landed | fix-filed | skipped | paused; per-entry attempt log; CI conclusion mapping where cancelled/superseded = not a result (re-run, never a failure); one entry in flight at a time; no stacking. Write it as framework/core/landing-line.mjs (pure functions: next, transition, classifyCheckRun) plus a JSON Schema",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T22:18:10.711Z",
+   "doneAt": "2026-11-14T22:24:47.006Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Migration design: convert the current merge queue (stacks, entries, queue/pr-* refs) into landing-line@1 entries in their old order, keep history, drop stack fields; write the migration as a pure function with a fixture (before/after JSON)",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T22:24:47.006Z",
+   "doneAt": "2026-11-14T22:30:26.024Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Engine checks for landing-line@1: transitions, cancelled-run classification (cancelled / superseded / stale head = retry, failure / timed_out = red), red → fix-file + advance, pause / skip / move-up ordering, migration fixture",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T22:30:26.024Z",
+   "doneAt": "2026-11-14T22:32:09.133Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Serial lander, part 1: apps/console-web/plugins/push-banner/land/lander.mjs takes the head entry, checks out its branch, merges origin/main into it, and sets the entry state; reuses the merge drivers already in land.mjs (builds files newer-wins, logs unioned)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Serial lander, part 2: run generated-files@1 regeneration (tracker, schemas, fixtures, help, exports) after the main merge and push the branch once (head pinned)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "Serial lander, part 3: wait on the PR's checks for the pinned head; classify through landing-line.mjs; a cancelled or superseded run triggers one re-dispatch of the workflow and never counts as red; green merges the PR to main (merge commit naming the landing line) and advances",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s7",
+   "text": "Red check handling: on a real failure, file a fix build in the orchestrator (pipeline.mjs intake with the failing check names, log excerpt, PR link and Brett's original words carried over), mark the entry fix-filed, link the fix build, then move on to the next entry",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Remove the stacked merge queue: delete merge-queue.mjs stack building, queue/pr-* branch creation and the stack retest logic; land.mjs `run` now calls the serial lander; `queue list|add|remove|move` become aliases onto the landing line; clean up queue/pr-* refs once",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s9",
+   "text": "Run the migration on startup of the lander (old queue file → landing-line store, journalled), keep a read-only export of the old file for one release",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "Cron: the axf-auto-land cron runs `land.mjs run` as one landing pass (one entry per tick, lock file so ticks never overlap); queue-merging hold replaced by a landing-batch hold",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s11",
+   "text": "Redeploy after each landing batch: when the line goes empty or paused after at least one landing, trigger one console redeploy (existing updater) and log it with axf_deploy_log; release the 5-minute updater hold",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s12",
+   "text": "REST API: /api/plugins/push-banner/landing (GET state: line, current build, its stage, last results; POST pause, resume, skip <id>, move-up <id>, add <pr>, remove <id>, run-now); lander settings (enabled, max re-dispatch on cancelled, auto file fix build) as settings keys",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s13",
+   "text": "MCP + CLI + voice: plugin commands push_banner_landing_state|pause|resume|skip|move_up|add|remove (replacing push_banner_mergequeue_*), `axf landing …` CLI, console actions landing.pause / landing.skip / landing.moveUp for AmberX voice; same four reach the same routes",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s14",
+   "text": "Console UI, part 1: replace the push banner's Merge queue panel with a Landing line panel (framework DataGrid + TabGroup, tokens only): current build highlighted with its stage, ordered list, fix-filed and skipped rows with links",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s15",
+   "text": "Console UI, part 2: a toolbar (role=toolbar, settings id) with Pause / Resume / Skip / Move up / Run now; row context menu with the same; banner chip shows 'Landing #N (stage)' or 'Paused'",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s16",
+   "text": "Console control + deep links: register view:push-banner/landing, row:<pr>, and the toolbar buttons with control@1 (append-only), console_show/console_open targets; check-console-control passes",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s17",
+   "text": "Settings sub-tab: Settings → Plugins → Push banner → Landing line (enabled, re-dispatch on cancelled, auto file fix build, redeploy after batch) through the settings asset; remove the stack settings",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s18",
+   "text": "Systems check: health@1 item when the line is paused over an hour, a landing is stuck in one stage over 30 min, or a fix build was filed (banner item with Fix / Resume); notify.json entry for landing alerts",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s19",
+   "text": "Rules and docs: replace 'Only the merge queue merges' in _claude/shared/rules/RULES.md, _claude/rules/RULES.md and CLAUDE.md with the one-at-a-time landing rule (Brett, Nov 14 2026, his words); decision in _claude/memory/decisions.md; update the merge-queue memory doc; claude-sync sync",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s20",
+   "text": "Help and glossary: help entries for the Landing line panel, commands and CLI; plugin.json and command descriptions; glossary-index catalog --check passes; Shipped features ledger rows for lander, API and UI",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s21",
+   "text": "Tests for the lander: fake git + fake GitHub checks: green lands, cancelled run re-dispatches and is not red, red files a fix build and advances, pause/skip/move-up, one in flight at a time, redeploy once per batch",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s22",
+   "text": "Route + command tests: REST, MCP, CLI and voice actions hit the same state; plugin-lifecycle check, check-toolbars, check-theme, check-controls, check-console-control",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s23",
+   "text": "UI Review: 3 options for the Landing line panel as assets (ui-choices@1) with desktop + phone shots, submitted via review.mjs submit --choices",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s24",
+   "text": "Finish: run the full check sweep (check-landing-line, lander tests, tracker --check, builds-store verify), write _claude/builds/reports/replace-merge-queue-one-time-landing.md (what was removed, API reach for each feature: deep link, state, actions, settings over REST/MCP/CLI/voice), THREADS row, push the branch and open the PR (this PR lands through the old queue one last time or by a single deliberate merge)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/replace-merge-queue-one-time-landing",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 677,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/677"
+ },
+ "landedCommit": "7ca342b2f1757ccc0b6fcf95ef788d092c2b9014",
+ "commits": [
+  "3a8b475867b752ffcf8798c64b2614fb1f870bbc",
+  "2eea74e45ee340b0cbfbb9f5af0788e571aa42be",
+  "513f901e5da6133108152c44bc01b2ff2d3e2052"
+ ],
+ "mergedAt": "2026-11-14T23:06:15Z",
+ "landedAt": "2026-11-14T23:06:15Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "framework/core/landing-line.mjs",
+  "framework/schemas/landing-line.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-landing-line.mjs",
+  "framework/spec/fixtures/landing-line-migrate.json"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-landing-line.mjs",
+    "framework/spec/fixtures/landing-line-migrate.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/landing-line.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/landing-line.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 5.9143,
+  "estimated": false,
+  "tokens": {
+   "input": 898,
+   "output": 1025,
+   "cacheRead": 2272835,
+   "cacheWrite": 117461
+  }
+ },
+ "report": "",
+ "open": [
+  "s4: Serial lander, part 1: apps/console-web/plugins/push-banner/land/lander.mjs takes the head entry, checks out its branch, merges origin/main into it, and sets the entry state; reuses the merge drivers",
+  "s5: Serial lander, part 2: run generated-files@1 regeneration (tracker, schemas, fixtures, help, exports) after the main merge and push the branch once (head pinned)",
+  "s6: Serial lander, part 3: wait on the PR's checks for the pinned head; classify through landing-line.mjs; a cancelled or superseded run triggers one re-dispatch of the workflow and never counts as red; g",
+  "s7: Red check handling: on a real failure, file a fix build in the orchestrator (pipeline.mjs intake with the failing check names, log excerpt, PR link and Brett's original words carried over), mark the e",
+  "s8: Remove the stacked merge queue: delete merge-queue.mjs stack building, queue/pr-* branch creation and the stack retest logic; land.mjs `run` now calls the serial lander; `queue list|add|remove|move` b",
+  "s9: Run the migration on startup of the lander (old queue file → landing-line store, journalled), keep a read-only export of the old file for one release",
+  "s10: Cron: the axf-auto-land cron runs `land.mjs run` as one landing pass (one entry per tick, lock file so ticks never overlap); queue-merging hold replaced by a landing-batch hold",
+  "s11: Redeploy after each landing batch: when the line goes empty or paused after at least one landing, trigger one console redeploy (existing updater) and log it with axf_deploy_log; release the 5-minute u",
+  "s12: REST API: /api/plugins/push-banner/landing (GET state: line, current build, its stage, last results; POST pause, resume, skip <id>, move-up <id>, add <pr>, remove <id>, run-now); lander settings (enab",
+  "s13: MCP + CLI + voice: plugin commands push_banner_landing_state|pause|resume|skip|move_up|add|remove (replacing push_banner_mergequeue_*), `axf landing …` CLI, console actions landing.pause / landing.ski",
+  "s14: Console UI, part 1: replace the push banner's Merge queue panel with a Landing line panel (framework DataGrid + TabGroup, tokens only): current build highlighted with its stage, ordered list, fix-file",
+  "s15: Console UI, part 2: a toolbar (role=toolbar, settings id) with Pause / Resume / Skip / Move up / Run now; row context menu with the same; banner chip shows 'Landing #N (stage)' or 'Paused'",
+  "s16: Console control + deep links: register view:push-banner/landing, row:<pr>, and the toolbar buttons with control@1 (append-only), console_show/console_open targets; check-console-control passes",
+  "s17: Settings sub-tab: Settings → Plugins → Push banner → Landing line (enabled, re-dispatch on cancelled, auto file fix build, redeploy after batch) through the settings asset; remove the stack settings",
+  "s18: Systems check: health@1 item when the line is paused over an hour, a landing is stuck in one stage over 30 min, or a fix build was filed (banner item with Fix / Resume); notify.json entry for landing",
+  "s19: Rules and docs: replace 'Only the merge queue merges' in _claude/shared/rules/RULES.md, _claude/rules/RULES.md and CLAUDE.md with the one-at-a-time landing rule (Brett, Nov 14 2026, his words); decisi",
+  "s20: Help and glossary: help entries for the Landing line panel, commands and CLI; plugin.json and command descriptions; glossary-index catalog --check passes; Shipped features ledger rows for lander, API",
+  "s21: Tests for the lander: fake git + fake GitHub checks: green lands, cancelled run re-dispatches and is not red, red files a fix build and advances, pause/skip/move-up, one in flight at a time, redeploy",
+  "s22: Route + command tests: REST, MCP, CLI and voice actions hit the same state; plugin-lifecycle check, check-toolbars, check-theme, check-controls, check-console-control",
+  "s23: UI Review: 3 options for the Landing line panel as assets (ui-choices@1) with desktop + phone shots, submitted via review.mjs submit --choices",
+  "s24: Finish: run the full check sweep (check-landing-line, lander tests, tracker --check, builds-store verify), write _claude/builds/reports/replace-merge-queue-one-time-landing.md (what was removed, API r"
+ ]
+}

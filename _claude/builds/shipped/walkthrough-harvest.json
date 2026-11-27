@@ -1,0 +1,147 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-harvest",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:44Z",
+ "build": {
+  "id": "walkthrough-harvest",
+  "title": "Harvest Walkthrough Studio into framework libraries with configurable features (dnd, workspace, datagrid, tree, recorder, docstore) + Build Pilot feature config",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Branch claude/framework-walkthrough-video-builder-qocfr1. library@1 gains `parts` (features inside a library, each included by default or not, with its own params); installer + core helpers + fixture. Six web libraries harvested from apps/walkthrough-studio; the studio switches to them. Build Pilot lists each library part as a feature you can include and configure.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "library@1 parts contract: core/library.ts + libraries.mjs + fixture + check",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-22T23:20:51.557Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "lib-dnd + lib-tree",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.557Z",
+   "doneAt": "2026-10-22T23:20:51.610Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "lib-datagrid",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.610Z",
+   "doneAt": "2026-10-22T23:20:51.673Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "lib-workspace (panes, layouts, toolbars, customizer)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.673Z",
+   "doneAt": "2026-10-22T23:20:51.727Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "lib-recorder + lib-docstore",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.727Z",
+   "doneAt": "2026-10-22T23:20:51.780Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Switch Walkthrough Studio onto the libraries; build, test, screenshots",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.780Z",
+   "doneAt": "2026-10-22T23:20:51.828Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Build Pilot: library parts as configurable features",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.828Z",
+   "doneAt": "2026-10-22T23:20:51.879Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Docs, PORTING.md, catalog, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T23:20:51.879Z",
+   "doneAt": "2026-10-22T23:20:51.930Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-22T23:20:51.501Z",
+ "landedAt": "2026-10-22T23:20:51.501Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

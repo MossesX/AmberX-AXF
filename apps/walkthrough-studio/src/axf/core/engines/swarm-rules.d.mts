@@ -10,7 +10,7 @@ export type LeaseKind = 'files' | 'area' | 'all';
 export interface FieldError { field: string; code: 'missing' | 'invalid'; message: string }
 export interface Avatar { face: string; hair: number; gear: string; hue: number }
 export interface Agent {
-  $axf: 'agent@1'; id: string; name: string; role: string; skill: string; jobsOnly: boolean; specialty: string; keywords: string[]; paths: string[];
+  $axf: 'agent@1'; id: string; name: string; role: string; skill: string; skills: string[]; home: string; jobsOnly: boolean; specialty: string; keywords: string[]; paths: string[];
   models: Model[]; tools: string[]; maxTurns: number; tokenBudget: number; salary: number; hiredAt: string; avatar: Avatar; catchphrase: string; bio: string;
 }
 export interface Skill { id: string; title: string; schema: string; body: string; lines: number; chars: number }
@@ -67,6 +67,8 @@ export function isAgentId(v: unknown): boolean;
 export function isCardId(v: unknown): boolean;
 export function isTimestamp(v: unknown): boolean;
 export function rejection(errors: FieldError[]): string;
+export const ALL_SKILLS: '*';
+export function hasSkills(agent: Pick<Agent, 'skill' | 'skills'> | null | undefined, need: string[] | null | undefined): boolean;
 export function normAgent(a: unknown): Agent;
 export function agentErrors(a: unknown, p?: string): FieldError[];
 export function parseSkill(md: string): Skill;

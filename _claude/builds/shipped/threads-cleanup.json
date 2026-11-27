@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-threads-cleanup",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:11Z",
+ "build": {
+  "id": "threads-cleanup",
+  "title": "threads-cleanup",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "threads-cleanup",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/threads-cleanup",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "916f7e65098943dd6b553c556e2cd738eb9d9be2",
+ "commits": [
+  "0b13d8c5f9b62665b45dedbd08f7ad40e032bf5b"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T00:06:55Z",
+ "files": [
+  "_claude/THREADS.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

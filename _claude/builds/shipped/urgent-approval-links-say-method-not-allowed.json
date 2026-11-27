@@ -1,0 +1,126 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-approval-links-say-method-not-allowed",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:11Z",
+ "build": {
+  "id": "urgent-approval-links-say-method-not-allowed",
+  "title": "URGENT: approval links say 'Method not allowed'",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "When I click approve, it says method not allowed. You can't have it broken.",
+  "verbatim": true,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# URGENT: approval links answer 'Method not allowed'\n\nBrett's words: \"When I click approve, it says method not allowed. You can't have it broken.\"\n\nPending build: 'URGENT: approval links say Method not allowed' (tick its steps via the orchestrator).\n\n## Problem\nApproval links sent in notices, AmberX push, the console banner and axHub tool results (approvalUrl = https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app (apps/axhub-web), so the old link/form hits a route that no longer accepts it. The axHub repo itself may need the fix; if so, say exactly what to change there.\n\n## Do\n1. Find every place that builds approval links (console approvals-banner, lib-approvals, notify/AmberX push, axhub-web routes) and the hub's decide API (approve/deny).\n2. Make the link open the approval in axhub-web (or the console) with Approve and Deny that call the decide API with the correct method and close/confirm.\n3. Keep the old /auth/admin/approvals/<id> URL working (redirect to the new view).\n4. Test Approve and Deny end to end on a veto hold and a confirm hold.\n5. Short report, commit, stop so it can be landed with build_land. Keep it small and fast.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-approval-links-fix--paulie",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-09T02:24:18.533Z",
+   "endedAt": "2026-11-09T02:30:22.984Z",
+   "exit": 0,
+   "costUsd": 1.7924
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Approval links sent in notices and by Claude (https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app, so the old link/form posts to a route that no longer takes it. Fix: the approval link opens the approval in axhub-web (or the console) with working Approve/Deny that call the hub's decide API with the right method; keep the old URL working as a redirect. Check every place that builds approval links (notices, AmberX push, console banner, axHub tool results approvalUrl). Test Approve and Deny end to end on a veto hold and a confirm hold. Land it the same day.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-09T02:24:18.533Z",
+   "doneAt": "2026-11-09T02:29:51.649Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "When I click approve, it says method not allowed. You can't have it broken.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-09T02:29:51.649Z",
+   "doneAt": "2026-11-09T02:29:53.100Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/urgent-approval-links-say-method-not-allowed.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/approval-links-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 403,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/403"
+ },
+ "landedCommit": "4aafd97f1a31edd318e5c14d6aec823946192029",
+ "commits": [
+  "70d167b49842bf81cdf9f07ca3fce3cde36349bc"
+ ],
+ "mergedAt": "2026-11-09T04:24:12Z",
+ "landedAt": "2026-11-09T04:24:06Z",
+ "files": [
+  "apps/console-web/plugins/approvals-banner/test.py",
+  "apps/console-web/server/requirements.txt"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/requirements.txt"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 1.7924,
+  "estimated": false,
+  "tokens": {
+   "input": 104,
+   "output": 641,
+   "cacheRead": 3214057,
+   "cacheWrite": 92602
+  }
+ },
+ "report": "",
+ "open": [
+  "s3: Tests green, report _claude/builds/reports/urgent-approval-links-say-method-not-allowed.md, THREADS row, commit, push, PR"
+ ]
+}

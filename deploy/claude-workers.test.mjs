@@ -11,6 +11,8 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, wr
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
+process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let passed = 0;
@@ -76,6 +78,45 @@ ok(X.route({}, env, now) === 'console', 'every worker out = the console\'s own a
 X.markLimit('console', { kind: 'usage' }, env, now);
 ok(X.route({}, env, now) === '', 'every account out = nothing free');
 rmSync(join(W, 'worker-state.json'));
+
+console.log('pipeline-2@1: the real reset, usage left, never an account marked out');
+ok(new Date(X.parseReset("You've hit your weekly limit · resets Nov 21, 3am (UTC)", now)).toISOString() === '2026-11-21T03:00:00.000Z', 'the weekly message of Nov 19 2026');
+ok(new Date(X.parseReset('resets 3pm (America/New_York)', now)).toISOString() === '2026-11-07T20:00:00.000Z', 'a time zone');
+ok(new Date(X.parseReset('resets Mon 9:30am', now)).toISOString() === '2026-11-09T09:30:00.000Z', 'a weekday');
+ok(new Date(X.parseReset('resets in 3 days', now)).toISOString() === '2026-11-10T12:00:00.000Z', 'in N days');
+ok(new Date(X.parseReset('Claude AI usage limit reached|1795503600', now)).getTime() === 1795503600e3, 'an epoch');
+{ const l2 = X.markLimit('w1', { kind: 'usage', text: "You've hit your weekly limit · resets Nov 21, 3am (UTC)" }, env, now);
+  ok(l2.until === '2026-11-21T03:00:00.000Z' && l2.resetFrom === 'message', 'benched until the real reset, days away (not 5 h)');
+  ok(Date.parse(X.markLimit('w1', { kind: 'usage', text: 'weekly limit' }, env, now).until) === now + 24 * 3600e3, 'a weekly limit with no reset = a day, not 5 h'); }
+{ const raw = JSON.stringify({ type: 'rate_limit_event', rate_limit_info: { status: 'allowed', resetsAt: 1795503600, rateLimitType: 'seven_day', unifiedWindows: { seven_day: { utilization: 0.97, resetsAt: 1795503600, status: 'allowed' } } } });
+  const info = X.rateLimitOf(`x\n${raw}\n`); ok(info.utilization === 0.97 && info.window === 'seven_day' && info.resetsAt === 1795503600e3, 'the stream\'s rate_limit_event is read');
+  X.recordUsage('w2', info, env, now); ok(Math.abs(X.status(env, now).accounts.find((a) => a.name === 'w2').usageLeft - 0.03) < 1e-9, 'usage left on the status row');
+  X.recordUsage('w2', { ...info, utilization: 1 }, env, now);
+  ok(X.route({ exclude: ['w1', 'w3', 'console'] }, env, now) === '', 'no usage left = never routed (usage checked before routing)');
+  X.recordUsage('w2', { ...info, status: 'rejected' }, env, now);
+  ok(X.status(env, now).accounts.find((a) => a.name === 'w2').limited?.until === new Date(1795503600e3).toISOString(), 'a rejected rate_limit_event benches it until the reset');
+  // the CLI reads the wall clock, so bench w2 against it: the fixed reset above is a real date, and it passes
+  X.recordUsage('w2', { ...info, status: 'rejected', resetsAt: Date.now() + 24 * 3600e3 }, env);
+  const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), ...a], { env: { ...process.env }, encoding: 'utf8' });
+  ok(cli('out', 'w2').status === 0 && /out until/.test(cli('out', 'w2').stdout) && cli('out', 'w3').status === 1, 'CLI out: a marked-out account says so (the launcher skips it)'); }
+for (let i = 0; i < 5; i += 1) ok(!['w1', 'w2'].includes(X.claim(`never-${i}`, {}, {}, env, now).account), `claim ${i}: never an account marked out`);
+rmSync(join(W, 'worker-state.json'));
+
+console.log('one build account');
+writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'] }));
+ok(X.setBuildAccount('w3', env) === 'w3' && X.route({}, env, now) === 'w3', 'build-account w3: every job goes to w3');
+const sOne = X.status(env, now);
+ok(sOne.buildAccount === 'w3' && sOne.accounts.every((a) => a.buildPick === 'w3') && sOne.accounts.find((a) => a.name === 'w3').buildAccount, 'status rows carry the pick (the dispatcher reads them)');
+ok(X.route({ exclude: ['w3'] }, env, now) === '', 'no other account takes over');
+let refused = ''; try { X.setBuildAccount('keyonly', env); } catch (e) { refused = e.message; }
+ok(/API key/.test(refused), 'an API key is refused');
+refused = ''; try { X.setBuildAccount('ghost', env); } catch (e) { refused = e.message; }
+ok(/no saved account/.test(refused), 'an unknown name is refused');
+const oneCli = spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'build-account'], { env: { ...process.env }, encoding: 'utf8' });
+ok(oneCli.status === 0 && oneCli.stdout.trim() === 'w3', 'CLI: build-account prints the pick');
+const cliOff = spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'build-account', 'off'], { env: { ...process.env }, encoding: 'utf8' });
+ok(cliOff.status === 0 && X.loadConfig(env).buildAccount === '' && X.route({}, env, now) === 'w1', 'CLI: build-account off = the normal routing again');
+rmSync(join(W, 'workers.json'));
 
 console.log('claims: 3 building per account, then a queue of 5, oldest first');
 writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'], excluded: ['w3'], interactiveTakesJobs: false, limits: { building: 2, queue: 1 } }));
@@ -175,7 +216,7 @@ echo finished
 `);
   chmodSync(join(bin, 'claude'), 0o755);
   const runEnv = { ...env, HOME: home, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_TOKEN: '' };
-  for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN', 'AXF_CLAUDE_ACCOUNT', 'AXF_MODEL']) delete runEnv[k];
+  for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN', 'AXF_CLAUDE_ACCOUNT', 'AXF_MODEL', 'AXF_DISPATCH_TOKEN', 'AXF_BUILD_ID', 'AXF_BRIEF_ONLY_RUN', 'AXF_PRIORITY', 'AXF_SURFACE']) delete runEnv[k];
   const w = join(tmp, 'build'); mkdirSync(w); writeFileSync(join(w, 'brief.md'), 'Do the thing.\n');
   setWorkers(['w1', 'w2']);
   const r = spawnSync('bash', [join(HERE, 'claude-headless.sh'), '--name', 'job', '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd: w, env: runEnv, encoding: 'utf8', timeout: 30_000 });
@@ -190,6 +231,16 @@ echo finished
   ok(lines.filter((e) => e.event === 'session-login').map((e) => e.account).join() === 'w1,w2', 'each login is recorded');
   ok(lines.some((e) => e.event === 'session-part' && e.account === 'w1'), 'the move is recorded');
   ok(!/fake-w|fake-console/.test(read(join(HD, 'events.jsonl'))), 'no credential in the events or the log');
+  // one build account: an explicit --account for another login runs on the pick instead
+  X.setBuildAccount('w2', env);
+  const w2d = join(tmp, 'build2'); mkdirSync(w2d); writeFileSync(join(w2d, 'brief.md'), 'Do the other thing.\n');
+  const ends = () => read(join(HD, 'events.jsonl')).split('\n').filter((x) => /session-end/.test(x)).length;
+  const r2 = spawnSync('bash', [join(HERE, 'claude-headless.sh'), '--name', 'job2', '--account', 'w1', '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd: w2d, env: runEnv, encoding: 'utf8', timeout: 30_000 });
+  ok(/started/.test(r2.stdout), 'one build account: the launcher starts it');
+  ok(await until(() => ends() >= 2, 60_000), 'and the run ends');
+  ok(read(join(w2d, 'attempts')).trim() === 'fake-w2', '--account w1 ran on the one build account w2');
+  ok(/w1 is off for builds: this run uses the one build account, w2/.test(read(join(w2d, 'run.log'))), 'the log says why');
+  X.setBuildAccount('off', env);
   spawnSync('tmux', ['kill-server'], { env: runEnv });
 } else console.log('(tmux missing: skipped the end-to-end checks)');
 

@@ -6,9 +6,9 @@
  * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, PageToolbar, Segmented as FxSegmented, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
-import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
+import { ConflictList, DetailPane, HealthChip, Monogram, openDetailTab } from './Detail';
 import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
 import { FILTERS, LAYOUTS, SORTS, usePrefs, VIEWS, type FilterId, type LayoutId, type Prefs, type SortId, type ViewId } from './prefs';
 import { CardsView, GraphView, MasterDetailView, TableView, type ViewProps } from './views';
@@ -86,11 +86,33 @@ export function PluginManager({ embedded }: { embedded?: boolean }) {
     globalThis.addEventListener('axp-plugin-manager:select', on);
     return () => globalThis.removeEventListener('axp-plugin-manager:select', on);
   }); // eslint-disable-line react-hooks/exhaustive-deps
+  // the page toolbar (page-toolbar@1, assets/toolbar/plugin-manager.json): the selected plugin's plugin-inventory@1 actions
+  const rt = useRuntime();
+  const sel = inv?.items.find((r) => r.folder === prefs.selected);
+  const detail = (tab: Parameters<typeof openDetailTab>[0]) => { if (prefs.view !== 'detail' && prefs.layout !== 'studio') set('view', 'detail'); setTimeout(() => openDetailTab(tab), 0); return { plugin: sel?.folder ?? '', section: tab }; };
+  usePublishPageState('plugin-manager', {
+    clashes: inv?.conflicts.length ?? 0,
+    selection: sel ? {
+      id: sel.folder, enabled: sel.enabled, removed: sel.removed, hasSettings: hasSettings(sel), logCount: sel.logCount,
+      blocking: sel.dependencies.filter((d) => d.required && (d.status === 'missing' || d.status === 'disabled' || d.status === 'unsupported')).length,
+      replacedBy: sel.builtWith?.replacedBy ? 'new' : '',
+    } : null,
+  });
+  useToolbarHandlers('plugin-manager', {
+    'plugin-manager.toggle': async () => { if (!sel) return null; const on = !sel.enabled; if (await setEnabled(rt, sel, on)) await reload(); return { plugin: sel.folder, enabled: on }; },
+    'plugin-manager.settings': () => (sel ? { plugin: sel.folder, opened: openSettings(rt, sel) } : null),
+    'plugin-manager.logs': () => detail('logs'),
+    'plugin-manager.deps': () => detail('deps'),
+    'plugin-manager.clashes': async () => { await reload(); if (sel) detail('overview'); else set('filter', 'problems'); return { clashes: inv?.conflicts.map((c) => ({ id: c.id, severity: c.severity, folders: c.folders })) ?? [] }; },
+    'plugin-manager.install': () => (sel ? detail('install') : (set('view', 'install'), { view: 'install' })),
+    'plugin-manager.update': () => detail('install'),
+  });
   if (!inv) return <div className="axp-plugin-manager axp-plugin-manager--loading"><LoadingSkeleton /></div>;
   const shared = { inv, rows, prefs, set, q, setQ, reload, loading, select, embedded: Boolean(embedded) };
   const L = { studio: Studio, mission: Mission, terminal: Terminal, catalog: Catalog }[prefs.layout];
   return (
     <div className={`axp-plugin-manager axp-plugin-manager--${prefs.layout} ${embedded ? 'is-embedded' : ''}`} data-layout={prefs.layout} data-view={prefs.view}>
+      <PageToolbar view="plugin-manager" />
       <L {...shared} />
     </div>
   );

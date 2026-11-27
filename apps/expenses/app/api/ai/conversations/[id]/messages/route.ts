@@ -8,11 +8,13 @@ import { caller, json, str } from "../../../../../../src/server/ai/http";
 import { getConversation } from "../../../../../../src/server/ai/store";
 import type { PageContext } from "../../../../../../src/server/ai/types";
 
+import { corsRoute, preflight } from "../../../../../../src/server/cors";
+
 export const dynamic = "force-dynamic";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-export async function POST(request: Request, ctx: Ctx): Promise<Response> {
+async function handlePOST(request: Request, ctx: Ctx): Promise<Response> {
   const c = await caller(request);
   const id = Number((await ctx.params).id);
   const conv = await getConversation(c.user, id);
@@ -73,3 +75,7 @@ export async function POST(request: Request, ctx: Ctx): Promise<Response> {
   });
   return new Response(stream, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no" } });
 }
+
+/* Molly (molly.amberxai.com) reaches the assistant cross-origin with the signed-in session: src/server/cors.ts */
+export const POST = corsRoute(handlePOST);
+export const OPTIONS = preflight;

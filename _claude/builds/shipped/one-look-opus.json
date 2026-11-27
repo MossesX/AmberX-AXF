@@ -1,0 +1,234 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-one-look-opus",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:35Z",
+ "build": {
+  "id": "one-look-opus",
+  "title": "one-look-opus — one default look from axHub, design theme precedence, selection-only Appearance",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "one-look-opus — one default look from axHub, design theme precedence, selection-only Appearance",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/one-look-opus",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "195193a05802bb0386101103592589b857c07565",
+ "commits": [
+  "5f6c6cb9761cf56731444816272e64a40736be02",
+  "228d490b4fdacc0de406ef1a1f9467847bae4f76"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T21:20:47Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/one-look-opus.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/axf.manifest.json",
+  "apps/amberx-droid/src/axf/assets/color-theme/hub-night.json",
+  "apps/amberx-droid/src/axf/assets/design-package/fresh.json",
+  "apps/amberx-droid/src/axf/assets/design-package/hub-default.json",
+  "apps/amberx-droid/src/axf/assets/style-theme/fresh.json",
+  "apps/amberx-droid/src/axf/assets/style-theme/hub.json",
+  "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/axf/assets/color-theme/hub-night.json",
+  "apps/axhub-web/src/axf/assets/design-package/fresh.json",
+  "apps/axhub-web/src/axf/assets/design-package/hub-default.json",
+  "apps/axhub-web/src/axf/assets/style-theme/fresh.json",
+  "apps/axhub-web/src/axf/assets/style-theme/hub.json",
+  "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/src/axf/assets/color-theme/hub-night.json",
+  "apps/console-web/src/axf/assets/design-package/fresh.json",
+  "apps/console-web/src/axf/assets/design-package/hub-default.json",
+  "apps/console-web/src/axf/assets/style-theme/fresh.json",
+  "apps/console-web/src/axf/assets/style-theme/hub.json",
+  "apps/console-web/src/axf/core/engines/designpackage.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "framework/assets/color-theme/hub-night.json",
+  "framework/assets/design-package/fresh.json",
+  "framework/assets/design-package/hub-default.json",
+  "framework/assets/style-theme/fresh.json",
+  "framework/assets/style-theme/hub.json",
+  "framework/core/engines/designpackage.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/spec/APPEARANCE-SOURCE.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-design-package.mts",
+  "framework/spec/check-hub-look.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/spec/fixtures/spacing.json",
+  "framework/spec/fixtures/theme.json",
+  "framework/spec/help-coverage.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/axf.manifest.json",
+    "apps/amberx-droid/src/axf/assets/color-theme/hub-night.json",
+    "apps/amberx-droid/src/axf/assets/design-package/fresh.json",
+    "apps/amberx-droid/src/axf/assets/design-package/hub-default.json",
+    "apps/amberx-droid/src/axf/assets/style-theme/fresh.json",
+    "apps/amberx-droid/src/axf/assets/style-theme/hub.json",
+    "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/axf/assets/color-theme/hub-night.json",
+    "apps/axhub-web/src/axf/assets/design-package/fresh.json",
+    "apps/axhub-web/src/axf/assets/design-package/hub-default.json",
+    "apps/axhub-web/src/axf/assets/style-theme/fresh.json",
+    "apps/axhub-web/src/axf/assets/style-theme/hub.json",
+    "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/src/axf/assets/color-theme/hub-night.json",
+    "apps/console-web/src/axf/assets/design-package/fresh.json",
+    "apps/console-web/src/axf/assets/design-package/hub-default.json",
+    "apps/console-web/src/axf/assets/style-theme/fresh.json",
+    "apps/console-web/src/axf/assets/style-theme/hub.json",
+    "apps/console-web/src/axf/core/engines/designpackage.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/APPEARANCE-SOURCE.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-design-package.mts",
+    "framework/spec/check-hub-look.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/roll.json",
+    "framework/spec/fixtures/spacing.json",
+    "framework/spec/fixtures/theme.json",
+    "framework/spec/help-coverage.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/color-theme/hub-night.json",
+    "framework/assets/design-package/fresh.json",
+    "framework/assets/design-package/hub-default.json",
+    "framework/assets/style-theme/fresh.json",
+    "framework/assets/style-theme/hub.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/designpackage.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/one-look-opus.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/one-look-opus.md",
+ "open": [
+  "No UI Review screenshots: this claude.ai session has no console or hub token. The PR says so; shots are due before it counts as ready.",
+  "`apps/console-web/src/hubAppearance.tsx` and Build Pilot's Look still offer their own look controls outside Settings; untouched here.",
+  "AmberX now starts on the shared Hub Default (its layout and navigation follow the package). Its own AmberX Day / Night packages still ship and can be picked.",
+  "Patches, demo and Walkthrough Studio left out (paused / not listed)."
+ ]
+}

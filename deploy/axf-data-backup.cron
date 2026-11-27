@@ -1,0 +1,10 @@
+# axf-data daily backup (installed to /etc/cron.d/axf-data-backup by deploy/install-data.sh).
+# backup.py picks the engine: pg_dump of the Postgres database (axf-data-db) when AXF_DATA_DSN is set, else the SQLite
+# online backup + blobs. Tar.gz to /root/hub/data/axf-data/backups, verified against the live store, then pruned (14 days
+# plus weekly copies for 12 weeks). The result is backups/last.json (read by the systems check).
+# 03:40: the SQLite files the console still writes (Shipped features ledger, Chat viewer) are mirrored into Postgres rows
+# (tables ledger_*, chats_*; counts checked), so they are queryable and in the same pg_dump the next night.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+17 3 * * * root docker exec axf-data python backup.py run >> /root/hub/data/axf-data/backups/backup.log 2>&1
+40 3 * * * root docker exec axf-data python mirror_sync.py --all >> /root/hub/data/axf-data/backups/mirror.log 2>&1

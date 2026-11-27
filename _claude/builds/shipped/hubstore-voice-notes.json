@@ -1,0 +1,103 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hubstore-voice-notes",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:49Z",
+ "build": {
+  "id": "hubstore-voice-notes",
+  "title": "lib-hubstore (settings + app data on axHub, pick tables) + Voice notes console plugin (settings only)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "one library, two classes (HubSettings, HubData); in Pilot pick settings only, all data or some tables. Voice notes plugin: settings interface for a voice-activated notes pusher (start/stop triggers, beep, lists with numbers, per-list questions on a number or recorded trigger, subcategories), all stored on axHub. Branch claude/project-thread-l3b0qo.",
+  "verbatim": false,
+  "at": "2026-10-23T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "lib-hubstore: core rules + HubSettings + HubData + library.json + catalog",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T12:30:10.679Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "check-hubstore.mts with a fake hub data server, CI line",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-10-23T12:30:10.679Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "voice-notes plugin: config model + settings tab UI on the library",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T12:30:10.679Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "plugin self-test, lifecycle, menu, docs, status/tracker, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T12:30:10.679Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T12:30:55.345Z",
+ "landedAt": "2026-10-23T12:30:55.345Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

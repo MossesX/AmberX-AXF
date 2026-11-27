@@ -1,0 +1,73 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-codebase-changes-dense",
+  "name": "Codebase changes: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-codebase-changes",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:codebase-changes",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "log",
+        "label": "Log",
+        "items": [
+          {
+            "id": "live",
+            "icon": "play",
+            "label": "Filter live",
+            "action": "handler:codebase-changes.filter-live",
+            "checked": "state:live",
+            "badge": "state:running",
+            "priority": 300,
+            "overflow": "never"
+          }
+        ]
+      },
+      {
+        "id": "entry",
+        "label": "Open entry",
+        "items": [
+          {
+            "id": "resume",
+            "icon": "copy",
+            "label": "Resume",
+            "action": "handler:codebase-changes.resume",
+            "enabledWhen": "selection.id",
+            "priority": 260
+          },
+          {
+            "id": "branch",
+            "icon": "branch",
+            "label": "Open branch",
+            "action": "handler:codebase-changes.open-branch",
+            "enabledWhen": "selection.id",
+            "priority": 220
+          },
+          {
+            "id": "areas",
+            "icon": "folder",
+            "label": "Show areas",
+            "action": "handler:codebase-changes.areas",
+            "enabledWhen": "selection.id",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

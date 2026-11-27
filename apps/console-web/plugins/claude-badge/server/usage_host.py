@@ -49,7 +49,7 @@ def main():
     except OSError:
         active = ""
     rows = []
-    names = sorted(n for n in os.listdir(BASE) if os.path.isdir(os.path.join(BASE, n))) if os.path.isdir(BASE) else []
+    names = sorted(n for n in os.listdir(BASE) if not n.startswith(".") and os.path.isdir(os.path.join(BASE, n))) if os.path.isdir(BASE) else []
     for name in names:
         d = os.path.join(BASE, name)
         row = {"name": name, "active": name == active, "http": None, "plan": "", "kind": "login"}

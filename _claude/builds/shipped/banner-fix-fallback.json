@@ -1,0 +1,143 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-fix-fallback",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:00Z",
+ "build": {
+  "id": "banner-fix-fallback",
+  "title": "Systems check: when a Fix fails, a dialog with the Claude connection badge + account, approve Mosses to launch headless Claude Code; no connection = error, fix, VPS command and Vinny Auto fix",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "chat",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "systems-check: GET fix-help/{id} (check, failure, Claude connection state ok/no-credit/dead + model + account profile, Mosses ready, Vinny's command for it, VPS command), POST fix-help/{id}/claude (explicit approval launches headless Claude Code through Mosses, no setting needed), POST fix-help/{id}/vinny + GET run; Vinny find_fix returns the command text",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T10:01:41.167Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix failed dialog: badge + account, Approve Mosses → headless Claude (approval link, live state); dead connection → error, how to fix, VPS command (copy) + Auto fix with Vinny; opened whenever a banner Fix fails",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T10:01:41.167Z",
+   "doneAt": "2026-10-28T10:01:41.230Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests (systems-check test.py/test.mts), lifecycle + theme checks, CI, PR, merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-28T10:01:41.230Z",
+   "doneAt": "2026-10-28T10:11:22.287Z",
+   "actualMin": 10,
+   "done": true
+  }
+ ],
+ "branch": "claude/banner-fix-fallback",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 152,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/152"
+ },
+ "landedCommit": "6b3ea2fafe1964b8e49a7dce0bb99462bbdc4821",
+ "commits": [
+  "42b7b8155c6cafbf5873a1c3943f7b2dcb87ba83",
+  "3190510fb26e79a49cb17135943775a1c4bba8dc",
+  "1cc668d80ad013e8ee201b7a5f2b63ee23584a05",
+  "d8158301f883b24d3cac4b50dec3350433c4d954"
+ ],
+ "mergedAt": "2026-10-28T10:19:39Z",
+ "landedAt": "2026-10-28T10:11:11Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/console-web/plugins/agent-manager/server/vinny.py",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "apps/console-web/plugins/systems-check/server/claudefix.py",
+  "apps/console-web/plugins/systems-check/test.py",
+  "apps/console-web/plugins/systems-check/web/FixHelp.tsx",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/console-web/plugins/systems-check/web/index.tsx",
+  "apps/console-web/plugins/systems-check/web/systems-check.css"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/__init__.py",
+    "apps/console-web/plugins/systems-check/server/claudefix.py",
+    "apps/console-web/plugins/systems-check/test.py",
+    "apps/console-web/plugins/systems-check/web/FixHelp.tsx",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/console-web/plugins/systems-check/web/index.tsx",
+    "apps/console-web/plugins/systems-check/web/systems-check.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/server/vinny.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

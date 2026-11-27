@@ -29,7 +29,7 @@ import contextvars
 import time
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
-from mcp.types import ToolAnnotations
+from mcp.types import CallToolResult, ImageContent, TextContent, ToolAnnotations
 
 Call = Callable[..., dict[str, Any]]
 
@@ -129,7 +129,8 @@ CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", d
 
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
                  console: Callable[[dict[str, Any]], dict[str, Any]] | None = None, notes: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
-                 on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None) -> MCPServer:
+                 on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None,
+                 console_control: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
     one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
     runs one command of the console domain in the caller's open console (None = no console_* tools); `notes(line)` posts
@@ -559,6 +560,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     if console is not None:
         _register_console_tools(mcp, console)
+        _register_console_control_tools(mcp, console_control or console_control_runner())
 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
@@ -650,19 +652,47 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         """Claude settings (kept on axHub, shared by every Claude session): read them at session start and before
         acting, and follow them. Every setting comes with its value, default, who may change it and a plain
         description: No wait (held calls run at once), Follow Amber, builds (default model, launch without asking,
-        max parallel, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
+        brief size, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
         memory. `key` = one setting only."""
         return await go("get", key) if key else await go("get")
 
     @mcp.tool(annotations=IDEMPOTENT)
     async def claude_settings_set(values: dict[str, Any], by: str = "") -> dict[str, Any]:
         """Change Claude settings that are not owner-only ({key: value}). Owner-only settings (No wait, Include
-        irreversible, launch without asking, default model, UI Review gate, raising a budget cap or max parallel) are
+        irreversible, launch without asking, default model, UI Review gate, raising a budget cap) are
         refused here: only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
         pairs = [f"{k}={v if isinstance(v, str) else json.dumps(v)}" for k, v in (values or {}).items()]
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+    @mcp.tool(annotations=READ)
+    async def claude_view_get(device: str = "") -> dict[str, Any]:
+        """How the Claude settings page looks on one device: mode (classic | tabbed), tab position (top, bottom, left,
+        right), labels (both, words, icons). Saved per device. Empty `device` lists every device."""
+        return await go("view", "get", "--device", device) if device else await go("view", "devices")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def claude_view_set(device: str, values: dict[str, Any], by: str = "") -> dict[str, Any]:
+        """Change the Claude settings view on one device. `values`: mode (classic | tabbed), position (top, bottom,
+        left, right), labels (both, words, icons), tab. `claude_view_get` lists the devices."""
+        pairs = [f"{k}={v}" for k, v in (values or {}).items()]
+        if not pairs:
+            raise ToolError("invalid: send values as {mode, position, labels, tab}")
+        return await go("view", "set", *pairs, "--device", device, "--by", by or "mcp")
+
+    @mcp.tool(annotations=READ)
+    async def claude_policy_get() -> dict[str, Any]:
+        """axHub's live tool policy: per service and tool, allow / veto / confirm / deny and the hold length. Read only:
+        no session, token or tool can change it. Only Brett does, from his own hub session (Settings, Plugins, Claude,
+        Approvals & veto)."""
+        return await go("policy", "get")
+
+    @mcp.tool(annotations=READ)
+    async def claude_policy_plan_get() -> dict[str, Any]:
+        """What Brett's default (hold only VPS writes and account switches, reads run at once) would change in axHub's
+        live policy. Read only: only his click in the console applies it."""
+        return await go("policy", "plan")
 
 
 # ---------------------------------------------------------------------- Expenses (apps/expenses, /api/expenses/v1)
@@ -917,13 +947,14 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=WRITE)
     async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:
-        """"Put it in a plan for later": a parked Plan Studio plan (never a build; it becomes one only when Brett says)."""
+        """"Put it in a plan for later": a parked Plan Studio 2.0 plan (never a build; it becomes one only when Brett says). `category` = the item it goes inside (id or title; empty = top level)."""
         return await go({"op": "add", "target": "planner.plans", "value": {k: v for k, v in {"title": title, "summary": summary, "category": category, "body": body, "status": "parked"}.items() if v}})
 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
+                 "console_screenshot")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -931,12 +962,25 @@ NAVIGATE = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentH
 Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
 
 
+_control_run: Callable[[dict[str, Any]], dict[str, Any]] | None = None  # set by _register_console_control_tools
+
+
+async def _control_focus(address: str, verb: str = "focus", to: str = "recent", reason: str = "") -> dict[str, Any]:
+    """console_open / console_show with a console-control@1 address: the same command console_control_focus sends."""
+    run = _control_run or console_control_runner()
+    body = {k: v for k, v in {"verb": verb, "address": address, "to": to, "reason": reason, "by": "mcp"}.items() if v}
+    r = await anyio.to_thread.run_sync(lambda: run(body))
+    if not r.get("ok") and r.get("code") != "unavailable":
+        raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+    return {**r, "status": "delivered" if r.get("ok") else "failed"}
+
+
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
     says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message) and how
-    it got there (`delivery.how`: live, after reconnect, woke via AmberX, or queued). No console open: the command waits
-    on the console server (up to a minute here, 2 minutes there by default) and AmberX opens the console on Brett's
-    phone; `queued: true` = still waiting when this returned (it runs when a console opens). A failure raises a
+    it got there (`delivery.how`: live, after reconnect, woke via AmberX, or queued). No console open: the command stays
+    queued on the console server (2 minutes by default) and the phone opens the console on that screen; the call itself
+    answers within a few seconds, `queued: true` = still waiting when this returned (it runs when a console opens). A failure raises a
     ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
 
     async def go(command: dict[str, Any]) -> dict[str, Any]:
@@ -954,11 +998,18 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return d
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
-        """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
-        `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
-        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
-        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
+    async def console_open(screen: str, focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
+        answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio-2"), its title ("Plan
+        Studio 2.0") or a few words ("plan studio", "orchestrator"); plugins' screens count. Or a console-control@1 address
+        ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>"): opened and focused. A tab or item on the screen:
+        "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
+        opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
+        Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
+        console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
+        if ADDRESS_RE.match(screen.strip()):
+            return await _control_focus(screen.strip() if not focus else f"{screen.strip()}/{focus}", "focus", to)
+        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to, focus=focus)})
 
     @mcp.tool(annotations=NAVIGATE)
     async def console_dialog(dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
@@ -995,8 +1046,19 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
 
     @mcp.tool(annotations=READ)
+    async def console_screenshot(selector: str = "", address: str = "", to: Delivery = "recent") -> CallToolResult:
+        """See what Brett's open Dev Console shows: a PNG of the screen (at most 1600 px wide) plus its state (screen id
+        and label, open tab of each tab row, open dialog, selection, scroll). Whole page by default; one panel or dialog
+        with `address` (a console-control@1 address: "view:settings/panel:appearance", "grid:queue") or `selector` (CSS).
+        Read-only: nothing on screen changes. `status` as console_open: delivered, pending (no console answered yet: it is
+        captured when one opens) or failed. to="all" captures every open console."""
+        r = await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": inp(to, selector=selector.strip(), address=address.strip())})
+        return shot_result(r)
+
+    @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:
-        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is."""
+        """Where Brett's open console is now: screen, open dialog, settings tab, the open tab of each tab row and the
+        selection (as of its last beat, at most 15 s old), and which console that is. To see it: console_screenshot."""
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)
@@ -1018,20 +1080,242 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return r
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
+    async def console_show(target: str, highlight: str = "", say: str = "", focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Follow Amber: call this EVERY time you mention something in Brett's Dev Console (a screen, a settings tab, a
         dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
-        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
-        return await follow("show", target=target, highlight=highlight, say=say, to=to)
+        axHub approval). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
+        scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
+        `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
+        whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
+        `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted.
+        With a paired phone online (and its Follow switch on) the console also comes to the front on the phone at that
+        screen: `phone` in the answer says so."""
+        if ADDRESS_RE.match(target.strip()):
+            st = await follow("state")
+            if not st.get("on"):
+                return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
+            r = {**(await _control_focus(target.strip(), "focus", to, say)), "shown": True}
+            if r.get("ok") and r.get("shell"):
+                # the console inside the phone's app answered and brought itself to the front: opening the console
+                # there again would load the page a second time (Brett, Nov 23 2026: no reload to the home screen)
+                return {**r, "phone": {"ok": True, "shown": True, "message": "the console app on the phone opened it (no reload)"}}
+            ph = await anyio.to_thread.run_sync(lambda: follow_call("phone", {"address": target.strip()}))
+            return {**r, **({"phone": ph["phone"]} if ph.get("phone") else {})}
+        return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)
 
     @mcp.tool(annotations=READ)
     async def console_follow() -> dict[str, Any]:
         """Is Follow Amber on? {on, by, at, clients}. On: call console_show whenever you mention something in the
         console, and Brett's approvals pop up there. Only Brett switches it (in the console)."""
         return await follow("state")
+
+
+def shot_result(r: dict[str, Any]) -> CallToolResult:
+    """A console screenshot answer as MCP content: one image block per console, then the answer as JSON without the
+    image data (status, state, delivery). No image (pending, or the console could not capture): the JSON alone."""
+    images = [i for i in r.get("images") or [] if isinstance(i, dict) and i.get("data")]
+    meta = {**{k: v for k, v in r.items() if k not in ("images", "sent")},
+            "images": [{k: v for k, v in i.items() if k != "data"} for i in images]}
+    blocks: list[Any] = [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
+    blocks.append(TextContent(type="text", text=json.dumps(meta, default=str)))
+    return CallToolResult(content=blocks, structured_content=meta)
+
+
+# ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
+
+CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar", "console_control_place")
+ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
+
+
+def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """console-control@1 commands: in the console process through console_control_api (same guards, audit and policy as
+    REST); in stdio mode (a local clone) through the console's REST API (AXF_CONSOLE_URL + AXF_TOKEN). A command is the
+    /do body; `{"verb": "targets", under, kinds, source}` lists targets."""
+
+    def remote(body: dict[str, Any]) -> dict[str, Any]:
+        import urllib.error
+        import urllib.parse
+        import urllib.request
+        base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console-control"
+        auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+        if body.get("verb") == "voice":
+            req = urllib.request.Request(f"{base}/voice", data=json.dumps({"text": body.get("text"), "by": body.get("by"), "to": body.get("to")}).encode(), method="POST",
+                                         headers={"content-type": "application/json", **auth})
+        elif body.get("verb") == "targets":
+            q = urllib.parse.urlencode({k: body[k] for k in ("under", "kinds", "source") if body.get(k)})
+            req = urllib.request.Request(f"{base}/targets?{q}", headers=auth)
+        else:
+            req = urllib.request.Request(f"{base}/do", data=json.dumps(body).encode(), method="POST", headers={"content-type": "application/json", **auth})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as res:
+                return json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                return json.loads(e.read().decode() or "{}")
+            except ValueError:
+                return {"ok": False, "code": "unexpected", "message": f"{e.code} from {base}"}
+        except (OSError, ValueError) as e:
+            return {"ok": False, "code": "unexpected", "message": f"could not reach {base}: {str(e)[:200]}"}
+
+    def run(body: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # noqa: F401 — present only inside the console process
+            import console_control_api as api
+        except ImportError:
+            return remote(body)
+        if body.get("verb") == "targets":
+            ks = [k for k in str(body.get("kinds") or "").split(",") if k]
+            return api.targets(str(body.get("under") or ""), ks or None, str(body.get("source") or "auto"), str(body.get("by") or "mcp"))
+        if body.get("verb") == "voice":
+            return api.voice(str(body.get("text") or ""), str(body.get("by") or "voice"), to=str(body.get("to") or "recent"))
+        return api.command(body, str(body.get("by") or "mcp"))
+
+    return run
+
+
+def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """console_control_* (= CONSOLE_CONTROL_TOOLS): drive every part of the console by address. Reads and navigation are
+    read-only (axHub runs them at once); press / set / plugin are writes (veto); a destructive press answers
+    confirmation_required until it is sent with confirm=true; a deciding one (approve, deny) is always refused."""
+    global _control_run
+    _control_run = run
+
+    async def go(body: dict[str, Any]) -> dict[str, Any]:
+        body = {k: v for k, v in body.items() if v not in (None, "", {}, [])}
+        body.setdefault("by", "mcp")
+        r = await anyio.to_thread.run_sync(lambda: run(body))
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def console_control_targets(under: str = "", kinds: str = "", source: Literal["auto", "console", "inventory"] = "auto") -> dict[str, Any]:
+        """Every addressable part of the console: screens (view:), tabs, settings, buttons, functions, plugins, grids, rows,
+        build steps, panes. `under` = an address to list below ("view:build-orchestrator"); `kinds` = comma list
+        ("setting,plugin"). source auto = the open console's live list, else the static inventory (source says which)."""
+        return await go({"verb": "targets", "under": under, "kinds": kinds, "source": source})
+
+    @mcp.tool(annotations=READ)
+    async def console_control_state(address: str = "") -> dict[str, Any]:
+        """Where the open console is (screen, active tabs, scroll, focused row, dialog), or one target's state (a
+        setting's value and range, a plugin's on/off and who needs it, a tab row's tab, a grid's selection)."""
+        return await go({"verb": "state", "address": address})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_do(verb: Literal["open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable"], address: str = "",
+                                 value: Any = None, confirm: bool = False, reason: str = "", scroll_dir: str = "", amount: float = 0, q: str = "", to: str = "recent") -> dict[str, Any]:
+        """Any console-control@1 command. address = a full or short address ("setting:axf.display.fontScale",
+        "button:save", "view:settings/tab:settings.tabs=plugins"); value = for set / press. A press that deletes answers
+        confirmation_required: tell Brett, then send again with confirm=true. Approve / deny are never pressed by a command.
+        The answer carries `state` (screen, tabs, scroll, focus) and `policy`. No console open: unavailable + openUrl."""
+        body: dict[str, Any] = {"verb": verb, "address": address, "value": value, "reason": reason, "to": to}
+        if confirm:
+            body["confirm"] = True
+        if verb == "scroll":
+            body["scroll"] = {"dir": scroll_dir or "down", **({"amount": amount} if amount else {}), **({"to": address} if scroll_dir == "to" else {})}
+            if scroll_dir == "to":
+                body.pop("address", None)
+        if verb == "search":
+            body["query"] = {"q": q or str(value or "")}
+        return await go(body)
+
+    @mcp.tool(annotations=READ)
+    async def console_control_search(q: str, kinds: str = "", limit: int = 20) -> dict[str, Any]:
+        """One ranked search over screens, tabs, settings, buttons, plugins, help and everything the open console has
+        loaded (grid rows, build steps, UI Review items, chat lines). Each hit has an address: console_control_focus it."""
+        return await go({"verb": "search", "query": {"q": q, "kinds": [k for k in kinds.split(",") if k], "limit": limit}})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_control_focus(address: str, select: bool = False, expand: bool = False, to: str = "recent") -> dict[str, Any]:
+        """Pull a target into focus in the open console: opens its screen and tab, expands its row, scrolls it into
+        view and highlights it. A build step: "row:<build id>/step:s3"; a grid row: "grid:<grid>/row:<id>"."""
+        return await go({"verb": "focus", "address": address, "options": {k: True for k, v in (("select", select), ("expand", expand)) if v}, "to": to})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_control_scroll(dir: Literal["up", "down", "page-up", "page-down", "top", "bottom", "to"] = "down", amount: float = 0, to_address: str = "", address: str = "") -> dict[str, Any]:
+        """Scroll the active pane (or the pane of `address`): up / down by `amount` screens (default most of one),
+        top / bottom, or to=`to_address`. The answer has the scroll position (fraction, atTop, atBottom)."""
+        return await go({"verb": "scroll", "address": address, "scroll": {"dir": dir, **({"amount": amount} if amount else {}), **({"to": to_address} if dir == "to" else {})}})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_plugin(plugin: str, enabled: bool, force: bool = False, reason: str = "") -> dict[str, Any]:
+        """Turn a console plugin on or off (id, folder or name). Core plugins refuse; a plugin another enabled one needs
+        refuses unless force. The answer names the effects: who stops working, what it needs that is off."""
+        return await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason, **({"options": {"force": True}} if force else {})})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_toolbar(toolbar: str = "", button: str = "", value: Any = None, confirm: bool = False, open: bool = False, view: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """Page toolbars (page-toolbar@1). No toolbar: list every toolbar the open console shows (view= one page), each with
+        its buttons. toolbar=<settings id> (gate.auto-lander): its state (look, buttons with enabled / visible / pressed /
+        badge / action / inMore). With button=<id>: press that button (value = its argument); a destructive button answers
+        confirmation_required until confirm=true. open=true brings the toolbar onto the screen. Same as
+        GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press and `axf console toolbar list|get|press`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses
+        if not toolbar:
+            return await go({"verb": "targets", "under": f"view:{view}" if view else "", "kinds": cc.TOOLBAR_KIND, "source": "console"})
+        try:
+            address = cc.toolbar_button_address(toolbar, button) if button else cc.toolbar_address(toolbar)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        if button:
+            return await go({"verb": "press", "address": address, **({"value": value} if value is not None else {}), **({"confirm": True} if confirm else {}), "reason": reason, "to": to})
+        if open:
+            return await go({"verb": "open", "address": address, "reason": reason, "to": to})
+        return await go({"verb": "state", "address": address, "to": to})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_control_place(restore: bool = False, source: Literal["", "loaded", "saved"] = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """The console's place: the screen, tabs, selection and scroll offsets it keeps so a reload, a pull-down refresh
+        or a pushed console refresh comes back where Brett was. With no argument: read it (state.saved = what is kept,
+        state.loaded = what this page load found, state.now = what is on screen, state.restoring = a restore still
+        running). restore=true puts it back (source: `loaded` = where he was before the last reload, the default when
+        there is one; `saved` = the one kept since). Same as GET /api/console-control/place, POST …/place/restore
+        and `axf console place get|restore`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses
+        try:
+            cmd = cc.place_command(restore, source)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        return await go({**cmd, **({"reason": reason} if restore else {}), "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """One console plugin's settings (id, folder or name): with no other argument, its Settings → Plugins sub-tab,
+        the gear on its screen, on/off and every setting in the tab. open=true opens that sub-tab in the open console
+        (the same as pressing the plugin's settings gear); set={key: value} changes settings in it; enabled turns the
+        plugin on or off. Same as GET /api/console-control/plugins/<id>/settings and `axf console plugin-settings`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses (reads the static inventory)
+        try:
+            st = cc.plugin_settings_state(plugin)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        done: list[dict[str, Any]] = []
+        if enabled is not None:
+            done.append(await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason}))
+        for key, value in (set or {}).items():
+            spec = next((x for x in st.get("settings") or [] if x.get("key") == key or x.get("address") == key), None)
+            if spec is None:
+                raise ToolError(f"not_found: {st.get('label')} has no setting {key}")
+            done.append(await go({"verb": "set", "address": spec["address"], "value": value, "reason": reason, "to": to}))
+        if open:
+            if not st.get("tab"):
+                raise ToolError(f"not_found: {st.get('label')} has no settings sub-tab")
+            done.append(await go({"verb": "open", "address": st["tab"]["address"], "to": to}))
+        return {**st, **({"done": done} if done else {})}
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_voice(text: str, to: str = "recent") -> dict[str, Any]:
+        """What Brett said to AmberX about the console ("scroll down", "open plugins settings", "find <x>", "show step 3
+        of <build>", "disable plugin <y>", "press <button>", "set <setting> to <v>"): mapped to one console-control
+        command, run, and answered with `say` (speak it back) plus the command and the console's state."""
+        r = await anyio.to_thread.run_sync(lambda: run({"verb": "voice", "text": text, "to": to, "by": "voice"}))
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "not_found", "invalid"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
 
 
 def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -1049,15 +1333,19 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
             return {"ok": True, **svc.state()}
-        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)")
+        if op == "phone":  # the paired phone follows too (console_show with an address); a no-op without one
+            return {"ok": True, "phone": svc.phone(str(args.get("address") or ""), "amber (mcp)") if hasattr(svc, "phone") else None}
+        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)", focus=str(args.get("focus") or ""))
     import urllib.error
     import urllib.request
     base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber
     auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+    if op == "phone":  # stdio mode: the console's own show already covers the phone
+        return {"ok": True, "phone": None}
     req = (urllib.request.Request(base + "state", headers=auth) if op == "state" else
            urllib.request.Request(base + "show", data=json.dumps({**args, "by": "amber (mcp)"}).encode(), method="POST", headers={"content-type": "application/json", **auth}))
     try:
-        with urllib.request.urlopen(req, timeout=30) as res:
+        with urllib.request.urlopen(req, timeout=75) as res:
             return json.loads(res.read().decode() or "{}")
     except urllib.error.HTTPError as e:
         return {"ok": False, "code": "unexpected", "message": f"{e.code} from {base}"}

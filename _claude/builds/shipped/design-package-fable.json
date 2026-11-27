@@ -1,0 +1,154 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-design-package-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:46Z",
+ "build": {
+  "id": "design-package-fable",
+  "title": "AmberX Design Package + Behaviour theme: Fable rebuild",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fable rebuild of the Opus build on rebuild/design-package-opus (Fable suggested, Opus chosen). Starts by reading _claude/memory/docs/rebuilds/design-package.md and replacing the Opus build in place: same type names (design-package, behavior-theme), data format and setting keys unless the report says why. Wire the stored-only behaviour fields (windows.stack/minimize/snap, feedback.busyCursor) into the window manager, review the Settings → Appearance picker + Everything else container, screenshots before/after, differences report.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read the Opus report + code; list what to keep, change, wire in",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Review design-package engine + runtime apply/capture/migration; fix gaps",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Review behaviour engine + CSS; refine motion/interaction mappings",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Wire feedback.busyCursor + confirmDelete into framework controls",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "Settings → Appearance picker + Everything else container polish",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s7",
+   "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Before/after screenshots, differences report, LOG line, PR",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Read the Opus report + code; list what to keep, change, wire in",
+  "s2: Review design-package engine + runtime apply/capture/migration; fix gaps",
+  "s3: Review behaviour engine + CSS; refine motion/interaction mappings",
+  "s4: Wire windows.stack / minimize / snap + snapGrid into the window manager",
+  "s5: Wire feedback.busyCursor + confirmDelete into framework controls",
+  "s6: Settings → Appearance picker + Everything else container polish",
+  "s7: Extend check-design-package.mts; regenerate fixtures; re-bake apps",
+  "s8: Before/after screenshots, differences report, LOG line, PR"
+ ]
+}

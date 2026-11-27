@@ -110,5 +110,6 @@
     "branch": "claude/md-studio"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "settingsTab": { "default": true }
 }

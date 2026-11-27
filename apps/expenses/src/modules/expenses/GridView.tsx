@@ -101,7 +101,7 @@ function LineItems({
     onChange(expense.items.map((i) => (i.id === id ? { ...i, ...patch } : i)));
 
   const label = {
-    fontSize: 9,
+    fontSize: 'var(--fx-type-root-2xs)',
     letterSpacing: "0.14em",
     textTransform: "uppercase",
     color: token("dim"),
@@ -110,18 +110,18 @@ function LineItems({
 
   return (
     <Box sx={{ pl: 2, py: 0.6 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.4 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', mb: 0.4 }}>
         <Typography sx={label}>Line items</Typography>
         <Button
           size="small"
-          sx={{ fontSize: 10.5, minWidth: 0, py: 0 }}
+          sx={{ fontSize: 'var(--fx-type-root-xs)', minWidth: 0, py: 0 }}
           onClick={() => onChange([...expense.items, { id: uid("li"), description: "Item", unit: 0, qty: 1 }])}
         >
           Add line
         </Button>
         <Button
           size="small"
-          sx={{ fontSize: 10.5, minWidth: 0, py: 0, color: expense.disputed ? token("warn") : token("dim") }}
+          sx={{ fontSize: 'var(--fx-type-root-xs)', minWidth: 0, py: 0, color: expense.disputed ? token("warn") : token("dim") }}
           onClick={() => {
             const next = !expense.disputed;
             onExpenseChange({ disputed: next, disputeNote: next ? (expense.disputeNote ?? "") : expense.disputeNote });
@@ -131,7 +131,7 @@ function LineItems({
         </Button>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, mb: 0.6 }}>
+      <Box sx={{ display: "flex", alignItems: "baseline", gap: 'var(--fx-dens-gap-xl)', mb: 0.6 }}>
         <Typography sx={label}>Notes</Typography>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <TextCell value={expense.note ?? ""} onCommit={(v) => onExpenseChange({ note: v || undefined })} width={420} />
@@ -143,13 +143,13 @@ function LineItems({
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1,
+            gap: 'var(--fx-dens-gap-xl)',
             mb: 0.6,
             px: 1,
             py: 0.5,
             borderRadius: "var(--axf-radius-tight)",
-            border: `1px solid ${token("warn")}`,
-            opacity: 0.9
+            border: `var(--fx-border-w) solid ${token("warn")}`,
+            opacity: "var(--fx-opacity-glass)"
           }}
         >
           <Typography sx={{ ...label, color: token("warn") }}>Dispute note</Typography>
@@ -164,16 +164,16 @@ function LineItems({
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
-            sx={{ "& input": { fontSize: 12, py: 0.2 } }}
+            sx={{ "& input": { fontSize: 'var(--fx-type-root-sm)', py: 0.2 } }}
           />
-          <Typography sx={{ ...MONO, fontSize: 10.5, color: token("warn"), flexShrink: 0 }}>
+          <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("warn"), flexShrink: 0 }}>
             excluded · $0.00
           </Typography>
         </Box>
       )}
 
       {expense.items.map((i) => (
-        <Box key={i.id} sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.25 }}>
+        <Box key={i.id} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.25 }}>
           {i.uncertain && (
             <Tooltip title="The parser was unsure about this line — check it against the receipt.">
               <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: token("warn"), flexShrink: 0 }} />
@@ -188,18 +188,18 @@ function LineItems({
             type="number"
             value={i.qty}
             onChange={(e) => set(i.id, { qty: Math.max(0, Number(e.target.value) || 0) })}
-            sx={{ width: 58, "& input": { ...MONO, fontSize: 11.5, py: 0.2 } }}
+            sx={{ width: 58, "& input": { ...MONO, fontSize: 'var(--fx-type-root-sm)', py: 0.2 } }}
           />
           <Box sx={{ width: 110 }}>
             <MoneyCell value={i.unit} onCommit={(c) => set(i.id, { unit: c ?? 0, uncertain: false })} />
           </Box>
-          <Typography sx={{ ...MONO, width: 110, fontSize: 11.8, color: token("dim") }}>
+          <Typography sx={{ ...MONO, width: 110, fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             {money(lineTotal(i))}
           </Typography>
           <Button
             size="small"
             color="error"
-            sx={{ fontSize: 10.5, minWidth: 0, py: 0 }}
+            sx={{ fontSize: 'var(--fx-type-root-xs)', minWidth: 0, py: 0 }}
             onClick={() => onChange(expense.items.filter((x) => x.id !== i.id))}
           >
             remove
@@ -207,7 +207,7 @@ function LineItems({
         </Box>
       ))}
       {!expense.items.length && (
-        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           No line items — add one, or the total is zero.
         </Typography>
       )}
@@ -334,7 +334,7 @@ export function GridView({
               setSortDir("desc");
             }
           }}
-          sx={{ fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: token("dim") }}
+          sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.06em", textTransform: "uppercase", color: token("dim") }}
         >
           {label}
         </TableSortLabel>
@@ -358,7 +358,7 @@ export function GridView({
   return (
     <Box>
       {!compact && (
-        <Box sx={{ display: "flex", gap: 1, mb: 1.2, flexWrap: "wrap", alignItems: "stretch" }}>
+        <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', mb: 1.2, flexWrap: "wrap", alignItems: "stretch" }}>
           {show("count") && <StatTile value={String(expenses.length - totals.incomeCount)} label="expenses" />}
           {show("spent") && <StatTile value={money(totals.spent)} label="spent" />}
           {show("income") && (
@@ -393,13 +393,13 @@ export function GridView({
             onClick={(e) => setCardsMenu(e.currentTarget)}
             aria-haspopup="menu"
             aria-expanded={Boolean(cardsMenu)}
-            sx={{ fontSize: 11, color: token("dim"), alignSelf: "center", minWidth: 0 }}
+            sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), alignSelf: "center", minWidth: 0 }}
           >
             Cards ▾
           </Button>
           <Menu anchorEl={cardsMenu} open={Boolean(cardsMenu)} onClose={() => setCardsMenu(null)}>
             {CARDS.map((c) => (
-              <MenuItem key={c.id} dense onClick={() => cards.toggle(c.id)} sx={{ fontSize: 12, py: 0.2 }}>
+              <MenuItem key={c.id} dense onClick={() => cards.toggle(c.id)} sx={{ fontSize: 'var(--fx-type-root-sm)', py: 0.2 }}>
                 <Checkbox size="small" checked={show(c.id)} sx={{ p: 0.4, mr: 0.6 }} tabIndex={-1} disableRipple />
                 {c.label}
               </MenuItem>
@@ -410,7 +410,7 @@ export function GridView({
                 cards.reset();
                 setCardsMenu(null);
               }}
-              sx={{ fontSize: 11.5, color: token("dim"), borderTop: `1px solid ${token("edge")}`, mt: 0.4 }}
+              sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), borderTop: `var(--fx-border-w) solid ${token("edge")}`, mt: 0.4 }}
             >
               Reset to default
             </MenuItem>
@@ -418,7 +418,7 @@ export function GridView({
         </Box>
       )}
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', mb: 1, flexWrap: "wrap" }}>
         <Button size="small" variant="outlined" onClick={onAdd}>
           Add expense
         </Button>
@@ -492,16 +492,16 @@ export function GridView({
               {header("merchant", "Merchant")}
               {col("category") && header("category", "Category")}
               {col("account") && header("payment", "Account")}
-              {col("lines") && <TableCell sx={{ py: 0.4, fontSize: 11, color: token("dim"), textTransform: "uppercase" }}>Lines</TableCell>}
+              {col("lines") && <TableCell sx={{ py: 0.4, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), textTransform: "uppercase" }}>Lines</TableCell>}
               {col("subtotal") && header("subtotal", "Subtotal")}
               {col("tax") && header("tax", "Tax")}
-              {col("tip") && <TableCell sx={{ py: 0.4, fontSize: 11, color: token("dim"), textTransform: "uppercase" }}>Tip</TableCell>}
+              {col("tip") && <TableCell sx={{ py: 0.4, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), textTransform: "uppercase" }}>Tip</TableCell>}
               {col("printed") && header("stated", "Printed", "The total printed on the receipt. Blank means trust the computed figure.")}
               {col("delta") && header("recon", "Δ", "Printed total minus the sum of the lines. Reported, never auto-corrected.")}
               {col("total") && header("total", "Total")}
               {col("balance") && header("balance", "Balance", "Running net balance — income minus spending, cumulative in date order, correct under any display sort.")}
-              {col("source") && <TableCell sx={{ py: 0.4, fontSize: 11, color: token("dim"), textTransform: "uppercase" }}>Source</TableCell>}
-              {col("notes") && <TableCell sx={{ py: 0.4, fontSize: 11, color: token("dim"), textTransform: "uppercase" }}>Notes</TableCell>}
+              {col("source") && <TableCell sx={{ py: 0.4, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), textTransform: "uppercase" }}>Source</TableCell>}
+              {col("notes") && <TableCell sx={{ py: 0.4, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), textTransform: "uppercase" }}>Notes</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -528,11 +528,11 @@ export function GridView({
                     }}
                     sx={
                       r.disputed
-                        ? { opacity: 0.55, "& td": { textDecoration: "line-through" } }
+                        ? { opacity: "var(--fx-opacity-muted)", "& td": { textDecoration: "line-through" } }
                         : !rec.ok
-                          ? { "& td": { background: "color-mix(in srgb, var(--axf-warn) 7%, transparent)" } }
+                          ? { "& td": { background: "color-mix(in srgb, var(--axf-warn) calc(var(--fx-opacity-hover) * 100%), transparent)" } }
                           : income
-                            ? { "& td": { background: "color-mix(in srgb, var(--axf-ok) 8%, transparent)" } }
+                            ? { "& td": { background: "color-mix(in srgb, var(--axf-ok) calc(var(--fx-opacity-hover) * 100%), transparent)" } }
                             : {}
                     }
                   >
@@ -580,10 +580,10 @@ export function GridView({
                         variant="standard"
                         value={r.category}
                         onChange={(e) => onUpdate(r.id, { category: e.target.value })}
-                        sx={{ "& .MuiInputBase-input": { fontSize: 11.8, py: 0.2 } }}
+                        sx={{ "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-sm)', py: 0.2 } }}
                       >
                         {CATEGORIES.map((c) => (
-                          <MenuItem key={c.id} value={c.id} sx={{ fontSize: 12 }}>
+                          <MenuItem key={c.id} value={c.id} sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
                             <Box component="span" sx={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", bgcolor: c.color, mr: 0.8 }} />
                             {c.label}
                           </MenuItem>
@@ -594,10 +594,10 @@ export function GridView({
                       <PaymentCell value={r.paymentMethod ?? ""} onCommit={(v) => onUpdate(r.id, { paymentMethod: v || undefined })} />
                     </TableCell>}
                     {col("lines") && <TableCell sx={cell}>
-                      <Typography sx={{ fontSize: 11.5, color: token("dim") }}>{r.items.length}</Typography>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{r.items.length}</Typography>
                     </TableCell>}
                     {col("subtotal") && <TableCell sx={cell}>
-                      <Typography sx={{ ...MONO, fontSize: 11.8, color: token("dim") }}>{money(subtotal(r))}</Typography>
+                      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{money(subtotal(r))}</Typography>
                     </TableCell>}
                     {col("tax") && <TableCell sx={cell}>
                       <Tooltip title={`${taxRate(r).toFixed(2)}% of subtotal`}>
@@ -614,12 +614,12 @@ export function GridView({
                     </TableCell>}
                     {col("delta") && <TableCell sx={cell}>
                       {rec.stated === null ? (
-                        <Typography sx={{ fontSize: 11, color: token("dim") }}>—</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>—</Typography>
                       ) : rec.ok ? (
-                        <Typography sx={{ fontSize: 11, color: token("ok") }}>✓</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("ok") }}>✓</Typography>
                       ) : (
                         <Tooltip title={`Printed total is ${money(rec.delta)} away from the sum of the lines.`}>
-                          <Typography sx={{ ...MONO, fontSize: 11.5, color: token("warn") }}>
+                          <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("warn") }}>
                             {rec.delta > 0 ? "+" : ""}
                             {money(rec.delta)}
                           </Typography>
@@ -627,13 +627,13 @@ export function GridView({
                       )}
                     </TableCell>}
                     {col("total") && <TableCell sx={cell}>
-                      <Typography sx={{ ...MONO, fontSize: 12.2, fontWeight: 600, color: income ? token("ok") : undefined }}>
+                      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', fontWeight: 600, color: income ? token("ok") : undefined }}>
                         {income ? "+" : ""}
                         {money(effectiveTotal(r))}
                       </Typography>
                     </TableCell>}
                     {col("balance") && <TableCell sx={cell}>
-                      <Typography sx={{ ...MONO, fontSize: 11.8, color: balance < 0 ? token("dim") : token("ok") }}>
+                      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: balance < 0 ? token("dim") : token("ok") }}>
                         {money(balance)}
                       </Typography>
                     </TableCell>}
@@ -662,7 +662,7 @@ export function GridView({
             })}
             {!sorted.length && (
               <TableRow>
-                <TableCell colSpan={span} sx={{ py: 2, textAlign: "center", color: token("dim"), fontSize: 12 }}>
+                <TableCell colSpan={span} sx={{ py: 2, textAlign: "center", color: token("dim"), fontSize: 'var(--fx-type-root-sm)' }}>
                   No expenses yet — add one.
                 </TableCell>
               </TableRow>

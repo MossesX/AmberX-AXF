@@ -1,0 +1,68 @@
+/* The one builds table (status-table@1, Pipeline 2.0): layout plus one colour per status, every value a theme token. */
+
+/* one colour per contract status (build and step), mixed from the theme's own colours */
+.st-badge { --st-c: var(--fx-muted); color: var(--st-c); border-color: var(--st-c); white-space: nowrap }
+/* a state the table has no colour of its own for takes its tone from the store's view (pipeline-status@1) */
+.st-badge.tone-muted { --st-c: var(--fx-muted) }
+.st-badge.tone-info { --st-c: var(--fx-info) }
+.st-badge.tone-accent { --st-c: var(--fx-accent) }
+.st-badge.tone-warning { --st-c: var(--fx-warning) }
+.st-badge.tone-success { --st-c: var(--fx-success) }
+.st-badge.tone-danger { --st-c: var(--fx-danger) }
+.st-badge.is-pending { --st-c: var(--fx-muted) }
+.st-badge.is-splitting { --st-c: var(--fx-brand-1) }
+.st-badge.is-split { --st-c: color-mix(in srgb, var(--fx-muted), var(--fx-info)) }
+.st-badge.is-pulling-main { --st-c: var(--fx-info) }
+.st-badge.is-assigning-models { --st-c: var(--fx-brand-2) }
+.st-badge.is-ready { --st-c: color-mix(in srgb, var(--fx-info), var(--fx-success)) }
+.st-badge.is-sending { --st-c: var(--fx-brand-3) }
+.st-badge.is-building { --st-c: var(--fx-accent) }
+.st-badge.is-build-complete, .st-badge.is-completed { --st-c: color-mix(in srgb, var(--fx-accent), var(--fx-success)) }
+.st-badge.is-merging-pr, .st-badge.is-in-pr { --st-c: var(--fx-warning) }
+.st-badge.is-pr-pulling-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-info)) }
+.st-badge.is-running-ci { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-accent)) }
+.st-badge.is-merging-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-success)) }
+.st-badge.is-waiting-to-merge { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-muted)) }
+.st-badge.is-merging { --st-c: var(--fx-warning) }
+.st-badge.is-landed { --st-c: var(--fx-success) }
+.st-badge.is-failed { --st-c: var(--fx-danger) }
+/* an emergency build (Brett sent it to the emergency slots): filled, so it stands out from the status badges */
+.st-badge.is-emergency { --st-c: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.st-emergency { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); margin: 0 }
+
+/* phone first: the filters wrap two to a row, the find field takes a whole row; wider screens put them on one line */
+.st-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.st-toolbar > .st-pick { flex: 1 1 calc(var(--fx-font-size) * 9); min-width: 0; margin: 0 }
+.st-toolbar > .st-find { flex: 1 1 100%; min-width: 0; margin: 0 }
+.st-toolbar > .st-landed { flex: 0 0 auto }
+@container st-page (min-width: 760px) { .st-toolbar > .st-pick { flex: 0 1 calc(var(--fx-font-size) * 11) } .st-toolbar > .st-find { flex: 1 1 calc(var(--fx-font-size) * 12) } }
+.st-page { container: st-page / inline-size }
+
+.st-timer { display: inline-flex; gap: var(--fx-dens-gap-md); white-space: nowrap } /* the flex item swallows the leading space before the slash: the gap keeps "5h 09m / 2d 12h" apart */
+.st-live { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin: 0 }
+.st-live__dot { inline-size: var(--fx-dens-gap-md); block-size: var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); background: var(--fx-success) }
+.st-facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0 }
+.st-facts dt { color: var(--fx-muted) }
+.st-facts dd { margin: 0; overflow-wrap: anywhere }
+/* the phone's one-line row meta (status, steps, timer, PR); its own class: .st-meta is the Standards page's meta row in console.css */
+.st-rowmeta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); white-space: normal }
+.oc-cell-title > .st-rowmeta { overflow: visible }
+
+/* pipeline-status@1: the build number, what the build is doing now, why it waits, the merge line and the split badge */
+.st-no, .st-uid { white-space: nowrap }
+.st-now { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.st-now > .fx-icon { flex: none }
+.st-now > a { overflow: hidden; text-overflow: ellipsis }
+.oc-cell-title > .st-now { white-space: normal }
+.st-split { display: inline-flex; white-space: nowrap }
+.st-state { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.st-state__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.st-state__line { margin: 0; white-space: normal; overflow-wrap: anywhere }
+.st-wait, .st-merge { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); margin: 0; white-space: normal }
+.st-wait > .fx-icon, .st-merge > .fx-icon { flex: none; color: var(--fx-warning) }
+/* build-clash@1: the clash line with Run all / Defer; the buttons wrap under the text, never over it */
+.st-clash { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); white-space: normal }
+.st-clash > .fx-icon { flex: none; color: var(--fx-warning) }
+.st-clash__text { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }
+.st-clash__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.st-merge__text, .st-wait > span { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }

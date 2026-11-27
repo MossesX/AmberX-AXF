@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/auto-lander-action.schema.json",
+  "title": "auto-lander-action@1 (auto-lander@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "state",
+    "reason"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "auto-lander-action@1"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "build": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "head": {
+      "type": "string"
+    },
+    "action": {
+      "enum": [
+        "merge-main",
+        "fix-session",
+        "wait",
+        "land",
+        "escalate",
+        "none"
+      ]
+    },
+    "state": {
+      "enum": [
+        "waiting",
+        "merging-main",
+        "fixing",
+        "ci-running",
+        "landing",
+        "landed",
+        "escalated"
+      ],
+      "description": "the state after the action is taken"
+    },
+    "kind": {
+      "enum": [
+        "clash",
+        "red-ci",
+        "land",
+        ""
+      ]
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "the n of the attempt the action starts; 0 for wait / none"
+    },
+    "notBefore": {
+      "type": "string",
+      "description": "an ISO date-time, or empty"
+    },
+    "waitReason": {
+      "enum": [
+        "switched-off",
+        "ci-running",
+        "ci-none",
+        "in-flight",
+        "backoff",
+        "ui-review",
+        "held",
+        "draft",
+        "fork",
+        "no-pr",
+        ""
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 600
+    }
+  }
+}

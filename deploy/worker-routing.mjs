@@ -12,6 +12,9 @@
  *   excluded              subscription logins that are NOT workers (Stop worker). Every other saved subscription login
  *                         is a worker by default (Brett, Nov 8 2026: "All subscription logins are workers").
  *   interactiveTakesJobs  the console's own (active) account also takes headless jobs, after the workers. Default on.
+ *   buildAccount          one subscription login that takes every build ('' = off, the normal routing). While set, every
+ *                         other account (workers, the console's own when it differs, API accounts) is off for builds and
+ *                         no rule applies (build one-account-picker, Nov 13 2026). The console is switched to it as well.
  *   limits                { building: 3, queue: 5 } per account: jobs running at once, jobs waiting for that account
  *   perAccount            { name: { label?, building?, queue? } }
  *   api                   { name: { label, enabled, dailyCapUsd, weeklyCapUsd, alertAt } } the API-key accounts that may
@@ -104,7 +107,8 @@ export function normConfig(c) {
     while (seen.has(id)) id = `${x.id}-${k++}`;
     seen.add(id); return { ...x, id };
   });
-  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, limits, perAccount, api, rules };
+  const buildAccount = typeof src.buildAccount === 'string' && NAME_RE.test(src.buildAccount) ? src.buildAccount : '';
+  return { $axf: SCHEMA, workers: names(src.workers), excluded: names(src.excluded), interactiveTakesJobs: src.interactiveTakesJobs !== false, buildAccount, limits, perAccount, api, rules };
 }
 
 /** The caps of one account that went up from `before` to `after` (raising a cap is Brett's own call). */
@@ -172,13 +176,17 @@ export function roster(config, accounts) {
     else if (cfg.excluded.includes(a.name)) { role = 'saved'; why = 'not a worker (stopped)'; }
     else role = 'worker';
     const spend = kind === 'api' ? spendOf(a, api) : null;
-    const takes = (role === 'worker' || (role === 'interactive' && cfg.interactiveTakesJobs) || (role === 'api-worker' && a.hasKey !== false)) && building > 0;
+    const only = cfg.buildAccount;
+    const picked = !!only && a.name === only && kind === 'subscription';
+    if (only && !picked) why = kind === 'api' && a.name === only ? 'an API key can\'t be the one build account' : `off for builds: ${only} takes every build`;
+    else if (picked) why = '';
+    const takes = (picked || (!only && (role === 'worker' || (role === 'interactive' && cfg.interactiveTakesJobs) || (role === 'api-worker' && a.hasKey !== false)))) && building > 0;
     const limited = a.limited || null;
     const capped = spend?.state === 'capped';
     const can = takes && !limited && !capped;
     if (!why && limited) why = `out until ${limited.until}${limited.reason ? ` (${limited.reason})` : ''}`;
     if (!why && capped) why = spend.why;
-    return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, running, queued, building, queue, limited, spend,
+    return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, buildAccount: picked, running, queued, building, queue, limited, spend,
       takesJobs: takes, canRun: can && running < building, canQueue: can && running >= building && queued < queue, order: role === 'interactive' ? 2e3 : order(a.name), why };
   });
 }
@@ -194,6 +202,7 @@ export function decide(config, accounts, job) {
   const subsFree = subs.filter((r) => r.canRun);
   const considered = [];
   let rule = null;
+  if (cfg.buildAccount) return pinned(cfg.buildAccount, rows, j);
   for (const r of cfg.rules) {
     if (!r.enabled) { considered.push({ rule: r.id, name: r.name, match: false, why: 'switched off' }); continue; }
     const miss = ruleMiss(r, j, subsFree.length > 0);
@@ -214,6 +223,17 @@ export function decide(config, accounts, job) {
   const q = subs.filter((r) => r.canQueue).sort((a, b) => a.queued - b.queued || byLoad(a, b))[0];
   if (q) return out(q, 'queue', `${lead}every subscription account is full: waits for ${q.name} (${q.queued + 1} in its queue)`, q.queued + 1);
   return out(null, 'none', `${lead}${subs.length ? 'every subscription account is out or its queue is full' : 'no subscription account takes headless jobs'}`);
+}
+
+/** One account takes every build (config.buildAccount): run on it, wait in its queue, or none. Rules don't apply. */
+function pinned(name, rows, job) {
+  const row = rows.find((r) => r.name === name);
+  const out = (state, why, position = 0) => ({ account: state === 'none' ? '' : name, label: row?.label ?? '', kind: state === 'none' ? '' : 'subscription', state, rule: '', ruleName: '', position, why, job, considered: [], buildAccount: name });
+  if (!row) return out('none', `the one build account ${name} is not saved on the VPS`);
+  if (!row.takesJobs) return out('none', `the one build account ${name} can't take builds (${row.why || (row.kind === 'api' ? 'API key' : 'no building slots')})`);
+  if (row.canRun) return out('run', `${name} is the one build account`);
+  if (row.canQueue) return out('queue', `${name} is the one build account and it is full: ${row.queued + 1} in its queue`, row.queued + 1);
+  return out('none', `the one build account ${name} is ${row.limited ? row.why : 'full and its queue is full'}`);
 }
 
 /** Alerts for the banner: API accounts near or over a cap, API workers without a key. */

@@ -1,0 +1,463 @@
+{
+  "intents": {
+    "scroll down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "Amber, scroll up a bit please": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "up",
+        "amount": 0.25
+      }
+    },
+    "scroll down two pages": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down",
+        "amount": 2
+      }
+    },
+    "page down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "page-down"
+      }
+    },
+    "go to the top": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "top"
+      }
+    },
+    "scroll to the bottom": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "bottom"
+      }
+    },
+    "open plugins settings": {
+      "verb": "open",
+      "find": {
+        "q": "plugins",
+        "kinds": [
+          "tab",
+          "subtab"
+        ]
+      },
+      "within": "view:settings"
+    },
+    "open the pipeline tab": {
+      "verb": "open",
+      "find": {
+        "q": "pipeline",
+        "kinds": [
+          "tab",
+          "subtab"
+        ]
+      }
+    },
+    "press run now on the auto-lander toolbar": {
+      "verb": "press",
+      "find": {
+        "q": "auto-lander run",
+        "kinds": [
+          "button"
+        ]
+      },
+      "toolbar": "auto-lander"
+    },
+    "tap the retry button in the auto lander toolbar": {
+      "verb": "press",
+      "find": {
+        "q": "auto lander retry",
+        "kinds": [
+          "button"
+        ]
+      },
+      "toolbar": "auto lander"
+    },
+    "what's on the auto-lander toolbar": null,
+    "list the gate rules toolbar": {
+      "verb": "list",
+      "find": {
+        "q": "gate rules",
+        "kinds": [
+          "toolbar"
+        ]
+      }
+    },
+    "show me the builds toolbar": {
+      "verb": "list",
+      "find": {
+        "q": "builds",
+        "kinds": [
+          "toolbar"
+        ]
+      }
+    },
+    "go to plan studio": {
+      "verb": "open",
+      "find": {
+        "q": "plan studio",
+        "kinds": [
+          "view",
+          "tab",
+          "subtab",
+          "plugin"
+        ]
+      }
+    },
+    "open settings": {
+      "verb": "open",
+      "address": "view:settings"
+    },
+    "find dark mode": {
+      "verb": "search",
+      "query": {
+        "q": "dark mode"
+      }
+    },
+    "search for snapshot": {
+      "verb": "search",
+      "query": {
+        "q": "snapshot"
+      }
+    },
+    "show step 3 of the console control build": {
+      "verb": "focus",
+      "find": {
+        "q": "console control",
+        "kinds": [
+          "row"
+        ]
+      },
+      "step": 3,
+      "options": {
+        "expand": true
+      }
+    },
+    "step three of skins": {
+      "verb": "focus",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "row"
+        ]
+      },
+      "step": 3,
+      "options": {
+        "expand": true
+      }
+    },
+    "disable plugin skins": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "turn off the skins plugin": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "turn the skins plugin off": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "enable voice notes plugin": {
+      "verb": "plugin.enable",
+      "find": {
+        "q": "voice notes",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "press save": {
+      "verb": "press",
+      "find": {
+        "q": "save",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "click the refresh button": {
+      "verb": "press",
+      "find": {
+        "q": "refresh",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "Set font scale to 1.2.": {
+      "verb": "set",
+      "find": {
+        "q": "font scale",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": "1.2"
+    },
+    "turn help mode on": {
+      "verb": "set",
+      "find": {
+        "q": "help mode",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "Lock the console to the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "get my skin only from axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "unlock the console from the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "get my skin only from axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": false
+    },
+    "Override the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "override axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "stop overriding the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "override axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": false
+    },
+    "put me back": {
+      "verb": "press",
+      "address": "panel:console-place"
+    },
+    "Amber, take me back to where I was": {
+      "verb": "press",
+      "address": "panel:console-place"
+    },
+    "restore my place": {
+      "verb": "press",
+      "address": "panel:console-place"
+    },
+    "what time is it": null,
+    "": null
+  },
+  "commands": {
+    "scroll down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "Amber, scroll up a bit please": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "up",
+        "amount": 0.25
+      }
+    },
+    "scroll down two pages": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down",
+        "amount": 2
+      }
+    },
+    "page down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "page-down"
+      }
+    },
+    "go to the top": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "top"
+      }
+    },
+    "scroll to the bottom": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "bottom"
+      }
+    },
+    "open plugins settings": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "open the pipeline tab": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "press run now on the auto-lander toolbar": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "tap the retry button in the auto lander toolbar": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "list the gate rules toolbar": {
+      "verb": "list",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "show me the builds toolbar": {
+      "verb": "list",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "go to plan studio": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "open settings": {
+      "verb": "open",
+      "address": "view:settings"
+    },
+    "find dark mode": {
+      "verb": "search",
+      "query": {
+        "q": "dark mode"
+      }
+    },
+    "search for snapshot": {
+      "verb": "search",
+      "query": {
+        "q": "snapshot"
+      }
+    },
+    "show step 3 of the console control build": {
+      "verb": "focus",
+      "address": "view:build-orchestrator/grid:builds/row:b1/step:s3",
+      "options": {
+        "expand": true
+      }
+    },
+    "step three of skins": {
+      "verb": "focus",
+      "address": "view:build-orchestrator/grid:builds/row:b1/step:s3",
+      "options": {
+        "expand": true
+      }
+    },
+    "disable plugin skins": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "turn off the skins plugin": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "turn the skins plugin off": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "enable voice notes plugin": {
+      "verb": "plugin.enable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "press save": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "click the refresh button": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "Set font scale to 1.2.": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": "1.2"
+    },
+    "turn help mode on": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "Lock the console to the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "unlock the console from the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": false
+    },
+    "Override the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "stop overriding the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": false
+    },
+    "put me back": {
+      "verb": "press",
+      "address": "panel:console-place"
+    },
+    "Amber, take me back to where I was": {
+      "verb": "press",
+      "address": "panel:console-place"
+    },
+    "restore my place": {
+      "verb": "press",
+      "address": "panel:console-place"
+    }
+  },
+  "replies": {
+    "scroll": "Scrolled, 42 percent down.",
+    "bottom": "At the bottom.",
+    "search": "2 results. Top: Plugins.",
+    "none": "Nothing found.",
+    "open": "Opened Settings.",
+    "set": "Set Help mode to on.",
+    "disable": "Skins is off. Crew loses a feature.",
+    "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
+    "noConsole": "No console is open. Open it and ask again.",
+    "failed": "Couldn't: needs Brett",
+    "place": "Back where you were."
+  }
+}

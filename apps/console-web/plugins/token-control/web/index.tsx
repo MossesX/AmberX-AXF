@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Container, Markdown, Note, Segmented, SelectField, TextField } from '@console/axf/react';
+import { Button, Container, Markdown, Note, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { controlClient, controlForms, type ControlAnswer, type ControlCommand } from './client.mjs';
 import { GUIDES } from './docs';
 import { appMenu } from './menu';
-import { PassBanner, PassSettings, PassesTab } from './pass';
+import { PassBanner } from './pass';
 import './token-control.css';
 
 /** The folder name under plugins/: the routes live at /api/plugins/token-control/ (and /api/control/). */
@@ -19,7 +19,7 @@ interface TargetInfo { domain: string; label: string; ops: string[]; paths: unkn
 interface Registry { ops: string[]; targets: Record<string, TargetInfo>; tools: { name: string; description: string; effect: string }[]; routes: { op: string; method: string; path: string; body?: string; note?: string }[]; cli: { usage: string[]; aliases: Record<string, string> } }
 interface TokenRow { id: string; token?: string; kind: string; unit?: string; min?: number; max?: number; options?: string[]; value: unknown; base?: unknown; overridden?: boolean; asset?: string }
 
-const TOKEN_SETS = ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.nav', 'tokens.slots'];
+const TOKEN_SETS = ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.nav', 'tokens.instances', 'tokens.slots'];
 const show = (v: unknown) => (v === null || v === undefined ? '–' : typeof v === 'object' ? JSON.stringify(v) : String(v));
 const parse = (s: string): unknown => { try { return JSON.parse(s); } catch { return s; } };
 
@@ -215,26 +215,26 @@ function AuditTab() {
 
 /* ------------------------------------------------------------------ the page */
 
-type Tab = 'tokens' | 'passes' | 'try' | 'docs' | 'audit';
+type Tab = 'tokens' | 'try' | 'docs' | 'audit';
 
 function TokenControlView() {
   const { reg, err } = useRegistry();
   const [tab, setTab] = useState<Tab>('tokens');
   const [preset, setPreset] = useState<Partial<ControlCommand> | null>(null);
   const tryIt = (c: Partial<ControlCommand>) => { setPreset({ ...c }); setTab('try'); };
+  const rt = useRuntime();
   return (
     <div className="fx-stack fx-stack--lg axf-tc">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1><p className="fx-muted">Change any token, AmberX note or planner item, and see the same command as an API call, an MCP tool and a CLI line.</p></div></header>
       <Segmented label="Token control" value={tab} onChange={setTab} className="axf-tc-wrap" options={[
         { value: 'tokens', label: <span data-help="tc-tab-tokens">Tokens</span>, icon: 'sliders' },
-        { value: 'passes', label: <span data-help="tc-tab-passes">Passes</span>, icon: 'key' },
         { value: 'try', label: <span data-help="tc-tab-try">Try it</span>, icon: 'play' },
         { value: 'docs', label: <span data-help="tc-tab-docs">Docs</span>, icon: 'book' },
         { value: 'audit', label: <span data-help="tc-tab-audit">Audit</span>, icon: 'list' },
       ]} />
       {err && <Note tone="danger">{err}</Note>}
+      <div className="fx-row"><Button id="tc-open-passes" icon="key" tone="ghost" onClick={() => rt.dispatch('vps.passes.open:veto')}>Veto passes are in VPS Configuration</Button></div>
       {tab === 'tokens' && <TokensTab />}
-      {tab === 'passes' && <PassesTab />}
       {tab === 'try' && reg && <TryTab reg={reg} preset={preset} />}
       {tab === 'docs' && reg && <DocsTab reg={reg} tryIt={tryIt} />}
       {tab === 'audit' && <AuditTab />}
@@ -248,10 +248,10 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   appMenu,
   views: { 'token-control': { title: 'Token control', icon: 'sliders', render: () => <TokenControlView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
+  nav: { label: 'Design', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
   settingsTabs: [{ id: 'token-control', label: 'Token control', icon: 'sliders', order: 90, parent: 'plugins' }],
   // After Codebase changes (4.7) and the Claude handoff reminder (4.9), before approvals (5): renders nothing without a pass.
   banners: [{ id: 'token-pass', label: 'Pass', icon: 'key', settingsTab: 'token-control', order: 4.95, render: () => <PassBanner /> }],
-  settingsPanels: [{ id: 'token-control.passes', tab: 'token-control', title: 'Veto passes', icon: 'key', order: 20, render: () => <PassSettings /> },
-    { id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  // the veto passes (start, scopes, longest pass) live in Builds → VPS Configuration → Passes; the banner above stays here
+  settingsPanels: [{ id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

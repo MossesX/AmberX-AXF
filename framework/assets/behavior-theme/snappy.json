@@ -12,7 +12,12 @@
       "speed": "fast",
       "easing": "emphasized",
       "reduced": "system",
-      "entrance": "fade"
+      "entrance": "fade",
+      "swatches": "ripple",
+      "skinSwitch": "ripple",
+      "picker": "pop",
+      "animSpeed": 180,
+      "animIntensity": 50
     },
     "interaction": {
       "hover": "lift",

@@ -14,7 +14,12 @@
       "speed": "instant",
       "easing": "linear",
       "reduced": "system",
-      "entrance": "none"
+      "entrance": "none",
+      "swatches": "off",
+      "skinSwitch": "off",
+      "picker": "off",
+      "animSpeed": 100,
+      "animIntensity": 0
     },
     "interaction": {
       "hover": "tint",

@@ -1,0 +1,124 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-jflo9d",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:45Z",
+ "build": {
+  "id": "project-thread-jflo9d",
+  "title": "project-thread-jflo9d",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-jflo9d",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-jflo9d",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "1af872b58cb11ad2181dd244e7dae091f080d503",
+ "commits": [
+  "27cdad90fc8d1a5761c78152466e22254997513c"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T18:12:37Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/context-menu-designer/hooks.mjs",
+  "apps/console-web/plugins/context-menu-designer/install.mjs",
+  "apps/console-web/plugins/context-menu-designer/plugin.json",
+  "apps/console-web/plugins/context-menu-designer/server/__init__.py",
+  "apps/console-web/plugins/context-menu-designer/test.mts",
+  "apps/console-web/plugins/context-menu-designer/test.py",
+  "apps/console-web/plugins/context-menu-designer/uninstall.mjs",
+  "apps/console-web/plugins/context-menu-designer/web/Designer.tsx",
+  "apps/console-web/plugins/context-menu-designer/web/context-menu-designer.css",
+  "apps/console-web/plugins/context-menu-designer/web/core.ts",
+  "apps/console-web/plugins/context-menu-designer/web/index.tsx",
+  "apps/console-web/plugins/context-menu-designer/web/menu.ts",
+  "apps/console-web/plugins/context-menu-designer/web/store.ts",
+  "framework/plan/pending.json",
+  "framework/react/components/MenuList.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/hooks.mjs",
+    "apps/console-web/plugins/context-menu-designer/install.mjs",
+    "apps/console-web/plugins/context-menu-designer/plugin.json",
+    "apps/console-web/plugins/context-menu-designer/server/__init__.py",
+    "apps/console-web/plugins/context-menu-designer/test.mts",
+    "apps/console-web/plugins/context-menu-designer/test.py",
+    "apps/console-web/plugins/context-menu-designer/uninstall.mjs",
+    "apps/console-web/plugins/context-menu-designer/web/Designer.tsx",
+    "apps/console-web/plugins/context-menu-designer/web/context-menu-designer.css",
+    "apps/console-web/plugins/context-menu-designer/web/core.ts",
+    "apps/console-web/plugins/context-menu-designer/web/index.tsx",
+    "apps/console-web/plugins/context-menu-designer/web/menu.ts",
+    "apps/console-web/plugins/context-menu-designer/web/store.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/MenuList.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

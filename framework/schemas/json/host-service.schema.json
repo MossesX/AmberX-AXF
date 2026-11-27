@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/host-service.schema.json",
+  "title": "host-service@1 (host-services@1) — a host service manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "title",
+    "kind",
+    "plugin"
+  ],
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "required": [
+            "unit"
+          ]
+        },
+        {
+          "required": [
+            "cron"
+          ]
+        }
+      ]
+    },
+    {
+      "anyOf": [
+        {
+          "required": [
+            "runner"
+          ]
+        },
+        {
+          "required": [
+            "adopted"
+          ]
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "$axf": {
+      "const": "host-service@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,40}$",
+      "description": "the service id; unit, socket, state folder and console-control addresses derive from it"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "kind": {
+      "enum": [
+        "tick",
+        "daemon"
+      ]
+    },
+    "unit": {
+      "type": "string",
+      "pattern": "^axf-[a-z0-9][a-z0-9-]{0,60}\\.(service|timer)$|^cron:axf-[a-z0-9][a-z0-9-]{0,60}$",
+      "description": "the systemd unit (axf-<id>.service unless the manifest says otherwise); a filled-in cron tick reads cron:<file>"
+    },
+    "timer": {
+      "type": "string",
+      "pattern": "^axf-[a-z0-9][a-z0-9-]{0,60}\\.(service|timer)$",
+      "description": "tick: the timer that starts the unit"
+    },
+    "cron": {
+      "type": "string",
+      "pattern": "^axf-[a-z0-9][a-z0-9-]{0,60}$",
+      "description": "tick: the /etc/cron.d file that starts it instead of a unit and timer (adopted schedules only)"
+    },
+    "adopted": {
+      "type": "boolean",
+      "description": "already runs on the host from its own installer: listed and health-checked here, never installed, stopped or migrated; its mode is always host"
+    },
+    "plugin": {
+      "type": "string",
+      "pattern": "^(console|[a-z0-9][a-z0-9-]{0,60})$",
+      "description": "the console plugin folder that owns it ('console' for core parts like alert delivery)"
+    },
+    "runner": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "repo-relative entry the unit runs (deploy/<service>/…); an adopted schedule may leave it out (its own installer says what runs)"
+    },
+    "user": {
+      "type": "string",
+      "pattern": "^[a-z_][a-z0-9_-]{0,31}$",
+      "description": "the host account; default axf-host"
+    },
+    "sudo": {
+      "type": "array",
+      "maxItems": 40,
+      "description": "exact command lines the host may run for this service as root; the installer writes them to /etc/sudoers.d/axf-<id>; anything else is forbidden_command",
+      "items": {
+        "type": "object",
+        "required": [
+          "cmd",
+          "why"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "cmd": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400,
+            "description": "absolute program path and fixed arguments; a trailing \" *\" allows arguments"
+          },
+          "why": {
+            "type": "string",
+            "maxLength": 600
+          },
+          "as": {
+            "enum": [
+              "root"
+            ]
+          }
+        }
+      }
+    },
+    "socket": {
+      "type": "string",
+      "pattern": "^/[A-Za-z0-9._/-]*$",
+      "description": "daemon: the unix socket the service serves; default /run/axf-host/<id>.sock"
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "how the host API decides up / degraded / down for this service",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/[A-Za-z0-9._/-]*$",
+          "description": "daemon: the GET on the service socket that answers { ok, message? }"
+        },
+        "intervalSec": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 3600
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 60000
+        },
+        "staleSec": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 86400,
+          "description": "tick: a last run older than this is degraded"
+        },
+        "freshness": {
+          "type": "boolean",
+          "description": "tick: false when the schedule leaves no trace of a quiet run (its log is only written when something happens); only \"is it still scheduled\" is checked then"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 600
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "destructive: the call needs a confirm token (console-control confirm)"
+          },
+          "modes": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "container",
+                "shadow",
+                "host"
+              ]
+            },
+            "description": "migration modes the action may run in; default shadow + host"
+          },
+          "args": {
+            "type": "object",
+            "maxProperties": 20,
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "boolean",
+                    "integer",
+                    "number",
+                    "string",
+                    "enum"
+                  ]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "description": {
+                  "type": "string",
+                  "maxLength": 600
+                }
+              }
+            }
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 1800000
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "maxProperties": 80,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "type",
+          "default"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "enum": [
+              "boolean",
+              "integer",
+              "number",
+              "string",
+              "enum"
+            ]
+          },
+          "default": {},
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 600
+          }
+        }
+      }
+    },
+    "replaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "name"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "cron",
+              "thread",
+              "loop"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "where": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "what in the container or in cron this service takes over (the migration turns these off in host mode)"
+    },
+    "after": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+      },
+      "description": "services that must be in host mode before this one may cut over (host-api is implied)"
+    },
+    "dataDir": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "repo-relative state folder; default _data/host-services/<id>"
+    },
+    "log": {
+      "type": "string",
+      "pattern": "^/[A-Za-z0-9._/-]*$",
+      "description": "default /var/log/axf-<id>.log"
+    }
+  }
+}

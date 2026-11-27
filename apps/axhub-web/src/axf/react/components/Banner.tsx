@@ -16,6 +16,18 @@ import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { Icon } from './Icon';
 import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
 import { Tap, WidgetView } from './Widgets';
+import { controlSlug } from '../controlTargets';
+import { CHROME_INSTANCE_KEY } from '../../core/engines/chrome-settings-rules.mjs';
+
+/**
+ * Re-render when this banner's own settings change (chrome-settings@1 `axf.chrome.banner.app`, written by its Settings…
+ * dialog, Look / Behaviour / Interface tabs, chrome.set): the frame re-reads them at once, never after a reload.
+ */
+function useBannerOverrides(): void {
+  const rt = useRuntime();
+  const [, tick] = useState(0);
+  useEffect(() => rt.settings.onChange(CHROME_INSTANCE_KEY('banner', 'app'), () => tick((n) => n + 1)), [rt]);
+}
 
 function clockParts(tz?: string): ClockParts {
   const now = new Date();
@@ -43,7 +55,7 @@ export function BannerClock({ data }: { data: ClockData }) {
   return <time className={`fx-banner__clock${data.mono === false ? '' : ' is-mono'}`} aria-label={`Time ${text}`} title={data.timezone || undefined}>{text}</time>;
 }
 
-export function BannerBadge({ data }: { data: BadgeData }) {
+export function BannerBadge({ data, id }: { data: BadgeData; id?: string }) {
   const rt = useRuntime();
   const body = (
     <>
@@ -53,7 +65,7 @@ export function BannerBadge({ data }: { data: BadgeData }) {
   );
   const props = { className: `fx-banner__badge is-${data.shape}`, 'data-tone': data.tone, 'data-token': badgeToneToken(data), title: data.tooltip ?? data.label, 'aria-label': data.tooltip ?? data.label };
   return data.link
-    ? <button type="button" {...props} onClick={() => rt.dispatch(data.link!)}>{body}</button>
+    ? <button type="button" {...props} {...(id ? { 'data-axf-target': `button:banner.${controlSlug(id)}` } : {})} onClick={() => rt.dispatch(data.link!)}>{body}</button>
     : <span role="img" {...props}>{body}</span>;
 }
 
@@ -73,7 +85,7 @@ export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   if (!asset) return null;
   const { show } = rt.bannerWidgetView(`${type}:${id}`);
-  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} />;
+  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} id={id} />;
   if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
   // icon only: a status has no icon, its dot is what's left
   return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
@@ -104,6 +116,7 @@ const BANNER_APP_NAME = '{app}';
 export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
   useAxfState();
+  useBannerOverrides();
   const { data, placed } = rt.banner();
   const arrange = useArrange('banner', placed);
   const root = useRef<HTMLDivElement>(null);

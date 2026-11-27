@@ -1,37 +1,45 @@
 #!/usr/bin/env node
 /**
- * builds-live — every builds store write reaches main at once (Brett, Nov 3 2026: "every completed step, no matter how
- * small, must reach the orchestrator and appear on main immediately"; build orch-live-sync).
+ * builds-live — the builds store's projection on main (build orch-live-sync, Nov 3 2026), published as one snapshot
+ * when a build lands, not once per store write (audit finding B4-06, Nov 21 2026: a push per write put 896 status-only
+ * commits on main in 24 hours, so main moved about every 90 seconds and every PR was always behind it).
  *
- * The store (_claude/builds/store.json, builds@1) is a repo file, so until now a session's step ticks, statuses, notes,
- * branch and PR fields sat on its feature branch and main (and every banner reading main) only saw them if and when
- * that branch merged. Now:
- *
- *   1. every store write that changes a build is queued here (an outbox next to the store: one journal entry per line);
- *   2. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
+ *   1. every store write that changes a build is queued here (an outbox next to the store: one journal entry per line).
+ *      The store is the live copy and is written at once as before; with a file store the console's checkout on this
+ *      machine takes the changed builds right away (a file copy, no commit, no push). Only a real change is queued
+ *      (builds-merge-core realChanges): stamps, the dispatcher's run bookkeeping, a repeated note, or a shipped build
+ *      touched without moving forward queue nothing, and a publish that would not really change main makes no commit
+ *      (Nov 23 2026: a failed launch repeating every minute put "Builds live" commits for shipped builds on main);
+ *   2. the outbox is due on main when a build in it lands, when it has held changes for a day (the daily snapshot)
+ *      or when it has grown past its size cap. Everything queued rides along in the same commit. `flush` and
+ *      `sync --now` publish at once;
+ *   3. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
  *      (a private index, never this checkout's working tree or branch): fetch, take main's store, merge this
  *      checkout's changed builds into it (per build and per step, newer wins: builds-merge-core.mjs), append the journal
- *      lines (union), append one line per change to THREADS.md's live log, regenerate the orchestrator exports, commit
- *      with `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
- *   3. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
+ *      lines, one line per change in THREADS.md's live log, regenerate the orchestrator exports, commit with
+ *      `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
+ *   4. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
  *      default /opt/axf, mounted live into the console) so the banners show the change now, not at the next update.
  *
- * Code still goes through the feature branch and its PR as before; only status data goes straight to main.
- * A flush that can't reach GitHub keeps the outbox and says why (`status`; the systems check shows it red after 15 min);
- * the next write or `flush` retries.
+ * Code still goes through the feature branch and its PR; only status data goes straight to main. A flush that can't reach GitHub keeps the outbox and says why (`status`); the next due write or `flush` retries.
  *
- *   node framework/cli/builds-live.mjs status [--json]        outbox size, last publish, last error
- *   … flush                                                   publish the outbox now (waits for it)
- *   … pull                                                    take main's newer builds into this checkout
- *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
- *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
- *   … install                                                 git merge driver for the builds files (this clone)
- *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
- *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
+ *   node framework/cli/builds-live.mjs status [--json]   outbox size, whether it is due, last publish, last error
+ *   … flush                                              publish the outbox now (waits for it)
+ *   … pull                                               take main's newer builds into this checkout
+ *   … sync [--now]                                       take main's newer builds; due or --now: publish first
+ *   … link <build> [--branch b] [--pr n|url] [--merged [iso]] [--sha <merge commit>] [--ci success|failure|running]
+ *         [--ci-run url] [--verified check|playwright|deploy|hand]   a build's branch / PR / merged + landed evidence
+ *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
+ *                                                        how a session ended, on the build (pipeline.runEnd)
+ *   … install                                            git merge driver for the builds files (this clone)
+ *   … merge-driver <base> <ours> <theirs> <path>         (git calls it) newer-wins merge of a builds file
+ *   … heal <branch>                                      merge main into a branch whose PR conflicts only in builds files
  *
  * Environment: AXF_BUILDS_LIVE=0 off | 1 on even for a test store; AXF_BUILDS_LIVE_GIT the checkout to run git in
- * (default the repo); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main); AXF_BUILDS_LIVE_SYNC=1 flush in
- * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
+ * (default the repo); AXF_BUILDS_LIVE_PUSH=landed (default) | every (a push per write); AXF_BUILDS_LIVE_SNAPSHOT_HOURS
+ * (24; 0 = no daily snapshot); AXF_BUILDS_LIVE_OUTBOX_MAX_MB (16); AXF_BUILDS_LIVE_PUSH_CONFIG (the snapshot's push
+ * target on a protected main, see pushTarget); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main);
+ * AXF_BUILDS_LIVE_SYNC=1 flush in the writing process, not a background one (tests); AXF_CONSOLE_ROOT (/opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
@@ -42,13 +50,29 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeMode, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
+import { normRunEnd } from '../core/build-pipeline.mjs';
+import { containerRuns } from './host-mode.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
+/** data-store@1: the store is on axf-data's tables (cutover, or rolling back from them): no checkout file is the store. */
+const storeOnTables = () => ['cutover', 'rollback'].includes(storeMode());
+/**
+ * builds-journal@1: the journal's home is the hub data store, not main. With the hub (or an explicit folder) as home,
+ * or once main's pointer (_claude/builds/journal.json) says `home: 'hub'`, no journal line goes to main and none is
+ * pulled from it; a test store (AXF_BUILDS_STORE) and a spool before the migration keep the old path.
+ */
+export const JOURNAL_POINTER_REL = '_claude/builds/journal.json';
+const journalOffMain = (base) => {
+  const m = journalMode();
+  if (m === 'hub' || m === 'explicit') return true;
+  if (m === 'test') return false;
+  try { return JSON.parse(show(base, JOURNAL_POINTER_REL) ?? '{}').home === 'hub'; } catch { return false; }
+};
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
 const SHIPPED_DIR_REL = '_claude/builds/shipped'; // shipped-manifest@1 sidecars (framework/cli/shipped-files.mjs)
 const THREADS_REL = '_claude/THREADS.md';
@@ -66,16 +90,59 @@ const gitRoot = () => env('AXF_BUILDS_LIVE_GIT') || REPO_ROOT;
 const testStore = () => !!process.env.AXF_BUILDS_STORE || !!(process.env.AXF_DATA_DIR && process.env.AXF_DATA_DIR !== 'off');
 /** On unless switched off; a test or scratch store only when asked for (AXF_BUILDS_LIVE=1). */
 export const liveOn = () => env('AXF_BUILDS_LIVE') === '1' || (env('AXF_BUILDS_LIVE') !== '0' && !testStore());
+/** When the outbox goes to main: `landed` (a build landed, the daily snapshot or a full outbox; the default) or `every` (each write). */
+export const pushMode = () => (env('AXF_BUILDS_LIVE_PUSH') === 'every' ? 'every' : 'landed');
+/** Statuses of a build that is on main (done-means-merged@1: merged, CI green; `built` is the legacy word for landed). */
+export const LANDED_STATUSES = ['landed', 'built', 'complete'];
+/** Does this journal entry land a build: its status moved into LANDED_STATUSES (landed → complete is not a second landing). */
+export function landsBuild(entry) {
+  return (entry?.builds ?? []).some((b) => LANDED_STATUSES.includes(b.after?.status) && !LANDED_STATUSES.includes(b.before?.status));
+}
+const num = (k, d) => { const n = Number(env(k)); return env(k) !== '' && Number.isFinite(n) && n >= 0 ? n : d; };
+const snapshotMs = () => num('AXF_BUILDS_LIVE_SNAPSHOT_HOURS', 24) * 3600000;
+const outboxMax = () => num('AXF_BUILDS_LIVE_OUTBOX_MAX_MB', 16) * 1024 * 1024;
 export const outboxFile = () => `${storeFile()}.live-outbox.jsonl`;
+/** Marks the outbox as holding a landing (written with the entry, so no write has to re-read the whole outbox). */
+const dueFile = () => `${outboxFile()}.due`;
+/** When the oldest line still in the outbox was queued (the daily snapshot counts from here). */
+const sinceFile = () => `${outboxFile()}.since`;
 const statusFile = () => `${storeFile()}.live.json`;
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+/**
+ * Where the snapshot is pushed when main is protected (deploy/branch-protection.mjs status-key): a deploy key that is
+ * the ruleset's only bypass, so the status-only commit still reaches main while every other change needs a green PR.
+ * { url, key } from AXF_BUILDS_LIVE_PUSH_CONFIG, else `.axf-console/builds-live-push.json` in this checkout or the
+ * console's (`key` is a path next to that file). None (null): the push goes to the remote like the fetch. Never read
+ * for a test store unless the config is named, and never when AXF_BUILDS_LIVE_REMOTE names the remote.
+ */
+export function pushTarget() {
+  const named = env('AXF_BUILDS_LIVE_PUSH_CONFIG');
+  if (!named && (testStore() || env('AXF_BUILDS_LIVE_REMOTE'))) return null;
+  const consoleRoot = env('AXF_CONSOLE_ROOT', '/opt/axf');
+  const files = named ? [named] : [REPO_ROOT, consoleRoot === 'off' ? '' : consoleRoot].filter(Boolean).map((r) => join(r, '.axf-console', 'builds-live-push.json'));
+  for (const f of files) {
+    const c = readJson(f);
+    if (typeof c?.url === 'string' && c.url) return { url: c.url, key: typeof c.key === 'string' && c.key ? resolve(dirname(f), c.key) : '' };
+  }
+  return null;
+}
 
 // ------------------------------------------------------------------ outbox
 
-/** Queue one journal entry for main (called by builds-store for every write that changes a build). */
+/**
+ * Queue one journal entry for main (called by builds-store for every write that changes a build). Only builds that
+ * really changed are queued (builds-merge-core realChanges): a write that moved nothing but stamps, run bookkeeping or
+ * a repeated note, or that touched a shipped build without moving it forward, is not a change and queues nothing.
+ */
 export function enqueueLive(entry) {
   if (!liveOn()) return;
-  try { appendFileSync(outboxFile(), `${JSON.stringify(entry)}\n`); } catch { /* the journal has it; status shows the outbox */ }
+  entry = merge.realEntry(entry);
+  if (!entry) return;
+  try {
+    appendFileSync(outboxFile(), `${JSON.stringify(entry)}\n`);
+    if (!existsSync(sinceFile())) writeFileSync(sinceFile(), `${new Date().toISOString()}\n`, { flag: 'wx' });
+  } catch { /* the journal has it; status shows the outbox */ }
+  try { if (landsBuild(entry)) writeFileSync(dueFile(), `${new Date().toISOString()}\n`); } catch { /* the daily snapshot takes it */ }
 }
 function readOutbox() {
   try { return readFileSync(outboxFile(), 'utf8').split('\n').filter((l) => l.trim()); } catch { return []; }
@@ -85,6 +152,28 @@ function dropFromOutbox(lines) {
   const done = new Set(lines);
   const left = readOutbox().filter((l) => !done.has(l));
   if (left.length) writeFileSync(outboxFile(), `${left.join('\n')}\n`); else rmSync(outboxFile(), { force: true });
+  // what is left was queued while the publish ran: due again only when it holds a landing of its own
+  const landing = left.some((l) => { try { return landsBuild(JSON.parse(l)); } catch { return false; } });
+  if (!landing) rmSync(dueFile(), { force: true });
+  if (left.length) { try { writeFileSync(sinceFile(), `${new Date().toISOString()}\n`); } catch { /* best effort */ } } else rmSync(sinceFile(), { force: true });
+}
+/**
+ * Why the outbox should go to main now ('' = it waits): `every` (push mode every), `landed` (a build in it landed),
+ * `snapshot` (it has held changes for the snapshot period) or `full` (it passed the size cap).
+ */
+export function outboxDue() {
+  let size = 0; try { size = statSync(outboxFile()).size; } catch { return ''; }
+  if (!size) return '';
+  if (pushMode() === 'every') return 'every';
+  if (existsSync(dueFile())) return 'landed';
+  if (size > outboxMax()) return 'full';
+  const every = snapshotMs();
+  if (every > 0) {
+    let since = NaN; try { since = Date.parse(readFileSync(sinceFile(), 'utf8').trim()); } catch { /* no mark: the outbox file's own age */ }
+    if (!Number.isFinite(since)) { try { since = statSync(outboxFile()).birthtimeMs || statSync(outboxFile()).mtimeMs; } catch { since = Date.now(); } }
+    if (Date.now() - since >= every) return 'snapshot';
+  }
+  return '';
 }
 function setStatus(patch) {
   const s = { ...(readJson(statusFile()) ?? {}), ...patch };
@@ -94,12 +183,22 @@ function setStatus(patch) {
 export function liveStatus() {
   const s = readJson(statusFile()) ?? {};
   const queued = readOutbox().length;
-  return { on: liveOn(), remote: remote(), branch: branch(), queued, ...s, stuck: queued > 0 && !!s.lastError && (!s.lastOk || s.lastOk < s.lastError) };
+  return { on: liveOn(), remote: remote(), branch: branch(), push: pushMode(), pushVia: pushTarget() ? 'deploy-key' : 'remote', queued, due: outboxDue(), ...s, stuck: queued > 0 && !!s.lastError && (!s.lastOk || s.lastOk < s.lastError) };
 }
 
-/** After a write: publish in a background process (the writer returns at once) or inline with AXF_BUILDS_LIVE_SYNC=1. */
+/**
+ * After a write: when the outbox is due (outboxDue), publish in a background process (the writer returns at once) or
+ * inline with AXF_BUILDS_LIVE_SYNC=1. Otherwise the change waits in the outbox: no commit, no push. With a file store
+ * the console's checkout on this machine takes the changed builds now (a file copy); on the tables it already has them.
+ */
 export function flushLiveSoon() {
-  if (!liveOn() || !readOutbox().length) return;
+  if (!liveOn()) return;
+  if (!outboxDue()) {
+    if (existsSync(outboxFile()) && !storeOnTables()) { try { toConsole({ [STORE_REL]: storeText(readStoreNow()) }); } catch { /* the next publish brings it */ } }
+    return;
+  }
+  // host-service builds-live (HOST-SERVICES.md): in host mode the host runner publishes the outbox; this copy only queues.
+  if (!containerRuns('builds-live')) return;
   if (env('AXF_BUILDS_LIVE_SYNC') === '1') { flushLive(); return; }
   try {
     const c = spawn(process.execPath, [SELF, 'flush', '--quiet'], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env: process.env });
@@ -187,8 +286,11 @@ export function appendThreads(text, lines) {
  * files = { rel: text } is what main holds now for every builds file (for the pull), or { ok: false, error }.
  */
 export function publish(entries, { journalExtra = {} } = {}) {
+  // lines queued by an older version (or by hand) get the same rule as enqueueLive: no real change, nothing published
+  entries = entries.map((e) => merge.realEntry(e)).filter(Boolean);
   const records = recordsOf(entries);
   const ids = records.map((r) => r.id);
+  if (!records.length && !Object.keys(journalExtra).length) return { ok: true, sha: '', files: {}, skipped: [] };
   const ref = `refs/remotes/${remote()}/${branch()}`;
   let last = '';
   for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
@@ -209,21 +311,26 @@ export function publish(entries, { journalExtra = {} } = {}) {
     if (!v.ok) return { ok: false, error: `the merged store is not valid builds@1, nothing pushed: ${v.errors.slice(0, 3).map((e) => `${e.path} ${e.message}`).join('; ')}` };
     if (skipped.length && !taken.length) return { ok: true, sha: '', files: allFiles(base, { [STORE_REL]: mainText }), skipped };
     const now = new Date().toISOString();
-    if (taken.length) { merged.rev = (mainStore.rev ?? 0) + 1; merged.updatedAt = now; }
+    // the builds whose record on main really moves (realChanges against main's own copy). With none, main's store,
+    // exports and live log stay byte for byte as they are: a newer stamp alone is never a commit
+    const real = taken.filter((id) => merge.realChanges(mainStore.builds.find((b) => b.id === id), merged.builds.find((b) => b.id === id)).length);
+    if (real.length) { merged.rev = (mainStore.rev ?? 0) + 1; merged.updatedAt = now; }
     const files = {};
-    files[STORE_REL] = taken.length ? storeText(merged) : mainText ?? storeText(merged);
+    if (real.length || mainText === null) files[STORE_REL] = storeText(merged);
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
-    const sizes = journalSizes(base);
-    for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
-    const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => !skipped.includes(b.id)) }));
+    const sizes = journalOffMain(base) ? null : journalSizes(base);
+    if (sizes) for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
+    const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => real.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
-    for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    if (real.length) for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
     // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
-    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten.
-    for (const rel of staleProfileExports(base, files)) files[rel] = null;
+    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten. The same for a
+    // profile registered only on the hub (test-sandbox, Nov 13 2026): orchestratorExports lists repo-registered
+    // profiles only, so its folder leaves main with the next publish instead of failing check-profiles.mjs there.
+    if (real.length) for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
@@ -238,17 +345,28 @@ export function publish(entries, { journalExtra = {} } = {}) {
     }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
-    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files), skipped };
-    const sha = commitOnto(base, changed, message(entries, taken));
+    if (!changed.length) return { ok: true, sha: '', files: allFiles(base, { [STORE_REL]: mainText, ...files }), skipped };
+    const sha = commitOnto(base, changed, message(entries, real, changed.map(([rel]) => rel)));
     if (!sha.ok) return sha;
-    const p = git(['push', '-q', remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000 });
-    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, files), skipped }; }
+    const to = pushTarget();
+    const p = git(['push', '-q', to?.url ?? remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000, envx: to?.key ? { GIT_SSH_COMMAND: `ssh -i "${to.key}" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new` } : {} });
+    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, files: allFiles(sha.sha, { [STORE_REL]: mainText, ...files }), skipped }; }
     last = p.err;
     // main moved under us: fetch and apply again; anything else (protection, auth) is not retried
-    if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
+    if (!pushRetryable(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
     sleep(200 * attempt + Math.floor(Math.random() * 400));
   }
   return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
+}
+/**
+ * Is a refused push worth another try: main moved under us (yes), or the remote refuses us whatever main holds
+ * (protection, auth: no). The refusals are matched as whole words: git's "cannot lock ref" message quotes commit ids,
+ * and an id with 403 in it must not read as an HTTP 403.
+ */
+export function pushRetryable(err) {
+  const text = String(err ?? '');
+  return /non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(text)
+    && !/protected branch|permission|denied|\b403\b|\bGH006\b|\bGH013\b/i.test(text);
 }
 /** { fileKey: bytes } of the journal files at a revision. */
 function journalSizes(rev) {
@@ -267,9 +385,17 @@ function allFiles(rev, files) {
   for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
   return out;
 }
-function message(entries, taken) {
-  const lines = entries.flatMap((e) => merge.changeLines(e)).map((l) => l.replace(/^- [^·]*· /, '').replace(/ · [^·]*$/, ''));
-  const head = lines.length === 1 ? lines[0] : `${taken.length || entries.length} build change(s): ${[...new Set(taken)].slice(0, 4).join(', ')}`;
+/**
+ * The commit message: the one change, or how many builds changed and which. A commit with no build change (a shipped
+ * manifest, an origin or a journal line on its own) names its files; the subject never ends in an empty list.
+ */
+export function message(entries, real, rels = []) {
+  const ids = [...new Set(real)];
+  const lines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => ids.includes(b.id)) })).map((l) => l.replace(/^- [^·]*· /, '').replace(/ · [^·]*$/, ''));
+  const names = rels.map((r) => r.replace(/^_claude\/(builds\/)?/, ''));
+  const head = lines.length === 1 ? lines[0]
+    : ids.length ? `${ids.length} build change(s): ${ids.slice(0, 4).join(', ')}${ids.length > 4 ? ` +${ids.length - 4}` : ''}`
+      : `${names.length} status file(s): ${names.slice(0, 3).join(', ') || 'none'}`;
   return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, exports, THREADS live log).`;
 }
 /** A commit on `base` with the given files replaced, through a private index (no working tree is touched). */
@@ -303,7 +429,8 @@ export function pullFrom(files) {
   const localOnly = merge.mergeStores(main, local).taken;
   const next = localOnly.length ? store : main;
   const journals = {};
-  for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
+  const offMain = ['hub', 'explicit'].includes(journalMode());
+  for (const [rel, t] of Object.entries(files)) if (!offMain && rel.startsWith(`${JOURNAL_REL}/`)) {
     const m = rel.slice(JOURNAL_REL.length + 1, -'.jsonl'.length);
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { /* new month */ }
     journals[m] = merge.mergeJournalText(t, mine);
@@ -325,6 +452,9 @@ function toConsole(files) {
     const { store, taken } = merge.mergeStores(theirs, main);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeFileSync(join(root, rel), t); }
     if (!taken.length) return;
+    // cutover: the console's store is the tables (this process's pullFrom already merged main into them); its checkout
+    // file is no longer read, and its exports are regenerated by the console's own writes from the record
+    if (storeOnTables()) return;
     const consoleOnly = merge.mergeStores(main, theirs).taken.length;
     const next = consoleOnly ? store : main;
     // build-hook@1: these builds changed in this checkout, not in the console's; their events go to the console's outbox
@@ -344,8 +474,10 @@ function toConsole(files) {
  * `sync`: both ways at once. Builds this checkout has newer than main (written before live existed, offline, or
  * queued and lost) go to main in one commit with the journal lines main lacks; then main's newer builds come back.
  */
-export function syncAll() {
+export function syncAll({ now = false } = {}) {
   if (!liveOn()) return { ok: true, skipped: 'off' };
+  // a session start or the reconciler only takes main's builds; what is queued here goes with the next landing or snapshot
+  if (!now && !outboxDue()) { const p = pullMain(); return { ...p, pushed: [], held: readOutbox().length }; }
   const flushed = flushLive();
   if (!flushed.ok) return flushed;
   const ref = `refs/remotes/${remote()}/${branch()}`;
@@ -355,12 +487,14 @@ export function syncAll() {
   const mainText = show(rev, STORE_REL);
   const main = mainText ? core.normalizeStore(JSON.parse(mainText)) : core.emptyStore();
   const local = readStoreNow();
-  const ids = merge.mergeStores(main, local).taken;
+  // newer here in a way that matters (realChanges): a copy that differs from main only by stamps or run bookkeeping is not sent
+  const ahead = merge.mergeStores(main, local);
+  const ids = ahead.taken.filter((id) => merge.realChanges(main.builds.find((x) => x.id === id), ahead.store.builds.find((x) => x.id === id)).length);
   if (!ids.length) return { ...pullMain(), pushed: [] };
   const journalExtra = {};
   const mainKeys = Object.keys(journalSizes(rev));
   const onMain = new Map();   // month → every line main holds in any part of that month
-  for (const key of localJournalMonths()) {
+  for (const key of journalOffMain(rev) ? [] : localJournalMonths()) {
     const m = key.slice(0, 7);
     if (!onMain.has(m)) onMain.set(m, new Set(mainKeys.filter((k) => k.slice(0, 7) === m).flatMap((k) => (show(rev, `${JOURNAL_REL}/${k}.jsonl`) ?? '').split('\n'))));
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${key}.jsonl`), 'utf8'); } catch { continue; }
@@ -396,7 +530,7 @@ export function pullMain() {
 // ------------------------------------------------------------------ link (s2)
 
 /** Set a build's branch / PR / merged time in whatever profile it is in; status follows (built ↔ complete). */
-export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-live') {
+export function linkBuild(id, { branch: br, pr, mergedAt, landed } = {}, by = 'builds-live') {
   let found = null;
   const r = withStore((s) => {
     const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
@@ -404,11 +538,36 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
     if (typeof br === 'string' && br) b.branch = br;
     if (pr !== undefined && pr !== null && String(pr)) b.pr = normPr(pr);
     if (typeof mergedAt === 'string') b.mergedAt = mergedAt;
+    // done-means-merged@1 evidence: the merge commit, CI on it, the verify (landed / complete need them; the store guard refuses without)
+    if (landed && typeof landed === 'object') {
+      const prN = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
+      b.landed = { ...(b.landed ?? {}), ...Object.fromEntries(Object.entries(landed).filter(([, v]) => v !== undefined && v !== '')), pr: prN || b.landed?.pr || 0, mergedAt: b.mergedAt || b.landed?.mergedAt || '' };
+      if (landed.ci && !landed.ciAt) b.landed.ciAt = new Date().toISOString();
+      if (landed.verifyHow && !landed.verifiedAt) b.landed.verifiedAt = new Date().toISOString();
+    }
     b.updatedAt = new Date().toISOString();
     merge.settleStatus(b, b.updatedAt);
     return s;
   }, { by, action: 'link', note: id });
-  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
+  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes, refused: r.refused ?? [] };
+}
+/**
+ * How a session ended, on the build's run record (pipeline.runEnd; build-pipeline@1): exit code, signal, exit kind, the
+ * account stop (usage | auth), account, session, phase, time. Written the moment claude exits so a killed (143) or failed
+ * (1) run leaves evidence the watchdog (build-watchdog@1) reads even when nothing after it runs. Live like every write.
+ */
+export function recordRunEnd(id, end = {}, by = 'claude-headless') {
+  const rec = normRunEnd({ at: new Date().toISOString(), ...end });
+  if (!rec) throw new Error('run-end needs a time');
+  let found = null;
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+    found = b;
+    b.pipeline = { ...(b.pipeline ?? {}), runEnd: rec };
+    b.updatedAt = rec.at;
+    return s;
+  }, { by, action: 'run-end', note: `${id}: exit ${rec.exit ?? '?'}${rec.signal ? ` (SIG${rec.signal})` : ''}${rec.kind ? ` ${rec.kind}` : ''}${rec.limit ? ` ${rec.limit}` : ''}${rec.account ? ` on ${rec.account}` : ''}` });
+  return { build: r.store.builds.find((b) => b.id === found.id), runEnd: rec, changes: r.changes };
 }
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */
 export function normPr(pr) {
@@ -476,15 +635,24 @@ async function main(argv) {
   const opt = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : undefined; };
   const out = (o, text) => { if (!quiet) console.log(json ? JSON.stringify(o) : text); };
   const [cmd = 'status', ...rest] = args;
-  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} · ${s.queued} queued · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}${s.skipped?.length ? `\nleft out as not valid: ${s.skipped.join(', ')}` : ''}`); }
+  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} (push ${s.push === 'every' ? 'every write' : 'when a build lands'}) · ${s.queued} queued${s.due ? ` (due: ${s.due})` : ''} · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}${s.skipped?.length ? `\nleft out as not valid: ${s.skipped.join(', ')}` : ''}`); }
   if (cmd === 'flush') { const r = flushLive(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `flush skipped (${r.skipped})` : `published ${r.commits.length} commit(s) ${r.commits.map((c) => c.slice(0, 8)).join(' ')}`) : `not published: ${r.error}`); }
-  if (cmd === 'sync') { const r = syncAll(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
+  if (cmd === 'sync') { const r = syncAll({ now: argv.includes('--now') }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}${r.held ? `, ${r.held} change(s) held for the next landing or snapshot` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
   if (cmd === 'pull') { const r = pullMain(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `pulled: ${r.taken.length} build(s) newer on main${r.taken.length ? ` (${r.taken.join(', ')})` : ''}`) : `pull failed: ${r.error}`); }
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');
     const merged = opt('merged');
-    const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
-    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
+    const sv = (k) => (typeof opt(k) === 'string' ? opt(k) : undefined);
+    const landed = sv('sha') || sv('ci') || sv('verified') ? { sha: sv('sha'), ci: sv('ci'), ciRun: sv('ci-run'), verifyHow: sv('verified'), verifyLog: sv('verify-log') } : undefined;
+    const r = linkBuild(id, { branch: sv('branch'), pr: sv('pr'), mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined, landed });
+    const refused = r.refused?.find((x) => x.id === r.build.id);
+    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt, landed: r.build.landed ?? null }, ...(refused ? { refused } : {}) }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}${refused ? `\nrefused ${refused.from} → ${refused.to}: ${refused.why}` : ''}`);
+  }
+  if (cmd === 'run-end') {
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('run-end <build> --exit n [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]');
+    const s = (n) => (typeof opt(n) === 'string' ? opt(n) : '');
+    const r = recordRunEnd(id, { exit: s('exit'), signal: s('signal'), kind: s('kind'), limit: s('limit'), account: s('account'), session: s('session'), phase: s('phase') });
+    return out({ ok: true, build: r.build.id, runEnd: r.runEnd }, `${r.build.id}: run ended exit ${r.runEnd.exit ?? '?'}${r.runEnd.signal ? ` (SIG${r.runEnd.signal})` : ''}${r.runEnd.kind ? ` · ${r.runEnd.kind}` : ''}${r.runEnd.limit ? ` · ${r.runEnd.limit}` : ''}`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
   if (cmd === 'merge-driver') {

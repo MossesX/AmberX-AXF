@@ -1,0 +1,228 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-theme-sync-pane",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:39Z",
+ "build": {
+  "id": "theme-sync-pane",
+  "title": "theme-sync-pane",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "theme-sync-pane",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/theme-sync-pane",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "1156332cec82a5a2c8a21252f72fde296f3bf986",
+ "commits": [
+  "7b52e3de0b214ba3ff1f73af7f58f66ca7f0657b"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T17:29:35Z",
+ "files": [
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/assets/app-menu/standard-desktop.json",
+  "apps/amberx-droid/src/axf/core/engines/job-type-rules.mjs",
+  "apps/amberx-droid/src/axf/core/model-policy.d.mts",
+  "apps/amberx-droid/src/axf/core/model-policy.mjs",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/core/ui-review-schema.d.mts",
+  "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/studio/Inspector.tsx",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/json/job-type.schema.json",
+  "apps/amberx-droid/src/axf/schemas/model-policy.json",
+  "apps/amberx-droid/src/axf/schemas/ui-review.json",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/assets/app-menu/standard-desktop.json",
+  "apps/axhub-web/src/axf/core/engines/job-type-rules.mjs",
+  "apps/axhub-web/src/axf/core/model-policy.d.mts",
+  "apps/axhub-web/src/axf/core/model-policy.mjs",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/ui-review-schema.d.mts",
+  "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/studio/Inspector.tsx",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/json/job-type.schema.json",
+  "apps/axhub-web/src/axf/schemas/model-policy.json",
+  "apps/axhub-web/src/axf/schemas/ui-review.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/assets/app-menu/standard-desktop.json",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/studio/Inspector.tsx",
+  "apps/demo/axf.lock.json",
+  "apps/demo/src/assets/app-menu/standard-desktop.json",
+  "apps/demo/src/axf/core/engines/job-type-rules.mjs",
+  "apps/demo/src/axf/core/model-policy.d.mts",
+  "apps/demo/src/axf/core/model-policy.mjs",
+  "apps/demo/src/axf/core/runtime.ts",
+  "apps/demo/src/axf/core/ui-review-schema.d.mts",
+  "apps/demo/src/axf/core/ui-review-schema.mjs",
+  "apps/demo/src/axf/react/AppShell.tsx",
+  "apps/demo/src/axf/react/studio/Inspector.tsx",
+  "apps/demo/src/axf/schemas/asset-types.json",
+  "apps/demo/src/axf/schemas/json/job-type.schema.json",
+  "apps/demo/src/axf/schemas/model-policy.json",
+  "apps/demo/src/axf/schemas/ui-review.json",
+  "apps/patches-web/src/assets/app-menu/standard-desktop.json",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/assets/app-menu/standard-desktop.json",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+  "apps/walkthrough-studio/src/axf/react/studio/Inspector.tsx",
+  "framework/assets/app-menu/standard-desktop.json",
+  "framework/core/runtime.ts",
+  "framework/react/AppShell.tsx",
+  "framework/react/studio/Inspector.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/assets/app-menu/standard-desktop.json",
+    "apps/amberx-droid/src/axf/core/engines/job-type-rules.mjs",
+    "apps/amberx-droid/src/axf/core/model-policy.d.mts",
+    "apps/amberx-droid/src/axf/core/model-policy.mjs",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/core/ui-review-schema.d.mts",
+    "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/studio/Inspector.tsx",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/json/job-type.schema.json",
+    "apps/amberx-droid/src/axf/schemas/model-policy.json",
+    "apps/amberx-droid/src/axf/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/assets/app-menu/standard-desktop.json",
+    "apps/axhub-web/src/axf/core/engines/job-type-rules.mjs",
+    "apps/axhub-web/src/axf/core/model-policy.d.mts",
+    "apps/axhub-web/src/axf/core/model-policy.mjs",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/ui-review-schema.d.mts",
+    "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/studio/Inspector.tsx",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/json/job-type.schema.json",
+    "apps/axhub-web/src/axf/schemas/model-policy.json",
+    "apps/axhub-web/src/axf/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/axf.lock.json",
+    "apps/demo/src/assets/app-menu/standard-desktop.json",
+    "apps/demo/src/axf/core/engines/job-type-rules.mjs",
+    "apps/demo/src/axf/core/model-policy.d.mts",
+    "apps/demo/src/axf/core/model-policy.mjs",
+    "apps/demo/src/axf/core/runtime.ts",
+    "apps/demo/src/axf/core/ui-review-schema.d.mts",
+    "apps/demo/src/axf/core/ui-review-schema.mjs",
+    "apps/demo/src/axf/react/AppShell.tsx",
+    "apps/demo/src/axf/react/studio/Inspector.tsx",
+    "apps/demo/src/axf/schemas/asset-types.json",
+    "apps/demo/src/axf/schemas/json/job-type.schema.json",
+    "apps/demo/src/axf/schemas/model-policy.json",
+    "apps/demo/src/axf/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/assets/app-menu/standard-desktop.json",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/studio/Inspector.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/assets/app-menu/standard-desktop.json",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+    "apps/walkthrough-studio/src/axf/react/studio/Inspector.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/studio/Inspector.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/src/assets/app-menu/standard-desktop.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/app-menu/standard-desktop.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/runtime.ts"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

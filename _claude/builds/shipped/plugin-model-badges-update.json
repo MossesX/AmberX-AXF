@@ -1,0 +1,169 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plugin-model-badges-update",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:52Z",
+ "build": {
+  "id": "plugin-model-badges-update",
+  "title": "Plugin model badges, open-in setting, build-engine default rules + Plugin Update plugin",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "plugin@1 records the model that built each plugin (all new + existing), shown as a badge wherever plugin info shows; field + setting for where a UI plugin opens (main area default, floating window, dialog, tab group); build engine applies default-config rules from a registry on every build; new Plugin Update plugin (installed list with model/built date/version, axHub catalog check + one-click update, Rebuild with another model with confirmed removal + install); never two installs of the same plugin, never one plugin built by two models.",
+  "verbatim": false,
+  "at": "2026-10-23T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Report build, rule in _claude, plan the fields",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-10-23T14:55:48.423Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "plugin@1 builtWith + builtAt + openIn fields; schema, loader, plugins.mjs --check; every plugin.json",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.423Z",
+   "doneAt": "2026-10-23T14:55:48.486Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Build-engine default-rules registry (build-defaults@1) applied by plugins.mjs / axf build paths; first rule: UI plugins open in the main area",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.486Z",
+   "doneAt": "2026-10-23T14:55:48.543Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Open-in setting per UI plugin (main / floating window / dialog / tab group) in its settings, hot render",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.543Z",
+   "doneAt": "2026-10-23T14:55:48.597Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Model badges: Plugin Manager, plugin switches, Settings → Plugins, app tabs/Patches plugin lists",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.597Z",
+   "doneAt": "2026-10-23T14:55:48.653Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "One-instance rule: console loader, plugin-catalog install, lifecycle install refuse a second copy of an id",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.653Z",
+   "doneAt": "2026-10-23T14:55:48.714Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Plugin Update plugin: server (installed list, axHub catalog check, update)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.714Z",
+   "doneAt": "2026-10-23T14:55:48.777Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Plugin Update: Rebuild with <model> (park a from-scratch rebuild, confirmed swap: uninstall old, install new)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.777Z",
+   "doneAt": "2026-10-23T14:55:48.829Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Plugin Update web UI + menu + settings",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.829Z",
+   "doneAt": "2026-10-23T14:55:48.885Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Tests, docs, CLAUDE.md status, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T14:55:48.885Z",
+   "doneAt": "2026-10-23T14:55:48.943Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T14:55:49Z",
+ "landedAt": "2026-10-23T14:55:49Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

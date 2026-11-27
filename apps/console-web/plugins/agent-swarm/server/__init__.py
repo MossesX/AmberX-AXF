@@ -9,6 +9,8 @@ Never exposed on the console MCP.
 
 Capability axf.crew@1 (for other plugins, e.g. the Claude plugin's agent picker): crew() = every agent with status,
 pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book).
+Capability axf.crew-sections@1 (crew-sections@1, sections.mjs): say(section, event, text, ref) = a section's event in the
+group chat as its owner; GET sections / POST sections/assign = the owners board in the settings tab.
 """
 from __future__ import annotations
 
@@ -20,6 +22,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import host_mode
 import plugin_services
 
 router = APIRouter()
@@ -134,6 +137,9 @@ async def jobs_run(request: Request) -> dict[str, Any]:
         if not isinstance(k, str) or not INPUT_KEY.match(k) or not isinstance(v, str) or len(v) > 2000:
             raise HTTPException(400, f"bad input {k!r}")
         args += ["--input", f"{k}={v}"]
+    if not host_mode.container_runs("agent-swarm"):
+        # host-service agent-swarm (HOST-SERVICES.md): the host launches jobs; the console sends them over the socket
+        return _host("run-job", {"jobType": data["jobType"], "inputs": json.dumps(inputs), "dry": data.get("dry") is True})
     if data.get("dry") is True:
         args.append("--dry-run")
     return _run(*args, cli=JOBS)
@@ -143,7 +149,18 @@ async def jobs_run(request: Request) -> dict[str, Any]:
 async def jobs_hire(request: Request) -> dict[str, Any]:
     """One-tap hire for a job type nobody owns."""
     data = await _body(request)
+    if not host_mode.container_runs("agent-swarm"):
+        return _host("hire", {"jobType": data["jobType"]})
     return _run("hire", data["jobType"], cli=JOBS)
+
+
+def _host(action: str, args: dict[str, Any]) -> dict[str, Any]:
+    """Send a job to the agent-swarm host service; a dead host answers 503 host_service_down (HostServiceGate shows it)."""
+    import host_services  # noqa: PLC0415 — the console's host client, used only in host mode
+
+    r = host_services.client().action("agent-swarm", action, args, by="agent-swarm", reason={"title": f"Agent job: {action} {args.get('jobType', '')}", "description": "Breakroom → Jobs, sent to the host job runner."})
+    out = r.get("result")
+    return out if isinstance(out, dict) else {"ok": True, "result": out}
 
 
 class RosterService:
@@ -178,3 +195,70 @@ class RosterService:
 from plugin_services import provide as _provide  # noqa: E402
 
 _provide("axf.swarm-roster@1", RosterService(), "agent-swarm")
+
+
+# ---------------------------------------------------------------- section owners (crew-sections@1)
+
+SECTIONS = CLI.parent / "sections.mjs"
+SECTION_ID = re.compile(r"^[a-z][a-z0-9-]{0,39}$")
+EVENTS = ("start", "done", "failed", "blocked", "waiting")
+
+
+class CrewSectionsService:
+    """Capability `axf.crew-sections@1`: a section that acts on its own posts its key events in the group chat as the
+    employee who owns it. `say` returns at once (the post runs on a side thread, one at a time) and never raises, so a
+    monitor or a notification is never held up by the chat. Node callers use framework/cli/crew-say.mjs instead."""
+    version = 1
+
+    def __init__(self) -> None:
+        import threading
+        self._lock = threading.Lock()
+
+    def owners(self) -> dict[str, Any]:
+        return _run("list", cli=SECTIONS).get("board") or {}
+
+    def say(self, section: str, event: str, text: str, ref: str = "") -> bool:
+        import threading
+        if not SECTION_ID.match(str(section or "")) or event not in EVENTS or not str(text or "").strip():
+            return False
+        args = ["post", section, event, str(text)[:600]]
+        if ref:
+            args += ["--ref", str(ref)[:80]]
+
+        def go() -> None:
+            with self._lock:  # one writer at a time: posts read, change and save the swarm state
+                try:
+                    _run(*args, cli=SECTIONS)
+                except Exception:  # noqa: BLE001
+                    pass
+        threading.Thread(target=go, name="crew-say", daemon=True).start()
+        return True
+
+
+_provide("axf.crew-sections@1", CrewSectionsService(), "agent-swarm")
+
+
+@router.get("/sections")
+def sections() -> dict[str, Any]:
+    """Every section that acts on its own, its owner (default and current), the events it posts, reassignment history."""
+    return _run("list", cli=SECTIONS)
+
+
+@router.post("/sections/assign")
+async def sections_assign(request: Request) -> dict[str, Any]:
+    """Brett reassigns a section: {section, agent, note?}. Saved in the data folder; Boss says it in the chat."""
+    body = await request.body()
+    if len(body) > MAX_BODY:
+        raise HTTPException(413, "too large")
+    try:
+        data = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    sec, agent = data.get("section") if isinstance(data, dict) else None, data.get("agent") if isinstance(data, dict) else None
+    if not isinstance(sec, str) or not SECTION_ID.match(sec) or not isinstance(agent, str) or not ID.match(agent):
+        raise HTTPException(400, "section and agent are needed")
+    args = ["assign", sec, agent]
+    note = data.get("note")
+    if isinstance(note, str) and note.strip():
+        args += ["--note", note.strip()[:200]]
+    return _run(*args, cli=SECTIONS)

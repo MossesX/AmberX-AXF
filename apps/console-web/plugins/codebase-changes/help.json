@@ -29,6 +29,13 @@
         "title": "Clear search and filters",
         "text": "Shows everything again.",
         "kind": "button"
+      },
+      {
+        "target": "view:codebase-changes",
+        "title": "Codebase changes banner",
+        "text": "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps that Claude fills in as it works, and the result when it's done (branch, commits, files, tests, links).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

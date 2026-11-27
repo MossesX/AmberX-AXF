@@ -15,15 +15,15 @@
 .axf-alerts__sev.is-warning { color: var(--fx-warning) }
 .axf-alerts__sev.is-error, .axf-alerts__sev.is-critical { color: var(--fx-danger) }
 .axf-alerts__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
-.axf-alerts__title { font-weight: 600; overflow-wrap: anywhere }
-.axf-alerts__item.is-unread .axf-alerts__title { font-weight: 700 }
+.axf-alerts__title { font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
+.axf-alerts__item.is-unread .axf-alerts__title { font-weight: calc(var(--fx-type-weights-strong) + 100) }
 .axf-alerts__sub { font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
 .axf-alerts__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: 0 var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); overflow-wrap: anywhere }
 .axf-alerts__body { margin: 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 10); overflow: auto }
 .axf-alerts__scroll { overflow-x: auto }
 .axf-alerts__min { width: auto; min-width: calc(var(--fx-space) * 9) }
 .axf-alerts__min.is-inherited { color: var(--fx-muted) }
-.axf-alerts__muted-th { font-weight: 500; color: var(--fx-muted) }
+.axf-alerts__muted-th { font-weight: calc(var(--fx-type-weights-medium) - 50); color: var(--fx-muted) }
 .axf-alerts__choice { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-xl); cursor: pointer }
 .axf-alerts__choice input { margin-top: var(--fx-dens-gap-xs) }
 .axf-alerts__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }

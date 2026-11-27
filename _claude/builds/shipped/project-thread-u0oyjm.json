@@ -1,0 +1,196 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-u0oyjm",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:15Z",
+ "build": {
+  "id": "project-thread-u0oyjm",
+  "title": "project-thread-u0oyjm",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-u0oyjm",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-u0oyjm",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "d5ab7cae4404ec5d0773fec32abf1d878814bc59",
+ "commits": [
+  "56f66e20e9cf6f67ed931d36045ba2465bbd3e7c"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T15:29:34Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/hub-sync/hooks.mjs",
+  "apps/console-web/plugins/hub-sync/install.mjs",
+  "apps/console-web/plugins/hub-sync/plugin.json",
+  "apps/console-web/plugins/hub-sync/test.py",
+  "apps/console-web/plugins/hub-sync/uninstall.mjs",
+  "apps/console-web/plugins/hub-sync/web/index.tsx",
+  "apps/console-web/plugins/hub-sync/web/menu.ts",
+  "apps/console-web/src/axf/libs/hubsync/core.ts",
+  "apps/console-web/src/axf/libs/hubsync/hubsync.css",
+  "apps/console-web/src/axf/libs/hubsync/index.tsx",
+  "apps/console-web/src/axf/libs/hubsync/library.json",
+  "apps/console-web/src/axf/libs/hubsync/sync.ts",
+  "apps/voicevault/app/build.gradle.kts",
+  "apps/voicevault/app/src/main/assets/axf/assets/nav-menu/voice-nav.json",
+  "apps/voicevault/app/src/main/assets/axf/axf.manifest.json",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/App.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/MainActivity.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/sync/HubSync.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/HubSyncView.kt",
+  "apps/voicevault/app/src/test/kotlin/ai/amberx/axf/voicevault/sync/HubSyncRulesTest.kt",
+  "apps/voicevault/axf.manifest.json",
+  "framework/catalog/catalog.json",
+  "framework/catalog/libraries.json",
+  "framework/catalog/status.json",
+  "framework/libs/README.md",
+  "framework/libs/hubsync/core.ts",
+  "framework/libs/hubsync/hubsync.css",
+  "framework/libs/hubsync/index.tsx",
+  "framework/libs/hubsync/library.json",
+  "framework/libs/hubsync/sync.ts",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-hubsync.mts",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "voicevault",
+   "files": [
+    "apps/voicevault/app/build.gradle.kts",
+    "apps/voicevault/app/src/main/assets/axf/assets/nav-menu/voice-nav.json",
+    "apps/voicevault/app/src/main/assets/axf/axf.manifest.json",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/App.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/MainActivity.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/sync/HubSync.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/HubSyncView.kt",
+    "apps/voicevault/app/src/test/kotlin/ai/amberx/axf/voicevault/sync/HubSyncRulesTest.kt",
+    "apps/voicevault/axf.manifest.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "hub-sync",
+   "files": [
+    "apps/console-web/plugins/hub-sync/hooks.mjs",
+    "apps/console-web/plugins/hub-sync/install.mjs",
+    "apps/console-web/plugins/hub-sync/plugin.json",
+    "apps/console-web/plugins/hub-sync/test.py",
+    "apps/console-web/plugins/hub-sync/uninstall.mjs",
+    "apps/console-web/plugins/hub-sync/web/index.tsx",
+    "apps/console-web/plugins/hub-sync/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/libs/hubsync/core.ts",
+    "apps/console-web/src/axf/libs/hubsync/hubsync.css",
+    "apps/console-web/src/axf/libs/hubsync/index.tsx",
+    "apps/console-web/src/axf/libs/hubsync/library.json",
+    "apps/console-web/src/axf/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/hubsync/core.ts",
+    "framework/libs/hubsync/hubsync.css",
+    "framework/libs/hubsync/index.tsx",
+    "framework/libs/hubsync/library.json",
+    "framework/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/libraries.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-hubsync.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

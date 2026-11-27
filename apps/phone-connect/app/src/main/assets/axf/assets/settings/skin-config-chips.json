@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "skin-config-chips",
+  "name": "Skin config: compact chip grid",
+  "version": "1.0.0",
+  "description": "Every category is one chip: tap to allow or lock it all (a dash = partly allowed). The menu depth and toolbar group steppers sit under the chips. Quickest to scan; options one by one are in the other two layouts.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin-config",
+    "ui-choices:skin-config"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "view": "chips"
+  }
+}

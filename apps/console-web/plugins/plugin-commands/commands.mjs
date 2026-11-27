@@ -12,6 +12,7 @@
  *   node commands.mjs registry [--json]            the whole registry
  *   node commands.mjs plan                         one control@1 command as JSON on stdin ({command, grants?, by?, enabled?, registry?})
  *   node commands.mjs bundle                       {registry, tools} for {enabled} on stdin (the console server)
+ *   node commands.mjs serve                        plan / finish / bundle as JSON lines on stdin, for one long-lived runner (the console server)
  *   node commands.mjs finish                       the answer of a dispatched command ({command, outcome} on stdin)
  *   node commands.mjs check [folder…] [--json]     coverage (what the lifecycle check runs)
  *   node commands.mjs tools | routes | cli         the projections
@@ -140,7 +141,7 @@ function dataFile(dir, file) {
 
 class PluginError extends Error { constructor(code, message, extra = {}) { super(message); this.code = code; this.extra = extra; } }
 
-const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: p.app, name: p.name, command: c.id, title: c.title, description: c.description, kind: c.kind, effect: c.effect, confirm: c.confirm, run: c.run.route ? 'route' : c.run.action ? 'action' : c.run.data ? 'data' : 'info', tool: p.app === 'console-web' ? commandToolName(p.folder, c.id) : null, enabled: p.enabled !== false, ...(c.context ? { context: true } : {}) });
+const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: p.app, name: p.name, command: c.id, title: c.title, description: c.description, kind: c.kind, effect: c.effect, confirm: c.confirm, run: c.run.route ? 'route' : c.run.action ? 'action' : c.run.data ? 'data' : 'info', tool: p.app === 'console-web' ? c.tool || commandToolName(p.folder, c.id) : null, enabled: p.enabled !== false, ...(c.context ? { context: true } : {}) });
 
 /**
  * Gate and plan one plugins.* command. Answers the control@1 envelope for list / get / local reads and failures, or
@@ -256,6 +257,37 @@ function show(r, json) {
   console.log(JSON.stringify(rest, null, 2));
 }
 
+/**
+ * One long-lived runner for the console server: a JSON request per line on stdin ({id, op: plan | finish | bundle, body}),
+ * one JSON answer per line on stdout ({id, ok, result} or {id, ok: false, error}). The server used to start a Node
+ * process for the plan and another for the finish of every command. A plan may name the registry by `registrySig`
+ * after sending it once, so the registry is not re-sent with every command.
+ */
+export function serveOne(req, state = {}) {
+  const body = isObj(req.body) ? req.body : {};
+  if (req.op === 'plan') {
+    if (body.registry && typeof body.registrySig === 'string') { state.sig = body.registrySig; state.reg = body.registry; }
+    const reg = body.registry ?? (typeof body.registrySig === 'string' && body.registrySig === state.sig ? state.reg : undefined);
+    if (reg === undefined && typeof body.registrySig === 'string') return { id: req.id, ok: false, error: 'registry_needed' };
+    return { id: req.id, ok: true, result: plan(body.command ?? {}, { grants: body.grants ?? ['*'], by: body.by ?? '', enabled: body.enabled ?? null, reg: reg ?? null }) };
+  }
+  if (req.op === 'finish') return { id: req.id, ok: true, result: finish(body.command ?? {}, body.outcome ?? {}) };
+  if (req.op === 'bundle') { const reg = registry({ enabled: body.enabled ?? null }); return { id: req.id, ok: true, result: { registry: reg, tools: pluginCommandTools(reg) } }; }
+  return { id: req.id, ok: false, error: `unknown op ${req.op}` };
+}
+
+async function serve() {
+  const { createInterface } = await import('node:readline');
+  const state = {};
+  for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {
+    if (!line.trim()) continue;
+    let out;
+    let id = null;
+    try { const req = JSON.parse(line); id = req?.id ?? null; out = serveOne(req, state); } catch (e) { out = { id, ok: false, error: String(e?.message ?? e).slice(0, 600) }; } // the id always goes back: the caller waits for it
+    process.stdout.write(`${JSON.stringify(out)}\n`);
+  }
+}
+
 export async function main(argv) {
   const f = cliFlags(argv);
   const [cmd, ...rest] = f._;
@@ -275,6 +307,7 @@ export async function main(argv) {
     return 0;
   }
   if (cmd === 'bundle') { const body = JSON.parse(read('/dev/stdin') || '{}'); const reg = registry({ enabled: body.enabled ?? null }); console.log(JSON.stringify({ registry: reg, tools: pluginCommandTools(reg) })); return 0; }
+  if (cmd === 'serve') { await serve(); return 0; }
   if (cmd === 'finish') { const body = JSON.parse(read('/dev/stdin') || '{}'); console.log(JSON.stringify(finish(body.command ?? {}, body.outcome ?? {}))); return 0; }
   if (cmd === 'check') {
     const reg = registry({ folders: rest.length ? rest : null, apps: ['console-web'] });

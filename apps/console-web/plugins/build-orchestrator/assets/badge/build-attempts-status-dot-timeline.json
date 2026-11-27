@@ -1,0 +1,50 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "build-attempts-status-dot-timeline",
+ "name": "build-attempts-status: Dot + word, attempts as a timeline",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Status as a coloured dot and its word (quieter in long tables); the Attempts tab is a vertical timeline, one entry per try with its result colour. Easiest to read on the phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-attempts-status",
+  "choice-option:dot-timeline"
+ ],
+ "data": {
+  "icon": "refresh",
+  "label": "fixing",
+  "tone": "warning",
+  "shape": "dot",
+  "statuses": {
+   "running": [
+    "building",
+    "accent"
+   ],
+   "fixing": [
+    "fixing",
+    "warning"
+   ],
+   "landing": [
+    "landing",
+    "accent"
+   ],
+   "landed": [
+    "landed",
+    "success"
+   ],
+   "complete": [
+    "complete",
+    "success"
+   ],
+   "escalated": [
+    "escalated",
+    "danger"
+   ]
+  },
+  "attempts": {
+   "layout": "timeline",
+   "order": "newest-first"
+  }
+ }
+}

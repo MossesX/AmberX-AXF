@@ -299,6 +299,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       copy: () => { const x = t(); if (x?.hasSelection()) void navigator.clipboard?.writeText(x.getSelection()); },
       paste: (plain) => void pasteFromClipboard(plain), selectAll: () => t()?.selectAll(), clear: () => t()?.clear(), restart,
       focus: () => t()?.focus(), menu: (x, y) => setMenu({ x, y }),
+      selection: () => t()?.getSelection() ?? '', type: (text) => send(text),
     });
   }); // every render: the handle always carries the current state
   useEffect(() => { if (active) { const f = fitRef.current; setTimeout(() => { try { f?.fit(); } catch { /* hidden */ } termRef.current?.focus(); }, 0); } }, [active]);

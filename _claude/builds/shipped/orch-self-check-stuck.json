@@ -1,0 +1,128 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orch-self-check-stuck",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:24Z",
+ "build": {
+  "id": "orch-self-check-stuck",
+  "title": "orch-self-check-stuck",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "orch-self-check-stuck",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\n\nLaunched directly by Brett's request (voice) because the dispatcher is stuck. Orchestrator build record id (filed separately, will be marked built after): `orchestrator-self-check-when-stuck-verify-each-a`.\n\n## Problem\nThe build pipeline (build-orchestrator plugin, pipeline-status) shows every queued build waiting with \"no Claude account is signed in on the VPS\" and an empty accounts list, while claude-accounts/list shows mossesx-max- (Max) active and signed in, account-3 (Hulu) saved, and API workers mossesx-api and account-5. The dispatcher's account view is out of sync with claude-workers / claude-login.\n\n## Do\n1. Find why pipeline-status `accounts` is empty and why the dispatcher thinks no account is signed in (compare build-orchestrator pipeline code with deploy/claude-workers.mjs and claude-login.mjs). Fix the root cause.\n2. Self-check: on console load, on every dispatcher tick where queued builds wait with no launch, and on demand, the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, free slots), rebuilds its account list from that, and logs what it found.\n3. Stale reaper: release running counts / slots / build records with no live tmux session or claude process; requeue or mark their builds. Overlaps pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper: fold in what fits.\n4. Notify AmberX when the self-check fixes something or finds an account it can't use.\n5. Expose the self-check as a control command (API/voice) and show its last result in the orchestrator UI.\n6. Tests green, report in _claude/builds/reports/, THREADS row, commit, push, PR. Keep it small; stop and report if blocked.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-orch-self-check-stuck--sully",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-09T16:25:09.655Z",
+   "endedAt": "2026-11-09T16:40:08.059Z",
+   "exit": 0,
+   "costUsd": 4.5234
+  }
+ ],
+ "steps": [],
+ "branch": "claude/orch-self-check-stuck",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "45aad4cef90c84c770f95cfcea1286e4d050a86c",
+ "commits": [
+  "fb837940b37412152faeebd3a43ebfec3fb584f7"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-10T03:11:02Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "deploy/claude-workers.mjs",
+  "deploy/claude-workers.test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-workers.mjs",
+    "deploy/claude-workers.test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261109-e0f2d156",
+   "name": "Pipeline tab: dispatcher self-check card",
+   "status": "approved",
+   "group": "g-20261109-4134a39d",
+   "url": "/review/r-20261109-e0f2d156"
+  }
+ ],
+ "cost": {
+  "usd": 4.5234,
+  "estimated": false,
+  "tokens": {
+   "input": 196,
+   "output": 1362,
+   "cacheRead": 10180989,
+   "cacheWrite": 162760
+  }
+ },
+ "report": "",
+ "open": []
+}

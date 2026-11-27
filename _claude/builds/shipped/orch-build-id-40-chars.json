@@ -1,0 +1,149 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orch-build-id-40-chars",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:09:27Z",
+ "build": {
+  "id": "orch-build-id-40-chars",
+  "title": "orch-build-id-40-chars",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "orch-build-id-40-chars",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/orch-build-id-40-chars",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "f9391678a12767fa5fd2a10a73562ba1b5a0a03f",
+ "commits": [
+  "f9391678a12767fa5fd2a10a73562ba1b5a0a03f",
+  "9aa384f5ea82578294d973bad1cabde59378f6c1",
+  "6b88c46e2cdd23d3e8a54c7460ffa38eb7ea49aa"
+ ],
+ "mergedAt": "2026-11-13T17:22:23Z",
+ "landedAt": "2026-11-13T17:22:23Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "apps/console-web/plugins/build-orchestrator/build-id.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/core/build-id.d.mts",
+  "framework/core/build-id.mjs",
+  "framework/plan/builds-merge-core.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/pending-core.mjs",
+  "framework/spec/BUILDS.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-id.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/build-id.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-merge-core.mjs",
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/pending-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BUILDS.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-id.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-id.d.mts",
+    "framework/core/build-id.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/web/plan-core.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43472160379",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43472158256",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

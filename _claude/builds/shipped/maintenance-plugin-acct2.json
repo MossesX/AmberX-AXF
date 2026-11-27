@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-maintenance-plugin-acct2",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:28Z",
+ "build": {
+  "id": "maintenance-plugin-acct2",
+  "title": "maintenance-plugin-acct2",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "maintenance-plugin-acct2",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/maintenance-plugin-acct2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "4b80f6b21a99c9c51d835e4ea85b8aabbe3d490d",
+ "commits": [
+  "4b80f6b21a99c9c51d835e4ea85b8aabbe3d490d"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-04T20:36:23Z",
+ "files": [
+  "deploy/install-console.sh"
+ ],
+ "areas": [
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

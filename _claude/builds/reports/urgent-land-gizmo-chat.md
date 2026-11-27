@@ -34,13 +34,29 @@ this PR). Model: Opus 5.5. Branch `claude/gizmo-companion`, PR #296.
 The rest of Addendum 4–8 (`appearance-addon` and the four other panels) stay on the gizmo-companion brief for the
 orchestrator to split after these two.
 
-## Landing
+## Landed
 
-Lenny's `land-round-2` got a note to skip #296. After CI is green the push banner's auto-merge takes it (up to date
-with main, CI on the head). AmberX web (`amberx.amberxai.com`) auto-updates from main every 5 minutes; the console
-picks up the shared library and Gizmo's agent add-on on its next update.
+- **PR #296 merged** at 15:24 UTC, Nov 4 2026 (merge commit `471e66fe`), CI green on its head `09f142608` (Build
+  engine sweep, Web Dev Console + Python API, AmberX APK + native tests, Gradle). Main moved three times while landing
+  (#298 lazy loader, #307 expenses-port); each time main was merged back in and CI re-run before the merge. The push
+  banner had 12 older PRs ahead in its queue, so the merge was done directly (GraphQL, pinned to the tested head).
+- CI fixes on the way: tool-card list marked not a toolbar; the chat window's page-head opt-out (design language);
+  the lifecycle check's stale references (the claude-session header and the companion api.ts comment named console
+  plugin paths; reworded, baked copies and lock hashes updated).
+- **Redeployed** by the VPS updaters: AmberX web (`amberx-web`, serves the window build) and the Dev Console (its
+  rebuild first hit Docker layer-extraction errors; `urgent-approval-popup-crash` re-ran the update and it came back).
+- **Live check:** the console's assistant lists agent `gizmo`; one message got a streamed answer (79 events, stored in
+  the chat's history): "I'm Gizmo, your AmberX sidekick: I chat with you, keep tabs on the crew and the codebase, and
+  run anything on the server only once you approve it." The test chat was deleted. AmberX's proxy to it
+  (`/api/console/…`) answers behind the axHub wall (401 without a hub session, as designed).
 
-## Screenshot
+## Not done / follow-ups
 
-A local phone shot isn't possible: the AmberX build waits for the live axHub look, and the hub only answers its
-allow-listed origins. The shot is taken from the live deploy after the merge (see below).
+- **No phone screenshot.** A local AmberX build waits for the live axHub look, and the hub only answers its
+  allow-listed origins; the live app needs a hub sign-in this session doesn't have.
+- **GitHub API quota.** Only the old personal token is on the VPS (GitHub App: "not set up" in `github-token.mjs
+  status`), and the sessions running at once used up its 5,000 REST calls an hour twice during this landing. Setting up
+  the GitHub App (Settings → Plugins → GitHub) gives the console and the agents their own quota.
+- **Duplicated steps in the store.** `gizmo-voice` and `gizmo-terminal` came back with every step repeated 16 times
+  (48 and 64 steps, all with fresh uids) a few minutes after they were added; deduplicated back to 3 and 4. Something
+  that re-normalises builds (live merge or reconciler) repeated them; worth a look if it happens again.

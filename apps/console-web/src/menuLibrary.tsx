@@ -1,7 +1,7 @@
 /**
  * Console application menu (library `ai.amberx.axf.console.menu`, installed with the console's built-ins).
  *
- * The static menus are the app-menu asset `console` (src/assets/app-menu/console.json); this library adds what needs
+ * The static menus are the app-menu asset `default-console-web-appmenu` (src/assets/app-menu/default-console-web-appmenu.json, app-menus@1); this library adds what needs
  * code: the View menu's chrome toggles (src/menu.ts), the live lists (pending builds, queue steps left, unbuilt
  * features, libraries, modules, boilerplates, plugins), the "Pending builds" badge, and the actions the asset names:
  *   console.search                  focus the search bar, or open the search dialog when no search bar is shown
@@ -15,8 +15,8 @@
  * neither the banner nor the toolbar shows a search bar), and a note at the top of every view offers to bring the menu
  * bar back while the menu bar and the side navigation are both hidden.
  *
- * Once per browser the console moves to the `console` menu when an older saved look (the hub's appearance document)
- * still picks another app menu; picking another one afterwards sticks.
+ * The app menu is the console's own (app-menus@1): a saved look that picks a shared or another app's menu falls back
+ * to default-console-web-appmenu in the runtime. Once per browser the console moves to the `amber` context menu.
  */
 import { useEffect, useRef } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from './axf/core';
@@ -29,10 +29,10 @@ import type { ConsoleStore } from './store';
 import { bundledPlugins, fetchPluginStatus } from './plugins';
 import { CONSOLE_MENU_ID, CONSOLE_PROVIDERS as P, PENDING_BADGE, consoleMenuContributions } from './menu';
 
-const REFRESH_MS = 3 * 60_000;
 const SEARCH_DIALOG = 'console-search';
-const MIGRATED_KEY = 'axf-console:menu-console-v1';
-const MOVES: [AssetType, string, string][] = [['app-menu', 'console', MIGRATED_KEY], ['context-menu', 'amber', 'axf-console:context-amber-v1']];
+// app-menus@1: the app menu needs no move any more; the runtime refuses any app menu not built for the console and
+// falls back to default-console-web-appmenu, so an older saved pick lands on the console's own menu by itself.
+const MOVES: [AssetType, string, string][] = [['context-menu', 'amber', 'axf-console:context-amber-v1']];
 const store = () => (globalThis as unknown as { __axfConsole?: ConsoleStore }).__axfConsole;
 
 /* ---------------- where console.open goes (a fixed list: nothing else can be opened through it) ---------------- */
@@ -56,6 +56,10 @@ const OPEN: Record<string, () => string> = {
   'axhub-account': () => accountUrl(hubBase),
   'plugin-guide': () => `${REPO}/blob/main/apps/console-web/plugins/README.md`,
   docs: () => `${REPO}/tree/main/framework/spec`,
+};
+/** console.open keys whose page an axHub plugin has in the console (its `<view>.open` action, found by action id). */
+const IN_CONSOLE: Record<string, string> = {
+  axhub: 'axhub-hub.open', 'axhub-approvals': 'axhub-approvals.open', 'axhub-apps': 'axhub-apps.open', 'axhub-users': 'axhub-users.open', 'axhub-account': 'axhub-account.open',
 };
 const openTab = (url: string) => { globalThis.open?.(url, '_blank', 'noopener,noreferrer'); };
 
@@ -248,10 +252,10 @@ function start(rt: AxfRuntime) {
   if (started) return;
   started = true;
   void loadHub();
+  // The pending count is a badge inside the Builds menu: it is read when that list is drawn (the provider above) and
+  // when a pending build changes here, not at start or on a timer.
   const badge = () => void pendingOpen().then((l) => rt.setBadge(PENDING_BADGE, l.length), () => { /* offline: keep */ });
-  badge();
   globalThis.addEventListener('axf:pending-changed', badge);
-  setInterval(badge, REFRESH_MS);
   // Ctrl/Cmd+K must always search, even with every search bar hidden.
   globalThis.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'k' || e.altKey || e.shiftKey) return;
@@ -283,7 +287,12 @@ export const menuLibrary: AxfWebLibrary = {
     start(rt);
     rt.actions.register('console.search', () => search(rt), { label: 'Search everything' });
     rt.actions.register('amber.plugin', ([folder]) => { if (folder) openPlugin(rt, folder); }, { label: 'Open a plugin where it opens', params: true, searchable: false });
-    rt.actions.register('console.open', ([key]) => { const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning'); }, { label: 'Open an app or page in a new tab', params: true, searchable: false });
+    rt.actions.register('console.open', ([key]) => {
+      // The hub's pages are console plugins (module axHub, Nov 20 2026): one that is installed opens here, not in a tab.
+      const here = key ? IN_CONSOLE[key] : undefined;
+      if (here && rt.actions.get(here)) { rt.dispatch(here); return; }
+      const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning');
+    }, { label: 'Open an app or page (the hub\'s pages in the console when their plugin is installed, else a new tab)', params: true, searchable: false });
     rt.actions.register('console.reveal', ([view, text, how]) => { if (view) reveal(rt, view, decodeURIComponent(text ?? ''), how === 'pick'); }, { label: 'Show a row in a view', params: true, searchable: false });
     rt.actions.register('console.pending.open', ([id]) => {
       rt.navigate('pending');

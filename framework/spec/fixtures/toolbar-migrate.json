@@ -1,0 +1,6636 @@
+{
+  "contract": "page-toolbar@1",
+  "starters": {
+    "amberx-signature": {
+      "needed": true,
+      "record": {
+        "id": "amberx-signature",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search AmberX…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "groups": [
+          {
+            "id": "pages",
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "nav:home"
+              }
+            ],
+            "provider": "views",
+            "max": 6,
+            "label": "Pages"
+          },
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "amberx-day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "surface": "glass",
+        "collapsible": true,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search AmberX…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "amberx-day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search AmberX…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "amberx-day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "appearance-studio": {
+      "needed": true,
+      "record": {
+        "id": "appearance-studio",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "package",
+            "items": [
+              {
+                "id": "next-package",
+                "icon": "package",
+                "label": "Next design package",
+                "action": "design.package:next",
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "themes",
+            "items": [
+              {
+                "id": "next-color",
+                "icon": "palette",
+                "label": "Next colour theme",
+                "action": "swap:color-theme:next",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "swap:style-theme:next",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "swap:layout:next",
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "roll",
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize the look",
+                "action": "assets.random",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset the look",
+                "action": "assets.reset",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "appearance",
+                "icon": "sliders",
+                "label": "Appearance settings…",
+                "action": "settings.open:appearance"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "surface": "glass",
+        "collapsible": true,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": true,
+        "search": null,
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": [
+          {
+            "id": "package",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-package",
+                "icon": "package",
+                "label": "Next design package",
+                "action": "action:design.package:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "themes",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-color",
+                "icon": "palette",
+                "label": "Next colour theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "roll",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize the look",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset the look",
+                "action": "action:assets.reset",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "appearance",
+                "icon": "sliders",
+                "label": "Appearance settings…",
+                "action": "action:settings.open:appearance",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": true,
+        "search": null,
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": [
+          {
+            "id": "package",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-package",
+                "icon": "package",
+                "label": "Next design package",
+                "action": "action:design.package:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "themes",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-color",
+                "icon": "palette",
+                "label": "Next colour theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "roll",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize the look",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset the look",
+                "action": "action:assets.reset",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "appearance",
+                "icon": "sliders",
+                "label": "Appearance settings…",
+                "action": "action:settings.open:appearance",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "approvals-desk": {
+      "needed": true,
+      "record": {
+        "id": "approvals-desk",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[1].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "review",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save"
+              }
+            ]
+          },
+          {
+            "id": "inbox",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "counter",
+            "id": "approvals",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "counter",
+            "id": "approvals",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "review",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "inbox",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "counter",
+            "id": "approvals",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "review",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "inbox",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "brand-bar": {
+      "needed": true,
+      "record": {
+        "id": "brand-bar",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…",
+          "maxResults": 10
+        },
+        "groups": [],
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "mark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "label",
+            "id": "version",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "surface": "raised",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "raised",
+        "divider": false,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search…",
+          "maxResults": 10
+        },
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "mark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "label",
+            "id": "version",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": []
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "raised",
+        "divider": false,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search…",
+          "maxResults": 10
+        },
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "mark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "label",
+            "id": "version",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": []
+      },
+      "errors": []
+    },
+    "chrome-toggles": {
+      "needed": true,
+      "record": {
+        "id": "chrome-toggles",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "chrome",
+            "items": [],
+            "provider": "chrome",
+            "max": 8,
+            "label": "Bars and menus"
+          },
+          {
+            "id": "spacing",
+            "items": [
+              {
+                "id": "spacing-tight",
+                "icon": "minimize",
+                "label": "Super tight spacing",
+                "action": "spacing:tight",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "spacing:compact",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "spacing:regular",
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ],
+        "surface": "glass",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "chrome",
+            "label": "Bars and menus",
+            "provider": "chrome",
+            "max": 8,
+            "items": []
+          },
+          {
+            "id": "spacing",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "spacing-tight",
+                "icon": "minimize",
+                "label": "Super tight spacing",
+                "action": "action:spacing:tight",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "action:spacing:compact",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "action:spacing:regular",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "glass",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "chrome",
+            "label": "Bars and menus",
+            "provider": "chrome",
+            "max": 8,
+            "items": []
+          },
+          {
+            "id": "spacing",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "spacing-tight",
+                "icon": "minimize",
+                "label": "Super tight spacing",
+                "action": "action:spacing:tight",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "action:spacing:compact",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "action:spacing:regular",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "data-grid-tools": {
+      "needed": true,
+      "record": {
+        "id": "data-grid-tools",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "rows",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "file.new"
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "edit.copy"
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "edit.delete"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "file.export"
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "items": [],
+            "provider": "views",
+            "max": 6,
+            "label": "Pages"
+          }
+        ],
+        "density": "compact",
+        "surface": "flat",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "rows",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "action:edit.delete",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "rows",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "action:edit.delete",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "developer-ops": {
+      "needed": true,
+      "record": {
+        "id": "developer-ops",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "run",
+            "items": [
+              {
+                "id": "build",
+                "icon": "hammer",
+                "label": "Build",
+                "action": "run.build"
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "run.deploy"
+              }
+            ]
+          },
+          {
+            "id": "tools",
+            "items": [
+              {
+                "id": "console",
+                "icon": "terminal",
+                "label": "Dev console",
+                "action": "dev.console"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "density": "compact",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "groups": [
+          {
+            "id": "run",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "build",
+                "icon": "hammer",
+                "label": "Build",
+                "action": "action:run.build",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "action:run.deploy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "tools",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "console",
+                "icon": "terminal",
+                "label": "Dev console",
+                "action": "action:dev.console",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "groups": [
+          {
+            "id": "run",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "build",
+                "icon": "hammer",
+                "label": "Build",
+                "action": "action:run.build",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "action:run.deploy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "tools",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "console",
+                "icon": "terminal",
+                "label": "Dev console",
+                "action": "action:dev.console",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "dialog-launcher": {
+      "needed": true,
+      "record": {
+        "id": "dialog-launcher",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Open a dialog…",
+          "maxResults": 10,
+          "kinds": [
+            "dialog",
+            "action"
+          ]
+        },
+        "groups": [
+          {
+            "id": "dialogs",
+            "items": [],
+            "provider": "dialogs",
+            "max": 8,
+            "label": "Dialogs"
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Open a dialog…",
+          "maxResults": 10,
+          "kinds": [
+            "dialog",
+            "action"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "dialogs",
+            "label": "Dialogs",
+            "provider": "dialogs",
+            "max": 8,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Open a dialog…",
+          "maxResults": 10,
+          "kinds": [
+            "dialog",
+            "action"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "dialogs",
+            "label": "Dialogs",
+            "provider": "dialogs",
+            "max": 8,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "editor-classic": {
+      "needed": true,
+      "record": {
+        "id": "editor-classic",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "file.new"
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "file.export"
+              }
+            ]
+          },
+          {
+            "id": "history",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              }
+            ]
+          },
+          {
+            "id": "clipboard",
+            "items": [
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "edit.cut"
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "edit.copy"
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "edit.paste"
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "edit.delete"
+              }
+            ]
+          }
+        ],
+        "density": "compact",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "history",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "clipboard",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "action:edit.delete",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "history",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "clipboard",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "delete",
+                "icon": "trash",
+                "label": "Delete",
+                "action": "action:edit.delete",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "enterprise-command": {
+      "needed": true,
+      "record": {
+        "id": "enterprise-command",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "file.new"
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "file.export"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "surface": "raised",
+        "collapsible": true,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export…",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "kiosk-lite": {
+      "needed": true,
+      "record": {
+        "id": "kiosk-lite",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "help",
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "help.docs"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "density": "roomy",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "roomy",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "groups": [
+          {
+            "id": "help",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "roomy",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "groups": [
+          {
+            "id": "help",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "labeled-actions": {
+      "needed": true,
+      "record": {
+        "id": "labeled-actions",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": true,
+        "groups": [
+          {
+            "id": "doc",
+            "items": [
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save",
+                "requires": "files.write"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export",
+                "action": "file.export",
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Theme",
+                "action": "swap:color-theme:next"
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Layout",
+                "action": "swap:layout:next"
+              }
+            ]
+          },
+          {
+            "id": "ship",
+            "items": [
+              {
+                "id": "build",
+                "icon": "package",
+                "label": "Build",
+                "action": "run.build",
+                "requires": "dev.tools"
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "run.deploy",
+                "requires": "dev.deploy"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "doc",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "ship",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "build",
+                "icon": "package",
+                "label": "Build",
+                "action": "action:run.build",
+                "badge": null,
+                "checked": null,
+                "requires": "dev.tools"
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "action:run.deploy",
+                "badge": null,
+                "checked": null,
+                "requires": "dev.deploy"
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "doc",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              },
+              {
+                "id": "export",
+                "icon": "download",
+                "label": "Export",
+                "action": "action:file.export",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "ship",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "build",
+                "icon": "package",
+                "label": "Build",
+                "action": "action:run.build",
+                "badge": null,
+                "checked": null,
+                "requires": "dev.tools"
+              },
+              {
+                "id": "deploy",
+                "icon": "rocket",
+                "label": "Deploy",
+                "action": "action:run.deploy",
+                "badge": null,
+                "checked": null,
+                "requires": "dev.deploy"
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "live-pages": {
+      "needed": true,
+      "record": {
+        "id": "live-pages",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Find a page…",
+          "maxResults": 10,
+          "kinds": [
+            "view"
+          ]
+        },
+        "groups": [
+          {
+            "id": "pages",
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "nav:home"
+              }
+            ],
+            "provider": "views",
+            "max": 10,
+            "label": "Pages"
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Find a page…",
+          "maxResults": 10,
+          "kinds": [
+            "view"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 10,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Find a page…",
+          "maxResults": 10,
+          "kinds": [
+            "view"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 10,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "minimal-glass": {
+      "needed": true,
+      "record": {
+        "id": "minimal-glass",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[0].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search",
+          "maxResults": 8
+        },
+        "groups": [
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              }
+            ]
+          }
+        ],
+        "surface": "glass",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "glass",
+        "divider": false,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search",
+          "maxResults": 8
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "center",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "glass",
+        "divider": false,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search",
+          "maxResults": 8
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "navigator-strip": {
+      "needed": true,
+      "record": {
+        "id": "navigator-strip",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "nav",
+            "items": [],
+            "provider": "nav",
+            "max": 12,
+            "label": "Navigation"
+          }
+        ],
+        "density": "compact",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "nav",
+            "label": "Navigation",
+            "provider": "nav",
+            "max": 12,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "nav",
+            "label": "Navigation",
+            "provider": "nav",
+            "max": 12,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "ops-monitor": {
+      "needed": true,
+      "record": {
+        "id": "ops-monitor",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              },
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "help.docs"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 30
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 40
+          }
+        ],
+        "surface": "raised",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 30
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 40
+          }
+        ],
+        "groups": [
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 30
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 40
+          }
+        ],
+        "groups": [
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "portal-header": {
+      "needed": true,
+      "record": {
+        "id": "portal-header",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "nav",
+            "items": [],
+            "provider": "nav",
+            "max": 6,
+            "label": "Navigation"
+          }
+        ],
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "wordmark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "spacer",
+            "id": "push",
+            "at": "end",
+            "order": 0
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "surface": "raised",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "raised",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "wordmark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "spacer",
+            "id": "push",
+            "at": "end",
+            "order": 0
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": [
+          {
+            "id": "nav",
+            "label": "Navigation",
+            "provider": "nav",
+            "max": 6,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "raised",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "wordmark",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "spacer",
+            "id": "push",
+            "at": "end",
+            "order": 0
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 10
+          }
+        ],
+        "groups": [
+          {
+            "id": "nav",
+            "label": "Navigation",
+            "provider": "nav",
+            "max": 6,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "power-user": {
+      "needed": true,
+      "record": {
+        "id": "power-user",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "file.new"
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "edit.cut"
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "edit.copy"
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "edit.paste"
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              },
+              {
+                "id": "shortcuts",
+                "icon": "keyboard",
+                "label": "Keyboard shortcuts",
+                "action": "view.shortcuts"
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "items": [],
+            "provider": "views",
+            "max": 6,
+            "label": "Pages"
+          },
+          {
+            "id": "chrome",
+            "items": [],
+            "provider": "chrome",
+            "max": 4,
+            "label": "Bars"
+          }
+        ],
+        "density": "compact",
+        "collapsible": true,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": true,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "shortcuts",
+                "icon": "keyboard",
+                "label": "Keyboard shortcuts",
+                "action": "action:view.shortcuts",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": []
+          },
+          {
+            "id": "chrome",
+            "label": "Bars",
+            "provider": "chrome",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": true,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "shortcuts",
+                "icon": "keyboard",
+                "label": "Keyboard shortcuts",
+                "action": "action:view.shortcuts",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": []
+          },
+          {
+            "id": "chrome",
+            "label": "Bars",
+            "provider": "chrome",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "quick-create": {
+      "needed": true,
+      "record": {
+        "id": "quick-create",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "file.new"
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              }
+            ]
+          },
+          {
+            "id": "dialogs",
+            "items": [],
+            "provider": "dialogs",
+            "max": 4,
+            "label": "Create"
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "dialogs",
+            "label": "Create",
+            "provider": "dialogs",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open-file",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "dialogs",
+            "label": "Create",
+            "provider": "dialogs",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "reader-bar": {
+      "needed": true,
+      "record": {
+        "id": "reader-bar",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "labels",
+        "align": "spread",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "spacing",
+            "items": [
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "spacing:compact",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "spacing:regular",
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "help",
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "help.docs"
+              }
+            ]
+          }
+        ],
+        "density": "compact",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "labels",
+        "align": "spread",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "spacing",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "action:spacing:compact",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "action:spacing:regular",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "help",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "labels",
+        "align": "spread",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "spacing",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "spacing-compact",
+                "icon": "list",
+                "label": "Compact spacing",
+                "action": "action:spacing:compact",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "spacing-regular",
+                "icon": "grid",
+                "label": "Regular spacing",
+                "action": "action:spacing:regular",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          },
+          {
+            "id": "help",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "docs",
+                "icon": "help",
+                "label": "Documentation",
+                "action": "action:help.docs",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "review-flow": {
+      "needed": true,
+      "record": {
+        "id": "review-flow",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "history",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save"
+              }
+            ]
+          },
+          {
+            "id": "windows",
+            "items": [],
+            "provider": "windows",
+            "max": 6,
+            "label": "Open windows"
+          },
+          {
+            "id": "inbox",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "history",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "windows",
+            "label": "Open windows",
+            "provider": "windows",
+            "max": 6,
+            "items": []
+          },
+          {
+            "id": "inbox",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "history",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "windows",
+            "label": "Open windows",
+            "provider": "windows",
+            "max": 6,
+            "items": []
+          },
+          {
+            "id": "inbox",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "search-first": {
+      "needed": true,
+      "record": {
+        "id": "search-first",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "chrome",
+            "items": [],
+            "provider": "chrome",
+            "max": 4,
+            "label": "Bars and menus"
+          }
+        ],
+        "widgets": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "groups": [
+          {
+            "id": "chrome",
+            "label": "Bars and menus",
+            "provider": "chrome",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "start",
+            "order": 0
+          }
+        ],
+        "groups": [
+          {
+            "id": "chrome",
+            "label": "Bars and menus",
+            "provider": "chrome",
+            "max": 4,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "settings-jump": {
+      "needed": true,
+      "record": {
+        "id": "settings-jump",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search settings…",
+          "maxResults": 12,
+          "kinds": [
+            "setting",
+            "settings-tab"
+          ]
+        },
+        "groups": [
+          {
+            "id": "settings",
+            "items": [],
+            "provider": "settings",
+            "max": 10,
+            "label": "Settings pages"
+          }
+        ],
+        "density": "compact",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search settings…",
+          "maxResults": 12,
+          "kinds": [
+            "setting",
+            "settings-tab"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "settings",
+            "label": "Settings pages",
+            "provider": "settings",
+            "max": 10,
+            "items": []
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": {
+          "live": true,
+          "placeholder": "Search settings…",
+          "maxResults": 12,
+          "kinds": [
+            "setting",
+            "settings-tab"
+          ]
+        },
+        "widgets": [],
+        "groups": [
+          {
+            "id": "settings",
+            "label": "Settings pages",
+            "provider": "settings",
+            "max": 10,
+            "items": []
+          }
+        ]
+      },
+      "errors": []
+    },
+    "settings-page": {
+      "needed": true,
+      "record": {
+        "id": "settings-page",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "density": "compact",
+        "surface": "flat",
+        "showSearch": true,
+        "groups": [
+          {
+            "id": "tabs",
+            "items": [
+              {
+                "id": "appearance",
+                "icon": "palette",
+                "label": "Appearance",
+                "action": "settings.open:appearance"
+              },
+              {
+                "id": "account",
+                "icon": "shield",
+                "label": "Account",
+                "action": "settings.open:account"
+              },
+              {
+                "id": "plugins",
+                "icon": "package",
+                "label": "Plugins",
+                "action": "settings.open:plugins"
+              },
+              {
+                "id": "about",
+                "icon": "info",
+                "label": "About",
+                "action": "settings.open:about"
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "items": [
+              {
+                "id": "restore",
+                "icon": "refresh",
+                "label": "Restore look",
+                "action": "appearance.restore",
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "tabs",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "appearance",
+                "icon": "palette",
+                "label": "Appearance",
+                "action": "action:settings.open:appearance",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "account",
+                "icon": "shield",
+                "label": "Account",
+                "action": "action:settings.open:account",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "plugins",
+                "icon": "package",
+                "label": "Plugins",
+                "action": "action:settings.open:plugins",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "about",
+                "icon": "info",
+                "label": "About",
+                "action": "action:settings.open:about",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "restore",
+                "icon": "refresh",
+                "label": "Restore look",
+                "action": "action:appearance.restore",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "tabs",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "appearance",
+                "icon": "palette",
+                "label": "Appearance",
+                "action": "action:settings.open:appearance",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "account",
+                "icon": "shield",
+                "label": "Account",
+                "action": "action:settings.open:account",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "plugins",
+                "icon": "package",
+                "label": "Plugins",
+                "action": "action:settings.open:plugins",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "about",
+                "icon": "info",
+                "label": "About",
+                "action": "action:settings.open:about",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "restore",
+                "icon": "refresh",
+                "label": "Restore look",
+                "action": "action:appearance.restore",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "standard-icons": {
+      "needed": true,
+      "record": {
+        "id": "standard-icons",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "file.new"
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save",
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "edit.cut"
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "edit.copy"
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "edit.paste"
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "swap:color-theme:next"
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "swap:style-theme:next"
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "swap:layout:next"
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "assets.random"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "status-strip": {
+      "needed": true,
+      "record": {
+        "id": "status-strip",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "groups": [],
+        "widgets": [
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "density": "compact",
+        "surface": "flat",
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "groups": []
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "spread",
+        "showSearch": false,
+        "density": "compact",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "ai",
+            "at": "start",
+            "order": 0
+          },
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "order": 10
+          },
+          {
+            "type": "progress",
+            "id": "build",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "end",
+            "order": 30
+          }
+        ],
+        "groups": []
+      },
+      "errors": []
+    },
+    "text-commands": {
+      "needed": true,
+      "record": {
+        "id": "text-commands",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "labels",
+        "align": "center",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "go",
+            "items": [
+              {
+                "id": "go-home",
+                "icon": "home",
+                "label": "Home",
+                "action": "nav:home"
+              },
+              {
+                "id": "go-components",
+                "icon": "grid",
+                "label": "Components",
+                "action": "nav:components"
+              },
+              {
+                "id": "go-assets",
+                "icon": "layers",
+                "label": "Assets",
+                "action": "nav:assets"
+              },
+              {
+                "id": "go-account",
+                "icon": "user",
+                "label": "Account",
+                "action": "nav:account"
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "assets.random"
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset",
+                "action": "assets.reset"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "labels",
+        "align": "center",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "go",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "go-home",
+                "icon": "home",
+                "label": "Home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-components",
+                "icon": "grid",
+                "label": "Components",
+                "action": "action:nav:components",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-assets",
+                "icon": "layers",
+                "label": "Assets",
+                "action": "action:nav:assets",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-account",
+                "icon": "user",
+                "label": "Account",
+                "action": "action:nav:account",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset",
+                "action": "action:assets.reset",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "labels",
+        "align": "center",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "go",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "go-home",
+                "icon": "home",
+                "label": "Home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-components",
+                "icon": "grid",
+                "label": "Components",
+                "action": "action:nav:components",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-assets",
+                "icon": "layers",
+                "label": "Assets",
+                "action": "action:nav:assets",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "go-account",
+                "icon": "user",
+                "label": "Account",
+                "action": "action:nav:account",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "look",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "reset",
+                "icon": "refresh",
+                "label": "Reset",
+                "action": "action:assets.reset",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "touch-dock": {
+      "needed": true,
+      "record": {
+        "id": "touch-dock",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "go",
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "nav:home"
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "items": [],
+            "provider": "views",
+            "max": 3,
+            "label": "Pages"
+          },
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "alerts.open",
+                "badge": "counter:alerts.unread"
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              }
+            ]
+          }
+        ],
+        "density": "roomy",
+        "divider": false,
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": false,
+        "density": "roomy",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "go",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 3,
+            "items": []
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "spread",
+        "showSearch": false,
+        "density": "roomy",
+        "surface": "flat",
+        "divider": false,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "go",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 3,
+            "items": []
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "alerts",
+                "icon": "bell",
+                "label": "Alerts",
+                "action": "action:alerts.open",
+                "badge": "counter:alerts.unread",
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "window-switcher": {
+      "needed": true,
+      "record": {
+        "id": "window-switcher",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "windows",
+            "items": [],
+            "provider": "windows",
+            "max": 8,
+            "label": "Open windows"
+          },
+          {
+            "id": "layout",
+            "items": [
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "swap:layout:next",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "toggle-nav",
+                "icon": "list",
+                "label": "Show or hide navigation",
+                "action": "slot.hide:nav-menu:toggle",
+                "checked": "slot:nav-menu"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "windows",
+            "label": "Open windows",
+            "provider": "windows",
+            "max": 8,
+            "items": []
+          },
+          {
+            "id": "layout",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "toggle-nav",
+                "icon": "list",
+                "label": "Show or hide navigation",
+                "action": "action:slot.hide:nav-menu:toggle",
+                "badge": null,
+                "checked": "slot:nav-menu",
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "windows",
+            "label": "Open windows",
+            "provider": "windows",
+            "max": 8,
+            "items": []
+          },
+          {
+            "id": "layout",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "next-layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "toggle-nav",
+                "icon": "list",
+                "label": "Show or hide navigation",
+                "action": "action:slot.hide:nav-menu:toggle",
+                "badge": null,
+                "checked": "slot:nav-menu",
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
+    "windows": {
+      "needed": true,
+      "record": {
+        "id": "windows",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "file.new"
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "file.open"
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "file.save",
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "edit.undo"
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "edit.redo"
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "edit.cut"
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "edit.copy"
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "edit.paste"
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "swap:color-theme:next"
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "swap:style-theme:next"
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "swap:layout:next"
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "assets.random"
+              }
+            ]
+          }
+        ],
+        "scope": "app",
+        "overflow": {
+          "when": "auto",
+          "keep": 0,
+          "label": "More"
+        }
+      },
+      "signatureBefore": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": true,
+        "density": "regular",
+        "surface": "flat",
+        "divider": true,
+        "collapsible": false,
+        "search": null,
+        "widgets": [],
+        "groups": [
+          {
+            "id": "file",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New file",
+                "action": "action:file.new",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "action": "action:file.open",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "save",
+                "icon": "save",
+                "label": "Save",
+                "action": "action:file.save",
+                "badge": null,
+                "checked": null,
+                "requires": "files.write"
+              }
+            ]
+          },
+          {
+            "id": "edit",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "undo",
+                "icon": "undo",
+                "label": "Undo",
+                "action": "action:edit.undo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "redo",
+                "icon": "redo",
+                "label": "Redo",
+                "action": "action:edit.redo",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "cut",
+                "icon": "cut",
+                "label": "Cut",
+                "action": "action:edit.cut",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "copy",
+                "icon": "copy",
+                "label": "Copy",
+                "action": "action:edit.copy",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "paste",
+                "icon": "paste",
+                "label": "Paste",
+                "action": "action:edit.paste",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "color",
+                "icon": "palette",
+                "label": "Next color theme",
+                "action": "action:swap:color-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "style",
+                "icon": "type",
+                "label": "Next style theme",
+                "action": "action:swap:style-theme:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "layout",
+                "icon": "layout",
+                "label": "Next layout",
+                "action": "action:swap:layout:next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
+                "id": "random",
+                "icon": "shuffle",
+                "label": "Randomize",
+                "action": "action:assets.random",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    }
+  },
+  "pageToolbar": {
+    "isPage": true,
+    "needed": false,
+    "errors": [],
+    "stateKeys": [
+      "paused",
+      "selection.id",
+      "status",
+      "waiting"
+    ],
+    "migrated": {
+      "asset": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "scope": "view:gate",
+        "overflow": {
+          "when": "auto",
+          "keep": 1
+        },
+        "groups": [
+          {
+            "id": "lander",
+            "items": [
+              {
+                "id": "run",
+                "icon": "play",
+                "label": "Run now",
+                "action": "command:gate/lander-run",
+                "enabledWhen": [
+                  "!paused",
+                  "waiting>0"
+                ],
+                "badge": "state:waiting",
+                "priority": 200,
+                "overflow": "never"
+              },
+              {
+                "id": "retry",
+                "icon": "refresh",
+                "label": "Retry",
+                "action": "command:gate/lander-retry",
+                "args": {
+                  "build": "$selection.id"
+                },
+                "enabledWhen": "selection.id"
+              },
+              {
+                "id": "reset",
+                "icon": "trash",
+                "label": "Reset",
+                "action": "command:gate/rules-reset",
+                "destructive": true,
+                "confirm": "Reset every rule to the defaults?",
+                "priority": 10
+              },
+              {
+                "id": "pause",
+                "icon": "pause",
+                "label": "Pause",
+                "action": "handler:gate.pause",
+                "checked": "state:paused",
+                "visibleWhen": "status!=off"
+              },
+              {
+                "id": "open",
+                "icon": "settings",
+                "label": "Rules",
+                "action": "control:view:settings/tab:settings.tabs=plugins"
+              },
+              {
+                "id": "legacy",
+                "icon": "home",
+                "label": "Home",
+                "action": "nav:home",
+                "badge": "counter:alerts.unread"
+              }
+            ]
+          }
+        ]
+      },
+      "data": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "scope": "view:gate",
+        "overflow": {
+          "when": "auto",
+          "keep": 1
+        },
+        "groups": [
+          {
+            "id": "lander",
+            "items": [
+              {
+                "id": "run",
+                "icon": "play",
+                "label": "Run now",
+                "action": "command:gate/lander-run",
+                "enabledWhen": [
+                  "!paused",
+                  "waiting>0"
+                ],
+                "badge": "state:waiting",
+                "priority": 200,
+                "overflow": "never"
+              },
+              {
+                "id": "retry",
+                "icon": "refresh",
+                "label": "Retry",
+                "action": "command:gate/lander-retry",
+                "args": {
+                  "build": "$selection.id"
+                },
+                "enabledWhen": "selection.id"
+              },
+              {
+                "id": "reset",
+                "icon": "trash",
+                "label": "Reset",
+                "action": "command:gate/rules-reset",
+                "destructive": true,
+                "confirm": "Reset every rule to the defaults?",
+                "priority": 10
+              },
+              {
+                "id": "pause",
+                "icon": "pause",
+                "label": "Pause",
+                "action": "handler:gate.pause",
+                "checked": "state:paused",
+                "visibleWhen": "status!=off"
+              },
+              {
+                "id": "open",
+                "icon": "settings",
+                "label": "Rules",
+                "action": "control:view:settings/tab:settings.tabs=plugins"
+              },
+              {
+                "id": "legacy",
+                "icon": "home",
+                "label": "Home",
+                "action": "nav:home",
+                "badge": "counter:alerts.unread"
+              }
+            ]
+          }
+        ]
+      },
+      "changed": true,
+      "changes": [
+        "groups[0].items[5].badge: counter:alerts.unread"
+      ]
+    }
+  },
+  "oldShape": {
+    "isPage": false,
+    "needed": true
+  },
+  "errors": {
+    "bad": [
+      "data.scope must be app, view:<view id> or plugin:<plugin id>",
+      "data.overflow must be one of: auto, never, always",
+      "data.groups[0].items[0].action must be an action id, action:<id>, command:<plugin>/<command>, control:<address> or handler:<id>",
+      "data.groups[0].items[0].badge must be a counter name, counter:<name> or state:<key>",
+      "data.groups[0].items[0].confirm must be true, false or the question (up to 200 characters)",
+      "data.groups[0].items[0].enabledWhen must be a term or a list of up to 8 terms (key, !key, key=value, key!=value, key>n, key<n)",
+      "data.groups[0].items[0].overflow must be one of: auto, never, always",
+      "data.groups[0].items[0].priority must be a number 0–1000",
+      "data.groups[0].items[1].id \"a\" is used twice in group \"g\"",
+      "data.groups[0].items[1].action must be an action id, action:<id>, command:<plugin>/<command>, control:<address> or handler:<id>",
+      "data.groups[1] needs items or a provider"
+    ],
+    "notToolbar": [],
+    "notObject": [
+      "data must be an object"
+    ]
+  },
+  "parse": {
+    "scope": {
+      "7": null,
+      "app": {
+        "kind": "app",
+        "id": ""
+      },
+      "undefined": {
+        "kind": "app",
+        "id": ""
+      },
+      "view:gate": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "plugin:ai.amberx.axf.console.gate": {
+        "kind": "plugin",
+        "id": "ai.amberx.axf.console.gate"
+      },
+      "page:x": null,
+      "view:": null,
+      "view": null
+    },
+    "action": {
+      "file.save": {
+        "kind": "action",
+        "id": "file.save"
+      },
+      "nav:home": {
+        "kind": "action",
+        "id": "nav:home"
+      },
+      "settings.open:appearance": {
+        "kind": "action",
+        "id": "settings.open:appearance"
+      },
+      "swap:layout:next": {
+        "kind": "action",
+        "id": "swap:layout:next"
+      },
+      "action:file.save": {
+        "kind": "action",
+        "id": "file.save"
+      },
+      "command:gate/lander-run": {
+        "kind": "command",
+        "id": "gate/lander-run",
+        "plugin": "gate",
+        "command": "lander-run"
+      },
+      "command:gate": null,
+      "command:/x": null,
+      "control:view:settings/tab:settings.tabs=plugins": {
+        "kind": "control",
+        "id": "view:settings/tab:settings.tabs=plugins"
+      },
+      "handler:gate.pause": {
+        "kind": "handler",
+        "id": "gate.pause"
+      },
+      "handler:": null,
+      "": null,
+      "  ": null
+    },
+    "badge": {
+      "alerts.unread": {
+        "kind": "counter",
+        "ref": "alerts.unread"
+      },
+      "counter:alerts.unread": {
+        "kind": "counter",
+        "ref": "alerts.unread"
+      },
+      "state:waiting": {
+        "kind": "state",
+        "ref": "waiting"
+      },
+      "state:": null,
+      "other:x": {
+        "kind": "counter",
+        "ref": "other:x"
+      },
+      "": null
+    },
+    "when": {
+      "\"busy\"": [
+        {
+          "key": "busy",
+          "op": "truthy",
+          "value": "",
+          "negate": false
+        }
+      ],
+      "\"!busy\"": [
+        {
+          "key": "busy",
+          "op": "truthy",
+          "value": "",
+          "negate": true
+        }
+      ],
+      "\"selection.count>0\"": [
+        {
+          "key": "selection.count",
+          "op": ">",
+          "value": "0",
+          "negate": false
+        }
+      ],
+      "\"status=running\"": [
+        {
+          "key": "status",
+          "op": "=",
+          "value": "running",
+          "negate": false
+        }
+      ],
+      "\"status!=off\"": [
+        {
+          "key": "status",
+          "op": "!=",
+          "value": "off",
+          "negate": false
+        }
+      ],
+      "\"n>=2\"": [
+        {
+          "key": "n",
+          "op": ">=",
+          "value": "2",
+          "negate": false
+        }
+      ],
+      "\"n<=2\"": [
+        {
+          "key": "n",
+          "op": "<=",
+          "value": "2",
+          "negate": false
+        }
+      ],
+      "\"n<x\"": null,
+      "\"sel count\"": null,
+      "\"\"": null,
+      "[\"a\",\"!b\",\"c=1\"]": [
+        {
+          "key": "a",
+          "op": "truthy",
+          "value": "",
+          "negate": false
+        },
+        {
+          "key": "b",
+          "op": "truthy",
+          "value": "",
+          "negate": true
+        },
+        {
+          "key": "c",
+          "op": "=",
+          "value": "1",
+          "negate": false
+        }
+      ],
+      "[\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"]": null
+    }
+  },
+  "holds": {
+    "\"busy\" on {\"busy\":true}": true,
+    "\"busy\" on {\"busy\":0}": false,
+    "\"!busy\" on {}": true,
+    "\"selection.count>0\" on {\"selection\":{\"count\":2}}": true,
+    "\"selection.count>0\" on {\"selection\":{\"count\":0}}": false,
+    "\"status=running\" on {\"status\":\"running\"}": true,
+    "\"status!=off\" on {\"status\":\"off\"}": false,
+    "\"n>=2\" on {\"n\":2}": true,
+    "\"n<=2\" on {\"n\":3}": false,
+    "\"list\" on {\"list\":[]}": false,
+    "\"list\" on {\"list\":[1]}": true,
+    "[\"a\",\"b=1\"] on {\"a\":true,\"b\":1}": true,
+    "[\"a\",\"b=1\"] on {\"a\":true,\"b\":2}": false
+  }
+}

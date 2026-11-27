@@ -36,7 +36,9 @@
     ],
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/cli/project-seed.mjs",
+      "framework/cli/project_seed_stores.py"
     ]
   },
   "opens": "main"

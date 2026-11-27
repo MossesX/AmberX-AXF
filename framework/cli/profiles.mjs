@@ -7,7 +7,8 @@
  * server and its plugins read and write the active profile's copy (resolution lives in persist.mjs → dataPath()).
  * "all" is the base profile and keeps the original paths (since Nov 7 2026; it took over from "main-framework" when
  * every profile was merged into it); any other profile lives under framework/plan/profiles/<id>/ (hub shared data)
- * and _claude/builds/profiles/<id>/orchestrator.json (repo).
+ * and _claude/builds/profiles/<id>/orchestrator.json (repo, only when the repo's framework/plan/profiles.json lists
+ * it; a profile registered only on the hub keeps that export in its shared-data folder: persist.mjs hasRepoExport).
  *
  *   node framework/cli/profiles.mjs                         list (★ = active)
  *   node framework/cli/profiles.mjs current                 the active profile

@@ -10,14 +10,17 @@
  *
  * Who may change what: `owner: true` settings change only with an owner approval, which the transport derives from
  * Brett's signed-in console session (never from a request body, an MCP call, a CLI flag or the environment);
- * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner; `locked` settings change for nobody.
+ * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner (a toggle: anyone switches it off, only
+ * the owner switches it on); `locked` settings change for nobody.
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync, appendFileSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nonHumanSource } from '../../../../framework/core/model-switch.mjs';
+import * as files from '../../../../framework/core/data-files.mjs';
+import { VIEW_FRAME, deviceOk, normView, viewProblem } from './web/view-core.mjs';
 
 export const FRAME = 'claude-settings@1';
 export const FOLDER = 'claude-settings';
@@ -40,7 +43,8 @@ export class SettingsError extends Error {
 }
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+// data-store@1: the settings document and the audit log follow their namespaces onto axf-data (framework/core/data-files.mjs)
+const readJson = (f) => files.readJsonSync(f, null);
 
 /* ------------------------------------------------------------------ where things are */
 
@@ -68,6 +72,7 @@ function normEntry(e) {
   };
   if (e.kind === 'choice') out.options = (Array.isArray(e.options) ? e.options : []).filter((o) => isObj(o) && typeof o.value === 'string').map((o) => ({ value: o.value, label: String(o.label || o.value) }));
   if (e.kind === 'number') for (const k of ['min', 'max', 'step']) if (typeof e[k] === 'number') out[k] = e[k];
+  if (e.kind === 'number' && e.zeroIsNoCap === true) out.zeroIsNoCap = true; // a cap where 0 means none: 0 is the highest value, so only the owner sets it
   if (typeof e.shared === 'string') out.shared = e.shared;
   if (typeof e.effect === 'string') out.effect = e.effect;
   return valid(out, out.default) ? out : null;
@@ -82,13 +87,17 @@ export function loadRegistry({ extra = [] } = {}) {
   if (hub && !process.env.AXF_CLAUDE_SETTINGS_FILE) sources.push(join(hub, 'claude', 'registry.json'));
   const groups = new Map();
   const settings = new Map();
+  const tabs = new Map();
+  let policyDefaults = {};
   for (const doc of [...sources.map(readJson), ...extra]) {
     if (!isObj(doc)) continue;
     for (const g of Array.isArray(doc.groups) ? doc.groups : []) if (isObj(g) && typeof g.id === 'string') groups.set(g.id, { id: g.id, label: String(g.label || g.id), icon: g.icon || 'settings', order: Number(g.order) || 100, description: String(g.description || '') });
     for (const e of Array.isArray(doc.settings) ? doc.settings : []) { const n = normEntry(e); if (n) settings.set(n.key, n); }
+    for (const t of Array.isArray(doc.tabs) ? doc.tabs : []) if (isObj(t) && typeof t.id === 'string') tabs.set(t.id, { id: t.id, label: String(t.label || t.id), icon: t.icon || 'settings', order: Number(t.order) || 100, description: String(t.description || ''), always: t.always === true, groups: Array.isArray(t.groups) ? t.groups.filter((g) => typeof g === 'string') : [] });
+    if (isObj(doc.policyDefaults)) policyDefaults = doc.policyDefaults;
   }
   for (const s of settings.values()) if (!groups.has(s.group)) groups.set(s.group, { id: s.group, label: s.group, icon: 'settings', order: 900, description: '' });
-  return { groups: [...groups.values()].sort((a, b) => a.order - b.order), settings: [...settings.values()] };
+  return { groups: [...groups.values()].sort((a, b) => a.order - b.order), settings: [...settings.values()], tabs: [...tabs.values()].sort((a, b) => a.order - b.order), policyDefaults };
 }
 
 /* ------------------------------------------------------------------ values */
@@ -119,13 +128,10 @@ export function readDoc() {
 }
 function writeDoc(d) {
   const { file } = storeFile();
-  mkdirSync(dirname(file), { recursive: true });
-  const tmp = `${file}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(d, null, 1)}\n`);
-  renameSync(tmp, file);
+  files.writeJsonSync(file, d, 1);
 }
 function audit(entry) {
-  try { mkdirSync(DATA_DIR, { recursive: true }); appendFileSync(join(DATA_DIR, 'audit.jsonl'), `${JSON.stringify({ at: new Date().toISOString(), ...entry })}\n`); } catch { /* audit is best effort */ }
+  try { files.appendJsonlSync(join(DATA_DIR, 'audit.jsonl'), { at: new Date().toISOString(), ...entry }); } catch { /* audit is best effort */ }
 }
 
 /** The value in force: the stored one when it is still valid (and the setting isn't locked), else the default. */
@@ -139,7 +145,7 @@ export function valueOf(spec, doc) {
 export function whoSentence(spec) {
   if (spec.locked) return 'Locked: nobody changes it.';
   if (spec.owner === true) return "Owner-only: changes only with Brett's own click in the console.";
-  if (spec.owner === 'raise') return 'Anyone may lower it; only Brett raises it.';
+  if (spec.owner === 'raise') return spec.kind === 'toggle' ? 'Anyone may switch it off; only Brett switches it on.' : 'Anyone may lower it; only Brett raises it.';
   return 'Any Claude session may change it (axHub veto).';
 }
 
@@ -155,7 +161,7 @@ export function view({ doc = readDoc(), registry = loadRegistry(), extras = {} }
   const values = Object.fromEntries(settings.map((s) => [s.key, s.value]));
   return {
     $axf: FRAME, live, store: live ? (process.env.AXF_CLAUDE_SETTINGS_FILE ? file : 'axHub /projects/_shared/_data/claude/settings.json') : file,
-    updatedAt: doc.updatedAt || '', groups: registry.groups, values, settings,
+    updatedAt: doc.updatedAt || '', groups: registry.groups, tabs: registry.tabs, values, settings,
     howToUse: 'Read at session start and before acting; follow every value. Owner-only settings are changed only by Brett in the console.',
     ...extras,
   };
@@ -180,7 +186,9 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     const before = valueOf(spec, doc);
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
-    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
+    const height = (n) => (spec.zeroIsNoCap && n === 0 ? Infinity : n);
+    if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && height(v) > height(before)) throw new SettingsError('denied', `${key} can only be raised${spec.zeroIsNoCap ? ' or removed (0 = no cap)' : ''} by Brett (console); lowering it is fine`);
+    if (spec.owner === 'raise' && !isOwner && spec.kind === 'toggle' && v === true && before !== true) throw new SettingsError('denied', `${key} can only be switched on by Brett (console); switching it off is fine`);
     if (v !== before) { next[key] = v; changed.push({ key, from: before, to: v }); }
   }
   if (!changed.length) return { changed: [], view: view({ doc, registry }) };
@@ -207,6 +215,58 @@ export function systemOff(key, why, { registry = loadRegistry(), now = new Date(
   writeDoc(out);
   audit({ action: 'system-off', key, why });
   return { changed: [{ key, from: true, to: false }] };
+}
+
+/* ------------------------------------------------------------------ views, per device */
+
+/** claude-settings-view@1: next to the settings document, one entry per device. Not owner-only: it only changes a look. */
+export const viewsFile = () => join(dirname(storeFile().file), 'views.json');
+export function readViews() {
+  const d = readJson(viewsFile());
+  return isObj(d) && d.$axf === VIEW_FRAME && isObj(d.devices) ? d : { $axf: VIEW_FRAME, devices: {} };
+}
+const needDevice = (device) => { if (!deviceOk(device)) throw new SettingsError('invalid', 'name the device (--device <id>; the console shows it under View)'); };
+export function getView(device) {
+  needDevice(device);
+  const all = readViews().devices;
+  const e = Object.hasOwn(all, device) ? all[device] : null;
+  return { device, saved: !!e, ...normView(e), ...(e?.name ? { name: e.name } : {}), ...(e?.updatedAt ? { updatedAt: e.updatedAt } : {}) };
+}
+export function setView(device, patch, { by = 'unknown', name, now = new Date() } = {}) {
+  needDevice(device);
+  if (!isObj(patch) || !Object.keys(patch).length) throw new SettingsError('invalid', 'nothing to change: send mode, position, labels or tab');
+  const bad = viewProblem(patch);
+  if (bad) throw new SettingsError('invalid', bad);
+  const doc = readViews();
+  const was = Object.hasOwn(doc.devices, device) ? doc.devices[device] : {};
+  const next = { ...normView({ ...was, ...patch }), ...(name || was.name ? { name: String(name || was.name).slice(0, 60) } : {}), updatedAt: now.toISOString(), by: String(by).slice(0, 80) };
+  // through data-files like the settings document (atomic locally; mirrored / served by axf-data per its mode)
+  files.writeJsonSync(viewsFile(), { ...doc, devices: { ...doc.devices, [device]: next } }, 1);
+  return getView(device);
+}
+
+/* ------------------------------------------------------------------ axHub's policy table (read only here) */
+
+/** The hub's address from AXHUB_URL (which may name /mcp). */
+export const hubBase = (env = process.env) => String(env.AXHUB_URL || 'https://axhub.amberxai.com').replace(/\/mcp\/?$/, '').replace(/\/+$/, '');
+function hubToken(env) {
+  if (env.AXHUB_TOKEN) return env.AXHUB_TOKEN.trim();
+  try { return readFileSync(join(env.HOME || '', '.config', 'axhub', 'token'), 'utf8').trim(); } catch { return ''; }
+}
+/**
+ * The live policy table (policy-table@1, framework/spec/AXHUB-POLICY-API.md). Read with the hub token: a bearer can
+ * read, never write. → { hub, available: true, table } | { hub, available: false, message }, never a stale copy.
+ */
+export async function readPolicy({ env = process.env, fetch: f = globalThis.fetch } = {}) {
+  const hub = hubBase(env);
+  const token = hubToken(env);
+  if (!token) return { hub, available: false, message: 'No axHub token here, so the table cannot be read.' };
+  try {
+    const r = await f(`${hub}/auth/api/policy`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000) });
+    if (r.status === 404) return { hub, available: false, message: "axHub doesn't have the policy API yet: it needs axHub decision 119 (GET/PUT /auth/api/policy) deployed." };
+    if (!r.ok) return { hub, available: false, message: `axHub answered ${r.status}.` };
+    return { hub, available: true, table: await r.json() };
+  } catch (e) { return { hub, available: false, message: `Can't reach axHub: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
 
 /* ------------------------------------------------------------------ No wait ↔ the veto pass */

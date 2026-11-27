@@ -1,0 +1,186 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-voice-fix",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:55Z",
+ "build": {
+  "id": "amberx-voice-fix",
+  "title": "AmberX voice monitor: hears better, no constant tone, live text, no swear filter",
+  "profile": "all",
+  "category": "AmberX app",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "the voice monitor misses what he says, filters swears, text does not show in real time, and it constantly makes a tone. Fix all of it. Android exception (AmberX). Built in this session (Brett).",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Silence the recognizer beep (mute notification/system streams while listening, restore after); longer listening turns so it restarts less",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-10-28T04:45:09.242Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Better hearing: online recognizer when the phone is online (offline as fallback/setting), 5 alternatives, longer silence windows, wake phrases matched loosely (amber x, amber ex)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T04:45:09.242Z",
+   "doneAt": "2026-10-28T04:45:09.296Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Swear words shown as said: ask Android not to mask them (API 33+) and un-mask any f*** left over",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-28T04:45:09.296Z",
+   "doneAt": "2026-10-28T04:45:09.343Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Real-time text: Speak and dictation stream partial results to the page and the overlay as you talk",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T04:45:09.343Z",
+   "doneAt": "2026-10-28T04:45:09.392Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Voice settings for beep, accuracy, swear words; tests; THREADS/STATUS",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-28T04:45:09.392Z",
+   "doneAt": "2026-10-28T04:45:09.446Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-voice-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "f3c560c784a670046883db3ceb7f72fc1bab996e",
+ "commits": [
+  "3fa897356c27732396fb216c3a1d5b48f081b94a",
+  "4cc508bfc76035554d2162aee310655d904d2b58",
+  "44da44b342d6301c3df91c5e25de991e23b3c783"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-28T05:08:55Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/SpeechTuning.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/SpeechTuningTest.java",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/dictation/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/core.ts",
+  "apps/amberx-droid/src/plugins/voice/web/handsfree.ts",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/speech-cases.json",
+  "apps/amberx-droid/src/plugins/voice/web/speech.ts",
+  "apps/amberx-droid/test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/SpeechTuning.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/SpeechTuningTest.java",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/core.ts",
+    "apps/amberx-droid/src/plugins/voice/web/handsfree.ts",
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+    "apps/amberx-droid/src/plugins/voice/web/speech-cases.json",
+    "apps/amberx-droid/src/plugins/voice/web/speech.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "dictation",
+   "files": [
+    "apps/amberx-droid/src/plugins/dictation/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

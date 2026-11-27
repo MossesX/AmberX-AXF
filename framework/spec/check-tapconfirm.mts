@@ -1,9 +1,10 @@
 /**
- * Tap-to-confirm on toolbars: the pure state machine (core/engines/tapconfirm.ts) and the web host
+ * Tap-to-confirm on toolbars, tab groups, navigation menus, application menus, context menus and banners: the pure state machine (core/engines/tapconfirm.ts) and the web host
  * (react/tapConfirm.ts) on a small fake DOM. Run: npx -y tsx framework/spec/check-tapconfirm.mts
  */
-import { TAP_ARM_DEFAULT_MS, TAP_IDLE, TAP_KEYS, tapArmMs, tapConfig, tapDecide, tapExpired, tapPointer, toolbarIdOf, type TapState } from '../core/engines/tapconfirm';
-import { installTapConfirm } from '../react/tapConfirm';
+import { TAP_ARM_DEFAULT_MS, TAP_HINT, TAP_IDLE, TAP_KEYS, TAP_KINDS, tapArmMs, tapConfig, tapConfigFor, tapDecide, tapKindKey, tapExpired, tapPointer, toolbarIdOf, type TapState } from '../core/engines/tapconfirm';
+import { installTapConfirm, tapSurfaceOf } from '../react/tapConfirm';
+import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 
 let pass = 0;
 let fail = 0;
@@ -44,11 +45,26 @@ ok(tapConfig(settings({ 'axf.toolbar.x.tapConfirm': 'bogus' }), 'x').enabled ===
 ok(tapConfig(settings({ [TAP_KEYS.armMs]: 5000 }), 'x').armMs === 5000, 'arm window from settings');
 ok(toolbarIdOf({ id: 'Main Bar' }) === 'main-bar' && toolbarIdOf({ asset: 'console-search' }) === 'console-search' && toolbarIdOf({ label: 'Terminal tools' }) === 'terminal-tools' && toolbarIdOf({}) === 'toolbar', 'toolbar ids');
 
+/* ---------- every kind, its own choice (chrome-settings@1 field) ---------- */
+ok(CHROME_TYPES.every((t) => CHROME_FIELDS[t as keyof typeof CHROME_FIELDS].some((f) => f.key === 'tapConfirm' && f.group === 'behaviour' && f.level === 'simple')), 'every chrome settings interface offers Tap to confirm');
+ok(TAP_KINDS.every((k) => (CHROME_TYPES as readonly string[]).includes(k)), 'tap kinds are chrome types');
+ok(tapKindKey('toolbar') === TAP_KEYS.enabled && tapKindKey('tab-group') === 'axf.tapConfirm.tab-group', 'kind switch keys');
+ok(TAP_KINDS.every((k) => tapConfigFor(settings({}), k, 'x').enabled), 'every kind on by default');
+ok(!tapConfigFor(settings({ 'axf.tapConfirm.nav-menu': false }), 'nav-menu', 'app').enabled && tapConfigFor(settings({ 'axf.tapConfirm.nav-menu': false }), 'tab-group', 'app').enabled, 'a kind switch is that kind only');
+ok(tapConfigFor(settings({ 'axf.tapConfirm.tab-group': false, 'axf.chrome.tab-group.ui.tabs': { tapConfirm: 'on' } }), 'tab-group', 'ui.tabs').enabled, 'item on beats kind off');
+ok(!tapConfigFor(settings({ 'axf.chrome.app-menu.app': { tapConfirm: 'off' } }), 'app-menu', 'app').enabled, 'item off');
+ok(tapConfigFor(settings({ 'axf.chrome.app-menu.app': { tapConfirm: 'bogus' } }), 'app-menu', 'app').enabled, 'bad item value = inherit');
+ok(!tapConfigFor(settings({ 'axf.toolbar.main-tools.tapConfirm': 'off' }), 'toolbar', 'main-tools').enabled, 'toolbar honours its older per-toolbar key');
+ok(tapConfigFor(settings({ 'axf.toolbar.main-tools.tapConfirm': 'off', 'axf.chrome.toolbar.main-tools': { tapConfirm: 'on' } }), 'toolbar', 'main-tools').enabled, 'the settings dialog choice beats the older key');
+ok(TAP_HINT === 'Tap again to confirm', 'tip says tap again to confirm');
+
 /* ---------- web host on a fake DOM ---------- */
 type L = (e: any) => void;
 class El {
   tag: string; parent: El | null = null; children: El[] = []; attrs: Record<string, string> = {}; dataset: Record<string, string> = {};
   style = { props: {} as Record<string, string>, setProperty(k: string, v: string) { this.props[k] = v; }, removeProperty(k: string) { delete this.props[k]; }, left: '', top: '' };
+  get tagName() { return this.tag.toUpperCase(); }
+  get parentElement() { return this.parent; }
   disabled = false; className = ''; textContent = ''; offsetWidth = 100; offsetHeight = 40; clicks = 0;
   constructor(tag: string, attrs: Record<string, string> = {}) { this.tag = tag; for (const [k, v] of Object.entries(attrs)) this.setAttribute(k, v); }
   add(c: El) { c.parent = this; this.children.push(c); return c; }
@@ -62,6 +78,10 @@ class El {
     return sel.split(',').map((x) => x.trim()).some((one) => {
       if (one === 'button') return this.tag === 'button';
       if (one === 'a[href]') return this.tag === 'a' && 'href' in this.attrs;
+      if (one === 'nav') return this.tag === 'nav';
+      if (one.startsWith('.')) return this.className.split(' ').includes(one.slice(1));
+      const has = /^\[([a-z-]+)\]$/.exec(one);
+      if (has) return has[1]! in this.attrs;
       const m = /^\[([a-z-]+)="([^"]+)"\]$/.exec(one);
       return !!m && this.attrs[m[1]!] === m[2];
     });
@@ -128,6 +148,43 @@ delete store['axf.toolbar.main-tools.tapConfirm'];
 runBtn.disabled = true;
 ok(tap(runBtn, 'touch'), 'host: disabled buttons are left to the browser');
 runBtn.disabled = false;
+ok(tips().length === 0, 'host: nothing armed between cases');
+ok(!tap(runBtn, 'touch') && tips()[0]!.children[1]!.textContent === TAP_HINT, 'host: tip says what it is, then Tap again to confirm');
+tap(runBtn, 'touch');
+
+// every other kind
+const tabs = body.add(new El('div', { role: 'tablist', 'aria-label': 'Sections', 'data-axf-tab-group': 'ui-review.sections', 'data-fx-ctx-target': 'tab-group', 'data-fx-ctx-payload': 'ui-review.sections' }));
+const tab = tabs.add(new El('button', { role: 'tab', title: 'Queue' }));
+const more = tabs.add(new El('ul', { role: 'menu' })).add(new El('button', { role: 'menuitemradio', title: 'Archive' }));
+const nav = body.add(new El('nav', { 'aria-label': 'Main', 'data-axf-nav': 'app', 'data-fx-ctx-target': 'nav', 'data-fx-ctx-payload': 'app' }));
+const navItem = nav.add(new El('a', { href: '#/plan', title: 'Plan' }));
+const preview = body.add(new El('nav', { 'data-axf-not-nav': 'preview' })).add(new El('button', { title: 'Preview' }));
+const menubar = body.add(new El('div', { role: 'menubar', 'data-fx-ctx-target': 'app-menu', 'data-fx-ctx-payload': 'app' }));
+const fileMenu = menubar.add(new El('ul', { role: 'menu' })).add(new El('button', { role: 'menuitem', title: 'Open' }));
+const ctx = body.add(new El('div')); ctx.className = 'fx-ctx';
+const ctxItem = ctx.add(new El('ul', { role: 'menu' })).add(new El('button', { role: 'menuitem', title: 'Copy' }));
+const banner = body.add(new El('div', { 'data-fx-ctx-target': 'banner', 'data-fx-ctx-payload': 'app' })).add(new El('button', { title: 'Dismiss' }));
+const kindOf = (el: El) => { const x = tapSurfaceOf(el as any); return x ? `${x.kind}:${x.instance}` : null; };
+ok(kindOf(tab) === 'tab-group:ui-review.sections', 'surface: tab → its tab group');
+ok(kindOf(more) === 'tab-group:ui-review.sections', 'surface: the More list belongs to its tab group');
+ok(kindOf(navItem) === 'nav-menu:app', 'surface: nav item → navigation menu');
+ok(kindOf(preview) === null, 'surface: nav previews are left alone');
+ok(kindOf(fileMenu) === 'app-menu:app' && kindOf(ctxItem) === 'context-menu:app' && kindOf(banner) === 'banner:app', 'surface: app menu, context menu, banner');
+ok(kindOf(runBtn) === 'toolbar:main-tools', 'surface: toolbar id = its context-menu instance');
+for (const [el, name] of [[tab, 'tab'], [more, 'tab More item'], [navItem, 'nav item'], [fileMenu, 'app menu item'], [ctxItem, 'context menu item'], [banner, 'banner button']] as const) {
+  ok(!tap(el, 'touch') && tips().length === 1, `host: first tap on a ${name} arms and shows its tip`);
+  clock += 100;
+  ok(tap(el, 'touch') && !tips().length, `host: second tap on a ${name} confirms`);
+  ok(tap(el, 'mouse'), `host: a mouse click on a ${name} runs at once`);
+}
+store['axf.chrome.tab-group.ui-review.sections'] = { tapConfirm: 'off' };
+ok(tap(tab, 'touch'), 'host: a tab group switched off in its own settings');
+delete store['axf.chrome.tab-group.ui-review.sections'];
+store['axf.tapConfirm.nav-menu'] = false;
+ok(tap(navItem, 'touch') && !tap(tab, 'touch'), 'host: the kind switch turns off navigation menus only');
+tap(tab, 'touch');
+delete store['axf.tapConfirm.nav-menu'];
+ok(tap(preview, 'touch'), 'host: preview nav untouched');
 ok(!tap(runBtn, 'touch') && tips().length === 1, 'host: armed before dispose');
 host.dispose();
 ok(!tips().length && !('data-axf-armed' in runBtn.attrs) && !(listeners.click ?? []).length, 'host: dispose removes listeners, light and tip');

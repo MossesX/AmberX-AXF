@@ -1,0 +1,88 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-cloning-plugin-hzcj78",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:33Z",
+ "build": {
+  "id": "amberx-cloning-plugin-hzcj78",
+  "title": "amberx-cloning-plugin-hzcj78",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "amberx-cloning-plugin-hzcj78",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/amberx-cloning-plugin-hzcj78",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "3f8ecca1786583dd60654f3f0c423ff9d403e13a",
+ "commits": [
+  "2de2c4187cc9ee3878a12dfd585d72dc3df94436"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-22T15:45:12Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/claude-handoff/server/__init__.py",
+  "apps/console-web/plugins/claude-handoff/server/results.py",
+  "apps/console-web/plugins/claude-handoff/test.py",
+  "apps/console-web/plugins/claude-handoff/web/claude-handoff.css",
+  "apps/console-web/plugins/claude-handoff/web/installer.tsx",
+  "apps/console-web/plugins/claude-handoff/web/store.ts",
+  "apps/console-web/plugins/claude-handoff/web/ui.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/server/__init__.py",
+    "apps/console-web/plugins/claude-handoff/server/results.py",
+    "apps/console-web/plugins/claude-handoff/test.py",
+    "apps/console-web/plugins/claude-handoff/web/claude-handoff.css",
+    "apps/console-web/plugins/claude-handoff/web/installer.tsx",
+    "apps/console-web/plugins/claude-handoff/web/store.ts",
+    "apps/console-web/plugins/claude-handoff/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

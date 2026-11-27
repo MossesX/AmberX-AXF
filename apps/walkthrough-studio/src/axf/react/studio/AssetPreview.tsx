@@ -24,7 +24,7 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
             <div style={{ height: 6, width: '60%', background: t.text, borderRadius: 'var(--fx-radius-sm)', opacity: 'var(--fx-opacity-glass)' }} />
             <div style={{ height: 5, width: '85%', background: t.muted, borderRadius: 'var(--fx-radius-sm)', opacity: 'var(--fx-opacity-muted)' }} />
             <div style={{ display: 'flex', gap: 'var(--fx-dens-gap-md)', marginTop: 'var(--fx-dens-gap-xs)' }}>
-              <span style={{ background: t.accent, color: t.accentText, fontSize: 'var(--fx-type-root-2xs)', fontWeight: 700, padding: 'var(--fx-dens-gap-sm) var(--fx-dens-gap-xl)', borderRadius: 'var(--fx-radius-sm)' }}>Aa</span>
+              <span style={{ background: t.accent, color: t.accentText, fontSize: 'var(--fx-type-root-2xs)', fontWeight: 'calc(var(--fx-type-weights-strong) + 100)', padding: 'var(--fx-dens-gap-sm) var(--fx-dens-gap-xl)', borderRadius: 'var(--fx-radius-sm)' }}>Aa</span>
               {[t.success, t.warning, t.danger, t.info].map((c) => (
                 <span key={c} style={{ width: 14, borderRadius: 'var(--fx-radius-sm)', background: c }} />
               ))}

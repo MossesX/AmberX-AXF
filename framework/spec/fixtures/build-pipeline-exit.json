@@ -1,0 +1,830 @@
+{
+  "$axf": "build-pipeline-exit@1",
+  "note": "Golden cases for the build-pipeline@1 exit transition. `transition` replays nextStatusOnExit() alone (maxRuns 3 unless a case says); `sessions` replays the dispatcher's endOutcome() on build records (steps: id, model, phase, done, doneAt; policy = Fable upgrades need my approval on | off). Regenerate the `out` blocks with: node framework/spec/check-build-pipeline.mjs --write",
+  "maxRuns": 3,
+  "transition": [
+    {
+      "name": "every step done: built",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 0,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "landing",
+        "outcome": "finished",
+        "reason": "all-done",
+        "crashes": 0,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "every step done, the session crashed on its way out: still built, the crash counted",
+      "in": {
+        "exit": 1,
+        "stepsLeft": 0,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "landing",
+        "outcome": "finished",
+        "reason": "all-done",
+        "crashes": 1,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "phase done, Fable -> Opus: queued, same place",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 3,
+        "runs": 1,
+        "crashes": 0,
+        "phaseDone": true
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "phase done, Opus -> Fable with the upgrade policy satisfied: queued",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 1,
+        "runs": 2,
+        "crashes": 1,
+        "phaseDone": true,
+        "upgradeBlocked": false
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 1,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "phase done on run 3 with no crashes: queued, the run count is not the crash limit",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 2,
+        "runs": 3,
+        "crashes": 0,
+        "phaseDone": true
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "phase done after two crashes: queued, a phase end never adds a crash",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 1,
+        "runs": 5,
+        "crashes": 2,
+        "phaseDone": true
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 2,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "crash, run 1: queued (crash 1 of 3)",
+      "in": {
+        "exit": 1,
+        "stepsLeft": 2,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 1,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "crash, run 2: queued (crash 2 of 3)",
+      "in": {
+        "exit": 137,
+        "stepsLeft": 2,
+        "runs": 2,
+        "crashes": 1
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 2,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "crash, the third: the limit, Pending for Brett",
+      "in": {
+        "exit": 1,
+        "stepsLeft": 2,
+        "runs": 3,
+        "crashes": 2
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "failed",
+        "reason": "crash-limit",
+        "crashes": 3,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "crash on an older record without a crash count: runs stand in for it",
+      "in": {
+        "exit": 1,
+        "stepsLeft": 2,
+        "runs": 3
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "failed",
+        "reason": "crash-limit",
+        "crashes": 3,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "session gone with tmux (no exit code): a crash",
+      "in": {
+        "exit": null,
+        "stepsLeft": 1,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 1,
+        "keepQueue": true
+      }
+    },
+    {
+      "name": "crash with maxRuns 1: the limit at once",
+      "maxRuns": 1,
+      "in": {
+        "exit": 1,
+        "stepsLeft": 1,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "failed",
+        "reason": "crash-limit",
+        "crashes": 1,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "phase done, the next phase is an upgrade Brett has not approved (approval on): Pending",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 1,
+        "runs": 1,
+        "crashes": 0,
+        "phaseDone": true,
+        "upgradeBlocked": true
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "upgrade-blocked",
+        "crashes": 0,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "phase done, the session needs Brett: Pending",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 1,
+        "runs": 1,
+        "crashes": 0,
+        "phaseDone": true,
+        "needsBrett": true
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "needs-brett",
+        "crashes": 0,
+        "keepQueue": false
+      }
+    },
+    {
+      "name": "clean stop mid-phase (a question, UI Review): Pending",
+      "in": {
+        "exit": 0,
+        "stepsLeft": 2,
+        "runs": 1,
+        "crashes": 0
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "stopped",
+        "crashes": 0,
+        "keepQueue": false
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "name": "A: Fable phase done, Opus phase next (model recorded)",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Fable",
+          "phase": "Phase 1",
+          "queuedAt": "2026-11-08T00:00:00.000Z"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "B: Opus 'Phase 1' done, Opus 'Phase 2' next: same model, still a phase end",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus",
+            "phase": "Phase 2"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "C: Fable -> Opus with no model and no phase on the record (older run): the ticked phase counts",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "D: Fable 'Schema' done, Fable 'Engine' next",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "phase": "Schema",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Fable",
+            "phase": "Engine"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Fable",
+          "phase": "Schema"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Schema",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "E: Opus phase done, Fable phase next, approval off: queued for a Fable account",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Fable"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "F: Opus phase done, Fable phase next, approval on and not approved: Pending",
+      "policy": "on",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Fable"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "upgrade-blocked",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "G: Opus phase done, Fable phase next, approval on and Brett approved: queued",
+      "policy": "on",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Fable"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        },
+        "approvals": [
+          {
+            "phase": 1,
+            "from": "Opus",
+            "to": "Fable",
+            "at": "2026-11-08T00:50:00.000Z",
+            "by": "brett"
+          }
+        ]
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "crashes": 0,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "H: launched for Phase 2, ticked nothing, exited clean: a stop mid-phase, Pending (no relaunch loop)",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-08T00:10:00.000Z"
+          },
+          {
+            "id": "s2",
+            "model": "Opus",
+            "phase": "Phase 2"
+          },
+          {
+            "id": "s3",
+            "model": "Opus",
+            "phase": "Phase 2"
+          }
+        ],
+        "pipeline": {
+          "runs": 2,
+          "model": "Opus",
+          "phase": "Phase 2",
+          "launchedAt": "2026-11-08T00:30:00.000Z"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "stopped",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 2",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "I: half a phase ticked, clean exit: Pending",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "stopped",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "J: crash on run 1: queued, crash 1",
+      "policy": "off",
+      "exit": 1,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 1,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "K: crash on run 2: queued, crash 2",
+      "policy": "off",
+      "exit": 137,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 2,
+          "crashes": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 2,
+        "keepQueue": true,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "L: crash on run 3: the limit, Pending",
+      "policy": "off",
+      "exit": 1,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 3,
+          "crashes": 2,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "failed",
+        "reason": "crash-limit",
+        "crashes": 3,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "M: two phase ends then a crash on run 3: still crash 1, queued",
+      "policy": "off",
+      "exit": 1,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "phase": "Schema",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus",
+            "phase": "UI",
+            "done": true
+          },
+          {
+            "id": "s3",
+            "model": "Opus",
+            "phase": "Tests"
+          }
+        ],
+        "pipeline": {
+          "runs": 3,
+          "crashes": 0,
+          "model": "Opus",
+          "phase": "Tests"
+        }
+      },
+      "out": {
+        "status": "queued",
+        "outcome": "requeued",
+        "reason": "crash",
+        "crashes": 1,
+        "keepQueue": true,
+        "phase": "Tests",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "N: every step done with an open PR: built",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "pr": "12",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "landing",
+        "outcome": "finished",
+        "reason": "all-done",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "O: every step done, no PR on file: complete",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Opus",
+            "done": true
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Opus",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "landing",
+        "outcome": "finished",
+        "reason": "all-done",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "P: phase done but the build was left waiting on Brett: Pending",
+      "policy": "off",
+      "exit": 0,
+      "build": {
+        "status": "waiting",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Fable",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "needs-brett",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    },
+    {
+      "name": "Q: phase done, the caller says the session needs Brett: Pending",
+      "policy": "off",
+      "exit": 0,
+      "needsBrett": true,
+      "build": {
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "model": "Fable",
+            "done": true
+          },
+          {
+            "id": "s2",
+            "model": "Opus"
+          }
+        ],
+        "pipeline": {
+          "runs": 1,
+          "model": "Fable",
+          "phase": "Phase 1"
+        }
+      },
+      "out": {
+        "status": "pending",
+        "outcome": "returned",
+        "reason": "needs-brett",
+        "crashes": 0,
+        "keepQueue": false,
+        "phase": "Phase 1",
+        "queuedAtKept": true
+      }
+    }
+  ]
+}

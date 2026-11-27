@@ -138,10 +138,10 @@ const off = derivePluginCommands({ folder: 'demo', manifest: { commands: { auto:
 eq(off.commands.map((c) => c.id), ['state', 'info'], 'auto: false = only what is declared (and info)');
 
 /* ---- registry, resolve, requests, inputs */
-const reg = pluginCommandRegistry([{ folder: 'demo', app: 'console-web', manifest, routes, unread: [], actions: acts, hasData: true }, { folder: 'notes', app: 'amberx-droid', manifest: { name: 'Notes' }, routes: [], actions: [{ id: 'notes.new', label: 'New' }] }]);
-eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['console-web:demo', 'amberx-droid:notes'], 'the console\'s plugins first, then by app and folder');
+const reg = pluginCommandRegistry([{ folder: 'demo', app: 'console-web', manifest, routes, unread: [], actions: acts, hasData: true }, { folder: 'notes', app: 'axhub-web', manifest: { name: 'Notes' }, routes: [], actions: [{ id: 'notes.new', label: 'New' }] }]);
+eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['console-web:demo', 'axhub-web:notes'], 'the console\'s plugins first, then by app and folder');
 eq(resolvePluginCommand(reg, 'demo/state').command.id, 'state', 'resolve <plugin>/<command>');
-eq(resolvePluginCommand(reg, 'amberx-droid:notes/action-new').plugin.app, 'amberx-droid', 'app-qualified paths');
+eq(resolvePluginCommand(reg, 'axhub-web:notes/action-new').plugin.app, 'axhub-web', 'app-qualified paths');
 eq(resolvePluginCommand(reg, 'demo/nope'), null, 'unknown');
 const cmd = resolvePluginCommand(reg, 'demo/plans-by-pid').command;
 eq(pluginRouteRequest('demo', cmd, { pid: 'a b', full: true, limit: 5 }), { method: 'GET', path: '/api/plugins/demo/plans/a%20b', query: { full: 'true', limit: '5' }, body: null }, 'a GET with path + query');
@@ -163,6 +163,13 @@ ok(commandToolName('a'.repeat(40), 'b'.repeat(40)) !== commandToolName('a'.repea
 eq(pluginCommandRoutes(reg).find((r) => r.command === 'state').path, '/api/control/demo/state', 'REST route');
 ok(pluginCommandCli(reg).commands.find((c) => c.command === 'plans-by-pid').usage.includes('--pid <pid>'), 'CLI usage names required fields');
 eq(commandSlug('/plans/{pid}/steps'), 'plans-by-pid-steps', 'slugs');
+{ // a declared tool name (a contract's fixed name) wins when it is free; a bad or generic one is an error
+  const mk = (folder, items) => ({ folder, manifest: { name: folder, commands: { $axf: 'plugin-commands@1', auto: true, items } }, routes: [{ method: 'GET', path: '/state', fn: 'state', params: [], body: false }], actions: [] });
+  const named = pluginCommandRegistry([mk('alpha', [{ route: 'GET /state', id: 'state', tool: 'thing_status' }]), mk('beta', [{ route: 'GET /state', id: 'state', tool: 'thing_status' }])]);
+  const tl = pluginCommandTools(named);
+  eq(tl.filter((x) => x.command === 'state').map((x) => x.name), ['thing_status', 'beta_state'], 'a declared tool name wins once; a clash falls back to <plugin>_<command>');
+  ok(derivePluginCommands(mk('gamma', [{ route: 'GET /state', tool: 'plugin_run' }])).errors.some((e) => /generic tool/.test(e)), 'a generic tool name is refused');
+}
 
 /* ---- coverage */
 const cov = pluginCommandCoverage(reg.plugins.find((p) => p.folder === 'demo'));
@@ -178,7 +185,7 @@ const bad = real.filter((c) => !c.ok);
 ok(real.length >= 40, `the console's plugins (${real.length})`);
 eq(bad.map((c) => `${c.folder}: ${c.errors.join('; ')}`), [], 'every console plugin exposes every command and read');
 const all = registry();
-ok(all.plugins.some((p) => p.app === 'amberx-droid'), 'AmberX\'s plugins are listed too');
+ok(all.plugins.every((p) => ['console-web', 'axhub-web'].includes(p.app)), 'every app\'s plugins are listed');
 ok(all.plugins.every((p) => p.declared), 'every plugin (every app) has a commands block');
 
 console.log(`✓ plugin commands — ${n} checks, ${real.length} console plugins, ${all.plugins.reduce((s, p) => s + p.commands.length, 0)} commands and reads`);

@@ -6,7 +6,7 @@
  * Theme tokens only.
  */
 import type { ComponentType, ReactNode } from 'react';
-import { avatarInitials, avatarSize, counterText, imageSrc, linkHref, logoSize, progressPercent, progressWidth, searchBarConfig, spacerUnits, statusOn, themeSwitchNext, widgetTone } from '../../core/engines/widgets';
+import { avatarInitials, avatarSize, counterText, imageSrc, linkHref, logoSize, progressPercent, progressWidth, searchBarConfig, spacerUnits, statusOn, themeSwitchNext, themeSwitchPair, widgetTone } from '../../core/engines/widgets';
 import type { ActionButtonData, AvatarData, ClockData, CounterData, DividerData, LabelData, LinkData, LogoData, ProgressData, SearchBarData, SpacerData, StatusData, ThemeSwitchData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { BannerClock } from './Banner';
@@ -138,8 +138,9 @@ export function ThemeSwitchWidget({ data }: WidgetRenderProps<ThemeSwitchData>) 
   const rt = useRuntime();
   const state = useAxfState();
   const active = state.active['color-theme'];
-  const dark = active === data.dark;
-  const next = themeSwitchNext(active, data.light, data.dark);
+  const pair = themeSwitchPair(active, data, rt.registry.list('theme-switch').map((a) => a.data as ThemeSwitchData));
+  const dark = active === pair.dark;
+  const next = themeSwitchNext(active, pair.light, pair.dark);
   const label = dark ? (data.lightLabel ?? 'Light') : (data.darkLabel ?? 'Dark');
   return (
     <button type="button" className={`fx-widget-theme is-${data.show}`} title={data.tooltip ?? `Switch to ${label.toLowerCase()} theme`} aria-label={`Switch to ${label} theme`} aria-pressed={dark} disabled={rt.lockedByAppearance('assets.swap')} onClick={() => rt.swap('color-theme', next)}>

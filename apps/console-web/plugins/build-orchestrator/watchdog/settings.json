@@ -1,0 +1,43 @@
+{
+  "$axf": "watchdog-settings-schema@1",
+  "description": "The stale-row watchdog's settings (Settings → Plugins → Build orchestrator → Watchdog). Stored in the plugin data folder (watchdog/settings.json there); read and written through GET/PUT /api/plugins/build-orchestrator/watchdog, MCP watchdog-settings, axf watchdog set <key> <value>, voice orchestrator.watchdog.set. Generated from watchdog.mjs SETTINGS.",
+  "settings": {
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "title": "Watchdog on"
+    },
+    "intervalMin": {
+      "type": "integer",
+      "min": 1,
+      "max": 120,
+      "default": 5,
+      "title": "Run every (minutes)"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "title": "Dry run only (decide, change nothing)"
+    },
+    "tables.builds": {
+      "type": "boolean",
+      "default": true,
+      "title": "Watch Pending, Queue and Building"
+    },
+    "tables.merge-queue": {
+      "type": "boolean",
+      "default": true,
+      "title": "Watch the merge queue"
+    },
+    "tables.ui-review": {
+      "type": "boolean",
+      "default": true,
+      "title": "Watch UI Review"
+    },
+    "notify": {
+      "type": "boolean",
+      "default": true,
+      "title": "Tell the phone what was cleaned"
+    }
+  }
+}

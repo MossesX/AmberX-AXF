@@ -44,6 +44,15 @@ const assetFile = (type: string, id: string) => {
 const menuAsset = assetFile('app-menu', manifest.defaults['app-menu']);
 const navAsset = assetFile('nav-menu', manifest.defaults['nav-menu']);
 const toolbarAsset = assetFile('toolbar', manifest.defaults.toolbar);
+/** The console nav's section labels: every plugin's nav entry names one of them (checked below). */
+const navSections = new Set<string>((navAsset.data.sections as { label?: string }[]).map((x) => x.label ?? '').filter(Boolean));
+{
+  const seen = new Set<string>();
+  for (const sec of navAsset.data.sections as { label?: string; items: { view: string; label: string }[] }[]) for (const it of sec.items) {
+    if (seen.has(it.view)) problems.push(`nav entry "${it.label}" (view ${it.view}) is listed twice in ${navAsset.id}`);
+    seen.add(it.view);
+  }
+}
 /** Every toolbar the console ships (any can be picked in Settings → Appearance). */
 const toolbars = ofType('toolbar');
 /** Framework stand-ins the console gives no handler (they only say "no handler yet"): reached through the toolbar live list. */
@@ -105,6 +114,8 @@ for (const folder of readdirSync(pluginDir).filter((f) => !f.startsWith('_') && 
   // their pages through an .open action, a gap recorded in the enforce-the-merge-queue report)
   pluginPages.push(...views);
   for (const v of navViews(src.split('\n').filter((l) => /^\s*nav:\s*\{/.test(l)).join('\n'))) pluginNav.push({ folder, view: v });
+  // the side nav keeps one shape: a plugin's nav entry joins one of the console nav asset's sections (by label)
+  for (const m of [...src.matchAll(/^\s*nav:\s*\{\s*label:\s*'([^']*)'/gm), ...src.matchAll(/\bnavLabel:\s*'([^']*)'/g)]) need(navSections.has(m[1]!), `plugin ${folder}'s nav entry joins section "${m[1]}", which the console nav (${navAsset.id}) doesn't have: use one of ${[...navSections].join(', ')}`);
   const hasUi = views.length > 0 || /\bdialogs:\s*\{/.test(src) || /\bsettingsTabs\b/.test(src);
   const menuFile = join(pluginDir, folder, 'web/menu.ts');
   if (!existsSync(menuFile)) { need(!hasUi, `plugin ${folder} has a page, dialog or settings tab but no web/menu.ts`); continue; }
@@ -157,8 +168,17 @@ for (const s of navAsset.data.sections) for (const it of s.items) need(reaches(i
 for (const p of pluginNav) need(reaches(p.view), `plugin ${p.folder}'s nav entry (view ${p.view}) isn't in the app menu`);
 for (const v of libViews) need(reaches(v), `library page "${v}" isn't in the app menu`);
 const stubbed = new Set<string>();
+/*
+ * Skins only (#532): the style / layout / spacing / design-package pickers left the console menus; the skin carries
+ * those parts and View › Look steps it (skin.use:next|prev). The shared toolbars still offer the retired picks (the
+ * runtime routes swap:<folded type>:next|prev to the skin step), so they count as reached when the menu steps the skin.
+ */
+const SKIN_STEP = ['skin.use:next', 'skin.use:prev'];
+const retiredPick = (a: string) => /^swap:(style-theme|layout|behavior-theme|style-package):(next|prev)$/.test(a) || /^design\.package:(next|prev)$/.test(a) || /^spacing:(tight|compact|regular)$/.test(a);
+const skinStepped = new Set<string>();
 for (const tb of toolbars) for (const g of tb.data.groups) for (const it of g.items) {
   if (stubs.has(it.action) && !actions.has(it.action)) { stubbed.add(it.action); continue; }
+  if (!actions.has(it.action) && retiredPick(it.action) && SKIN_STEP.every((a) => actions.has(a))) { skinStepped.add(it.action); continue; }
   need(actions.has(it.action), `toolbar ${tb.id}: item "${it.label}" (${it.action}) isn't in the app menu`);
 }
 for (const v of consoleViews) need(reaches(v), `page "${v}" (src/App.tsx) isn't in the app menu`);
@@ -182,5 +202,6 @@ if (problems.length) {
   process.exit(1);
 }
 assert.ok(items > 0);
+if (skinStepped.size) console.log(`menu-reach: retired picks on the toolbars, reached through View › Look › Next / Previous skin: ${[...skinStepped].join(', ')}`);
 if (stubbed.size) console.log(`menu-reach: framework stand-ins with no console handler, reached through View › Toolbar items: ${[...stubbed].join(', ')}`);
 console.log(`menu-reach: ok — ${checks} checks; ${compiled.menus.length} menus, ${items} static items, ${used.size} live lists, ${contributions.length} contributions; ${known.size} pages and items of ${toolbars.length} toolbars reachable`);

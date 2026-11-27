@@ -1,0 +1,61 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "claude-login.signin",
+      "label": "Build signed in to Claude",
+      "group": "accounts",
+      "app": "console",
+      "source": "Claude login (VPS)",
+      "description": "A build started on a Claude account: the token it uses was checked with Anthropic (which account, which build, verified OK, renewing, or not answered).",
+      "match": {
+        "source": "claude-login",
+        "keyPrefix": "claude-login:signin:ok:"
+      },
+      "push": true,
+      "priority": "default"
+    },
+    {
+      "id": "claude-login.refresh",
+      "label": "Claude token refreshed and saved",
+      "group": "accounts",
+      "app": "console",
+      "source": "Claude login (VPS)",
+      "description": "A Claude login renewed its token: the new token was saved to the account's shared login file and every store, and read back OK.",
+      "match": {
+        "source": "claude-login",
+        "keyPrefix": "claude-login:refresh:ok:"
+      },
+      "push": true,
+      "priority": "default"
+    },
+    {
+      "id": "claude-login.signin-failed",
+      "label": "Build could NOT sign in to Claude",
+      "group": "accounts",
+      "app": "console",
+      "source": "Claude login (VPS)",
+      "description": "Anthropic refused the token a build was about to use (which account, which build, the HTTP answer). The build will stop on it until the account signs in again.",
+      "match": {
+        "source": "claude-login",
+        "keyPrefix": "claude-login:signin:failed:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "claude-login.refresh-failed",
+      "label": "Claude token refresh NOT saved",
+      "group": "accounts",
+      "app": "console",
+      "source": "Claude login (VPS)",
+      "description": "A Claude login renewed its token but the new token could not be written back or read back from the shared login file: builds on that account may stop at their next renewal.",
+      "match": {
+        "source": "claude-login",
+        "keyPrefix": "claude-login:refresh:failed:"
+      },
+      "push": true,
+      "priority": "high"
+    }
+  ]
+}

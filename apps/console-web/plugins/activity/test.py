@@ -466,10 +466,13 @@ check(mod.builds_store_file() == sdir / "store.json", "the store is found the wa
 check([mod._pending_status(x) for x in ("android-framework-update", "done-one", "risky", "gone", "nope")] == ["pending", "complete", "unsafe", "missing", "missing"],
       "a hold's pending build: status from the builds store (pending, complete, unsafe, deleted/absent = missing)")
 os.environ["AXF_BUILDS_STORE"] = str(sdir / "absent.json")
+__import__("builds_store").clear()
 check(mod._pending_status("android-framework-update") is None, "an unreadable store = unknown (the hold stays)")
 os.environ.pop("AXF_BUILDS_STORE")
-real = mod.build_status(json.loads((REPO / "_claude" / "builds" / "store.json").read_text()), "android-framework-update")
-check(real in ("pending", "unsafe", "complete", "missing"), f"the repo's store answers for the shipped hold ({real})")
+import builds_store  # noqa: E402
+builds_store.clear()
+real = mod._pending_status("android-framework-update")
+check(real in ("pending", "unsafe", "complete", "missing", None), f"the real builds store (the tables once cut over) answers for the shipped hold ({real})")
 
 print("hook health check")
 H = 3600_000

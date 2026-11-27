@@ -1,0 +1,81 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-land-gizmo-chat-report",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:07:17Z",
+ "build": {
+  "id": "urgent-land-gizmo-chat-report",
+  "title": "urgent-land-gizmo-chat-report",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "urgent-land-gizmo-chat-report",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/urgent-land-gizmo-chat-report",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 324,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/324"
+ },
+ "landedCommit": "32e55adee5601051a27afe133e2f639ac37ced8a",
+ "commits": [
+  "32e55adee5601051a27afe133e2f639ac37ced8a"
+ ],
+ "mergedAt": "2026-11-15T10:06:17Z",
+ "landedAt": "2026-11-15T10:06:16Z",
+ "files": [
+  "_claude/builds/reports/urgent-land-gizmo-chat.md"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/urgent-land-gizmo-chat.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43702439795",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43702439842",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

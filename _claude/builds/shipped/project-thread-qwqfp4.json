@@ -1,0 +1,336 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-qwqfp4",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:27Z",
+ "build": {
+  "id": "project-thread-qwqfp4",
+  "title": "project-thread-qwqfp4",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-qwqfp4",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-qwqfp4",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "f239b93b8739072cb84f178b8f36116822187e1f",
+ "commits": [
+  "065e29efa2599a2721c29473d9277ce9a1af4222"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T23:33:21Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/assets/settings/console.json",
+  "apps/amberx-droid/src/assets/toolbar/settings-page.json",
+  "apps/amberx-droid/src/axf/core/engines/actions.ts",
+  "apps/amberx-droid/src/axf/core/engines/appearancepackage.ts",
+  "apps/amberx-droid/src/axf/core/engines/banner.ts",
+  "apps/amberx-droid/src/axf/core/engines/settingsui.ts",
+  "apps/amberx-droid/src/axf/core/engines/widgets.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/react/components/Arrange.tsx",
+  "apps/amberx-droid/src/axf/react/components/Banner.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+  "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+  "apps/amberx-droid/src/axf/react/components/Icon.tsx",
+  "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+  "apps/amberx-droid/src/axf/react/components/Slots.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/react/library.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/assets/settings/console.json",
+  "apps/axhub-web/src/assets/toolbar/settings-page.json",
+  "apps/axhub-web/src/axf/core/engines/actions.ts",
+  "apps/axhub-web/src/axf/core/engines/appearancepackage.ts",
+  "apps/axhub-web/src/axf/core/engines/banner.ts",
+  "apps/axhub-web/src/axf/core/engines/settingsui.ts",
+  "apps/axhub-web/src/axf/core/engines/widgets.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+  "apps/axhub-web/src/axf/react/components/Banner.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/Icon.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/components/Slots.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/src/assets/app-menu/console.json",
+  "apps/console-web/src/assets/settings/console.json",
+  "apps/console-web/src/assets/toolbar/settings-page.json",
+  "apps/console-web/src/axf/core/engines/settingsui.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/assets/settings/console.json",
+  "apps/patches-web/src/assets/toolbar/settings-page.json",
+  "apps/patches-web/src/axf/core/engines/actions.ts",
+  "apps/patches-web/src/axf/core/engines/appearancepackage.ts",
+  "apps/patches-web/src/axf/core/engines/banner.ts",
+  "apps/patches-web/src/axf/core/engines/settingsui.ts",
+  "apps/patches-web/src/axf/core/engines/widgets.ts",
+  "apps/patches-web/src/axf/core/index.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/react/components/Arrange.tsx",
+  "apps/patches-web/src/axf/react/components/Banner.tsx",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Chrome.tsx",
+  "apps/patches-web/src/axf/react/components/Icon.tsx",
+  "apps/patches-web/src/axf/react/components/Overlays.tsx",
+  "apps/patches-web/src/axf/react/components/Slots.tsx",
+  "apps/patches-web/src/axf/react/index.ts",
+  "apps/patches-web/src/axf/react/library.ts",
+  "apps/patches-web/src/axf/schemas/asset-types.json",
+  "apps/patches-web/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/assets/settings/console.json",
+  "apps/walkthrough-studio/src/assets/toolbar/settings-page.json",
+  "apps/walkthrough-studio/src/axf/core/engines/actions.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/appearancepackage.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/banner.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/settingsui.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/widgets.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/react/components/Arrange.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Banner.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Icon.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Overlays.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Slots.tsx",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/react/library.ts",
+  "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "framework/assets/settings/console.json",
+  "framework/assets/toolbar/settings-page.json",
+  "framework/core/engines/settingsui.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/react/components/Chrome.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/spec/check-settings-ui.mts",
+  "framework/spec/fixtures/settings-ui.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/assets/settings/console.json",
+    "apps/amberx-droid/src/assets/toolbar/settings-page.json",
+    "apps/amberx-droid/src/axf/core/engines/actions.ts",
+    "apps/amberx-droid/src/axf/core/engines/appearancepackage.ts",
+    "apps/amberx-droid/src/axf/core/engines/banner.ts",
+    "apps/amberx-droid/src/axf/core/engines/settingsui.ts",
+    "apps/amberx-droid/src/axf/core/engines/widgets.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/react/components/Arrange.tsx",
+    "apps/amberx-droid/src/axf/react/components/Banner.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+    "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+    "apps/amberx-droid/src/axf/react/components/Icon.tsx",
+    "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+    "apps/amberx-droid/src/axf/react/components/Slots.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/react/library.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/assets/settings/console.json",
+    "apps/axhub-web/src/assets/toolbar/settings-page.json",
+    "apps/axhub-web/src/axf/core/engines/actions.ts",
+    "apps/axhub-web/src/axf/core/engines/appearancepackage.ts",
+    "apps/axhub-web/src/axf/core/engines/banner.ts",
+    "apps/axhub-web/src/axf/core/engines/settingsui.ts",
+    "apps/axhub-web/src/axf/core/engines/widgets.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+    "apps/axhub-web/src/axf/react/components/Banner.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/Icon.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/components/Slots.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/assets/settings/console.json",
+    "apps/patches-web/src/assets/toolbar/settings-page.json",
+    "apps/patches-web/src/axf/core/engines/actions.ts",
+    "apps/patches-web/src/axf/core/engines/appearancepackage.ts",
+    "apps/patches-web/src/axf/core/engines/banner.ts",
+    "apps/patches-web/src/axf/core/engines/settingsui.ts",
+    "apps/patches-web/src/axf/core/engines/widgets.ts",
+    "apps/patches-web/src/axf/core/index.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/react/components/Arrange.tsx",
+    "apps/patches-web/src/axf/react/components/Banner.tsx",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Chrome.tsx",
+    "apps/patches-web/src/axf/react/components/Icon.tsx",
+    "apps/patches-web/src/axf/react/components/Overlays.tsx",
+    "apps/patches-web/src/axf/react/components/Slots.tsx",
+    "apps/patches-web/src/axf/react/index.ts",
+    "apps/patches-web/src/axf/react/library.ts",
+    "apps/patches-web/src/axf/schemas/asset-types.json",
+    "apps/patches-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/assets/settings/console.json",
+    "apps/walkthrough-studio/src/assets/toolbar/settings-page.json",
+    "apps/walkthrough-studio/src/axf/core/engines/actions.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/appearancepackage.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/banner.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/settingsui.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/widgets.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/react/components/Arrange.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Banner.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Icon.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Overlays.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Slots.tsx",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/react/library.ts",
+    "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/assets/app-menu/console.json",
+    "apps/console-web/src/assets/settings/console.json",
+    "apps/console-web/src/assets/toolbar/settings-page.json",
+    "apps/console-web/src/axf/core/engines/settingsui.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/Chrome.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/settings/console.json",
+    "framework/assets/toolbar/settings-page.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Chrome.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-settings-ui.mts",
+    "framework/spec/fixtures/settings-ui.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/settingsui.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

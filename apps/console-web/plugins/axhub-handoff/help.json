@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-handoff-help",
+  "name": "axHub handoff help",
+  "version": "0.1.0",
+  "description": "axHub handoff's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-handoff",
+    "entries": [
+      {
+        "target": "view:axhub-handoff",
+        "title": "Handoff",
+        "text": "Hands a job to another Claude account with everything it needs, and shows the runs.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:axhub-handoff-run",
+        "title": "Handoff run",
+        "text": "One handoff run: what was sent, what came back.",
+        "kind": "screen"
+      },
+      {
+        "target": "all-runs",
+        "title": "All runs",
+        "text": "Every handoff run."
+      },
+      {
+        "target": "continue-installation-and-handoff",
+        "title": "Continue",
+        "text": "Carries on installing and hands the job over."
+      },
+      {
+        "target": "ive-sent-it",
+        "title": "I've sent it",
+        "text": "Tells the hub you've sent the message, so it waits for the reply."
+      }
+    ]
+  }
+}

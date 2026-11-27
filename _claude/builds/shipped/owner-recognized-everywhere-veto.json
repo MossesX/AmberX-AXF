@@ -1,0 +1,195 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-owner-recognized-everywhere-veto",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-16T19:42:13Z",
+ "build": {
+  "id": "owner-recognized-everywhere-veto",
+  "title": "Owner recognized everywhere + veto countdown only on shell commands",
+  "profile": "all",
+  "category": "axhub",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: owner-recognized-everywhere-veto\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Owner recognized everywhere + veto countdown only on shell commands\" (owner-recognized-everywhere-veto) [axhub] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/owner-recognized-everywhere-veto · PR #601\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30 min) Fix owner detection: Brett's admin console login and axHub session count as owner everywhere; finish the axHub owner-only policy API (GET/PUT /auth/api/policy) and the Approvals & veto tab so Brett can change policies himself.\n[x] s2 (~25 min) Set axHub policies: veto countdown ONLY for shell commands on the VPS (vps.run and anything executing a shell); all console/orchestrator tools to allow; keep confirm on model upgrades.\n[ ] s3 (~20 min) Tests (owner recognized, vps.run still veto, console/orchestrator tools run immediately), PR, land, redeploy, AmberX FYI when live.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step owner-recognized-everywhere-veto <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link owner-recognized-everywhere-veto --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step owner-recognized-everywhere-veto <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note owner-recognized-everywhere-veto \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-owner-recognized-everywhere-veto--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-14T23:06:12.460Z",
+   "endedAt": "2026-11-14T23:11:52.987Z",
+   "exit": 0,
+   "costUsd": 0.8624
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Fix owner detection: Brett's admin console login and axHub session count as owner everywhere; finish the axHub owner-only policy API (GET/PUT /auth/api/policy) and the Approvals & veto tab so Brett can change policies himself.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-14T23:06:12.460Z",
+   "doneAt": "2026-11-12T02:35:26.238Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Set axHub policies: veto countdown ONLY for shell commands on the VPS (vps.run and anything executing a shell); all console/orchestrator tools to allow; keep confirm on model upgrades.",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-12T02:35:26.238Z",
+   "doneAt": "2026-11-12T02:38:56.423Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests (owner recognized, vps.run still veto, console/orchestrator tools run immediately), PR, land, redeploy, AmberX FYI when live.",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-12T02:38:56.423Z",
+   "doneAt": "2026-11-14T23:11:39.845Z",
+   "actualMin": 4113,
+   "done": true
+  }
+ ],
+ "branch": "claude/owner-recognized-everywhere-veto",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 601,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/601"
+ },
+ "landedCommit": "d46ec0f788e957fe04dd915465c9428e5a8d790e",
+ "commits": [
+  "b9c73f59fb65d423bb8483a42e3a94599ebcb5fc",
+  "489c24996c74be604f08184e8602d6124a3adb3d",
+  "bbcdd4298611d79724df035b6a8e8668f0e0beb5",
+  "c5dd6d7b47439eb18695cbe9f106b17b413d920e",
+  "1264c4df72a93ef5d5d171f0a96e70ade67acf5b",
+  "e3555e1b751a971fead8c6389128fa0640092864",
+  "a53aa0f76635b94703b5c9765d02aa2374a89818",
+  "3ea43ba12515dd09df3d3415dbaa25a65af9c65f",
+  "426a423de98a6787ca9922ec9d16c2770d3bf7b3"
+ ],
+ "mergedAt": "2026-11-16T19:09:18Z",
+ "landedAt": "2026-11-16T19:09:05Z",
+ "files": [
+  "_claude/builds/journal/2026-11-p5.jsonl",
+  "_claude/builds/journal/2026-11-p6.jsonl",
+  "_claude/builds/journal/2026-11-p7.jsonl",
+  "_claude/builds/journal/2026-11-p8.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/reports/owner-recognized-everywhere-veto-countdown-only-on-shell-commands.md",
+  "_claude/builds/reports/owner-recognized-everywhere-veto.md",
+  "_claude/builds/store.json",
+  "apps/console-web/plugins/claude-settings/core.mjs",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/test.mjs",
+  "apps/console-web/plugins/claude-settings/web/approvals.tsx",
+  "apps/console-web/plugins/claude-settings/web/policy-core.d.mts",
+  "apps/console-web/plugins/claude-settings/web/policy-core.mjs",
+  "apps/console-web/src/control/inventory.json",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/spec/AXHUB-POLICY-API.md",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11-p5.jsonl",
+    "_claude/builds/journal/2026-11-p6.jsonl",
+    "_claude/builds/journal/2026-11-p7.jsonl",
+    "_claude/builds/journal/2026-11-p8.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/reports/owner-recognized-everywhere-veto-countdown-only-on-shell-commands.md",
+    "_claude/builds/reports/owner-recognized-everywhere-veto.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/core.mjs",
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/test.mjs",
+    "apps/console-web/plugins/claude-settings/web/approvals.tsx",
+    "apps/console-web/plugins/claude-settings/web/policy-core.d.mts",
+    "apps/console-web/plugins/claude-settings/web/policy-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/AXHUB-POLICY-API.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0.8624,
+  "estimated": false,
+  "tokens": {
+   "input": 84,
+   "output": 534,
+   "cacheRead": 1382405,
+   "cacheWrite": 41672
+  }
+ },
+ "report": "_claude/builds/reports/owner-recognized-everywhere-veto.md",
+ "open": [
+  "`orchestrator_upgrade_approve` is `confirm`, which under `AXHUB_CONFIRM_AS=veto` shows as a countdown (it never runs without the window). A straight approval for an explicit `confirm` needs a policy engine change (Fable).",
+  "`claude-accounts` decides owner from `user.admin`, which the console token also has: looser than `control@1 owner()`, left as is (not a recognition problem)."
+ ]
+}

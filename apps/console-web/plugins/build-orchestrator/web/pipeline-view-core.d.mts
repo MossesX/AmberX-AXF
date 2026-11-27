@@ -1,0 +1,21 @@
+// Types for pipeline-view-core.mjs (pipeline-status@1 as the builds table reads it).
+export type PipelineTone = 'muted' | 'info' | 'accent' | 'warning' | 'success' | 'danger';
+export type WaitingOn = { buildId: string; number: string; title: string; reason: string };
+export type MergeLine = { position: number; waitingFor: string; waitingForNumber: string; waitingForTitle: string; text: string };
+export type SplitInfo = { by: string; model: string; at: string; stepCount: number };
+export type PipelineView = { state: string; label: string; tone: PipelineTone; icon: string; line: string; attempt: number; waitingOn: WaitingOn | null; mergeLine: MergeLine | null; fromStore: boolean };
+export const PIPELINE_STATES: readonly string[];
+export const LANDER_STATES: readonly string[];
+export const TONES: readonly PipelineTone[];
+export function ordinal(n: number): string;
+export function buildNumber(b: unknown): string;
+export function stateLabel(state: string, attempt?: number): string;
+export function stateTone(state: string): PipelineTone;
+export function stateIcon(state: string): string;
+export function activeHolder(b: unknown, all: unknown[]): unknown | null;
+export function normMergeLine(m: unknown, all?: unknown[]): MergeLine | null;
+export function normSplit(s: unknown): SplitInfo | null;
+export function splitLabel(split: SplitInfo | null | undefined): string;
+export function stepSplitLabel(splitBy: unknown, split?: SplitInfo | null): string;
+export function viewOf(b: unknown, all?: unknown[]): PipelineView;
+export function waitingToMerge<R extends { view?: PipelineView }>(rows: R[]): R[];

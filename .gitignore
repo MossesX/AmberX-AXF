@@ -6,6 +6,9 @@ dist-single/
 framework/node_modules/
 __pycache__/
 .axf-console/
+# console-control inventory: generated from each plugin's registered targets (apps/console-web/scripts/control-inventory.mjs),
+# published to axf-data as the control_targets table; never hand-edited, never committed (builds used to clash on it)
+apps/console-web/src/control/inventory.json
 
 # Synced copies of /projects/_shared/_claude (claude-sync); committed once, at the repo root (_claude/shared/)
 apps/*/_claude/shared/
@@ -36,3 +39,7 @@ _claude/builds/store.json.live.json
 
 # Auto-land (push banner): a finished worktree claude-sync leaves alone
 .claude-sync-hold
+
+# builds journal (builds-journal@1): lives on the hub data store (/projects/amberx-axf/_data/builds/journal); the repo
+# folder is only the spool and the old parts until the migration untracks them
+_claude/builds/journal/

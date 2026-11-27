@@ -19,6 +19,7 @@
  *
  * | value | hex | contrast on page | spec minimum |
  * |---|---|---|---|
+ * (theme-ok-begin: measured palette values, documentation)
  * | page | `#1e1a15` | (rel. luminance 0.011 — near-black, warm) | — |
  * | ink | `#f0efed` | **15.06:1** | 4.5 |
  * | dim | `#b7b3ad` | **8.29:1** | 3 |
@@ -27,6 +28,7 @@
  * `paletteLegibility()` (core brand/roles.ts) over the rolled palette
  * (accent/accent2/accent3/ink/dim/edge/page/ok/warn/err): **zero problems**.
  * The accent's 36° hue sits beside the house amber (`#f0982e`, ~30°), so the
+ * (theme-ok-end)
  * default theme and the default identity pack speak the same colour.
  *
  * `options` is `{}` deliberately: the seed rolls IDENTICAL values with

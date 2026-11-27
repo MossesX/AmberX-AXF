@@ -1,0 +1,102 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-9jsom2",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:00Z",
+ "build": {
+  "id": "project-thread-9jsom2",
+  "title": "project-thread-9jsom2",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-9jsom2",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-9jsom2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "8053e4c0a96ceba0a04b6bae8cbd19c36017867a",
+ "commits": [
+  "c4841ad16510a081db861250924dfb2236c5a63f"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T18:52:35Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/src/axf/core/engines/bannerhide.ts",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "framework/core/engines/bannerhide.ts",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/spec/check-banner-hide.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/core/engines/bannerhide.ts",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/bannerhide.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-banner-hide.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

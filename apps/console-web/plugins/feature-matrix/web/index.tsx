@@ -21,7 +21,7 @@ export const plugin: AxfWebLibrary = {
   // the Builds pages' toolbar (slot builds.toolbar: orchestrator, pending, build queue, build manager)
   slots: { 'builds.toolbar': [{ id: 'feature-matrix', order: 20, render: () => <OpenMatrixButton /> }] },
   views: { [VIEW]: { title: 'Feature matrix', icon: 'check-circle', keywords: ['feature matrix', 'matrix', 'scope', 'keep', 'skip', 'apply', 'features', 'minutes', 'fable', 'opus'], render: () => <FeatureMatrixPage /> } },
-  nav: { label: 'Builds', items: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', view: 'feature-matrix' }] },
+  nav: { label: 'Plan', items: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', view: 'feature-matrix' }] },
   contextMenu: [{ id: 'feature-matrix.default', target: 'default', order: 92, items: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', action: 'nav:feature-matrix' }] }],
   settingsTabs: [{ id: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', parent: 'plugins', order: 44, description: 'Every build’s keep / skip feature list, one dataset, Apply to every table.' }],
   settings: [{

@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "gate-lists-compact",
+  "name": "gate-lists: Compact grid",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "DataGrid with one line a row: the most rules, PRs and runs on one screen; details open under the row.",
+  "tags": [
+    "ui-choice",
+    "choice-set:gate-lists",
+    "choice-option:compact"
+  ],
+  "data": {
+    "view": "compact",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.rules",
+      "gate.waiting",
+      "gate.runs",
+      "gate.history"
+    ],
+    "builtFor": "plugin:gate"
+  }
+}

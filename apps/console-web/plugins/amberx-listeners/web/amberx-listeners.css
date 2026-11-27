@@ -10,3 +10,5 @@
 .axp-amberx-listeners__error { margin: 0; color: var(--fx-danger); overflow-wrap: anywhere; }
 .axp-amberx-listeners__controls { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axp-amberx-listeners__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-amberx-listeners > .fx-pagehead { margin-bottom: var(--fx-dens-gap-xl) }

@@ -1,0 +1,172 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-empty-shell",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:42Z",
+ "build": {
+  "id": "amberx-empty-shell",
+  "title": "AmberX as an empty shell for building and testing plugins",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "refactoring and upgrading work from today's sessions).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Remove Hub, Apps, Manage, Asset studio, Account views and demo dialogs",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-27T03:48:42.596Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Trim nav, app menu, toolbar, context menu assets",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-27T03:48:42.596Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "README plugin how-to, CLAUDE.md status, test.mjs shell checks",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-27T03:48:42.596Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "tsc, vite build, axf validate, PR, THREADS",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-27T03:48:42.596Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-empty-shell",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 118,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/118"
+ },
+ "landedCommit": "c9755267920d470e0afa2bb5d76f1304655ec60d",
+ "commits": [
+  "888bc0a2c88e23b50d07a512bb0fc36268e47e09",
+  "4d59df809d3bfc8ae54541c1abdb010988b28d76",
+  "02d825287cb22f2343f4e982cc567353a277d77c",
+  "0e81c8e73386939f915698cea141cbcbada65bba"
+ ],
+ "mergedAt": "2026-10-27T03:54:31Z",
+ "landedAt": "2026-10-27T03:54:31Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "apps/amberx-droid/README.md",
+  "apps/amberx-droid/project.manifest.json",
+  "apps/amberx-droid/src/App.tsx",
+  "apps/amberx-droid/src/actions.ts",
+  "apps/amberx-droid/src/assets/app-menu/amberx-droid.json",
+  "apps/amberx-droid/src/assets/context-menu/amberx-droid.json",
+  "apps/amberx-droid/src/assets/nav-menu/amberx-droid.json",
+  "apps/amberx-droid/src/assets/toolbar/amberx-droid.json",
+  "apps/amberx-droid/src/dialogs.tsx",
+  "apps/amberx-droid/src/hub/useHub.ts",
+  "apps/amberx-droid/src/plugins/README.md",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/views/Apps.tsx",
+  "apps/amberx-droid/src/views/HubView.tsx",
+  "apps/amberx-droid/src/views/Planned.tsx",
+  "apps/amberx-droid/test.mjs",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/README.md",
+    "apps/amberx-droid/project.manifest.json",
+    "apps/amberx-droid/src/App.tsx",
+    "apps/amberx-droid/src/actions.ts",
+    "apps/amberx-droid/src/assets/app-menu/amberx-droid.json",
+    "apps/amberx-droid/src/assets/context-menu/amberx-droid.json",
+    "apps/amberx-droid/src/assets/nav-menu/amberx-droid.json",
+    "apps/amberx-droid/src/assets/toolbar/amberx-droid.json",
+    "apps/amberx-droid/src/dialogs.tsx",
+    "apps/amberx-droid/src/hub/useHub.ts",
+    "apps/amberx-droid/src/plugins/README.md",
+    "apps/amberx-droid/src/views/Apps.tsx",
+    "apps/amberx-droid/src/views/HubView.tsx",
+    "apps/amberx-droid/src/views/Planned.tsx",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

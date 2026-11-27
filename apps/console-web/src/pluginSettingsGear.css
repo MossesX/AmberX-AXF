@@ -1,0 +1,17 @@
+/* The host row with the settings gear above every plugin screen (src/PluginSettingsGear.tsx). Theme tokens only.
+   It takes no height of its own: the gear sits on the page head's eyebrow line at the right edge, so a plugin screen's
+   title starts at the same place as a core screen's (console UI pass). Only the gear itself catches the pointer. */
+.cw-plugin-host { display: contents }
+.cw-plugin-host__bar { display: flex; justify-content: flex-end; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; height: 0; overflow: visible; position: relative; z-index: 1; pointer-events: none }
+.cw-plugin-host__bar > * { pointer-events: auto }
+.cw-plugin-host__bar > .cw-plugin-gear { flex: none }
+
+/* The default plugin settings sub-tab (src/PluginDefaultSettingsTab.tsx). */
+.cw-plugin-default__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); margin: 0; font-size: var(--fx-type-root-md) }
+.cw-plugin-default__facts dt { color: var(--fx-muted) }
+.cw-plugin-default__facts dd { margin: 0; overflow-wrap: anywhere }
+.cw-plugin-default__h { margin: 0; font-size: var(--fx-type-root-md); font-weight: 600 }
+.cw-plugin-default__list, .cw-plugin-default__logs { margin: 0; padding-left: var(--fx-dens-gap-3xl); display: grid; gap: var(--fx-dens-gap-md) }
+.cw-plugin-default__logs { max-height: calc(var(--fx-dens-gap-4xl) * 8); overflow: auto; overflow-wrap: anywhere }
+.cw-plugin-default__logs li[data-level='error'] { color: var(--fx-danger) }
+.cw-plugin-default__logs li[data-level='warn'] { color: var(--fx-warning) }

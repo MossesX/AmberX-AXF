@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "skin-gallery-layout-stage",
+ "name": "skin-gallery-layout: Preview on top, gallery under it",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A wide preview stage first, then the cards in a full-width grid. Best on big screens.",
+ "tags": [
+  "ui-choice",
+  "choice-set:skin-gallery-layout",
+  "choice-option:stage"
+ ],
+ "data": {
+  "variant": "panel",
+  "header": "accent",
+  "padding": "lg",
+  "elevation": 0,
+  "collapsible": false,
+  "gallery": {
+   "layout": "stage"
+  }
+ }
+}

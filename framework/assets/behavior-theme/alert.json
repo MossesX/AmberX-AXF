@@ -14,7 +14,12 @@
       "speed": "fast",
       "easing": "emphasized",
       "reduced": "system",
-      "entrance": "none"
+      "entrance": "none",
+      "swatches": "pop",
+      "skinSwitch": "sweep",
+      "picker": "pop",
+      "animSpeed": 160,
+      "animIntensity": 55
     },
     "interaction": {
       "hover": "tint",

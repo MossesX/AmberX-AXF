@@ -1,0 +1,326 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-12T20:51:04Z",
+ "build": {
+  "id": "add-a-tap-to-confirm-option-to-every-settings-in",
+  "title": "Add a \"Tap to confirm\" option to every settings interface",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "You'll put the tap to confirm option in all tab um, tab group settings, navigation menus, application menus, toolbars, put tap to confirm option in all of them. In all their settings interfaces.",
+  "verbatim": true,
+  "at": "2026-11-12T18:33:10.932Z",
+  "source": "",
+  "by": "add-a-tap-to-confirm-option-to-every-settings-in",
+  "addenda": [
+   {
+    "text": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+    "at": "",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "And when you tap the first time, it shows the um, the um, it shows the tooltip saying what it is. So the first tap, instead of saying tap to confirm, they show what it is and tap to confirm.",
+    "at": "",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on. If there is text, it turns it off.",
+    "at": "",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "So on these tab groups, I need the the double click op, op actually the, we're doing a build that adds the that makes the double click option show the name when there's no text. It already shows the name when when this when the double tip is activated. On toolbars anyways. I need the same behavior in toolbars and tab groups and uh, menus and application menus. At least the option to double tap. And I need the settings in, in every toolbar tab group, nav menu, and application menu settings. The, the double tap option, like if it, if a, a pane, a collapsible pane at the top of the settings interface that um, has switches like that, like on and off options, like override or, you know, override or double tap or whatever. Maybe off the top, easy to see.",
+    "at": "",
+    "source": "voice",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: add-a-tap-to-confirm-option-to-every-settings-in\n\n## Brett said (verbatim)\nAt: 2026-11-12T18:33:10.932Z\n> You'll put the tap to confirm option in all tab um, tab group settings, navigation menus, application menus, toolbars, put tap to confirm option in all of them. In all their settings interfaces.\n\n## Addendum 1 (Brett (voice))\n> And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.\n## Addendum 2 (Brett (voice))\n> And when you tap the first time, it shows the um, the um, it shows the tooltip saying what it is. So the first tap, instead of saying tap to confirm, they show what it is and tap to confirm.\n\n## What to build\nContinue build \"Add a \"Tap to confirm\" option to every settings interface\" (add-a-tap-to-confirm-option-to-every-settings-in) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-12 18:33):\n\"You'll put the tap to confirm option in all tab um, tab group settings, navigation menus, application menus, toolbars, put tap to confirm option in all of them. In all their settings interfaces.\"\nAddendum 1: \"And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.\"\nAddendum 2: \"And when you tap the first time, it shows the um, the um, it shows the tooltip saying what it is. So the first tap, instead of saying tap to confirm, they show what it is and tap to confirm.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Add a per-item \"Tap to confirm\" setting (when on, the first tap arms the item and a second tap confirms it) in the settings interfaces of: all tabs and tab groups, navigation menus, application menus and toolbars, across the console, Molly and every standalone app. Expose it in each one's settings UI, store it with the framework tokens/settings, and apply it consistently through the shared framework component so new menus/toolbars get it automatically. Each item goes in as its own step.\n[ ] s2 (~30 min) You'll put the tap to confirm option in all tab um, tab group settings, navigation menus, application menus, toolbars, put tap to confirm option in all of them. In all their settings interfaces.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step add-a-tap-to-confirm-option-to-every-settings-in <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link add-a-tap-to-confirm-option-to-every-settings-in --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step add-a-tap-to-confirm-option-to-every-settings-in <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note add-a-tap-to-confirm-option-to-every-settings-in \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-add-a-tap-to-confirm-option-to-every-settings-in--sully",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-12T18:34:38.743Z",
+   "endedAt": "2026-11-12T19:00:35.216Z",
+   "exit": 0,
+   "costUsd": 4.8937
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Add a per-item \"Tap to confirm\" setting (when on, the first tap arms the item and a second tap confirms it) in the settings interfaces of: all tabs and tab groups, navigation menus, application menus and toolbars, across the console, Molly and every standalone app. Expose it in each one's settings UI, store it with the framework tokens/settings, and apply it consistently through the shared framework component so new menus/toolbars get it automatically. Each item goes in as its own step.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T18:34:38.743Z",
+   "doneAt": "2026-11-12T18:45:19.309Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "You'll put the tap to confirm option in all tab um, tab group settings, navigation menus, application menus, toolbars, put tap to confirm option in all of them. In all their settings interfaces.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T18:45:19.309Z",
+   "doneAt": "2026-11-12T18:45:21.270Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-12T18:45:21.270Z",
+   "doneAt": "2026-11-12T19:00:10.432Z",
+   "actualMin": 15,
+   "done": true
+  }
+ ],
+ "branch": "claude/add-a-tap-to-confirm-option-to-every-settings-in",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 524,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/524"
+ },
+ "landedCommit": "28e34f70e0a0140f5f83908d821a0ddf1ab0ef1e",
+ "commits": [
+  "c27961c97c59d8ca9e2377569ee2d883e1f32f9d",
+  "f9f218a89f894ac39066af73798f732d44f45de0"
+ ],
+ "mergedAt": "2026-11-12T20:46:42Z",
+ "landedAt": "2026-11-12T20:46:42Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/desktop-1-click-opens.png",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/desktop-2-toolbar-settings-behaviour.png",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-1-menu-first-tap.png",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-2-menu-opened.png",
+  "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-3-menu-item-first-tap.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/tapconfirm.ts",
+  "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+  "apps/amberx-droid/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/amberx-droid/src/axf/react/components/TapConfirmChoice.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/react/tapConfirm.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/tapconfirm.ts",
+  "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+  "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/TapConfirmChoice.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/tapConfirm.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/console-web/src/axf/core/engines/tapconfirm.ts",
+  "apps/console-web/src/axf/libs/toolbars/index.tsx",
+  "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/console-web/src/axf/react/components/TapConfirmChoice.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/tapConfirm.ts",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/molly/src/axf/core/engines/tapconfirm.ts",
+  "apps/molly/src/axf/libs/toolbars/index.tsx",
+  "apps/molly/src/axf/react/components/ChromeContext.tsx",
+  "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/molly/src/axf/react/components/TapConfirmChoice.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/react/tapConfirm.ts",
+  "framework/core/engines/chrome-settings-rules.d.mts",
+  "framework/core/engines/chrome-settings-rules.mjs",
+  "framework/core/engines/tapconfirm.ts",
+  "framework/libs/toolbars/index.tsx",
+  "framework/react/components/ChromeContext.tsx",
+  "framework/react/components/NavStyleSettings.tsx",
+  "framework/react/components/TapConfirmChoice.tsx",
+  "framework/react/index.ts",
+  "framework/react/tapConfirm.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-chrome-settings.mts",
+  "framework/spec/check-tapconfirm.mts",
+  "framework/spec/fixtures/chrome-settings.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/tapconfirm.ts",
+    "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+    "apps/amberx-droid/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/amberx-droid/src/axf/react/components/TapConfirmChoice.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/react/tapConfirm.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/tapconfirm.ts",
+    "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+    "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/TapConfirmChoice.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/tapConfirm.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/console-web/src/axf/core/engines/tapconfirm.ts",
+    "apps/console-web/src/axf/libs/toolbars/index.tsx",
+    "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/console-web/src/axf/react/components/TapConfirmChoice.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/tapConfirm.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/molly/src/axf/core/engines/tapconfirm.ts",
+    "apps/molly/src/axf/libs/toolbars/index.tsx",
+    "apps/molly/src/axf/react/components/ChromeContext.tsx",
+    "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/molly/src/axf/react/components/TapConfirmChoice.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/react/tapConfirm.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md",
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/desktop-1-click-opens.png",
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/desktop-2-toolbar-settings-behaviour.png",
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-1-menu-first-tap.png",
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-2-menu-opened.png",
+    "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in/shots/phone-3-menu-item-first-tap.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/ChromeContext.tsx",
+    "framework/react/components/NavStyleSettings.tsx",
+    "framework/react/components/TapConfirmChoice.tsx",
+    "framework/react/index.ts",
+    "framework/react/tapConfirm.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-chrome-settings.mts",
+    "framework/spec/check-tapconfirm.mts",
+    "framework/spec/fixtures/chrome-settings.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/chrome-settings-rules.d.mts",
+    "framework/core/engines/chrome-settings-rules.mjs",
+    "framework/core/engines/tapconfirm.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/toolbars/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261112-55e4690f",
+   "name": "Tap to confirm in every settings interface",
+   "status": "waiting",
+   "group": "g-20261112-f859d5ce",
+   "url": "/review/r-20261112-55e4690f"
+  }
+ ],
+ "cost": {
+  "usd": 4.8937,
+  "estimated": false,
+  "tokens": {
+   "input": 222,
+   "output": 1332,
+   "cacheRead": 11878019,
+   "cacheWrite": 152370
+  }
+ },
+ "report": "_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md",
+ "open": [
+  "The console's top menu bar sits outside `.fx-shell`. Right-clicking it doesn't open the shared context menu (the context host ignores anything outside the shell). Its Application menu settings are still reachable through `chrome.settings:app-menu:app` and the Settings dialog of any other chrome. Tap to confirm itself works on it (see the shots).",
+  "Other toolbar editors don't show the choice yet. lib-workspace `ToolbarCustomizer` and Molly's `toolbar-designer` don't have the control. Those toolbars get it through their right-click Settings dialog and the Toolbars → All toolbars list.",
+  "Molly was type-checked with axhub-web's node_modules (Molly has none installed in this worktree)."
+ ]
+}

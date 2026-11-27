@@ -1,0 +1,111 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-dock-engine",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:57Z",
+ "build": {
+  "id": "dock-engine",
+  "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Engine: split tree (horizontal/vertical), drop zones (any tab header, split edges, centre), undock to floating, re-dock, pane limit, serialize/restore",
+   "model": "Fable",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fixture + engine tests; PORTING.md deferred Kotlin twin",
+   "model": "Fable",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "React DockHost on WindowHost: drag tabs between headers, hover drop-zone overlay shows the split, splitter resize, tokens only",
+   "model": "Fable",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "10 layout presets as data + preview thumbnails (for xLayout IDE mode and MD Studio IDE view)",
+   "model": "Fable",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/molly-fable",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 245,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/245"
+ },
+ "landedCommit": "a9a2a793d80a6a3635372bf142e02c955470d9bb",
+ "commits": [],
+ "mergedAt": "2026-11-03T16:48:22.941Z",
+ "landedAt": "2026-11-04T14:38:20Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-80e15b02",
+   "name": "Dock engine: DockHost panes + Pane layout dialog (console Libraries)",
+   "status": "approved",
+   "group": "g-20261103-39c97372",
+   "url": "/review/r-20261103-80e15b02"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

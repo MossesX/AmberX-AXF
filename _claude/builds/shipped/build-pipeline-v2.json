@@ -1,0 +1,1554 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-pipeline-v2",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:46Z",
+ "build": {
+  "id": "build-pipeline-v2",
+  "title": "Build pipeline v2: one clean pipeline (Pending → Queued → Building)",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD). Replace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what is redundant. Single profile all already on main. Flow: Request → orchestrator → Pending → Queued (one queue per Claude account, max 5) → Building (parallel per account, default 3). Build table states ONLY Pending, Queued, Building. Shipped features: Waiting → Building → Pending merge → Live. Headless sessions load ONLY the brief; brief check before queueing; progress file per build (START/END per step, never pauses, watcher crosses steps off, token usage per session and per step); final step updates Shipped features. Blocked flow: phone alert → Brett answers or taps Let orchestrator decide → relaunch from the blocked step. Phone notifications on session started, build finished, failed, stopped incomplete, blocked, landed. Account dies → move its builds + alert. Landing discards _claude/builds sync noise; on land Shipped features Live + alert. Decisions to _claude/memory. Acceptance suite in CI blocks landing.",
+  "verbatim": true,
+  "at": "2026-11-07T10:30:00Z",
+  "source": "chat",
+  "by": "Brett",
+  "addenda": []
+ },
+ "brief": "# Build pipeline v2 — one clean pipeline (Brett, Nov 7, shipped-product quality; this harness is being SOLD)\n\nReplace the sloppy, redundant build tables/flows with ONE pipeline. Reuse existing code where it fits (orchestrator, multi-account workers PR #382, headless-progress-lean-chain, md-chain-default, claude-accounts, builds store, Shipped features feature-ledger@1). Delete what's redundant. Single profile `all` already on main.\n\n## Flow\n1. **Request → orchestrator.** Every build request (console, voice, API/MCP/CLI, planner) goes to the orchestrator only. It picks the model (Fable for contracts/schemas/shared asset types, else Opus), splits the work into steps of ≤30 min, assigns the build id, writes the brief, and puts it in **Pending**. It also creates the Shipped features entry.\n2. **Pending → Queued.** One queue per Claude account. Max queued per account: setting, default 5. Orchestrator assigns the account (only accounts that can run the model and have credit; Fable needs Max).\n3. **Queued → Building.** When a slot opens (parallel builds per account: Claude settings, default 3) it launches a headless session on that account and marks it Building.\n4. Build table states are ONLY: **Pending, Queued, Building**. Remove every other state/table/view. Shipped features states: **Waiting → Building → Pending merge → Live**.\n\n## Headless sessions\n- Load ONLY the brief. No CLAUDE.md chain (cut CLAUDE.md to a few lines; headless skips it). Brief carries: steps, files to touch, rules for this build, done-check.\n- **Brief check before queueing**: refuse to queue if any required brief field is missing.\n- Session may open files on demand. If info is truly missing: write `blocked: needs X` to the progress file and stop.\n- **Progress file** per build: session logs START/END of each step. Session NEVER pauses between steps. A watcher monitors progress files; on change it crosses the step off in the orchestrator. Log token usage per session and per step.\n- Final required step of every build: update Shipped features.\n\n## Blocked flow\nPhone alert says what's missing → Brett answers by voice/text in AmberX, or taps \"Let orchestrator decide\" → orchestrator adds it to the brief and relaunches from the blocked step (done steps stay done) → orchestrator adds that info type to its brief template.\n\n## Phone notifications (AmberX push) — every time\nSession started, step done? (no — only:) session started, build finished, build failed, stopped incomplete, blocked, landed (merged to main / Live). Each opens that build. Orchestrator status updated on fail/stop. Account dies → move its builds to another account + alert.\n\n## Landing\nbuild_land / merge queue: discard _claude/builds sync noise automatically so finished builds never block on it; on land set Shipped features Live + alert.\n\n## Memory\nImportant decisions go to the repo memory folder (_claude/memory), not claude.ai. Record today's decisions there.\n\n## Acceptance suite (required, in CI, blocks landing)\nEnd-to-end on a throwaway repo: request → orchestrator → ≤30-min steps → Pending→Queued→Building; per-account limits (5 queued/3 parallel) and slot-open launch; progress file crosses steps off with no stops; phone alerts on start/finish/fail/blocked/land; blocked → answer → relaunch from step; land → Shipped features Live; account dies → failover. Nothing ships unless green.\n\nNo hard-coded styling; settings through existing settings assets. Progress: append `<time> START|DONE <step>` to PROGRESS.md here at each step. Don't stop between steps. Commit, don't push.",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-pipeline-v2--rhonda",
+   "account": "account-1",
+   "model": "Fable",
+   "startedAt": "2026-11-07T10:43:53.730Z",
+   "endedAt": "2026-11-07T11:45:06.228Z",
+   "exit": 0,
+   "costUsd": 30.1939
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Cancel the Opus copy (hl-mw69nff2-7p), register this build, PROGRESS.md",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-07T10:43:53.730Z",
+   "doneAt": "2026-11-07T10:50:25.192Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Merge the reuse branches (multi-account-headless-workers #382, shipped-features-fable #364, md-chain-control incl. token-optimize + headless-progress) into claude/pipeline-v2; node tests green",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T10:50:25.192Z",
+   "doneAt": "2026-11-07T10:53:38.192Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "pipeline@1 core contract (framework/core/pipeline.mjs): the three table states, brief check, account assignment (model → plan, credit, per-account caps), slot-open launch, failover, alert events, Shipped features state map; fixture + check-pipeline.mjs",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T10:53:38.192Z",
+   "doneAt": "2026-11-07T11:00:37.408Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Settings + schema: builds.maxQueuedPerAccount (5) in Claude settings, builds.maxParallel per account, framework/schemas/pipeline.json; account registry (plan, worker, limited)",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T11:00:37.408Z",
+   "doneAt": "2026-11-07T11:00:38.903Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Orchestrator intake: one entry (framework/cli/pipeline.mjs request) — model pick, ≤30-min split, id, brief written from the template, brief check, Pending; Shipped features entry via build-hook",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:00:38.903Z",
+   "doneAt": "2026-11-07T11:09:04.443Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Dispatcher: pipeline.mjs tick — Pending→Queued (account, cap 5), Queued→Building (parallel 3, launches claude-headless.sh --account, brief only); failover when an account dies; cron",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:09:04.443Z",
+   "doneAt": "2026-11-07T11:09:05.456Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Headless session: brief only (CLAUDE.md cut to a few lines, headless skips the chain), progress START/END per step, token usage per step, blocked: needs X",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:09:09.611Z",
+   "doneAt": "2026-11-07T11:29:58.556Z",
+   "actualMin": 21,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Watcher: progress file change → step crossed off in the orchestrator, status on fail/stop/blocked; pipeline.mjs watch",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T11:09:05.456Z",
+   "doneAt": "2026-11-07T11:09:06.653Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Blocked flow: alert with the question, answer / Let orchestrator decide (REST + MCP), brief addendum, relaunch from the blocked step, template learns the info type",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:09:06.653Z",
+   "doneAt": "2026-11-07T11:09:07.862Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Phone notifications (notify.json types pipeline.*: started, finished, failed, stopped, blocked, landed; each opens the build) raised from the dispatcher and watcher",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T11:09:07.862Z",
+   "doneAt": "2026-11-07T11:09:08.777Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Landing: merge queue discards _claude/builds sync noise automatically; on land Shipped features Live + alert",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T11:09:08.777Z",
+   "doneAt": "2026-11-07T11:09:09.611Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Console: one Pipeline view (Pending / Queued / Building) on the orchestrator page; remove the redundant build tables/views (Build manager banner, Builds page, Fable rebuilds, Pending/queue tabs)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:29:58.556Z",
+   "doneAt": "2026-11-07T11:29:59.234Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Memory + docs: _claude/memory/decisions.md (today), _claude/memory/docs/build-pipeline.md, _claude/builds/README.md, rules",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-07T11:29:59.234Z",
+   "doneAt": "2026-11-07T11:30:00.011Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Acceptance suite in CI: framework/spec/check-pipeline-e2e.mjs on a throwaway repo (request→…→Building, caps, slot-open launch, progress crosses off, alerts, blocked→answer→relaunch, land→Live, failover); blocks landing",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T11:30:00.011Z",
+   "doneAt": "2026-11-07T11:37:25.834Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Update Shipped features (required last step), THREADS.md, report, commit",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-07T11:37:25.834Z",
+   "doneAt": "2026-11-07T11:37:26.587Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/pipeline-v2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [
+  "bde9da73d2e675e23fe6727aba3e15f49cfcca5d",
+  "4fbb2b74fe98141fb27544d4f5e38027f00899cc",
+  "21610ad73cc4856b3510e92ca6acb43363ae236b",
+  "b1d89ff413adf0aa4b6c194e3ea30e49dbd095b8",
+  "3c02cbe0dc7f910b6fcfc618f91632e6c5d01fa0",
+  "4e738879cec36f11b41a9d9409855b5c8bee6b52",
+  "74689c7760d94d448e35cbe3daaf23b3407ce378",
+  "3783dbd79c496b10e484123ad0b0e8697e6c5aab"
+ ],
+ "mergedAt": "2026-11-07T11:37:26.588Z",
+ "landedAt": "2026-11-07T11:37:26.588Z",
+ "files": [
+  ".axf-queue.log",
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "PROGRESS.md",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/all/matrices.json",
+  "_claude/builds/profiles/all/orchestrator.json",
+  "_claude/builds/reports/build-pipeline-v2.md",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "_claude/memory/docs/CLAUDE-FULL.md",
+  "_claude/memory/docs/build-manager.md",
+  "_claude/memory/docs/build-pipeline.md",
+  "_claude/rules/RULES.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/_template/plugin.json",
+  "apps/console-web/plugins/activity/plugin.json",
+  "apps/console-web/plugins/agent-manager/plugin.json",
+  "apps/console-web/plugins/agent-slots/plugin.json",
+  "apps/console-web/plugins/agent-voice/plugin.json",
+  "apps/console-web/plugins/ai-assistant/plugin.json",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/alerts-bell/plugin.json",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/basic-filter/plugin.json",
+  "apps/console-web/plugins/brand-library/plugin.json",
+  "apps/console-web/plugins/build-breaker/plugin.json",
+  "apps/console-web/plugins/build-breaker/web/buildMenu.ts",
+  "apps/console-web/plugins/build-manager/help.json",
+  "apps/console-web/plugins/build-manager/hooks.mjs",
+  "apps/console-web/plugins/build-manager/install.mjs",
+  "apps/console-web/plugins/build-manager/notify.json",
+  "apps/console-web/plugins/build-manager/plugin.json",
+  "apps/console-web/plugins/build-manager/server/__init__.py",
+  "apps/console-web/plugins/build-manager/test.mjs",
+  "apps/console-web/plugins/build-manager/test.py",
+  "apps/console-web/plugins/build-manager/uninstall.mjs",
+  "apps/console-web/plugins/build-manager/web/build-manager.css",
+  "apps/console-web/plugins/build-manager/web/history.d.mts",
+  "apps/console-web/plugins/build-manager/web/history.mjs",
+  "apps/console-web/plugins/build-manager/web/index.tsx",
+  "apps/console-web/plugins/build-manager/web/menu.ts",
+  "apps/console-web/plugins/build-manager/web/merge.d.mts",
+  "apps/console-web/plugins/build-manager/web/merge.mjs",
+  "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+  "apps/console-web/plugins/build-manager/web/plan-cli.mjs",
+  "apps/console-web/plugins/build-manager/web/store.ts",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/build-profiles/plugin.json",
+  "apps/console-web/plugins/builds-page/builds.mjs",
+  "apps/console-web/plugins/builds-page/hooks.mjs",
+  "apps/console-web/plugins/builds-page/install.mjs",
+  "apps/console-web/plugins/builds-page/plugin.json",
+  "apps/console-web/plugins/builds-page/server/__init__.py",
+  "apps/console-web/plugins/builds-page/test.py",
+  "apps/console-web/plugins/builds-page/uninstall.mjs",
+  "apps/console-web/plugins/builds-page/web/builds.css",
+  "apps/console-web/plugins/builds-page/web/index.tsx",
+  "apps/console-web/plugins/builds-page/web/menu.ts",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/changes-grid/plugin.json",
+  "apps/console-web/plugins/claude-accounts/plugin.json",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-handoff/plugin.json",
+  "apps/console-web/plugins/claude-session/plugin.json",
+  "apps/console-web/plugins/claude-settings/plugin.json",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/server/__init__.py",
+  "apps/console-web/plugins/codebase-changes/plugin.json",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/container-access/plugin.json",
+  "apps/console-web/plugins/context-menu-designer/plugin.json",
+  "apps/console-web/plugins/crew-live/plugin.json",
+  "apps/console-web/plugins/fable-rebuilds/help.json",
+  "apps/console-web/plugins/fable-rebuilds/hooks.mjs",
+  "apps/console-web/plugins/fable-rebuilds/install.mjs",
+  "apps/console-web/plugins/fable-rebuilds/plugin.json",
+  "apps/console-web/plugins/fable-rebuilds/server/__init__.py",
+  "apps/console-web/plugins/fable-rebuilds/test.py",
+  "apps/console-web/plugins/fable-rebuilds/uninstall.mjs",
+  "apps/console-web/plugins/fable-rebuilds/web/api.ts",
+  "apps/console-web/plugins/fable-rebuilds/web/fable-rebuilds.css",
+  "apps/console-web/plugins/fable-rebuilds/web/index.tsx",
+  "apps/console-web/plugins/fable-rebuilds/web/menu.ts",
+  "apps/console-web/plugins/fable-rebuilds/web/ui.tsx",
+  "apps/console-web/plugins/feature-assist/plugin.json",
+  "apps/console-web/plugins/feature-matrix/plugin.json",
+  "apps/console-web/plugins/follow-amber/plugin.json",
+  "apps/console-web/plugins/github-app/plugin.json",
+  "apps/console-web/plugins/hub-sync/plugin.json",
+  "apps/console-web/plugins/main-build-status/plugin.json",
+  "apps/console-web/plugins/mcp-client/plugin.json",
+  "apps/console-web/plugins/plugin-manager/plugin.json",
+  "apps/console-web/plugins/plugin-switches/plugin.json",
+  "apps/console-web/plugins/plugin-update/plugin.json",
+  "apps/console-web/plugins/plugins-menu/plugin.json",
+  "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/shipped-features/help.json",
+  "apps/console-web/plugins/shipped-features/plugin.json",
+  "apps/console-web/plugins/snapshot-manager/plugin.json",
+  "apps/console-web/plugins/systems-check/help.json",
+  "apps/console-web/plugins/systems-check/plugin.json",
+  "apps/console-web/plugins/systems-check/web/FixHelp.tsx",
+  "apps/console-web/plugins/systems-check/web/panels.tsx",
+  "apps/console-web/plugins/theme-editor/plugin.json",
+  "apps/console-web/plugins/theme-manager/plugin.json",
+  "apps/console-web/plugins/todo-manager/plugin.json",
+  "apps/console-web/plugins/token-control/plugin.json",
+  "apps/console-web/plugins/voice-notes/plugin.json",
+  "apps/console-web/plugins/whats-shipped/plugin.json",
+  "apps/console-web/src/axf/core/build-progress.mjs",
+  "apps/console-web/src/axf/core/engines/card-rules.mjs",
+  "apps/console-web/src/axf/core/pipeline.mjs",
+  "apps/console-web/src/axf/schemas/pipeline.json",
+  "apps/console-web/src/axf/schemas/rules-briefs.json",
+  "apps/console-web/src/lazyEngine.ts",
+  "deploy/claude-headless.sh",
+  "framework/catalog/libraries.json",
+  "framework/cli/persist.mjs",
+  "framework/cli/pipeline.mjs",
+  "framework/cli/plugins.mjs",
+  "framework/cli/profiles.mjs",
+  "framework/cli/token-log.mjs",
+  "framework/core/build-progress.mjs",
+  "framework/core/engines/card-rules.mjs",
+  "framework/core/pipeline.mjs",
+  "framework/plan/build-queue.json",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/pending.json",
+  "framework/plan/profiles.json",
+  "framework/plan/profiles/all/framework/catalog/status.json",
+  "framework/plan/profiles/all/framework/plan/build-queue.json",
+  "framework/plan/profiles/all/framework/plan/pending.json",
+  "framework/plan/profiles/all/framework/plan/plan.json",
+  "framework/plan/profiles/breakroom/framework/catalog/status.json",
+  "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+  "framework/plan/profiles/breakroom/framework/plan/plan.json",
+  "framework/schemas/pipeline.json",
+  "framework/schemas/rules-briefs.json",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/check-card.mjs",
+  "framework/spec/check-pipeline-e2e.mjs",
+  "framework/spec/check-pipeline.mjs",
+  "framework/spec/fixtures/card.json",
+  "framework/spec/fixtures/pipeline.json",
+  "sessions/archive/2026/11/cc-003a4b9c-5e55-4045-97a9-dfb5ab48fc44.json",
+  "sessions/archive/2026/11/cc-01c42928-a797-4d06-bbee-cf686632247f.json",
+  "sessions/archive/2026/11/cc-01e1a3ce-c4b9-4096-9652-889510e40d73.json",
+  "sessions/archive/2026/11/cc-039e02fa-9705-4ab2-b02f-dbe28bcc9be0.json",
+  "sessions/archive/2026/11/cc-0500af0e-2b55-44ff-ada8-d57b656487d8.json",
+  "sessions/archive/2026/11/cc-053aa91c-f264-4db0-aec1-74c4daf061b2.json",
+  "sessions/archive/2026/11/cc-06098c52-0c63-420d-b509-2584971f9b18.json",
+  "sessions/archive/2026/11/cc-066f1340-a6f7-4143-84f4-4abf1147f41e.json",
+  "sessions/archive/2026/11/cc-069121d5-a076-445d-bb35-db48b96b25b1.json",
+  "sessions/archive/2026/11/cc-07025017-3cb8-48e2-a34b-6c91d05f034e.json",
+  "sessions/archive/2026/11/cc-071adbfc-fc14-4d2d-a6bf-8ae34e3b6297.json",
+  "sessions/archive/2026/11/cc-07310bbc-f582-40eb-a9cf-01a88b0e05f1.json",
+  "sessions/archive/2026/11/cc-073de0d8-1b6b-4852-840e-f8e2675fb1d9.json",
+  "sessions/archive/2026/11/cc-0763800d-17b3-485b-8451-e6ceb632f017.json",
+  "sessions/archive/2026/11/cc-07ff0c70-5512-45b3-841d-fb481931376d.json",
+  "sessions/archive/2026/11/cc-08acba27-d1eb-4851-9301-0d800098a964.json",
+  "sessions/archive/2026/11/cc-08fcbd72-9168-444e-9947-fdf17fa6aac1.json",
+  "sessions/archive/2026/11/cc-0b14b5d9-3c8c-4812-9a4f-d14d27523374.json",
+  "sessions/archive/2026/11/cc-0d35e7cb-5b72-4db3-80af-b9121aeba59c.json",
+  "sessions/archive/2026/11/cc-0f133c5e-08a6-41aa-a137-dba86cf7bf28.json",
+  "sessions/archive/2026/11/cc-0f6334e3-ebca-44ce-905d-ef6e726f0431.json",
+  "sessions/archive/2026/11/cc-103aa207-d032-4b66-a6e4-958192bd5851.json",
+  "sessions/archive/2026/11/cc-1057f7f4-eee4-43ba-8479-21a1839ef422.json",
+  "sessions/archive/2026/11/cc-10c8d9a2-d523-497b-9ac4-ba724fcb9286.json",
+  "sessions/archive/2026/11/cc-1145c5d3-6ae8-47ca-8173-76039231638c.json",
+  "sessions/archive/2026/11/cc-119a70b0-fdb4-4d17-8411-4a5f7f52908d.json",
+  "sessions/archive/2026/11/cc-13242948-cce1-446c-88c7-5f49abf06625.json",
+  "sessions/archive/2026/11/cc-14c2bb1c-88e8-4d7f-81d2-6d31602ddf42.json",
+  "sessions/archive/2026/11/cc-14d02d2a-ca0a-453b-8671-c0747370d1e2.json",
+  "sessions/archive/2026/11/cc-15b61612-27cb-4e27-9022-2c40d9380a1b.json",
+  "sessions/archive/2026/11/cc-15e1c924-0bd7-4e56-a9f5-1d3edb020a82.json",
+  "sessions/archive/2026/11/cc-15fb1aed-49fb-4820-8de5-dd46717994f6.json",
+  "sessions/archive/2026/11/cc-16363d7b-eb7a-4ba0-b8a9-e6d051442b06.json",
+  "sessions/archive/2026/11/cc-166899be-0042-4262-a76d-8150e4d86418.json",
+  "sessions/archive/2026/11/cc-17397bd1-7aa2-40c0-b75d-0a8d6b632021.json",
+  "sessions/archive/2026/11/cc-177b3568-4f2b-48f2-a7c8-1814812ec683.json",
+  "sessions/archive/2026/11/cc-184f9b42-8416-4e19-81c5-17db86a68179.json",
+  "sessions/archive/2026/11/cc-18cd0f50-d69d-4152-be18-a5d5b158059b.json",
+  "sessions/archive/2026/11/cc-18ea4145-c53d-4bdd-b226-de4118b1810b.json",
+  "sessions/archive/2026/11/cc-19c33f9a-b290-4747-b340-b7ed298d0507.json",
+  "sessions/archive/2026/11/cc-19f48156-ef54-4851-80eb-3f36bd940ca9.json",
+  "sessions/archive/2026/11/cc-1c07cfe7-c11d-4fa9-ada8-f27881ed747f.json",
+  "sessions/archive/2026/11/cc-1c1bce25-9296-4ad0-95ae-4e728d329836.json",
+  "sessions/archive/2026/11/cc-1c43e3cf-9524-44d4-8279-11699da29e3e.json",
+  "sessions/archive/2026/11/cc-1ccbf2d4-5c53-409e-99d5-27959488afc7.json",
+  "sessions/archive/2026/11/cc-1cec00fa-7c0d-411f-8cb5-a47a9672366c.json",
+  "sessions/archive/2026/11/cc-1e11455e-a19a-4e8c-afbb-57baa5043e86.json",
+  "sessions/archive/2026/11/cc-1e69b8d1-eb76-43b4-9da8-b8d2a5e60af2.json",
+  "sessions/archive/2026/11/cc-1eee18de-47b8-4f7c-b042-70599e64b08b.json",
+  "sessions/archive/2026/11/cc-1fb50d9e-b9f9-4019-a8a5-176542957368.json",
+  "sessions/archive/2026/11/cc-205aa57e-c417-4a14-8dd5-0c070ac2d5d0.json",
+  "sessions/archive/2026/11/cc-21f5e3a7-fea0-4b85-9226-aa628e7140c0.json",
+  "sessions/archive/2026/11/cc-223822bb-0cc4-4fe4-842c-7f8530c068c5.json",
+  "sessions/archive/2026/11/cc-23731149-52dc-4447-87a3-230d271c128f.json",
+  "sessions/archive/2026/11/cc-239eed37-ab0c-46de-8768-c671dde8f337.json",
+  "sessions/archive/2026/11/cc-2500b1b6-4520-4e73-ad6c-54b832370d42.json",
+  "sessions/archive/2026/11/cc-2539d849-4aed-413b-aeb6-ea295ffad232.json",
+  "sessions/archive/2026/11/cc-258692a5-2ae7-460d-a778-34c3acd61d45.json",
+  "sessions/archive/2026/11/cc-2729fbb6-f2b7-4991-a30c-9ae792b1c316.json",
+  "sessions/archive/2026/11/cc-28791f04-dd8c-4022-bb12-3129253fb9dd.json",
+  "sessions/archive/2026/11/cc-2b5193bf-f1fc-437c-8e0c-c3d4601115ce.json",
+  "sessions/archive/2026/11/cc-2bb1340a-13be-4932-988d-4780e8847182.json",
+  "sessions/archive/2026/11/cc-2cb965ab-cfc0-4f22-8389-01008613b9b0.json",
+  "sessions/archive/2026/11/cc-2cd51b67-65ee-4f89-b0e3-114d99bbe9a4.json",
+  "sessions/archive/2026/11/cc-2dc480f2-9f60-4266-811e-2174a67ba9c1.json",
+  "sessions/archive/2026/11/cc-304af727-d0c6-4c94-a34d-db0564e24f4b.json",
+  "sessions/archive/2026/11/cc-31e2fd9b-33db-4250-9cfc-c89963237034.json",
+  "sessions/archive/2026/11/cc-3240dbc7-116f-4d9c-9041-beff094b1559.json",
+  "sessions/archive/2026/11/cc-32712a84-2136-4912-8fca-1e3ecfd97f62.json",
+  "sessions/archive/2026/11/cc-345771d2-44bf-4bdc-b091-5c17331adfbd.json",
+  "sessions/archive/2026/11/cc-34aa06b4-581c-4d67-a95b-b26cc06a88d2.json",
+  "sessions/archive/2026/11/cc-34d4011d-151d-47ed-800a-5a94f73f696f.json",
+  "sessions/archive/2026/11/cc-3545cb2d-25bf-4907-9535-ed9842cd5e2e.json",
+  "sessions/archive/2026/11/cc-356c4c77-3857-492b-b523-45a28241828c.json",
+  "sessions/archive/2026/11/cc-36f09489-4377-49a8-b3c4-c8d400c91a01.json",
+  "sessions/archive/2026/11/cc-37349be3-27a7-428b-8e7c-ba7215259f54.json",
+  "sessions/archive/2026/11/cc-3749983d-1e8b-4697-a858-255e5f76059c.json",
+  "sessions/archive/2026/11/cc-38b2073d-122a-419e-9759-6e324c97ec3f.json",
+  "sessions/archive/2026/11/cc-38eb1fe0-e337-44a6-8d40-9815554018f4.json",
+  "sessions/archive/2026/11/cc-3955450a-1da7-438e-9c65-f895d91edfba.json",
+  "sessions/archive/2026/11/cc-3bca1b5a-7c51-4c5e-bf3d-9ad33bfb5707.json",
+  "sessions/archive/2026/11/cc-3bcbb1a5-6f72-473d-b661-bb7f82609c13.json",
+  "sessions/archive/2026/11/cc-3fb1e28d-353c-4249-89f9-87ba8cf4c114.json",
+  "sessions/archive/2026/11/cc-3fface92-093a-4989-860d-69979a80d7ec.json",
+  "sessions/archive/2026/11/cc-426d49b6-ffa5-4739-9912-fe8cc9ce8fd0.json",
+  "sessions/archive/2026/11/cc-42ac4268-ece2-475b-964b-5bad685a9a73.json",
+  "sessions/archive/2026/11/cc-4631efa9-8cbf-4ca4-81f7-0dc0b47beeff.json",
+  "sessions/archive/2026/11/cc-4698be5f-e002-47b8-bbee-069f0b3edca2.json",
+  "sessions/archive/2026/11/cc-47734d89-2e9a-4288-8136-05c6a7cbe683.json",
+  "sessions/archive/2026/11/cc-478e312e-1784-463e-b5bb-8cff03d99188.json",
+  "sessions/archive/2026/11/cc-48c20ef1-f427-426d-b521-3fa876888853.json",
+  "sessions/archive/2026/11/cc-49871d25-39d2-4093-b1bc-b70d47f2d694.json",
+  "sessions/archive/2026/11/cc-4a7bac52-3703-4d65-9810-64dd45c10338.json",
+  "sessions/archive/2026/11/cc-4ab73e5e-c2f6-4221-b4da-8430671d2173.json",
+  "sessions/archive/2026/11/cc-4e084272-5027-4fd9-ae24-55bcfa81c66e.json",
+  "sessions/archive/2026/11/cc-4ef88292-3e80-46c0-94be-27ac8993de5f.json",
+  "sessions/archive/2026/11/cc-511d0782-b898-4c1f-a6a6-55471dbdb8d0.json",
+  "sessions/archive/2026/11/cc-5248886a-1b30-4e1b-be39-42f87d27f0e4.json",
+  "sessions/archive/2026/11/cc-52ca851a-2f89-4823-b26c-a3b1311dde4b.json",
+  "sessions/archive/2026/11/cc-53ea5e78-1320-4ae1-8ebc-52e6b1e6c22f.json",
+  "sessions/archive/2026/11/cc-552c9e3a-e109-4a8f-b887-340a37424ed2.json",
+  "sessions/archive/2026/11/cc-555a37ed-2084-4daa-b757-505f97fa4244.json",
+  "sessions/archive/2026/11/cc-56f954cc-6509-4e4b-a530-2de0a51433f1.json",
+  "sessions/archive/2026/11/cc-572e4d03-fc4e-406e-838a-e61fb70a4a19.json",
+  "sessions/archive/2026/11/cc-57d671f5-0351-438b-9e11-aa9eb2dae90e.json",
+  "sessions/archive/2026/11/cc-58c819d1-2073-4fbf-a951-5402b26042d7.json",
+  "sessions/archive/2026/11/cc-598fc378-f7bc-4e74-b627-d1de2062e5cd.json",
+  "sessions/archive/2026/11/cc-59c8c66f-ac64-4f03-898a-43ff9eec0f98.json",
+  "sessions/archive/2026/11/cc-59edd1c8-f4e9-44fc-a0ad-9525fa87408b.json",
+  "sessions/archive/2026/11/cc-5a18f633-fe24-4d63-8464-0487068a74a8.json",
+  "sessions/archive/2026/11/cc-5a1be2f0-767d-48ee-bacc-41b5bf9871fb.json",
+  "sessions/archive/2026/11/cc-5b2fdc44-a6f9-43b3-8245-f8bbe3c239b5.json",
+  "sessions/archive/2026/11/cc-5b3ea7be-87ca-4b01-a90a-a0fcf9f7fb9a.json",
+  "sessions/archive/2026/11/cc-5c12c31c-c9cd-4fb5-9134-2e09acc55632.json",
+  "sessions/archive/2026/11/cc-5c63e4ac-b02f-4ba4-b59c-f538c4625779.json",
+  "sessions/archive/2026/11/cc-5c7fd1ea-fe6d-479a-a6cc-f39c3a47589f.json",
+  "sessions/archive/2026/11/cc-5d90b8a3-1d85-4c58-96ba-595abec39add.json",
+  "sessions/archive/2026/11/cc-5dcd468f-b62d-46de-9a7c-cd2a9e2a28ad.json",
+  "sessions/archive/2026/11/cc-5f11ef9d-ffde-4443-9d11-63830a4a0f5f.json",
+  "sessions/archive/2026/11/cc-60079acc-7951-4f64-af62-521846a9ce6c.json",
+  "sessions/archive/2026/11/cc-6232cf91-ace8-48d3-abac-da283bb63134.json",
+  "sessions/archive/2026/11/cc-62cd2a36-1d3a-451b-8b1c-ce3406decc1b.json",
+  "sessions/archive/2026/11/cc-62fb5ff2-e886-41a7-99e6-f4fb92622d61.json",
+  "sessions/archive/2026/11/cc-63d48160-8b2f-46ea-a9a7-d5147bcad789.json",
+  "sessions/archive/2026/11/cc-64978b44-ed02-44e8-8c64-75f4e1cad588.json",
+  "sessions/archive/2026/11/cc-6498000c-41fc-42c9-830b-859746d15a4d.json",
+  "sessions/archive/2026/11/cc-656af3c8-0b8e-4946-82e0-37142f4eea72.json",
+  "sessions/archive/2026/11/cc-657de452-50fd-4361-a714-db442adb040a.json",
+  "sessions/archive/2026/11/cc-668e1532-a63b-4910-b9a0-6e9b07f84381.json",
+  "sessions/archive/2026/11/cc-679a4d48-a074-4694-92aa-6e0c21c11021.json",
+  "sessions/archive/2026/11/cc-680e7c16-b278-4556-adc6-909060326117.json",
+  "sessions/archive/2026/11/cc-6a92031a-87dd-4366-97bc-560ab58112a1.json",
+  "sessions/archive/2026/11/cc-6ac5df84-a5e9-4282-b914-a4026e6dd862.json",
+  "sessions/archive/2026/11/cc-6b0f0bbb-8a67-47b2-950f-e50ced36a595.json",
+  "sessions/archive/2026/11/cc-6b349b8e-a9e3-41df-ae07-78f48cda91f3.json",
+  "sessions/archive/2026/11/cc-6dbc041a-2653-4530-953f-20945c21a3e9.json",
+  "sessions/archive/2026/11/cc-6e6ed2c9-9a1a-4c2f-850b-c24f0ea23523.json",
+  "sessions/archive/2026/11/cc-701cb394-2636-47bb-abef-6092980442a5.json",
+  "sessions/archive/2026/11/cc-706066cd-822a-43d9-892a-2ae31bfd9272.json",
+  "sessions/archive/2026/11/cc-715a51c8-45fe-409c-bfe2-79be2b2e4f13.json",
+  "sessions/archive/2026/11/cc-71bc4331-315e-4ff5-a1ec-d936aa63229d.json",
+  "sessions/archive/2026/11/cc-71f52fc5-9d16-419f-8fb2-b4357ab1633c.json",
+  "sessions/archive/2026/11/cc-72e24082-a897-4a74-b61d-ae6d453356d0.json",
+  "sessions/archive/2026/11/cc-7381b5f9-4e2f-4109-9e69-04acea1344a1.json",
+  "sessions/archive/2026/11/cc-738a949e-e559-465b-814c-e81ba48fb64a.json",
+  "sessions/archive/2026/11/cc-73d96bbb-9f10-47fd-9515-869c72bcb9c5.json",
+  "sessions/archive/2026/11/cc-75a91872-0dc8-4eca-80b5-8b7c4677d557.json",
+  "sessions/archive/2026/11/cc-7630daf5-8344-47b3-87ba-b80c9766431b.json",
+  "sessions/archive/2026/11/cc-76660cc9-cb18-4b31-be9f-9ba95aac84dd.json",
+  "sessions/archive/2026/11/cc-76d9b48e-f9c5-4485-a7cc-fee434c26f47.json",
+  "sessions/archive/2026/11/cc-77fdb657-9c7f-4b88-b00d-c52243f692b3.json",
+  "sessions/archive/2026/11/cc-79436cc5-d860-45cd-924c-1f4070869c8b.json",
+  "sessions/archive/2026/11/cc-79517ba0-d45d-405c-b930-2cfd73b128f4.json",
+  "sessions/archive/2026/11/cc-7a5f2369-28d7-4eed-84d4-1532b5b509e1.json",
+  "sessions/archive/2026/11/cc-7aa17646-461e-4d18-bb57-3bd1ad128544.json",
+  "sessions/archive/2026/11/cc-7b6fcc33-f8a4-423d-b322-f6b8b9fa5c3d.json",
+  "sessions/archive/2026/11/cc-7c65396f-527e-4ee3-8ed7-a8ecd3191a51.json",
+  "sessions/archive/2026/11/cc-7ca67ca0-cd7a-4491-947c-1cc442cffaa6.json",
+  "sessions/archive/2026/11/cc-7e5d81d7-969a-4e11-ad2a-7790521090d5.json",
+  "sessions/archive/2026/11/cc-7e80a7cc-680b-4729-b023-bd1172fa5574.json",
+  "sessions/archive/2026/11/cc-801f29e3-9f9d-4c86-aa48-1328bb0b1fcc.json",
+  "sessions/archive/2026/11/cc-80c00636-55cf-475b-a5c2-707ea7949b11.json",
+  "sessions/archive/2026/11/cc-80ca6167-196b-44e0-857d-ce29ae926863.json",
+  "sessions/archive/2026/11/cc-8136ddec-4793-485e-81b9-95c3f22d8fb5.json",
+  "sessions/archive/2026/11/cc-8239a8e1-37db-4137-871c-8d8880f02f15.json",
+  "sessions/archive/2026/11/cc-82ec55c1-a821-476c-aaf6-e8f387646dd2.json",
+  "sessions/archive/2026/11/cc-83742305-e919-420d-9654-a0146dcbdbe0.json",
+  "sessions/archive/2026/11/cc-84813c84-cf69-49ad-b5df-1721d0a89fb2.json",
+  "sessions/archive/2026/11/cc-86769cf9-ef3e-46fe-8f55-4bd976f33d77.json",
+  "sessions/archive/2026/11/cc-86ab2420-6fc2-4119-b216-716d833246db.json",
+  "sessions/archive/2026/11/cc-86d11a22-49eb-4f41-9934-f37ceea13295.json",
+  "sessions/archive/2026/11/cc-87737b5c-fe08-4e42-bcd6-2e6c81335b03.json",
+  "sessions/archive/2026/11/cc-87c58668-6392-460f-b1ba-ef03f0225a00.json",
+  "sessions/archive/2026/11/cc-88289eae-2f0f-4e24-b220-96e3ffb5a0d3.json",
+  "sessions/archive/2026/11/cc-88419d1f-762b-4d35-8439-64b562a79518.json",
+  "sessions/archive/2026/11/cc-8ad36bcb-aef0-45ea-be01-5ddb094bbc96.json",
+  "sessions/archive/2026/11/cc-8ad55667-4bed-4727-9c18-92ebec13f296.json",
+  "sessions/archive/2026/11/cc-8bba7b0d-4d42-4c10-978e-57fd9e15b7c5.json",
+  "sessions/archive/2026/11/cc-8c61feb1-befe-4ed0-a282-977f2f9bb804.json",
+  "sessions/archive/2026/11/cc-8c891776-736a-4d5a-bb96-eb889164b0d9.json",
+  "sessions/archive/2026/11/cc-8d2e6bf2-6fbc-4007-ab31-5d948bff1ca9.json",
+  "sessions/archive/2026/11/cc-8d5d708b-0305-44cd-b508-ceb67fbb00d5.json",
+  "sessions/archive/2026/11/cc-8db37ee8-a0aa-4cb5-baee-f2bcd5582d14.json",
+  "sessions/archive/2026/11/cc-8e1b5a48-1195-4169-b98c-e3cef41beccb.json",
+  "sessions/archive/2026/11/cc-8f0d3909-41fb-4f88-a317-a8dc2547180b.json",
+  "sessions/archive/2026/11/cc-902dbab7-f989-449d-a144-f4d58544ffb1.json",
+  "sessions/archive/2026/11/cc-907f8a57-4187-4f9c-b2ae-e20424ad103a.json",
+  "sessions/archive/2026/11/cc-934e1036-7bb2-4f93-b86d-0edede06460b.json",
+  "sessions/archive/2026/11/cc-93500830-476a-4dcf-9f4e-992cd64aff0c.json",
+  "sessions/archive/2026/11/cc-939d8a20-85bc-4acf-bb80-8ef67e3ce0d6.json",
+  "sessions/archive/2026/11/cc-9524aabd-8d0a-4043-a63a-1a055c85f5c1.json",
+  "sessions/archive/2026/11/cc-95c0e538-eede-408f-a1e5-23bb64df503a.json",
+  "sessions/archive/2026/11/cc-976eeb09-710d-4bee-8c38-696953afa497.json",
+  "sessions/archive/2026/11/cc-9847dba8-1d83-4cd5-a46f-1cd22f21fd2d.json",
+  "sessions/archive/2026/11/cc-9a04c784-dfda-4b1d-9990-ea6cb78d04b0.json",
+  "sessions/archive/2026/11/cc-9ac040ba-c9d9-42ef-af0d-bfb291cead5d.json",
+  "sessions/archive/2026/11/cc-9af76821-e52f-427c-a484-21a489e562f6.json",
+  "sessions/archive/2026/11/cc-9cbdcc4d-68eb-43bd-b405-f698f750c786.json",
+  "sessions/archive/2026/11/cc-9d6f1bfb-9822-41e7-839a-d2758210955d.json",
+  "sessions/archive/2026/11/cc-9db72667-269a-403c-a0a2-225ee07a2765.json",
+  "sessions/archive/2026/11/cc-9de1c458-7295-4b30-b19e-8f9dadc5714e.json",
+  "sessions/archive/2026/11/cc-9eb4b524-cb52-4cc8-bfed-2572eb18fe32.json",
+  "sessions/archive/2026/11/cc-9fd62e08-90ee-41cc-b6cd-b5919b77efd8.json",
+  "sessions/archive/2026/11/cc-a040cd1a-a76b-45e2-9fbb-27637844cf1d.json",
+  "sessions/archive/2026/11/cc-a0520800-1291-4a24-ab88-595c052e1463.json",
+  "sessions/archive/2026/11/cc-a0642df9-a27f-40df-a779-bb66c6301684.json",
+  "sessions/archive/2026/11/cc-a2808ec9-ff48-460b-ac19-e423a41641e6.json",
+  "sessions/archive/2026/11/cc-a29bceb0-f7c2-4803-9d2d-7a4a46053edb.json",
+  "sessions/archive/2026/11/cc-a339b28c-d0a0-4bb5-b217-90fe53e9d58d.json",
+  "sessions/archive/2026/11/cc-a4ff8969-07d6-49d9-b472-0e5ca7a3bce2.json",
+  "sessions/archive/2026/11/cc-a6e1639a-e76e-4a7c-a5cf-25d280b76187.json",
+  "sessions/archive/2026/11/cc-a8037b19-d385-41d4-80f3-38d29e718468.json",
+  "sessions/archive/2026/11/cc-a8aafdc9-9e6a-4d5a-94e4-eb3f7da39b4d.json",
+  "sessions/archive/2026/11/cc-a8b7b2f8-afb5-4b31-8f4f-5cf3b63449bd.json",
+  "sessions/archive/2026/11/cc-a9c2e497-a6ef-4797-b658-2b4c85bc403b.json",
+  "sessions/archive/2026/11/cc-aa2ee3ca-86cc-410a-99e7-3c234771aef2.json",
+  "sessions/archive/2026/11/cc-ab174302-ce1a-407b-85ad-8d23acd0091e.json",
+  "sessions/archive/2026/11/cc-abccd31e-3e70-42be-9c2f-94ada80a4456.json",
+  "sessions/archive/2026/11/cc-ac4f876a-7e4d-4815-b99c-5e72b7b5d36b.json",
+  "sessions/archive/2026/11/cc-afde2636-b268-4c5f-a020-c44736d736ba.json",
+  "sessions/archive/2026/11/cc-b0cf67e8-f5ea-4ca7-a7fd-82dfa920d094.json",
+  "sessions/archive/2026/11/cc-b0fefeca-52e0-4c35-b953-6652e818de4a.json",
+  "sessions/archive/2026/11/cc-b214bd7c-087a-48ad-919b-c752673f75c1.json",
+  "sessions/archive/2026/11/cc-b2ae5152-44b7-4a15-b457-5b1cb057cc6f.json",
+  "sessions/archive/2026/11/cc-b411473c-7cf2-417c-a951-7289e7b8759a.json",
+  "sessions/archive/2026/11/cc-b5ada7f3-cb3a-40f1-97e3-5286811b3965.json",
+  "sessions/archive/2026/11/cc-b5eed377-c05d-49b4-8054-e5d0f913f679.json",
+  "sessions/archive/2026/11/cc-b5fa9490-1bd1-4b93-850d-60275b499fd5.json",
+  "sessions/archive/2026/11/cc-b6993100-800c-4043-8efd-6834086f89c4.json",
+  "sessions/archive/2026/11/cc-b7b66813-d946-40de-b6db-0efd597eb614.json",
+  "sessions/archive/2026/11/cc-b91d107a-18d1-4507-9257-07ba544418f4.json",
+  "sessions/archive/2026/11/cc-b9add429-c232-4f58-8e4a-9b6cecc38c57.json",
+  "sessions/archive/2026/11/cc-ba742245-94c4-4c3a-ab24-8bc458f3dc59.json",
+  "sessions/archive/2026/11/cc-bb32ca22-2342-4abb-903f-c8e349694771.json",
+  "sessions/archive/2026/11/cc-bc8d00e1-b057-4225-bc4e-a35962630b83.json",
+  "sessions/archive/2026/11/cc-bd3e6bdb-e1b1-4873-8394-cd4b4f1c5b5d.json",
+  "sessions/archive/2026/11/cc-bdb9bda9-37cc-4546-9d3e-4840f9e3f5fa.json",
+  "sessions/archive/2026/11/cc-bdba2d32-458e-4b2b-b41a-fc6b09d47667.json",
+  "sessions/archive/2026/11/cc-be80ebbd-2b0c-4202-8526-6d758a01c6c1.json",
+  "sessions/archive/2026/11/cc-c028f9fb-58e7-49a3-883e-d11190823114.json",
+  "sessions/archive/2026/11/cc-c14910bc-66f7-42aa-990f-11d151dde39e.json",
+  "sessions/archive/2026/11/cc-c46ad724-204f-484e-a09a-512f9086b019.json",
+  "sessions/archive/2026/11/cc-c5c48510-f60d-4746-97bc-52ba2cb70924.json",
+  "sessions/archive/2026/11/cc-c6726383-800e-4ddf-8cb6-3ce7b516947b.json",
+  "sessions/archive/2026/11/cc-c8975887-133e-49fa-a24d-891761a4a28d.json",
+  "sessions/archive/2026/11/cc-c9ba2895-cb6d-4d86-af66-422ca94e020e.json",
+  "sessions/archive/2026/11/cc-c9ea296f-76b5-4d7a-92eb-73e8589ecab6.json",
+  "sessions/archive/2026/11/cc-cabf2905-67a6-44cf-9b85-c61669cba6bc.json",
+  "sessions/archive/2026/11/cc-cc299498-60c5-4380-8c6a-b9bf1e0eb1e9.json",
+  "sessions/archive/2026/11/cc-d0d8512c-b04d-4849-8240-4edd6cf7b056.json",
+  "sessions/archive/2026/11/cc-d15af078-ae5e-40c1-8c81-764dddaa160f.json",
+  "sessions/archive/2026/11/cc-d40dd8e4-a4ea-4f4e-91ab-902dd3883846.json",
+  "sessions/archive/2026/11/cc-d43b8447-5635-427b-ba66-90a2c157e2e2.json",
+  "sessions/archive/2026/11/cc-d4e619c2-8c23-4775-b6a7-aad25aac55f9.json",
+  "sessions/archive/2026/11/cc-d5a05cce-1008-4baa-8053-67078dcc1198.json",
+  "sessions/archive/2026/11/cc-d62c218f-158c-423e-9c5b-6314477db6b0.json",
+  "sessions/archive/2026/11/cc-d6774f1e-8590-41f8-b5ae-3ca76a4946e6.json",
+  "sessions/archive/2026/11/cc-d761b078-ad3d-4289-9e4f-2c2fe5264db7.json",
+  "sessions/archive/2026/11/cc-d79ab68f-b95b-4ee1-9fdb-fba08c0eb86b.json",
+  "sessions/archive/2026/11/cc-d8b103cb-c071-4dcd-8fbc-94ac011c87cc.json",
+  "sessions/archive/2026/11/cc-da1b841d-ff22-46fe-850b-4448036a5cfe.json",
+  "sessions/archive/2026/11/cc-dc2fc058-6ff3-4810-b4a3-9d86e521fdbf.json",
+  "sessions/archive/2026/11/cc-dc3900a0-3750-42e4-86ba-294d4a8a2eb1.json",
+  "sessions/archive/2026/11/cc-dcacb2c9-fca7-4031-84f2-d50f59450538.json",
+  "sessions/archive/2026/11/cc-df220c75-619e-4d59-8a5c-768f8579371f.json",
+  "sessions/archive/2026/11/cc-e23e5d8e-5b90-4228-b756-1325ac7b3536.json",
+  "sessions/archive/2026/11/cc-e25ded31-0bae-4e66-9fe6-94849fcdd28c.json",
+  "sessions/archive/2026/11/cc-e36fcba8-1506-492e-8e13-278ee3deb430.json",
+  "sessions/archive/2026/11/cc-e48eec1b-d1c3-4d0b-8826-afd849a8c8c7.json",
+  "sessions/archive/2026/11/cc-e5dd3cda-88dc-4dfa-b00a-33e79c3043ea.json",
+  "sessions/archive/2026/11/cc-e698e544-e133-47a1-bdcd-3bc1c889743a.json",
+  "sessions/archive/2026/11/cc-e7b07fde-9e09-4ff0-a71b-b9f5b26e66d9.json",
+  "sessions/archive/2026/11/cc-e8430d74-3460-47c6-b425-a38b3f17d8aa.json",
+  "sessions/archive/2026/11/cc-e85c1b2f-fab5-4e71-9549-b81febef1f96.json",
+  "sessions/archive/2026/11/cc-ea919fd2-65fb-4643-9c78-f2c1bde1b8b0.json",
+  "sessions/archive/2026/11/cc-eb3e9d23-bf18-4e6f-93bc-866f2abee5cb.json",
+  "sessions/archive/2026/11/cc-ebfec8d2-ff82-442b-8473-9a2e82023c4e.json",
+  "sessions/archive/2026/11/cc-ec292790-0e4b-474d-9e66-164c3001ace1.json",
+  "sessions/archive/2026/11/cc-ecab8ba9-2df2-45c6-93de-19ba365306c1.json",
+  "sessions/archive/2026/11/cc-ecd3b54d-15cc-44bf-9647-807681f4f2ce.json",
+  "sessions/archive/2026/11/cc-ecd81dde-82fb-4164-8d98-2c56c8cb7114.json",
+  "sessions/archive/2026/11/cc-eee835a8-ffa3-4894-a9a9-17ae454f27de.json",
+  "sessions/archive/2026/11/cc-efb6abe5-1180-4ace-b0f1-b5b087db5785.json",
+  "sessions/archive/2026/11/cc-f05d27ca-a344-4acc-bb58-a574bd1d8d77.json",
+  "sessions/archive/2026/11/cc-f0e4892a-2aea-4162-8536-1af6d5cd043c.json",
+  "sessions/archive/2026/11/cc-f11be751-ba95-4413-9bfd-c16204abf519.json",
+  "sessions/archive/2026/11/cc-f2736e7b-3981-4905-8a08-59c21068ba49.json",
+  "sessions/archive/2026/11/cc-f2da85ae-10a8-492d-929d-36844ba6f661.json",
+  "sessions/archive/2026/11/cc-f364db88-6b8b-4e91-b699-8420d2dc6d3f.json",
+  "sessions/archive/2026/11/cc-f5145179-62b2-43cf-90c3-0069aab69a58.json",
+  "sessions/archive/2026/11/cc-f60ff30a-c7b8-4f1e-a806-5035409996ab.json",
+  "sessions/archive/2026/11/cc-f6921403-6870-444c-a2fb-f39193e5bdf3.json",
+  "sessions/archive/2026/11/cc-f909197e-f930-4dde-b236-0e7afc41025e.json",
+  "sessions/archive/2026/11/cc-f958a06e-753b-41b6-ad91-e3d94f81f855.json",
+  "sessions/archive/2026/11/cc-fa9a5763-4dbf-45b9-a72c-20adc013f943.json",
+  "sessions/archive/2026/11/cc-faef8f0e-e2bc-4884-a7b8-8a94bc480007.json",
+  "sessions/archive/2026/11/cc-fb1a559b-84a5-45f3-8d2d-0bf238c6d370.json",
+  "sessions/archive/2026/11/cc-fb6cf85d-eb0e-4b56-9605-df6a4b85a7d4.json",
+  "sessions/archive/2026/11/cc-fb9c6d28-7cae-46d8-a2bd-bbc6ce273194.json",
+  "sessions/archive/2026/11/cc-fba1c47b-7807-4650-8918-8dd909a0ab03.json",
+  "sessions/archive/2026/11/cc-fcab8683-3f90-40ce-bd54-f2d2a5a13bb8.json",
+  "sessions/archive/2026/11/cc-fd531e5f-67f8-4088-9ea3-a0ce6511d2d6.json",
+  "sessions/archive/2026/11/cc-fe2e5c90-16de-4c8b-9417-cad7e8ec530c.json",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "other",
+   "id": "sessions",
+   "files": [
+    "sessions/archive/2026/11/cc-003a4b9c-5e55-4045-97a9-dfb5ab48fc44.json",
+    "sessions/archive/2026/11/cc-01c42928-a797-4d06-bbee-cf686632247f.json",
+    "sessions/archive/2026/11/cc-01e1a3ce-c4b9-4096-9652-889510e40d73.json",
+    "sessions/archive/2026/11/cc-039e02fa-9705-4ab2-b02f-dbe28bcc9be0.json",
+    "sessions/archive/2026/11/cc-0500af0e-2b55-44ff-ada8-d57b656487d8.json",
+    "sessions/archive/2026/11/cc-053aa91c-f264-4db0-aec1-74c4daf061b2.json",
+    "sessions/archive/2026/11/cc-06098c52-0c63-420d-b509-2584971f9b18.json",
+    "sessions/archive/2026/11/cc-066f1340-a6f7-4143-84f4-4abf1147f41e.json",
+    "sessions/archive/2026/11/cc-069121d5-a076-445d-bb35-db48b96b25b1.json",
+    "sessions/archive/2026/11/cc-07025017-3cb8-48e2-a34b-6c91d05f034e.json",
+    "sessions/archive/2026/11/cc-071adbfc-fc14-4d2d-a6bf-8ae34e3b6297.json",
+    "sessions/archive/2026/11/cc-07310bbc-f582-40eb-a9cf-01a88b0e05f1.json",
+    "sessions/archive/2026/11/cc-073de0d8-1b6b-4852-840e-f8e2675fb1d9.json",
+    "sessions/archive/2026/11/cc-0763800d-17b3-485b-8451-e6ceb632f017.json",
+    "sessions/archive/2026/11/cc-07ff0c70-5512-45b3-841d-fb481931376d.json",
+    "sessions/archive/2026/11/cc-08acba27-d1eb-4851-9301-0d800098a964.json",
+    "sessions/archive/2026/11/cc-08fcbd72-9168-444e-9947-fdf17fa6aac1.json",
+    "sessions/archive/2026/11/cc-0b14b5d9-3c8c-4812-9a4f-d14d27523374.json",
+    "sessions/archive/2026/11/cc-0d35e7cb-5b72-4db3-80af-b9121aeba59c.json",
+    "sessions/archive/2026/11/cc-0f133c5e-08a6-41aa-a137-dba86cf7bf28.json",
+    "sessions/archive/2026/11/cc-0f6334e3-ebca-44ce-905d-ef6e726f0431.json",
+    "sessions/archive/2026/11/cc-103aa207-d032-4b66-a6e4-958192bd5851.json",
+    "sessions/archive/2026/11/cc-1057f7f4-eee4-43ba-8479-21a1839ef422.json",
+    "sessions/archive/2026/11/cc-10c8d9a2-d523-497b-9ac4-ba724fcb9286.json",
+    "sessions/archive/2026/11/cc-1145c5d3-6ae8-47ca-8173-76039231638c.json",
+    "sessions/archive/2026/11/cc-119a70b0-fdb4-4d17-8411-4a5f7f52908d.json",
+    "sessions/archive/2026/11/cc-13242948-cce1-446c-88c7-5f49abf06625.json",
+    "sessions/archive/2026/11/cc-14c2bb1c-88e8-4d7f-81d2-6d31602ddf42.json",
+    "sessions/archive/2026/11/cc-14d02d2a-ca0a-453b-8671-c0747370d1e2.json",
+    "sessions/archive/2026/11/cc-15b61612-27cb-4e27-9022-2c40d9380a1b.json",
+    "sessions/archive/2026/11/cc-15e1c924-0bd7-4e56-a9f5-1d3edb020a82.json",
+    "sessions/archive/2026/11/cc-15fb1aed-49fb-4820-8de5-dd46717994f6.json",
+    "sessions/archive/2026/11/cc-16363d7b-eb7a-4ba0-b8a9-e6d051442b06.json",
+    "sessions/archive/2026/11/cc-166899be-0042-4262-a76d-8150e4d86418.json",
+    "sessions/archive/2026/11/cc-17397bd1-7aa2-40c0-b75d-0a8d6b632021.json",
+    "sessions/archive/2026/11/cc-177b3568-4f2b-48f2-a7c8-1814812ec683.json",
+    "sessions/archive/2026/11/cc-184f9b42-8416-4e19-81c5-17db86a68179.json",
+    "sessions/archive/2026/11/cc-18cd0f50-d69d-4152-be18-a5d5b158059b.json",
+    "sessions/archive/2026/11/cc-18ea4145-c53d-4bdd-b226-de4118b1810b.json",
+    "sessions/archive/2026/11/cc-19c33f9a-b290-4747-b340-b7ed298d0507.json",
+    "sessions/archive/2026/11/cc-19f48156-ef54-4851-80eb-3f36bd940ca9.json",
+    "sessions/archive/2026/11/cc-1c07cfe7-c11d-4fa9-ada8-f27881ed747f.json",
+    "sessions/archive/2026/11/cc-1c1bce25-9296-4ad0-95ae-4e728d329836.json",
+    "sessions/archive/2026/11/cc-1c43e3cf-9524-44d4-8279-11699da29e3e.json",
+    "sessions/archive/2026/11/cc-1ccbf2d4-5c53-409e-99d5-27959488afc7.json",
+    "sessions/archive/2026/11/cc-1cec00fa-7c0d-411f-8cb5-a47a9672366c.json",
+    "sessions/archive/2026/11/cc-1e11455e-a19a-4e8c-afbb-57baa5043e86.json",
+    "sessions/archive/2026/11/cc-1e69b8d1-eb76-43b4-9da8-b8d2a5e60af2.json",
+    "sessions/archive/2026/11/cc-1eee18de-47b8-4f7c-b042-70599e64b08b.json",
+    "sessions/archive/2026/11/cc-1fb50d9e-b9f9-4019-a8a5-176542957368.json",
+    "sessions/archive/2026/11/cc-205aa57e-c417-4a14-8dd5-0c070ac2d5d0.json",
+    "sessions/archive/2026/11/cc-21f5e3a7-fea0-4b85-9226-aa628e7140c0.json",
+    "sessions/archive/2026/11/cc-223822bb-0cc4-4fe4-842c-7f8530c068c5.json",
+    "sessions/archive/2026/11/cc-23731149-52dc-4447-87a3-230d271c128f.json",
+    "sessions/archive/2026/11/cc-239eed37-ab0c-46de-8768-c671dde8f337.json",
+    "sessions/archive/2026/11/cc-2500b1b6-4520-4e73-ad6c-54b832370d42.json",
+    "sessions/archive/2026/11/cc-2539d849-4aed-413b-aeb6-ea295ffad232.json",
+    "sessions/archive/2026/11/cc-258692a5-2ae7-460d-a778-34c3acd61d45.json",
+    "sessions/archive/2026/11/cc-2729fbb6-f2b7-4991-a30c-9ae792b1c316.json",
+    "sessions/archive/2026/11/cc-28791f04-dd8c-4022-bb12-3129253fb9dd.json",
+    "sessions/archive/2026/11/cc-2b5193bf-f1fc-437c-8e0c-c3d4601115ce.json",
+    "sessions/archive/2026/11/cc-2bb1340a-13be-4932-988d-4780e8847182.json",
+    "sessions/archive/2026/11/cc-2cb965ab-cfc0-4f22-8389-01008613b9b0.json",
+    "sessions/archive/2026/11/cc-2cd51b67-65ee-4f89-b0e3-114d99bbe9a4.json",
+    "sessions/archive/2026/11/cc-2dc480f2-9f60-4266-811e-2174a67ba9c1.json",
+    "sessions/archive/2026/11/cc-304af727-d0c6-4c94-a34d-db0564e24f4b.json",
+    "sessions/archive/2026/11/cc-31e2fd9b-33db-4250-9cfc-c89963237034.json",
+    "sessions/archive/2026/11/cc-3240dbc7-116f-4d9c-9041-beff094b1559.json",
+    "sessions/archive/2026/11/cc-32712a84-2136-4912-8fca-1e3ecfd97f62.json",
+    "sessions/archive/2026/11/cc-345771d2-44bf-4bdc-b091-5c17331adfbd.json",
+    "sessions/archive/2026/11/cc-34aa06b4-581c-4d67-a95b-b26cc06a88d2.json",
+    "sessions/archive/2026/11/cc-34d4011d-151d-47ed-800a-5a94f73f696f.json",
+    "sessions/archive/2026/11/cc-3545cb2d-25bf-4907-9535-ed9842cd5e2e.json",
+    "sessions/archive/2026/11/cc-356c4c77-3857-492b-b523-45a28241828c.json",
+    "sessions/archive/2026/11/cc-36f09489-4377-49a8-b3c4-c8d400c91a01.json",
+    "sessions/archive/2026/11/cc-37349be3-27a7-428b-8e7c-ba7215259f54.json",
+    "sessions/archive/2026/11/cc-3749983d-1e8b-4697-a858-255e5f76059c.json",
+    "sessions/archive/2026/11/cc-38b2073d-122a-419e-9759-6e324c97ec3f.json",
+    "sessions/archive/2026/11/cc-38eb1fe0-e337-44a6-8d40-9815554018f4.json",
+    "sessions/archive/2026/11/cc-3955450a-1da7-438e-9c65-f895d91edfba.json",
+    "sessions/archive/2026/11/cc-3bca1b5a-7c51-4c5e-bf3d-9ad33bfb5707.json",
+    "sessions/archive/2026/11/cc-3bcbb1a5-6f72-473d-b661-bb7f82609c13.json",
+    "sessions/archive/2026/11/cc-3fb1e28d-353c-4249-89f9-87ba8cf4c114.json",
+    "sessions/archive/2026/11/cc-3fface92-093a-4989-860d-69979a80d7ec.json",
+    "sessions/archive/2026/11/cc-426d49b6-ffa5-4739-9912-fe8cc9ce8fd0.json",
+    "sessions/archive/2026/11/cc-42ac4268-ece2-475b-964b-5bad685a9a73.json",
+    "sessions/archive/2026/11/cc-4631efa9-8cbf-4ca4-81f7-0dc0b47beeff.json",
+    "sessions/archive/2026/11/cc-4698be5f-e002-47b8-bbee-069f0b3edca2.json",
+    "sessions/archive/2026/11/cc-47734d89-2e9a-4288-8136-05c6a7cbe683.json",
+    "sessions/archive/2026/11/cc-478e312e-1784-463e-b5bb-8cff03d99188.json",
+    "sessions/archive/2026/11/cc-48c20ef1-f427-426d-b521-3fa876888853.json",
+    "sessions/archive/2026/11/cc-49871d25-39d2-4093-b1bc-b70d47f2d694.json",
+    "sessions/archive/2026/11/cc-4a7bac52-3703-4d65-9810-64dd45c10338.json",
+    "sessions/archive/2026/11/cc-4ab73e5e-c2f6-4221-b4da-8430671d2173.json",
+    "sessions/archive/2026/11/cc-4e084272-5027-4fd9-ae24-55bcfa81c66e.json",
+    "sessions/archive/2026/11/cc-4ef88292-3e80-46c0-94be-27ac8993de5f.json",
+    "sessions/archive/2026/11/cc-511d0782-b898-4c1f-a6a6-55471dbdb8d0.json",
+    "sessions/archive/2026/11/cc-5248886a-1b30-4e1b-be39-42f87d27f0e4.json",
+    "sessions/archive/2026/11/cc-52ca851a-2f89-4823-b26c-a3b1311dde4b.json",
+    "sessions/archive/2026/11/cc-53ea5e78-1320-4ae1-8ebc-52e6b1e6c22f.json",
+    "sessions/archive/2026/11/cc-552c9e3a-e109-4a8f-b887-340a37424ed2.json",
+    "sessions/archive/2026/11/cc-555a37ed-2084-4daa-b757-505f97fa4244.json",
+    "sessions/archive/2026/11/cc-56f954cc-6509-4e4b-a530-2de0a51433f1.json",
+    "sessions/archive/2026/11/cc-572e4d03-fc4e-406e-838a-e61fb70a4a19.json",
+    "sessions/archive/2026/11/cc-57d671f5-0351-438b-9e11-aa9eb2dae90e.json",
+    "sessions/archive/2026/11/cc-58c819d1-2073-4fbf-a951-5402b26042d7.json",
+    "sessions/archive/2026/11/cc-598fc378-f7bc-4e74-b627-d1de2062e5cd.json",
+    "sessions/archive/2026/11/cc-59c8c66f-ac64-4f03-898a-43ff9eec0f98.json",
+    "sessions/archive/2026/11/cc-59edd1c8-f4e9-44fc-a0ad-9525fa87408b.json",
+    "sessions/archive/2026/11/cc-5a18f633-fe24-4d63-8464-0487068a74a8.json",
+    "sessions/archive/2026/11/cc-5a1be2f0-767d-48ee-bacc-41b5bf9871fb.json",
+    "sessions/archive/2026/11/cc-5b2fdc44-a6f9-43b3-8245-f8bbe3c239b5.json",
+    "sessions/archive/2026/11/cc-5b3ea7be-87ca-4b01-a90a-a0fcf9f7fb9a.json",
+    "sessions/archive/2026/11/cc-5c12c31c-c9cd-4fb5-9134-2e09acc55632.json",
+    "sessions/archive/2026/11/cc-5c63e4ac-b02f-4ba4-b59c-f538c4625779.json",
+    "sessions/archive/2026/11/cc-5c7fd1ea-fe6d-479a-a6cc-f39c3a47589f.json",
+    "sessions/archive/2026/11/cc-5d90b8a3-1d85-4c58-96ba-595abec39add.json",
+    "sessions/archive/2026/11/cc-5dcd468f-b62d-46de-9a7c-cd2a9e2a28ad.json",
+    "sessions/archive/2026/11/cc-5f11ef9d-ffde-4443-9d11-63830a4a0f5f.json",
+    "sessions/archive/2026/11/cc-60079acc-7951-4f64-af62-521846a9ce6c.json",
+    "sessions/archive/2026/11/cc-6232cf91-ace8-48d3-abac-da283bb63134.json",
+    "sessions/archive/2026/11/cc-62cd2a36-1d3a-451b-8b1c-ce3406decc1b.json",
+    "sessions/archive/2026/11/cc-62fb5ff2-e886-41a7-99e6-f4fb92622d61.json",
+    "sessions/archive/2026/11/cc-63d48160-8b2f-46ea-a9a7-d5147bcad789.json",
+    "sessions/archive/2026/11/cc-64978b44-ed02-44e8-8c64-75f4e1cad588.json",
+    "sessions/archive/2026/11/cc-6498000c-41fc-42c9-830b-859746d15a4d.json",
+    "sessions/archive/2026/11/cc-656af3c8-0b8e-4946-82e0-37142f4eea72.json",
+    "sessions/archive/2026/11/cc-657de452-50fd-4361-a714-db442adb040a.json",
+    "sessions/archive/2026/11/cc-668e1532-a63b-4910-b9a0-6e9b07f84381.json",
+    "sessions/archive/2026/11/cc-679a4d48-a074-4694-92aa-6e0c21c11021.json",
+    "sessions/archive/2026/11/cc-680e7c16-b278-4556-adc6-909060326117.json",
+    "sessions/archive/2026/11/cc-6a92031a-87dd-4366-97bc-560ab58112a1.json",
+    "sessions/archive/2026/11/cc-6ac5df84-a5e9-4282-b914-a4026e6dd862.json",
+    "sessions/archive/2026/11/cc-6b0f0bbb-8a67-47b2-950f-e50ced36a595.json",
+    "sessions/archive/2026/11/cc-6b349b8e-a9e3-41df-ae07-78f48cda91f3.json",
+    "sessions/archive/2026/11/cc-6dbc041a-2653-4530-953f-20945c21a3e9.json",
+    "sessions/archive/2026/11/cc-6e6ed2c9-9a1a-4c2f-850b-c24f0ea23523.json",
+    "sessions/archive/2026/11/cc-701cb394-2636-47bb-abef-6092980442a5.json",
+    "sessions/archive/2026/11/cc-706066cd-822a-43d9-892a-2ae31bfd9272.json",
+    "sessions/archive/2026/11/cc-715a51c8-45fe-409c-bfe2-79be2b2e4f13.json",
+    "sessions/archive/2026/11/cc-71bc4331-315e-4ff5-a1ec-d936aa63229d.json",
+    "sessions/archive/2026/11/cc-71f52fc5-9d16-419f-8fb2-b4357ab1633c.json",
+    "sessions/archive/2026/11/cc-72e24082-a897-4a74-b61d-ae6d453356d0.json",
+    "sessions/archive/2026/11/cc-7381b5f9-4e2f-4109-9e69-04acea1344a1.json",
+    "sessions/archive/2026/11/cc-738a949e-e559-465b-814c-e81ba48fb64a.json",
+    "sessions/archive/2026/11/cc-73d96bbb-9f10-47fd-9515-869c72bcb9c5.json",
+    "sessions/archive/2026/11/cc-75a91872-0dc8-4eca-80b5-8b7c4677d557.json",
+    "sessions/archive/2026/11/cc-7630daf5-8344-47b3-87ba-b80c9766431b.json",
+    "sessions/archive/2026/11/cc-76660cc9-cb18-4b31-be9f-9ba95aac84dd.json",
+    "sessions/archive/2026/11/cc-76d9b48e-f9c5-4485-a7cc-fee434c26f47.json",
+    "sessions/archive/2026/11/cc-77fdb657-9c7f-4b88-b00d-c52243f692b3.json",
+    "sessions/archive/2026/11/cc-79436cc5-d860-45cd-924c-1f4070869c8b.json",
+    "sessions/archive/2026/11/cc-79517ba0-d45d-405c-b930-2cfd73b128f4.json",
+    "sessions/archive/2026/11/cc-7a5f2369-28d7-4eed-84d4-1532b5b509e1.json",
+    "sessions/archive/2026/11/cc-7aa17646-461e-4d18-bb57-3bd1ad128544.json",
+    "sessions/archive/2026/11/cc-7b6fcc33-f8a4-423d-b322-f6b8b9fa5c3d.json",
+    "sessions/archive/2026/11/cc-7c65396f-527e-4ee3-8ed7-a8ecd3191a51.json",
+    "sessions/archive/2026/11/cc-7ca67ca0-cd7a-4491-947c-1cc442cffaa6.json",
+    "sessions/archive/2026/11/cc-7e5d81d7-969a-4e11-ad2a-7790521090d5.json",
+    "sessions/archive/2026/11/cc-7e80a7cc-680b-4729-b023-bd1172fa5574.json",
+    "sessions/archive/2026/11/cc-801f29e3-9f9d-4c86-aa48-1328bb0b1fcc.json",
+    "sessions/archive/2026/11/cc-80c00636-55cf-475b-a5c2-707ea7949b11.json",
+    "sessions/archive/2026/11/cc-80ca6167-196b-44e0-857d-ce29ae926863.json",
+    "sessions/archive/2026/11/cc-8136ddec-4793-485e-81b9-95c3f22d8fb5.json",
+    "sessions/archive/2026/11/cc-8239a8e1-37db-4137-871c-8d8880f02f15.json",
+    "sessions/archive/2026/11/cc-82ec55c1-a821-476c-aaf6-e8f387646dd2.json",
+    "sessions/archive/2026/11/cc-83742305-e919-420d-9654-a0146dcbdbe0.json",
+    "sessions/archive/2026/11/cc-84813c84-cf69-49ad-b5df-1721d0a89fb2.json",
+    "sessions/archive/2026/11/cc-86769cf9-ef3e-46fe-8f55-4bd976f33d77.json",
+    "sessions/archive/2026/11/cc-86ab2420-6fc2-4119-b216-716d833246db.json",
+    "sessions/archive/2026/11/cc-86d11a22-49eb-4f41-9934-f37ceea13295.json",
+    "sessions/archive/2026/11/cc-87737b5c-fe08-4e42-bcd6-2e6c81335b03.json",
+    "sessions/archive/2026/11/cc-87c58668-6392-460f-b1ba-ef03f0225a00.json",
+    "sessions/archive/2026/11/cc-88289eae-2f0f-4e24-b220-96e3ffb5a0d3.json",
+    "sessions/archive/2026/11/cc-88419d1f-762b-4d35-8439-64b562a79518.json",
+    "sessions/archive/2026/11/cc-8ad36bcb-aef0-45ea-be01-5ddb094bbc96.json",
+    "sessions/archive/2026/11/cc-8ad55667-4bed-4727-9c18-92ebec13f296.json",
+    "sessions/archive/2026/11/cc-8bba7b0d-4d42-4c10-978e-57fd9e15b7c5.json",
+    "sessions/archive/2026/11/cc-8c61feb1-befe-4ed0-a282-977f2f9bb804.json",
+    "sessions/archive/2026/11/cc-8c891776-736a-4d5a-bb96-eb889164b0d9.json",
+    "sessions/archive/2026/11/cc-8d2e6bf2-6fbc-4007-ab31-5d948bff1ca9.json",
+    "sessions/archive/2026/11/cc-8d5d708b-0305-44cd-b508-ceb67fbb00d5.json",
+    "sessions/archive/2026/11/cc-8db37ee8-a0aa-4cb5-baee-f2bcd5582d14.json",
+    "sessions/archive/2026/11/cc-8e1b5a48-1195-4169-b98c-e3cef41beccb.json",
+    "sessions/archive/2026/11/cc-8f0d3909-41fb-4f88-a317-a8dc2547180b.json",
+    "sessions/archive/2026/11/cc-902dbab7-f989-449d-a144-f4d58544ffb1.json",
+    "sessions/archive/2026/11/cc-907f8a57-4187-4f9c-b2ae-e20424ad103a.json",
+    "sessions/archive/2026/11/cc-934e1036-7bb2-4f93-b86d-0edede06460b.json",
+    "sessions/archive/2026/11/cc-93500830-476a-4dcf-9f4e-992cd64aff0c.json",
+    "sessions/archive/2026/11/cc-939d8a20-85bc-4acf-bb80-8ef67e3ce0d6.json",
+    "sessions/archive/2026/11/cc-9524aabd-8d0a-4043-a63a-1a055c85f5c1.json",
+    "sessions/archive/2026/11/cc-95c0e538-eede-408f-a1e5-23bb64df503a.json",
+    "sessions/archive/2026/11/cc-976eeb09-710d-4bee-8c38-696953afa497.json",
+    "sessions/archive/2026/11/cc-9847dba8-1d83-4cd5-a46f-1cd22f21fd2d.json",
+    "sessions/archive/2026/11/cc-9a04c784-dfda-4b1d-9990-ea6cb78d04b0.json",
+    "sessions/archive/2026/11/cc-9ac040ba-c9d9-42ef-af0d-bfb291cead5d.json",
+    "sessions/archive/2026/11/cc-9af76821-e52f-427c-a484-21a489e562f6.json",
+    "sessions/archive/2026/11/cc-9cbdcc4d-68eb-43bd-b405-f698f750c786.json",
+    "sessions/archive/2026/11/cc-9d6f1bfb-9822-41e7-839a-d2758210955d.json",
+    "sessions/archive/2026/11/cc-9db72667-269a-403c-a0a2-225ee07a2765.json",
+    "sessions/archive/2026/11/cc-9de1c458-7295-4b30-b19e-8f9dadc5714e.json",
+    "sessions/archive/2026/11/cc-9eb4b524-cb52-4cc8-bfed-2572eb18fe32.json",
+    "sessions/archive/2026/11/cc-9fd62e08-90ee-41cc-b6cd-b5919b77efd8.json",
+    "sessions/archive/2026/11/cc-a040cd1a-a76b-45e2-9fbb-27637844cf1d.json",
+    "sessions/archive/2026/11/cc-a0520800-1291-4a24-ab88-595c052e1463.json",
+    "sessions/archive/2026/11/cc-a0642df9-a27f-40df-a779-bb66c6301684.json",
+    "sessions/archive/2026/11/cc-a2808ec9-ff48-460b-ac19-e423a41641e6.json",
+    "sessions/archive/2026/11/cc-a29bceb0-f7c2-4803-9d2d-7a4a46053edb.json",
+    "sessions/archive/2026/11/cc-a339b28c-d0a0-4bb5-b217-90fe53e9d58d.json",
+    "sessions/archive/2026/11/cc-a4ff8969-07d6-49d9-b472-0e5ca7a3bce2.json",
+    "sessions/archive/2026/11/cc-a6e1639a-e76e-4a7c-a5cf-25d280b76187.json",
+    "sessions/archive/2026/11/cc-a8037b19-d385-41d4-80f3-38d29e718468.json",
+    "sessions/archive/2026/11/cc-a8aafdc9-9e6a-4d5a-94e4-eb3f7da39b4d.json",
+    "sessions/archive/2026/11/cc-a8b7b2f8-afb5-4b31-8f4f-5cf3b63449bd.json",
+    "sessions/archive/2026/11/cc-a9c2e497-a6ef-4797-b658-2b4c85bc403b.json",
+    "sessions/archive/2026/11/cc-aa2ee3ca-86cc-410a-99e7-3c234771aef2.json",
+    "sessions/archive/2026/11/cc-ab174302-ce1a-407b-85ad-8d23acd0091e.json",
+    "sessions/archive/2026/11/cc-abccd31e-3e70-42be-9c2f-94ada80a4456.json",
+    "sessions/archive/2026/11/cc-ac4f876a-7e4d-4815-b99c-5e72b7b5d36b.json",
+    "sessions/archive/2026/11/cc-afde2636-b268-4c5f-a020-c44736d736ba.json",
+    "sessions/archive/2026/11/cc-b0cf67e8-f5ea-4ca7-a7fd-82dfa920d094.json",
+    "sessions/archive/2026/11/cc-b0fefeca-52e0-4c35-b953-6652e818de4a.json",
+    "sessions/archive/2026/11/cc-b214bd7c-087a-48ad-919b-c752673f75c1.json",
+    "sessions/archive/2026/11/cc-b2ae5152-44b7-4a15-b457-5b1cb057cc6f.json",
+    "sessions/archive/2026/11/cc-b411473c-7cf2-417c-a951-7289e7b8759a.json",
+    "sessions/archive/2026/11/cc-b5ada7f3-cb3a-40f1-97e3-5286811b3965.json",
+    "sessions/archive/2026/11/cc-b5eed377-c05d-49b4-8054-e5d0f913f679.json",
+    "sessions/archive/2026/11/cc-b5fa9490-1bd1-4b93-850d-60275b499fd5.json",
+    "sessions/archive/2026/11/cc-b6993100-800c-4043-8efd-6834086f89c4.json",
+    "sessions/archive/2026/11/cc-b7b66813-d946-40de-b6db-0efd597eb614.json",
+    "sessions/archive/2026/11/cc-b91d107a-18d1-4507-9257-07ba544418f4.json",
+    "sessions/archive/2026/11/cc-b9add429-c232-4f58-8e4a-9b6cecc38c57.json",
+    "sessions/archive/2026/11/cc-ba742245-94c4-4c3a-ab24-8bc458f3dc59.json",
+    "sessions/archive/2026/11/cc-bb32ca22-2342-4abb-903f-c8e349694771.json",
+    "sessions/archive/2026/11/cc-bc8d00e1-b057-4225-bc4e-a35962630b83.json",
+    "sessions/archive/2026/11/cc-bd3e6bdb-e1b1-4873-8394-cd4b4f1c5b5d.json",
+    "sessions/archive/2026/11/cc-bdb9bda9-37cc-4546-9d3e-4840f9e3f5fa.json",
+    "sessions/archive/2026/11/cc-bdba2d32-458e-4b2b-b41a-fc6b09d47667.json",
+    "sessions/archive/2026/11/cc-be80ebbd-2b0c-4202-8526-6d758a01c6c1.json",
+    "sessions/archive/2026/11/cc-c028f9fb-58e7-49a3-883e-d11190823114.json",
+    "sessions/archive/2026/11/cc-c14910bc-66f7-42aa-990f-11d151dde39e.json",
+    "sessions/archive/2026/11/cc-c46ad724-204f-484e-a09a-512f9086b019.json",
+    "sessions/archive/2026/11/cc-c5c48510-f60d-4746-97bc-52ba2cb70924.json",
+    "sessions/archive/2026/11/cc-c6726383-800e-4ddf-8cb6-3ce7b516947b.json",
+    "sessions/archive/2026/11/cc-c8975887-133e-49fa-a24d-891761a4a28d.json",
+    "sessions/archive/2026/11/cc-c9ba2895-cb6d-4d86-af66-422ca94e020e.json",
+    "sessions/archive/2026/11/cc-c9ea296f-76b5-4d7a-92eb-73e8589ecab6.json",
+    "sessions/archive/2026/11/cc-cabf2905-67a6-44cf-9b85-c61669cba6bc.json",
+    "sessions/archive/2026/11/cc-cc299498-60c5-4380-8c6a-b9bf1e0eb1e9.json",
+    "sessions/archive/2026/11/cc-d0d8512c-b04d-4849-8240-4edd6cf7b056.json",
+    "sessions/archive/2026/11/cc-d15af078-ae5e-40c1-8c81-764dddaa160f.json",
+    "sessions/archive/2026/11/cc-d40dd8e4-a4ea-4f4e-91ab-902dd3883846.json",
+    "sessions/archive/2026/11/cc-d43b8447-5635-427b-ba66-90a2c157e2e2.json",
+    "sessions/archive/2026/11/cc-d4e619c2-8c23-4775-b6a7-aad25aac55f9.json",
+    "sessions/archive/2026/11/cc-d5a05cce-1008-4baa-8053-67078dcc1198.json",
+    "sessions/archive/2026/11/cc-d62c218f-158c-423e-9c5b-6314477db6b0.json",
+    "sessions/archive/2026/11/cc-d6774f1e-8590-41f8-b5ae-3ca76a4946e6.json",
+    "sessions/archive/2026/11/cc-d761b078-ad3d-4289-9e4f-2c2fe5264db7.json",
+    "sessions/archive/2026/11/cc-d79ab68f-b95b-4ee1-9fdb-fba08c0eb86b.json",
+    "sessions/archive/2026/11/cc-d8b103cb-c071-4dcd-8fbc-94ac011c87cc.json",
+    "sessions/archive/2026/11/cc-da1b841d-ff22-46fe-850b-4448036a5cfe.json",
+    "sessions/archive/2026/11/cc-dc2fc058-6ff3-4810-b4a3-9d86e521fdbf.json",
+    "sessions/archive/2026/11/cc-dc3900a0-3750-42e4-86ba-294d4a8a2eb1.json",
+    "sessions/archive/2026/11/cc-dcacb2c9-fca7-4031-84f2-d50f59450538.json",
+    "sessions/archive/2026/11/cc-df220c75-619e-4d59-8a5c-768f8579371f.json",
+    "sessions/archive/2026/11/cc-e23e5d8e-5b90-4228-b756-1325ac7b3536.json",
+    "sessions/archive/2026/11/cc-e25ded31-0bae-4e66-9fe6-94849fcdd28c.json",
+    "sessions/archive/2026/11/cc-e36fcba8-1506-492e-8e13-278ee3deb430.json",
+    "sessions/archive/2026/11/cc-e48eec1b-d1c3-4d0b-8826-afd849a8c8c7.json",
+    "sessions/archive/2026/11/cc-e5dd3cda-88dc-4dfa-b00a-33e79c3043ea.json",
+    "sessions/archive/2026/11/cc-e698e544-e133-47a1-bdcd-3bc1c889743a.json",
+    "sessions/archive/2026/11/cc-e7b07fde-9e09-4ff0-a71b-b9f5b26e66d9.json",
+    "sessions/archive/2026/11/cc-e8430d74-3460-47c6-b425-a38b3f17d8aa.json",
+    "sessions/archive/2026/11/cc-e85c1b2f-fab5-4e71-9549-b81febef1f96.json",
+    "sessions/archive/2026/11/cc-ea919fd2-65fb-4643-9c78-f2c1bde1b8b0.json",
+    "sessions/archive/2026/11/cc-eb3e9d23-bf18-4e6f-93bc-866f2abee5cb.json",
+    "sessions/archive/2026/11/cc-ebfec8d2-ff82-442b-8473-9a2e82023c4e.json",
+    "sessions/archive/2026/11/cc-ec292790-0e4b-474d-9e66-164c3001ace1.json",
+    "sessions/archive/2026/11/cc-ecab8ba9-2df2-45c6-93de-19ba365306c1.json",
+    "sessions/archive/2026/11/cc-ecd3b54d-15cc-44bf-9647-807681f4f2ce.json",
+    "sessions/archive/2026/11/cc-ecd81dde-82fb-4164-8d98-2c56c8cb7114.json",
+    "sessions/archive/2026/11/cc-eee835a8-ffa3-4894-a9a9-17ae454f27de.json",
+    "sessions/archive/2026/11/cc-efb6abe5-1180-4ace-b0f1-b5b087db5785.json",
+    "sessions/archive/2026/11/cc-f05d27ca-a344-4acc-bb58-a574bd1d8d77.json",
+    "sessions/archive/2026/11/cc-f0e4892a-2aea-4162-8536-1af6d5cd043c.json",
+    "sessions/archive/2026/11/cc-f11be751-ba95-4413-9bfd-c16204abf519.json",
+    "sessions/archive/2026/11/cc-f2736e7b-3981-4905-8a08-59c21068ba49.json",
+    "sessions/archive/2026/11/cc-f2da85ae-10a8-492d-929d-36844ba6f661.json",
+    "sessions/archive/2026/11/cc-f364db88-6b8b-4e91-b699-8420d2dc6d3f.json",
+    "sessions/archive/2026/11/cc-f5145179-62b2-43cf-90c3-0069aab69a58.json",
+    "sessions/archive/2026/11/cc-f60ff30a-c7b8-4f1e-a806-5035409996ab.json",
+    "sessions/archive/2026/11/cc-f6921403-6870-444c-a2fb-f39193e5bdf3.json",
+    "sessions/archive/2026/11/cc-f909197e-f930-4dde-b236-0e7afc41025e.json",
+    "sessions/archive/2026/11/cc-f958a06e-753b-41b6-ad91-e3d94f81f855.json",
+    "sessions/archive/2026/11/cc-fa9a5763-4dbf-45b9-a72c-20adc013f943.json",
+    "sessions/archive/2026/11/cc-faef8f0e-e2bc-4884-a7b8-8a94bc480007.json",
+    "sessions/archive/2026/11/cc-fb1a559b-84a5-45f3-8d2d-0bf238c6d370.json",
+    "sessions/archive/2026/11/cc-fb6cf85d-eb0e-4b56-9605-df6a4b85a7d4.json",
+    "sessions/archive/2026/11/cc-fb9c6d28-7cae-46d8-a2bd-bbc6ce273194.json",
+    "sessions/archive/2026/11/cc-fba1c47b-7807-4650-8918-8dd909a0ab03.json",
+    "sessions/archive/2026/11/cc-fcab8683-3f90-40ce-bd54-f2d2a5a13bb8.json",
+    "sessions/archive/2026/11/cc-fd531e5f-67f8-4088-9ea3-a0ce6511d2d6.json",
+    "sessions/archive/2026/11/cc-fe2e5c90-16de-4c8b-9417-cad7e8ec530c.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/help.json",
+    "apps/console-web/plugins/build-manager/hooks.mjs",
+    "apps/console-web/plugins/build-manager/install.mjs",
+    "apps/console-web/plugins/build-manager/notify.json",
+    "apps/console-web/plugins/build-manager/plugin.json",
+    "apps/console-web/plugins/build-manager/server/__init__.py",
+    "apps/console-web/plugins/build-manager/test.mjs",
+    "apps/console-web/plugins/build-manager/test.py",
+    "apps/console-web/plugins/build-manager/uninstall.mjs",
+    "apps/console-web/plugins/build-manager/web/build-manager.css",
+    "apps/console-web/plugins/build-manager/web/history.d.mts",
+    "apps/console-web/plugins/build-manager/web/history.mjs",
+    "apps/console-web/plugins/build-manager/web/index.tsx",
+    "apps/console-web/plugins/build-manager/web/menu.ts",
+    "apps/console-web/plugins/build-manager/web/merge.d.mts",
+    "apps/console-web/plugins/build-manager/web/merge.mjs",
+    "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+    "apps/console-web/plugins/build-manager/web/plan-cli.mjs",
+    "apps/console-web/plugins/build-manager/web/store.ts",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "fable-rebuilds",
+   "files": [
+    "apps/console-web/plugins/fable-rebuilds/help.json",
+    "apps/console-web/plugins/fable-rebuilds/hooks.mjs",
+    "apps/console-web/plugins/fable-rebuilds/install.mjs",
+    "apps/console-web/plugins/fable-rebuilds/plugin.json",
+    "apps/console-web/plugins/fable-rebuilds/server/__init__.py",
+    "apps/console-web/plugins/fable-rebuilds/test.py",
+    "apps/console-web/plugins/fable-rebuilds/uninstall.mjs",
+    "apps/console-web/plugins/fable-rebuilds/web/api.ts",
+    "apps/console-web/plugins/fable-rebuilds/web/fable-rebuilds.css",
+    "apps/console-web/plugins/fable-rebuilds/web/index.tsx",
+    "apps/console-web/plugins/fable-rebuilds/web/menu.ts",
+    "apps/console-web/plugins/fable-rebuilds/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/builds.mjs",
+    "apps/console-web/plugins/builds-page/hooks.mjs",
+    "apps/console-web/plugins/builds-page/install.mjs",
+    "apps/console-web/plugins/builds-page/plugin.json",
+    "apps/console-web/plugins/builds-page/server/__init__.py",
+    "apps/console-web/plugins/builds-page/test.py",
+    "apps/console-web/plugins/builds-page/uninstall.mjs",
+    "apps/console-web/plugins/builds-page/web/builds.css",
+    "apps/console-web/plugins/builds-page/web/index.tsx",
+    "apps/console-web/plugins/builds-page/web/menu.ts",
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/build-queue.json",
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/pending.json",
+    "framework/plan/profiles.json",
+    "framework/plan/profiles/all/framework/catalog/status.json",
+    "framework/plan/profiles/all/framework/plan/build-queue.json",
+    "framework/plan/profiles/all/framework/plan/pending.json",
+    "framework/plan/profiles/all/framework/plan/plan.json",
+    "framework/plan/profiles/breakroom/framework/catalog/status.json",
+    "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+    "framework/plan/profiles/breakroom/framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "PROGRESS.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md",
+    "_claude/memory/docs/CLAUDE-FULL.md",
+    "_claude/memory/docs/build-manager.md",
+    "_claude/memory/docs/build-pipeline.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/all/matrices.json",
+    "_claude/builds/profiles/all/orchestrator.json",
+    "_claude/builds/reports/build-pipeline-v2.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/core/build-progress.mjs",
+    "apps/console-web/src/axf/core/engines/card-rules.mjs",
+    "apps/console-web/src/axf/core/pipeline.mjs",
+    "apps/console-web/src/axf/schemas/pipeline.json",
+    "apps/console-web/src/axf/schemas/rules-briefs.json",
+    "apps/console-web/src/lazyEngine.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/check-card.mjs",
+    "framework/spec/check-pipeline-e2e.mjs",
+    "framework/spec/check-pipeline.mjs",
+    "framework/spec/fixtures/card.json",
+    "framework/spec/fixtures/pipeline.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/persist.mjs",
+    "framework/cli/pipeline.mjs",
+    "framework/cli/plugins.mjs",
+    "framework/cli/profiles.mjs",
+    "framework/cli/token-log.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/help.json",
+    "apps/console-web/plugins/systems-check/plugin.json",
+    "apps/console-web/plugins/systems-check/web/FixHelp.tsx",
+    "apps/console-web/plugins/systems-check/web/panels.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/plugin.json",
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-progress.mjs",
+    "framework/core/engines/card-rules.mjs",
+    "framework/core/pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-breaker",
+   "files": [
+    "apps/console-web/plugins/build-breaker/plugin.json",
+    "apps/console-web/plugins/build-breaker/web/buildMenu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "shipped-features",
+   "files": [
+    "apps/console-web/plugins/shipped-features/help.json",
+    "apps/console-web/plugins/shipped-features/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/pipeline.json",
+    "framework/schemas/rules-briefs.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "_template",
+   "files": [
+    "apps/console-web/plugins/_template/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-slots",
+   "files": [
+    "apps/console-web/plugins/agent-slots/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-voice",
+   "files": [
+    "apps/console-web/plugins/agent-voice/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "basic-filter",
+   "files": [
+    "apps/console-web/plugins/basic-filter/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "brand-library",
+   "files": [
+    "apps/console-web/plugins/brand-library/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-profiles",
+   "files": [
+    "apps/console-web/plugins/build-profiles/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "changes-grid",
+   "files": [
+    "apps/console-web/plugins/changes-grid/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-session",
+   "files": [
+    "apps/console-web/plugins/claude-session/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "container-access",
+   "files": [
+    "apps/console-web/plugins/container-access/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "crew-live",
+   "files": [
+    "apps/console-web/plugins/crew-live/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-assist",
+   "files": [
+    "apps/console-web/plugins/feature-assist/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-matrix",
+   "files": [
+    "apps/console-web/plugins/feature-matrix/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "github-app",
+   "files": [
+    "apps/console-web/plugins/github-app/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "hub-sync",
+   "files": [
+    "apps/console-web/plugins/hub-sync/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "mcp-client",
+   "files": [
+    "apps/console-web/plugins/mcp-client/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-switches",
+   "files": [
+    "apps/console-web/plugins/plugin-switches/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-update",
+   "files": [
+    "apps/console-web/plugins/plugin-update/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "snapshot-manager",
+   "files": [
+    "apps/console-web/plugins/snapshot-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-editor",
+   "files": [
+    "apps/console-web/plugins/theme-editor/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice-notes",
+   "files": [
+    "apps/console-web/plugins/voice-notes/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".axf-queue.log",
+   "files": [
+    ".axf-queue.log"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 30.1939,
+  "estimated": false,
+  "tokens": {
+   "input": 3010,
+   "output": 821,
+   "cacheRead": 31792166,
+   "cacheWrite": 535039
+  }
+ },
+ "report": "",
+ "open": []
+}

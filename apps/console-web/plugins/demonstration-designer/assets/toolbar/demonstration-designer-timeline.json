@@ -1,0 +1,59 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "demonstration-designer-timeline",
+  "name": "Timeline actions",
+  "version": "1.0.0",
+  "description": "The Timeline toolbar of the open pitch: add a step, save the timeline and revert it to the saved one.",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "demonstration-designer",
+    "timeline"
+  ],
+  "data": {
+    "scope": "view:demonstration-designer-advanced",
+    "slot": "timeline",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "timeline",
+        "label": "Timeline",
+        "items": [
+          {
+            "id": "add",
+            "icon": "plus",
+            "label": "Add step",
+            "action": "handler:demonstration-designer.add-step",
+            "enabledWhen": "demo",
+            "priority": 260
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save timeline",
+            "action": "handler:demonstration-designer.save-timeline",
+            "enabledWhen": "dirty",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "revert",
+            "icon": "undo",
+            "label": "Revert",
+            "action": "handler:demonstration-designer.revert",
+            "enabledWhen": "dirty",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-refactor-profile-today",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:54Z",
+ "build": {
+  "id": "refactor-profile-today",
+  "title": "refactor-profile-today",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "refactor-profile-today",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/refactor-profile-today",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "5de7a7b5a0bd8248f5fcab5252b0d4f4ebbb097c",
+ "commits": [
+  "00524fadf66c18bbdaf274db96e2936555e3fe75",
+  "47e24f60dff7d8e0686a0a21b2848907036167df",
+  "fd5cf30148017ff9c2d264e695b1acae47f18d37"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T23:11:08Z",
+ "files": [
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/refactor/framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

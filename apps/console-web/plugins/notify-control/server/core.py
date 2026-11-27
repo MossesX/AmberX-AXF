@@ -16,9 +16,9 @@ from zoneinfo import ZoneInfo
 
 PRIORITIES = ["low", "normal", "high", "urgent"]
 ENFORCED = {
-    "gate": "Checked by the console's alert hub",
+    "gate": "Checked by the console's alert hub",  # notify@1 enforcement value, axf-not-plugin:gate
     "browser": "Checked in the open console",
-    "device": "Checked by the AmberX app",
+    "device": "Checked on the phone",
     "required": "Android needs it, it can't be switched off",
     "feed": "Nothing to switch here",
     "elsewhere": "Switched where it lives",
@@ -75,7 +75,7 @@ def normal(t: dict[str, Any], channels: list[str]) -> dict[str, Any]:
     start = {c: c not in OPT_IN or only is not None for c in allowed}
     defaults = {c: (t.get("channels") or {}).get(c, start[c]) is True for c in allowed}
     pri = t.get("priority") if t.get("priority") in PRIORITIES else "normal"
-    return {**t, "enforced": t.get("enforced") or "gate", "allowed": allowed, "defaults": defaults, "priority": pri,
+    return {**t, "enforced": t.get("enforced") or "gate", "allowed": allowed, "defaults": defaults, "priority": pri,  # axf-not-plugin:gate
             "guarded": t.get("guarded") is True, "match": t.get("match") or None}
 
 

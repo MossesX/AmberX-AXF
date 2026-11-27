@@ -1,0 +1,363 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-land-all-skin-builds",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:11:28Z",
+ "build": {
+  "id": "land-all-skin-builds",
+  "title": "Land all skin builds",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "land the skin builds",
+  "verbatim": true,
+  "at": "2026-11-14T18:15:01.485Z",
+  "source": "",
+  "by": "land-all-skin-builds",
+  "addenda": []
+ },
+ "brief": "# Build: land-all-skin-builds\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:15:01.485Z\n> land the skin builds\n\n## What to build\nContinue build \"Land all skin builds\" (land-all-skin-builds) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:15):\n\"land the skin builds\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/land-all-skin-builds\nSteps in this phase (6 left, ~49 min):\n[x] s1 (~6 min) Survey: fetch origin and list the 8 skin branches plus the 4 superseded ones; for each, record ahead/behind vs origin/main, its open PR number and its builds-store record (builds-store.mjs get / builds-live.mjs). Write the table to the top of _claude/builds/reports/land-all-skin-builds.md and commit it.\n[x] s2 (~10 min) skins-plugin-merge-main-and-land: check out the branch, pull --rebase from its remote branch to clear the non-fast-forward, then merge origin/main. Resolve conflicts and keep both sides' features: the Skins plugin hides the built-in skins panel when installed and brings it back when removed. Commit the merge.\n[x] s3 (~10 min) skins-plugin-merge-main-and-land: regenerate the generated files (generated-files@1: tracker.mjs, axf.mjs schemas, re-bake the console's src/axf, help/control registries) and commit them. Run the plugin's lifecycle check (install hides the built-in panel, uninstall --all brings it back), check-theme, check-controls and check-skin.mts.\n[x] s4 (~4 min) skins-plugin-merge-main-and-land: push the branch, link it with builds-live.mjs link, and add its PR to the merge queue with land.mjs queue add. Only the queue merges (Nov 4 rule), so make no direct merge to main.\n[x] s5 (~10 min) skin-config-panel-merge-main-and-land: pull --rebase from its remote branch, then merge the updated skins-plugin branch tip and origin/main so it stacks cleanly. Resolve conflicts and keep both sides' features (config panel plus the plugin's panel swap). Commit.\n[x] s6 (~10 min) skin-config-panel-merge-main-and-land: regenerate the generated files, run check-skin.mts, check-console-control.mjs and the console typecheck, push, link and add it to the merge queue behind skins-plugin.\n[x] s7 (~10 min) every-skin-ships-light-dark-colour-theme: pull --rebase from its remote branch, then merge the previous queued tip and origin/main. Resolve conflicts in framework/assets/skin and the colour-theme assets, keeping both light and dark themes and every skin added on the other side. Commit.\n[x] s8 (~10 min) every-skin-ships-light-dark-colour-theme: run shared-assets.mjs bake, regenerate the fixtures and schemas, run theme-swap.mjs, check-skin-coverage.mjs and check-skin.mts, push, link and add it to the merge queue.\n[x] s9 (~10 min) console-skin-axhub-only: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the appearance source and skin resolution so the console skin comes only from axHub and per-app skins stay intact. Commit.\n[x] s10 (~8 min) console-skin-axhub-only: regenerate the generated files, re-bake the console, run check-skin.mts and the hubstatus tests, push, link and add it to the merge queue.\n[x] s11 (~10 min) skin-axhub-override-switch-greyed-out: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts with console-skin-axhub-only's switch logic, keeping the greyed-out override plus its reason text. Commit.\n[x] s12 (~8 min) skin-axhub-override-switch-greyed-out: regenerate the generated files, run check-console-control.mjs (setting address still callable) and check-skin.mts, push, link and add it to the merge queue.\n[x] s13 (~10 min) skin-animations-swatches-skin-switch: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in skin-switch animations and swatches, keeping the opacity and motion tokens from both sides. Commit.\n[x] s14 (~10 min) skin-animations-swatches-skin-switch: regenerate the generated files, run check-theme.mjs, theme-swap.mjs and check-controls.mjs, push, link and add it to the merge queue.\n[x] s15 (~10 min) token-registry-skin-editor-live-sandbox, part 1: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the token registry and control@1 targets: new targets go last, since the registry is append-only. Commit.\n[x] s16 (~10 min) token-registry-skin-editor-live-sandbox, part 2: resolve the remaining conflicts in the skin editor and sandbox UI, keeping the config panel's and plugin's features. Commit.\n[x] s17 (~10 min) token-registry-skin-editor-live-sandbox: regenerate the fixtures (gen-fixtures.mts), schemas and tracker, re-bake, run check-control, check-skin.mts and check-skin-coverage.mjs, push, link and add it to the merge queue.\n[x] s18 (~10 min) own-token-sets-for-grids-and-tab-groups: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the DataGrid and TabGroup token sets and in the tab-group asset, keeping the token registry entries from both sides. Commit.\n[x] s19 (~10 min) own-token-sets-for-grids-and-tab-groups: regenerate the generated files, run check-tab-group.mts, check-chrome-assets.mjs, check-theme.mjs and check-skin-coverage.mjs, push, link and add it to the merge queue.\n[ ] s20 (~10 min) Brett override: do NOT use the stacked merge queue. Remove the 8 skin PRs from the queue (land.mjs queue remove), then land them one at a time directly in order #647, #648, #590, #618, #641, #652, #657, #654: for each, merge origin/main, regenerate generated files, run its checks once, merge to main (gh pr merge), then the next. If one goes red, fix it on that branch and continue. Record each merge commit in the report.\n[ ] s21 (~8 min) Superseded branches: for each of skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app and fix-merge-conflicts-pr-557-professional, list its commits missing from main (git cherry / patch-id). Note any unique work in the report, and stop and flag it instead of archiving if anything real is missing.\n[ ] s22 (~6 min) Archive the superseded branches that are fully included: push an archive/<name> tag, delete the remote branch, close their PRs with a note naming the PR that replaced them, and mark their builds-store records complete/superseded.\n[ ] s23 (~10 min) Once all 8 have merged, run /usr/local/bin/axf-console-update. Then verify: the console loads, the Skins plugin panel replaces the built-in one with no doubled chrome (one banner, one skins panel), and capture desktop and phone shots with axf shot into the group 'land-all-skin-builds - <Mon D h:mm AM/PM>'.\n[ ] s24 (~5 min) Log the deploy with axf_deploy_log (deploy-log@1). Send Brett one phone notification through the AmberX app (axf.notify@1 / alert hub) listing every build that landed with its PR number, and the archived branches.\n[ ] s25 (~10 min) Wrap-up: run builds-store.mjs verify and tracker.mjs --check, finish the report (_claude/builds/reports/land-all-skin-builds.md: order, conflicts resolved, tests, PRs, archived branches, deploy check), and update the THREADS.md row. Mark the build complete in the orchestrator, commit through a status PR into the merge queue, and record the changes.mjs result.\nRead first: _claude/builds/reports/land-all-skin-builds.md, _claude/builds/store.json, deploy/, apps/console-web/plugins/notify-control/, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-all-skin-builds <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-all-skin-builds --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-all-skin-builds <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-all-skin-builds \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Survey: fetch origin and list the 8 skin branches plus the 4 superseded ones; for each, record ahead/behind vs origin/main, its open PR number and its builds-store record (builds-store.mjs get / builds-live.mjs). Write the table to the top of _claude/builds/reports/land-all-skin-builds.md and commit it.",
+   "model": "Opus",
+   "estimate": "6 min",
+   "estimateMin": 6,
+   "startedAt": "",
+   "doneAt": "2026-11-14T18:20:45.227Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "skins-plugin-merge-main-and-land: check out the branch, pull --rebase from its remote branch to clear the non-fast-forward, then merge origin/main. Resolve conflicts and keep both sides' features: the Skins plugin hides the built-in skins panel when installed and brings it back when removed. Commit the merge.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:20:45.227Z",
+   "doneAt": "2026-11-14T18:21:17.710Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "skins-plugin-merge-main-and-land: regenerate the generated files (generated-files@1: tracker.mjs, axf.mjs schemas, re-bake the console's src/axf, help/control registries) and commit them. Run the plugin's lifecycle check (install hides the built-in panel, uninstall --all brings it back), check-theme, check-controls and check-skin.mts.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:21:17.710Z",
+   "doneAt": "2026-11-14T18:22:34.240Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "skins-plugin-merge-main-and-land: push the branch, link it with builds-live.mjs link, and add its PR to the merge queue with land.mjs queue add. Only the queue merges (Nov 4 rule), so make no direct merge to main.",
+   "model": "Opus",
+   "estimate": "4 min",
+   "estimateMin": 4,
+   "startedAt": "2026-11-14T18:22:34.240Z",
+   "doneAt": "2026-11-14T18:22:48.717Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "skin-config-panel-merge-main-and-land: pull --rebase from its remote branch, then merge the updated skins-plugin branch tip and origin/main so it stacks cleanly. Resolve conflicts and keep both sides' features (config panel plus the plugin's panel swap). Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:22:48.717Z",
+   "doneAt": "2026-11-14T18:23:14.117Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "skin-config-panel-merge-main-and-land: regenerate the generated files, run check-skin.mts, check-console-control.mjs and the console typecheck, push, link and add it to the merge queue behind skins-plugin.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:23:14.117Z",
+   "doneAt": "2026-11-14T18:26:38.077Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "every-skin-ships-light-dark-colour-theme: pull --rebase from its remote branch, then merge the previous queued tip and origin/main. Resolve conflicts in framework/assets/skin and the colour-theme assets, keeping both light and dark themes and every skin added on the other side. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:26:38.077Z",
+   "doneAt": "2026-11-14T18:27:20.847Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "every-skin-ships-light-dark-colour-theme: run shared-assets.mjs bake, regenerate the fixtures and schemas, run theme-swap.mjs, check-skin-coverage.mjs and check-skin.mts, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:27:20.847Z",
+   "doneAt": "2026-11-14T18:31:17.556Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "console-skin-axhub-only: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the appearance source and skin resolution so the console skin comes only from axHub and per-app skins stay intact. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:31:17.556Z",
+   "doneAt": "2026-11-14T18:32:36.162Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "console-skin-axhub-only: regenerate the generated files, re-bake the console, run check-skin.mts and the hubstatus tests, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T18:32:36.162Z",
+   "doneAt": "2026-11-14T18:34:14.653Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "skin-axhub-override-switch-greyed-out: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts with console-skin-axhub-only's switch logic, keeping the greyed-out override plus its reason text. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:34:14.653Z",
+   "doneAt": "2026-11-14T18:34:32.328Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "skin-axhub-override-switch-greyed-out: regenerate the generated files, run check-console-control.mjs (setting address still callable) and check-skin.mts, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T18:34:32.328Z",
+   "doneAt": "2026-11-14T18:36:18.530Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "skin-animations-swatches-skin-switch: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in skin-switch animations and swatches, keeping the opacity and motion tokens from both sides. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:36:18.530Z",
+   "doneAt": "2026-11-14T18:37:17.445Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "skin-animations-swatches-skin-switch: regenerate the generated files, run check-theme.mjs, theme-swap.mjs and check-controls.mjs, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:37:17.445Z",
+   "doneAt": "2026-11-14T18:40:55.425Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "token-registry-skin-editor-live-sandbox, part 1: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the token registry and control@1 targets: new targets go last, since the registry is append-only. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:40:55.425Z",
+   "doneAt": "2026-11-14T18:41:39.529Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "token-registry-skin-editor-live-sandbox, part 2: resolve the remaining conflicts in the skin editor and sandbox UI, keeping the config panel's and plugin's features. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:41:39.529Z",
+   "doneAt": "2026-11-14T18:42:11.282Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "token-registry-skin-editor-live-sandbox: regenerate the fixtures (gen-fixtures.mts), schemas and tracker, re-bake, run check-control, check-skin.mts and check-skin-coverage.mjs, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:42:11.282Z",
+   "doneAt": "2026-11-14T18:44:08.791Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "own-token-sets-for-grids-and-tab-groups: pull --rebase from its remote branch, then merge the previous tip and origin/main. Resolve conflicts in the DataGrid and TabGroup token sets and in the tab-group asset, keeping the token registry entries from both sides. Commit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:44:08.791Z",
+   "doneAt": "2026-11-14T18:44:29.553Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "own-token-sets-for-grids-and-tab-groups: regenerate the generated files, run check-tab-group.mts, check-chrome-assets.mjs, check-theme.mjs and check-skin-coverage.mjs, push, link and add it to the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:44:29.553Z",
+   "doneAt": "2026-11-14T18:47:01.904Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Brett override: do NOT use the stacked merge queue. Remove the 8 skin PRs from the queue (land.mjs queue remove), then land them one at a time directly in order #647, #648, #590, #618, #641, #652, #657, #654: for each, merge origin/main, regenerate generated files, run its checks once, merge to main (gh pr merge), then the next. If one goes red, fix it on that branch and continue. Record each merge commit in the report.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T18:47:01.904Z",
+   "doneAt": "2026-11-14T22:33:41.459Z",
+   "actualMin": 227,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Superseded branches: for each of skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app and fix-merge-conflicts-pr-557-professional, list its commits missing from main (git cherry / patch-id). Note any unique work in the report, and stop and flag it instead of archiving if anything real is missing.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T22:33:41.459Z",
+   "doneAt": "2026-11-14T22:34:07.410Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Archive the superseded branches that are fully included: push an archive/<name> tag, delete the remote branch, close their PRs with a note naming the PR that replaced them, and mark their builds-store records complete/superseded.",
+   "model": "Opus",
+   "estimate": "6 min",
+   "estimateMin": 6,
+   "startedAt": "2026-11-14T22:34:07.410Z",
+   "doneAt": "2026-11-14T22:34:10.017Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Once all 8 have merged, run /usr/local/bin/axf-console-update. Then verify: the console loads, the Skins plugin panel replaces the built-in one with no doubled chrome (one banner, one skins panel), and capture desktop and phone shots with axf shot into the group 'land-all-skin-builds - <Mon D h:mm AM/PM>'.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T22:34:10.017Z",
+   "doneAt": "2026-11-14T22:44:50.407Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "Log the deploy with axf_deploy_log (deploy-log@1). Send Brett one phone notification through the AmberX app (axf.notify@1 / alert hub) listing every build that landed with its PR number, and the archived branches.",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "2026-11-14T22:44:50.407Z",
+   "doneAt": "2026-11-14T22:48:14.818Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "Wrap-up: run builds-store.mjs verify and tracker.mjs --check, finish the report (_claude/builds/reports/land-all-skin-builds.md: order, conflicts resolved, tests, PRs, archived branches, deploy check), and update the THREADS.md row. Mark the build complete in the orchestrator, commit through a status PR into the merge queue, and record the changes.mjs result.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-14T22:48:14.818Z",
+   "doneAt": "2026-11-14T22:50:08.993Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/land-all-skin-builds",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 696,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/679"
+ },
+ "landedCommit": "fc744e5e32cac41bf4c247b30ed88a0194e1c1b9",
+ "commits": [
+  "fc744e5e32cac41bf4c247b30ed88a0194e1c1b9"
+ ],
+ "mergedAt": "2026-11-15T07:51:30Z",
+ "landedAt": "2026-11-15T07:51:29Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/land-all-skin-builds.md"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11-p8.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/store.json"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43691811433",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43691811423",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/land-all-skin-builds.md",
+ "open": []
+}

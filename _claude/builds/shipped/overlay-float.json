@@ -1,0 +1,96 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-overlay-float",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:08:55Z",
+ "build": {
+  "id": "overlay-float",
+  "title": "overlay-float",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "overlay-float",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/overlay-float",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "5497cc657611b1dcb14762d1a2d8005d5ba7bdb5",
+ "commits": [
+  "5497cc657611b1dcb14762d1a2d8005d5ba7bdb5",
+  "66ac7ba7ca3a10ea1d2f2e34312c2f76f2d76363"
+ ],
+ "mergedAt": "2026-11-13T17:20:15Z",
+ "landedAt": "2026-11-13T17:20:15Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/android-approval-overlay-a-small-always-on-float.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlay.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlayRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/ApprovalOverlayRulesTest.java",
+  "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+  "apps/amberx-droid/src/native.ts",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/overlay.ts",
+  "apps/console-web/src/axf/libs/hub/veto.ts"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43471805133",
+   "result": "fail",
+   "detail": "cancelled"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43471805120",
+   "result": "fail",
+   "detail": "cancelled"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

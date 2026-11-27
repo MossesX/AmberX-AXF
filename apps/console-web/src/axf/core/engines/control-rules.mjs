@@ -41,6 +41,7 @@ import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
 import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
+import { componentTokenError, componentTokenFields, componentTokenPaths, parseInstanceTokenPath } from './component-tokens.mjs';
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
@@ -71,7 +72,11 @@ const STYLE_FIELDS = {
   fontFamily: 'string', fontDisplay: 'string', fontMono: 'string', fontSize: 'number', space: 'number', borderWidth: 'number', motion: 'number', blur: 'number', headingWeight: 'number', tracking: 'number',
   density: 'enum:compact,comfortable,spacious', 'radius.sm': 'number', 'radius.md': 'number', 'radius.lg': 'number', 'shadow.sm': 'string', 'shadow.md': 'string', 'shadow.lg': 'string',
   wrapGroups: 'boolean', opacityDisabled: 'number', opacityMuted: 'number', opacityHover: 'number', opacityTint: 'number', opacityScrim: 'number', opacityGlass: 'number',
+  opacityDialog: 'number', opacitySettings: 'number', opacityPanel: 'number', opacityMenu: 'number', opacityToolbar: 'number', opacityBanner: 'number',
+  // component-tokens@1: grid.<token> / tabs.<token> (core/engines/component-tokens.mjs is the one schema)
+  ...componentTokenFields(),
 };
+const COMPONENT_PATHS = componentTokenPaths();
 const ITEM_KINDS = ['note', 'todo', 'task'];
 const ITEM_FIELDS = { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', title: 'string', text: 'string', summary: 'string', tags: 'string[]', pinned: 'boolean', starred: 'boolean', status: 'enum:open,doing,done', priority: 'enum:0,1,2,3', due: 'string', checklist: 'object[]', parent: 'string', order: 'number', url: 'string' };
 const LIST_FIELDS = { name: 'string', parent: 'string|null', order: 'number', icon: 'string', aliases: 'string[]' };
@@ -85,6 +90,8 @@ const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (def
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];
+/** component-tokens@1 per-instance target id (control-rules + the Token control runner + the chrome dialogs share it). */
+export const INSTANCE_TOKENS_TARGET = 'tokens.instances';
 const ENTITY_OPS = ['list', 'get', 'set', 'add', 'remove', 'act'];
 
 /**
@@ -108,14 +115,30 @@ export const CONTROL_TARGETS = {
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
   'console.screens': { domain: 'console', label: 'Console screens', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for ("plan studio", "builds"); act open shows it. ${CONSOLE_DELIVERY}` },
   'console.dialogs': { domain: 'console', label: 'Console dialogs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {}, close: {} }, actEffect: { open: 'navigate', close: 'navigate' }, doc: `Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path "current" = whichever dialog is open). ${CONSOLE_DELIVERY}` },
-  'console.settings': { domain: 'console', label: 'Console settings tabs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, "plugins/<id>" or its title); act open shows it, input.anchor scrolls to one setting or group. ${CONSOLE_DELIVERY}` },
+  'console.settings': { domain: 'console', label: 'Console settings tabs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, "plugins/<id>" or its title); act open shows it, input.anchor scrolls to one setting or group. Single settings are here too: path = a setting key, "field:<key>", "<tab>/<key>" or its name ("text size") opens its tab scrolled to it, get reads its current value (never a secret's), list with q finds them (kind field: type, value, options, min, max); console.actions run settings.set:<key>:<value> changes one. ${CONSOLE_DELIVERY}` },
   'console.actions': { domain: 'console', label: 'Console actions', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments ("swap:color-theme:dark" or ["color-theme", "dark"]). ${CONSOLE_DELIVERY}` },
-  'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {}, refresh: {} }, actEffect: { refresh: 'navigate', back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). ${CONSOLE_DELIVERY}` },
+  'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {}, refresh: {}, screenshot: {} }, actEffect: { refresh: 'navigate', back: 'navigate', home: 'navigate', close: 'navigate', screenshot: 'read' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), refresh (reload the page). act screenshot captures what the console shows as a PNG (the whole page, or the element input.address or input.selector names; at most 1600 px wide) and answers with the image and the screen state (screen, tabs, dialog, selection, scroll); read-only. ${CONSOLE_DELIVERY}` },
   'console.clients': { domain: 'console', label: 'Open consoles', ops: ['list'], paths: 'host', select: { limit: 'number' }, doc: 'The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.' },
   'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow everything for the next 30 minutes". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can\'t. The pass target itself is never covered.' },
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
   'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
+  'console.control': { domain: 'console', label: 'Console control (any address)', ops: ['list', 'get', 'act'], paths: 'host', select: { kinds: 'string', source: 'enum:auto,console,inventory', limit: 'number' },
+    acts: { open: { options: 'object' }, focus: { options: 'object' }, press: { value: 'any', confirm: 'boolean' }, set: { value: 'any' }, scroll: { scroll: 'object' }, search: { query: 'object' }, state: {}, 'plugin.enable': {}, 'plugin.disable': { options: 'object' } },
+    actEffect: { open: 'navigate', focus: 'navigate', scroll: 'navigate', search: 'read', state: 'read', press: 'write', set: 'write', 'plugin.enable': 'write', 'plugin.disable': 'write' },
+    doc: `console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "plugin:<id>"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. ${CONSOLE_DELIVERY}` },
+  // component-tokens@1 (core/engines/component-tokens.mjs): one grid's or one tab row's own token values, on top of the style theme's grid.* / tabs.*
+  [INSTANCE_TOKENS_TARGET]: { domain: 'tokens', label: 'Per-instance component tokens', ops: ['list', 'get', 'set', 'reset', 'act'], paths: 'pattern', pathShape: '<grid|tabs>.<instance>[.<token>]', value: 'field', acts: { 'restore-previous': {}, 'restore-hub': {} }, doc: 'component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.' },
+  // build every-plugin-screen-gets-a-settings-gear (Nov 16 2026): one plugin's Settings → Plugins sub-tab and the gear on its screen
+  'console.pluginsettings': { domain: 'console', label: 'Plugin settings (sub-tab and gear)', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number' },
+    acts: { open: {}, set: { key: 'string', value: 'any' }, enable: {}, disable: { options: 'object' } },
+    actEffect: { open: 'navigate', set: 'write', enable: 'write', disable: 'write' },
+    doc: `Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. ${CONSOLE_DELIVERY}` },
+  // build rebuild-every-toolbar-page-specific (Nov 17 2026): every page toolbar (page-toolbar@1) and its buttons, by settings id
+  'console.toolbars': { domain: 'console', label: 'Page toolbars (buttons by settings id)', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number', view: 'string' },
+    acts: { press: { button: 'string', value: 'any' }, open: {} },
+    actEffect: { press: 'write', open: 'navigate' },
+    doc: `Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -158,7 +181,7 @@ export const controlPermission = (target, op, action) => (isControlTarget(target
 export function controlPaths(target) {
   switch (target) {
     case 'tokens.theme': return COLOR_TOKENS.map((id) => ({ id, token: `--fx-${id.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`, kind: 'color' }));
-    case 'tokens.style': return Object.entries(STYLE_FIELDS).map(([id, t]) => ({ id, kind: t.startsWith('enum:') ? 'enum' : t, ...(t.startsWith('enum:') ? { options: t.slice(5).split(',') } : {}) }));
+    case 'tokens.style': return Object.entries(STYLE_FIELDS).map(([id, t]) => COMPONENT_PATHS.find((p) => p.id === id) ?? ({ id, kind: t.startsWith('enum:') ? 'enum' : t, ...(t.startsWith('enum:') ? { options: t.slice(5).split(',') } : {}) }));
     case 'tokens.layout': return [
       ...Object.entries(LAYOUT_FIELDS).map(([id, [def, min, max, unit]]) => ({ id, token: layoutToken(id), kind: 'number', unit, default: def, min, max })),
       ...Object.entries(LAYOUT_ENUMS).map(([id, options]) => ({ id, token: layoutToken(id), kind: 'enum', options: [...options] })),
@@ -181,6 +204,7 @@ export function controlPaths(target) {
 /** Is `path` a path of a static token target? (host / entity targets: the host decides.) */
 export function controlPathKnown(target, path) {
   if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
+  if (target === INSTANCE_TOKENS_TARGET) return parseInstanceTokenPath(path) !== null;
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }
@@ -226,7 +250,17 @@ export function controlValueErrors(target, path, value) {
   if (controlPathKnown(target, path) === false) return [`${target} has no token ${path} (control list ${target} names them)`];
   switch (target) {
     case 'tokens.theme': return typeof value === 'string' && COLOR.test(value.trim()) ? [] : ['value must be a colour (#rgb, #rrggbb, #rrggbbaa, rgb(), hsl())'];
-    case 'tokens.style': { const e = typeError('value', STYLE_FIELDS[path], value); return e ? [e] : typeof value === 'string' && value.length > 400 ? ['value is too long'] : []; }
+    case 'tokens.style': {
+      const comp = COMPONENT_PATHS.find((p) => p.id === path);
+      if (comp) { const e = componentTokenError(comp.family, path.slice(comp.family.length + 1), value); return e ? [e] : []; }
+      const e = typeError('value', STYLE_FIELDS[path], value); return e ? [e] : typeof value === 'string' && value.length > 400 ? ['value is too long'] : [];
+    }
+    case INSTANCE_TOKENS_TARGET: {
+      const p = parseInstanceTokenPath(path);
+      if (!p) return [`${target} wants a path <grid|tabs>.<instance>[.<token>] (grid.ui-review.items.hoverBg, tabs.settings.main.activeText)`];
+      if (!p.key) return ['a set on a whole instance needs a token: <family>.<instance>.<token>'];
+      const e = componentTokenError(p.family, p.key, value); return e ? [e] : [];
+    }
     case 'tokens.layout': return layoutErrors('layout', { [path]: value });
     case 'tokens.typography': case 'tokens.density': case 'tokens.sizing': { const [g, f] = path.split('.'); return scaleErrors(target.slice('tokens.'.length), { [g]: { [f]: value } }); }
     case 'tokens.nav': return navFieldErrors(path, value);
@@ -358,7 +392,7 @@ export const controlFailure = (code, message, extra = {}) => ({ $axf: CONTROL_FR
 
 /* ================================================================== projections: schema, MCP tools, REST routes, CLI */
 
-const schemaOf = (decl) => (decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
+const schemaOf = (decl) => (decl === 'any' ? {} : decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
 
 /** JSON Schema of a control@1 command (editors, the API's request body, the MCP tools' inputs). */
 export function controlSchema() {

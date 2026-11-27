@@ -1,0 +1,207 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-main-ci-green",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:47Z",
+ "build": {
+  "id": "urgent-main-ci-green",
+  "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
+  "profile": "all",
+  "category": "Ops",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-urgent-main-ci-green",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T20:53:57.683Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 40.7634
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read the latest failing main CI run and get the exact failures",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T20:53:57.683Z",
+   "doneAt": "2026-11-03T21:12:20.518Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix each failure at the root (widgets fixture, xlayout opens, Kotlin banner test)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T21:12:20.518Z",
+   "doneAt": "2026-11-03T21:12:22.113Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Get main green: small PR; refresh the waiting PRs from main",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "health@1 check: red banner item when main CI is red, with an Auto fix that queues an ops-fix job",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T21:12:22.113Z",
+   "doneAt": "2026-11-03T21:31:47.371Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Report, THREADS, store steps",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T21:31:47.371Z",
+   "doneAt": "2026-11-03T21:31:49.702Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/urgent-main-ci-green",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 284,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/284"
+ },
+ "landedCommit": "6113a896b1b2a092ebe29c578275394c7fcd0f01",
+ "commits": [
+  "3ecb20af4a9c3419d5eb3f0879d99e1a0bf0a39e",
+  "44e220d4465873af36300c279d919da51c4c62a4",
+  "0a910efaafdaa48bb6b42642f6198cff13e59d1d"
+ ],
+ "mergedAt": "2026-11-03T22:42:17Z",
+ "landedAt": "2026-11-03T22:42:16Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/urgent-main-ci-green.md",
+  "framework/cli/plugin-lifecycle.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/urgent-main-ci-green.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "check-widgets.mts: fail → 248 ok; check-chrome.mts: 130 ok",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "plugins.mjs --check (CI env): xLayout error gone",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-profiles.mjs: fail → ok (7 profiles)",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "framework/deploy/test.sh: fail → 43 ok",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "systems-check/test.py: 222 → 228 (6 new ci-main checks)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "agent-swarm/test.mjs: 93 ok (skill list and job-type count now seven)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-swarm 224, check-job-type 101, check-agent-card 84, check-help 228, check-plugin-commands ok",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Kotlin tests: CI only (no JDK on the VPS)",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 40.7634,
+  "estimated": true,
+  "tokens": {
+   "input": 376,
+   "output": 2604,
+   "cacheRead": 24659537,
+   "cacheWrite": 198751
+  }
+ },
+ "report": "_claude/builds/reports/urgent-main-ci-green.md",
+ "open": [
+  "s3: Get main green: small PR; refresh the waiting PRs from main",
+  "After #284 merges: update the waiting PRs (#265, #266, #268, #269, #271, #279) from main so they re-run on green.",
+  "Unrelated drift noticed: regenerating fixtures rewrites `agent-card.json` (left as is; not checked in CI)."
+ ]
+}

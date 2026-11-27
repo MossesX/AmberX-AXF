@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
+  "description": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -22,7 +22,7 @@
   "enabledByDefault": true,
   "optional": [
     "service:axf.agent-slots@1",
-    "service:axf.merge-queue@1",
+    "service:axf.merge-queue@2",
     "service:plans@1",
     "service:ui-review@1"
   ],
@@ -37,6 +37,7 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      "apps/console-web/plugins/gate/build-cap.mjs",
       ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/THREADS.md",
@@ -46,7 +47,23 @@
       "_claude/shared/rules/RULES.md",
       "deploy/claude-headless.sh",
       "deploy/install-console.sh",
-      "framework/spec/check-builds-live.mjs"
+      "framework/spec/PORTING.md",
+      "framework/spec/check-builds-live.mjs",
+      "framework/cli/agent-slots.mjs",
+      "apps/console-web/scripts/console-control.e2e.mjs",
+      "framework/cli/project-seed.mjs",
+      "framework/spec/check-build-limit.mjs",
+      "framework/spec/check-build-pipeline.mjs",
+      "framework/cli/builds-reconcile.mjs",
+      "framework/spec/check-projects.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md",
+      "deploy/auto-lander/fix-session.mjs",
+      "deploy/test/claude-headless-brief.test.sh",
+      "framework/spec/LIVE-DEMO.md",
+      "framework/spec/check-landing-line.mjs",
+      "deploy/watchdog/cron.mjs",
+      "deploy/watchdog/layer2.mjs",
+      "apps/console-web/scripts/status-table-shots.mjs"
     ]
   },
   "commands": {
@@ -240,12 +257,20 @@
         "output": "{ id, origin }"
       },
       {
+        "id": "status-table",
+        "route": "GET /table",
+        "title": "Builds table (by status)",
+        "description": "Pipeline 2.0's one builds table, driven only by status: every build with its status (pending, splitting, pulling main, assigning models, ready, sending, building, build complete, merging to one PR, PR pulling main, running CI, merging into main, landed, or failed with its attempt), steps done of total, model, account, slot, PR and when it entered its status. queue=true is the merge queue (merging-pr through merging-main); landed=true includes landed builds. Read from the builds store on Postgres. Say 'what's building', 'what's in the merge queue'.",
+        "readOnly": true,
+        "output": "{ rev, updatedAt, profile, rows: [{ id, title, status, attempt, done, total, model, account, slot, prNumber, at, by, steps: [{ id, title, status, attempt, model, account, slot, prNumber, at, by }] }] } or { unchanged, rev } with since=<rev>"
+      },
+      {
         "id": "pipeline-status",
         "route": "GET /pipeline",
         "title": "Pipeline status",
         "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
         "readOnly": true,
-        "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
+        "output": "{ table: { pending, queued, building } (rows carry requeue: { reason, phase, next, at } when back in the Queue after a finished phase, stuck: { phase, next, why } when parked in Pending by mistake), accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
       },
       {
         "id": "pipeline-selfcheck",
@@ -267,6 +292,114 @@
           }
         },
         "output": "{ ran: false, requested, last: { at, line, fixes, problems, findings } }"
+      },
+      {
+        "id": "pipeline-requeue-stuck",
+        "route": "POST /pipeline/requeue-stuck",
+        "title": "Requeue builds parked after a phase",
+        "description": "Find Pending builds whose last session finished its phase with steps left (parked by the old exit rule, so the next phase never started) and, with apply, move them back to the Queue at their place so the dispatcher starts the next phase. Without apply it only lists them. Say 'requeue the stuck builds' or 'which builds are stuck after a phase'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean",
+              "description": "Move them (true) or only list them (false, the default)"
+            }
+          }
+        },
+        "output": "{ apply, found: [{ id, phase, next, why }], moved: [id] }"
+      },
+      {
+        "id": "pipeline-launch-state",
+        "route": "GET /launch-state/{build}",
+        "title": "A build's launches and bounces",
+        "description": "What the dispatcher knows about a build's launches: runs, crashes, the launch-retry record (lastLaunchError, retries, retryAt, gaveUp after 3 launch crashes in a row) and the last land-clash bounce (bounceReason, the merge-main step it added). Say 'why won't skins start' or 'did skins crash at launch'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, runs, crashes, lastRun, launchRetry, lastLaunchError, retries, retryAt, gaveUp, bounce, bounceReason }"
+      },
+      {
+        "id": "pipeline-requeue",
+        "route": "POST /pipeline/requeue-launch",
+        "title": "Requeue a build that crashed at launch",
+        "description": "Put a build that crashed at launch (E2BIG, a launcher error, a session that died before its first output) back in the Queue now, with its launch retries reset, including one that stopped retrying by itself. Say 'requeue skins' or 'try starting skins again'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-clash-bounce",
+        "route": "POST /pipeline/clash-bounce",
+        "title": "Bounce a clashing build back to the Queue",
+        "description": "A build with every step done whose branch clashes with main gets one Opus step 'Merge main into <branch> and resolve conflicts in <files>' and goes back to the Queue so the dispatcher runs it. Without files the server works the clash out with git; the same clash never adds a second step. The dispatcher does this by itself when the lander reports a conflict. Say 'phone connect clashes with main, send it back'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional: the conflicting files (default: worked out by git merge-tree)"
+            },
+            "head": {
+              "type": "string",
+              "description": "Optional: the branch head the clash is on"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, bounced: { id, step, text, status } | null, files, head, clash? }"
+      },
+      {
+        "id": "pipeline-dedupe",
+        "route": "POST /pipeline/dedupe-steps",
+        "title": "Collapse repeated build steps",
+        "description": "Collapse steps a build has more than once (a done copy wins, order of first appearance), one journal revision per build. Without apply it only counts them. Every store write already refuses repeats; this cleans what was stored before. Say 'dedupe the build steps' or 'how many repeated steps are there'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean",
+              "description": "Write it (true) or only count (false, the default)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional: only these builds"
+            }
+          }
+        },
+        "output": "{ apply, builds: [{ id, before, after, renamed }], total: { before, after } }"
       },
       {
         "id": "pipeline-tab",
@@ -318,7 +451,7 @@
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
-        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'.",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -332,6 +465,87 @@
           ]
         },
         "output": "{ id, status, pipeline }"
+      },
+      {
+        "id": "pipeline-act",
+        "route": "POST /pipeline/act",
+        "title": "One action on a Pipeline 2.0 build or step",
+        "description": "queue (move it on: split it and give it the active place when it is next), hold / release (a waiting build keeps its place and is skipped), retry (failed parts leave failed forward), rebuild (a failed step is built again; a build that failed while landing is recompiled), run-ci, land (the lander takes it now) or cancel (archived). run-all / defer answer a clash by hand (see pipeline-clash-answer). The VPS decides; an action that does not fit where the build is gets refused with the reason. Say 'retry the plan studio build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "queue",
+                "hold",
+                "release",
+                "retry",
+                "rebuild",
+                "run-ci",
+                "land",
+                "cancel",
+                "run-all",
+                "defer"
+              ]
+            },
+            "step": {
+              "type": "string",
+              "description": "A step id, for an action on one step (rebuild)"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason, kept on the build"
+            }
+          },
+          "required": [
+            "id",
+            "action"
+          ]
+        },
+        "output": "{ id, action, step, status, label, held, say }"
+      },
+      {
+        "id": "pipeline-clash-answer",
+        "route": "POST /pipeline/clash-answer",
+        "title": "Answer a build's clash by hand: run all, or defer",
+        "description": "A clash never blocks a build: the pipeline answers it itself (every step runs) and a conflict with main is fixed by a session. This answers by hand instead. run-all = every step runs now (also undoes a defer). defer = each clashing step that has not started waits for the build it clashes with and starts by itself when that build lands. Refused with the reason when the build has no clash or a person already answered. Say 'run all on the landing build' or 'defer the clashing steps of the watchdog build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "answer": {
+              "type": "string",
+              "enum": [
+                "run-all",
+                "defer"
+              ]
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason, kept on the build"
+            }
+          },
+          "required": [
+            "id",
+            "answer"
+          ]
+        },
+        "output": "{ id, action, status, label, say, clash, deferred: [step] }"
+      },
+      {
+        "id": "pipeline-clashes",
+        "route": "GET /pipeline/clashes",
+        "title": "Builds that carry a clash",
+        "description": "Every Pipeline 2.0 build with a clash record: what it clashes with, the answer and who gave it (the pipeline or a person), whether Run all / Defer may still be chosen, the deferred steps, and the steps whose session resolves a conflict with main first. Say 'which builds clash'.",
+        "output": "{ ok, clashes: [{ id, number, title, status, reason, with, answer, answeredBy, auto, canAnswer, options, deferred: [{ step, waitsFor }], fixing: [{ step, files }] }] }"
       },
       {
         "id": "pipeline-unqueue",
@@ -351,6 +565,52 @@
           ]
         },
         "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-emergency-list",
+        "route": "GET /pipeline/emergency",
+        "title": "Emergency builds",
+        "description": "The builds Brett sent to emergency (they skip the line, build in the 2 emergency slots and land first), each with its status and whether its slot grant is on file.",
+        "readOnly": true,
+        "output": "{ builds: [{ id, title, status, emergency: { at, by }, granted }], canSend }"
+      },
+      {
+        "id": "pipeline-emergency",
+        "route": "POST /pipeline/emergency",
+        "title": "Send a build to emergency",
+        "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Tags a Pipeline 2.0 build as emergency: it skips the one-active-build line, builds in the emergency slot pool and lands first.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, emergency: { at, by }, already }"
+      },
+      {
+        "id": "pipeline-emergency-clear",
+        "route": "POST /pipeline/emergency/clear",
+        "title": "Make an emergency build ordinary again",
+        "description": "Removes the emergency tag and the emergency slot grant. Sessions already running finish; the build waits its turn like any other.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, cleared }"
       },
       {
         "id": "pipeline-build-action",
@@ -399,7 +659,7 @@
         "id": "pipeline-split",
         "route": "POST /pipeline/split",
         "title": "Split a build into steps",
-        "description": "Ask the orchestrator to split (or re-split) a build into steps of 30 minutes or less, Fable only where needed; done by the dispatcher within a minute.",
+        "description": "Ask the orchestrator to split (or re-split) a build into steps of 10 minutes or less, Fable only where needed; done by the dispatcher within a minute.",
         "input": {
           "type": "object",
           "properties": {
@@ -509,10 +769,16 @@
               }
             },
             "parallelPerAccount": {
-              "type": "integer"
+              "type": "integer",
+              "description": "Sessions per account (1-20). Saved as its one key: claude-workers limits.building."
+            },
+            "stepsInParallel": {
+              "type": "integer",
+              "description": "Steps at once per build (1-12), under Builds at once."
             },
             "maxRuns": {
-              "type": "integer"
+              "type": "integer",
+              "description": "Sessions per build before it stops (1-10): a build that crashed or was cut off this many times goes back to Pending."
             },
             "idleAfterMin": {
               "type": "integer"
@@ -528,6 +794,695 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-fill-status",
+        "route": "GET /pipeline/fill",
+        "title": "Fill every slot: slots and ready steps",
+        "description": "Which build and step runs in each agent slot (or free), the ready steps of running builds, what the next dispatcher round would start (dry run, with why the rest waits) and the fill settings; with build, that build's steps and their dependency state (done, running in slot N, ready, waiting on). Say 'what's in the slots' or 'what runs in parallel'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (adds its steps and their dependency state)"
+            }
+          }
+        },
+        "output": "{ settings: { fillSlots, autoQueuePending, maxParallelPerBuild }, slots: { cap, used, free, rows: [{ n, build, step, state, session }] }, ready, builds: [{ id, parallel, cap }], plan: { launches, waits, free, blocked }, build?: { steps: [{ id, state, dependsOn, waitingOn, runningIn }] } }"
+      },
+      {
+        "id": "pipeline-fill-run",
+        "route": "POST /pipeline/fill/run",
+        "title": "Fill the slots now",
+        "description": "Run one dispatcher round now: ready parallel steps start in the free slots (and Queue builds, and Pending ones when auto-queue is on). On the VPS it runs at once; from the console it is filed and runs within a minute. Say 'fill the slots'.",
+        "readOnly": false,
+        "output": "{ ran, requested?, launched, fill: { launched, ended, autoQueued, plan } }"
+      },
+      {
+        "id": "pipeline-step-deps",
+        "route": "POST /builds/{build_id}/steps/{step}/deps",
+        "title": "Set a step's dependencies",
+        "description": "Set which steps of the build one step waits for: a list of step ids ([] = independent, it may run in parallel as soon as the build runs) or null = sequential (it waits for the step before it). Unknown ids, the step itself and cycles are refused. Say 'step 4 of the icon build only needs step 1'.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "step": {
+              "type": "string",
+              "description": "Step id (s4)"
+            },
+            "dependsOn": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Step ids it waits for; [] = independent; null = sequential"
+            }
+          },
+          "required": [
+            "build_id",
+            "step"
+          ]
+        },
+        "output": "{ id, step, dependsOn, explicit, parallel }"
+      },
+      {
+        "id": "pipeline-fill-settings",
+        "route": "POST /pipeline/fill/settings",
+        "title": "Fill every slot settings",
+        "description": "Fill every slot (run independent steps in parallel; anyone may switch it off, only Brett on), max parallel steps per build (1-12; only Brett raises it) and auto-queue pending builds (owner-only: refused unless Brett's own click). Say 'turn off fill every slot' or 'one parallel step per build'.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "fillSlots": {
+              "type": "boolean"
+            },
+            "maxParallelPerBuild": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "autoQueuePending": {
+              "type": "boolean",
+              "description": "Owner-only: Brett's own console click"
+            }
+          }
+        },
+        "output": "{ changed, settings }"
+      },
+      {
+        "id": "groups-list",
+        "route": "GET /groups",
+        "title": "Build groups",
+        "description": "Every custom group on the builds board of the active project: name, colour, tab, sort, filter, smart rule, its builds sorted by state (partial, pending, queued, running, failed, done, landed) and the count per state, plus the Pending builds in no group. Say 'what's in my console app group'.",
+        "readOnly": true,
+        "output": "{ profile, groups: [{ id, name, color, tab, sort, filter, rule, counts, total, rows, tabRows }], loose }"
+      },
+      {
+        "id": "groups-tabs",
+        "route": "GET /groups/tabs",
+        "title": "Custom build tabs",
+        "description": "The groups pinned as tabs next to Pending, Queue, Active … and the builds each tab shows (a custom Pending tab is a group pinned next to Pending). Deep link: build-orchestrator.tab:group:<id>.",
+        "readOnly": true,
+        "output": "{ tabs: [{ id: 'group:<id>', group, label, stage, color, count, rows }] }"
+      },
+      {
+        "id": "groups-get",
+        "route": "GET /groups/{group}",
+        "title": "One build group",
+        "description": "One group by id or name with its builds sorted the group's way and the count per state.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "Group id or name ('console app')"
+            }
+          },
+          "required": [
+            "group"
+          ]
+        },
+        "output": "{ group }"
+      },
+      {
+        "id": "groups-change",
+        "route": "POST /groups",
+        "title": "Create, edit, reorder, delete or fill a build group",
+        "description": "op=create {name, color?, tab?, sort?, filter?, rule?, builds?} makes a group ('make a group called UI with its own pending tab'); op=update {group, name?, color?, tab?, sort?, filter?, rule?} renames, recolours, pins it as a tab (tab = pending, queue, active, incomplete, complete, errors, archive, all or none), changes the sort or the states shown, or sets a smart rule (rule = {titleContains, behindMoreThan, filedWithinDays, states, priorities}; null clears it); op=move {group, to: index|up|down|first|last}; op=delete {group} (its builds stay); op=assign {groups, builds, mode: add|remove|set} puts builds in one or several groups ('put skins and banner widgets in Urgent'). Saved per project.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "create",
+                "update",
+                "move",
+                "delete",
+                "assign"
+              ]
+            },
+            "group": {
+              "type": "string",
+              "description": "Group id or name (update, move, delete)"
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Group ids or names (assign)"
+            },
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (assign, create)"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "add",
+                "remove",
+                "set"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger"
+              ]
+            },
+            "tab": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "queue",
+                "active",
+                "incomplete",
+                "complete",
+                "errors",
+                "archive",
+                "all"
+              ]
+            },
+            "sort": {
+              "type": "string",
+              "enum": [
+                "state",
+                "priority",
+                "updated",
+                "title"
+              ]
+            },
+            "filter": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "States shown: partial, pending, queued, running, failed, done, landed (empty = all)"
+            },
+            "rule": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "titleContains": {
+                  "type": "string"
+                },
+                "behindMoreThan": {
+                  "type": "integer"
+                },
+                "filedWithinDays": {
+                  "type": "integer",
+                  "description": "0 = filed today"
+                },
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "priorities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "to": {
+              "type": [
+                "string",
+                "integer"
+              ],
+              "description": "move: index, up, down, first or last"
+            }
+          },
+          "required": [
+            "op"
+          ]
+        },
+        "output": "{ group, groups, deleted? }"
+      },
+      {
+        "id": "groups-action",
+        "route": "POST /groups/{group}/action",
+        "title": "Run an action on a whole build group",
+        "description": "queue = every Pending build of the group goes to the Queue; land = every Done build goes first in the merge queue (tagged Urgent); archive = every build without a live session goes to the Archive; priority = every build gets the priority. Say 'queue all of console app', 'make the UI group urgent'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "Group id or name"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "queue",
+                "land",
+                "archive",
+                "priority"
+              ]
+            },
+            "priority": {
+              "type": "string",
+              "description": "urgent, high, normal, low or P0-P3 (action priority)"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "group",
+            "action"
+          ]
+        },
+        "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
+      },
+      {
+        "id": "attempts",
+        "route": "GET /attempts/{build}",
+        "title": "A build's attempts",
+        "description": "done-means-merged@1: every try at getting a build past a failure (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) with its strategy, model, account and result; the open failure, the merge + CI + verify evidence, the escalation and what the retry ladder tries next. Say 'what's wrong with skins' or 'why did skins stop'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, attempts: [{ n, kind, strategy, fixStrategy, model, account, result, startedAt, endedAt, note }], failure, landed, escalation, ladder, next }"
+      },
+      {
+        "id": "retry",
+        "route": "POST /retry/{build}",
+        "title": "Retry a build",
+        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). A Pipeline 2.0 build that failed (given up at attempt 5 included): the build and its failed steps go forward again from the status they failed at with their attempt counts reset, and the next pass carries on; a strategy is not used. Say 'retry skins' or 'retry skins in a fresh session'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "retry",
+                "merge-main",
+                "fix:targeted",
+                "fix:regenerate",
+                "fix:redo-step",
+                "fresh-session",
+                "switch-model",
+                "switch-account"
+              ],
+              "description": "Optional: the rung to run now"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, strategy, launch? }"
+      },
+      {
+        "id": "watchdogs-status",
+        "route": "GET /watchdogs",
+        "title": "Build watchdog status",
+        "readOnly": true,
+        "description": "The one build watchdog and every watch it runs (build sessions, stuck statuses, left-over rows): on or off, the cron, the last pass and how long ago, each watch's last run, what it caught and its last error, and the newest catches. Say 'what did the watchdog catch' or 'is the watchdog running'.",
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "watchdogs-status@1 { enabled, alerts, cron, lastPass, ageMin, stale, watches[], caught[], gaveUp[] }"
+      },
+      {
+        "id": "watchdogs-caught",
+        "route": "GET /watchdogs/caught",
+        "title": "What the watchdog caught",
+        "readOnly": true,
+        "description": "Everything the build watchdog caught, newest first: the watch, the build, the status it stood in, the cause, the action taken (retry, requeue, record-merge, land, fail, ladder rung, escalate, complete, remove), whether it worked and whether the phone was told. Filter by watch (sessions, stale, rows) or build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "sessions, stale or rows"
+            },
+            "build": {
+              "type": "string",
+              "description": "a build id"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "how many (default 100)"
+            }
+          }
+        },
+        "output": "{ caught: [watchdog-catch@1] }"
+      },
+      {
+        "id": "watchdogs-scan",
+        "route": "GET /watchdogs/scan",
+        "title": "Dry-run the build watchdog",
+        "readOnly": true,
+        "description": "What each watch would catch right now and what it would do about it, changing nothing. From the console container it answers with what the VPS's last pass saw.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "only this watch: sessions, stale or rows"
+            }
+          }
+        },
+        "output": "watchdogs-scan@1 { watches[], items: [watchdog-catch@1] }"
+      },
+      {
+        "id": "watchdogs-run",
+        "route": "POST /watchdogs/run",
+        "title": "Run the build watchdog now",
+        "description": "One watchdog pass now, for every watch or one, optionally for one build: stuck sessions recovered, builds standing in landing or fixing pushed to the next action on their ladder, left-over rows cleaned. From the console the VPS runs it within a minute.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "only this watch: sessions, stale or rows"
+            },
+            "build": {
+              "type": "string",
+              "description": "only this build"
+            }
+          }
+        },
+        "output": "watchdogs-pass@1 { ran[], notRun[], catches[], alerts } or { requested: true }"
+      },
+      {
+        "id": "watchdogs-settings",
+        "route": "GET /watchdogs/settings",
+        "title": "Build watchdog settings",
+        "readOnly": true,
+        "description": "Every watchdog setting in one flat map with its type, range and title: enabled (the master switch), alerts (batch, each, off), and each watch's own under <watch>.<key>, e.g. sessions.maxRetries, stale.limit.fixing, stale.maxLaunchPerPass, rows.intervalMin.",
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "watchdogs-settings@1 { values, schema, unavailable }"
+      },
+      {
+        "id": "watchdogs-settings-set",
+        "route": "PUT /watchdogs/settings",
+        "title": "Change build watchdog settings",
+        "description": "Change any watchdog setting: switch the watchdog or one watch on or off (enabled, stale.enabled), thresholds (stale.limit.landing, stale.limit.fixing, sessions.staleMin), caps (stale.maxLaunchPerPass, sessions.maxRetries), intervals and alerts. Send {key: value}; each value is checked and unknown keys are refused.",
+        "input": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "{ '<key>': value, … } as listed by watchdogs-settings"
+        },
+        "output": "watchdogs-settings@1 { values, schema }"
+      },
+      {
+        "id": "watchdog-status",
+        "route": "GET /watchdog",
+        "title": "Stale-row watchdog status",
+        "readOnly": true,
+        "description": "The VPS stale-row watchdog: its settings (on/off, every how many minutes, dry run only, which lists it watches, notify), the last run (rows read, found, cleaned, GitHub calls), the last runs and the newest cleanup log records. Say 'what did the watchdog clean'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "log": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500,
+              "description": "how many cleanup log records to include (default 20)"
+            }
+          }
+        },
+        "output": "{ settings, schema, last, lastOk, running, runs, log }"
+      },
+      {
+        "id": "watchdog-run",
+        "route": "POST /watchdog/run",
+        "title": "Run the stale-row watchdog now",
+        "description": "Run the watchdog now: rows on Pending, Queue, Building, the merge queue and UI Review whose PR merged are completed, rows whose PR closed or whose build died are removed; running builds are never touched. Logged, noted on the builds, one FYI to AmberX. force=true runs even when it is off.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "force": {
+              "type": "boolean",
+              "description": "run even when the watchdog is switched off"
+            }
+          }
+        },
+        "output": "watchdog-run@1 { rows, planned, cleaned, changes[] }"
+      },
+      {
+        "id": "watchdog-dry-run",
+        "route": "POST /watchdog/dry-run",
+        "title": "Dry-run the stale-row watchdog",
+        "readOnly": true,
+        "description": "What the watchdog would clean right now and why, changing nothing.",
+        "output": "watchdog-run@1 { dry: true, rows, planned, changes[] }"
+      },
+      {
+        "id": "watchdog-log",
+        "route": "GET /watchdog/log",
+        "title": "Watchdog cleanup log",
+        "readOnly": true,
+        "description": "Every row the watchdog completed or removed (stale-row-log@1), newest first, with the reason and evidence. Filter by list kind, action or build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queued",
+                "building",
+                "merge-queue",
+                "ui-review"
+              ]
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "remove"
+              ]
+            },
+            "build": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ records: [stale-row-log@1] }"
+      },
+      {
+        "id": "watchdog-settings",
+        "route": "PUT /watchdog/settings",
+        "title": "Change watchdog settings",
+        "description": "Change the stale-row watchdog's settings: enabled (on/off), intervalMin (1-120), dryRun, tables.builds / tables.merge-queue / tables.ui-review (which lists it watches), notify (the FYI to AmberX).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "dryRun": {
+              "type": "boolean"
+            },
+            "tables.builds": {
+              "type": "boolean"
+            },
+            "tables.merge-queue": {
+              "type": "boolean"
+            },
+            "tables.ui-review": {
+              "type": "boolean"
+            },
+            "notify": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ ok, settings }"
+      },
+      {
+        "id": "recovery-watchdog-status",
+        "route": "GET /recovery-watchdog/status",
+        "title": "Build watchdog status",
+        "description": "The build watchdog: on or off, its cron, the last pass and how long ago (stale after 3 min), what the VPS saw for every build marked running (pid, tmux, heartbeat, exit), recent fixes (cause → action, attempt, told the phone) and builds it gave up on. Say 'watchdog status'.",
+        "readOnly": true,
+        "output": "watchdog-status@1 { settings, cron, lastPass, ageMin, stale, lastScan, recent, gaveUp }"
+      },
+      {
+        "id": "recovery-watchdog-scan",
+        "route": "GET /recovery-watchdog/scan",
+        "title": "Watchdog dry run",
+        "description": "Every build marked running with what the probe saw, why it is stuck (killed 143, failed 1, OOM 137, usage limit, dead login, tmux or claude gone, stale heartbeat) and what the watchdog would do. Changes nothing.",
+        "readOnly": true,
+        "output": "{ source, at, builds: [{ id, probe, cause, stuck, action, attempt, note }], stuck }"
+      },
+      {
+        "id": "recovery-watchdog-run",
+        "route": "POST /recovery-watchdog/run",
+        "title": "Run the watchdog now",
+        "description": "One watchdog pass now: stuck builds reset, requeued or retried (another account on a usage limit), slots released and refilled, a phone FYI per fix. From the console the VPS runs it within a minute. Say 'run the watchdog'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (optional: only this build)"
+            }
+          }
+        },
+        "output": "{ requested, fixes: [watchdog-recovery@1], skipped, fill }"
+      },
+      {
+        "id": "recovery-watchdog-requeue",
+        "route": "POST /recovery-watchdog/requeue",
+        "title": "Requeue builds the watchdog gave up on",
+        "description": "Fix (requeue): builds the watchdog gave up on (past Max retries, or every account tried) go back to the Queue with a fresh retry count. No builds = all of them.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (optional)"
+            }
+          }
+        },
+        "output": "{ requeued, failed, notGaveUp }"
+      },
+      {
+        "id": "recovery-watchdog-settings",
+        "route": "GET /recovery-watchdog/settings",
+        "title": "Watchdog settings",
+        "description": "The Watchdog settings: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi (batch | each), cooldownMin.",
+        "readOnly": true,
+        "output": "{ settings, keys, defaults }"
+      },
+      {
+        "id": "recovery-watchdog-settings-set",
+        "route": "PUT /recovery-watchdog/settings",
+        "title": "Change the watchdog settings",
+        "description": "Change any Watchdog setting: switch it on or off, the interval, stale heartbeat minutes, max retries, retry on another account, one phone FYI per fix or batched. Say 'set watchdog max retries to 5'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
+            "staleMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 240
+            },
+            "graceMin": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 60
+            },
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "retryOtherAccount": {
+              "type": "boolean"
+            },
+            "fyi": {
+              "enum": [
+                "batch",
+                "each"
+              ]
+            },
+            "cooldownMin": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 120
+            }
+          }
+        },
+        "output": "{ settings }"
+      },
+      {
+        "id": "build-recoveries",
+        "route": "GET /builds/{build_id}/recoveries",
+        "title": "A build's recoveries",
+        "description": "Every time the watchdog reset, requeued or retried a build: when, the cause, the action, the attempt, whether the phone was told.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ build, status, retries, recoveries: [watchdog-recovery@1] }"
       }
     ]
   },
@@ -535,5 +1490,10 @@
     "model": "opus",
     "builtAt": "2026-10-27"
   },
-  "opens": "main"
+  "opens": "main",
+  "cli": {
+    "watchdog": "watchdog.mjs",
+    "recovery-watchdog": "watchdog/sessions.mjs"
+  },
+  "buildHooks": "pipeline2-hook.mjs"
 }

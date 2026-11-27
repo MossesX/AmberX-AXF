@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "data-store-settings-tab-mwhw8jtk-data-store-panels",
+  "name": "data-store-settings-tab-mwhw8jtk: Three panels (status table, backups, move a namespace)",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Three panels in order: where the data is (a table of namespaces with mode, keys on axf-data, drift and next step), backups (last backup, verify result, Backup now / Verify), and move a namespace (pick one, then Shadow / Cut over / Roll back with confirm, drift log under it).",
+  "tags": [
+    "ui-choice",
+    "choice-set:data-store-settings-tab-mwhw8jtk",
+    "choice-option:data-store-panels"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "levels": true,
+    "defaultLevel": "basic",
+    "view": "panels",
+    "order": [
+      "status",
+      "backups",
+      "mode"
+    ],
+    "open": [
+      "status",
+      "backups",
+      "mode"
+    ],
+    "builtFor": "plugin:data-store"
+  }
+}

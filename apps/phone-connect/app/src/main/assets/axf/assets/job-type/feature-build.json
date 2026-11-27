@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "feature-build",
+  "name": "Feature build",
+  "version": "1.0.0",
+  "description": "Any feature or fix build launched headless (axHub vps.build_start, the console's Build manager, the orchestrator, deploy/claude-headless.sh). The launcher books it on a named agent before it starts; the build's own brief says what to build.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "build"
+  ],
+  "data": {
+    "specialty": "feature-build",
+    "skills": [
+      "feature-build"
+    ],
+    "model": "opus",
+    "budget": {
+      "tokens": 4000000,
+      "maxTurns": 200,
+      "usd": 40
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "build.started"
+    },
+    "tools": [
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "Bash"
+    ],
+    "inputs": [
+      {
+        "id": "build",
+        "label": "Build id",
+        "required": true,
+        "about": "the orchestrator build (or branch) this run works on"
+      },
+      {
+        "id": "task",
+        "label": "What to build",
+        "default": "the next open step of the build in the orchestrator"
+      }
+    ],
+    "brief": "Build {{build}}: {{task}}.\n1. Read _claude/THREADS.md and the build's record (orchestrator.mjs next {{build}}); work only on its open steps.\n2. Branch claude/{{build}} from origin/main; small commits, clean messages.\n3. Run the build's checks and the conformance checks (check-theme, check-controls) for anything visible.\n4. Tick each finished step through the orchestrator (act step), push the branch, open the PR and link it (builds-live.mjs link).\nReport what changed, the checks, the PR, and what is left.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/feature-build/{{stamp}}.md"
+    }
+  }
+}

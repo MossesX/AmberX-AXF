@@ -1,0 +1,112 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-notes-tasks-r2-land",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:09:33Z",
+ "build": {
+  "id": "notes-tasks-r2-land",
+  "title": "notes-tasks-r2-land",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "notes-tasks-r2-land",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/notes-tasks-r2-land",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "5b8fb0e4cda1351fdcf9cf16a3167390628f1b03",
+ "commits": [
+  "5b8fb0e4cda1351fdcf9cf16a3167390628f1b03",
+  "a985bb85758b233c0bdfd5e6fa1e1d413cae1590",
+  "e9d93cd81d9060854a849fa2f1e27144a4df32fb"
+ ],
+ "mergedAt": "2026-11-13T18:42:32Z",
+ "landedAt": "2026-11-13T18:42:32Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to.md",
+  "apps/console-web/plugins/notes-tasks/DESIGN.md",
+  "apps/console-web/plugins/notes-tasks/schema/notes-tasks.schema.json",
+  "apps/console-web/plugins/notes-tasks/test.mjs",
+  "framework/spec/PORTING.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "notes-tasks",
+   "files": [
+    "apps/console-web/plugins/notes-tasks/DESIGN.md",
+    "apps/console-web/plugins/notes-tasks/schema/notes-tasks.schema.json",
+    "apps/console-web/plugins/notes-tasks/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43485253913",
+   "result": "fail",
+   "detail": "cancelled"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43485253951",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

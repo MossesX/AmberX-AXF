@@ -1,0 +1,144 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "wake-listener-help",
+  "name": "Wake listener help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Wake listener plugin (help@1): the settings tab and each of its controls, the banner light, the menu items, the spoken flows and Claude mode.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:wake-listener",
+    "entries": [
+      {
+        "target": "settings:wake-listener",
+        "title": "Wake listener",
+        "text": "The console listens for a wake phrase you set here (several allowed), then takes one command: any console action, plugin command, pipeline command or control@1 target, by voice. A command with missing fields becomes a spoken wizard that asks for each one and confirms. 'Approve' reviews everything waiting on axHub one call at a time.",
+        "more": "The switch closes the microphone everywhere this console is open. On the console Android app the recognizer runs on the device (offline); in a browser it is the browser's own. The light on the banner shows what the listener is doing: grey = off, green = waiting for the wake phrase, amber = heard it and waiting for a command, accent = a wizard is waiting for your answer, red = an error with the reason. Replies are spoken through the agent voice when it is installed, else the device voice.",
+        "tryIt": "Say your wake phrase, wait for the chime, then say 'approve'."
+      },
+      {
+        "target": "wake-listener",
+        "title": "Wake listener tab",
+        "text": "The wake listener's settings: the switch, the wake phrases, the recognizer and its timings, spoken replies, the mic light, Claude mode and the command history. Everything here is also reachable without the UI: REST /api/plugins/wake-listener, MCP wake-listener_*, CLI axf voice and axf wake-listener, and by voice.",
+        "kind": "tab"
+      },
+      {
+        "target": "status:wake-listener",
+        "title": "Mic light",
+        "text": "Lit while the console listens for its wake phrase. Tap it to switch the listener on or off.",
+        "more": "Grey: off. Green: idle, waiting for the wake phrase. Amber: awake, say a command. Accent: a wizard or the approvals review is waiting for an answer. Red: the recognizer stopped; the label says why. With Claude mode on but Claude unreachable the label adds 'offline mode'."
+      },
+      {
+        "target": "listen-for-a-wake-phrase",
+        "title": "Listen for a wake phrase",
+        "text": "The listener's switch. On opens the microphone in every console you have open and waits for a wake phrase; off closes it everywhere and the light on the banner goes grey. Also POST /api/plugins/wake-listener/on and /off, MCP wake-listener_on / _off, CLI axf wake-listener on|off, or say 'stop listening'.",
+        "kind": "toggle"
+      },
+      {
+        "target": "add-a-wake-phrase",
+        "title": "Add a wake phrase",
+        "text": "Type a phrase and press Add to make it a wake phrase. Several are allowed; 'hey' or 'OK' in front of any of them is fine. Remove drops one (the last one stays). Also POST /api/plugins/wake-listener/settings with addPhrase or removePhrase.",
+        "kind": "field"
+      },
+      {
+        "target": "recognizer",
+        "title": "Recognizer",
+        "text": "Which speech engine hears you. Automatic picks the best one available here: the console app's on-device recognizer (offline, audio never leaves the device) or the browser's own, which may use its vendor's service. None keeps the switch but nothing listens. Also POST /api/plugins/wake-listener/settings with engine.",
+        "kind": "field"
+      },
+      {
+        "target": "awake-for-a-command-seconds",
+        "title": "Awake for a command (seconds)",
+        "text": "How long the listener stays awake for a command after it hears the wake phrase. Say nothing for this long and it goes back to waiting for the wake phrase. Also POST /api/plugins/wake-listener/settings with awakeSec.",
+        "kind": "field"
+      },
+      {
+        "target": "a-wizard-waits-for-an-answer-seconds",
+        "title": "A wizard waits for an answer (seconds)",
+        "text": "How long a spoken wizard, a Claude follow-up question or the approvals review waits for your answer before it gives up and says so. Also POST /api/plugins/wake-listener/settings with answerSec.",
+        "kind": "field"
+      },
+      {
+        "target": "chime-on-the-wake-phrase",
+        "title": "Chime on the wake phrase",
+        "text": "Plays a short chime when the wake phrase is heard, so you know it is awake and you can say the command. Also POST /api/plugins/wake-listener/settings with chime.",
+        "kind": "toggle"
+      },
+      {
+        "target": "mic-light-on-the-banner",
+        "title": "Mic light on the banner",
+        "text": "When the mic light shows on the banner: always (grey when the listener is off), only while it is listening, or never. The light is also the quickest switch: tap it to turn the listener on or off. Also POST /api/plugins/wake-listener/settings with indicator.",
+        "kind": "field"
+      },
+      {
+        "target": "pause-while-this-page-is-hidden",
+        "title": "Pause while this page is hidden",
+        "text": "On: the microphone closes while this console tab is in the background (on the phone: another app in front) and reopens when you come back. Off keeps listening in the background where the engine allows it. Also POST /api/plugins/wake-listener/settings with pauseHidden.",
+        "kind": "toggle"
+      },
+      {
+        "target": "say-a-phrase",
+        "title": "Say a phrase",
+        "text": "Type what you would have said after the wake phrase and press Say it. The listener runs it exactly as if the microphone heard it: the command runs, a wizard asks for its fields, or the approvals review starts. The API's wake-listener.heard does the same.",
+        "kind": "field"
+      },
+      {
+        "target": "say-it",
+        "title": "Say it",
+        "text": "Runs the typed phrase as if the microphone heard it after the wake phrase. Nothing is recorded; the log below shows what was heard, the command and the reply.",
+        "kind": "button"
+      },
+      {
+        "target": "action:wake-listener.heard",
+        "title": "Say a phrase without the microphone",
+        "text": "Runs a phrase as if the mic heard it after the wake phrase: from the settings tab's Try it box, or from the API (REST, MCP, CLI, AmberX) as the console action wake-listener.heard:<phrase>."
+      },
+      {
+        "target": "action:wake-listener.toggle",
+        "title": "Wake listener on / off",
+        "text": "Flips the listener switch from the Plugins menu: the same as tapping the mic light on the banner. Also the console action wake-listener.toggle, MCP wake-listener_toggle and CLI axf wake-listener on|off.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:wake-listener.approvals",
+        "title": "Review approvals by voice",
+        "text": "Starts the spoken approvals review: each call waiting on axHub is read out one at a time and you say approve, deny, skip or approve all pending. Claude never approves or denies anything: 'approve', 'deny', 'approve all pending' and the veto timer keep the spoken approvals review and the approvals banner's relay, with the explicit approve / deny words, whether Claude mode is on or off.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "understand-with-claude-when-connected",
+        "title": "Understand with Claude when connected (Claude mode)",
+        "text": "On (the default): while Claude is connected, Claude understands what you say, picks the command and fills its fields from your words. It asks only for what is missing and asks you to confirm anything that changes or deletes something. Off: the scripted matcher answers every command, and nothing you say is sent to Claude.",
+        "more": "The setting is axf.voice.useClaude. Claude is reached through the AI assistant (axf.llm@1), the same connection the Claude badge tests. When Claude is not connected, is out of credits, answers with another model or takes longer than the wait setting, the same words go to the scripted matcher and its wizard, so nothing you said is lost. After a failure Claude is skipped for a minute, then tried again. Also: REST /api/plugins/wake-listener/claude, MCP wake-listener_claude-on / _claude-off / _claude / _claude-test, CLI axf voice claude on|off|status|test, voice 'use Claude for voice' / 'stop using Claude for voice'.",
+        "tryIt": "Say your wake phrase, then 'make me a project called Gizmo Johnson'.",
+        "kind": "toggle"
+      },
+      {
+        "target": "wait-for-claude-seconds",
+        "title": "Wait for Claude (seconds)",
+        "text": "How long Claude mode waits for Claude (2 to 30 seconds, default 8). After that the scripted matcher takes the same command. The setting is axf.voice.claudeTimeoutSec; also POST /api/plugins/wake-listener/claude with timeoutSec and CLI axf voice claude timeout <seconds>.",
+        "kind": "field"
+      },
+      {
+        "target": "wake-listener.mode",
+        "title": "Mode: Claude, Scripted or Offline mode",
+        "text": "Claude mode: Claude understands your commands. Scripted: Claude mode is off. Offline mode: Claude mode is on, but Claude is not connected or the scripted matcher handled your last command; hover for why.",
+        "more": "The mic light on the banner adds 'offline mode' to its label at the same time. A spoken approval never counts as offline: approvals always stay on the scripted path. Readable at GET /api/plugins/wake-listener/state (mode, claudeConnected, lastFallbackReason, offline, offlineReason); open it with the console action wake-listener.show:mode."
+      },
+      {
+        "target": "wake-listener.history",
+        "title": "Command history",
+        "text": "Every voice command: what you said, the command it ran, the reply, and who understood it (Claude or Scripted). A scripted one taken while Claude mode was on says why (too slow, not connected, out of credits…). Filter by mode with All / Claude / Scripted.",
+        "more": "Commands from before Claude mode show as Scripted. Also GET /api/plugins/wake-listener/history?mode=claude|scripted, MCP wake-listener_history, CLI axf voice history [claude|scripted], console action wake-listener.show:history:claude."
+      },
+      {
+        "target": "action:voice.understand.test",
+        "title": "Test Claude mode on a phrase",
+        "text": "A dry run: says which command Claude would pick for a phrase, the fields it filled and what it would ask. Nothing runs. Also POST /api/plugins/wake-listener/claude/test, MCP wake-listener_claude-test, CLI axf voice claude test \"<phrase>\"."
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, PageToolbar, RefText, useBannerLaunchOpen, usePublishPageState, useRuntime, useToolbarHandlers, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -282,6 +282,25 @@ export function ChangesView() {
     if (!items.some((i) => i.id === id)) void loadEntry(id).then((e) => setItems((x) => (x.some((i) => i.id === id) ? x : [{ id: e.id, createdAt: e.createdAt, updatedAt: e.updatedAt, kind: e.kind, title: e.title, asked: e.asked, state: e.state, repos: e.repos, model: e.model, where: e.who.where ?? '', steps: { total: e.steps.length, done: e.steps.filter((x2) => x2.state === 'done').length, failed: e.steps.filter((x2) => x2.state === 'failed').length, running: e.steps.find((x2) => x2.state === 'running')?.text ?? '' }, result: e.result ? { state: e.result.state, summary: e.result.summary } : null, closed: e.closed?.at ?? null }, ...x])), () => undefined);
   }, [s.focus, items]);
 
+  // the Codebase changes toolbar (page-toolbar@1, assets/toolbar/codebase-changes.json): the expanded entry is the selection
+  const rt = useRuntime();
+  usePublishPageState('codebase-changes', {
+    live: f.state === 'running', running: page?.counts?.byState?.running ?? 0,
+    selection: expanded ? { id: expanded } : null,
+  });
+  const branchUrl = (e: Entry) => { const b = e.result?.branch || e.resume?.branch || ''; const repo = e.resume?.repo || e.repos[0] || ''; return b && /^[\w.-]+\/[\w.-]+$/.test(repo) ? `https://github.com/${repo}/tree/${encodeURIComponent(b)}` : ''; };
+  useToolbarHandlers('codebase-changes', {
+    'codebase-changes.filter-live': () => { const on = f.state !== 'running'; up({ state: on ? 'running' : '' }); return { live: on }; },
+    'codebase-changes.resume': async () => { if (!expanded) return null; const x = await loadResume(expanded); await navigator.clipboard?.writeText(x.prompt); rt.toast('Resume prompt copied: paste it into a new Claude session', 'info'); return { id: expanded, prompt: x.prompt }; },
+    'codebase-changes.open-branch': async () => { if (!expanded) return null; const u = branchUrl(await loadEntry(expanded)); if (!u) throw new Error('this entry has no branch'); window.open(u, '_blank', 'noopener'); return u; },
+    'codebase-changes.areas': async () => {
+      if (!expanded) return null;
+      const e = await loadEntry(expanded);
+      const areas = [...new Set((e.resume?.files ?? []).map((x) => x.split('/').slice(0, x.startsWith('apps/') || x.startsWith('framework/') ? 3 : 1).join('/')))].sort();
+      rt.toast(areas.length ? areas.join(' · ') : 'No files recorded for this entry', 'info', 'Areas touched');
+      return { id: expanded, areas };
+    },
+  });
   const c = page?.counts;
   const kinds = [...new Set(['build', 'edit', 'remove', 'fix', 'other', ...Object.keys(c?.byKind ?? {})])];
   const up = (p: Partial<Filters>) => setF((x) => ({ ...x, ...p }));
@@ -298,6 +317,7 @@ export function ChangesView() {
       </div>
       </header>
       {/* search + one Filters toggle; the six filters open below it (compact pages, Oct 30 2026) */}
+      <PageToolbar view="codebase-changes" />
       <div className="axp-codebase-changes__searchbar" role="search">
         <input className="fx-input" type="search" placeholder="Search titles, requests, results…" aria-label="Search the log" value={f.q} onChange={(e) => up({ q: e.target.value })} />
         <IconButton icon="sliders" label={showFilters ? 'Hide filters' : `Filters${nFilters ? ` (${nFilters} on)` : ''}`} aria-pressed={showFilters} className={nFilters ? 'is-on' : ''} onClick={() => setShowFilters(!showFilters)} />

@@ -1,0 +1,127 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-whats-new-banner",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:13Z",
+ "build": {
+  "id": "whats-new-banner",
+  "title": "What's new banner",
+  "profile": "all",
+  "category": "Banners",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "A What's new banner showing features merged to main and deployed, grouped by date, build and app (Brett, Nov 3 2026, voice).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: whats-new-banner (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice). GO given. Build it now.\n\n## First\n- Register in the Urgent profile through the orchestrator/store (id `whats-new-banner`, branch claude/whats-new-banner) with the steps below + in-progress banner entry, per standing rules. Check the pending queue.\n- Running in parallel: `orch-live-sync` (live store writes to main, reconciler, banners/THREADS follow the store, per-step branch/pr/merged fields), `notes-vault`, `headless-tabs`. Never hand-edit store.json; use the orchestrator CLI. Reuse orch-live-sync's events (framework/cli/builds-live.mjs, reconciler) if they are on main when you need them; otherwise read the store + GitHub merged PRs directly and leave a seam to switch over.\n\n## What Brett wants\nA **What's new** banner that shows new features that have been pushed out (merged to main and deployed), filterable/groupable **by date, by build, and by app** (all three).\n\n## Steps\n- s1 Feed: a `whats-new@1` feed built from what actually shipped: builds/steps whose code merged to main (store merged/mergedAt, merged PRs, build reports' Added/Changed sections, Codebase Changes plugin entries). Each item: title (plain-language feature, from the build report/PR, not commit-speak), build id, profile, apps affected (from changed paths: apps/console-web, axhub-web, amberx-droid, molly, plugins/<x> -> app/plugin names), date merged, deployed yes/no (deploy workflow run for that commit), links (PR, report). Server route + cached file; updates when the store/merges change (no model tokens).\n- s2 Banner: a `whats-new` banner asset/widget (banner-pack conventions, works in the banner editor and gallery): compact ticker of the newest shipped features with an unread count; tap opens a panel.\n- s3 Panel: list grouped by Date (Today / Yesterday / this week / older), By build, or By app (segmented switch, remembered); search; per-item details (what it does, where to find it, PR/report links); mark read / mark all read; 'new since last visit' highlighting.\n- s4 Settings: show/hide the banner, which apps to include, how far back, only deployed vs merged.\n- s5 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots (phone + desktop), report `_claude/builds/reports/whats-new-banner.md`, THREADS.md, PR. Mark each step done through the store as you finish it.\nTokens only, follows the hub look. Android: deferred gap in PORTING.md. Code, comments and commits stay clean and professional.\n## ADDENDUM (Brett, Nov 3 2026) - three states\nThe feed and panel show three sections/states, each still groupable by date, build and app:\n1. **Live** - merged to main AND deployed.\n2. **Merged** - on main, not deployed yet.\n3. **Ready to merge** - built and finished but not merged: open PRs for builds/steps marked done, plus finished headless builds whose branch is ahead of main with no PR (vps build_list 'finished, not landed'). For each item show what it's waiting on in plain words: UI Review approval (with the review group name and a button that opens it), CI red/pending, waiting on another PR first (merge order, e.g. #245 before #252), sync hold, or nothing (ready now). Link to the PR.\nBanner ticker shows counts per state (e.g. '3 live, 2 merged, 10 waiting'). Reuse the push banner's PR data if it already has it instead of fetching twice; don't duplicate its merge actions (link to it).\n\n## ADDENDUM 2 (Brett, Nov 3 2026) - Go-to hook\n- Tapping/clicking an item does NOT navigate; it only expands its details.\n- Every **Live** item carries its own hook: a small 'Go to it' button/icon on the item. Clicking the hook takes you to the feature itself: opens the right app/plugin/window/tab, scrolls to and briefly highlights the exact control or setting (e.g. Terminal > Settings > Tooltip mode), using axf:// deep links / the router + the element's control id / help id. Each feed item stores its target (deep link + control id) in whats-new@1, filled from the build report / changed controls; if a target can't be resolved, the hook opens the closest screen and says so.\n- Merged (not deployed) and Ready-to-merge items get no Go-to hook (feature isn't live); they keep their PR / UI Review links.\n- Tests for target resolution + highlight; shots of the hook and the highlight.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Feed: whats-new@1 built from shipped builds, merged PRs, reports and change entries; server route + cached file",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T14:09:31.736Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Banner: whats-new banner widget, ticker + unread count, tap opens panel",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T14:09:31.736Z",
+   "doneAt": "2026-11-03T14:12:24.075Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Panel: group by date/build/app, search, details, mark read, new since last visit",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T14:12:24.075Z",
+   "doneAt": "2026-11-03T14:12:24.621Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Settings: show/hide, apps, how far back, deployed vs merged",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T14:12:24.621Z",
+   "doneAt": "2026-11-03T14:12:25.135Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Help pack, tests, theme/controls checks, lifecycle, UI Review shots, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T14:12:25.135Z",
+   "doneAt": "2026-11-03T14:53:33.448Z",
+   "actualMin": 41,
+   "done": true
+  }
+ ],
+ "branch": "claude/whats-new-banner",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 260,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/260"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T16:41:30.054Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-8861306a",
+   "name": "What's new banner: ticker, panel by date / build / app, settings",
+   "status": "approved",
+   "group": "g-20261103-7eb01d69",
+   "url": "/review/r-20261103-8861306a"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/whats-new-banner.md",
+ "open": [
+  "Android: deferred gap in `framework/spec/PORTING.md` (Android on hold); the widget already works through the Kotlin `status` widget.",
+  "On a phone the banner's right side is crowded; the widget is there but the banner scrolls sideways to it (same as the build-status dot).",
+  "Without `GITHUB_TOKEN` the PR body isn't available, so summaries come from reports and Codebase changes only.",
+  "Read marks are per-device console settings (they follow the console's own settings sync, not a server list)."
+ ]
+}

@@ -5,7 +5,8 @@
  * record just gains an optional `priority`, and an agent-slots entry an optional `build`.
  *
  * A build without a stored priority is worked out on read (effectivePriority): Normal, or Urgent when it is marked
- * urgent. So there is nothing to migrate, and no store write that would touch every record.
+ * urgent (in its title or brief). Urgency is never a profile (Nov 7 2026: the Urgent profile's builds were merged into
+ * `all` with `priority: 'P0'` stored on each).
  */
 export const PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
 export const PRIORITY_DEFAULT = 'P2';
@@ -29,14 +30,13 @@ const BRIEF_SHOUT = /\b(URGENT|HOTFIX)\b/;
 const BRIEF_OPENS = /^\s*(urgent|hotfix)\b/im;
 export function markedUrgent(b) {
   if (!b) return false;
-  if ((b.profiles ?? []).includes('urgent')) return true;
   if (TITLE_MARK.test(`${b.id ?? ''} ${b.title ?? ''}`)) return true;
   const brief = `${b.detail ?? ''}\n${b.origin?.brief ?? ''}`;
   return BRIEF_SHOUT.test(brief) || BRIEF_OPENS.test(brief);
 }
 export const effectivePriority = (b) => normPriority(b?.priority) || (markedUrgent(b) ? 'P0' : PRIORITY_DEFAULT);
 
-const FINISHED = ['complete', 'archived'];
+const FINISHED = ['complete', 'landed', 'archived'];
 const prNumber = (pr) => Number(/(\d+)\s*$/.exec(String(pr ?? ''))?.[1] ?? 0);
 const entryOf = (e, id) => e.build === id || e.name === id;
 
@@ -96,7 +96,7 @@ export function waitingOn(id, sources = {}) {
     if (hit && open) add({ kind: 'ui', id: u.id, title: u.name || u.title || u.id, why: 'In UI Review', route: 'ui-review', highlight: u.name || u.title || '' });
   }
   for (const p of sources.plans ?? []) {
-    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio', highlight: p.title });
+    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio-2', highlight: p.title });
   }
   return rows;
 }

@@ -1,0 +1,112 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-claude-tokens",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:09Z",
+ "build": {
+  "id": "amberx-claude-tokens",
+  "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
+  "profile": "all",
+  "category": "AmberX app",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server add-with-key + primary routes + tests; page: inline errors + Claude tokens list",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T16:55:24.189Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-claude-tokens",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 157,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/157"
+ },
+ "landedCommit": "b5d2492b227a6787829a5708718bdb3af49c48aa",
+ "commits": [
+  "6827e8a712fb0f5f84e8fedfbc079c98ecdd4694"
+ ],
+ "mergedAt": "2026-10-28T17:04:30Z",
+ "landedAt": "2026-10-28T17:04:30Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/amberx-droid/server/main.py",
+  "apps/amberx-droid/server/router.py",
+  "apps/amberx-droid/server/test_server.py",
+  "apps/amberx-droid/src/plugins/ai/web/client.ts",
+  "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/server/main.py",
+    "apps/amberx-droid/server/router.py",
+    "apps/amberx-droid/server/test_server.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai/web/client.ts",
+    "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

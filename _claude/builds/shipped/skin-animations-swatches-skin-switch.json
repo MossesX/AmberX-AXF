@@ -1,0 +1,596 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-skin-animations-swatches-skin-switch",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-14T21:01:04Z",
+ "build": {
+  "id": "skin-animations-swatches-skin-switch",
+  "title": "Skin animations: swatches, skin-switch sweep, picker",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "where can I put some cool animations, like color swatches; make a separate build right now",
+  "verbatim": true,
+  "at": "2026-11-13T19:49:31.102Z",
+  "source": "",
+  "by": "skin-animations-swatches-skin-switch",
+  "addenda": []
+ },
+ "brief": "# Build: skin-animations-swatches-skin-switch\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:49:31.102Z\n> where can I put some cool animations, like color swatches; make a separate build right now\n\n## What to build\nContinue build \"Skin animations: swatches, skin-switch sweep, picker\" (skin-animations-swatches-skin-switch) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:49):\n\"where can I put some cool animations, like color swatches; make a separate build right now\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (8 left, ~1.3 h):\n[ ] s1 (~10 min) Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n[ ] s2 (~10 min) Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n[ ] s3 (~10 min) Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n[ ] s4 (~10 min) Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n[ ] s5 (~10 min) Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n[ ] s6 (~10 min) Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.\n[ ] s7 (~10 min) where can I put some cool animations, like color swatches; make a separate build right now\n[ ] s8 (~10 min) Tests green, report _claude/builds/reports/skin-animations-swatches-skin-switch.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/skin-animations-swatches-skin-switch.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skin-animations-swatches-skin-switch <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skin-animations-swatches-skin-switch --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skin-animations-swatches-skin-switch <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skin-animations-swatches-skin-switch \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-skin-animations-swatches-skin-switch--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T19:59:21.346Z",
+   "endedAt": "2026-11-13T20:30:49.594Z",
+   "exit": 0,
+   "costUsd": 7.3722
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:59:21.346Z",
+   "doneAt": "2026-11-13T20:10:01.840Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:10:01.840Z",
+   "doneAt": "2026-11-13T20:10:29.554Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:10:29.554Z",
+   "doneAt": "2026-11-13T20:12:42.345Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:12:42.345Z",
+   "doneAt": "2026-11-13T20:14:28.336Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:14:28.336Z",
+   "doneAt": "2026-11-13T20:17:32.580Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:17:32.580Z",
+   "doneAt": "2026-11-13T20:25:09.680Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "where can I put some cool animations, like color swatches; make a separate build right now",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:25:09.680Z",
+   "doneAt": "2026-11-13T20:25:43.559Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests green, report _claude/builds/reports/skin-animations-swatches-skin-switch.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/skin-animations-swatches-skin-switch",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 652,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/652"
+ },
+ "landedCommit": "aee42bbe81ae9a1f36418bd747d96332e151e0fa",
+ "commits": [
+  "97ff1b59a1513337799dc58a44cfe85a56f8a7fa",
+  "4eeaf589e71d155dff26b333c441fdae4aff947b",
+  "01104c989441a6fb51cf9827ca007a96160aac38",
+  "7091e6878eefc5c528f4f5ca94c0b1a083a1cdc7",
+  "d0288e11091c6454e404c3449bc0510d7138559b",
+  "44e05d2765084d235755238b9f13e6dfeb6b418b",
+  "698ce4268d7a37e2f29eda5af3db9578b212cfd8",
+  "a9e5635911c910d8f1ef60627040c95ba8b459f4",
+  "e9224992fd9c65a03ba444e11d834d0f7f041d62",
+  "84da9ee93ab6131c40ba7652345dede9be9d41a5",
+  "c84c924713ea2056abeffca6c35023efb6f872e6"
+ ],
+ "mergedAt": "2026-11-14T20:51:15Z",
+ "landedAt": "2026-11-14T20:51:14Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/skin-animations-swatches-skin-switch.md",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/alert.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/calm.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/cinematic.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/fluid.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/instant.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/minimal-motion.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/playful.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/precise.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/quiet.json",
+  "apps/amberx-droid/src/axf/assets/behavior-theme/snappy.json",
+  "apps/amberx-droid/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/alert.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/calm.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/cinematic.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/fluid.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/instant.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/minimal-motion.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/playful.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/precise.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/quiet.json",
+  "apps/axhub-web/src/axf/assets/behavior-theme/snappy.json",
+  "apps/axhub-web/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/animation-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/animation-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/behavior.ts",
+  "apps/axhub-web/src/axf/core/engines/swatches.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/Forms.tsx",
+  "apps/axhub-web/src/axf/react/components/Swatches.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/plugins/molly-guide/help.json",
+  "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx",
+  "apps/console-web/src/axf/assets/behavior-theme/alert.json",
+  "apps/console-web/src/axf/assets/behavior-theme/calm.json",
+  "apps/console-web/src/axf/assets/behavior-theme/cinematic.json",
+  "apps/console-web/src/axf/assets/behavior-theme/fluid.json",
+  "apps/console-web/src/axf/assets/behavior-theme/instant.json",
+  "apps/console-web/src/axf/assets/behavior-theme/minimal-motion.json",
+  "apps/console-web/src/axf/assets/behavior-theme/playful.json",
+  "apps/console-web/src/axf/assets/behavior-theme/precise.json",
+  "apps/console-web/src/axf/assets/behavior-theme/quiet.json",
+  "apps/console-web/src/axf/assets/behavior-theme/snappy.json",
+  "apps/console-web/src/axf/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/animation-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/animation-rules.mjs",
+  "apps/console-web/src/axf/core/engines/behavior.ts",
+  "apps/console-web/src/axf/core/engines/swatches.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/Forms.tsx",
+  "apps/console-web/src/axf/react/components/Swatches.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/views/Explorer.tsx",
+  "apps/molly/src/axf/assets/behavior-theme/alert.json",
+  "apps/molly/src/axf/assets/behavior-theme/calm.json",
+  "apps/molly/src/axf/assets/behavior-theme/cinematic.json",
+  "apps/molly/src/axf/assets/behavior-theme/fluid.json",
+  "apps/molly/src/axf/assets/behavior-theme/instant.json",
+  "apps/molly/src/axf/assets/behavior-theme/minimal-motion.json",
+  "apps/molly/src/axf/assets/behavior-theme/playful.json",
+  "apps/molly/src/axf/assets/behavior-theme/precise.json",
+  "apps/molly/src/axf/assets/behavior-theme/quiet.json",
+  "apps/molly/src/axf/assets/behavior-theme/snappy.json",
+  "apps/molly/src/axf/assets/help/framework.json",
+  "apps/molly/src/axf/core/engines/animation-rules.d.mts",
+  "apps/molly/src/axf/core/engines/animation-rules.mjs",
+  "apps/molly/src/axf/core/engines/behavior.ts",
+  "apps/molly/src/axf/core/engines/swatches.ts",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/core/types.ts",
+  "apps/molly/src/axf/libs/settings/index.tsx",
+  "apps/molly/src/axf/react/components/Forms.tsx",
+  "apps/molly/src/axf/react/components/Swatches.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "framework/assets/behavior-theme/alert.json",
+  "framework/assets/behavior-theme/calm.json",
+  "framework/assets/behavior-theme/cinematic.json",
+  "framework/assets/behavior-theme/fluid.json",
+  "framework/assets/behavior-theme/instant.json",
+  "framework/assets/behavior-theme/minimal-motion.json",
+  "framework/assets/behavior-theme/playful.json",
+  "framework/assets/behavior-theme/precise.json",
+  "framework/assets/behavior-theme/quiet.json",
+  "framework/assets/behavior-theme/snappy.json",
+  "framework/assets/help/framework.json",
+  "framework/catalog/status.json",
+  "framework/cli/animations.mjs",
+  "framework/cli/asset-library.mjs",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/animation-rules.d.mts",
+  "framework/core/engines/animation-rules.mjs",
+  "framework/core/engines/behavior.ts",
+  "framework/core/engines/swatches.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/types.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/react/components/Forms.tsx",
+  "framework/react/components/Swatches.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/THEMING.md",
+  "framework/spec/check-skin-animations.mts",
+  "framework/spec/fixtures/skin-animations.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/assets/behavior-theme/alert.json",
+    "apps/console-web/src/axf/assets/behavior-theme/calm.json",
+    "apps/console-web/src/axf/assets/behavior-theme/cinematic.json",
+    "apps/console-web/src/axf/assets/behavior-theme/fluid.json",
+    "apps/console-web/src/axf/assets/behavior-theme/instant.json",
+    "apps/console-web/src/axf/assets/behavior-theme/minimal-motion.json",
+    "apps/console-web/src/axf/assets/behavior-theme/playful.json",
+    "apps/console-web/src/axf/assets/behavior-theme/precise.json",
+    "apps/console-web/src/axf/assets/behavior-theme/quiet.json",
+    "apps/console-web/src/axf/assets/behavior-theme/snappy.json",
+    "apps/console-web/src/axf/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/animation-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/animation-rules.mjs",
+    "apps/console-web/src/axf/core/engines/behavior.ts",
+    "apps/console-web/src/axf/core/engines/swatches.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/Forms.tsx",
+    "apps/console-web/src/axf/react/components/Swatches.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/views/Explorer.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/behavior-theme/alert.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/calm.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/cinematic.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/fluid.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/instant.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/minimal-motion.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/playful.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/precise.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/quiet.json",
+    "apps/axhub-web/src/axf/assets/behavior-theme/snappy.json",
+    "apps/axhub-web/src/axf/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/animation-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/animation-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/behavior.ts",
+    "apps/axhub-web/src/axf/core/engines/swatches.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/Forms.tsx",
+    "apps/axhub-web/src/axf/react/components/Swatches.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/behavior-theme/alert.json",
+    "apps/molly/src/axf/assets/behavior-theme/calm.json",
+    "apps/molly/src/axf/assets/behavior-theme/cinematic.json",
+    "apps/molly/src/axf/assets/behavior-theme/fluid.json",
+    "apps/molly/src/axf/assets/behavior-theme/instant.json",
+    "apps/molly/src/axf/assets/behavior-theme/minimal-motion.json",
+    "apps/molly/src/axf/assets/behavior-theme/playful.json",
+    "apps/molly/src/axf/assets/behavior-theme/precise.json",
+    "apps/molly/src/axf/assets/behavior-theme/quiet.json",
+    "apps/molly/src/axf/assets/behavior-theme/snappy.json",
+    "apps/molly/src/axf/assets/help/framework.json",
+    "apps/molly/src/axf/core/engines/animation-rules.d.mts",
+    "apps/molly/src/axf/core/engines/animation-rules.mjs",
+    "apps/molly/src/axf/core/engines/behavior.ts",
+    "apps/molly/src/axf/core/engines/swatches.ts",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/core/types.ts",
+    "apps/molly/src/axf/libs/settings/index.tsx",
+    "apps/molly/src/axf/react/components/Forms.tsx",
+    "apps/molly/src/axf/react/components/Swatches.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/behavior-theme/alert.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/calm.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/cinematic.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/fluid.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/instant.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/minimal-motion.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/playful.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/precise.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/quiet.json",
+    "apps/amberx-droid/src/axf/assets/behavior-theme/snappy.json",
+    "apps/amberx-droid/src/axf/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/behavior-theme/alert.json",
+    "framework/assets/behavior-theme/calm.json",
+    "framework/assets/behavior-theme/cinematic.json",
+    "framework/assets/behavior-theme/fluid.json",
+    "framework/assets/behavior-theme/instant.json",
+    "framework/assets/behavior-theme/minimal-motion.json",
+    "framework/assets/behavior-theme/playful.json",
+    "framework/assets/behavior-theme/precise.json",
+    "framework/assets/behavior-theme/quiet.json",
+    "framework/assets/behavior-theme/snappy.json",
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/animation-rules.d.mts",
+    "framework/core/engines/animation-rules.mjs",
+    "framework/core/engines/behavior.ts",
+    "framework/core/engines/swatches.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/types.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/THEMING.md",
+    "framework/spec/check-skin-animations.mts",
+    "framework/spec/fixtures/skin-animations.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/animations.mjs",
+    "framework/cli/asset-library.mjs",
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Forms.tsx",
+    "framework/react/components/Swatches.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/skin-animations-swatches-skin-switch.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "npx -y tsx framework/spec/check-skin-animations.mts: 80 checks passed (fixture replay, rules, every behaviour theme valid, runtime API + actions, CLI, tokens-only CSS, reduced motion). Added to CI.",
+   "command": "npx -y tsx framework/spec/check-skin-animations.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/check-design-package.mts: 1158 checks passed",
+   "command": "npx -y tsx framework/spec/check-design-package.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/check-skin.mts: 313 + 356 checks passed",
+   "command": "npx -y tsx framework/spec/check-skin.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/check-appearance.mts 108 passed · check-appearance-lock.mts 27 passed · check-settings-ui.mts 55 passed · check-roller.mts 138 passed · check-customize.mts 163 passed · check-scale.mts 496 passed · check-looktokens.mts 195 passed · check-console-control.mts 290 passed · che",
+   "command": "npx -y tsx framework/spec/check-appearance.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "node framework/spec/check-skin-colour-rule.mjs, check-skin-sections.mjs, check-skin-coverage.mjs: ok",
+   "command": "node framework/spec/check-skin-colour-rule.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "node framework/cli/check-theme.mjs (1288 files), check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs: pass",
+   "command": "node framework/cli/check-theme.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "node framework/cli/help-coverage.mjs --check: pass (help synced to the app copies; one missing molly-guide tab drafted)",
+   "command": "node framework/cli/help-coverage.mjs --check",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx tsc --noEmit in apps/console-web: clean",
+   "command": "npx tsc --noEmit",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/gen-fixtures.mts: new fixtures/skin-animations.json, no other fixture changed",
+   "command": "npx -y tsx framework/spec/gen-fixtures.mts",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-help-mode.mts: not run (jsdom is not installed in this sandbox)",
+   "command": "",
+   "result": "skip",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 7.3722,
+  "estimated": false,
+  "tokens": {
+   "input": 330,
+   "output": 2635,
+   "cacheRead": 19047020,
+   "cacheWrite": 196651
+  }
+ },
+ "report": "_claude/builds/reports/skin-animations-swatches-skin-switch.md",
+ "open": [
+  "s8: Tests green, report _claude/builds/reports/skin-animations-swatches-skin-switch.md, THREADS row, commit, push, PR",
+  "UI Review shots: not taken. The headless console waits for axHub, which this sandbox can't reach, so every capture was the \"Waiting for axHub\" card. Needs a session with hub access: shots of Settings → Appearance → Animations and the skin picker, desktop and phone.",
+  "The Skins plugin (branch `claude/skins-plugin-own-removable-console`) is not on main yet; when it lands, its skin cards should render `Swatches` (one line, same as the built-in picker).",
+  "Kotlin twin deferred (framework/spec/PORTING.md → \"Deferred: skin animations\").",
+  "Skin switch through View Transitions applies the colour change one frame later in the browser; callers that read state synchronously after `swap('color-theme', …)` in a browser see it after that frame (node and tests are unchanged)."
+ ]
+}

@@ -122,9 +122,9 @@ function CreateUserDialog({ onClose, onDone }: { onClose: () => void; onDone: (n
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Add member</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Add member</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             label="Username"
             size="small"
@@ -152,7 +152,7 @@ function CreateUserDialog({ onClose, onDone }: { onClose: () => void; onDone: (n
             <MenuItem value="administrator">administrator</MenuItem>
           </TextField>
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -280,7 +280,7 @@ export default function AdminUsersTab() {
 
   const roster = (
     <Stack sx={{ height: "100%", minHeight: 0 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, p: 1.25, flexWrap: "wrap" }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', p: 1.25, flexWrap: "wrap" }}>
         <TextField
           placeholder="Search members…"
           size="small"
@@ -295,7 +295,7 @@ export default function AdminUsersTab() {
               ),
             },
           }}
-          sx={{ width: 200, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+          sx={{ width: 200, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
         />
         <TextField
           select
@@ -306,15 +306,15 @@ export default function AdminUsersTab() {
             setRole(e.target.value as "" | AccountRole);
             setOffset(0);
           }}
-          sx={{ width: 130, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+          sx={{ width: 130, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
         >
-          <MenuItem value="" sx={{ fontSize: 12.5 }}>
+          <MenuItem value="" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             Any
           </MenuItem>
-          <MenuItem value="member" sx={{ fontSize: 12.5 }}>
+          <MenuItem value="member" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             member
           </MenuItem>
-          <MenuItem value="administrator" sx={{ fontSize: 12.5 }}>
+          <MenuItem value="administrator" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             administrator
           </MenuItem>
         </TextField>
@@ -327,10 +327,10 @@ export default function AdminUsersTab() {
             setState(e.target.value as UserStateFilter);
             setOffset(0);
           }}
-          sx={{ width: 150, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+          sx={{ width: 150, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
         >
           {STATES.map((s) => (
-            <MenuItem key={s.value} value={s.value} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={s.value} value={s.value} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {s.label}
             </MenuItem>
           ))}
@@ -348,14 +348,14 @@ export default function AdminUsersTab() {
           size="small"
           startIcon={<Glyph id="icon-plus" size={12} />}
           onClick={() => setCreating(true)}
-          sx={{ textTransform: "none", fontSize: 12.5 }}
+          sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-md)' }}
         >
           Add member
         </Button>
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12, mx: 1.25, mb: 1 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)', mx: 1.25, mb: 1 }}>
           {error}
         </Alert>
       )}
@@ -363,7 +363,7 @@ export default function AdminUsersTab() {
         <Alert
           severity="success"
           variant="outlined"
-          sx={{ fontSize: 12, mx: 1.25, mb: 1 }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', mx: 1.25, mb: 1 }}
           onClose={() => setNotice(null)}
         >
           {notice}
@@ -378,7 +378,7 @@ export default function AdminUsersTab() {
                 <TableCell
                   key={c.key}
                   align={c.numeric ? "right" : "left"}
-                  sx={{ fontSize: 11.5, color: token("dim"), whiteSpace: "nowrap" }}
+                  sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), whiteSpace: "nowrap" }}
                 >
                   <TableSortLabel
                     active={sort === c.key}
@@ -407,7 +407,7 @@ export default function AdminUsersTab() {
                 sx={{ cursor: "pointer" }}
               >
                 <TableCell>
-                  <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
+                  <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
                     <Box
                       component="span"
                       aria-label={r.online ? "online" : "offline"}
@@ -417,15 +417,15 @@ export default function AdminUsersTab() {
                         borderRadius: "50%",
                         flexShrink: 0,
                         background: r.online ? token("ok") : "transparent",
-                        border: `1.5px solid ${r.online ? token("ok") : token("dim")}`,
+                        border: `calc(var(--fx-border-w) * 1.5) solid ${r.online ? token("ok") : token("dim")}`,
                       }}
                     />
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography sx={{ fontSize: 12.5, fontWeight: 600 }}>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>
                         {r.screenname ?? r.username}
                       </Typography>
                       <Typography
-                        sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}
+                        sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}
                       >
                         {r.username}
                         {r.disabled ? " · disabled" : ""}
@@ -438,13 +438,13 @@ export default function AdminUsersTab() {
                         size="small"
                         variant="outlined"
                         label="suspended"
-                        sx={{ height: 18, fontSize: 10, color: token("warn"), borderColor: token("warn") }}
+                        sx={{ height: 18, fontSize: 'var(--fx-type-root-2xs)', color: token("warn"), borderColor: token("warn") }}
                       />
                     )}
                   </Stack>
                 </TableCell>
-                <TableCell sx={{ fontSize: 12 }}>{r.role}</TableCell>
-                <TableCell align="right" sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)' }}>{r.role}</TableCell>
+                <TableCell align="right" sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                   {r.storage === undefined ? (
                     "—"
                   ) : r.storage === null ? (
@@ -452,7 +452,7 @@ export default function AdminUsersTab() {
                     // this member, and a quota refuses nobody on the strength
                     // of a measurement that does not exist.
                     <Tooltip title="Never scanned">
-                      <Typography component="span" sx={{ fontSize: 12, color: token("dim") }}>
+                      <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                         unscanned
                       </Typography>
                     </Tooltip>
@@ -460,7 +460,7 @@ export default function AdminUsersTab() {
                     fmtBytes(r.storage.totalBytes)
                   )}
                 </TableCell>
-                <TableCell sx={{ fontSize: 12, color: token("dim"), whiteSpace: "nowrap" }}>
+                <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), whiteSpace: "nowrap" }}>
                   {fmtWhen(r.lastLoginAt)}
                 </TableCell>
               </TableRow>
@@ -468,7 +468,7 @@ export default function AdminUsersTab() {
             {rows.length === 0 && !loading && (
               <TableRow>
                 <TableCell colSpan={COLUMNS.length}>
-                  <Typography sx={{ fontSize: 12.5, color: token("dim"), py: 1 }}>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), py: 1 }}>
                     {query || role || state !== "all"
                       ? "No member matches those filters."
                       : "No accounts yet."}
@@ -492,9 +492,9 @@ export default function AdminUsersTab() {
           setOffset(0);
         }}
         sx={{
-          borderTop: `1px solid ${token("edge")}`,
+          borderTop: `var(--fx-border-w) solid ${token("edge")}`,
           "& .MuiTablePagination-toolbar": { minHeight: 40 },
-          "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": { fontSize: 11.5 },
+          "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": { fontSize: 'var(--fx-type-root-sm)' },
         }}
       />
     </Stack>
@@ -513,8 +513,8 @@ export default function AdminUsersTab() {
           focusCard={requested && requested.user === current.username ? requested.card : null}
         />
       ) : (
-        <Stack sx={{ p: 3, gap: 1, alignItems: "flex-start" }}>
-          <Typography sx={{ fontSize: 12.5, color: token("dim") }}>
+        <Stack sx={{ p: 3, gap: 'var(--fx-dens-gap-xl)', alignItems: "flex-start" }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim") }}>
             {selected
               ? `“${selected}” is not on this page any more — the filters or the page moved. Select somebody from the list.`
               : "Select a member to see their profile, storage, sessions, policy and module access."}

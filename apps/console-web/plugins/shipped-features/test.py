@@ -30,6 +30,7 @@ applyManifest(db, { build: { id: 'veto', title: 'Veto notice alarm too loud', pr
 """
 subprocess.run(["node", "--input-type=module", "-e", SEED, str(HERE / "ledger" / "db.mjs"), str(HERE / "ledger" / "manifest.mjs")], check=True, env=os.environ)
 
+sys.path.insert(0, str(HERE.parent.parent / "server"))  # the plugin imports the console server's data_store (data-store@1)
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
 spec = importlib.util.spec_from_file_location("axf_console_plugins.shipped_features_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 mod = importlib.util.module_from_spec(spec)

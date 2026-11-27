@@ -1,0 +1,66 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "skin-editor-help",
+  "name": "Skin editor help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Token registry and the Skin editor.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:skin-editor",
+    "entries": [
+      { "target": "view:skin-editor", "title": "Skin editor", "text": "Pick any UI and it is drawn in the sandbox with real components. Change a token on the right and the sandbox re-renders at once; every change is a snapshot you can go back to, and any state exports as a new skin.", "kind": "screen" },
+      { "target": "view:token-registry", "title": "Token registry", "text": "Every token in the system in one list: what element it styles, which area, state, light or dark, its level, what it does in plain words, its default and where it comes from. Search by any word; click a row to edit it in the Skin editor.", "kind": "screen" },
+      { "target": "ui", "title": "UI to skin", "text": "The screen, dialog, plugin or element the sandbox draws. Picking a new one starts its own snapshot chain at the default skin." },
+      { "target": "pick-on-screen", "title": "Pick on screen", "text": "Then click any screen in the console: it is loaded into the sandbox. Esc cancels." },
+      { "target": "pick-element", "title": "Pick element", "text": "Then click a control inside the sandbox: the token list narrows to that element's tokens, so you edit the thing you clicked." },
+      { "target": "undo", "title": "Undo", "text": "Back to the previous snapshot. The undo is itself a snapshot, so you can redo by reverting to the later one." },
+      { "target": "token-registry", "title": "Token registry", "text": "Opens the registry page: every token in the system with what it styles and what it does." },
+      { "target": "level", "title": "Level", "text": "Basic shows the handful of tokens everyone changes, Pro adds per-element looks and transparencies, Advanced shows everything including layout, type scale, density and motion." },
+      { "target": "find-a-token", "title": "Find a token", "text": "Type words from a token's name, element or description to narrow the list." },
+      { "target": "revert", "title": "Revert", "text": "Back to this snapshot's state. The revert is added as a new snapshot at the head, so the chain keeps every step." },
+      { "target": "export", "title": "Export as a skin", "text": "Saves the head snapshot's state as a new skin asset, starting from the console's look as it stands. Tokens a control set carries ride the skin as overrides; stylesheet variables are kept under the skin's own key." },
+      { "target": "name", "title": "Skin name", "text": "The new skin's name; its id is derived from it (lowercase, dashes)." },
+      { "target": "description", "title": "Skin description", "text": "What the skin is for, shown in the skin picker." },
+      { "target": "skin-editor", "title": "Skin editor settings", "text": "Where the Skin editor keeps its snapshot chains and exported skins, and the last UI you picked." },
+      { "target": "action:skin-editor.open", "title": "Open the Skin editor", "text": "Opens the Skin editor, optionally on a UI or a token." },
+      { "target": "action:skin-editor.pick", "title": "Pick a UI to skin", "text": "The next click anywhere in the console loads that screen into the Skin editor's sandbox." },
+      { "target": "action:token-registry.open", "title": "Open the token registry", "text": "Browse and search every token in the system." },
+      { "target": "click-a-control-inside-the-sandbox-to-edit-its-tokens", "title": "Pick element", "text": "Then click a control inside the sandbox: the token list narrows to that element's tokens." },
+      { "target": "every-element", "title": "Every element", "text": "Drops the element filter so the token list shows every element again." },
+      { "target": "export-edit-as-a-skin", "title": "Export as a skin", "text": "Saves the head snapshot's edits as a new skin asset with the name you gave." },
+      { "target": "success", "title": "Sample button", "text": "A sample control in the element gallery: it shows how the tokens look, it does nothing when pressed." },
+      { "target": "follow-the-hub-skin", "title": "Sample switch", "text": "A sample switch in the element gallery: it shows how the tokens look and changes nothing." },
+      { "target": "day", "title": "Sample segment", "text": "A sample segmented control in the element gallery, for the look only." },
+      { "target": "week", "title": "Sample segment", "text": "A sample segmented control in the element gallery, for the look only." },
+      { "target": "month", "title": "Sample segment", "text": "A sample segmented control in the element gallery, for the look only." },
+      { "target": "link", "title": "Sample link", "text": "A sample link in the element gallery: it shows the link colour and goes nowhere." },
+      { "target": "area", "title": "Area", "text": "Narrow the registry to layout, style, colour or behaviour tokens." },
+      { "target": "element", "title": "Element", "text": "Narrow the registry to one element type: buttons, tabs, grids, dialogs and so on." },
+      { "target": "state", "title": "State", "text": "Narrow the registry to tokens for one interaction state: hover, selected, disabled and so on." }
+    ],
+    "intros": [
+      {
+        "screen": "skin-editor",
+        "title": "Skin editor",
+        "steps": [
+          { "say": "Pick a UI from the list, or click Pick on screen and then any screen in the console. It is drawn here with real components.", "target": "ui" },
+          { "say": "Change a token on the right: the sandbox re-renders at once and the change is saved as a snapshot.", "target": "level" },
+          { "say": "History shows the chain like disk snapshots. Click any one to go back; nothing is ever lost.", "target": "" },
+          { "say": "Export turns the current state into a new skin you can use anywhere.", "target": "export" }
+        ]
+      },
+      {
+        "screen": "token-registry",
+        "title": "Token registry",
+        "steps": [
+          { "say": "Every token in the system, with what it styles and what it does in plain words.", "target": "" },
+          { "say": "Search by any word, narrow by level, area, element or state, and click a row to edit it in the Skin editor.", "target": "find-a-token" }
+        ]
+      }
+    ]
+  }
+}

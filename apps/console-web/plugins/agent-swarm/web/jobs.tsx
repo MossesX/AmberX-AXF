@@ -74,7 +74,7 @@ function JobCard({ j, reload, onAgent }: { j: JobView; reload: () => Promise<voi
     const a = r.agent as { name: string }; setMsg({ text: `Hired ${a.name}.`, warn: false }); rt.terminal.log('swarm', `hired ${a.name} for ${j.id}`, 'ok'); await reload();
   };
   return (
-    <article role="listitem" className="sw-card sw-job" aria-label={j.name}>
+    <article role="listitem" data-axf-target={`row:job-${j.id}`} className="sw-card sw-job" aria-label={j.name}>
       <div className="sw-job__head">
         <b>{j.name}</b>
         <span className="sw-bar">

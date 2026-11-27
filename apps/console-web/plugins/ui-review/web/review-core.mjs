@@ -135,7 +135,7 @@ export function matches(it, q) {
 /** Filters: kind ('' = all), status ('' | id | 'open' = not approved), app, branch, pr, q. */
 export function filterItems(items, f = {}) {
   return items.filter((it) => (!f.kind || it.kind === f.kind) && (!f.group || it.group === f.group)
-    && (!f.status || (f.status === 'open' ? it.status !== 'approved' : it.status === f.status))
+    && (!f.status || (f.status === 'open' ? it.status !== 'approved' && !it.landed : it.status === f.status))
     && (!f.app || it.app === f.app) && (!f.branch || it.branch === f.branch)
     && (!f.pr || Number(it.pr) === Number(f.pr)) && matches(it, f.q));
 }
@@ -197,7 +197,8 @@ export function togglePick(picked, id, max = MAX_PICKS) {
  */
 export function reviewState(items, { branch = '', pr = null } = {}) {
   // a predicted look (ui-prediction@1) is approved for the look, not for merging: only real screens count
-  const mine = items.filter((it) => ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr))) && it.prediction?.state !== 'predicted');
+  // an item the stale-row watchdog closed (its PR merged or closed: `landed`) no longer holds anything
+  const mine = items.filter((it) => ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr))) && it.prediction?.state !== 'predicted' && !it.landed);
   const c = { waiting: 0, changes: 0, rejected: 0, approved: 0 };
   for (const it of mine) if (it.status in c) c[it.status]++;
   const state = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';

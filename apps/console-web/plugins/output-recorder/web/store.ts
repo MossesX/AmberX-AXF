@@ -29,7 +29,7 @@ export interface Hooks {
 export interface Controller {
   get(): State;
   subscribe(fn: () => void): () => void;
-  /** the native recorder is here (AmberX on Android) */
+  /** a native recorder is here (a phone shell that provides the OutputRecorder plugin) */
   native(): boolean;
   attach(): Promise<void>;
   detach(): Promise<void>;
@@ -50,7 +50,6 @@ export interface Controller {
   play(r: Recording): Promise<void>;
   stopPlaying(): void;
   share(r: Recording): Promise<void>;
-  toExtract(r: Recording): Promise<void>;
   remove(r: Recording): Promise<void>;
   onEvent(e: NativeEvent): void;
 }
@@ -108,7 +107,7 @@ export function createController(bridge: OutputRecorderBridge | null, hooks: Hoo
     },
 
     async start() {
-      if (!bridge) { toast('Recording runs in the AmberX app on Android.', 'warning'); return; }
+      if (!bridge) { toast('Recording runs on the paired phone: start it from Phone Connect.', 'warning'); return; }
       if (st.rec.running) return;
       set({ rec: recReduce(st.rec, { type: 'start' }) });
       try { await bridge.start(); }
@@ -165,16 +164,6 @@ export function createController(bridge: OutputRecorderBridge | null, hooks: Hoo
         a.download = `${r.name}.m4a`;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 30_000);
-      } catch (e) { toast(msg(e), 'danger'); }
-      finally { busy(r.id, null); }
-    },
-    async toExtract(r) {
-      if (!bridge) { toast('Audio Extract runs in the AmberX app.', 'warning'); return; }
-      busy(r.id, 'Getting it');
-      try {
-        const { uri } = await bridge.fetch({ id: r.id });
-        await bridge.toExtract({ uri });
-        toast(`${r.name} sent to Audio Extract.`, 'success');
       } catch (e) { toast(msg(e), 'danger'); }
       finally { busy(r.id, null); }
     },

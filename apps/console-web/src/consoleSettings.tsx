@@ -3,6 +3,7 @@ import { Button, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { getToken, health, isBackendUp, post, setToken } from './api';
 import { PluginsPanel } from './views/Plugins';
+import { CONSOLE_SETTINGS_HELP, installConsoleSettingsMenu } from './consoleSettingsMenu';
 
 /** Console token (AXF_TOKEN) kept in this browser, plus a server-side reset underneath. */
 function TokenPanel() {
@@ -87,14 +88,27 @@ function BackendPanel() {
   );
 }
 
+import { SETTINGS_GEAR_PLACEMENT_KEY } from './PluginSettingsGear';
+
 /** The console's contributions to the framework settings page. */
 export const consoleSettings: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.settings',
   label: 'Console settings',
   version: '0.1.0',
+  // Console settings leads every right-click / long-press menu (consoleSettingsMenu.ts)
+  register: (rt) => { installConsoleSettingsMenu(rt); },
+  help: CONSOLE_SETTINGS_HELP,
   settingsPanels: [
     { id: 'console.token', tab: 'account', title: 'Console token', icon: 'lock', order: 30, render: () => <TokenPanel /> },
     { id: 'console.backend', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },
     { id: 'console.plugins', tab: 'plugins', title: 'Console plugins', icon: 'package', order: 10, render: () => <PluginsPanel /> },
   ],
+  // How the settings gear on every plugin screen is drawn (PluginSettingsGear.tsx; picked in UI Review, build
+  // every-plugin-screen-gets-a-settings-gear). Every option opens the same Settings → Plugins sub-tab.
+  settings: [{
+    id: 'console.plugin-gear', tab: 'plugins', label: 'Plugin screens', icon: 'settings', order: 12, description: 'The settings gear at the top of every plugin screen.',
+    settings: [{ key: SETTINGS_GEAR_PLACEMENT_KEY, label: 'Settings gear', kind: 'choice', default: 'icon', scope: 'app',
+      options: [{ value: 'icon', label: 'Gear icon at the right' }, { value: 'label', label: 'Gear with the word Settings' }, { value: 'menu', label: 'In a ⋯ menu' }],
+      description: 'Where each plugin screen puts the button that opens its settings.' }],
+  }],
 };

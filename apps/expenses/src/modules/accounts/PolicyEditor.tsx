@@ -156,10 +156,10 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
             value={String(value ?? "")}
             disabled={!editable || busy}
             onChange={(e) => onSet(row.key, e.target.value)}
-            sx={{ width: 180, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+            sx={{ width: 180, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
           >
             {(row.options ?? []).map((o) => (
-              <MenuItem key={o.value} value={o.value} sx={{ fontSize: 12.5 }}>
+              <MenuItem key={o.value} value={o.value} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                 {o.label}
               </MenuItem>
             ))}
@@ -178,7 +178,7 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
               if (e.key === "Enter") commitText();
             }}
             slotProps={{ htmlInput: { min: row.min, max: row.max, step: row.step } }}
-            sx={{ width: 140, "& .MuiInputBase-input": { fontSize: 12.5, fontFamily: token("mono") } }}
+            sx={{ width: 140, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)', fontFamily: token("mono") } }}
           />
         );
       default:
@@ -192,7 +192,7 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
             onKeyDown={(e) => {
               if (e.key === "Enter") commitText();
             }}
-            sx={{ width: 220, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+            sx={{ width: 220, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
           />
         );
     }
@@ -221,17 +221,17 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
       data-axf-policy-value={fmtPolicyValue(row, value)}
       sx={{
         alignItems: "flex-start",
-        gap: 1.25,
+        gap: 'var(--fx-dens-gap-2xl)',
         px: 1.5,
         py: 1,
-        borderTop: `1px solid ${token("edge")}`,
+        borderTop: `var(--fx-border-w) solid ${token("edge")}`,
         opacity: siteOnlyHere ? 0.65 : 1,
       }}
     >
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-          <Typography sx={{ fontSize: 12.5, fontWeight: 600 }}>{row.label}</Typography>
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>{row.label}</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
             {row.key}
           </Typography>
           {pinned ? (
@@ -239,14 +239,14 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
               size="small"
               label={view.isSite ? "pinned · site" : "pinned"}
               variant="outlined"
-              sx={{ height: 18, fontSize: 10, color: token("accent"), borderColor: token("accent") }}
+              sx={{ height: 18, fontSize: 'var(--fx-type-root-2xs)', color: token("accent"), borderColor: token("accent") }}
             />
           ) : (
             <Chip
               size="small"
               label={followingLabel(tier)}
               variant="outlined"
-              sx={{ height: 18, fontSize: 10, color: token("dim") }}
+              sx={{ height: 18, fontSize: 'var(--fx-type-root-2xs)', color: token("dim") }}
             />
           )}
           {siteOnlyHere && (
@@ -254,14 +254,14 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
               size="small"
               label="site-wide only"
               variant="outlined"
-              sx={{ height: 18, fontSize: 10, color: token("warn"), borderColor: token("warn") }}
+              sx={{ height: 18, fontSize: 'var(--fx-type-root-2xs)', color: token("warn"), borderColor: token("warn") }}
             />
           )}
         </Stack>
 
-        <Typography sx={{ fontSize: 11, color: token("dim"), mt: 0.25 }}>{row.hint}</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.25 }}>{row.hint}</Typography>
 
-        <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5 }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5 }}>
           {siteOnlyHere
             ? "This limiter is consulted before anybody has proved who they are, so it has no per-user tier — set it on the site defaults."
             : pinned
@@ -270,7 +270,7 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
         </Typography>
       </Box>
 
-      <Stack direction="row" sx={{ alignItems: "center", gap: 0.5, flexShrink: 0 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-md)', flexShrink: 0 }}>
         {control()}
         {siteOnlyHere ? null : pinned ? (
           <Tooltip title={`Un-pin — ${row.label} follows the tier above again, including as it moves`}>
@@ -279,7 +279,7 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
                 size="small"
                 disabled={busy}
                 onClick={() => onUnpin(row.key)}
-                sx={{ fontSize: 11, textTransform: "none", minWidth: 0, color: token("dim") }}
+                sx={{ fontSize: 'var(--fx-type-root-xs)', textTransform: "none", minWidth: 0, color: token("dim") }}
               >
                 Un-pin
               </Button>
@@ -292,7 +292,7 @@ function PolicyRowView({ row, view, busy, onPin, onUnpin, onSet }: RowProps) {
                 size="small"
                 disabled={busy}
                 onClick={() => onPin(row.key, value)}
-                sx={{ fontSize: 11, textTransform: "none", minWidth: 0 }}
+                sx={{ fontSize: 'var(--fx-type-root-xs)', textTransform: "none", minWidth: 0 }}
               >
                 Pin
               </Button>
@@ -401,7 +401,7 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
 
   if (!view) {
     return error ? (
-      <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+      <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
         {error}
       </Alert>
     ) : (
@@ -419,9 +419,9 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
   const pinnedCount = Object.keys(view.overrides).length;
 
   return (
-    <Stack sx={{ gap: 1.25, minWidth: 0 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 12.5, fontWeight: 700 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)', minWidth: 0 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700 }}>
           {view.isSite ? "Site defaults" : `Policy — ${view.subject}`}
         </Typography>
         <Chip
@@ -436,7 +436,7 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
           }
           sx={{
             height: 19,
-            fontSize: 10.5,
+            fontSize: 'var(--fx-type-root-xs)',
             ...(pinnedCount > 0
               ? { color: token("accent"), borderColor: token("accent") }
               : { color: token("dim") }),
@@ -446,13 +446,13 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setError(null)}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
 
       {!view.isSite && view.suspension.on && (
-        <Alert severity={view.suspension.lapsed ? "info" : "warning"} variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity={view.suspension.lapsed ? "info" : "warning"} variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {view.suspension.lapsed
             ? `Suspension has LAPSED (until ${view.suspension.until}) — ${view.subject} signs in normally.`
             : `Suspended${view.suspension.until ? ` until ${view.suspension.until}` : " indefinitely"}${
@@ -467,11 +467,11 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
         return (
           <Box
             key={group}
-            sx={{ border: `1px solid ${token("edge")}`, borderRadius: token("radius"), overflow: "hidden" }}
+            sx={{ border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: token("radius"), overflow: "hidden" }}
           >
             <Typography
               sx={{
-                fontSize: 10.5,
+                fontSize: 'var(--fx-type-root-xs)',
                 fontFamily: token("mono"),
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
@@ -498,7 +498,7 @@ export default function PolicyEditor({ subject, reloadKey = 0, onChanged }: Poli
       })}
 
       {!view.isSite && (
-        <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
           Two capability rows are composed with the permission matrix before they are answered —
           either saying no is a no, so a row can read as refused here while nothing is pinned.
         </Typography>

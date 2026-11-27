@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "build-watchdog-panel-lay-mwk6tob9-split",
+ "name": "build-watchdog-panel-lay-mwk6tob9: Split: running beside the fixes",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Desktop: running builds on the left, recent fixes on the right, so cause and effect sit side by side; the toolbar and Gave up span the top. Stacks on the phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-watchdog-panel-lay-mwk6tob9",
+  "choice-option:split"
+ ],
+ "data": {
+  "variant": "panel",
+  "header": "divided",
+  "padding": "sm",
+  "elevation": 0,
+  "collapsible": false,
+  "watchdog": {
+   "layout": "split"
+  }
+ }
+}

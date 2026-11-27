@@ -1,0 +1,327 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-watch-live",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:42Z",
+ "build": {
+  "id": "watch-live",
+  "title": "Watch live: hot-rendered preview of the screen a session is changing",
+  "profile": "all",
+  "category": "Builds > Watch live",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Watch live = HOT RENDER. A Watch live link on every approval row (details) and every running build in the Build manager / Build orchestrator pops up (floating window desktop, full-screen sheet phone) the exact screen the session is changing, changed element scrolled to + outlined, hot-rendering as files change. Every web app, every hot-swappable asset (no reload), Android screens through the web port with a next-APK note. claude-headless.sh starts previews + registry; console proxies /preview/<session>/<app>/ behind auth; axf focus + .axf-focus.json; greyed No live preview otherwise.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "framework/core/watch-live.ts helper (focus params, outline overlay, asset hot swap) + AxfRuntime.hotReplaceAsset",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-01T00:35:23.970Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "framework/cli/watch-live.mjs (targets, registry, watcher, axf focus) + watch-live-vite.mjs plugin + dev-server reuse",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-01T00:35:23.970Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "claude-headless.sh starts/stops previews; brief templates ask for axf focus",
+   "model": "Opus",
+   "estimate": "15m",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-11-01T00:35:23.970Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Console server previews.py: /api/previews + /preview proxy (HTTP + HMR WebSocket) behind console auth, signed per-preview keys",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-01T00:35:23.970Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "WatchLiveLink/WatchLiveWindow (framework/react) + console watchLive.tsx; links in Build manager, Build orchestrator, approval details",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-01T00:35:23.970Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests: check-watch-live.mts, test_previews.py, end-to-end browser run; CI block green; report",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:35:23.970Z",
+   "doneAt": "2026-11-01T01:40:06.071Z",
+   "actualMin": 65,
+   "done": true
+  }
+ ],
+ "branch": "claude/watch-live",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "60752f8697a93085c8e65f97718b9d4d7822c7d1",
+ "commits": [
+  "b99f997b86709849bd862e44c0999a6ba8285a16",
+  "538df8605cc2de50729c73f04abcdf872c69754a"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T01:27:57Z",
+ "files": [
+  ".github/workflows/android.yml",
+  ".gitignore",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/reports/watch-live.md",
+  "_claude/builds/reports/watch-live/build-manager-row-desktop.png",
+  "_claude/builds/reports/watch-live/preview-focus-hot-swap-desktop.png",
+  "_claude/builds/reports/watch-live/watch-live-popup-desktop.png",
+  "_claude/builds/reports/watch-live/watch-live-sheet-phone.png",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/veto.tsx",
+  "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/previews.py",
+  "apps/console-web/server/test_previews.py",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/watch-live.ts",
+  "apps/console-web/src/axf/react/components/WatchLive.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/watchLive.tsx",
+  "apps/demo/src/views/Home.tsx",
+  "deploy/claude-headless.sh",
+  "framework/cli/axf.mjs",
+  "framework/cli/dev-server.mjs",
+  "framework/cli/watch-live-vite.mjs",
+  "framework/cli/watch-live.mjs",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/watch-live.ts",
+  "framework/react/components/WatchLive.tsx",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/WATCH-LIVE.md",
+  "framework/spec/check-watch-live.mts",
+  "framework/templates/next-ts/src/views/Home.tsx",
+  "framework/templates/react-ts/src/views/Home.tsx",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/previews.py",
+    "apps/console-web/server/test_previews.py",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/watch-live.ts",
+    "apps/console-web/src/axf/react/components/WatchLive.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/watchLive.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/reports/watch-live.md",
+    "_claude/builds/reports/watch-live/build-manager-row-desktop.png",
+    "_claude/builds/reports/watch-live/preview-focus-hot-swap-desktop.png",
+    "_claude/builds/reports/watch-live/watch-live-popup-desktop.png",
+    "_claude/builds/reports/watch-live/watch-live-sheet-phone.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/dev-server.mjs",
+    "framework/cli/watch-live-vite.mjs",
+    "framework/cli/watch-live.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/watch-live.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/WATCH-LIVE.md",
+    "framework/spec/check-watch-live.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/veto.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/orchestrate.mjs",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/WatchLive.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "templates",
+   "files": [
+    "framework/templates/next-ts/src/views/Home.tsx",
+    "framework/templates/react-ts/src/views/Home.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/src/views/Home.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261101-ksry601",
+   "name": "Watch live: link on running builds + approval details, floating window (desktop) / full-screen sheet (phone)",
+   "status": "approved",
+   "group": "g-20261101-watch-live-2026-11-01",
+   "url": "/review/r-20261101-ksry601"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/watch-live.md",
+ "open": [
+  "Android twin deferred (PORTING.md): Kotlin `hotReplaceAsset` + a Compose focus outline from the same focus file.",
+  "The first open of a preview takes a while (Vite pre-bundles; an app without `node_modules` borrows `/opt/axf`'s or runs `npm ci` once, status \"starting\" meanwhile).",
+  "Approval rows: matched by text (a held call naming the session's branch, change id or tmux session). The approval-expand build's expanded row details get the link when it lands on main (see THREADS carry-on).",
+  "Previews start only for sessions launched through `claude-headless.sh` (console launches, Build manager starts)."
+ ]
+}

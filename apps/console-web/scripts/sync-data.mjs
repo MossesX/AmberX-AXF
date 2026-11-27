@@ -40,6 +40,12 @@ if (existsSync(dataPath('framework/plan/build-queue.json'))) cpSync(dataPath('fr
 mkdirSync(resolve(HERE, '../src/axf/plan'), { recursive: true });
 if (existsSync(dataPath('framework/plan/pending.json'))) cpSync(dataPath('framework/plan/pending.json'), join(OUT, 'pending.json'));
 for (const f of ['build-queue-core.mjs', 'build-queue-core.d.mts', 'pending-core.mjs', 'pending-core.d.mts']) cpSync(join(ROOT, 'framework/plan', f), resolve(HERE, '../src/axf/plan', f));
+// the framework/core modules those plan files import (`../core/<name>.mjs`) come along, or the vite build cannot resolve them
+{
+  const core = new Set();
+  for (const f of ['build-queue-core.mjs', 'pending-core.mjs']) for (const m of readFileSync(join(ROOT, 'framework/plan', f), 'utf8').matchAll(/from '\.\.\/core\/([\w.-]+)\.mjs'/g)) core.add(m[1]);
+  for (const n of core) for (const ext of ['.mjs', '.d.mts']) if (existsSync(join(ROOT, 'framework/core', n + ext))) cpSync(join(ROOT, 'framework/core', n + ext), resolve(HERE, '../src/axf/core', n + ext));
+}
 // Standards: every project's manifest + validation, and the rules in force (static preview)
 {
   const { RULES_REL, baseRules, checkProject, findProjects, loadRules } = await import('../../../framework/cli/project.mjs');
@@ -48,3 +54,8 @@ for (const f of ['build-queue-core.mjs', 'build-queue-core.d.mts', 'pending-core
   writeFileSync(join(OUT, 'project-rules.json'), JSON.stringify({ rules, base: baseRules(), file: RULES_REL }));
 }
 console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);
+// console-control@1: the static inventory (views, tab rows, settings, functions, plugins) the console and the server share
+{
+  const { buildInventory } = await import('./control-inventory.mjs');
+  writeFileSync(resolve(HERE, '../src/control/inventory.json'), JSON.stringify(buildInventory(), null, 2) + '\n');
+}

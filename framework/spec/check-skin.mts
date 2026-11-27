@@ -9,10 +9,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationConflicts, declarationErrors, globalSkinOf, ingredientOfField, lookAfterChange, newAppLook, NO_SKIN_ENTRY, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, resolveSkinChain, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, SKIN_COLOR_SLOT, SKIN_THEME_FIELDS, skinColorOf, skinColorTheme, skinCoverage, skinCoverageSummary, skinCovers, skinErrors, skinFromDesignPackage, skinIngredients, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, skinUncovered, snapshotLook, uncoveredTypes, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationConflicts, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, ingredientOfField, LOOK_BACKUPS_MAX, lookAfterChange, lookBackup, newAppLook, NO_SKIN_ENTRY, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, resolveSkinChain, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, SKIN_COLOR_SLOT, SKIN_SCOPE_DEFAULT, SKIN_THEME_FIELDS, skinChromeErrors, skinChromeSettings, skinColorOf, skinColorTheme, skinCoverage, skinCoverageSummary, skinCovers, skinErrors, skinFromDesignPackage, skinIngredients, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, skinUncovered, snapshotLook, type AppLookDocument, type AppLookStore, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
-import { AxfRuntime, type AppearanceSource } from '../core/runtime';
-import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
+import { AxfRuntime, HUB_SKIN_ONLY_KEY, type AppearanceSource } from '../core/runtime';
+import { isAppearanceSetting } from '../core/engines/designpackage';
+import { combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
 import type { AxfManifest } from '../core/types';
 import * as engine from '../cli/build-engine.mjs';
 
@@ -409,8 +410,8 @@ console.log(`check-skin: ${n} checks passed`);
   // scopes: plugin → ui → app → global, the child overrides the parent
   const sc = fx.scopes;
   const place = { app: 'app', ui: 'home', plugin: 'notes' };
-  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global'], 'chain from the leaf');
-  eq(skinScopeChain({ app: 'app' }), ['app', 'global'], 'the app chain');
+  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global', 'default'], 'chain from the leaf (the hub default skin is the root)');
+  eq(skinScopeChain({ app: 'app' }), ['app', 'global', 'default'], 'the app chain');
   eq([skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], ['plugin:notes', 'ui:home', 'app'], 'keys');
   eq(['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), ['global', 'app', 'ui', 'plugin'], 'kinds');
   eq(skinScopeSelector('plugin:ai.amberx.notes'), '[data-fx-scope="skin-plugin-ai-amberx-notes"]', 'a plugin scope is drawn under its scope root');
@@ -467,8 +468,187 @@ console.log(`check-skin: ${n} checks passed`);
   eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' } }, 'appearance@1 keeps the hub-wide skin');
   eq(mergeAppearance(parsed, { skin: null }, 'test', 'now').skin, undefined, 'a null change clears it');
   eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
+
+  // Skin from axHub only: the hub-wide skin alone is drawn; the app's own skin, override, colour pick and scopes stay stored
+  const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+  const drawn = hubOnlyLook(mine);
+  eq(mine, sc.hubOnly.mine, 'hub only: the app look = fixture');
+  eq(drawn, sc.hubOnly.drawn, 'hub only: the drawn look = fixture');
+  eq(drawn.skin, { use: false, inherit: true, id: '', overrides: {} }, 'hub only: no skin of its own, follows the hub-wide skin');
+  eq([drawn.own, drawn.scopes, drawn.default], [{}, {}, mine.default], 'hub only: no own picks, no scopes, the default snapshot kept');
+  ok(mine.skin.use && mine.skin.id === 'windows' && mine.skin.overrides.button === 'terminal' && mine.skin.colorTheme === 'plum-noir' && !!mine.scopes['plugin:notes'], 'hub only: the stored look is untouched');
+  const hubComposed = composeLookAt(withGlobal as never, drawn, skinOf);
+  eq(hubComposed, sc.hubOnly.composed, 'hub only: composed = fixture');
+  eq([hubComposed.skin.id, hubComposed.skin.from, hubComposed.doc.slots!.button, hubComposed.doc.slots!['color-theme']], ['aurora', 'global', 'global-button', 'aurora-night'], "hub only: axHub's skin, its override and its colours");
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place), sc.hubOnly.inPlugin, 'hub only: a plugin scope of its own is not drawn either');
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place).skin.id, 'aurora', 'hub only: inside the plugin, the hub-wide skin');
+  eq(composeLookAt(shared as never, drawn, skinOf), sc.hubOnly.noHubSkin, 'hub only, no hub-wide skin = fixture');
+  eq(composeLookAt(shared as never, drawn, skinOf).doc.slots, composeLook(shared as never, look0, null).slots, 'hub only, no hub-wide skin: the default snapshot');
+  eq(hubOnlyLook(null), sc.hubOnly.none, 'hub only: no look stays none');
 }
 console.log(`check-skin (coverage + scopes): ${n} checks passed`);
+
+/* ---- the hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026): the floor every app stands on ---- */
+{
+  const hd = fx.hubDefault;
+  const consoleSkin = normalizeSkin({ layoutTheme: 'classic-ide', colorTheme: 'arctic-daylight', styleTheme: 'soft-studio', assets: { button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons' }, extras: { spacing: 'tight', hidden: { toolbar: false }, settings: { 'axf.tokens.layout': { '*': { toolbarPosition: 'bottom' } } } }, chrome: { toolbar: { interface: 'chrome-toolbar', instances: { main: { bogus: 1 } } }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' }, 'Bad Id!': { style: 'pills' } } }, nope: { interface: 'x' } } });
+  const windows = normalizeSkin(skin);
+  const skins: Record<string, typeof windows> = { console: consoleSkin, windows, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+  const skinOf = (id: string) => skins[id] ?? null;
+  const withDefault = { ...shared, defaultSkin: { id: 'console', overrides: { dialog: 'hub-dialog' } } };
+  const withGlobal = { ...withDefault, skin: { id: 'aurora' } };
+  const hubDefault = hubDefaultOf(withDefault as never);
+  const place = { app: 'app', ui: 'home', plugin: 'notes' };
+  const edited = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: true } }, null);
+  const pluginOver = setScopeOverride(edited, 'plugin:notes', 'button', 'plugin-button');
+  const pluginOff = setScopeSkin(look0, 'plugin:notes', 'off');
+  const ownOn = setUseSkin(pickSkin(look0, 'windows'), true);
+  const following = setInheritSkin(look0, true);
+  const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(ownOn, { slots: { dialog: 'my-dialog' } }, windows), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+  const adopted = adoptHubDefault(mine, { at: '2026-11-14T23:00:00Z', by: 'skins-cli', reason: 'console look becomes the hub default' });
+  const restored = restoreLookBackup(adopted, '', '2026-11-14T23:30:00Z');
+  const chromeBad = { toolbar: { interface: 'Bad Id', instances: { main: { bogus: 1 }, 'Bad Id!': { variant: 'icons' } } }, 'tab-group': { instances: 7 }, nope: {} };
+
+  // the chain and the pointer
+  eq(skinScopeChain(place), hd.chain, 'chain = fixture');
+  eq(hd.chain[hd.chain.length - 1], SKIN_SCOPE_DEFAULT, 'the hub default skin is the root of the chain');
+  eq(hubDefaultOf(withDefault as never), hd.pointer.good, 'pointer = fixture');
+  eq(hd.pointer.good, { id: 'console', overrides: { dialog: 'hub-dialog' } }, 'the pointer: a skin id and hub-level overrides');
+  eq([hubDefaultOf(shared as never), hd.pointer.none, hd.pointer.junk], [null, null, null], 'no pointer or a junk one = no floor');
+  eq(hd.pointer.legacyColour, { id: 'console', overrides: { dialog: 'd' }, colorTheme: 'harbor' }, 'an old color-theme override on the pointer is read as its colour theme');
+  // the skin's chrome block
+  eq(consoleSkin.chrome, hd.chrome.normalized, 'chrome = fixture');
+  eq(consoleSkin.chrome, { toolbar: { interface: 'chrome-toolbar' }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' } } } }, 'chrome kinds and fields kept; an unknown kind, a bad instance id and a bogus field dropped');
+  eq(skinChromeErrors(chromeBad), hd.chrome.errors, 'chrome errors = fixture');
+  eq(hd.chrome.errors.length, 5, 'bad interface, bogus field, bad instance id, instances not an object, unknown kind');
+  eq(skinErrors({ ...skin, chrome: chromeBad }), hd.chrome.skinErrors, 'skinErrors carries the chrome errors');
+  eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, chrome: chromeBad }), skinErrors({ ...skin, chrome: chromeBad }), 'build engine agrees on the chrome block');
+  eq(skinErrors({ ...skin, chrome: consoleSkin.chrome }), [], 'a clean chrome block passes');
+  eq(skinChromeSettings(consoleSkin.chrome), hd.chrome.settings, 'chrome settings = fixture');
+  eq(hd.chrome.settings, { 'axf.chrome.settings.toolbar': 'chrome-toolbar', 'axf.chrome.tab-group.builds': { style: 'pills', position: 'left' } }, 'the chrome block lands on the chrome-settings@1 keys');
+  // resolution
+  const resolve = {
+    noOverride: resolveLookSkin(look0, null, place, hubDefault), noDefault: resolveLookSkin(look0, null, place, null), ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault), pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
+    pluginOverride: resolveLookSkin(pluginOver, null, place, hubDefault), followingHub: resolveLookSkin(following, globalSkinOf(withGlobal as never), place, hubDefault), followingNoHub: resolveLookSkin(following, null, place, hubDefault),
+    notFollowingHub: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place, hubDefault), noDocument: resolveLookSkin(null, null, place, hubDefault), offSkinColourStays: resolveLookSkin(setSkinColorTheme(look0, 'plum-noir'), null, place, hubDefault),
+  };
+  eq(resolve, hd.resolve, 'resolution = fixture');
+  eq(hd.resolve.noOverride, { id: 'console', overrides: { dialog: 'hub-dialog' }, from: 'default' }, 'no override: the floor decides, with the pointer\'s overrides');
+  eq(hd.resolve.noDefault, { id: '', overrides: {}, from: 'app' }, 'without a hub default nothing changes: the app\'s own look');
+  eq(hd.resolve.ownSkinOn, { id: 'windows', overrides: {}, from: 'app' }, 'Use skin on beats the floor');
+  eq(hd.resolve.pluginOff, { id: '', overrides: {}, from: 'plugin:notes' }, 'a plugin that says off stands below the floor');
+  eq(hd.resolve.pluginOverride, { id: 'console', overrides: { dialog: 'hub-dialog', button: 'plugin-button' }, from: 'default' }, 'a plugin override rides the floor');
+  eq(hd.resolve.followingHub.from, 'global', 'Follow still takes the hub-wide skin');
+  eq(hd.resolve.followingNoHub.from, 'default', 'Follow with no hub-wide skin: the floor');
+  eq(hd.resolve.notFollowingHub, hd.resolve.noOverride, 'a hub-wide skin is not taken without Follow: the floor');
+  eq(hd.resolve.noDocument.from, 'default', 'an app without a look document stands on the floor');
+  ok(!('colorTheme' in hd.resolve.offSkinColourStays), 'the colour theme kept beside a switched-off skin does not leak onto the floor');
+  eq(resolveSkinChain(['app', 'global', 'default'], (k) => (k === 'default' ? { use: 'on', id: 'x' } : { use: 'inherit' })), { id: 'x', overrides: {}, from: 'default' }, 'resolveSkinChain: the root decides when everything above inherits');
+  // composition: the floor, then the app's edits, then its screens and plugins
+  const composed = {
+    noOverride: composeLookAt(withDefault as never, look0, skinOf), partialOverride: composeLookAt(withDefault as never, edited, skinOf), pluginOverride: composeLookAt(withDefault as never, pluginOver, skinOf, place), pluginOff: composeLookAt(withDefault as never, pluginOff, skinOf, place),
+    ownSkinOn: composeLookAt(withDefault as never, ownOn, skinOf), followingHub: composeLookAt(withGlobal as never, following, skinOf), unknownDefault: composeLookAt({ ...shared, defaultSkin: { id: 'gone' } } as never, look0, skinOf), hubOnly: composeLookAt(withDefault as never, hubOnlyLook(mine), skinOf),
+  };
+  eq(composed, hd.composed, 'composition = fixture');
+  const c0 = hd.composed.noOverride;
+  eq(c0.doc.slots, { layout: 'classic-ide', 'color-theme': 'arctic-daylight', 'style-theme': 'soft-studio', button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons', dialog: 'hub-dialog', 'design-package': 'hub-default' }, 'no override: the hub default skin, the pointer\'s override, the snapshot only where the skin names nothing');
+  eq([c0.doc.hidden, c0.doc.spacing], [{ toolbar: false }, 'tight'], 'the skin\'s extras over the snapshot');
+  eq([c0.doc.settings!['axf.chrome.settings.toolbar'], c0.doc.settings!['axf.chrome.tab-group.builds'], c0.doc.settings!['axf.tokens.button']], ['chrome-toolbar', { style: 'pills', position: 'left' }, 'x'], 'the chrome block and the shared tokens are in the settings');
+  eq(c0.skin, hd.resolve.noOverride, 'who decided');
+  const c1 = hd.composed.partialOverride;
+  eq([c1.doc.slots!.button, c1.doc.hidden!.toolbar], ['terminal', true], 'partial override: the edited slot and the edited chrome flag');
+  eq({ ...c1.doc.slots, button: c0.doc.slots!.button }, c0.doc.slots, 'and nothing else differs from the floor');
+  eq(hd.composed.pluginOverride.doc.slots!.button, 'plugin-button', 'a plugin override beats the app\'s edit');
+  eq(hd.composed.pluginOff.doc.slots, composeLook(shared as never, look0, null).slots, 'a plugin that says off draws the saved look');
+  eq(hd.composed.ownSkinOn.doc.slots, composeLook(shared as never, ownOn, windows).slots, 'Use skin on composes as it always has');
+  eq(hd.composed.followingHub.skin.id, 'aurora', 'Follow draws the hub-wide skin');
+  eq(hd.composed.unknownDefault.doc.slots, composeLook(shared as never, look0, null).slots, 'a hub default this app does not have reads as none');
+  eq(hd.composed.unknownDefault.skin, { id: '', overrides: {}, from: 'default' }, 'and says so');
+  eq([hd.composed.hubOnly.skin.from, hd.composed.hubOnly.doc.slots!.dialog], ['default', 'hub-dialog'], 'Skin from axHub only with no hub-wide skin draws the floor');
+  // adopt: back up, then stand on the floor keeping only the edits
+  eq(adopted, hd.adopt.adopted, 'adopt = fixture');
+  eq(adopted.skin, { use: false, inherit: false, id: 'windows', overrides: {} }, 'Use skin off, the picked skin remembered, overrides moved');
+  eq(adopted.own.slots, { dialog: 'my-dialog', 'color-theme': 'plum-noir' }, 'the override and the colour pick made under the old skin are kept as own picks: the edits');
+  eq(adopted.scopes, {}, 'every scope inherits again');
+  eq(adopted.backups!.length, 1, 'one backup');
+  eq([adopted.backups![0].own, adopted.backups![0].skin, adopted.backups![0].scopes], [mine.own, mine.skin, mine.scopes], 'the backup is what the app drew');
+  eq([adopted.backups![0].id, adopted.backups![0].by, adopted.backups![0].reason], ['2026-11-14T23:00:00Z', 'skins-cli', 'console look becomes the hub default'], 'named, signed, explained');
+  eq([adopted.undo!.action, adopted.undo!.scope], ['adopt-default', 'app:app'], 'one undo');
+  eq(hd.adopt.adoptedTwice, adopted, 'adopting again changes nothing');
+  eq(hd.adopt.alreadyOnFloor, look0, 'an app already on the floor is untouched: no backup, no undo');
+  eq([hd.adopt.composed.dialog, hd.adopt.composed['color-theme'], hd.adopt.composed.layout, hd.adopt.composed.button], ['my-dialog', 'plum-noir', 'classic-ide', 'rounded-solid'], 'after adopt: the floor plus the kept edits');
+  eq(undoRestore(adopted), hd.adopt.undone, 'undo = fixture');
+  eq([hd.adopt.undone.skin, hd.adopt.undone.scopes, hd.adopt.undone.undo], [mine.skin, mine.scopes, null], 'undo brings the old skin and scopes back');
+  eq(hd.adopt.undone.backups, adopted.backups, 'undo keeps the backup');
+  // restore from backup
+  eq(restored, hd.adopt.restored, 'restore = fixture');
+  eq([restored.own, restored.skin, restored.scopes], [mine.own, mine.skin, mine.scopes], 'restore from backup: what the app drew is back');
+  eq(restored.backups, adopted.backups, 'the backups are kept');
+  eq([restored.undo!.action, restored.undo!.scope], ['restore-backup', 'app:app'], 'one undo');
+  eq(hd.adopt.restoredUndone.skin, adopted.skin, 'undo after restore goes back onto the floor');
+  eq(hd.adopt.nothingToRestore, look0, 'nothing to restore = unchanged');
+  eq(hd.adopt.roundTrip, adopted, 'backups and the undo survive the document rules');
+  eq(parseAppLook(JSON.stringify(adopted)), adopted, 'round trip');
+  eq(hd.adopt.backups.twice.length, 2, 'a backup identical to the newest is not added again');
+  eq(hd.adopt.backups.cap.length, LOOK_BACKUPS_MAX, `at most ${LOOK_BACKUPS_MAX} backups`);
+  eq(hd.adopt.backups.cap[0], `t${LOOK_BACKUPS_MAX + 1}`, 'newest first');
+  eq(hd.adopt.backups.newest, adopted.backups![0], 'lookBackup() = the newest');
+  eq([hd.adopt.backups.byId.id, hd.adopt.backups.missing], ['b2', null], 'by id, or null');
+  eq(lookBackup(adopted), adopted.backups![0], 'lookBackup reads the newest');
+  eq(backupLook(adopted, { at: 'b2' }).backups!.length, 2, 'backupLook adds a record');
+  assert.throws(() => adoptHubDefault(mine, {} as never), /needs the time/); n++;
+  assert.throws(() => restoreLookBackup(adopted, '', ''), /needs the time/); n++;
+  // the shared document carries the pointer
+  eq(parseAppearance(JSON.stringify(withDefault)), hd.shared.parsed, 'appearance@1 with defaultSkin = fixture');
+  eq(hd.shared.parsed.defaultSkin, { id: 'console', overrides: { dialog: 'hub-dialog' } }, 'parsed');
+  eq(mergeAppearance(parseAppearance(JSON.stringify(withGlobal)), { defaultSkin: { id: 'windows' } }, 'skins-cli', '2026-11-14T23:00:00Z'), hd.shared.merged, 'merge = fixture');
+  eq([hd.shared.merged.defaultSkin, hd.shared.merged.skin], [{ id: 'windows' }, { id: 'aurora' }], 'a default pick replaces the pointer and leaves the hub-wide skin alone');
+  eq(hd.shared.cleared.defaultSkin, undefined, 'null clears it');
+  eq(hd.shared.cleared.skin, undefined, 'the fixture document had no hub-wide skin');
+  eq(serializeAppearance(parseAppearance(JSON.stringify(withGlobal))!), hd.shared.serialized, 'serialize = fixture');
+  ok(hd.shared.serialized.includes('"defaultSkin"') && hd.shared.serialized.includes('"skin"'), 'the text carries both pointers (a save no longer drops the hub-wide skin)');
+  eq([parseAppearance(hd.shared.serialized)?.defaultSkin, parseAppearance(hd.shared.serialized)?.skin], [hd.shared.parsed.defaultSkin, { id: 'aurora' }], 'and reads back');
+  eq(combineAppearanceChanges({ defaultSkin: { id: 'a' } }, { skin: null }), hd.shared.combined, 'combine = fixture');
+  eq(hd.shared.combined, { defaultSkin: { id: 'a' }, skin: null }, 'a pending default pick survives a later change');
+
+  // the runtime: an app whose shared document names a hub default draws it with no change to its look document
+  const h = (() => {
+    const rt = new AxfRuntime({ manifest: manifest('app-i'), assets: assets as never, storageKey: 'skin-app-i' });
+    const store = new Store();
+    const src = new Source(store, { ...hubDoc, defaultSkin: { id: 'windows' } } as AppearanceDocument);
+    rt.attachAppearanceSource(src);
+    return { rt, store, src, active: () => ({ ...rt.getState().active }) as Record<string, string> };
+  })();
+  eq(h.rt.hubDefaultSkin(), { id: 'windows', overrides: {} }, 'the runtime reads the pointer');
+  eq(h.active()['color-theme'], 'windows-light', 'the floor is drawn');
+  eq(h.rt.skinInForce(), { id: 'windows', overrides: {}, from: 'default' }, 'the default level decided');
+  eq(h.rt.skinAt().from, 'default', 'skinAt agrees');
+  eq(h.store.doc?.skin, { use: false, inherit: false, id: '', overrides: {} }, 'the look document did not change: Use skin is off, nothing picked');
+  eq(h.src.saved, [], 'nothing is written to the shared document');
+  h.rt.swap('button' as never, 'terminal');
+  eq(h.store.doc?.own.slots, { button: 'terminal' }, 'an edit over the floor is the app\'s own pick');
+  eq([h.active().button, h.active()['color-theme']], ['terminal', 'windows-light'], 'the edit shows, the rest is still the floor');
+  eq(h.rt.skinInForce().from, 'default', 'the floor still decides');
+  eq(h.rt.skinOverrides(), [], 'no overridden dot: the app has no skin of its own');
+  h.rt.swap('color-theme' as never, 'aurora-night');
+  eq(h.active()['color-theme'], 'aurora-night', 'a colour pick over the floor shows');
+  eq(h.store.doc?.own.slots!['color-theme'], 'aurora-night', 'and is an own pick, not a pick inside the hub default skin');
+  eq(h.rt.skinScoped('plugin:ai.amberx.notes'), null, 'a plugin that inherits needs no scope of its own on the floor');
+  ok(h.rt.scopeSkin('plugin:ai.amberx.notes', 'off'), 'a plugin may stand below the floor');
+  eq((h.rt.skinScoped('plugin:ai.amberx.notes')!.getState().active as Record<string, string>)['style-theme'], before['style-theme'], 'inside it: the saved look');
+  h.rt.scopeSkin('plugin:ai.amberx.notes', 'inherit');
+  ok(h.rt.useSkin(true, 'hub-default'), 'Use skin on');
+  eq(h.rt.skinInForce().from, 'app', 'the app\'s own skin beats the floor');
+  ok(h.rt.useSkin(false), 'Use skin off');
+  eq(h.rt.skinInForce().from, 'default', 'off = back on the floor');
+  h.rt.restoreDefaultAppearance();
+  eq([h.rt.skinInForce().from, h.active().button, h.active()['color-theme']], ['default', 'windows', 'windows-light'], 'Restore to default = the floor with no edits');
+  h.src.doc = { ...hubDoc } as AppearanceDocument;
+  h.src.start();
+  eq(h.rt.skinInForce().from, 'app', 'the pointer gone from the shared document: the app\'s own look again');
+  eq(h.active()['color-theme'], before['color-theme'], 'exactly as before');
+}
+console.log(`check-skin (hub default skin): ${n} checks passed`);
 
 /* ---- the runtime: scopes, the hub-wide skin, parts and the icon pack ---- */
 {
@@ -537,3 +717,60 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);
+
+/* ---- Skin from axHub only (build console-skin-axhub-only): the switch drives the lock, draws the hub-wide skin only ---- */
+{
+  const rt = new AxfRuntime({ manifest: manifest('app-h'), assets: assets as never, storageKey: 'skin-app-h' });
+  const store = new Store();
+  const src = new Source(store, { ...hubDoc, skin: { id: 'windows' } } as AppearanceDocument);
+  rt.attachAppearanceSource(src);
+  const active = () => ({ ...rt.getState().active }) as Record<string, string>;
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked() && rt.appearanceLockReason() === '', 'default off');
+  ok(!isAppearanceSetting(HUB_SKIN_ONLY_KEY), 'not an appearance setting: Restore and the hub document leave it');
+  // this app's own look: Use skin with a design package, an override, a UI scope
+  ok(rt.useSkin(true, 'hub-default'), 'own skin on');
+  rt.swap('button' as never, rt.registry.list('button' as never).find((a) => a.id !== active().button)!.id);
+  ok(rt.scopeSkin('ui:home', 'on', 'windows'), 'a UI scope of its own');
+  const own = active();
+  const ownDoc = JSON.stringify(store.doc);
+  ok(own['color-theme'] !== 'windows-light', "the app's own skin is drawn");
+
+  ok(rt.setHubSkinOnly(true), 'switch on');
+  ok(rt.hubSkinOnly() && rt.appearanceLocked() && rt.appearanceLockReason() === 'hub', 'on: drives the appearance lock (reason hub)');
+  eq(active()['color-theme'], 'windows-light', "on: axHub's skin is drawn");
+  eq(rt.skinInForce(), { id: 'windows', overrides: {}, from: 'global' }, 'on: the global level decides');
+  eq(rt.skinAt({ ui: 'home' }).from, 'global', 'on: the UI scope of its own is not drawn');
+  eq(rt.skinScoped('ui:home'), null, 'on: no scoped view for it');
+  ok(rt.customSheet().includes('.fx-widget-label'), "on: the hub skin's own parts still draw");
+  eq(JSON.stringify(store.doc), ownDoc, 'on: the own look is kept, not changed');
+  ok(rt.gate('assets.swap') === 'disable' && !rt.can('assets.swap'), 'on: look controls are locked');
+  ok(!rt.useSkin(false) && !rt.pickSkin('windows') && !rt.swap('color-theme' as never, 'arctic-daylight') && !rt.scopeSkin('ui:home', 'off'), 'on: local picks are refused');
+  ok(!rt.previewSkin('hub-default'), 'on: no preview');
+  eq(src.saved, [], 'on: nothing is written to axHub');
+
+  // a change made on axHub applies live
+  src.doc = { ...hubDoc, skin: { id: 'windows', colorTheme: 'aurora-night' } } as AppearanceDocument;
+  src.start();
+  eq(active()['color-theme'], 'aurora-night', 'on: a colour picked on axHub applies live');
+  src.doc = { ...hubDoc, skin: { id: 'hub-default' } } as AppearanceDocument;
+  src.start();
+  eq(rt.skinInForce().id, 'hub-default', 'on: another hub-wide skin applies live');
+
+  rt.dispatch('appearance.hubskin:off');
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked(), 'appearance.hubskin:off turns it off and unlocks');
+  eq(active(), own, "off: the app's own look is back, exactly");
+  rt.dispatch('appearance.hubskin:toggle');
+  ok(rt.hubSkinOnly(), 'appearance.hubskin:toggle turns it on');
+  rt.settings.set(HUB_SKIN_ONLY_KEY, false);
+  ok(!rt.appearanceLocked() && rt.skinInForce().id === 'hub-default' && rt.skinInForce().from === 'app', 'the setting itself (settings.set) switches it off and redraws');
+
+  // the lock and the switch are separate: one off leaves the other
+  rt.setHubSkinOnly(true);
+  ok(rt.setAppearanceLocked(true), 'the lock on as well');
+  rt.setHubSkinOnly(false);
+  ok(rt.appearanceLocked() && rt.appearanceLockReason() === 'lock', 'switch off: the lock set on its own stays');
+  rt.dispatch('appearance.lock:off');
+  ok(!rt.appearanceLocked(), 'and appearance.lock:off unlocks it');
+  ok(['appearance.hubskin', 'appearance.lock'].every((id) => rt.actions.list().some((x) => x.id === id)), 'both actions registered');
+}
+console.log(`check-skin (skin from axHub only): ${n} checks passed`);

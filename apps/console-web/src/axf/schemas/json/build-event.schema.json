@@ -26,7 +26,8 @@
         "pr-merged",
         "addendum",
         "cancelled",
-        "restored"
+        "restored",
+        "shipped"
       ]
     },
     "at": {
@@ -67,10 +68,14 @@
             "queued",
             "running",
             "waiting",
+            "fixing",
             "blocked",
             "failed",
             "built",
+            "landing",
+            "landed",
             "complete",
+            "escalated",
             "archived"
           ]
         },
@@ -168,6 +173,28 @@
         },
         "index": {
           "type": "integer"
+        }
+      }
+    },
+    "shipped": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string"
+        },
+        "landedCommit": {
+          "type": "string"
         }
       }
     }

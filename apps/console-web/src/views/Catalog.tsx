@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePlaceTab } from './placeRestore';
 import { Button, Chip, Container, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import { statusTone } from '../api';
@@ -7,7 +8,7 @@ import { statusTone } from '../api';
 export function Catalog() {
   const rt = useRuntime();
   const s = useStore();
-  const [tab, setTab] = useState('kernel');
+  const [tab, setTab] = usePlaceTab<string>('view:catalog/tab:catalog.tabs', 'kernel');
   const [q, setQ] = useState('');
   const tabs = s.catalog.tabs;
   const cur = tabs.find((t) => t.id === tab) ?? tabs[0];

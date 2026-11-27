@@ -76,3 +76,5 @@
 .axp-crew__offItem { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
 
 :where([data-fx-tiny], [data-fx-small]) .axp-crew__live { margin-inline-start: 0; }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-crew > .fx-pagehead { margin-bottom: var(--fx-dens-gap-2xl) }

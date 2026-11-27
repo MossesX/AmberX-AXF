@@ -34,3 +34,5 @@ select.fx-input.axp-fable__filter { width: auto; flex: none }
 .axp-fable__body { gap: var(--fx-dens-gap-md) }
 .axp-fable__logline + .axp-fable__logline { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-xs); margin-top: var(--fx-dens-gap-xs) }
 .axp-fable__logcard .fx-card__body { max-height: calc(var(--fx-space) * 30); overflow: auto }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-fable > .fx-pagehead { margin-bottom: var(--fx-dens-gap-xl) }

@@ -6,9 +6,8 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued and retried while offline, within a small local cap. One switch in AmberX plus a quick-settings tile; Android asks for consent every start and shows a notification while recording. Calls and apps that block capture can't be recorded. The recordings list (play, share, delete, send to Audio Extract) shows in AmberX and on the console. Every part is transcribed on the VPS, with no model tokens, and saved with its session; transcripts are searchable.",
+  "description": "The recordings the paired phone makes of what it plays (Phone Connect records them; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks on axHub. The recordings list (play, download, delete) shows on the console. Every part is transcribed on the VPS, with no model tokens, and saved with its session; transcripts are searchable.",
   "targets": [
-    "amberx-droid",
     "axf-console"
   ],
   "provides": [

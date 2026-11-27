@@ -75,7 +75,7 @@ const HELP_SCOPES = [
   { scope: 'axhub-web', app: 'axHub web', dirs: ['apps/axhub-web/src/assets/help'], plugins: 'apps/axhub-web/src/plugins' },
 ];
 const HELP_KIND_TO_KIND = { screen: 'screen', toggle: 'setting', slider: 'setting', field: 'setting' };
-const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio', 'molly', 'demo'];
+const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'walkthrough-studio', 'molly', 'demo'];
 
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/');
@@ -163,7 +163,7 @@ function pluginEntries() {
       out.push(entry({
         id: `command:${folder}:${c.id}`, term: c.title || titleCase(c.id), kind: 'command', category: `Plugins › ${name} › Commands`,
         plugin: folder, app: 'Dev Console', summary: c.description || c.title || titleCase(c.id), generic: !c.description, detail: c.description, source: rel(pj),
-        api: [{ kind: 'rest', name: `${c.route?.split(' ')[0] || 'GET'} /api/plugins/${folder}${c.route?.split(' ')[1] || `/${c.id}`}` }, { kind: 'mcp', name: `${folder.replace(/-/g, '_')}_${String(c.id).replace(/-/g, '_')}` }, { kind: 'cli', name: `axf ${folder} ${c.id}` }],
+        api: [{ kind: 'rest', name: `${c.route?.split(' ')[0] || 'GET'} /api/plugins/${folder}${c.route?.split(' ')[1] || `/${c.id}`}` }, { kind: 'mcp', name: c.tool || `${folder.replace(/-/g, '_')}_${String(c.id).replace(/-/g, '_')}` }, { kind: 'cli', name: `axf ${folder} ${c.id}` }],
         related: [`plugin:${folder}`], tags: [c.readOnly ? 'read-only' : 'changes'],
       }));
     }
@@ -330,7 +330,8 @@ function cliEntries() {
   const out = [];
   for (const f of readdirSync(dir).filter((n) => /\.(mjs|mts)$/.test(n) && !/\.test\./.test(n)).sort()) {
     const src = readFileSync(join(dir, f), 'utf8').slice(0, 4000);
-    const head = src.match(/\/\*\*([\s\S]*?)\*\//);
+    // the header doc block; a long one may close past the slice read here, so an unclosed block counts too
+    const head = src.match(/\/\*\*([\s\S]*?)(?:\*\/|$)/);
     const text = head ? head[1].split('\n').map((l) => l.replace(/^\s*\*\s?/, '')).join(' ') : '';
     const name = f.replace(/\.(mjs|mts)$/, '');
     out.push(entry({
