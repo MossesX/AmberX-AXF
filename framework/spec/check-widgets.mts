@@ -124,6 +124,15 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(f.resolve['toolbar-style'].out.sides.end.find((w: any) => w.key === 'status:online').view.size, 'icon', 'the toolbar style beats the entry hint');
   eq(f.resolve['no-toolbar'].out, { sides: { start: [], end: [] }, hidden: [] }, 'no toolbar: nothing, run-time and slots included');
   eq(f.resolve['added-missing-asset'].out.sides.start, [], 'a slot for a missing asset or a non-widget type is skipped');
+  eq(f.resolve['empty-toolbar'].out, { sides: { start: [], end: [] }, hidden: [] }, 'an empty toolbar resolves to nothing');
+  eq(f.resolve['old-asset-no-widgets'].out, { sides: { start: [], end: [] }, hidden: [] }, 'an old toolbar asset with no widgets field stays valid and resolves to nothing');
+  for (const size of BANNER_WIDGET_SIZES) for (const show of BANNER_WIDGET_SHOWS) {
+    const c = f.resolve[`style-${size}-${show}`];
+    const w = [...c.out.sides.start, ...c.out.sides.end][0];
+    eq([w.view.size, w.shape, w.attrs['data-fx-shape']], [size, c.toolbar.widgets[0].shape, c.toolbar.widgets[0].shape], `banner widget style ${size} / ${show} with its shape on a toolbar`);
+    // the banner's own rule: an icon-only widget on `auto` shows its icon; every other pick is kept as made
+    eq(w.view.show, show === 'auto' && size === 'icon' ? 'icon' : show, `show ${show} at size ${size} on a toolbar`);
+  }
   for (const [name, c] of Object.entries<any>(f.fit)) eq(fitToolbar(c.plan, c.available), c.fit, `fit ${name}`);
   const fits = Object.values<any>(f.fit).map((c) => c.fit);
   ok(fits.every((x) => Object.values<number>(x.sides).every((w) => w >= 0)), 'sides never go negative');

@@ -27,6 +27,7 @@ import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, merge
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
+import { BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES } from '../core/engines/bannerwidgets';
 import { HOST_ENTRY_WIDGET, HOST_ENTRY_WIDGET_FIELDS, TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_APP_INSTANCE, TOOLBAR_PERSON_ORDER, TOOLBAR_WIDGETS_CONTRACT, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGETS_MAX, TOOLBAR_WIDGET_OPS, TOOLBAR_WIDGET_STYLE_KEY, WIDGET_STYLE_FIELDS, addToolbarWidget, fitToolbar, foldArrangement, hostEntryErrors, hostShapeErrors, matchToolbarInstance, mergeWidgetStyle, moveToolbarWidget, normalizeToolbarWidgetSlots, normalizeWidgetStyle, parseToolbarWidgetArgs, parseToolbarWidgetShapeArgs, patchToolbarWidget, removeToolbarWidget, resolveToolbarWidgets, toolbarInstanceOfKey, type ToolbarFitPlan, type ToolbarWidgetSlot } from '../core/engines/toolbar-widgets';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -697,7 +698,14 @@ write('spacing.json', {
     'no-shape-defaults': { toolbar: { widgets: [{ type: 'status', id: 'online', at: 'end' }, { type: 'avatar', id: 'account', at: 'end', widget: { size: 'icon' } }] } },
     'no-toolbar': { toolbar: null, extra: [cpu], slots: slotsRaw },
     'added-missing-asset': { toolbar: { widgets: [] }, slots: [{ type: 'clock', id: 'nope', at: 'start' }, { type: 'badge', id: 'new', at: 'start' }] },
+    'empty-toolbar': { toolbar: { widgets: [] } },
+    'old-asset-no-widgets': { toolbar: { groups: [{ id: 'main', items: [] }] } },
   };
+  // Every banner widget style (size x show) on a toolbar, each with a shape@1 id, so a port replays the whole registry.
+  const styleShapes = ['circle', 'pill', 'rounded', 'square', 'squircle', 'hexagon', 'diamond', 'tag'];
+  BANNER_WIDGET_SIZES.forEach((size, i) => BANNER_WIDGET_SHOWS.forEach((show, j) => {
+    resolveCases[`style-${size}-${show}`] = { toolbar: { widgets: [{ type: 'status', id: 'online', at: j % 2 ? 'end' : 'start', widget: { size, show }, shape: styleShapes[(i * BANNER_WIDGET_SHOWS.length + j) % styleShapes.length] }] } };
+  }));
   const fitPlan: ToolbarFitPlan = { sides: { start: [{ key: 'logo', width: 80, priority: 5, overflow: true }], end: [{ key: 'search', width: 120, priority: 2, overflow: true }, { key: 'cpu', width: 70, priority: 5, overflow: true }, { key: 'avatar', width: 32, priority: 9, overflow: false }] }, flex: { width: 400, min: 160 }, gap: 8, moreWidth: 32, padding: 12 };
   const fitCases = Object.fromEntries([900, 760, 600, 500, 420, 330, 260, 120].map((n) => [`w${n}`, { plan: fitPlan, available: n, fit: fitToolbar(fitPlan, n) }]));
   fitCases['no-more-menu-w330'] = { plan: { ...fitPlan, overflowMenu: false }, available: 330, fit: fitToolbar({ ...fitPlan, overflowMenu: false }, 330) };

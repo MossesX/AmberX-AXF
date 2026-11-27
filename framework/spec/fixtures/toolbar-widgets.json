@@ -1722,6 +1722,1135 @@
         },
         "hidden": []
       }
+    },
+    "empty-toolbar": {
+      "toolbar": {
+        "widgets": []
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "old-asset-no-widgets": {
+      "toolbar": {
+        "groups": [
+          {
+            "id": "main",
+            "items": []
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-icon-auto": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "icon",
+              "show": "auto"
+            },
+            "shape": "circle"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon",
+                "show": "auto"
+              },
+              "shape": "circle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "circle"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-icon-both": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "icon",
+              "show": "both"
+            },
+            "shape": "pill"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "both",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon",
+                "show": "both"
+              },
+              "shape": "pill",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "both",
+                "data-fx-shape": "pill"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-icon-icon": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "icon",
+              "show": "icon"
+            },
+            "shape": "rounded"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon",
+                "show": "icon"
+              },
+              "shape": "rounded",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "rounded"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-icon-text": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "icon",
+              "show": "text"
+            },
+            "shape": "square"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "text",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon",
+                "show": "text"
+              },
+              "shape": "square",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "text",
+                "data-fx-shape": "square"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-icon-number": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "icon",
+              "show": "number"
+            },
+            "shape": "squircle"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "number",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon",
+                "show": "number"
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "number",
+                "data-fx-shape": "squircle"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-compact-auto": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "compact",
+              "show": "auto"
+            },
+            "shape": "hexagon"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "compact",
+                "show": "auto"
+              },
+              "shape": "hexagon",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "hexagon"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-compact-both": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "compact",
+              "show": "both"
+            },
+            "shape": "diamond"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "both",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "compact",
+                "show": "both"
+              },
+              "shape": "diamond",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "both",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "diamond"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-compact-icon": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "compact",
+              "show": "icon"
+            },
+            "shape": "tag"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "icon",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "compact",
+                "show": "icon"
+              },
+              "shape": "tag",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "icon",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "tag"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-compact-text": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "compact",
+              "show": "text"
+            },
+            "shape": "circle"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "text",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "compact",
+                "show": "text"
+              },
+              "shape": "circle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "text",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "circle"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-compact-number": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "compact",
+              "show": "number"
+            },
+            "shape": "pill"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "number",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "compact",
+                "show": "number"
+              },
+              "shape": "pill",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "number",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-normal-auto": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "normal",
+              "show": "auto"
+            },
+            "shape": "rounded"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "auto",
+                "cap": {
+                  "n": 52,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "normal",
+                "show": "auto"
+              },
+              "shape": "rounded",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 52)",
+                "data-fx-shape": "rounded"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-normal-both": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "normal",
+              "show": "both"
+            },
+            "shape": "square"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "both",
+                "cap": {
+                  "n": 52,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "normal",
+                "show": "both"
+              },
+              "shape": "square",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "both",
+                "--fx-widget-cap": "calc(var(--fx-space) * 52)",
+                "data-fx-shape": "square"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-normal-icon": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "normal",
+              "show": "icon"
+            },
+            "shape": "squircle"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "icon",
+                "cap": {
+                  "n": 52,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "normal",
+                "show": "icon"
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "icon",
+                "--fx-widget-cap": "calc(var(--fx-space) * 52)",
+                "data-fx-shape": "squircle"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-normal-text": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "normal",
+              "show": "text"
+            },
+            "shape": "hexagon"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "text",
+                "cap": {
+                  "n": 52,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "normal",
+                "show": "text"
+              },
+              "shape": "hexagon",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "text",
+                "--fx-widget-cap": "calc(var(--fx-space) * 52)",
+                "data-fx-shape": "hexagon"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-normal-number": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "normal",
+              "show": "number"
+            },
+            "shape": "diamond"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "number",
+                "cap": {
+                  "n": 52,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "normal",
+                "show": "number"
+              },
+              "shape": "diamond",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "number",
+                "--fx-widget-cap": "calc(var(--fx-space) * 52)",
+                "data-fx-shape": "diamond"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-wide-auto": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "wide",
+              "show": "auto"
+            },
+            "shape": "tag"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "show": "auto"
+              },
+              "shape": "tag",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "tag"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-wide-both": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "show": "both"
+            },
+            "shape": "circle"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "both",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "show": "both"
+              },
+              "shape": "circle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "both",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "circle"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-wide-icon": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "wide",
+              "show": "icon"
+            },
+            "shape": "pill"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "icon",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "show": "icon"
+              },
+              "shape": "pill",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "icon",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "style-wide-text": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "show": "text"
+            },
+            "shape": "rounded"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "text",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "show": "text"
+              },
+              "shape": "rounded",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "text",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "rounded"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "style-wide-number": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "start",
+            "widget": {
+              "size": "wide",
+              "show": "number"
+            },
+            "shape": "square"
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "number",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "show": "number"
+              },
+              "shape": "square",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "number",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "square"
+              }
+            }
+          ],
+          "end": []
+        },
+        "hidden": []
+      }
     }
   },
   "fit": {
