@@ -43,3 +43,8 @@ _claude/builds/store.json.live.json
 # builds journal (builds-journal@1): lives on the hub data store (/projects/amberx-axf/_data/builds/journal); the repo
 # folder is only the spool and the old parts until the migration untracks them
 _claude/builds/journal/
+
+# builds live in Postgres (axf-data); these files are retired
+_claude/builds/store.json
+_claude/builds/orchestrator.json
+_claude/builds/store.json.*
