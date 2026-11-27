@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10441,
- "updatedAt": "2026-11-27T04:32:12.670Z",
+ "rev": 10442,
+ "updatedAt": "2026-11-27T04:32:38.384Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -386327,7 +386327,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:31:59.414Z",
+   "updatedAt": "2026-11-27T04:32:20.902Z",
    "builtAt": "",
    "notes": [
     {
@@ -386521,6 +386521,10 @@
     {
      "text": "Headless run axf-emergency-check-can-these-plugins---s2--rhonda: brief only · start 12.6K tokens ($0.07) · cost $1.17 · 12 turns · 6 tools, MCP none",
      "at": "2026-11-27T04:31:59.414Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $1.17",
+     "at": "2026-11-27T04:32:10.979Z"
     }
    ],
    "approvals": [],
@@ -386961,11 +386965,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 13,
+     "rev": 14,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T04:27:42.153Z",
-     "statusAt": "2026-11-27T04:24:27.708Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T04:32:20.981Z",
+     "statusAt": "2026-11-27T04:32:20.902Z",
+     "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
       {
@@ -387029,9 +387033,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:32:20.902Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
      "branch": "claude/emergency-check-can-these-plugins---s4",
@@ -387411,7 +387422,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 119,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387496,7 +387507,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:29:27.718Z",
+   "updatedAt": "2026-11-27T04:32:20.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -387745,13 +387756,11 @@
     },
     {
      "text": "Watchdog: step s3 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-27T04:29:27.718Z",
-     "by": "watchdog"
+     "at": "2026-11-27T04:29:27.718Z"
     },
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-27T04:29:27.718Z",
-     "by": "watchdog"
+     "at": "2026-11-27T04:29:27.718Z"
     }
    ],
    "approvals": [],
@@ -388106,11 +388115,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 15,
+     "rev": 17,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-27T04:29:35.168Z",
-     "statusAt": "2026-11-27T04:29:27.718Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T04:32:20.497Z",
+     "statusAt": "2026-11-27T04:32:20.378Z",
+     "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
       {
@@ -388188,9 +388197,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:32:20.378Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s3",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s3",
@@ -388219,9 +388235,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 12,
+     "rev": 13,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-27T04:29:35.168Z",
+     "updatedAt": "2026-11-27T04:30:10.843Z",
      "statusAt": "2026-11-27T04:29:27.718Z",
      "statusBy": "watchdog",
      "attempt": 3,
@@ -388501,7 +388517,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 128,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
