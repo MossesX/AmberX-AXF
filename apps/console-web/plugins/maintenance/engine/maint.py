@@ -107,18 +107,65 @@ def normalize_settings(raw: Any) -> dict[str, Any]:
     return out
 
 
-def read_json(p: Path, default: Any = None) -> Any:
+# ------------------------------------------------------------------ records (data-store@1, one row per record)
+# Settings, state, the snapshot, each plan and each run are records on axf-data. In the console container the engine
+# uses the server's data layer (data_store); on the host (standard library only) it reaches the same layer through
+# framework/core/data-files.mjs with node. A path the layer doesn't map (--out, a scratch folder) is a plain file there.
+
+_FILES_MJS = Path(__file__).resolve().parents[5] / "framework" / "core" / "data-files.mjs"
+_BRIDGE = ("import { readFileSync } from 'node:fs'; const q = JSON.parse(readFileSync(0, 'utf8')); const f = await import(q.m);"
+           " const r = q.op === 'read' ? f.readJsonSync(q.p, null) : q.op === 'write' ? f.writeJsonSync(q.p, q.v, 1)"
+           " : q.op === 'exists' ? f.existsAnySync(q.p) : q.op === 'list' ? f.listSync(q.p) : null;"
+           " process.stdout.write(JSON.stringify({ r: r === undefined ? null : r }));")
+
+
+def _layer() -> Any:
     try:
-        return json.loads(p.read_text())
+        import data_store  # the console server's data layer
+        return data_store
+    except Exception:  # noqa: BLE001 — on the host: no console server modules
+        return None
+
+
+def _files(op: str, p: Path, value: Any = None) -> Any:
+    """One data-files.mjs call from the host. Raises OSError when the layer can't be reached."""
+    node = shutil.which("node")
+    if not node or not _FILES_MJS.is_file():
+        raise OSError("the data layer needs node and framework/core/data-files.mjs beside the engine")
+    q = {"op": op, "p": str(p), "v": value, "m": _FILES_MJS.as_uri()}
+    r = subprocess.run([node, "--input-type=module", "-e", _BRIDGE], input=json.dumps(q), capture_output=True, text=True, timeout=120)
+    if r.returncode != 0:
+        raise OSError((r.stderr or "the data layer failed").strip().splitlines()[-1][-300:])
+    return json.loads(r.stdout)["r"]
+
+
+def read_json(p: Path, default: Any = None) -> Any:
+    ds = _layer()
+    try:
+        v = ds.read_json(p, None) if ds else _files("read", p)
     except (OSError, ValueError):
         return default
+    return default if v is None else v
 
 
 def write_json(p: Path, value: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
-    tmp.write_text(json.dumps(value, indent=1, sort_keys=False))
-    os.replace(tmp, p)
+    ds = _layer()
+    if ds:
+        ds.write_json(p, value, indent=1, mode=0o644)
+    else:
+        _files("write", p, value)
+
+
+def record_exists(p: Path) -> bool:
+    ds = _layer()
+    return bool(ds.exists(p) if ds else _files("exists", p))
+
+
+def record_names(d: Path) -> list[str]:
+    """The .json records directly inside one of the engine's folders, by name."""
+    ds = _layer()
+    names = ds.list_files(d) if ds else _files("list", d)
+    return sorted(n for n in names or [] if "/" not in n and n.endswith(".json"))
 
 
 def load_settings(data_dir: Path = DATA_DIR) -> dict[str, Any]:
@@ -812,7 +859,7 @@ def run_plan(run_id: str, sha: str, data_dir: Path = DATA_DIR, run: Runner = _ru
         raise SystemExit(f"no plan {run_id}")
     if plan_sha(p) != sha or p.get("sha") != sha:
         raise SystemExit("the plan changed after it was approved; nothing was removed")
-    if (data_dir / "runs" / f"{run_id}.json").exists():
+    if record_exists(data_dir / "runs" / f"{run_id}.json"):
         raise SystemExit("this plan already ran; nothing was removed")
     res = execute(p, Ctx(load_settings(data_dir), run))
     write_json(data_dir / "runs" / f"{run_id}.json", res)
