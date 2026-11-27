@@ -7,7 +7,8 @@ import { fillApi, type FillStatus, type SlotRow } from './fill';
  * Slots strip (fill every slot, Nov 13 2026): one chip per agent slot on the VPS, saying which build and step runs
  * there (a parallel step session shows its step; the build's own session shows the build) or that it is free, then what
  * the next dispatcher round would start (planFill dry run) and a "Fill now" button. Data: GET pipeline/fill (the same as
- * the MCP command pipeline-fill-status, `pipeline.mjs fill status`, `agent-slots.mjs fill` and the voice action).
+ * the MCP command pipeline-fill-status, `pipeline.mjs fill status`, `agent-slots.mjs fill` and the voice action), read
+ * one page at a time (fill.ts): the strip keeps the slots, the plan and the builds running parallel steps, nothing more.
  * Deep link: console_show `builds/pipeline/slots` (the strip scrolls into view and flashes). Layout is a strip asset
  * choice: chips (default), grid or list (UI Review options), set by the settings sub-tab.
  */
@@ -19,7 +20,7 @@ export const SLOTS_ANCHOR = 'builds-pipeline-slots';
 
 const label = (r: SlotRow) => (r.state === 'free' ? 'free' : `${r.build || r.name}${r.step ? ` · ${r.step}` : ''}`);
 
-export function SlotsStrip({ api, layout = 'chips', onData }: { api: Api; layout?: SlotsLayout; onData?: (f: FillStatus) => void }) {
+export function SlotsStrip({ api, layout = 'chips', project = '', onData }: { api: Api; layout?: SlotsLayout; project?: string; onData?: (f: FillStatus) => void }) {
   const rt = useRuntime();
   const fill = fillApi(api);
   const [f, setF] = useState<FillStatus | null>(null);
@@ -27,7 +28,7 @@ export function SlotsStrip({ api, layout = 'chips', onData }: { api: Api; layout
   const [busy, setBusy] = useState(false);
   const timer = useRef<number | null>(null);
   const load = async () => {
-    try { const r = await fill.status(); setF(r); setError(''); onData?.(r); }
+    try { const r = await fill.statusWithBuilds({ project }); setF(r); setError(''); onData?.(r); }
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => {

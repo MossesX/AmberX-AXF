@@ -3,7 +3,9 @@
  * steps, driven only by status. No tabs: filters sit on the toolbar (status, account, model, date, words). The merge
  * queue is the same table, read-only, filtered to merging-pr through merging-main (mode="queue").
  *
- * Rows come from GET /table (status-table.mjs → the builds store on Postgres). The table re-reads them the moment the
+ * Rows come from GET /table (status-table.mjs → the builds store on Postgres), one page at a time (paging.tsx): the
+ * status filter and the page go to the server (?status=&limit=&offset=), the rest of the list loads when its foot
+ * scrolls into view or on "Load more", and the table never holds more than the pages it has shown. It re-reads them the moment the
  * builds live channel says `builds.updated` (live.ts: GET /api/builds/events), when the window gets the focus back, and
  * on a poll while the page is visible (every POLL_MS without the channel, every LIVE_POLL_MS with it: a missed event
  * still shows). A read that finds the store at the same rev carries nothing.
@@ -27,15 +29,18 @@ import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './fo
 import { liveOpen, onBuildsUpdated } from './live';
 import { mergeTogether, mergeTogetherLine } from './mergeTogether';
 import { waitingToMerge, type PipelineView } from './pipeline-view-core.mjs';
+import { LoadMore, PAGE_SIZE, addPage, pageOf, pageQuery, readWindow, type Paged } from './paging';
 import './status-table.css';
 
 type Api = ReturnType<typeof pluginApi>;
-type TableRes = { ok: boolean; error?: string; unchanged?: boolean; rev?: number; updatedAt?: string; rows?: TableRow[] };
+type TableRes = Paged & { ok: boolean; error?: string; unchanged?: boolean; rev?: number; updatedAt?: string; rows?: TableRow[] };
 export type Filters = { status: string; account: string; model: string; date: string; text: string; landed: boolean };
 export const NO_FILTERS: Filters = { status: '', account: '', model: '', date: '', text: '', landed: false };
 const POLL_MS = 5_000;
 /** The poll while the live channel is connected: only a safety net for a missed event. */
 const LIVE_POLL_MS = 30_000;
+/** How far the table reads on by itself to reach a build that was asked for (a deep link, a search hit). */
+const FOCUS_SCAN_ROWS = 1000;
 
 /** Another part of the console (an action, a deep link) asks for a filter: the table takes it. */
 export const FILTER_EVENT = 'axf:orchestrator-filter';
@@ -155,35 +160,72 @@ const PHONE_HIDDEN = ['number', 'status', 'now', 'steps', 'model', 'account', 's
 const PHONE_STEP_HIDDEN = ['id', 'uid', 'status', 'split', 'model', 'account', 'slot', 'timer', 'pr'];
 
 /**
- * The rows from GET /table (landed ones only when a filter asks for them): re-read on every `builds.updated` of the
- * live channel, when the window gets the focus back, and on the poll while the page is visible.
+ * The rows from GET /table, one page at a time (landed ones only when a filter asks for them; `status` is the status
+ * filter the server applies, one or a comma list): the pages already shown are re-read on every `builds.updated` of the
+ * live channel, when the window gets the focus back, and on the poll while the page is visible. `more` adds the next page.
  */
-function useTableRows(api: Api, landed: boolean) {
+function useTableRows(api: Api, landed: boolean, status: string, project = '') {
+  const key = `${landed ? 1 : 0}|${status}|${project}`;
   const [rows, setRows] = useState<TableRow[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [loadedFor, setLoadedFor] = useState('');
   const [error, setError] = useState('');
   const [rev, setRev] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
   const revRef = useRef<number | null>(null);
+  const cur = useRef<{ key: string; rows: TableRow[]; total: number; busy: boolean; added: number }>({ key: '', rows: [], total: 0, busy: false, added: 0 });
+  const read = async (limit: number, offset: number, since?: number) => {
+    const r = await api.call<TableRes>(pageQuery('table', { status, project, limit, offset }, { landed: landed ? 1 : 0, since }));
+    if (!r.ok) throw new Error(r.error ?? 'the builds table did not load');
+    return r;
+  };
+  const put = (list: TableRow[], n: number) => { cur.current.rows = list; cur.current.total = Math.max(n, list.length); setRows(list); setTotal(cur.current.total); setLoadedFor(key); };
   const load = async (fresh = false) => {
+    const mine = cur.current; const added = mine.added;
     try {
-      const q = `table?landed=${landed ? 1 : 0}${!fresh && revRef.current != null ? `&since=${revRef.current}` : ''}`;
-      const r = await api.call<TableRes>(q);
-      if (!r.ok) throw new Error(r.error ?? 'the builds table did not load');
-      if (!r.unchanged) { setRows(T.ensureViews(r.rows)); revRef.current = r.rev ?? null; setRev(r.rev ?? null); }
+      const seen = { unchanged: false, rev: null as number | null };
+      const w = await readWindow<TableRow>(Math.max(mine.rows.length, PAGE_SIZE), async (limit, offset) => {
+        const r = await read(limit, offset, offset === 0 && !fresh && revRef.current != null ? revRef.current : undefined);
+        if (r.unchanged) { seen.unchanged = true; return { rows: [], limit, offset, total: 0 }; }
+        if (offset === 0) seen.rev = r.rev ?? null;
+        return pageOf(r, T.ensureViews(r.rows), { status, limit, offset });
+      });
+      // a next page that arrived while this re-read ran is kept: the read after it carries both
+      if (mine !== cur.current || mine.busy || mine.added !== added) return;
+      if (!seen.unchanged) { put(w.rows, w.total); revRef.current = seen.rev; setRev(seen.rev); }
       setError('');
-    } catch (e) { setError((e as Error).message); setRows((x) => x ?? []); }
+    } catch (e) { if (mine === cur.current) { setError((e as Error).message); setRows((x) => x ?? []); } }
+  };
+  const more = async () => {
+    const mine = cur.current;
+    if (mine.busy || mine.rows.length >= mine.total) return;
+    mine.busy = true; setBusy(true);
+    try {
+      const offset = mine.rows.length;
+      const r = await read(PAGE_SIZE, offset);
+      if (mine !== cur.current || r.unchanged) return;
+      const p = pageOf(r, T.ensureViews(r.rows), { status, limit: PAGE_SIZE, offset });
+      const next = addPage(mine.rows, p.rows);
+      // a page that adds nothing (the list moved under it): stop here, the next re-read puts it right
+      mine.added += 1; put(next, next.length > offset ? p.total : next.length);
+      setError('');
+    } catch (e) { if (mine === cur.current) setError((e as Error).message); }
+    finally { mine.busy = false; if (mine === cur.current) setBusy(false); }
   };
   useEffect(() => {
+    // a new filter starts a new list: the rows on screen stay until its first page arrives
+    cur.current = { key, rows: [], total: 0, busy: false, added: 0 }; setBusy(false);
     revRef.current = null; void load(true);
     let last = Date.now();
-    const read = () => { last = Date.now(); void load(); };
-    const t = setInterval(() => { if (document.visibilityState !== 'hidden' && Date.now() - last >= (liveOpen() ? LIVE_POLL_MS : POLL_MS) - 250) read(); }, POLL_MS);
-    const vis = () => { if (document.visibilityState === 'visible') read(); };
+    const again = () => { last = Date.now(); void load(); };
+    const t = setInterval(() => { if (document.visibilityState !== 'hidden' && Date.now() - last >= (liveOpen() ? LIVE_POLL_MS : POLL_MS) - 250) again(); }, POLL_MS);
+    const vis = () => { if (document.visibilityState === 'visible') again(); };
     document.addEventListener('visibilitychange', vis);
-    window.addEventListener('focus', read);
-    const off = onBuildsUpdated(read); // closes the stream with the last table on the page
-    return () => { clearInterval(t); document.removeEventListener('visibilitychange', vis); window.removeEventListener('focus', read); off(); };
-  }, [landed]);
-  return { rows, error, rev, reload: () => load(true) };
+    window.addEventListener('focus', again);
+    const off = onBuildsUpdated(again); // closes the stream with the last table on the page
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', vis); window.removeEventListener('focus', again); off(); };
+  }, [key]);
+  return { rows, total, current: loadedFor === key, error, rev, busy, more, reload: () => load(true) };
 }
 
 export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'queue' }) {
@@ -196,9 +238,22 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
   useEffect(() => { if (queue) return undefined; const on = (e: Event) => setF((x) => ({ ...x, ...(e as CustomEvent<Partial<Filters>>).detail })); window.addEventListener(FILTER_EVENT, on); return () => window.removeEventListener(FILTER_EVENT, on); }, [queue]);
   const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setF((x) => ({ ...x, [k]: v }));
   const wantLanded = !queue && (f.landed || f.status === 'landed');
-  const { rows, error, rev, reload } = useTableRows(api, wantLanded);
+  // the server filters by status and pages; account, model, date and words filter the pages on screen
+  const asked = queue ? (f.status || T.MERGE_QUEUE.join(',')) : f.status;
+  const { rows, total, current, error, rev, busy: loadingMore, more, reload } = useTableRows(api, wantLanded, asked);
   const all = rows ?? [];
   const opts = useMemo(() => T.filterOptions(all), [rows]);
+  // how many builds each status has: exact once the whole unfiltered list is on screen, and for the status asked for
+  // (the server's total); until then a count is what the loaded pages hold, marked "+"
+  const known = useRef<{ counts: Partial<Record<string, number>>; exact: boolean }>({ counts: {}, exact: false });
+  const counts = useMemo(() => {
+    const k = known.current;
+    if (!rows || !current) return k;
+    if (!f.status) { k.counts = { ...opts.counts }; k.exact = all.length >= total; }
+    else k.counts = { ...k.counts, [f.status]: total };
+    return { ...k };
+  }, [rows, total, current, f.status]);
+  const countLabel = (s: string) => { const n = counts.counts[s]; return n === undefined ? '' : ` (${n}${counts.exact || s === f.status ? '' : '+'})`; };
   const shown = useMemo(() => T.filterRows(all, queue ? { ...f, status: f.status || [...T.MERGE_QUEUE], landed: false } : f), [rows, f, queue]);
 
   const [sort, setSort] = useState<GridSort>(null);
@@ -216,10 +271,12 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
   }, [listed, focusId]);
   // a build asked for that the filters hide: clear them so it shows (it may be landed: ask for those too)
   useEffect(() => { if (focusId && rows && !listed && !queue && Object.values(f).some(Boolean)) setF({ ...NO_FILTERS, landed: true }); }, [focusId, rows]);
+  // a build asked for that sits on a page not loaded yet: read on until it shows (up to FOCUS_SCAN_ROWS)
+  useEffect(() => { if (focusId && rows && current && !error && !listed && !loadingMore && all.length < total && all.length < FOCUS_SCAN_ROWS) void more(); }, [focusId, rows, current, listed, loadingMore, error]);
 
   // the Builds page toolbar (page-toolbar@1, assets/toolbar/build-orchestrator-pipeline.json) works on the picked row
   const one = shown.find((r) => r.id === picked);
-  const statuses = T.BUILD_STATUSES.filter((s) => opts.counts[s] > 0);
+  const statuses = T.BUILD_STATUSES.filter((s) => (counts.counts[s] ?? 0) > 0 || s === f.status);
   const nextStep = one?.steps.find((s) => s.status !== 'completed' && s.status !== 'in-pr' && s.model !== 'Fable');
   usePublishPageState(queue ? null : 'build-orchestrator', {
     tab: 'table',
@@ -244,7 +301,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     'builds.filter-status': () => { const i = statuses.indexOf(f.status as never); const next = statuses[i + 1] ?? ''; set('status', next); return { statusFilter: next }; },
   });
 
-  const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
+  const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''}${countLabel(s)}` }));
   const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && v);
   const waiting = useMemo(() => waitingToMerge(all).map((r) => r.id), [rows]);
   const cols: GridColumn<TableRow>[] = [
@@ -283,7 +340,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
       </div>
       {!queue && <PageToolbar view="build-orchestrator" slot="pipeline" label="Builds: actions on the picked build" />}
       {error && <div className="pl-note is-warn" role="status"><Icon name="alert" size={14} />{error}</div>}
-      <p className="st-live fx-small fx-muted" aria-live="polite"><span className="st-live__dot" aria-hidden="true" />{rows == null ? 'Loading the builds…' : `Live from the builds store${rev != null ? ` · rev ${rev}` : ''} · ${shown.length} of ${all.length}${queue ? ' · read-only' : ''}`}</p>
+      <p className="st-live fx-small fx-muted" aria-live="polite"><span className="st-live__dot" aria-hidden="true" />{rows == null ? 'Loading the builds…' : `Live from the builds store${rev != null ? ` · rev ${rev}` : ''} · ${shown.length} shown · ${all.length} of ${total} loaded${queue ? ' · read-only' : ''}`}</p>
       {rows != null && (
         <div className="oc-grid">
           <DataGrid<TableRow> id={queue ? 'orch-merge-queue' : 'orch-status-table'} label={queue ? 'Merge queue' : 'Builds'} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
@@ -297,6 +354,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
             renderDetail={(r) => <BuildDetail r={r} phone={phone} api={api} canSend={!queue} waiting={waiting} onChanged={() => void reload()} />} key={phone ? 'phone' : 'wide'} />
         </div>
       )}
+      {rows != null && <LoadMore shown={all.length} total={total} busy={loadingMore} onMore={() => void more()} />}
     </div>
   );
 }

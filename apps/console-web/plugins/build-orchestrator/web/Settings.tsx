@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Note, SelectField, Switch, useRuntime } from '@console/axf/react';
 import * as consoleApi from '@console/api';
-import { fillApi, type FillSettings } from './fill';
+import { FILL_HEAD, fillApi, type FillSettings } from './fill';
 import type { SlotsLayout } from './SlotsStrip';
 
 /*
@@ -40,7 +40,7 @@ export function FillSettingsPanel({ api }: { api: Api }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [layout, setLayout] = useState<SlotsLayout>(readSlotsLayout);
-  useEffect(() => { void fill.status().then((f) => setS(f.settings)).catch((e: Error) => setError(e.message)); }, []);
+  useEffect(() => { void fill.status('', FILL_HEAD).then((f) => setS(f.settings)).catch((e: Error) => setError(e.message)); }, []);
   const save = async (patch: Partial<FillSettings>) => {
     setBusy(true);
     try { const r = await fill.settings(patch); setS(r.settings); rt.toast(r.changed.length ? r.changed.map((c) => `${c.key.replace('builds.', '')}: ${String(c.to)}`).join(', ') : 'Nothing changed', 'success'); }

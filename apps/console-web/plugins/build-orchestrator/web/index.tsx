@@ -7,11 +7,12 @@ import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
 import { StatusTable } from './StatusTable';
-import { ensureViews, statusLabel, type TableRow } from './status-table-core.mjs';
+import { MERGE_QUEUE, ensureViews, statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
 import { mergeTogether, mergeTogetherLine } from './mergeTogether';
 import { waitingToMerge } from './pipeline-view-core.mjs';
-import { fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
+import { FILL_HEAD, fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
+import { PAGE_MAX, addPage, pageOf, pageQuery, type Paged } from './paging';
 import { FILL_ANCHOR, FillSettingsPanel } from './Settings';
 import { SLOTS_ANCHOR } from './SlotsStrip';
 import { stepsAnchor } from './StepDeps';
@@ -47,13 +48,45 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
  */
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
-// search and the context menu read the same rows as the table (GET /table: the builds store, landed ones included)
-let rows: TableRow[] = []; let loadedAt = 0;
+// search and the context menu read the same rows as the table (GET /table: the builds store, landed ones included),
+// one page of them: the builds the table leads with. Never every build (Brett, Nov 25 2026: no whole-set reads).
+type RowsRes = Paged & { ok: boolean; rows?: TableRow[] };
+let rows: TableRow[] = []; let rowsTotal = 0; let loadedAt = 0;
+const readRows = async (offset: number, status = '') => {
+  const q = { status, limit: PAGE_MAX, offset };
+  const r = await pipeApi.call<RowsRes>(pageQuery('table', q, { landed: 1 }));
+  return pageOf(r, ensureViews(r.rows), q);
+};
 async function loadRows(force = false): Promise<TableRow[]> {
   if (!force && Date.now() - loadedAt < 30_000) return rows;
-  const r = await pipeApi.call<{ ok: boolean; rows?: TableRow[] }>('table?landed=1');
-  rows = ensureViews(r.rows); loadedAt = Date.now();
+  const p = await readRows(0);
+  rows = p.rows; rowsTotal = p.total; loadedAt = Date.now();
   return rows;
+}
+/** How many pages a look-up of one build reads before it gives up (the table itself reads on from there). */
+const FIND_PAGES = 5;
+/** Is this build in the builds store? true / false, or null when it was not found in the pages read and more remain. */
+async function hasBuild(id: string): Promise<boolean | null> {
+  if ((await loadRows(true)).some((x) => x.id === id)) return true;
+  let offset = rows.length;
+  for (let i = 1; i < FIND_PAGES && offset < rowsTotal; i += 1) {
+    const p = await readRows(offset);
+    if (p.rows.some((x) => x.id === id)) return true;
+    if (!p.rows.length) break;
+    offset += p.rows.length;
+  }
+  return offset >= rowsTotal ? false : null;
+}
+/** The builds waiting in the merge line, asked for by status (every page of that short list). */
+async function mergeLineRows(): Promise<TableRow[]> {
+  const status = ['build-complete', ...MERGE_QUEUE].join(',');
+  let out: TableRow[] = [];
+  for (let i = 0; i < FIND_PAGES; i += 1) {
+    const p = await readRows(out.length, status);
+    out = addPage(out, p.rows);
+    if (!p.rows.length || out.length >= p.total) break;
+  }
+  return waitingToMerge(out);
 }
 /** A build's state as the table shows it (the store's pipeline view; older rows: the status label). */
 const label = (r: TableRow) => r.view?.label || statusLabel(r.status, r.attempt);
@@ -95,7 +128,7 @@ export const plugin: AxfWebLibrary = {
       if (openTab(tabOf(id))) return;
       // the build: the table clears filters that hide it, then its row scrolls into view, expands and stays highlighted
       focusBuild(id);
-      try { if (!(await loadRows(true)).some((x) => x.id === id)) rt.toast(`No build "${id}" in the builds store.`, 'warning'); }
+      try { if ((await hasBuild(id)) === false) rt.toast(`No build "${id}" in the builds store.`, 'warning'); }
       catch { /* the table shows its own error */ }
     };
     registerWatchdogActions(rt);
@@ -135,7 +168,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('build-orchestrator.pipeline-fill-status', ([arg]) => {
       const build = decodeURIComponent(arg ?? '').trim();
       void open(build || 'active');
-      void fill.status(build).then((f) => rt.toast(fillSummary(f), 'info')).catch(fail);
+      void fill.status(build, FILL_HEAD).then((f) => rt.toast(fillSummary(f), 'info')).catch(fail);
     }, { label: 'Fill every slot: what runs in each agent slot and what starts next (a build adds its steps)', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.settings', ([arg]) => {
       rt.dispatch('settings.open:build-orchestrator');
@@ -186,8 +219,8 @@ export const plugin: AxfWebLibrary = {
     // narrow it (comma separated); with none it takes every build the table shows as waiting to merge.
     rt.actions.register('build-orchestrator.merge-together', ([arg]) => {
       const named = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
-      void loadRows(true)
-        .then((all) => { const ids = named.length ? named : waitingToMerge(all).map((r) => r.id); if (ids.length < 2) throw new Error(ids.length ? 'Only one build is waiting to merge: there is nothing to combine.' : 'No build is waiting to merge.'); return mergeTogether(pipeApi, ids).then((r) => rt.toast(mergeTogetherLine(r, ids.length), 'success')); })
+      void (named.length ? Promise.resolve([]) : mergeLineRows())
+        .then((waiting) => { const ids = named.length ? named : waiting.map((r) => r.id); if (ids.length < 2) throw new Error(ids.length ? 'Only one build is waiting to merge: there is nothing to combine.' : 'No build is waiting to merge.'); return mergeTogether(pipeApi, ids).then((r) => rt.toast(mergeTogetherLine(r, ids.length), 'success')); })
         .catch((e: Error) => rt.toast(e.message, 'warning'));
     }, { label: 'Build orchestrator: merge the waiting builds together (one branch, CI once, one merge)', params: true });
     // done-means-merged@1: a build's Attempts tab (deep link row:<build>/tab:attempts) and Retry, the same calls as

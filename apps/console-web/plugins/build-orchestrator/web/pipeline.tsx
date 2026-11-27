@@ -11,6 +11,7 @@ import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@cons
 import { ParallelBadge, SlotsStrip, type SlotsLayout } from './SlotsStrip';
 import { StepDeps } from './StepDeps';
 import type { FillStatus } from './fill';
+import { LoadMore, PAGE_SIZE, addPage, pageOf, pageQuery, readWindow, type Paged } from './paging';
 
 /*
  * Nov 10 2026 (build retire-build-manager-the-orchestrator-is-the-onl): the orchestrator is the only place that browses
@@ -30,6 +31,11 @@ import type { FillStatus } from './fill';
  * the API overflow switch (off by default) and each build's route (Auto / API / Subscriptions) decide when a build may
  * run on an API-key account; API accounts show their key, caps and room. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
  * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
+ *
+ * Paged reads (Brett, Nov 25 2026: no pipeline status file, no whole-set reads): GET /pipeline is asked for with no
+ * build rows (limit=0) and gives the accounts, slots, plan, settings and how many builds each table holds; the builds
+ * of the tab on screen come from GET /pipeline/tab/<tab>?status=&limit=&offset= one page at a time, the next page when
+ * the foot of the list scrolls into view or on "Load more" (paging.tsx). Nothing here holds every build.
  */
 
 type Planned = { model: string; account: string; kind: string; at: string; why: string } | null;
@@ -38,8 +44,12 @@ type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
 type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
+type TableCounts = { pending: number; queued: number; building: number };
+/** GET /pipeline as it arrives: the build lists are counted (the answer's totals, else their length) and dropped. */
+type StatusRes = Omit<Status, 'counts'> & Paged & { error?: string; table?: Partial<Record<keyof TableCounts, unknown[]>>; tabs?: unknown; totals?: { table?: Partial<TableCounts> } };
+type TabRes = Paged & { ok: boolean; error?: string; tab?: string; rows?: Row[] };
 type Status = {
-  ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
+  ok: boolean; at: string; counts: TableCounts; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
@@ -70,7 +80,7 @@ const ACTION_ORDER = Object.keys(ACTION) as BuildAction[];
 type ActionResult = { ok: boolean; error?: string; done?: { id: string; tab: string }[]; refused?: { id: string; error: string }[] };
 const yn = (v: boolean | null | undefined) => (v == null ? '?' : v ? 'yes' : 'no');
 
-export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void; view: PipelineView; slotsLayout?: SlotsLayout }) {
+export function PipelineTab({ api, log, view, slotsLayout = 'chips', project = '' }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void; view: PipelineView; slotsLayout?: SlotsLayout; project?: string }) {
   const rt = useRuntime();
   // fill every slot: parallel step sessions per build (the badge), from the Slots strip's own reads
   const [parallel, setParallel] = useState<Record<string, number>>({});
@@ -79,17 +89,66 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [sel, setSel] = useState<Set<string>>(() => new Set());
+  const [statusFilter, setStatusFilter] = useState('');
   const timer = useRef<number | null>(null);
+  // the builds of the tab on screen, one page at a time (no rows at all on Accounts)
+  const tab = view === 'accounts' ? '' : view;
+  const tabKey = `${tab}|${statusFilter}|${project}`;
+  const [tabRows, setTabRows] = useState<Row[]>([]);
+  const [tabTotal, setTabTotal] = useState(0);
+  const [moreBusy, setMoreBusy] = useState(false);
+  const cur = useRef<{ key: string; rows: Row[]; total: number; busy: boolean; added: number }>({ key: '', rows: [], total: 0, busy: false, added: 0 });
+  const readTab = async (limit: number, offset: number) => {
+    const q = { status: statusFilter, project, limit, offset };
+    const r = await api.call<TabRes>(pageQuery(`pipeline/tab/${tab}`, q));
+    if (!r.ok) throw new Error(r.error);
+    return pageOf(r, r.rows, q);
+  };
+  const putTab = (list: Row[], n: number) => { cur.current.rows = list; cur.current.total = Math.max(n, list.length); setTabRows(list); setTabTotal(cur.current.total); };
+  const loadHead = async () => {
+    const r = await api.call<StatusRes>(pageQuery('pipeline', { project, limit: 0 }));
+    if (!r.ok) throw new Error(r.error);
+    const { table, tabs: _tabs, totals, limit: _l, offset: _o, total: _t, error: _e, ...head } = r;
+    const n = (k: keyof TableCounts) => totals?.table?.[k] ?? table?.[k]?.length ?? 0;
+    setS({ ...head, counts: { pending: n('pending'), queued: n('queued'), building: n('building') } });
+  };
+  const loadTab = async () => {
+    const mine = cur.current; const added = mine.added;
+    if (!tab) return;
+    const w = await readWindow<Row>(Math.max(mine.rows.length, PAGE_SIZE), readTab);
+    // a next page that arrived while this refresh ran is kept: the refresh after it carries both
+    if (mine === cur.current && !mine.busy && mine.added === added) putTab(w.rows, w.total);
+  };
   const load = async () => {
-    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
+    try { await Promise.all([loadHead(), loadTab()]); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
+  const more = async () => {
+    const mine = cur.current;
+    if (!tab || mine.busy || mine.rows.length >= mine.total) return;
+    mine.busy = true; setMoreBusy(true);
+    try {
+      const offset = mine.rows.length;
+      const p = await readTab(PAGE_SIZE, offset);
+      if (mine !== cur.current) return;
+      const next = addPage(mine.rows, p.rows);
+      mine.added += 1; putTab(next, next.length > offset ? p.total : next.length); // a page that adds nothing: stop, the next refresh puts it right
+    } catch (e) { if (mine === cur.current) setError((e as Error).message); }
+    finally { mine.busy = false; if (mine === cur.current) setMoreBusy(false); }
+  };
+  // every render's own reads: the timer below always runs the latest (the tab and filter on screen now)
+  const latest = useRef(load); latest.current = load;
   useEffect(() => {
-    void load();
+    // another tab or filter is another list: start it at its first page
+    cur.current = { key: tabKey, rows: [], total: 0, busy: false, added: 0 }; setTabRows([]); setTabTotal(0); setMoreBusy(false);
+    if (s) void loadTab().then(() => setError('')).catch((e: Error) => setError(e.message));
+  }, [tabKey]);
+  useEffect(() => {
+    void latest.current();
     // console load: the dispatcher checks every account on its next tick (quietly: no toast)
     void api.post('pipeline/selfcheck', { reason: 'console-load' }).catch(() => undefined);
     // one timer, only while the page is on screen (the console's pollers once starved the picture fetches: never per render)
-    const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
+    const tickIt = () => { if (document.visibilityState === 'visible') void latest.current(); };
     timer.current = window.setInterval(tickIt, REFRESH_MS);
     document.addEventListener('visibilitychange', tickIt);
     return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
@@ -119,11 +178,13 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
   // the Builds toolbar (page-toolbar@1, assets/toolbar/build-orchestrator-pipeline.json): what it reads, what it runs
-  const [statusFilter, setStatusFilter] = useState('');
-  const tabRows = view === 'accounts' ? [] : (s?.tabs?.[view] ?? []);
   const picked = tabRows.filter((r) => sel.has(r.id));
   const one = picked.length === 1 ? picked[0] : undefined;
-  const statuses = [...new Set(tabRows.map((r) => r.status))].sort();
+  // the statuses the status filter steps through: every one seen in this tab (a filtered page shows only its own)
+  const seen = useRef<{ tab: string; statuses: Set<string> }>({ tab: '', statuses: new Set() });
+  if (seen.current.tab !== tab) seen.current = { tab, statuses: new Set() };
+  for (const r of tabRows) seen.current.statuses.add(r.status);
+  const statuses = [...seen.current.statuses].sort();
   const nextPriority = (() => { const cur = picked.length ? effectivePriority(picked[0]) : 'P2'; const i = PRIORITIES.indexOf(cur); return PRIORITIES[(i + PRIORITIES.length - 1) % PRIORITIES.length] ?? 'P2'; })();
   usePublishPageState('build-orchestrator', {
     tab: view,
@@ -134,7 +195,7 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
       canRaise: !!one && !!one.stepList.find((x) => !x.done && !x.skip && x.model !== 'Fable'),
       canRelaunch: !!one && (one.tab === 'incomplete' || one.tab === 'errors'),
     },
-    statuses: statuses.length, statusFilter, statusFilterCount: statusFilter ? tabRows.filter((r) => r.status === statusFilter).length : 0,
+    statuses: statuses.length, statusFilter, statusFilterCount: statusFilter ? tabTotal : 0,
   });
   useToolbarHandlers('build-orchestrator', {
     'builds.queue-selected': async () => {
@@ -153,7 +214,7 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
   // a build asked for (console command, search, menu): once this tab lists it, scroll it into view and flash it; the
   // card stays expanded (its steps) and marked as the current one
   const focusId = useFocusedBuild();
-  const hasFocus = !!focusId && !!s && view !== 'accounts' && (s.tabs?.[view] ?? []).some((r) => r.id === focusId);
+  const hasFocus = !!focusId && !!s && view !== 'accounts' && tabRows.some((r) => r.id === focusId);
   useEffect(() => {
     if (!hasFocus) return;
     flashWhenReady(() => document.querySelector(buildRowSelector(focusId)), 5000);
@@ -172,14 +233,14 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
       {error && <Note tone="warning">{error}</Note>}
       <div className="pl-strip">
         <span className="pl-stat" title="Agent slots on the VPS (agent-slots@1): sessions running / the cap"><Icon name="layers" size={14} /><b>{s.slots.used}/{s.slots.cap}</b> slots{s.slots.unavailable ? ' (no slots store)' : ''}</span>
-        <span className="pl-stat" title="Builds the dispatcher is running"><Icon name="play" size={14} /><b>{s.table.building.length}</b> building</span>
-        <span className="pl-stat" title="Builds waiting in the Queue"><Icon name="list" size={14} /><b>{s.table.queued.length}</b> queued</span>
-        <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.table.pending.length}</b> pending</span>
+        <span className="pl-stat" title="Builds the dispatcher is running"><Icon name="play" size={14} /><b>{s.counts.building}</b> building</span>
+        <span className="pl-stat" title="Builds waiting in the Queue"><Icon name="list" size={14} /><b>{s.counts.queued}</b> queued</span>
+        <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.counts.pending}</b> pending</span>
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="Then any API" text="Subscriptions first; when every subscription account is full or out, an API-key account takes it (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
-      <SlotsStrip api={api} layout={slotsLayout} onData={onFill} />
+      <SlotsStrip api={api} layout={slotsLayout} project={project} onData={onFill} />
       {idle && <Note tone={idle.kind === 'stuck' || idle.kind === 'slots' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       {view === 'accounts' && <section className="fx-stack">
@@ -235,12 +296,12 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
         )}
       </section>}
       {view !== 'accounts' && (() => {
-        const rows = (s.tabs?.[view] ?? []).filter((r) => !statusFilter || r.status === statusFilter);
+        const rows = tabRows.filter((r) => !statusFilter || r.status === statusFilter);
         const chosen = rows.filter((r) => sel.has(r.id));
         const offered = ACTION_ORDER.filter((a) => rows.some((r) => r.actions?.includes(a)));
         return (
           <section className="fx-stack" aria-label={TAB_LABEL[view]}>
-            <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{rows.length}</span>
+            <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{Math.max(tabTotal, rows.length)}</span>
               {view === 'pending' && <span className="fx-muted fx-small"> · split as soon as filed, model and account planned · tap Queue to send one to the dispatcher</span>}
               {view === 'queue' && <span className="fx-muted fx-small"> · in start order · the final account pick happens when its turn comes</span>}
               {view === 'incomplete' && <span className="fx-muted fx-small"> · started, then stopped with steps left</span>}
@@ -261,6 +322,7 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
               : <PipelineTable view={view} rows={rows} sel={sel} toggle={toggle} focusId={focusId}
                   detail={(r) => <><PipelineCard embedded api={api} parallel={parallel[r.id] ?? 0} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} /><RecoveriesList id={r.id} /></>} />}
+            <LoadMore shown={tabRows.length} total={tabTotal} busy={moreBusy} onMore={() => void more()} />
           </section>
         );
       })()}

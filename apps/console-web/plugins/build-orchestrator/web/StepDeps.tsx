@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, ChoiceGrid, Note, useRuntime } from '@console/axf/react';
-import { fillApi, type StepState } from './fill';
+import { FILL_HEAD, fillApi, type StepState } from './fill';
 
 /*
  * Step dependencies (fill every slot, Nov 13 2026): in a build's detail, every step with what it waits for (dependsOn,
@@ -31,7 +31,7 @@ export function StepDeps({ api, build }: { api: Api; build: string }) {
   const [pick, setPick] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const load = async () => {
-    try { const r = await fill.status(build); setSteps(r.build?.steps ?? []); setError(''); }
+    try { const r = await fill.status(build, FILL_HEAD); setSteps(r.build?.steps ?? []); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => { void load(); }, [build]);

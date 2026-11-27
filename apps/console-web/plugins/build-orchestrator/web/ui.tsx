@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Icon, Slot, useRuntime } from '@console/axf/react';
 import { BUILD_STATUSES } from './status-table-core.mjs';
 import { pluginApi } from '@console/plugins';
@@ -9,6 +9,7 @@ import { WatchdogTab } from './watchdog';
 import { StatusTable, setTableFilter, type Filters } from './StatusTable';
 import { SlotsStrip } from './SlotsStrip';
 import { readSlotsLayout } from './Settings';
+import { LoadMore, PAGE_SIZE, addPage, pageOf, pageQuery, readWindow, type Paged } from './paging';
 import * as consoleApi from '@console/api';
 import './orchestrator.css';
 
@@ -27,7 +28,7 @@ type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; ph
 type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
-type Res = { ok: boolean; error?: string; state?: State; log?: string[]; upgradePolicy?: { approvalRequired: boolean; source: string } };
+type Res = Paged & { ok: boolean; error?: string; state?: State; log?: string[]; upgradePolicy?: { approvalRequired: boolean; source: string } };
 type Act = (c: Record<string, unknown>) => Promise<boolean>;
 
 /**
@@ -69,36 +70,80 @@ export function OrchestratorPage() {
   );
 }
 
-/** The orchestrator state for the settings panels that need it (rules, approvals). */
-function useOrchState() {
+/**
+ * The orchestrator state for the settings panels that need it, one page of its builds at a time (GET /state?limit=&
+ * offset=: the builds still being worked on come first). `pageSize` 0 asks for the rules alone, with no builds; `more`
+ * adds the next page. Never every build (Brett, Nov 25 2026: no whole-set reads).
+ */
+function useOrchState(pageSize: number) {
   const rt = useRuntime();
   const [state, setState] = useState<State | null>(null);
+  const [total, setTotal] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [moreBusy, setMoreBusy] = useState(false);
   const [error, setError] = useState('');
-  useEffect(() => { void api.call<Res>('state').then((r) => { if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); }).catch((e: Error) => setError(e.message)); }, []);
+  const held = useRef<Build[]>([]);
+  const read = async (limit: number, offset: number) => {
+    const q = { limit, offset };
+    const r = await api.call<Res>(pageQuery('state', q));
+    if (!r.ok || !r.state) throw new Error(r.error ?? 'the orchestrator state did not load');
+    if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy);
+    return { head: r.state, page: pageOf(r, r.state.builds, q) };
+  };
+  /** The rules and the pages already on screen, read again. */
+  const load = async () => {
+    let head: State | null = null;
+    if (!pageSize) { head = (await read(0, 0)).head; held.current = []; setTotal(0); }
+    else {
+      const w = await readWindow<Build>(Math.max(held.current.length, pageSize), async (limit, offset) => { const r = await read(limit, offset); head = r.head; return r.page; });
+      held.current = w.rows; setTotal(Math.max(w.total, w.rows.length));
+    }
+    if (head) setState({ ...(head as State), builds: held.current });
+  };
+  const more = async () => {
+    if (moreBusy || held.current.length >= total) return;
+    setMoreBusy(true);
+    try {
+      const offset = held.current.length;
+      const { page } = await read(pageSize, offset);
+      held.current = addPage(held.current, page.rows);
+      setTotal(held.current.length > offset ? Math.max(page.total, held.current.length) : held.current.length);
+      setState((x) => (x ? { ...x, builds: held.current } : x));
+    } catch (e) { setError((e as Error).message); }
+    finally { setMoreBusy(false); }
+  };
+  useEffect(() => { void load().catch((e: Error) => setError(e.message)); }, []);
   const act: Act = async (change) => {
     setBusy(true);
     try {
       const r = await api.post<Res>('act', change);
       if (!r.ok) { rt.toast(r.error ?? 'Change failed', 'danger'); return false; }
       for (const l of r.log ?? []) rt.terminal.log('orchestrator', l, 'ok');
-      if (r.state) setState(r.state);
+      // the answer's own build list is not kept: the rules are taken from it, the pages on screen are read again
+      const rules = r.state?.rules;
+      if (rules) setState((x) => (x ? { ...x, rules } : x));
+      await load().catch(() => undefined);
       return true;
     } catch (e) { rt.toast((e as Error).message, 'danger'); return false; }
     finally { setBusy(false); }
   };
-  return { state, busy, error, act };
+  return { state, total, busy, moreBusy, more, error, act };
 }
 
 export function RulesPanel() {
-  const { state, busy, error, act } = useOrchState();
+  const { state, busy, error, act } = useOrchState(0);
   if (!state) return <div className="fx-empty">{error || 'Loading the rules…'}</div>;
   return <RulesTab rules={state.rules} busy={busy} act={act} />;
 }
 export function ApprovalsPanel() {
-  const { state, busy, error, act } = useOrchState();
+  const { state, total, busy, moreBusy, more, error, act } = useOrchState(PAGE_SIZE);
   if (!state) return <div className="fx-empty">{error || 'Loading the approvals…'}</div>;
-  return <ApprovalsTab state={state} busy={busy} act={act} />;
+  return (
+    <div className="fx-stack">
+      <ApprovalsTab state={state} busy={busy} act={act} more={state.builds.length < total} />
+      <LoadMore shown={state.builds.length} total={total} busy={moreBusy} onMore={() => void more()} />
+    </div>
+  );
 }
 export function AccountsPanel() {
   const rt = useRuntime();
@@ -122,9 +167,9 @@ function approvalBy(b: Build, p: core.Phase): string {
   return a.via ? `Approved by ${a.by} (${a.via === 'axhub' ? 'axHub' : 'console'})` : 'Approved before Nov 3 2026 (approver not recorded)';
 }
 
-function ApprovalsTab({ state, busy, act }: { state: State; busy: boolean; act: Act }) {
+function ApprovalsTab({ state, busy, act, more = false }: { state: State; busy: boolean; act: Act; more?: boolean }) {
   const gates = state.builds.flatMap((b) => core.phases(b).filter((p) => p.gate).map((p) => ({ b, p })));
-  if (!gates.length) return <div className="fx-empty">No model switches in any build.</div>;
+  if (!gates.length) return <div className="fx-empty">{more ? 'No model switches in the builds loaded so far.' : 'No model switches in any build.'}</div>;
   return (
     <div className="pd-list" role="list">
       <p className="fx-small fx-muted">{core.upgradePolicy().approvalRequired
