@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:47 UTC · `one-true-source-for-every-setting` note, removed (all) · console
 - 2026-11-25 11:47 UTC · `nov-20-fix-list-voice-console-cont` note, removed (all) · console
 - 2026-11-25 11:48 UTC · `move-everything-axhub-web-console` note, removed (all) · console
 - 2026-11-25 11:48 UTC · `toolbars-1-5-build-orchestrator-incl` note, removed (all) · console
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 04:09 UTC · `memory-restructure-chunked-claude-md-store-memor` → fixing, note (all) · watchdog
 - 2026-11-27 04:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → fixing, note (all) · watchdog
 - 2026-11-27 04:20 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:21 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 
 ## Token passes (log)
 

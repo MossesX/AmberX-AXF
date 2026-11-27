@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:21:24.075Z",
+ "updatedAt": "2026-11-27T04:21:57.453Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13715,6 +13715,88 @@
    "steps": []
   },
   {
+   "id": "feature-matrix-compact",
+   "title": "feature-matrix-compact",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/feature-matrix-compact",
+   "pr": "",
+   "mergedAt": "2026-10-30T11:35:17Z",
+   "createdAt": "2026-10-30T11:35:17Z",
+   "updatedAt": "2026-11-12T03:31:48Z",
+   "builtAt": "2026-10-30T11:35:17Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 0d69817e0.",
+     "at": "2026-11-12T03:31:48Z"
+    },
+    {
+     "text": "Shipped manifest sm-feature-matrix-compact rev 1 sent to Shipped features (backfill): landed 0d69817e0, 4 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:48Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "feature-matrix-compact",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "design-packs",
+   "title": "design-packs",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/design-packs",
+   "pr": "",
+   "mergedAt": "2026-10-30T11:36:03Z",
+   "createdAt": "2026-10-30T11:36:03Z",
+   "updatedAt": "2026-11-12T03:31:47Z",
+   "builtAt": "2026-10-30T11:36:03Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 17a96679a.",
+     "at": "2026-11-12T03:31:47Z"
+    },
+    {
+     "text": "Shipped manifest sm-design-packs rev 1 sent to Shipped features (backfill): landed 17a96679a, 230 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:47Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "design-packs",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
    "id": "emergency-remove-every-leftover-js",
    "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it",
    "category": "",
@@ -14068,88 +14150,6 @@
      "createdAt": "2026-11-25T12:03:52.352Z"
     }
    ]
-  },
-  {
-   "id": "feature-matrix-compact",
-   "title": "feature-matrix-compact",
-   "category": "",
-   "detail": "",
-   "status": "complete",
-   "hidden": false,
-   "source": "shipped",
-   "pendingId": "",
-   "branch": "claude/feature-matrix-compact",
-   "pr": "",
-   "mergedAt": "2026-10-30T11:35:17Z",
-   "createdAt": "2026-10-30T11:35:17Z",
-   "updatedAt": "2026-11-12T03:31:48Z",
-   "builtAt": "2026-10-30T11:35:17Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 0d69817e0.",
-     "at": "2026-11-12T03:31:48Z"
-    },
-    {
-     "text": "Shipped manifest sm-feature-matrix-compact rev 1 sent to Shipped features (backfill): landed 0d69817e0, 4 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:31:48Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "feature-matrix-compact",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": false,
-    "from": "report",
-    "addenda": []
-   },
-   "steps": []
-  },
-  {
-   "id": "design-packs",
-   "title": "design-packs",
-   "category": "",
-   "detail": "",
-   "status": "complete",
-   "hidden": false,
-   "source": "shipped",
-   "pendingId": "",
-   "branch": "claude/design-packs",
-   "pr": "",
-   "mergedAt": "2026-10-30T11:36:03Z",
-   "createdAt": "2026-10-30T11:36:03Z",
-   "updatedAt": "2026-11-12T03:31:47Z",
-   "builtAt": "2026-10-30T11:36:03Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 17a96679a.",
-     "at": "2026-11-12T03:31:47Z"
-    },
-    {
-     "text": "Shipped manifest sm-design-packs rev 1 sent to Shipped features (backfill): landed 17a96679a, 230 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:31:47Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "design-packs",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": false,
-    "from": "report",
-    "addenda": []
-   },
-   "steps": []
   },
   {
    "id": "build-breaker",
@@ -15202,6 +15202,155 @@
    ]
   },
   {
+   "id": "terminal-vps-host",
+   "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
+   "category": "Ops > Terminal",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-vps-host",
+   "pr": "#274",
+   "mergedAt": "2026-11-04T03:59:20Z",
+   "createdAt": "2026-11-03T19:31:10.365Z",
+   "updatedAt": "2026-11-12T03:29:34Z",
+   "builtAt": "2026-11-03T19:40:51.453Z",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    },
+    {
+     "text": "Reconciler: PR #274 merged",
+     "at": "2026-11-04T04:03:16.252Z"
+    },
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-terminal-vps-host rev 1 sent to Shipped features (backfill): landed f424591c8, 6 file(s), 4 test line(s), 1 open.",
+     "at": "2026-11-12T03:29:34Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: terminal-vps-host (Current profile) - URGENT ops fix\n\nBrett, Nov 3 2026: the console Terminal shows NO headless tabs. `console-terminal/headless` read returns `{ready:false, items:[], why:\"the VPS tab isn't set up (Settings -> Plugins -> Terminal -> VPS host)\"}`. So headless-tabs (PR #259, live) can't attach to any build's tmux session. Assigned agent: whoever is free (all-rounder router if on main; else book on **Ping Paulie**; record who). Register in the `current` profile (id `terminal-vps-host`) + banner entry. Fix right away, tell after.\n\n## Do\n- s1 Find how the Terminal plugin (apps/console-web/plugins/console-terminal or terminal) stores the VPS host connection and what it needs (host, user, port, SSH key/agent). Configure it for the axf-console container to reach the VPS host (same Hostinger VPS: host.docker.internal / docker gateway / the VPS address) as root with a dedicated key: generate an ed25519 key for the console, add its public key to /root/.ssh/authorized_keys (restricted is fine), store the private key in the console's secure store / a mounted secret (never in the repo, never echoed in logs).\n- s2 Make the setting persistent across container redeploys (Coolify env/secret or mounted volume) so Lenny's landings don't wipe it. If Coolify config is needed, document it and use the existing Coolify API path (COOLIFY_TOKEN) if available.\n- s3 Verify: `console-terminal/headless` returns ready:true and lists the running axf-* tmux sessions (toolbar-tap-confirm, crew-live, auto-land-2, ui-review-shots, follow-amber, claude-settings, ...); meters return cost; opening the Terminal auto-opens a tab per build with agent + model + live cost.\n- s4 Add a health@1 check: red when the Terminal VPS host isn't ready, with Auto fix. Systems check banner row.\n- s5 Report `_claude/builds/reports/terminal-vps-host.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Configure the Terminal VPS host: console ed25519 key, authorized on the host, host = coolify gateway",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T19:31:23.156Z",
+     "note": "",
+     "uid": "st-mw132l3e06e3di",
+     "createdAt": "2026-11-03T19:31:10.365Z"
+    },
+    {
+     "id": "s2",
+     "text": "Persist the setting across redeploys (bind-mounted dataDir) and auto-detect the host",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T19:37:52.475Z",
+     "note": "",
+     "uid": "st-mw132l3e07nyxr",
+     "createdAt": "2026-11-03T19:31:10.365Z"
+    },
+    {
+     "id": "s3",
+     "text": "Verify headless list, meters and auto-opened tabs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T19:31:25.587Z",
+     "note": "",
+     "uid": "st-mw132l3e08kxnu",
+     "createdAt": "2026-11-03T19:31:10.365Z"
+    },
+    {
+     "id": "s4",
+     "text": "health@1 check: Terminal VPS host ready, with Auto fix",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T19:37:53.543Z",
+     "note": "",
+     "uid": "st-mw132l3e099uw8",
+     "createdAt": "2026-11-03T19:31:10.365Z"
+    },
+    {
+     "id": "s5",
+     "text": "Report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T19:40:51.453Z",
+     "note": "",
+     "uid": "st-mw132l3e0aawvn",
+     "createdAt": "2026-11-03T19:31:10.365Z"
+    }
+   ]
+  },
+  {
    "id": "emergency-check-can-these-plugins-",
    "title": "EMERGENCY CHECK: Can these plugins go? (report only, no deletes)",
    "category": "",
@@ -15632,155 +15781,6 @@
      "note": "",
      "uid": "st-mww38q3o1v9d4n",
      "createdAt": "2026-11-25T12:16:48.420Z"
-    }
-   ]
-  },
-  {
-   "id": "terminal-vps-host",
-   "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
-   "category": "Ops > Terminal",
-   "detail": "",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/terminal-vps-host",
-   "pr": "#274",
-   "mergedAt": "2026-11-04T03:59:20Z",
-   "createdAt": "2026-11-03T19:31:10.365Z",
-   "updatedAt": "2026-11-12T03:29:34Z",
-   "builtAt": "2026-11-03T19:40:51.453Z",
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
-     "at": "2026-11-03T19:31:28.416Z"
-    },
-    {
-     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
-     "at": "2026-11-03T19:40:47.953Z"
-    },
-    {
-     "text": "Reconciler: PR #274 merged",
-     "at": "2026-11-04T04:03:16.252Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-terminal-vps-host rev 1 sent to Shipped features (backfill): landed f424591c8, 6 file(s), 4 test line(s), 1 open.",
-     "at": "2026-11-12T03:29:34Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "# Build: terminal-vps-host (Current profile) - URGENT ops fix\n\nBrett, Nov 3 2026: the console Terminal shows NO headless tabs. `console-terminal/headless` read returns `{ready:false, items:[], why:\"the VPS tab isn't set up (Settings -> Plugins -> Terminal -> VPS host)\"}`. So headless-tabs (PR #259, live) can't attach to any build's tmux session. Assigned agent: whoever is free (all-rounder router if on main; else book on **Ping Paulie**; record who). Register in the `current` profile (id `terminal-vps-host`) + banner entry. Fix right away, tell after.\n\n## Do\n- s1 Find how the Terminal plugin (apps/console-web/plugins/console-terminal or terminal) stores the VPS host connection and what it needs (host, user, port, SSH key/agent). Configure it for the axf-console container to reach the VPS host (same Hostinger VPS: host.docker.internal / docker gateway / the VPS address) as root with a dedicated key: generate an ed25519 key for the console, add its public key to /root/.ssh/authorized_keys (restricted is fine), store the private key in the console's secure store / a mounted secret (never in the repo, never echoed in logs).\n- s2 Make the setting persistent across container redeploys (Coolify env/secret or mounted volume) so Lenny's landings don't wipe it. If Coolify config is needed, document it and use the existing Coolify API path (COOLIFY_TOKEN) if available.\n- s3 Verify: `console-terminal/headless` returns ready:true and lists the running axf-* tmux sessions (toolbar-tap-confirm, crew-live, auto-land-2, ui-review-shots, follow-amber, claude-settings, ...); meters return cost; opening the Terminal auto-opens a tab per build with agent + model + live cost.\n- s4 Add a health@1 check: red when the Terminal VPS host isn't ready, with Auto fix. Systems check banner row.\n- s5 Report `_claude/builds/reports/terminal-vps-host.md`, THREADS, PR, steps through the store. Commits clean and professional.",
-    "verbatim": false,
-    "from": "brief",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Configure the Terminal VPS host: console ed25519 key, authorized on the host, host = coolify gateway",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "15 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T19:31:23.156Z",
-     "note": "",
-     "uid": "st-mw132l3e06e3di",
-     "createdAt": "2026-11-03T19:31:10.365Z"
-    },
-    {
-     "id": "s2",
-     "text": "Persist the setting across redeploys (bind-mounted dataDir) and auto-detect the host",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T19:37:52.475Z",
-     "note": "",
-     "uid": "st-mw132l3e07nyxr",
-     "createdAt": "2026-11-03T19:31:10.365Z"
-    },
-    {
-     "id": "s3",
-     "text": "Verify headless list, meters and auto-opened tabs",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T19:31:25.587Z",
-     "note": "",
-     "uid": "st-mw132l3e08kxnu",
-     "createdAt": "2026-11-03T19:31:10.365Z"
-    },
-    {
-     "id": "s4",
-     "text": "health@1 check: Terminal VPS host ready, with Auto fix",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T19:37:53.543Z",
-     "note": "",
-     "uid": "st-mw132l3e099uw8",
-     "createdAt": "2026-11-03T19:31:10.365Z"
-    },
-    {
-     "id": "s5",
-     "text": "Report, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "15 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T19:40:51.453Z",
-     "note": "",
-     "uid": "st-mw132l3e0aawvn",
-     "createdAt": "2026-11-03T19:31:10.365Z"
     }
    ]
   },
@@ -18484,413 +18484,6 @@
    ]
   },
   {
-   "id": "emergency-rip-out-the-7-mb-status-",
-   "title": "EMERGENCY: rip out the 7 MB status file",
-   "category": "",
-   "detail": "Brett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.",
-   "status": "building",
-   "hidden": false,
-   "flow": "pipeline-2",
-   "source": "plan-studio-2",
-   "pendingId": "",
-   "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
-   "pr": "932",
-   "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:21:09.232Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Plan Studio 2.0 item: emergency-rip-out-the-7-mb-statu-qsmm (Fixes › Watchdog hunts real processes, not just slot rows › EMERGENCY: rip out the 7 MB status file). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
-     "at": "2026-11-25T22:53:22.832Z"
-    },
-    {
-     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
-     "at": "2026-11-25T22:53:34.694Z"
-    },
-    {
-     "text": "Split by Fable into 10 steps (147 min). The triage gate assigns the models.",
-     "at": "2026-11-25T22:55:50.321Z"
-    },
-    {
-     "text": "Draft PR #932 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/932.",
-     "at": "2026-11-25T22:56:49.813Z"
-    },
-    {
-     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it touches framework/cli/builds-store.mjs); s2 Fable (Contracts: it says \"builds store\"); s3 Fable (Contracts: it says \"builds store\"); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Contracts: it says \"builds store\"); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Contracts: it touches framework/schemas/data-store-paths.json).",
-     "at": "2026-11-25T23:00:26.640Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--sully is gone while the step was building.",
-     "at": "2026-11-25T23:10:07.035Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:15:06.964Z"
-    },
-    {
-     "text": "s1 pushed (claude/emergency-rip-out-the-7-mb-status---s1): the status file is _claude/builds/orchestrator.json; the Node store, builds-live, lander, worktree setup, feature matrix and agent swarm no longer read or write it. New builds-store.mjs exports for the other steps: readBuild, withBuild, queryBuilds({status, project, limit, offset}), pipelineSummary. Open: data-store@1 on main has no server-side row read or filter, so those reads still assemble the record from the tables once per call; a real row query needs services/axf-data (the stalled build pipeline-fixes-drop-7-mb-status-file has one in commit 170aba583), which no step of this build owns.",
-     "at": "2026-11-25T23:15:25.274Z"
-    },
-    {
-     "text": "Watchdog: step s4 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:23:02.078Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s2--rhonda is gone while the step was building.",
-     "at": "2026-11-25T23:28:02.044Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-25T23:29:02.024Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--paulie is gone while the step was building.",
-     "at": "2026-11-25T23:29:02.024Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:30:02.885Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
-     "at": "2026-11-25T23:31:04.442Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-25T23:32:02.769Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--joey, shared account login)",
-     "at": "2026-11-26T22:44:29.723Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--paulie, shared account login)",
-     "at": "2026-11-26T22:45:25.349Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--sully, shared account login)",
-     "at": "2026-11-26T22:58:23.150Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--earl: brief only · start 11.7K tokens ($0.05) · cost $0.72 · 14 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:03:21.695Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.72",
-     "at": "2026-11-26T23:03:43.629Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--gina, shared account login)",
-     "at": "2026-11-26T23:04:17.441Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:04:36.682Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--rhonda, shared account login)",
-     "at": "2026-11-26T23:04:59.901Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.66",
-     "at": "2026-11-26T23:09:16.337Z"
-    },
-    {
-     "text": "s1: code was already pushed by the first run; re-verified after merging main (builds-store 64, builds-live 140, data-store 16, lander 97, landing-line 32, gate-rules 38 all green) and pushed. The step kept failing because the VPS root disk is 100% full (387G, 300 MB free): sessions and tests die with ENOSPC. Freed 1.4 GB by removing day-old test scratch folders in /tmp (lander-run-*, axf-live-check-*, reconcile-*). Needs Brett: clear old worktrees under /root/axf-builds (257 of them) and add a disk-space check to Systems check.",
-     "at": "2026-11-26T23:09:51.420Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $1.39",
-     "at": "2026-11-26T23:12:35.051Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--joey, shared account login)",
-     "at": "2026-11-26T23:12:53.445Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s1--sully: brief only · start 12.3K tokens ($0.06) · cost $1.39 · 28 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:13:12.635Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--gina is gone while the step was building.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--paulie, shared account login)",
-     "at": "2026-11-26T23:15:46.588Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--joey: brief only · start 11.7K tokens ($0.00) · cost $0.50 · 7 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:16:22.482Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.50",
-     "at": "2026-11-26T23:16:53.009Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--rhonda: brief only · start 11.9K tokens ($0.06) · cost $3.77 · 37 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:22:03.954Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $3.77",
-     "at": "2026-11-26T23:22:19.401Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: step s4 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s4--rhonda is gone while the step was building.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--paulie: brief only · start 11.9K tokens ($0.06) · cost $3.46 · 26 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:26:11.165Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $3.46",
-     "at": "2026-11-26T23:26:17.002Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1168 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1173 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--lenny, shared account login)",
-     "at": "2026-11-27T04:20:38.865Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s4",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s4\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s4 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s4.\n\n## Your step\nDispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/pipeline.mjs. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
-    "verbatim": false,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "- Remove the whole-file pipeline status JSON from the Node builds store. In framework/cli/builds-store.mjs and framework/core/data-files.mjs, find every read, write, export or regeneration of the pipeline status JSON file and delete it. Status writes (step, status, note, branch, PR) become per-build row updates through the existing data-store@1 calls (Postgres builds store). Status reads become queries by status/project with limit and offset, never a whole-document load. Keep the exported function names and signatures other callers use, so parallel steps stay compatible. Run node framework/cli/b\n- Lander: no status file. In deploy/lander/ (run.mjs and its helpers), find every read or write of the pipeline status JSON file and replace it with per-build row reads and updates through the builds store / data-store@1 API already on main (builds-store.mjs exports, data-files.mjs readData/writeData for rows). Delete any code that regenerates the file after a landing. Do not change landing behaviour, queue, accounts or cancel logic. Run node framework/spec/check-landing-line.mjs and check-gate-rules.mjs, then commit.\n- Watchdog and remaining writers: no status file. Grep the repo for the pipeline status file name outside the files owned by other steps (builds-store.mjs, data-files.mjs, data_store.py, mcp_server.py, apps/console-web/plugins/build-orchestrator/, deploy/lander/). Fix the watchdog (deploy/ and framework/cli watchdog scripts), builds-live.mjs, builds-reconcile.mjs and any other CLI or cron script that reads, writes or recreates it, so they use per-build row reads and updates through data-store@1. Leave builds-store.mjs and data-files.mjs alone. Commit with a list of every file changed in the mess",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "42 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/core/data-files.mjs",
-      "deploy/lander/",
-      "deploy/",
-      "framework/cli/builds-live.mjs",
-      "framework/cli/builds-reconcile.mjs",
-      "framework/cli/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-26T23:10:43.214Z",
-     "note": "Part 1: 3 plan steps in one session (they touch the same files).",
-     "uid": "st-mwwq2iwo1lkdwx",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s2",
-     "text": "Remove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/server/data_store.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1msd97",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s3",
-     "text": "Make pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/server/mcp_server.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1n81b6",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s4",
-     "text": "Dispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1ozo68",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s5",
-     "text": "Build-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwp1pdwcm",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    },
-    {
-     "id": "s6",
-     "text": "Build-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwp1qqks4",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    },
-    {
-     "id": "s7",
-     "text": "- Delete the file and guard against its return. git rm the leftover 7 MB pipeline status JSON file (under _claude/builds/ or wherever grep finds it) and any committed copies or exports of it. Remove its entry from framework/schemas/data-store-paths.json and its line in framework/spec/DATA-INVENTORY.md, and add it to .gitignore. Add the CI guard framework/spec/check-no-pipeline-status-file.mjs: it fails if the file exists anywhere in the checkout, if any source file references its name outside the guard itself, or if any tracked runtime .json under _claude/builds exceeds a size cap. Wire it into \n- Tests and report. Add new test files only. framework/spec/check-pipeline-status-rows.mjs: a status write changes one build row and creates no status file; a paged read by status/project returns the right page and totals. apps/console-web/server/tests/test_pipeline_status_summary.py: pipeline_status MCP and REST responses stay under a small byte cap with many builds seeded, honour limit/offset, and no status file appears on disk afterwards. Run the console typecheck, check-builds-store, check-json-data-writes and the server tests, and record the results. Write _claude/builds/reports/emergency-r",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "_claude/builds/",
-      "framework/schemas/data-store-paths.json",
-      "framework/spec/DATA-INVENTORY.md",
-      "framework/spec/check-no-pipeline-status-file.mjs",
-      ".github/workflows/",
-      ".gitignore",
-      "framework/spec/check-pipeline-status-rows.mjs",
-      "apps/console-web/server/tests/test_pipeline_status_summary.py",
-      "_claude/builds/reports/emergency-rip-out-the-7-mb-status-.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Part 7: 2 plan steps in one session (they touch the same files).",
-     "uid": "st-mwwq2iwp1ripa4",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    }
-   ]
-  },
-  {
    "id": "browser-automation",
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
@@ -19677,6 +19270,417 @@
      "note": "",
      "uid": "st-mw1gf3s50hs10s",
      "createdAt": "2026-11-04T01:44:48.332Z"
+    }
+   ]
+  },
+  {
+   "id": "emergency-rip-out-the-7-mb-status-",
+   "title": "EMERGENCY: rip out the 7 MB status file",
+   "category": "",
+   "detail": "Brett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.",
+   "status": "building",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
+   "pr": "932",
+   "createdAt": "2026-11-25T22:53:22.832Z",
+   "updatedAt": "2026-11-27T04:21:32.292Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: emergency-rip-out-the-7-mb-statu-qsmm (Fixes › Watchdog hunts real processes, not just slot rows › EMERGENCY: rip out the 7 MB status file). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-25T22:53:22.832Z"
+    },
+    {
+     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
+     "at": "2026-11-25T22:53:34.694Z"
+    },
+    {
+     "text": "Split by Fable into 10 steps (147 min). The triage gate assigns the models.",
+     "at": "2026-11-25T22:55:50.321Z"
+    },
+    {
+     "text": "Draft PR #932 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/932.",
+     "at": "2026-11-25T22:56:49.813Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it touches framework/cli/builds-store.mjs); s2 Fable (Contracts: it says \"builds store\"); s3 Fable (Contracts: it says \"builds store\"); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Contracts: it says \"builds store\"); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Contracts: it touches framework/schemas/data-store-paths.json).",
+     "at": "2026-11-25T23:00:26.640Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--sully is gone while the step was building.",
+     "at": "2026-11-25T23:10:07.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:15:06.964Z"
+    },
+    {
+     "text": "s1 pushed (claude/emergency-rip-out-the-7-mb-status---s1): the status file is _claude/builds/orchestrator.json; the Node store, builds-live, lander, worktree setup, feature matrix and agent swarm no longer read or write it. New builds-store.mjs exports for the other steps: readBuild, withBuild, queryBuilds({status, project, limit, offset}), pipelineSummary. Open: data-store@1 on main has no server-side row read or filter, so those reads still assemble the record from the tables once per call; a real row query needs services/axf-data (the stalled build pipeline-fixes-drop-7-mb-status-file has one in commit 170aba583), which no step of this build owns.",
+     "at": "2026-11-25T23:15:25.274Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:23:02.078Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s2--rhonda is gone while the step was building.",
+     "at": "2026-11-25T23:28:02.044Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:29:02.024Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--paulie is gone while the step was building.",
+     "at": "2026-11-25T23:29:02.024Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:30:02.885Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
+     "at": "2026-11-25T23:31:04.442Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:32:02.769Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--joey, shared account login)",
+     "at": "2026-11-26T22:44:29.723Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--paulie, shared account login)",
+     "at": "2026-11-26T22:45:25.349Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--sully, shared account login)",
+     "at": "2026-11-26T22:58:23.150Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--earl: brief only · start 11.7K tokens ($0.05) · cost $0.72 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:03:21.695Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.72",
+     "at": "2026-11-26T23:03:43.629Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--gina, shared account login)",
+     "at": "2026-11-26T23:04:17.441Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--rhonda, shared account login)",
+     "at": "2026-11-26T23:04:59.901Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.66",
+     "at": "2026-11-26T23:09:16.337Z"
+    },
+    {
+     "text": "s1: code was already pushed by the first run; re-verified after merging main (builds-store 64, builds-live 140, data-store 16, lander 97, landing-line 32, gate-rules 38 all green) and pushed. The step kept failing because the VPS root disk is 100% full (387G, 300 MB free): sessions and tests die with ENOSPC. Freed 1.4 GB by removing day-old test scratch folders in /tmp (lander-run-*, axf-live-check-*, reconcile-*). Needs Brett: clear old worktrees under /root/axf-builds (257 of them) and add a disk-space check to Systems check.",
+     "at": "2026-11-26T23:09:51.420Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $1.39",
+     "at": "2026-11-26T23:12:35.051Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--joey, shared account login)",
+     "at": "2026-11-26T23:12:53.445Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s1--sully: brief only · start 12.3K tokens ($0.06) · cost $1.39 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:13:12.635Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--gina is gone while the step was building.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--paulie, shared account login)",
+     "at": "2026-11-26T23:15:46.588Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--joey: brief only · start 11.7K tokens ($0.00) · cost $0.50 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:16:22.482Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.50",
+     "at": "2026-11-26T23:16:53.009Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--rhonda: brief only · start 11.9K tokens ($0.06) · cost $3.77 · 37 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:22:03.954Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.77",
+     "at": "2026-11-26T23:22:19.401Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s4--rhonda is gone while the step was building.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--paulie: brief only · start 11.9K tokens ($0.06) · cost $3.46 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:26:11.165Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.46",
+     "at": "2026-11-26T23:26:17.002Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1168 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1173 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--lenny, shared account login)",
+     "at": "2026-11-27T04:20:38.865Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--sully, shared account login)",
+     "at": "2026-11-27T04:21:32.292Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "emergency-rip-out-the-7-mb-status---s4",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s4\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s4 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s4.\n\n## Your step\nDispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/pipeline.mjs. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "- Remove the whole-file pipeline status JSON from the Node builds store. In framework/cli/builds-store.mjs and framework/core/data-files.mjs, find every read, write, export or regeneration of the pipeline status JSON file and delete it. Status writes (step, status, note, branch, PR) become per-build row updates through the existing data-store@1 calls (Postgres builds store). Status reads become queries by status/project with limit and offset, never a whole-document load. Keep the exported function names and signatures other callers use, so parallel steps stay compatible. Run node framework/cli/b\n- Lander: no status file. In deploy/lander/ (run.mjs and its helpers), find every read or write of the pipeline status JSON file and replace it with per-build row reads and updates through the builds store / data-store@1 API already on main (builds-store.mjs exports, data-files.mjs readData/writeData for rows). Delete any code that regenerates the file after a landing. Do not change landing behaviour, queue, accounts or cancel logic. Run node framework/spec/check-landing-line.mjs and check-gate-rules.mjs, then commit.\n- Watchdog and remaining writers: no status file. Grep the repo for the pipeline status file name outside the files owned by other steps (builds-store.mjs, data-files.mjs, data_store.py, mcp_server.py, apps/console-web/plugins/build-orchestrator/, deploy/lander/). Fix the watchdog (deploy/ and framework/cli watchdog scripts), builds-live.mjs, builds-reconcile.mjs and any other CLI or cron script that reads, writes or recreates it, so they use per-build row reads and updates through data-store@1. Leave builds-store.mjs and data-files.mjs alone. Commit with a list of every file changed in the mess",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "42 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/core/data-files.mjs",
+      "deploy/lander/",
+      "deploy/",
+      "framework/cli/builds-live.mjs",
+      "framework/cli/builds-reconcile.mjs",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-26T23:10:43.214Z",
+     "note": "Part 1: 3 plan steps in one session (they touch the same files).",
+     "uid": "st-mwwq2iwo1lkdwx",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s2",
+     "text": "Remove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/data_store.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1msd97",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1n81b6",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s4",
+     "text": "Dispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1ozo68",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s5",
+     "text": "Build-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwp1pdwcm",
+     "createdAt": "2026-11-25T22:55:50.329Z"
+    },
+    {
+     "id": "s6",
+     "text": "Build-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwp1qqks4",
+     "createdAt": "2026-11-25T22:55:50.329Z"
+    },
+    {
+     "id": "s7",
+     "text": "- Delete the file and guard against its return. git rm the leftover 7 MB pipeline status JSON file (under _claude/builds/ or wherever grep finds it) and any committed copies or exports of it. Remove its entry from framework/schemas/data-store-paths.json and its line in framework/spec/DATA-INVENTORY.md, and add it to .gitignore. Add the CI guard framework/spec/check-no-pipeline-status-file.mjs: it fails if the file exists anywhere in the checkout, if any source file references its name outside the guard itself, or if any tracked runtime .json under _claude/builds exceeds a size cap. Wire it into \n- Tests and report. Add new test files only. framework/spec/check-pipeline-status-rows.mjs: a status write changes one build row and creates no status file; a paged read by status/project returns the right page and totals. apps/console-web/server/tests/test_pipeline_status_summary.py: pipeline_status MCP and REST responses stay under a small byte cap with many builds seeded, honour limit/offset, and no status file appears on disk afterwards. Run the console typecheck, check-builds-store, check-json-data-writes and the server tests, and record the results. Write _claude/builds/reports/emergency-r",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/",
+      "framework/schemas/data-store-paths.json",
+      "framework/spec/DATA-INVENTORY.md",
+      "framework/spec/check-no-pipeline-status-file.mjs",
+      ".github/workflows/",
+      ".gitignore",
+      "framework/spec/check-pipeline-status-rows.mjs",
+      "apps/console-web/server/tests/test_pipeline_status_summary.py",
+      "_claude/builds/reports/emergency-rip-out-the-7-mb-status-.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 7: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mwwq2iwp1ripa4",
+     "createdAt": "2026-11-25T22:55:50.329Z"
     }
    ]
   },
