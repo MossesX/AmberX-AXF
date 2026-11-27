@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 18:58 UTC · `emergency-remove-every-leftover-js` → failed, note (all) · watchdog
-- 2026-11-27 18:58 UTC · `emergency-check-can-these-plugins-` → failed, note (all) · watchdog
-- 2026-11-27 18:58 UTC · `emergency-rip-out-the-7-mb-status-` → failed, note (all) · watchdog
-- 2026-11-27 18:59 UTC · `claude-emergency-access` → building, note (all) · watchdog
 - 2026-11-27 18:59 UTC · `emergency-remove-every-leftover-js` → building, note (all) · watchdog
 - 2026-11-27 18:59 UTC · `emergency-check-can-these-plugins-` → building, note (all) · watchdog
 - 2026-11-27 18:59 UTC · `emergency-rip-out-the-7-mb-status-` → building, note (all) · watchdog
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 20:30 UTC · `owner-recognized-everywhere-veto` note (all) · watchdog
 - 2026-11-27 20:30 UTC · `data-container-axf-data-holds-all` note (all) · watchdog
 - 2026-11-27 20:30 UTC · `get-main-green-unblock-lander-land-axf` note (all) · watchdog
+- 2026-11-27 20:31 UTC · `layout-repeating-slots` → complete, note (all) · verify
+- 2026-11-27 20:39 UTC · `x.web.templates` → fixing, note (all) · watchdog
+- 2026-11-27 20:40 UTC · `stack-walkthrough` note (all) · watchdog
+- 2026-11-27 20:40 UTC · `ai-keys` → landed, note (all) · watchdog
 
 ## Token passes (log)
 

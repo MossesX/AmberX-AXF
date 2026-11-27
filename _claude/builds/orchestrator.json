@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T20:30:49.769Z",
+ "updatedAt": "2026-11-27T20:40:13.696Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -50869,7 +50869,7 @@
    "title": "Layouts: repeating slots",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -50877,7 +50877,7 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-27T20:30:22.755Z",
+   "updatedAt": "2026-11-27T20:31:33.150Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -50907,6 +50907,10 @@
     {
      "text": "Watchdog: merged and CI is green on 86657f7210: landed.",
      "at": "2026-11-27T20:30:22.755Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T20:31:33.150Z"
     }
    ],
    "approvals": [],
@@ -67861,7 +67865,7 @@
    "pr": "229",
    "mergedAt": "2026-11-02T01:38:15Z",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-12T03:28:49Z",
+   "updatedAt": "2026-11-27T20:40:02.223Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
    "notes": [
     {
@@ -67879,6 +67883,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #229 merged 2026-11-02 01:38 and the build never heard: the merge is recorded, CI on cfc33f428d is next.",
+     "at": "2026-11-27T20:40:02.223Z"
     }
    ],
    "approvals": [],
@@ -72713,7 +72721,7 @@
    "title": "AI keys plugin: several Anthropic keys, pick the active one for the assistant",
    "category": "Plugin",
    "detail": "",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "ai-keys",
@@ -72721,7 +72729,7 @@
    "pr": "#358",
    "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-10-23T00:40:17.479Z",
-   "updatedAt": "2026-11-27T20:00:39.936Z",
+   "updatedAt": "2026-11-27T20:40:09.176Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [
     {
@@ -72743,6 +72751,10 @@
     {
      "text": "Watchdog: PR #358 merged 2026-11-06 00:33 and the build never heard: the merge is recorded, CI on c79d45b798 is next.",
      "at": "2026-11-27T20:00:39.936Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on c79d45b798: landed.",
+     "at": "2026-11-27T20:40:09.176Z"
     }
    ],
    "approvals": [],
@@ -79237,14 +79249,14 @@
    "title": "Web templates: react-ts (Vite) and next-ts (Next.js 15)",
    "category": "Web port",
    "detail": "axf init creates either a Vite SPA or a Next.js App Router app (static export by default) with the framework baked in.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T20:39:56.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -79254,6 +79266,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T20:39:56.935Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T20:39:56.935Z"
     }
    ],
    "approvals": [],
