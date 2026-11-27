@@ -82,8 +82,14 @@ export function normItem(raw, at = nowIso()) {
     ...(r.origin === 'orchestrator' ? { origin: r.origin } : {}),
     ...(r.locked === true ? { locked: true } : {}),
     ...(r.live && typeof r.live === 'object' && !Array.isArray(r.live) ? { live: r.live } : {}),
+    // shipped-manifest@1 the plan received when its build shipped (shipped.mjs), or the refusal of an invalid one
+    ...(isObj(r.shipped) ? { shipped: r.shipped } : {}),
+    ...(isObj(r.shippedProblem) ? { shippedProblem: r.shippedProblem } : {}),
   };
 }
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+/** A copy (duplicate, import) is a new plan: the manifest stays with the plan its build was sent from. */
+const unshipped = ({ shipped: _s, shippedProblem: _p, ...it }) => it;
 
 /** The state as it is saved: no orchestrator rows and no view fields (they are read from the builds store each time). */
 export function stored(state) {
@@ -284,7 +290,7 @@ export function duplicate(state, ref, by = '') {
   const at = nowIso();
   const copyOf = (src, parent) => {
     const id = newId(src.title, taken); taken.add(id); map.set(src.id, id);
-    const c = { ...src, id, parent, tags: [...src.tags], links: src.links.map((l) => ({ ...l })), createdAt: at, updatedAt: at, by: str(by, 80) || src.by };
+    const c = { ...unshipped(src), id, parent, tags: [...src.tags], links: src.links.map((l) => ({ ...l })), createdAt: at, updatedAt: at, by: str(by, 80) || src.by };
     s.items.push(c);
     for (const k of children(state, src.id)) copyOf(k, id);
     return c;
@@ -386,7 +392,7 @@ export function importItems(state, data, { parent = null, by = '' } = {}) {
   const ids = new Map();
   for (const r of src) { const id = newId(r.title ?? 'item', taken); taken.add(id); ids.set(r.id, id); }
   const at = nowIso();
-  const made = src.map((r) => normItem({ ...r, id: ids.get(r.id), parent: ids.get(r.parent) ?? '__top__', createdAt: at, updatedAt: at, by }, at));
+  const made = src.map((r) => normItem({ ...unshipped(r), id: ids.get(r.id), parent: ids.get(r.parent) ?? '__top__', createdAt: at, updatedAt: at, by }, at));
   for (const m of made) {
     if (m.parent === '__top__') { m.parent = null; s.items.push(m); place(s, m, par?.id ?? null); } else s.items.push(m);
   }
