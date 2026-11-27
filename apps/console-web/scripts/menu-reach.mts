@@ -170,10 +170,13 @@ for (const v of libViews) need(reaches(v), `library page "${v}" isn't in the app
 const stubbed = new Set<string>();
 /*
  * Skins only (#532): the style / layout / spacing / design-package pickers left the console menus; the skin carries
- * those parts and View › Look steps it (skin.use:next|prev). The shared toolbars still offer the retired picks (the
+ * those parts and View › Look steps it (skin.next|prev, alias skin.use:next|prev). The shared toolbars still offer the retired picks (the
  * runtime routes swap:<folded type>:next|prev to the skin step), so they count as reached when the menu steps the skin.
  */
-const SKIN_STEP = ['skin.use:next', 'skin.use:prev'];
+const SKIN_STEP = ['skin.next', 'skin.prev'];
+/** The runtime registers both spellings of a skin step (skin.next = skin.use:next, framework/core/runtime.ts). */
+const SKIN_ALIAS: Record<string, string> = { 'skin.use:next': 'skin.next', 'skin.use:prev': 'skin.prev', 'skin.use:random': 'skin.random' };
+for (const a of [...actions]) { const twin = SKIN_ALIAS[a] ?? Object.keys(SKIN_ALIAS).find((k) => SKIN_ALIAS[k] === a); if (twin) actions.add(twin); }
 const retiredPick = (a: string) => /^swap:(style-theme|layout|behavior-theme|style-package):(next|prev)$/.test(a) || /^design\.package:(next|prev)$/.test(a) || /^spacing:(tight|compact|regular)$/.test(a);
 const skinStepped = new Set<string>();
 for (const tb of toolbars) for (const g of tb.data.groups) for (const it of g.items) {

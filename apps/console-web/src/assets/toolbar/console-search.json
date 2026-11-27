@@ -66,12 +66,6 @@
             "action": "swap:color-theme:next"
           },
           {
-            "id": "skin",
-            "icon": "sparkles",
-            "label": "Next skin",
-            "action": "skin.use:next"
-          },
-          {
             "id": "random",
             "icon": "shuffle",
             "label": "Randomize",

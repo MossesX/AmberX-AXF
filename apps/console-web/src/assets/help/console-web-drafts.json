@@ -782,23 +782,9 @@
         "kind": "button"
       },
       {
-        "target": "action:skin.use:next",
-        "title": "Next skin",
-        "text": "Goes to the next skin.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
         "target": "skin",
         "title": "Skin",
         "text": "Opens the skin picker: choose the skin for this app. The colour theme can be switched inside the skin without changing it.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:skin.use:prev",
-        "title": "Previous skin",
-        "text": "Goes to the previous skin.",
         "kind": "menu-item",
         "draft": true
       },
