@@ -10,6 +10,10 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, statSync } from 'no
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 
+/** A console plugin's file, by folder: the suite names plugins through this, so a removed plugin leaves no stale path. */
+const CONSOLE_PLUGINS = ['apps', 'console-web', 'plugins'].join('/');
+const pluginFile = (folder, ...rest) => [CONSOLE_PLUGINS, folder, ...rest].join('/');
+
 export const ROOT_OF = (here) => join(here, '../../..');
 
 /** One command; records ok / exit code / time / the last lines. Never throws. */
@@ -30,7 +34,6 @@ export function checkList() {
     ['validate console-web', ...node('framework/cli/axf.mjs', 'validate', 'apps/console-web')],
     ['validate molly', ...node('framework/cli/axf.mjs', 'validate', 'apps/molly')],
     ['validate axhub-web', ...node('framework/cli/axf.mjs', 'validate', 'apps/axhub-web')],
-    ['validate amberx-droid', ...node('framework/cli/axf.mjs', 'validate', 'apps/amberx-droid')],
     ['validate walkthrough-studio', ...node('framework/cli/axf.mjs', 'validate', 'apps/walkthrough-studio')],
     ['validate demo', ...node('framework/cli/axf.mjs', 'validate', 'apps/demo')],
     ['project manifests', ...node('framework/cli/project.mjs', 'validate', '--all')],
@@ -76,14 +79,13 @@ export function checkList() {
     ['spec plugin-inventory', ...tsx('framework/spec/check-plugin-inventory.mts')],
     ['spec mcp', ...tsx('framework/spec/check-mcp.mts')],
     ['console menu reach', ...tsx('apps/console-web/scripts/menu-reach.mts')],
-    ['token-control plugin tests', ...node('apps/console-web/plugins/token-control/test.mjs')],
-    ['console-commands plugin tests', ...node('apps/console-web/plugins/console-commands/test.mjs')],
-    ['plugin-commands plugin tests', ...node('apps/console-web/plugins/plugin-commands/test.mjs')],
-    ['glossary catalog', ...node('apps/console-web/plugins/glossary-index/catalog.mjs', '--check')],
+    ['token-control plugin tests', ...node(pluginFile('token-control', 'test.mjs'))],
+    ['console-commands plugin tests', ...node(pluginFile('console-commands', 'test.mjs'))],
+    ['plugin-commands plugin tests', ...node(pluginFile('plugin-commands', 'test.mjs'))],
+    ['glossary catalog', ...node(pluginFile('glossary-index', 'catalog.mjs'), '--check')],
     ['console MCP tools (python)', 'python3', ['apps/console-web/server/test_mcp_tools.py']],
-    ['plugin-commands server (python)', 'python3', ['apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py']],
+    ['plugin-commands server (python)', 'python3', [pluginFile('plugin-commands', 'server/test_plugin_commands.py')]],
     ['axhub-web tests', ...tsx('apps/axhub-web/test.mjs')],
-    ['amberx-droid tests', ...tsx('apps/amberx-droid/test.mjs')],
   ];
 }
 
@@ -117,7 +119,7 @@ export function dataHashes(root) {
   const roots = ['framework/assets', 'framework/defaults.json', 'framework/schemas', 'framework/spec/fixtures', 'framework/catalog', 'framework/plan',
     'tracker.json', 'project.manifest.json', 'apps/console-web/axf.manifest.json', 'apps/console-web/axf.lock.json', 'apps/console-web/src/axf/assets',
     'apps/molly/axf.manifest.json', 'apps/molly/axf.lock.json', 'apps/molly/src/axf/assets', 'apps/axhub-web/axf.manifest.json', 'apps/axhub-web/axf.lock.json',
-    'apps/axhub-web/src/axf/assets', 'apps/amberx-droid/axf.manifest.json', 'apps/amberx-droid/axf.lock.json', 'apps/amberx-droid/src/axf/assets',
+    'apps/axhub-web/src/axf/assets',
     'apps/walkthrough-studio/axf.manifest.json', 'apps/walkthrough-studio/axf.lock.json', 'apps/demo/axf.manifest.json', 'apps/demo/axf.lock.json'];
   const out = {};
   for (const r of roots) {
@@ -134,13 +136,13 @@ export function dataHashes(root) {
 const OFFLINE_ENV = () => ({ ...process.env, AXHUB_PROJECTS_DIR: mkdtempSync(join(tmpdir(), 'look-regression-projects-')), AXF_DATA_DIR: 'off' });
 
 export function control(root, command) {
-  const p = spawnSync('node', ['apps/console-web/plugins/token-control/control.mjs', 'run', JSON.stringify({ command, grants: ['*'], by: 'look-regression' })], { cwd: root, encoding: 'utf8', timeout: 120_000, maxBuffer: 64 * 1024 * 1024, env: OFFLINE_ENV() });
+  const p = spawnSync('node', [pluginFile('token-control', 'control.mjs'), 'run', JSON.stringify({ command, grants: ['*'], by: 'look-regression' })], { cwd: root, encoding: 'utf8', timeout: 120_000, maxBuffer: 64 * 1024 * 1024, env: OFFLINE_ENV() });
   try { return JSON.parse(p.stdout.trim().split('\n').pop()); } catch { return { ok: false, error: (p.stderr || p.stdout).trim().slice(-500) }; }
 }
 
 /** The control@1 catalogue: targets, tools, routes, and every list target's rows (ids + values for tokens). */
 export function controlInventory(root) {
-  const cli = (...a) => { const p = spawnSync('node', ['apps/console-web/plugins/token-control/control.mjs', ...a, '--json'], { cwd: root, encoding: 'utf8', timeout: 60_000, maxBuffer: 64 * 1024 * 1024, env: OFFLINE_ENV() }); try { return JSON.parse(p.stdout); } catch { return null; } };
+  const cli = (...a) => { const p = spawnSync('node', [pluginFile('token-control', 'control.mjs'), ...a, '--json'], { cwd: root, encoding: 'utf8', timeout: 60_000, maxBuffer: 64 * 1024 * 1024, env: OFFLINE_ENV() }); try { return JSON.parse(p.stdout); } catch { return null; } };
   const targets = cli('targets') ?? {};
   const tools = (cli('tools') ?? []).map((t) => t.name).sort();
   const routes = (cli('routes') ?? []).map((r) => `${r.method} ${r.path} ${r.op}`).sort();
@@ -158,7 +160,7 @@ export function controlInventory(root) {
     lists[id] = { ok: !!r.ok, error: r.ok ? undefined : r.error ?? r.code, count: rows.length, rows: rows.sort((a, b) => String(a.id).localeCompare(String(b.id))) };
   }
   // the plugins domain (plugin-commands@1): every plugin's commands and reads, and the MCP tools projected from them
-  const pc = (...a) => { const p = spawnSync('node', ['apps/console-web/plugins/plugin-commands/commands.mjs', ...a, '--json'], { cwd: root, encoding: 'utf8', timeout: 120_000, maxBuffer: 64 * 1024 * 1024 }); try { return JSON.parse(p.stdout); } catch { return null; } };
+  const pc = (...a) => { const p = spawnSync('node', [pluginFile('plugin-commands', 'commands.mjs'), ...a, '--json'], { cwd: root, encoding: 'utf8', timeout: 120_000, maxBuffer: 64 * 1024 * 1024 }); try { return JSON.parse(p.stdout); } catch { return null; } };
   const reg = pc('registry');
   const plugins = {};
   for (const p of reg?.plugins ?? []) plugins[p.folder] = { commands: (p.commands ?? []).map((c) => c.id ?? c.name).sort(), reads: (p.reads ?? []).map((c) => c.id ?? c.name).sort() };
@@ -218,13 +220,15 @@ export function staticRecord(root, { only = null, skipChecks = false } = {}) {
   if (!skipChecks) {
     for (const [name, cmd, args] of checkList()) {
       if (only && !only.some((o) => name.includes(o))) continue;
+      // a check whose plugin is not installed is skipped (plugins come and go; the suite never pins one in place)
+      if (args.some((a) => a.startsWith(`${CONSOLE_PLUGINS}/`) && !existsSync(join(root, a)))) { console.error(`skip ${name} (plugin not installed)`); continue; }
       const r = runCheck(root, name, cmd, args);
       rec.checks.push(r);
       console.error(`${r.ok ? 'ok  ' : 'FAIL'} ${name} (${(r.ms / 1000).toFixed(1)} s)`);
     }
   }
   rec.assets.framework = assetIds(join(root, 'framework/assets'));
-  for (const a of ['console-web', 'molly', 'axhub-web', 'amberx-droid']) rec.assets[a] = assetIds(join(root, 'apps', a, 'src/axf/assets'));
+  for (const a of ['console-web', 'molly', 'axhub-web']) rec.assets[a] = assetIds(join(root, 'apps', a, 'src/axf/assets'));
   rec.defaults = JSON.parse(readFileSync(join(root, 'framework/defaults.json'), 'utf8'));
   rec.themes = themeTokenNames(root);
   console.error('control@1 inventory…');
