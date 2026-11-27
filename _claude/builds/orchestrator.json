@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:09:36.941Z",
+ "updatedAt": "2026-11-27T19:10:05.268Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -46371,169 +46371,6 @@
    ]
   },
   {
-   "id": "settings-compact",
-   "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
-   "category": "Console",
-   "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/angel-settings",
-   "pr": "#175",
-   "mergedAt": "2026-10-30T16:37:18Z",
-   "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-11-12T03:28:24Z",
-   "builtAt": "2026-10-30T13:06:41.972Z",
-   "notes": [
-    {
-     "text": "Reconciler: PR #175; PR #175 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    },
-    {
-     "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-settings-compact rev 1 sent to Shipped features (backfill): landed 6a8ec6e95, 31 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:28:24Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
-    "at": "2026-10-30",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Before screenshots of every Settings page (phone + desktop) and a list of what wastes space",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "framework/react",
-      "apps/console-web/src"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.715Z",
-     "note": "",
-     "uid": "st-22fb07",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s2",
-     "text": "Settings home = a short list of sections you tap into (phone: one list, back arrow; desktop: list left, page right); plugin settings as one list under Plugins",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.761Z",
-     "note": "",
-     "uid": "st-1f5j9gp",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s3",
-     "text": "Choices with more than 3 options become one dropdown; 2–3 options stay a small segmented control; toggles are compact rows",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.810Z",
-     "note": "",
-     "uid": "st-p45tsr",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s4",
-     "text": "Tight rows: label and control on one line, description under an info tap; groups are plain headed lists, not big cards",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.867Z",
-     "note": "",
-     "uid": "st-4mhpg9",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s5",
-     "text": "Appearance: every asset picker (design pack, style pack, themes, layout…) becomes a compact dropdown row with a small preview instead of a wall of cards/buttons",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.915Z",
-     "note": "",
-     "uid": "st-1eq6qjb",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s6",
-     "text": "Level toolbar shrinks to one dropdown; checks (tsc, controls, theme, theme-swap, menu-reach); after screenshots; report + LOG; PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "Settings redesign",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T13:06:41.971Z",
-     "note": "",
-     "uid": "st-zp6q29",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    }
-   ]
-  },
-  {
    "id": "plugin-floatable",
    "title": "Plugin manifest field 'floatable': can the plugin open as a floating window",
    "category": "Plugins",
@@ -47020,162 +46857,6 @@
      "doneAt": "2026-10-30T21:21:37.559Z",
      "note": "",
      "uid": "st-ltgqm7",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    }
-   ]
-  },
-  {
-   "id": "ui-all-assets",
-   "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
-   "category": "Framework",
-   "detail": "Brett, Oct 30 2026: 'Any part of the UI that needs to be an asset in order to be changed, make an asset out of it… change it in one place, changes it everywhere. I want the whole framework and all the apps and plugins built on it to follow the same code.' Slimmed by Brett (voice, then 'Run that now' in text): three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/angel-ui-assets",
-   "pr": "#181",
-   "mergedAt": "2026-10-31T07:02:46Z",
-   "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-11-12T03:28:27Z",
-   "builtAt": "2026-10-31T09:07:22.007Z",
-   "notes": [
-    {
-     "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
-     "at": "2026-10-31T09:07:22.073Z"
-    },
-    {
-     "text": "Reconciler: PR #181; PR #181 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    },
-    {
-     "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-ui-all-assets rev 1 sent to Shipped features (backfill): landed 08ca3cda2, 93 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:28:27Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-10-31T09:07:21.794Z"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
-    "at": "",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Contract: three asset types in asset-types.json — typography, density, component-sizing — with JSON schemas, validators (ts + mjs), fixtures; design-package/style-package accept them as slots; open registries so later pieces add fields, never types",
-     "model": "Fable",
-     "why": "",
-     "phase": "Contract",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/schemas/asset-types.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-31T00:37:05.077Z",
-     "note": "",
-     "uid": "st-1rgbo1y",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s2",
-     "text": "Engine + live sync: compile the three types to --fx-* tokens (TS reference engine, fixtures, hot-swap), add them to the shared look on axHub so a change reaches every app live; PORTING.md records Kotlin twins as deferred",
-     "model": "Fable",
-     "why": "",
-     "phase": "Contract",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/core/engines"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-31T00:37:05.128Z",
-     "note": "",
-     "uid": "st-1dpkydw",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s3",
-     "text": "Adopt: axf.css (incl. the Oct 30 compact block), settings library, console.css, framework React components and libs (incl. framework/libs/mcp pages) read only the new tokens — no sizes decided in code",
-     "model": "Opus",
-     "why": "",
-     "phase": "Adopt",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-31T09:07:21.860Z",
-     "note": "",
-     "uid": "st-1427kv6",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s4",
-     "text": "Plugins: per-plugin sizes that duplicate a shared piece switch to the new tokens (all plugins); starter assets (compact = Oct 30 look, standard, roomy) for each type; design packages reference them; Settings → Appearance gets the three pickers",
-     "model": "Opus",
-     "why": "",
-     "phase": "Adopt",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-31T09:07:21.935Z",
-     "note": "",
-     "uid": "st-1dja2cs",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s5",
-     "text": "Checks (check-theme flags hard-coded sizes; theme-swap swaps the three types), re-bake every app once (Patches paused), before/after screenshots, report + LOG, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "Adopt",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-31T09:07:22.006Z",
-     "note": "",
-     "uid": "st-cb8bgu",
      "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
@@ -48828,6 +48509,177 @@
    ]
   },
   {
+   "id": "settings-compact",
+   "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
+   "category": "Console",
+   "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/angel-settings",
+   "pr": "#175",
+   "mergedAt": "2026-10-30T16:37:18Z",
+   "createdAt": "2026-10-30T13:01:42.736Z",
+   "updatedAt": "2026-11-27T19:09:41.842Z",
+   "builtAt": "2026-10-30T13:06:41.972Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #175; PR #175 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-settings-compact rev 1 sent to Shipped features (backfill): landed 6a8ec6e95, 31 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:24Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #175 merged 2026-10-30 16:37 and the build never heard: the merge is recorded, CI on 6a8ec6e954 is next.",
+     "at": "2026-11-27T19:09:41.842Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Before screenshots of every Settings page (phone + desktop) and a list of what wastes space",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "framework/react",
+      "apps/console-web/src"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.715Z",
+     "note": "",
+     "uid": "st-22fb07",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s2",
+     "text": "Settings home = a short list of sections you tap into (phone: one list, back arrow; desktop: list left, page right); plugin settings as one list under Plugins",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.761Z",
+     "note": "",
+     "uid": "st-1f5j9gp",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s3",
+     "text": "Choices with more than 3 options become one dropdown; 2–3 options stay a small segmented control; toggles are compact rows",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.810Z",
+     "note": "",
+     "uid": "st-p45tsr",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tight rows: label and control on one line, description under an info tap; groups are plain headed lists, not big cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.867Z",
+     "note": "",
+     "uid": "st-4mhpg9",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s5",
+     "text": "Appearance: every asset picker (design pack, style pack, themes, layout…) becomes a compact dropdown row with a small preview instead of a wall of cards/buttons",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.915Z",
+     "note": "",
+     "uid": "st-1eq6qjb",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s6",
+     "text": "Level toolbar shrinks to one dropdown; checks (tsc, controls, theme, theme-swap, menu-reach); after screenshots; report + LOG; PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "Settings redesign",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.971Z",
+     "note": "",
+     "uid": "st-zp6q29",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
    "id": "audio-output-recorder",
    "title": "AmberX Audio Output Recorder -> axHub (no mic)",
    "category": "Plugin",
@@ -49549,6 +49401,170 @@
      "doneAt": "",
      "note": "",
      "uid": "st-1akyazv",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
+   "id": "ui-all-assets",
+   "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
+   "category": "Framework",
+   "detail": "Brett, Oct 30 2026: 'Any part of the UI that needs to be an asset in order to be changed, make an asset out of it… change it in one place, changes it everywhere. I want the whole framework and all the apps and plugins built on it to follow the same code.' Slimmed by Brett (voice, then 'Run that now' in text): three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/angel-ui-assets",
+   "pr": "#181",
+   "mergedAt": "2026-10-31T07:02:46Z",
+   "createdAt": "2026-10-30T17:31:49.428Z",
+   "updatedAt": "2026-11-27T19:09:47.363Z",
+   "builtAt": "2026-10-31T09:07:22.007Z",
+   "notes": [
+    {
+     "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
+     "at": "2026-10-31T09:07:22.073Z"
+    },
+    {
+     "text": "Reconciler: PR #181; PR #181 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ui-all-assets rev 1 sent to Shipped features (backfill): landed 08ca3cda2, 93 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:27Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #181 merged 2026-10-31 07:02 and the build never heard: the merge is recorded, CI on 371ba924d7 is next.",
+     "at": "2026-11-27T19:09:47.363Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-31T09:07:21.794Z"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
+    "at": "",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Contract: three asset types in asset-types.json — typography, density, component-sizing — with JSON schemas, validators (ts + mjs), fixtures; design-package/style-package accept them as slots; open registries so later pieces add fields, never types",
+     "model": "Fable",
+     "why": "",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/schemas/asset-types.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T00:37:05.077Z",
+     "note": "",
+     "uid": "st-1rgbo1y",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s2",
+     "text": "Engine + live sync: compile the three types to --fx-* tokens (TS reference engine, fixtures, hot-swap), add them to the shared look on axHub so a change reaches every app live; PORTING.md records Kotlin twins as deferred",
+     "model": "Fable",
+     "why": "",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/engines"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T00:37:05.128Z",
+     "note": "",
+     "uid": "st-1dpkydw",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s3",
+     "text": "Adopt: axf.css (incl. the Oct 30 compact block), settings library, console.css, framework React components and libs (incl. framework/libs/mcp pages) read only the new tokens — no sizes decided in code",
+     "model": "Opus",
+     "why": "",
+     "phase": "Adopt",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T09:07:21.860Z",
+     "note": "",
+     "uid": "st-1427kv6",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s4",
+     "text": "Plugins: per-plugin sizes that duplicate a shared piece switch to the new tokens (all plugins); starter assets (compact = Oct 30 look, standard, roomy) for each type; design packages reference them; Settings → Appearance gets the three pickers",
+     "model": "Opus",
+     "why": "",
+     "phase": "Adopt",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T09:07:21.935Z",
+     "note": "",
+     "uid": "st-1dja2cs",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s5",
+     "text": "Checks (check-theme flags hard-coded sizes; theme-swap swaps the three types), re-bake every app once (Patches paused), before/after screenshots, report + LOG, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "Adopt",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T09:07:22.006Z",
+     "note": "",
+     "uid": "st-cb8bgu",
      "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
@@ -58248,7 +58264,7 @@
    "title": "AmberX voice notes, lists, tasks + AI router",
    "category": "AmberX app",
    "detail": "Brett Oct 27 2026: voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -58256,7 +58272,7 @@
    "pr": "#144",
    "mergedAt": "2026-10-28T02:20:51Z",
    "createdAt": "2026-10-28T00:32:03.143Z",
-   "updatedAt": "2026-11-27T19:09:31.085Z",
+   "updatedAt": "2026-11-27T19:09:48.106Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
    "notes": [
     {
@@ -58286,6 +58302,10 @@
     {
      "text": "Watchdog: merged and CI is green on fe52642a75: landed.",
      "at": "2026-11-27T19:09:31.085Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:09:48.106Z"
     }
    ],
    "approvals": [],
@@ -59401,7 +59421,7 @@
    "title": "Systems check: when a Fix fails, a dialog with the Claude connection badge + account, approve Mosses to launch headless Claude Code; no connection = error, fix, VPS command and Vinny Auto fix",
    "category": "Console",
    "detail": "Brett, Oct 28 2026 (claude.ai): \"If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.\" Mosses = the console agent; Vinny = axHub vps.run. Profile refactor, Opus. Built in the AX Notes claude.ai chat (Brett's pick).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -59409,7 +59429,7 @@
    "pr": "#152",
    "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-11-27T18:29:21.110Z",
+   "updatedAt": "2026-11-27T19:09:36.238Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
@@ -59435,6 +59455,10 @@
     {
      "text": "Watchdog: PR #152 merged 2026-10-28 10:19 and the build never heard: the merge is recorded, CI on 78a599b9a6 is next.",
      "at": "2026-11-27T18:29:21.110Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 78a599b9a6: landed.",
+     "at": "2026-11-27T19:09:36.238Z"
     }
    ],
    "approvals": [],
@@ -70223,14 +70247,14 @@
    "title": "Engines: theme, layout, component styles, UAC, context menu, actions",
    "category": "Kernel & engines",
    "detail": "Compile assets into tokens and behaviour: theme tokens (core + extended), layouts per window class, component styles, role-based access, context menus per target, action bus with interceptors.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T19:09:53.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -70240,6 +70264,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T19:09:53.563Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T19:09:53.563Z"
     }
    ],
    "approvals": [],
