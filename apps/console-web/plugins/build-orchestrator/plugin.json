@@ -570,28 +570,37 @@
         "id": "pipeline-emergency-list",
         "route": "GET /pipeline/emergency",
         "title": "Emergency builds",
-        "description": "The builds Brett sent to emergency (they skip the line, build in the 2 emergency slots and land first), each with its status and whether its slot grant is on file.",
+        "description": "The builds sent to emergency (they skip the line, build in the 2 emergency slots and land first), each with its status, who sent it and why, and whether its slot grant is on file. canSend: this request is Brett's own signed-in click. claudeCanSend: a Claude session may send one with pipeline-emergency (the Claude setting builds.claudeEmergency is on).",
         "readOnly": true,
-        "output": "{ builds: [{ id, title, status, emergency: { at, by }, granted }], canSend }"
+        "output": "{ builds: [{ id, title, status, emergency: { at, by, via, askedBy, reason }, granted }], canSend, claudeCanSend }"
       },
       {
         "id": "pipeline-emergency",
         "route": "POST /pipeline/emergency",
         "title": "Send a build to emergency",
-        "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Tags a Pipeline 2.0 build as emergency: it skips the one-active-build line, builds in the emergency slot pool and lands first.",
+        "description": "Tags a Pipeline 2.0 build as emergency: it skips the one-active-build line, builds in the emergency slot pool and lands first. Open to Claude (the console token through REST, MCP, the CLI, console control or voice) when Brett says so: send reason and askedBy. Every send is logged on the build with who asked and why, and an FYI goes to Brett's phone. Refused with 403 while the owner-only Claude setting builds.claudeEmergency is off, and with 400 when reason is missing. Brett's own signed-in click needs no reason. Say 'send the login fix build to emergency'.",
         "input": {
           "type": "object",
           "properties": {
             "id": {
               "type": "string",
               "description": "Build id"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why this build goes to emergency, in Brett's words when he said them. Logged on the build and sent to Brett's phone as an FYI."
+            },
+            "askedBy": {
+              "type": "string",
+              "description": "The session or agent that asks (falls back to the X-Axhub-Session header). Logged on the build and named in the FYI to Brett's phone."
             }
           },
           "required": [
-            "id"
+            "id",
+            "reason"
           ]
         },
-        "output": "{ id, emergency: { at, by }, already }"
+        "output": "{ id, emergency: { at, by, via, askedBy, reason }, already }"
       },
       {
         "id": "pipeline-emergency-clear",

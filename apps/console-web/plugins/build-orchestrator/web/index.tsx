@@ -202,6 +202,29 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id}: retrying${strategy ? ` (${strategy})` : ''}. The ladder starts over.`, 'success'); attempts(id); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Build orchestrator: retry a build (<build>|strategy: retry, fix:targeted, fresh-session, switch-model, switch-account …)', params: true });
+    // Send to emergency for Claude (Brett, Nov 24 2026): a console-control press, a console command or voice reaches
+    // POST pipeline/emergency through this action. It runs in Brett's open console, so the call names who asks in the
+    // X-Axhub-Session header: the server then never reads it as Brett's own click. It takes the Claude path instead:
+    // the owner-only setting builds.claudeEmergency decides, a reason is required, the send is logged on the build
+    // with who asked and why, and an FYI goes to Brett's phone. Brett's own button is in the status table.
+    rt.actions.register('build-orchestrator.emergency', (args) => {
+      const raw = args.join(':');
+      let text = raw;
+      try { text = decodeURIComponent(raw); } catch { /* not encoded: taken as typed */ }
+      const [id = '', reason = '', asker = ''] = text.split('|').map((x) => x.trim());
+      if (!id || !reason) { rt.toast('Name a build and say why: build-orchestrator.emergency:<build>|<reason>[|asked by]', 'warning'); return; }
+      // a header value: plain printable ASCII, never the word the server reads as Brett's own console
+      const clean = asker.replace(/[^\x20-\x7e]/g, '').trim().slice(0, 80);
+      const askedBy = clean && clean.toLowerCase() !== 'console' ? clean : 'console-control';
+      void pipeApi.call<{ ok: boolean; error?: string; already?: boolean }>('pipeline/emergency', { method: 'POST', headers: { 'X-Axhub-Session': askedBy }, body: JSON.stringify({ id, reason, askedBy }) })
+        .then((r) => {
+          if (!r.ok) throw new Error(r.error ?? 'not sent');
+          rt.toast(r.already ? `${id} is already an emergency build` : `${id} sent to emergency for ${askedBy}: logged on the build, FYI sent to Brett`, 'success');
+          void loadRows(true).catch(() => undefined);
+          void open(id);
+        })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: send a build to emergency (<build>|<reason>|asked by; logged, FYI to Brett)', params: true, effect: 'write' });
     // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
     // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
     addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);

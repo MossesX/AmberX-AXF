@@ -95,10 +95,11 @@ export function EmergencyBadge({ by = '' }: { by?: string }) {
 }
 
 /**
- * Send to emergency: Brett's own signed-in console only (the server refuses the console token, MCP, voice and sessions).
- * Never a toolbar button or a registered action, and its words sit in a <span> so the button is no console-control
- * target either (react/controlTargets.ts only registers buttons with plain-text words): nothing outside the page (MCP,
- * voice, a remote press) can press it for him. Two clicks: the first arms it, the second sends.
+ * Send to emergency, Brett's own click: the server reads it as his (no reason needed). Never a toolbar button, and its
+ * words sit in a <span> so the button is no console-control target (react/controlTargets.ts only registers buttons
+ * with plain-text words): nothing outside the page (MCP, voice, a remote press) can press it for him. Claude sends
+ * through the pipeline-emergency command or the build-orchestrator.emergency action instead, which carry who asked
+ * and why. Two clicks: the first arms it, the second sends.
  */
 function SendToEmergency({ api, id, onSent }: { api: Api; id: string; onSent: () => void }) {
   const rt = useRuntime();
