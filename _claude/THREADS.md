@@ -845,8 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:42 UTC · `orchestrator-master-pause-switch-stop` note (all) · watchdog
-- 2026-11-26 22:42 UTC · `host-phone-connect-apk-axhub-browser` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
@@ -1245,6 +1243,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 06:43 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 06:44 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
 - 2026-11-27 06:44 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 06:45 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:45 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 

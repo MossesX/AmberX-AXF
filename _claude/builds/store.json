@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10464,
- "updatedAt": "2026-11-27T06:45:37.003Z",
+ "rev": 10465,
+ "updatedAt": "2026-11-27T06:46:04.228Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -372643,7 +372643,7 @@
    "branch": "claude/claude-emergency-access--s5",
    "pr": "#933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T06:45:16.512Z",
+   "updatedAt": "2026-11-27T06:45:49.073Z",
    "builtAt": "",
    "notes": [
     {
@@ -372892,18 +372892,19 @@
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
+    },
+    {
+     "text": "Headless run axf-claude-emergency-access--s5--lenny: brief only · start 11.3K tokens ($0.05) · cost $0.96 · 11 turns · 6 tools, MCP none",
+     "at": "2026-11-27T06:45:38.601Z"
     }
    ],
    "approvals": [],
@@ -372914,8 +372915,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "claude-emergency-access--s3",
-    "brief": "# Let Claude send builds to emergency: step s3\n\nBuild claude-emergency-access (Pipeline 2.0), step s3 of 6. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/claude-emergency-access--s3 (already cut from main) · branch claude/claude-emergency-access--s3.\n\n## Your step\nOwner-only switch so the rule is Brett's to change. In apps/console-web/plugins/claude-settings/ add the Claude setting `builds.claudeEmergency` (label: \"Claude can send builds to emergency\", description: when on, a Claude session may send a build to the emergency slot when Brett says so; each one is logged with who asked and why and an FYI goes to his phone), default ON, marked owner-only like `builds.fableUpgradeApproval` (changes only with Brett's own console click; `claude_settings_set` from a session is refused). Add it to the settings registry / schema, the defaults, the settings tab's builds group (framework controls only, level-toolbar placement like its neighbours), and the plugin's own test for owner-only keys if there is one. Do not touch the build-orchestrator plugin. Commit.\n\nFiles: apps/console-web/plugins/claude-settings/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 24: he wants Claude (the console token through MCP, REST, CLI, voice) to be able to send a build to an emergency slot when he says so. Today build-orchestrator/pipeline-emergency is Brett-only from his own signed-in console and refuses the console token with 403. Change that rule as Brett decides (e.g. allow it, logged with who asked and why, with an FYI to his phone).\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "claude-emergency-access--s4",
+    "brief": "# Let Claude send builds to emergency: step s4\n\nBuild claude-emergency-access (Pipeline 2.0), step s4 of 6. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/claude-emergency-access--s4 (already cut from main) · branch claude/claude-emergency-access--s4.\n\n## Your step\nOpen the command to MCP, console control and voice. In apps/console-web/plugins/build-orchestrator/plugin.json and the plugin's web action / command registration (apps/console-web/plugins/build-orchestrator/web/ or src/, wherever `pipeline-emergency` is declared), remove the `personOnly` / Brett-only marking from the pipeline-emergency command only, add `reason` (required) and `askedBy` (optional) to its parameters with a description saying it is logged and an FYI is sent to Brett's phone, keep `confirm` if it is marked destructive, and make sure it appears in the plugin-commands MCP list, `axf console …` and the console-control registry (append new targets last; control@1 is append-only). Approve / deny and upgrade actions stay personOnly. If a CI pin lists person-only commands or console tools (framework/cli/check-console-control.mjs fixtures or the plugin's own list), update that pin for this one command. Do not touch the server routes folder or pipeline.mjs. Commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/web/, framework/spec/fixtures/console-control.json. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 24: he wants Claude (the console token through MCP, REST, CLI, voice) to be able to send a build to an emergency slot when he says so. Today build-orchestrator/pipeline-emergency is Brett-only from his own signed-in console and refuses the console token with 403. Change that rule as Brett decides (e.g. allow it, logged with who asked and why, with an FYI to his phone).\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -372947,13 +372948,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T06:44:51.165Z",
+     "at": "2026-11-27T06:45:27.881Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-claude-emergency-access--s5--lenny",
+     "session": "axf-claude-emergency-access--s3--joey",
      "phase": ""
     }
    },
@@ -373731,7 +373732,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 171,
+   "rev": 174,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -387890,7 +387891,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s11",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T06:44:44.695Z",
+   "updatedAt": "2026-11-27T06:45:50.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -388783,43 +388784,39 @@
     },
     {
      "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s6 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s8 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s9 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
     },
     {
      "text": "Watchdog: step s10 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-27T06:44:34.499Z",
-     "by": "watchdog"
+     "at": "2026-11-27T06:44:34.499Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.59",
+     "at": "2026-11-27T06:45:50.277Z"
     }
    ],
    "approvals": [],
@@ -388863,13 +388860,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T06:41:28.762Z",
+     "at": "2026-11-27T06:45:06.456Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s10--lenny",
+     "session": "axf-emergency-check-can-these-plugins---s11--lenny",
      "phase": ""
     }
    },
@@ -390561,18 +390558,18 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 382,
+   "rev": 385,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Fable",
-    "status": "pending",
-    "estimate": "",
-    "source": "plan-studio-2",
-    "planId": "emergency-check-can-these-plugin-hjqr",
-    "createdAt": "2026-11-25T12:13:57.933Z",
     "builtAt": "",
+    "createdAt": "2026-11-25T12:13:57.933Z",
+    "estimate": "",
+    "model": "Fable",
+    "planId": "emergency-check-can-these-plugin-hjqr",
     "prefixSteps": true,
+    "source": "plan-studio-2",
+    "status": "pending",
     "stepAt": {
      "st-mww38q3o1lgvjq": "2026-11-25T12:16:48.420Z",
      "st-mww38q3o1mibak": "2026-11-25T12:16:48.420Z",
