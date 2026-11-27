@@ -103,9 +103,8 @@ def _axhub_default() -> dict[str, Any]:
 
 
 def _load() -> dict[str, Any]:
-    try:
-        raw = json.loads((data_dir() / "archives.json").read_text("utf-8"))
-    except (OSError, ValueError):
+    raw = data_store.read_json(data_dir() / "archives.json", {})
+    if not isinstance(raw, dict):
         raw = {}
     items = [a for a in (raw.get("archives") or []) if isinstance(a, dict) and ID_RE.match(str(a.get("id", "")))]
     hub = next((a for a in items if a["id"] == "axhub"), None)
@@ -123,10 +122,7 @@ def _save(db: dict[str, Any]) -> None:
 
 
 def _config() -> dict[str, Any]:
-    try:
-        raw = json.loads((data_dir() / "config.json").read_text("utf-8"))
-    except (OSError, ValueError):
-        raw = {}
+    raw = data_store.read_json(data_dir() / "config.json", {})
     return clean_config(raw)
 
 

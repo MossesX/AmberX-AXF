@@ -232,9 +232,8 @@ def meter_state(active: dict[str, Any] | None) -> str:
 
 
 def _usage_saved() -> dict[str, Any]:
-    try:
-        v = json.loads((data_dir() / "usage.json").read_text("utf-8"))
-    except (OSError, ValueError):
+    v = data_store.read_json(data_dir() / "usage.json", None)
+    if not isinstance(v, dict):
         return {}
     return {str(a.get("name")): a for a in v.get("accounts") or [] if isinstance(a, dict)}
 
@@ -333,9 +332,8 @@ def test() -> dict[str, Any]:
 
 @router.get("/status")
 def status() -> dict[str, Any]:
-    try:
-        last = json.loads((data_dir() / "status.json").read_text("utf-8"))
-    except (OSError, ValueError):
+    last = data_store.read_json(data_dir() / "status.json", None)
+    if last is None:
         return {"last": None}
     if isinstance(last, dict) and last.get("state") not in STATES:  # saved before the out-of-credits state existed
         last["state"] = classify(bool(last.get("ok")), str(last.get("error") or ""))

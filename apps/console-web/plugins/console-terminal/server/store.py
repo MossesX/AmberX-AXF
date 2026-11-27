@@ -158,7 +158,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             tok = str(patch["claudeToken"] or "").strip()
             f = data_dir() / "claude-token"
             if not tok:
-                f.unlink(missing_ok=True)
+                data_store.remove(f)
             elif not re.match(r"^sk-ant-oat01-[A-Za-z0-9_-]{20,}$", tok):
                 raise ValueError("that isn't a Claude Code token (run `claude setup-token`; it starts with sk-ant-oat01-)")
             else:
@@ -168,10 +168,8 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
 
 
 def claude_token() -> str:
-    try:
-        return (data_dir() / "claude-token").read_text().strip()
-    except OSError:
-        return os.environ.get("CLAUDE_CODE_OAUTH_TOKEN", "")
+    tok = data_store.read_text(data_dir() / "claude-token", "").strip()
+    return tok or os.environ.get("CLAUDE_CODE_OAUTH_TOKEN", "")
 
 
 def ssh_key() -> Path:
@@ -231,10 +229,7 @@ def log(entry: dict[str, Any]) -> None:
 
 def read_log(limit: int = 200) -> list[dict[str, Any]]:
     p = data_dir() / "sessions.jsonl"
-    try:
-        lines = p.read_text("utf-8").splitlines()
-    except OSError:
-        return []
+    lines = data_store.read_text(p, "").splitlines()
     out = []
     for line in reversed(lines[-limit:]):
         try:

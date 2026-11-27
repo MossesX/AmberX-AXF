@@ -79,11 +79,12 @@ def themes() -> list[dict[str, Any]]:
     out = []
     root = data_dir() / "themes"
     for t in TYPES:
-        for f in sorted((root / t).glob("*.json")) if (root / t).is_dir() else []:
-            try:
-                out.append(json.loads(f.read_text("utf-8")))
-            except (OSError, ValueError):
+        for name in data_store.list_files(root / t):  # one row per saved theme (data-store@1)
+            if "/" in name or not name.endswith(".json"):
                 continue
+            a = data_store.read_json(root / t / name, None)
+            if a is not None:
+                out.append(a)
     return out
 
 
@@ -98,9 +99,9 @@ def save_theme(body: dict = Body(...)):
     a = clean(body.get("asset"))
     with _lock:
         p = _path(a["type"], a["id"])
-        if p.exists() and body.get("overwrite") is False:
+        if data_store.exists(p) and body.get("overwrite") is False:
             raise HTTPException(409, f"{a['id']} is already saved; pick another name or overwrite it")
-        if not p.exists() and len(themes()) >= MAX_THEMES:
+        if not data_store.exists(p) and len(themes()) >= MAX_THEMES:
             raise HTTPException(409, f"at most {MAX_THEMES} saved themes; delete some first")
         data_store.write_json(p, a)  # atomic, 0600, folder 0700
     return {"asset": a}
@@ -109,7 +110,6 @@ def save_theme(body: dict = Body(...)):
 @router.delete("/themes/{t}/{iid}")
 def delete_theme(t: str, iid: str):
     p = _path(t, iid)
-    if not p.exists():
+    if not data_store.remove(p):
         raise HTTPException(404, "no such theme")
-    p.unlink()
     return {"ok": True}
