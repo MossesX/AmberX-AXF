@@ -2437,6 +2437,18 @@
     }
    ]
   },
+  "claude-emergency-access": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "Janitor Joey",
+   "brief": "# Let Claude send builds to emergency: step s1\n\nBuild claude-emergency-access (Pipeline 2.0), step s1 of 6. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/claude-emergency-access--s1 (already cut from main) · branch claude/claude-emergency-access--s1.\n\n## Your step\nServer rule change for the emergency slot. In the build-orchestrator plugin's server routes (apps/console-web/plugins/build-orchestrator/server/), find the pipeline-emergency route that refuses the console token with 403 and change it to this contract: a console-token caller (MCP, REST, CLI, voice) is allowed when the body carries a non-empty `reason` (why) and `askedBy` (session / agent name; fall back to the X-Axhub-Session / AXF_AGENT headers), otherwise 400 naming the missing field; Brett's own signed-in click keeps working unchanged with no reason needed. Before allowing a token caller, read the Claude setting `builds.claudeEmergency` (missing key = on); when off, keep the 403 with a plain message saying where to switch it on. On success record on the build `emergency: { by, via: 'console-token'|'person', askedBy, reason, at }` plus a build note through the existing store write path (no new JSON file writes), and send one FYI through capability `axf.notify@1` / the alert hub with type `build-emergency-by-claude` (title: build id sent to emergency, body: who asked and why). Declare that type in the plugin's notify.json (notify-types@1) as an FYI that may buzz the phone. Do not touch pipeline.mjs, plugin.json or the web UI. Commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/server/, apps/console-web/plugins/build-orchestrator/notify.json. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 24: he wants Claude (the console token through MCP, REST, CLI, voice) to be able to send a build to an emergency slot when he says so. Today build-orchestrator/pipeline-emergency is Brett-only from his own signed-in console and refuses the console token with 403. Change that rule as Brett decides (e.g. allow it, logged with who asked and why, with an FYI to his phone).\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+   "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
   "claude-md-standing-rule-be-proactive-bring-up-th": {
    "said": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
    "at": "2026-11-10T16:45:47.022Z",
