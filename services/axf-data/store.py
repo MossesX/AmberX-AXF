@@ -188,6 +188,57 @@ def _frame(r: dict) -> dict:
             'at': r['at'], 'by': r['by'], 'size': r['size'], 'contentType': r['content_type'], 'deleted': bool(r['deleted'])}
 
 
+class _Rows:
+    """A statement's rows, read in full while the connection lock was held (see _LockedDb)."""
+
+    def __init__(self, cur: sqlite3.Cursor):
+        self.rows = cur.fetchall() if cur.description else []
+        self.rowcount = cur.rowcount
+        self.lastrowid = cur.lastrowid
+        self._i = 0
+
+    def fetchone(self):
+        if self._i >= len(self.rows):
+            return None
+        self._i += 1
+        return self.rows[self._i - 1]
+
+    def fetchall(self) -> list:
+        out, self._i = self.rows[self._i:], len(self.rows)
+        return out
+
+    def __iter__(self):
+        return iter(self.fetchall())
+
+
+class _LockedDb:
+    """
+    The one sqlite connection, shared by the server's worker threads (check_same_thread=False). sqlite3 connections
+    are not safe for concurrent use: two requests reading at once raised "bad parameter or other API misuse". Every
+    statement runs under the store's RLock and its rows are read before the lock is released. Writers that already
+    hold the lock (BEGIN IMMEDIATE … COMMIT) re-enter it.
+    """
+
+    def __init__(self, conn: sqlite3.Connection, lock):
+        self._conn = conn
+        self._lock = lock
+
+    def execute(self, sql: str, params=()) -> _Rows:
+        with self._lock:
+            return _Rows(self._conn.execute(sql, params))
+
+    def executemany(self, sql: str, seq) -> _Rows:
+        with self._lock:
+            return _Rows(self._conn.executemany(sql, seq))
+
+    def executescript(self, script: str):
+        with self._lock:
+            return self._conn.executescript(script)
+
+    def __getattr__(self, name: str):
+        return getattr(self._conn, name)
+
+
 class Store:
     def __init__(self, data_dir: str | os.PathLike, now=now_iso):
         self.dir = Path(data_dir)
@@ -196,8 +247,9 @@ class Store:
         (self.dir / 'snapshots').mkdir(exist_ok=True)
         self.db_path = self.dir / 'axf-data.sqlite'
         self.lock = threading.RLock()
-        self.db = sqlite3.connect(self.db_path, check_same_thread=False, isolation_level=None)
-        self.db.row_factory = sqlite3.Row
+        conn = sqlite3.connect(self.db_path, check_same_thread=False, isolation_level=None)
+        conn.row_factory = sqlite3.Row
+        self.db = _LockedDb(conn, self.lock)
         self.db.executescript(SCHEMA_SQL)
         self.now = now
         self.started = time.time()
