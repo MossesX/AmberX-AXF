@@ -49,8 +49,8 @@ def _log(entry: dict[str, Any]) -> None:
 
 def _builds() -> list[dict[str, Any]]:
     try:
-        return [json.loads(x) for x in (data_dir() / "builds.jsonl").read_text("utf-8").splitlines() if x.strip()]
-    except (OSError, ValueError):
+        return [json.loads(x) for x in data_store.read_text(data_dir() / "builds.jsonl", "").splitlines() if x.strip()]
+    except ValueError:
         return []
 
 

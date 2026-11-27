@@ -89,11 +89,12 @@ def _path(t: str, iid: str) -> Path:
 def themes() -> list[dict[str, Any]]:
     out = []
     root = data_dir() / "themes"
-    for f in sorted(root.glob("*/*.json")) if root.is_dir() else []:
-        try:
-            out.append(json.loads(f.read_text("utf-8")))
-        except (OSError, ValueError):
+    for name in data_store.list_files(root):  # one row per saved theme (data-store@1)
+        if name.count("/") != 1 or not name.endswith(".json"):
             continue
+        a = data_store.read_json(root / name, None)
+        if a is not None:
+            out.append(a)
     return out
 
 
@@ -107,7 +108,7 @@ def save_theme(body: dict = Body(...)):
     a = clean(body.get("asset"))
     with _lock:
         p = _path(a["type"], a["id"])
-        if not p.exists() and len(themes()) >= MAX_THEMES:
+        if not data_store.exists(p) and len(themes()) >= MAX_THEMES:
             raise HTTPException(409, f"at most {MAX_THEMES} saved themes; delete some first")
         _write(p, a)
     return {"asset": a}
@@ -116,7 +117,7 @@ def save_theme(body: dict = Body(...)):
 @router.put("/themes/{t}/{iid}")
 def update_theme(t: str, iid: str, body: dict = Body(...)):
     p = _path(t, iid)
-    if not p.exists():
+    if not data_store.exists(p):
         raise HTTPException(404, "no such theme")
     a = clean({**body, "type": t, "id": iid})
     with _lock:
@@ -127,18 +128,14 @@ def update_theme(t: str, iid: str, body: dict = Body(...)):
 @router.delete("/themes/{t}/{iid}")
 def delete_theme(t: str, iid: str):
     p = _path(t, iid)
-    if not p.exists():
+    if not data_store.remove(p):
         raise HTTPException(404, "no such theme")
-    p.unlink()
     return {"ok": True}
 
 
 def presets() -> dict[str, list[str]]:
-    try:
-        v = json.loads((data_dir() / "presets.json").read_text("utf-8"))
-        return v if isinstance(v, dict) else {}
-    except (OSError, ValueError):
-        return {}
+    v = data_store.read_json(data_dir() / "presets.json", {})
+    return v if isinstance(v, dict) else {}
 
 
 @router.get("/presets")

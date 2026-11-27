@@ -47,13 +47,10 @@ def _path(scope: str) -> Path:
 
 
 def load(scope: str) -> dict[str, Any]:
-    try:
-        mem = json.loads(_path(scope).read_text())
-        if not isinstance(mem, dict) or not isinstance(mem.get("items"), list):
-            raise ValueError
+    mem = data_store.read_json(_path(scope), None)  # data-store@1: one record per scope
+    if isinstance(mem, dict) and isinstance(mem.get("items"), list):
         return mem
-    except (OSError, ValueError):
-        return {"$axf": contract.AGENT_MEMORY_TAG, "scope": scope, "summary": "", "items": []}
+    return {"$axf": contract.AGENT_MEMORY_TAG, "scope": scope, "summary": "", "items": []}
 
 
 def save(scope: str, mem: dict[str, Any]) -> None:
@@ -143,16 +140,14 @@ def remove(scope: str, item_id: str = "", job_id: str = "", kind: str = "") -> i
 
 
 def clear(scope: str) -> None:
-    p = _path(scope)
-    if p.exists():
-        p.unlink()
+    data_store.remove(_path(scope))
 
 
 def stats(scope: str) -> dict[str, Any]:
     mem = load(scope)
     c = Counter(d.get("kind") for d in mem["items"])
     return {"scope": scope, "items": len(mem["items"]), "byKind": dict(c), "summary": bool(mem.get("summary")), "vectors": sum(1 for d in mem["items"] if d.get("vector")),
-            "bytes": _path(scope).stat().st_size if _path(scope).exists() else 0}
+            "bytes": len(data_store.read_bytes(_path(scope)) or b"")}
 
 
 def decay(scope: str, days: int) -> int:
@@ -169,7 +164,7 @@ def decay(scope: str, days: int) -> int:
 
 def scopes() -> list[str]:
     d = store.DATA / "memory"
-    return sorted(p.stem for p in d.glob("*.json")) if d.exists() else []
+    return sorted(n[:-5] for n in data_store.list_files(d) if "/" not in n and n.endswith(".json"))
 
 
 # ---------------------------------------------------------------- what chats use

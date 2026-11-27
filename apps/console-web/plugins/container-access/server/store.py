@@ -132,9 +132,7 @@ def audit(entry: dict[str, Any]) -> dict[str, Any]:
 def read_audit(limit: int = 200, container: str = "", op: str = "", batch: str = "") -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for p in (AUDIT, AUDIT.with_suffix(".1.jsonl")):
-        if not p.exists():
-            continue
-        for line in reversed(p.read_text("utf-8", "replace").splitlines()):
+        for line in reversed(data_store.read_text(p, "").splitlines()):
             try:
                 e = json.loads(line)
             except ValueError:
