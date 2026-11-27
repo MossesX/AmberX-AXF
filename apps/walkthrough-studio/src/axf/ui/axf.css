@@ -141,6 +141,7 @@ button:disabled { cursor: not-allowed; }
 :focus-visible { outline: 2px solid var(--fx-focus); outline-offset: 2px; }
 code, .fx-mono { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
 h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight, 650); letter-spacing: var(--fx-tracking, 0); margin: 0; line-height: 1.2; }
+h4 { margin: 0; line-height: 1.2; } /* same reset as the larger headings: a layout's gap spaces it, not the browser's default margin (.fx-md keeps its own document margins) */
 
 /* Smooth hot-swap: colors, radii and shadows glide between assets */
 .fx-shell, .fx-shell *, .fx-popover, .fx-popover *, .fx-dialog, .fx-toast {
@@ -336,6 +337,26 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar__widget { display: inline-flex; align-items: center; min-width: 0; flex: none; }
 .fx-toolbar__widgets { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; flex: none; }
 .fx-toolbar.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
+/* Widgets on any toolbar, banner style (toolbar-widgets@1, react/components/ToolbarWidgetSlot.tsx). Snap, never overlap
+   (Brett, Oct 28 2026), in the fitToolbar order: a side sizes to its content and never shrinks, the search bar is the one
+   widget that gives way (down to its minimum), widgets that still don't fit go into the side's ⋯ menu by priority, and a
+   bar that is still too wide scrolls sideways with every widget a snap point. Nothing is clipped or drawn over a neighbour. */
+.fx-toolbar__widgets > .fx-banner__item { flex: none; scroll-snap-align: start; }
+.fx-toolbar__widgets > .fx-banner__item:has(> .fx-widget-search) { flex: 0 1 auto; min-width: 0; }
+.fx-toolbar__widgets:has(> .fx-banner__item > .fx-widget-search) { flex: 0 1 auto; }
+.fx-toolbar .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
+.fx-toolbar__widgets > [data-fx-wsize] { overflow: hidden; }
+.fx-toolbar__widgets-more { position: relative; flex: none; display: inline-flex; align-items: center; scroll-snap-align: end; }
+.fx-toolbar__widgets-more > .fx-banner__more-btn { display: inline-flex; }
+/* a shaped widget (shape@1 ref resolved by the engine): the banner chip frame, cut by the theme's radii */
+.fx-toolbar__widget.fx-shaped { padding: 0 var(--fx-dens-gap-md); min-height: calc(var(--fx-space) * 3); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-tint) * 100%), transparent); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-border) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-toolbar__widget[data-fx-shape='pill'], .fx-toolbar__widget[data-fx-shape='circle'] { border-radius: 999px; }
+.fx-toolbar__widget[data-fx-shape='circle'] { min-width: calc(var(--fx-space) * 3); justify-content: center; padding: 0; }
+.fx-toolbar__widget[data-fx-shape='rounded'], .fx-toolbar__widget[data-fx-shape='squircle'] { border-radius: var(--fx-radius-md); }
+.fx-toolbar__widget[data-fx-shape='square'] { border-radius: var(--fx-radius-sm); }
+.fx-toolbar.is-widget-drop { outline: var(--fx-border-w) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-toolbar__widget[draggable='true'] { cursor: grab; }
+.fx-toolbar__widget.fx-shaped:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent); }
 
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */
 .fx-banner.is-arranging .fx-banner__side { overflow: visible; outline: var(--fx-border-w) dashed var(--fx-border); outline-offset: -2px; border-radius: var(--fx-radius-sm); min-height: 70%; }
@@ -598,6 +619,20 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-ctx='compact'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); }
 [data-fx-ctx='roomy'] .fx-ctx { padding: var(--fx-dens-gap-lg); min-width: 250px; }
 [data-fx-ctx='roomy'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); }
+/* context-menu rebuild (Nov 20 2026): the quick-action icon strip on top (items with place: toolbar) and Search
+   anywhere pinned at the bottom; both stay put while the list between them scrolls */
+.fx-ctx__bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs);
+  padding: 0 0 var(--fx-dens-gap-md); margin-bottom: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border);
+}
+.fx-ctx__tool { width: var(--fx-row-h); height: var(--fx-row-h); }
+.fx-ctx__tool:disabled { opacity: var(--fx-opacity-disabled); }
+.fx-ctx > .fx-search.fx-ctx__search {
+  margin: var(--fx-dens-gap-md) 0 0; flex: none; min-width: 0; width: auto;
+}
+.fx-ctx .fx-menu__item.is-active { background: var(--fx-accent-soft); }
+.fx-ctx .fx-menu__item .fx-search__kind { margin-inline-start: auto; }
+:where([data-fx-narrow]) .fx-ctx__tool { width: max(calc(var(--fx-space) * 5.5), 2.75rem); height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
 [data-fx-ctx='glass'] .fx-ctx, [data-fx-ctx='glass'] .fx-ctx .fx-popover {
   background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent);
   backdrop-filter: blur(var(--fx-blur)) saturate(1.4); -webkit-backdrop-filter: blur(var(--fx-blur)) saturate(1.4);
@@ -679,6 +714,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text);
   font-size: var(--fx-type-root-2xs); font-weight: 700; line-height: 16px; text-align: center; pointer-events: none;
 }
+/* a labelled button keeps its counter in the flow after the label (a corner badge drew over the label's last letters);
+   icon-only buttons keep the corner badge */
+.fx-toolbtn:has(> .fx-toolbtn__label) > .fx-toolbtn__badge { position: static; margin-inline-start: calc(var(--fx-dens-gap-sm) * -1); }
 .fx-search {
   display: flex; align-items: center; gap: var(--fx-dens-gap-lg); margin-left: auto; flex: 0 1 260px; min-width: 150px;
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border);
@@ -888,11 +926,18 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-small { font-size: var(--fx-type-scale-sm); }
 .fx-stack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
 .fx-stack--lg { gap: var(--fx-dens-gap-4xl); }
+.fx-stack--sm { gap: var(--fx-dens-gap-md); }
+.fx-stack--xs { gap: var(--fx-dens-gap-xs); }
 .fx-row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
 .fx-row--wrap { flex-wrap: wrap; }
 .fx-row--end { justify-content: flex-end; flex-wrap: wrap; }
+.fx-row--between { justify-content: space-between; }
 .fx-row--tight { gap: var(--fx-dens-gap-lg); }
 .fx-grow { flex: 1; }
+.fx-link { color: var(--fx-accent); text-decoration: none; }
+.fx-link:hover, .fx-link:focus-visible { text-decoration: underline; }
+.fx-error { margin: 0; color: var(--fx-danger); }
+.fx-input--sm { min-height: 0; padding-block: var(--fx-dens-gap-2xs); font-size: var(--fx-type-scale-xs); }
 .fx-grid { display: grid; gap: var(--fx-dens-gap-3xl); grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
 .fx-rot--90 { transform: rotate(-90deg); }
 
@@ -1726,6 +1771,7 @@ h2 { line-height: var(--fx-type-line-tight); }
 code, .fx-mono { font-size: var(--fx-type-mono-size); }
 .fx-stack { gap: var(--fx-dens-gap-2xl); }
 .fx-stack--lg { gap: var(--fx-dens-gap-3xl); }
+.fx-stack--sm { gap: var(--fx-dens-gap-md); }
 .fx-grid { gap: var(--fx-dens-gap-xl); }
 .fx-btn { min-height: var(--fx-size-button-height); padding: var(--fx-dens-pad-control) var(--fx-size-button-pad-x); font-size: var(--fx-size-button-font); font-weight: var(--fx-type-weights-medium); gap: var(--fx-dens-gap-md); }
 .fx-btn--sm { min-height: 0; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-xs); gap: var(--fx-dens-gap-xs); }

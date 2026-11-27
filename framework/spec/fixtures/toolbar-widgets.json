@@ -1,0 +1,2737 @@
+{
+  "contract": "toolbar-widgets@1",
+  "appInstance": "app",
+  "max": 60,
+  "personOrder": 2000,
+  "keys": {
+    "slots": "axf.toolbar.settings-toolbar.widgets",
+    "style": "axf.toolbar.settings-toolbar.widgetStyle",
+    "appSlots": "axf.toolbar.app.widgets",
+    "allStyle": "axf.toolbars.widgetStyle"
+  },
+  "instanceOfKey": {
+    "axf.toolbar.app.widgets": "app",
+    "axf.toolbar.axf-ws-toolbar:main.widgets": "axf-ws-toolbar:main",
+    "axf.toolbar.app.widgetStyle": null,
+    "axf.toolbars.widgetStyle": null,
+    "axf.toolbar..widgets": null,
+    "x": null
+  },
+  "hostEntryWidget": {
+    "sizes": [
+      "icon",
+      "compact",
+      "normal",
+      "wide"
+    ],
+    "shows": [
+      "auto",
+      "both",
+      "icon",
+      "text",
+      "number"
+    ],
+    "priority": {
+      "min": 1,
+      "max": 9,
+      "default": 5
+    },
+    "widthUnits": [
+      "px",
+      "ch"
+    ],
+    "aliasesMax": 12
+  },
+  "hostEntryWidgetFields": [
+    "label",
+    "icon",
+    "size",
+    "show",
+    "priority",
+    "hideWhenEmpty",
+    "overflow",
+    "hidden",
+    "aliases"
+  ],
+  "widgetStyleFields": [
+    "size",
+    "show",
+    "priority",
+    "hideWhenEmpty",
+    "overflow",
+    "shape"
+  ],
+  "ops": [
+    "add",
+    "remove",
+    "hide",
+    "show",
+    "reset",
+    "icon",
+    "compact",
+    "normal",
+    "wide",
+    "start",
+    "end"
+  ],
+  "normalize": {
+    "raw": [
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "start",
+        "size": "icon",
+        "shape": "hexagon"
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "hidden": true
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "start",
+        "order": 0,
+        "maxWidth": 240
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "hidden": false,
+        "priority": 40,
+        "show": "number"
+      },
+      {
+        "type": "bad id!",
+        "id": "x",
+        "at": "start"
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "top"
+      },
+      "nope",
+      {
+        "type": "logo",
+        "id": "wordmark"
+      }
+    ],
+    "slots": [
+      {
+        "type": "avatar",
+        "id": "account",
+        "size": "icon",
+        "at": "start",
+        "shape": "hexagon"
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "hidden": true
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "maxWidth": 240,
+        "maxUnit": "px",
+        "at": "start",
+        "order": 0
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "hidden": false,
+        "show": "number",
+        "priority": 9
+      }
+    ],
+    "style": {
+      "in": {
+        "size": "icon",
+        "show": "nope",
+        "priority": 12,
+        "hideWhenEmpty": true,
+        "overflow": "no",
+        "shape": "squircle",
+        "hidden": true,
+        "maxWidth": 40
+      },
+      "out": {
+        "size": "icon",
+        "priority": 9,
+        "hideWhenEmpty": true,
+        "shape": "squircle"
+      }
+    },
+    "styleJson": {
+      "size": "wide"
+    },
+    "slotsJson": [
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "end"
+      }
+    ],
+    "junk": [],
+    "merged": {
+      "size": "wide",
+      "shape": "circle"
+    }
+  },
+  "exists": [
+    "action-button:help",
+    "action-button:settings",
+    "action-button:skins",
+    "action-button:win-close",
+    "action-button:win-maximize",
+    "action-button:win-minimize",
+    "avatar:account",
+    "avatar:agent-avatar",
+    "badge:new",
+    "clock:digital-12h",
+    "clock:digital-24h",
+    "counter:alerts",
+    "counter:approvals",
+    "counter:shipped",
+    "divider:rule",
+    "label:environment",
+    "label:version",
+    "link:docs",
+    "logo:mark",
+    "logo:wordmark",
+    "progress:build",
+    "search-bar:compact",
+    "search-bar:everything",
+    "spacer:gap",
+    "spacer:push",
+    "status:ai",
+    "status:online",
+    "status:shipped",
+    "theme-switch:amberx-day-night",
+    "theme-switch:day-night",
+    "theme-switch:fresh-day-night"
+  ],
+  "resolve": {
+    "asset-only": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "auto",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "auto",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "squircle"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "compact",
+              "show": "auto",
+              "cap": {
+                "n": 30,
+                "unit": "space"
+              },
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "pill",
+            "shapeFrom": "host",
+            "attrs": {
+              "data-fx-wsize": "compact",
+              "data-fx-wshow": "auto",
+              "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+              "data-fx-shape": "pill"
+            }
+          }
+        ]
+      }
+    },
+    "plugin-chip": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "auto",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "auto",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "squircle"
+              }
+            },
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 1000,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "compact",
+              "show": "auto",
+              "cap": {
+                "n": 30,
+                "unit": "space"
+              },
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "pill",
+            "shapeFrom": "host",
+            "attrs": {
+              "data-fx-wsize": "compact",
+              "data-fx-wshow": "auto",
+              "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+              "data-fx-shape": "pill"
+            }
+          }
+        ]
+      }
+    },
+    "person-slots": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "start",
+          "size": "icon",
+          "shape": "hexagon"
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "hidden": true
+        },
+        {
+          "type": "search-bar",
+          "id": "everything",
+          "at": "start",
+          "order": 0,
+          "maxWidth": 240
+        },
+        {
+          "type": "counter",
+          "id": "alerts",
+          "hidden": false,
+          "priority": 40,
+          "show": "number"
+        },
+        {
+          "type": "bad id!",
+          "id": "x",
+          "at": "start"
+        },
+        {
+          "type": "status",
+          "id": "online",
+          "at": "top"
+        },
+        "nope",
+        {
+          "type": "logo",
+          "id": "wordmark"
+        }
+      ],
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 240,
+                  "unit": "px"
+                },
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "240px",
+                "data-fx-shape": "squircle"
+              }
+            },
+            {
+              "key": "avatar:account",
+              "type": "avatar",
+              "id": "account",
+              "at": "start",
+              "order": 2000,
+              "origin": "person",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "hexagon",
+              "shapeFrom": "slot",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "hexagon"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "counter:alerts",
+              "type": "counter",
+              "id": "alerts",
+              "at": "end",
+              "order": 20,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "number",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 9,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "Alerts",
+                "hidden": true,
+                "aliases": [
+                  "bell"
+                ]
+              },
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "number",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            },
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 1000,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "order": 0,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "normal",
+              "show": "auto",
+              "cap": null,
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": null,
+            "shape": "pill",
+            "shapeFrom": "host",
+            "attrs": {
+              "data-fx-wsize": "normal",
+              "data-fx-wshow": "auto",
+              "data-fx-shape": "pill"
+            }
+          }
+        ]
+      }
+    },
+    "toolbar-style": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "style": {
+        "size": "icon",
+        "shape": "diamond"
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "diamond",
+              "shapeFrom": "style",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "diamond"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "squircle"
+              }
+            },
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 1000,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "diamond",
+              "shapeFrom": "style",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "diamond"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "icon",
+              "show": "icon",
+              "cap": null,
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "diamond",
+            "shapeFrom": "style",
+            "attrs": {
+              "data-fx-wsize": "icon",
+              "data-fx-wshow": "icon",
+              "data-fx-shape": "diamond"
+            }
+          }
+        ]
+      }
+    },
+    "style-under-slot": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "slots": [
+        {
+          "type": "status",
+          "id": "online",
+          "size": "wide",
+          "shape": "tag"
+        }
+      ],
+      "style": {
+        "size": "icon",
+        "shape": "diamond"
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "diamond",
+              "shapeFrom": "style",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "diamond"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon",
+                "data-fx-shape": "squircle"
+              }
+            },
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 1000,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "tag",
+              "shapeFrom": "slot",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "tag"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "icon",
+              "show": "icon",
+              "cap": null,
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "diamond",
+            "shapeFrom": "style",
+            "attrs": {
+              "data-fx-wsize": "icon",
+              "data-fx-wshow": "icon",
+              "data-fx-shape": "diamond"
+            }
+          }
+        ]
+      }
+    },
+    "legacy-arrange": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "arrange": {
+        "clock:digital-12h": {
+          "at": "end",
+          "order": 5
+        },
+        "status:online": {
+          "at": "start",
+          "order": 0
+        }
+      },
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "start",
+              "order": 0,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "end",
+              "order": 5,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "auto",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "auto",
+                "data-fx-shape": "pill"
+              }
+            },
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "squircle"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "compact",
+              "show": "auto",
+              "cap": {
+                "n": 30,
+                "unit": "space"
+              },
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "pill",
+            "shapeFrom": "host",
+            "attrs": {
+              "data-fx-wsize": "compact",
+              "data-fx-wshow": "auto",
+              "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+              "data-fx-shape": "pill"
+            }
+          }
+        ]
+      }
+    },
+    "slot-over-arrange": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "widget": {
+              "size": "wide",
+              "priority": 2
+            },
+            "shape": "squircle"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "widget": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            }
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      },
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "arrange": {
+        "clock:digital-12h": {
+          "at": "end",
+          "order": 5
+        }
+      },
+      "slots": [
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "start",
+          "order": 0
+        }
+      ],
+      "out": {
+        "sides": {
+          "start": [
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "start",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "normal",
+                "show": "auto",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "normal",
+                "data-fx-wshow": "auto",
+                "data-fx-shape": "pill"
+              }
+            }
+          ],
+          "end": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "wide",
+                "show": "auto",
+                "cap": {
+                  "n": 90,
+                  "unit": "space"
+                },
+                "priority": 2,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "wide",
+                "priority": 2
+              },
+              "shape": "squircle",
+              "shapeFrom": "entry",
+              "attrs": {
+                "data-fx-wsize": "wide",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 90)",
+                "data-fx-shape": "squircle"
+              }
+            },
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 1000,
+              "origin": "vps",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 7,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "label": "CPU",
+                "size": "compact",
+                "priority": 7
+              },
+              "shape": "pill",
+              "shapeFrom": "host",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+                "data-fx-shape": "pill"
+              }
+            }
+          ]
+        },
+        "hidden": [
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset",
+            "view": {
+              "hidden": true,
+              "size": "compact",
+              "show": "auto",
+              "cap": {
+                "n": 30,
+                "unit": "space"
+              },
+              "priority": 5,
+              "hideWhenEmpty": false,
+              "overflow": true
+            },
+            "hint": {
+              "label": "Alerts",
+              "hidden": true,
+              "aliases": [
+                "bell"
+              ]
+            },
+            "shape": "pill",
+            "shapeFrom": "host",
+            "attrs": {
+              "data-fx-wsize": "compact",
+              "data-fx-wshow": "auto",
+              "--fx-widget-cap": "calc(var(--fx-space) * 30)",
+              "data-fx-shape": "pill"
+            }
+          }
+        ]
+      }
+    },
+    "no-shape-defaults": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "status",
+            "id": "online",
+            "at": "end"
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "widget": {
+              "size": "icon"
+            }
+          }
+        ]
+      },
+      "out": {
+        "sides": {
+          "start": [],
+          "end": [
+            {
+              "key": "status:online",
+              "type": "status",
+              "id": "online",
+              "at": "end",
+              "order": 0,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "compact",
+                "show": "auto",
+                "cap": {
+                  "n": 30,
+                  "unit": "space"
+                },
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": null,
+              "shape": null,
+              "shapeFrom": "none",
+              "attrs": {
+                "data-fx-wsize": "compact",
+                "data-fx-wshow": "auto",
+                "--fx-widget-cap": "calc(var(--fx-space) * 30)"
+              }
+            },
+            {
+              "key": "avatar:account",
+              "type": "avatar",
+              "id": "account",
+              "at": "end",
+              "order": 10,
+              "origin": "asset",
+              "view": {
+                "hidden": false,
+                "size": "icon",
+                "show": "icon",
+                "cap": null,
+                "priority": 5,
+                "hideWhenEmpty": false,
+                "overflow": true
+              },
+              "hint": {
+                "size": "icon"
+              },
+              "shape": null,
+              "shapeFrom": "none",
+              "attrs": {
+                "data-fx-wsize": "icon",
+                "data-fx-wshow": "icon"
+              }
+            }
+          ]
+        },
+        "hidden": []
+      }
+    },
+    "no-toolbar": {
+      "toolbar": null,
+      "extra": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "end",
+          "origin": "vps",
+          "widget": {
+            "label": "CPU",
+            "size": "compact",
+            "priority": 7
+          }
+        }
+      ],
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "start",
+          "size": "icon",
+          "shape": "hexagon"
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "hidden": true
+        },
+        {
+          "type": "search-bar",
+          "id": "everything",
+          "at": "start",
+          "order": 0,
+          "maxWidth": 240
+        },
+        {
+          "type": "counter",
+          "id": "alerts",
+          "hidden": false,
+          "priority": 40,
+          "show": "number"
+        },
+        {
+          "type": "bad id!",
+          "id": "x",
+          "at": "start"
+        },
+        {
+          "type": "status",
+          "id": "online",
+          "at": "top"
+        },
+        "nope",
+        {
+          "type": "logo",
+          "id": "wordmark"
+        }
+      ],
+      "out": {
+        "sides": {
+          "start": [],
+          "end": []
+        },
+        "hidden": []
+      }
+    },
+    "added-missing-asset": {
+      "toolbar": {
+        "widgets": []
+      },
+      "slots": [
+        {
+          "type": "clock",
+          "id": "nope",
+          "at": "start"
+        },
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "start"
+        }
+      ],
+      "out": {
+        "sides": {
+          "start": [],
+          "end": []
+        },
+        "hidden": []
+      }
+    }
+  },
+  "fit": {
+    "w900": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 900,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 238
+        },
+        "flex": 400,
+        "overflow": [],
+        "scroll": false,
+        "snap": [],
+        "width": 758
+      }
+    },
+    "w760": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 760,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 238
+        },
+        "flex": 400,
+        "overflow": [],
+        "scroll": false,
+        "snap": [],
+        "width": 758
+      }
+    },
+    "w600": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 600,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 238
+        },
+        "flex": 242,
+        "overflow": [],
+        "scroll": false,
+        "snap": [],
+        "width": 600
+      }
+    },
+    "w500": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 500,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 150
+        },
+        "flex": 160,
+        "overflow": [
+          "search"
+        ],
+        "scroll": false,
+        "snap": [],
+        "width": 430
+      }
+    },
+    "w420": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 420,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 72
+        },
+        "flex": 160,
+        "overflow": [
+          "search",
+          "cpu"
+        ],
+        "scroll": false,
+        "snap": [],
+        "width": 352
+      }
+    },
+    "w330": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 330,
+      "fit": {
+        "sides": {
+          "start": 0,
+          "end": 72
+        },
+        "flex": 160,
+        "overflow": [
+          "search",
+          "cpu",
+          "logo"
+        ],
+        "scroll": false,
+        "snap": [],
+        "width": 264
+      }
+    },
+    "w260": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 260,
+      "fit": {
+        "sides": {
+          "start": 0,
+          "end": 72
+        },
+        "flex": 160,
+        "overflow": [
+          "search",
+          "cpu",
+          "logo"
+        ],
+        "scroll": true,
+        "snap": [
+          12,
+          180,
+          220
+        ],
+        "width": 264
+      }
+    },
+    "w120": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 120,
+      "fit": {
+        "sides": {
+          "start": 0,
+          "end": 72
+        },
+        "flex": 160,
+        "overflow": [
+          "search",
+          "cpu",
+          "logo"
+        ],
+        "scroll": true,
+        "snap": [
+          12,
+          180,
+          220
+        ],
+        "width": 264
+      }
+    },
+    "no-more-menu-w330": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": {
+          "width": 400,
+          "min": 160
+        },
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12,
+        "overflowMenu": false
+      },
+      "available": 330,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 238
+        },
+        "flex": 160,
+        "overflow": [],
+        "scroll": true,
+        "snap": [
+          12,
+          100,
+          268,
+          396,
+          474
+        ],
+        "width": 518
+      }
+    },
+    "no-flex-w200": {
+      "plan": {
+        "sides": {
+          "start": [
+            {
+              "key": "logo",
+              "width": 80,
+              "priority": 5,
+              "overflow": true
+            }
+          ],
+          "end": [
+            {
+              "key": "search",
+              "width": 120,
+              "priority": 2,
+              "overflow": true
+            },
+            {
+              "key": "cpu",
+              "width": 70,
+              "priority": 5,
+              "overflow": true
+            },
+            {
+              "key": "avatar",
+              "width": 32,
+              "priority": 9,
+              "overflow": false
+            }
+          ]
+        },
+        "flex": null,
+        "gap": 8,
+        "moreWidth": 32,
+        "padding": 12
+      },
+      "available": 200,
+      "fit": {
+        "sides": {
+          "start": 80,
+          "end": 72
+        },
+        "flex": 0,
+        "overflow": [
+          "search",
+          "cpu"
+        ],
+        "scroll": false,
+        "snap": [],
+        "width": 184
+      }
+    },
+    "empty-sides-w100": {
+      "plan": {
+        "sides": {
+          "start": [],
+          "end": []
+        },
+        "flex": {
+          "width": 300,
+          "min": 120
+        },
+        "gap": 8,
+        "moreWidth": 32
+      },
+      "available": 100,
+      "fit": {
+        "sides": {
+          "start": 0,
+          "end": 0
+        },
+        "flex": 120,
+        "overflow": [],
+        "scroll": true,
+        "snap": [
+          0
+        ],
+        "width": 120
+      }
+    }
+  },
+  "edits": [
+    {
+      "step": "add avatar at start",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "start",
+          "order": 2000
+        }
+      ]
+    },
+    {
+      "step": "add a badge: refused (not a widget type)",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "start",
+          "order": 2000
+        }
+      ]
+    },
+    {
+      "step": "add at an unknown side: refused",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "start",
+          "order": 2000
+        }
+      ]
+    },
+    {
+      "step": "patch avatar: icon, hexagon, priority 3",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "priority": 3,
+          "at": "start",
+          "order": 2000,
+          "shape": "hexagon"
+        }
+      ]
+    },
+    {
+      "step": "hide the plugin chip (a slot with only a choice)",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "priority": 3,
+          "at": "start",
+          "order": 2000,
+          "shape": "hexagon"
+        },
+        {
+          "type": "status",
+          "id": "online",
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "step": "show it again: the empty slot goes",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "priority": 3,
+          "at": "start",
+          "order": 2000,
+          "shape": "hexagon"
+        }
+      ]
+    },
+    {
+      "step": "shape + priority back to default",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "at": "start",
+          "order": 2000
+        }
+      ]
+    },
+    {
+      "step": "add the same widget again: moves it to the end, keeps its size",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "at": "end",
+          "order": 2000
+        }
+      ]
+    },
+    {
+      "step": "move the plugin chip first at the start: every drawn widget gets side + order",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "at": "end",
+          "order": 10
+        },
+        {
+          "type": "status",
+          "id": "online",
+          "at": "start",
+          "order": 0
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "start",
+          "order": 10
+        },
+        {
+          "type": "search-bar",
+          "id": "everything",
+          "at": "end",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "step": "move a widget that is not drawn: unchanged",
+      "slots": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "size": "icon",
+          "at": "end",
+          "order": 10
+        },
+        {
+          "type": "status",
+          "id": "online",
+          "at": "start",
+          "order": 0
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "start",
+          "order": 10
+        },
+        {
+          "type": "search-bar",
+          "id": "everything",
+          "at": "end",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "step": "remove the avatar (its choices go)",
+      "slots": [
+        {
+          "type": "status",
+          "id": "online",
+          "at": "start",
+          "order": 0
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "start",
+          "order": 10
+        },
+        {
+          "type": "search-bar",
+          "id": "everything",
+          "at": "end",
+          "order": 0
+        }
+      ]
+    }
+  ],
+  "fold": {
+    "slots": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "order": 3
+      }
+    ],
+    "arrange": {
+      "clock:digital-12h": {
+        "at": "end",
+        "order": 10
+      },
+      "status:online": {
+        "at": "start",
+        "order": 0
+      },
+      "search-bar:everything": {
+        "at": "left",
+        "order": 1
+      }
+    },
+    "out": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "order": 3
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "end",
+        "order": 10
+      }
+    ]
+  },
+  "parse": {
+    "cpu:add": {
+      "instance": "app",
+      "name": "cpu",
+      "op": "add"
+    },
+    "settings:status:online:hide": {
+      "instance": "settings",
+      "name": "status:online",
+      "op": "hide"
+    },
+    "app:clock:icon": {
+      "instance": "app",
+      "name": "clock",
+      "op": "icon"
+    },
+    "cpu": null,
+    "x:cpu:explode": null,
+    "Bad Instance!:cpu:add": null,
+    "ui-review.sections:the:bell:end": {
+      "instance": "ui-review.sections",
+      "name": "the:bell",
+      "op": "end"
+    }
+  },
+  "parseShape": {
+    "app:cpu:squircle": {
+      "instance": "app",
+      "name": "cpu",
+      "shape": "squircle"
+    },
+    "settings:status:online:inherit": {
+      "instance": "settings",
+      "name": "status:online",
+      "shape": null
+    },
+    "app:cpu:Bad!": null,
+    "cpu:squircle": null
+  },
+  "match": {
+    "(empty)": "app",
+    "main": "app",
+    "the main toolbar": "app",
+    "settings": "settings-toolbar",
+    "the settings toolbar": "settings-toolbar",
+    "ui-review.sections": "ui-review.sections",
+    "UI review": "ui-review.sections",
+    "review": "ui-review.sections",
+    "nothing like it": null,
+    "axf-ws-toolbar:main": "axf-ws-toolbar:main"
+  },
+  "entryErrors": {
+    "ok": {
+      "entry": {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "widget": {
+          "label": "CPU",
+          "icon": "cpu",
+          "size": "compact",
+          "show": "both",
+          "priority": 7,
+          "hideWhenEmpty": true,
+          "overflow": false,
+          "hidden": false,
+          "aliases": [
+            "load"
+          ]
+        },
+        "shape": "squircle"
+      },
+      "errors": []
+    },
+    "bad-fields": {
+      "entry": {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "widget": {
+          "label": "",
+          "icon": 3,
+          "size": "huge",
+          "show": "all",
+          "priority": 0,
+          "hideWhenEmpty": "yes",
+          "overflow": 1,
+          "hidden": null,
+          "aliases": [
+            "",
+            2
+          ],
+          "colour": "red"
+        },
+        "shape": "Bad Shape"
+      },
+      "errors": [
+        "data.widgets[0].widget.colour is not a widget style field (one of: label, icon, size, show, priority, hideWhenEmpty, overflow, hidden, aliases)",
+        "data.widgets[0].widget.label must be a non-empty string",
+        "data.widgets[0].widget.icon must be a non-empty string",
+        "data.widgets[0].widget.size must be one of: icon, compact, normal, wide",
+        "data.widgets[0].widget.show must be one of: auto, both, icon, text, number",
+        "data.widgets[0].widget.priority must be a whole number from 1 to 9",
+        "data.widgets[0].widget.hideWhenEmpty must be a boolean",
+        "data.widgets[0].widget.overflow must be a boolean",
+        "data.widgets[0].widget.hidden must be a boolean",
+        "data.widgets[0].widget.aliases must be a list of non-empty strings",
+        "data.widgets[0].shape must be a shape asset id (^[a-z0-9][a-z0-9-]{1,47}$)"
+      ]
+    },
+    "widget-not-object": {
+      "entry": {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "widget": "compact"
+      },
+      "errors": [
+        "data.widgets[0].widget must be an object (banner widget style)"
+      ]
+    },
+    "too-many-aliases": {
+      "entry": {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "widget": {
+          "aliases": [
+            "a0",
+            "a1",
+            "a2",
+            "a3",
+            "a4",
+            "a5",
+            "a6",
+            "a7",
+            "a8",
+            "a9",
+            "a10",
+            "a11",
+            "a12"
+          ]
+        }
+      },
+      "errors": [
+        "data.widgets[0].widget.aliases has more than 12 entries"
+      ]
+    },
+    "no-style": {
+      "entry": {
+        "type": "status",
+        "id": "online",
+        "at": "end"
+      },
+      "errors": []
+    }
+  },
+  "shapeErrors": {
+    "ok": {
+      "shape": {
+        "icon": "circle",
+        "chip": "pill"
+      },
+      "errors": []
+    },
+    "one-slot": {
+      "shape": {
+        "chip": "squircle"
+      },
+      "errors": []
+    },
+    "bad-slot": {
+      "shape": {
+        "ring": "circle",
+        "chip": "Pill!"
+      },
+      "errors": [
+        "data.shape.ring is not a host shape slot (icon or chip)",
+        "data.shape.chip must be a shape asset id (^[a-z0-9][a-z0-9-]{1,47}$)"
+      ]
+    },
+    "not-object": {
+      "shape": "pill",
+      "errors": [
+        "data.shape must be an object { icon?, chip? } of shape asset ids"
+      ]
+    },
+    "none": {
+      "errors": []
+    }
+  }
+}

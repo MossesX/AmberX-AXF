@@ -30,7 +30,7 @@
       "anyOf": [
         {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         {
@@ -66,7 +66,8 @@
                       "step",
                       "panel",
                       "scroll",
-                      "toolbar"
+                      "toolbar",
+                      "widget"
                     ]
                   },
                   "id": {
@@ -112,7 +113,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             {
@@ -148,7 +149,8 @@
                           "step",
                           "panel",
                           "scroll",
-                          "toolbar"
+                          "toolbar",
+                          "widget"
                         ]
                       },
                       "id": {
@@ -180,7 +182,7 @@
         },
         "kinds": {
           "type": "array",
-          "maxItems": 13,
+          "maxItems": 14,
           "items": {
             "enum": [
               "view",
@@ -195,7 +197,8 @@
               "step",
               "panel",
               "scroll",
-              "toolbar"
+              "toolbar",
+              "widget"
             ]
           }
         },
@@ -389,7 +392,8 @@
             "step",
             "panel",
             "scroll",
-            "toolbar"
+            "toolbar",
+            "widget"
           ]
         },
         "id": {
@@ -427,7 +431,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             {
@@ -463,7 +467,8 @@
                           "step",
                           "panel",
                           "scroll",
-                          "toolbar"
+                          "toolbar",
+                          "widget"
                         ]
                       },
                       "id": {
@@ -518,7 +523,7 @@
         },
         "kinds": {
           "type": "array",
-          "maxItems": 13,
+          "maxItems": 14,
           "items": {
             "enum": [
               "view",
@@ -533,7 +538,8 @@
               "step",
               "panel",
               "scroll",
-              "toolbar"
+              "toolbar",
+              "widget"
             ]
           }
         },

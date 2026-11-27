@@ -1,6 +1,7 @@
 import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
+import { hostWidgetStyleErrors } from './engines/toolbar-widget-rules.mjs';
 import { validateMenuItems } from './engines/appmenu';
 import { designPackageErrors } from './engines/designpackage';
 import { skinErrors } from './engines/skin';
@@ -140,12 +141,14 @@ export function validateAsset(raw: unknown): ValidationResult {
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
-  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes; its banner widget
+  // style + shape ref and the host's shape default follow toolbar-widgets@1 (ONE rules file shared with the build engine).
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
   // settings-iface@1: who a settings interface is built for (core/engines/settings-iface-rules.mjs); required, so a
   // missing one is already reported by `required`
   if (raw.type === 'settings' && 'builtFor' in data) errors.push(...builtForErrors(data.builtFor));
+  if (host) errors.push(...hostWidgetStyleErrors(host.field, data));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

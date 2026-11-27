@@ -70,7 +70,9 @@ for (const t of cs.CHROME_TYPES) {
   eq(a.data.for, t, `${a.id}.data.for`);
   ok(a.data.extends === undefined, `${a.id} extends nothing (it is the root)`);
   const ui = normalizeSettingsUi(a.data);
-  eq(ui.tabs.map((x) => x.id), cs.CHROME_SETTINGS_TABS.map((x) => x.id), `${a.id} declares the four chrome tabs`);
+  // a toolbar's interface also lays out its Widgets tab (toolbar-widgets@1)
+  eq(ui.tabs.map((x) => x.id).filter((id) => !(t === 'toolbar' && id === 'widgets')), cs.CHROME_SETTINGS_TABS.map((x) => x.id), `${a.id} declares the four chrome tabs`);
+  if (t === 'toolbar') ok(ui.tabs.some((x) => x.id === 'widgets'), `${a.id} lays out the Widgets tab`);
   ok(ui.levels && ui.levelOf.interface === 'developer', `${a.id}: levels on, Interface at Developer`);
 }
 

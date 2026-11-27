@@ -363,6 +363,135 @@
     }
   },
   {
+    "case": "toolbar-widget-style-ok",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "toolbar",
+      "id": "xx",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "variant": "icons",
+        "align": "start",
+        "groups": [],
+        "showSearch": false,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "cpu",
+            "at": "end",
+            "widget": {
+              "label": "CPU",
+              "size": "compact",
+              "priority": 7,
+              "aliases": [
+                "load"
+              ]
+            },
+            "shape": "squircle"
+          }
+        ],
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
+      }
+    },
+    "result": {
+      "ok": true,
+      "errors": []
+    }
+  },
+  {
+    "case": "toolbar-widget-style-bad",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "toolbar",
+      "id": "xx",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "variant": "icons",
+        "align": "start",
+        "groups": [],
+        "showSearch": false,
+        "widgets": [
+          {
+            "type": "status",
+            "id": "cpu",
+            "at": "end",
+            "widget": {
+              "size": "huge",
+              "priority": 0,
+              "colour": "red"
+            },
+            "shape": "Bad!"
+          },
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "widget": "wide"
+          }
+        ],
+        "shape": {
+          "ring": "circle",
+          "chip": "Pill"
+        }
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "data.widgets[0].widget.colour is not a widget style field (one of: label, icon, size, show, priority, hideWhenEmpty, overflow, hidden, aliases)",
+        "data.widgets[0].widget.size must be one of: icon, compact, normal, wide",
+        "data.widgets[0].widget.priority must be a whole number from 1 to 9",
+        "data.widgets[0].shape must be a shape asset id (^[a-z0-9][a-z0-9-]{1,47}$)",
+        "data.widgets[1].widget must be an object (banner widget style)",
+        "data.shape.ring is not a host shape slot (icon or chip)",
+        "data.shape.chip must be a shape asset id (^[a-z0-9][a-z0-9-]{1,47}$)"
+      ]
+    }
+  },
+  {
+    "case": "banner-attach-style-bad",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "banner",
+      "id": "xx",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "X"
+        },
+        "attach": [
+          {
+            "type": "badge",
+            "id": "new",
+            "at": "left",
+            "widget": {
+              "show": "all",
+              "hidden": "yes"
+            }
+          }
+        ],
+        "shape": "pill"
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "data.attach[0].widget.show must be one of: auto, both, icon, text, number",
+        "data.attach[0].widget.hidden must be a boolean",
+        "data.shape must be an object { icon?, chip? } of shape asset ids"
+      ]
+    }
+  },
+  {
     "case": "repeat-ok",
     "raw": {
       "$axf": "asset@1",

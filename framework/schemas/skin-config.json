@@ -23,7 +23,7 @@
   "summary": {
     "categories": 48,
     "groups": 289,
-    "options": 1151,
+    "options": 1153,
     "limits": 4,
     "sections": [
       "Themes",
@@ -290,6 +290,7 @@
             "divider",
             "search",
             "widgets",
+            "shape",
             "collapsible",
             "scope",
             "overflow",
@@ -1556,7 +1557,8 @@
             "logo.show",
             "logo.text",
             "attach",
-            "divider"
+            "divider",
+            "shape"
           ]
         },
         {

@@ -19,6 +19,48 @@
       "roll": "boolean \u2014 whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
     }
   },
+  "hostEntry": {
+    "_doc": "toolbar-widgets@1 (Nov 16 2026): one entry of a widget host's list (banner.attach[], toolbar.widgets[]; any type with an `attach` or `widgets` block). The host block names the sides and which types it takes; this is the shape of every entry, shared by core/validate.ts, cli/build-engine.mjs (axf validate + the JSON Schemas) and the engines (core/engines/widgets.ts, bannerwidgets.ts, toolbar-widgets.ts). `widget` is the banner widget style: how the widget is drawn on any host, the same fields a plugin passes in rt.attachToBanner / rt.attachToToolbar and the same the person's per-host choices patch (axf.banners.widgets.*, axf.toolbar.<id>.widgets). `shape` names a shape@1 asset for this one widget; the host's `shape { icon, chip }` is the default under it and the shape chain (global → skin → app → instance) sits above. A shape id is checked for form only, so a host may name a shape before the shape asset ships.",
+    "required": [
+      "type",
+      "id",
+      "at"
+    ],
+    "optional_fields": {
+      "type": "string — a type the host takes (its `attach.types`, else every attachable type; a `widgets` host takes every widget type)",
+      "id": "string — the asset id (envelope idPattern); an entry whose asset doesn't exist is skipped at run time and refused by axf validate",
+      "at": "string — one of the host's sides (banner: left | center | right; toolbar: start | end)",
+      "order": "number — lower comes first on its side; the host's own entries default to index × 10, run-time ones to 1000 + index × 10, a person's additions to 2000 + index × 10",
+      "widget": "object — banner widget style: { label?: string (name in the picker and for voice; default the asset's name), icon?: string, size?: icon | compact | normal | wide (default compact; clocks, search bars, logos, avatars, spacers, dividers, progress and the theme switch keep their own shape until a size is picked), show?: auto | both | icon | text | number (default auto), priority?: 1–9 (default 5; low numbers leave for the ⋯ menu first), hideWhenEmpty?: boolean (default false), overflow?: boolean (default true; false keeps it on the bar), hidden?: boolean (default false; hidden until the person ticks it), aliases?: string[] (extra words voice and search match it by) }",
+      "shape": "string — a shape@1 asset id this widget is cut to (over the host's `shape` default; under a person's, the app's, the skin's or the global pick)"
+    },
+    "widget": {
+      "sizes": [
+        "icon",
+        "compact",
+        "normal",
+        "wide"
+      ],
+      "shows": [
+        "auto",
+        "both",
+        "icon",
+        "text",
+        "number"
+      ],
+      "priority": {
+        "min": 1,
+        "max": 9,
+        "default": 5
+      },
+      "widthUnits": [
+        "px",
+        "ch"
+      ],
+      "aliasesMax": 12
+    },
+    "hostShape": "{ icon?: <shape@1 asset id>, chip?: <shape@1 asset id> } — the host's default widget shapes: icon for icon-only / square widgets (the shape engine's default circle), chip for widgets with text (default pill). The lowest level of the shape chain: a widget's own `shape`, the app, the skin or the global pick wins."
+  },
   "types": {
     "color-theme": {
       "label": "Color theme",
@@ -289,7 +331,8 @@
         "divider": "boolean, default true \u2014 rule between item groups",
         "search": "object \u2014 live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string \u2014 a runtime counter name (runtime.setBadge, e.g. `alerts.unread`), counter:<name>, or state:<key> (a number or short text from the page state); shown as a small badge on the button, hidden at 0",
-        "widgets": "[{type, id, at: start|end, order?}] \u2014 widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
+        "widgets": "[{type, id, at: start|end, order?, widget?, shape?}] (hostEntry) \u2014 widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end, each with an optional banner widget style (`widget`: label, icon, size, show, priority, hideWhenEmpty, overflow, hidden, aliases) and shape@1 ref (`shape`). Runtime widgets (rt.attachToToolbar) with the same type+id replace these; a person's additions and choices per toolbar instance live in the setting axf.toolbar.<id>.widgets (toolbar-widgets@1, core/engines/toolbar-widgets.ts), never in the asset.",
+        "shape": "{ icon?, chip? } (hostEntry.hostShape) \u2014 default shape@1 asset ids for this toolbar's widgets: icon for icon-only / square widgets, chip for widgets with text. A widget's own `shape`, the app, the skin or the global pick wins.",
         "collapsible": "boolean, default false \u2014 a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
         "groups[].provider": "string \u2014 live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
         "groups[].max": "number 1\u201324, default 8 \u2014 cap on provider buttons",
@@ -314,7 +357,7 @@
       },
       "hideable": true,
       "widgets": {
-        "_doc": "Widget host: only widget types (\"widget\": true) are placed; missing assets are skipped.",
+        "_doc": "Widget host: only widget types (\"widget\": true) are placed; missing assets are skipped. Entries are hostEntry (type, id, at, order?, widget?, shape?). Every toolbar on screen is an instance of this host (its chrome-settings id: `app` for the app's own toolbar, a page toolbar's asset id, …), each with its own saved list (toolbar-widgets@1).",
         "sides": [
           "start",
           "end"
@@ -786,7 +829,7 @@
       "optional": true,
       "hideable": true,
       "attach": {
-        "_doc": "data.attach = [{type, id, at: left|center|right, order?}]. Every attachable type (\"attachable\": true: badges and all widgets) is placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
+        "_doc": "data.attach = [{type, id, at: left|center|right, order?, widget?, shape?}] (hostEntry). Every attachable type (\"attachable\": true: badges and all widgets) is placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
         "sides": [
           "left",
           "center",
@@ -795,7 +838,8 @@
       },
       "optional_fields": {
         "divider": "boolean \u2014 line under the banner (default true)",
-        "height": "number \u2014 px, 16 to 48 (thin = 24)"
+        "height": "number \u2014 px, 16 to 48 (thin = 24)",
+        "shape": "{ icon?, chip? } (hostEntry.hostShape) \u2014 default shape@1 asset ids for the banner's widgets: icon for icon-only / square widgets (default circle), chip for widgets with text (default pill). The lowest level of the shape chain: a widget, app, skin or global pick wins."
       }
     },
     "clock": {

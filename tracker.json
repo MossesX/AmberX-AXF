@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-16T21:11:15.442Z",
+  "generatedAt": "2026-11-18T16:18:53.414Z",
   "summary": {
     "foundations": {
       "built": 71,
@@ -20,12 +20,12 @@
       "coverage": 45
     },
     "console": {
-      "built": 15,
+      "built": 17,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 19,
-      "coverage": 79
+      "total": 21,
+      "coverage": 81
     },
     "modules": {
       "built": 15,
@@ -2965,7 +2965,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The AXF Console app (apps/console-droid, overlay@1) carries the same overlay, and since Nov 18 2026 Phone Connect's open_url lands in it (console-overlay@1, PhoneConnectProvider + PhoneConnectRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",
@@ -3868,6 +3868,28 @@
       "wave": 1,
       "module": "app-console",
       "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+    },
+    {
+      "id": "cx.phone",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md)."
+    },
+    {
+      "id": "cx.toolbarwidgets",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Toolbar widgets: attach any widget to any toolbar, banner style (any banner widget style + shape), snap, never overlap; right-click / long-press Attach widget… / Style… / Move / Detach, drag and drop between toolbars, the toolbar settings Widgets tab; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Build attach-widgets-to-any-toolbar-banner (Nov 2026; Brett: \"Rebuild.\", intent Nov 13: \"I can attach widgets to the toolbar right, just like the banner widgets\"). Every framework toolbar draws its widgets banner style; actions toolbar.widget.attach|detach|move|style; REST /api/plugins/toolbar-widgets/widgets, MCP toolbar_widgets_*, CLI axf toolbar widgets, voice. Kotlin twin deferred (PORTING.md)."
     },
     {
       "id": "m.kernel",

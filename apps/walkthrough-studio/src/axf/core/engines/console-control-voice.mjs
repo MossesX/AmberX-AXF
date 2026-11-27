@@ -23,6 +23,10 @@ export const VOICE_FRAME = 'console-control-voice@1';
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
 /** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
 export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
+/** The console's saved place (apps/console-web/src/place/placeApi.ts): pressing it puts the place back. */
+export const PLACE_ADDRESS = 'panel:console-place';
+/** "put me back", "back to where I was", "restore my place", "where was I" */
+export const PLACE_RESTORE_RE = /^(?:put me back(?: where i was)?|(?:take me |go |get me )?back to where i (?:was|left off)|restore (?:my |the )?(?:place|position|spot)|where was i)$/;
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -40,6 +44,9 @@ export function cleanPhrase(text) {
 }
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
+/** A toolbar named in words → its settings id as the grammar takes it ("the main" → main, "UI review" → ui-review). */
+const toolbarWords = (s) => strip(s).replace(/\s+/g, '-').replace(/[^a-z0-9._-]/g, '') || 'app';
+const widgetIntent = (toolbar, widget, op) => ({ verb: 'press', address: 'function:toolbar.widget', value: `${toolbarWords(toolbar)}:${strip(widget).replace(/:/g, ' ')}:${op}` });
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
 /**
@@ -51,6 +58,9 @@ export function voiceIntent(text) {
   const p = cleanPhrase(text);
   if (!p) return null;
   let m;
+
+  // the saved place: before the "go to …" rules, so "go back to where I was" is not taken for a screen name
+  if (PLACE_RESTORE_RE.test(p)) return { verb: 'press', address: PLACE_ADDRESS };
 
   // scrolling
   if ((m = /^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$/.exec(p))) {
@@ -91,6 +101,11 @@ export function voiceIntent(text) {
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };
 
+  // toolbar widgets (toolbar-widgets@1): the console action toolbar.widget:<toolbar>:<widget>:<op> (the console resolves both names)
+  if ((m = /^(?:move|put)(?: the)? (.+?)(?: widget)? (?:to|at) the (start|end) of(?: the)? (.+?) toolbar$/.exec(p))) return widgetIntent(m[3], m[1], m[2]);
+  if ((m = /^(?:attach|add|put|pin)(?: the)? (.+?)(?: widget)? (?:to|on|onto)(?: the)? (.+?) toolbar(?: at the (start|end))?$/.exec(p))) return widgetIntent(m[2], m[1], m[3] ?? 'add');
+  if ((m = /^(?:detach|remove|take)(?: the)? (.+?)(?: widget)? (?:from|off)(?: of)?(?: the)? (.+?) toolbar$/.exec(p))) return widgetIntent(m[2], m[1], 'remove');
+  if ((m = /^make(?: the)? (.+?)(?: widget)? (?:on|in)(?: the)? (.+?) toolbar (icon only|icon|compact|normal|wide)$/.exec(p))) return widgetIntent(m[2], m[1], m[3] === 'icon only' ? 'icon' : m[3]);
   // page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
   if ((m = /^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'press', find: { q: `${strip(m[2])} ${strip(m[1])}`, kinds: ['button'] }, toolbar: strip(m[2]) };
   if ((m = /^(?:what(?:'s| is) on|what does .+ hold on|list|show(?: me)?|read(?: me)?)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'list', find: { q: strip(m[1]), kinds: ['toolbar'] } };
@@ -140,7 +155,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
-    case 'press': return `Pressed ${what}.`;
+    case 'press': return answer.address === PLACE_ADDRESS || intent.address === PLACE_ADDRESS ? 'Back where you were.' : `Pressed ${what}.`;
     case 'list': { const n = answer.targets?.length ?? 0; return n ? `${n} item${n === 1 ? '' : 's'}: ${answer.targets.slice(0, 6).map((t) => t.label).join(', ')}.` : `Nothing on ${what || 'it'}.`; }
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;

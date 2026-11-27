@@ -1128,7 +1128,7 @@ def shot_result(r: dict[str, Any]) -> CallToolResult:
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
                          "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar", "console_control_place")
-ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
+ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar|widget):")
 
 
 def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:

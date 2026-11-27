@@ -1,0 +1,278 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.toolbar-widgets",
+  "name": "Toolbar widgets",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Attach any widget to any toolbar, banner style (toolbar-widgets@1): the same widgets the banner takes, any banner widget style and shape, snapped to the toolbar's ends so nothing overlaps. Right-click or long-press a toolbar → Attach widget…, a widget → Style… / Move / Detach; drag a widget onto any toolbar; the toolbar's settings → Widgets. Over REST (/api/plugins/toolbar-widgets/widgets…), the MCP tools toolbar_widgets_*, `axf toolbar-widgets …` / `axf toolbar widgets …` and AmberX voice, all through console-control@1.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "service:toolbar-widgets@1"
+  ],
+  "optional": [
+    "service:console-commands@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/toolbar-widgets",
+    "env": [],
+    "mentions": [
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "widgets",
+        "route": "GET /widgets",
+        "title": "Widgets on toolbars",
+        "description": "One toolbar's widgets (toolbar=<id>: every row drawn / hidden / addable with size, show, shape, side and place, the person's slots and the style defaults), or every toolbar's widget targets.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": []
+        },
+        "output": "console-control@1 state { value: toolbar-widgets@1 { toolbar, rows, slots, style, keys } } or list { targets }"
+      },
+      {
+        "id": "attach",
+        "route": "POST /widgets/attach",
+        "title": "Attach a widget to a toolbar",
+        "description": "Put a widget on a toolbar at its start or end, optionally with a banner widget size and a shape.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
+            },
+            "side": {
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ]
+            },
+            "size": {
+              "type": "string",
+              "enum": [
+                "icon",
+                "compact",
+                "normal",
+                "wide"
+              ]
+            },
+            "shape": {
+              "type": "string",
+              "description": "shape id (circle, pill, rounded, squircle, square, …)"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "toolbar",
+            "widget"
+          ]
+        },
+        "output": "console-control@1 press answer"
+      },
+      {
+        "id": "detach",
+        "route": "POST /widgets/detach",
+        "title": "Detach a widget from a toolbar",
+        "description": "Take a widget off a toolbar (one the toolbar or a plugin put there is hidden and can be shown again). Destructive: the console-control Detach button answers confirmation_required until confirm is true.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "true to really detach (console-control confirm)"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "toolbar",
+            "widget"
+          ]
+        },
+        "output": "console-control@1 press answer (confirmation_required without confirm)"
+      },
+      {
+        "id": "move",
+        "route": "POST /widgets/move",
+        "title": "Move a widget on a toolbar",
+        "description": "Move a widget to a side at a place (0 = first), or one place left / right.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
+            },
+            "side": {
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ]
+            },
+            "index": {
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "a number, prev or next"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "toolbar",
+            "widget",
+            "side"
+          ]
+        },
+        "output": "console-control@1 press answer"
+      },
+      {
+        "id": "style",
+        "route": "POST /widgets/style",
+        "title": "Style a toolbar widget",
+        "description": "Change one banner widget setting of a widget on a toolbar: size, show, priority, hideWhenEmpty, overflow, hidden, shape or label (no value = back to the default).",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
+            },
+            "field": {
+              "type": "string",
+              "enum": [
+                "size",
+                "show",
+                "priority",
+                "hideWhenEmpty",
+                "overflow",
+                "hidden",
+                "shape",
+                "label"
+              ]
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "toolbar",
+            "widget",
+            "field"
+          ]
+        },
+        "output": "console-control@1 press answer"
+      },
+      {
+        "id": "open",
+        "route": "POST /widgets/open",
+        "title": "Open a toolbar's widgets",
+        "description": "Open the Toolbar widgets dialog in the open console (on one widget when widget is given). Only navigates.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "toolbar": {
+              "type": "string",
+              "description": "the toolbar's settings id (app, gate.auto-lander, ui-review.sections)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "toolbar"
+          ]
+        },
+        "output": "console-control@1 open answer"
+      }
+    ]
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-18"
+  },
+  "help": "help.json",
+  "opens": false
+}

@@ -53,10 +53,11 @@ view:plan-studio-2/function:plan-studio-2.focus
 | `panel` | a titled card / section / settings group or panel | the anchor id (`settings-group:axf.display`) |
 | `scroll` | a scroll container by name (the main pane is `scroll:main`) | the container's id |
 | `toolbar` | a page toolbar (page-toolbar@1, `framework/core/engines/toolbar-actions.ts`); its buttons sit under it: `toolbar:gate.auto-lander/button:run` | the toolbar's settings id (`<scope id>[.<slot>]`: `gate`, `gate.auto-lander`; the frame toolbar is `app`) |
+| `widget` | a widget on a toolbar (toolbar-widgets@1, `framework/core/engines/toolbar-widgets.ts`), only under a `toolbar`: `toolbar:app/widget:status:cpu`; `widget:all` is the toolbar's whole widget list; a widget's Detach is `…/widget:<key>/button:detach` | the widget key `<type>:<id>`, or `all` |
 
 Rules:
 
-- A segment is `kind:id`; `kind` is one of the thirteen above (`CONSOLE_CONTROL_KINDS`, append-only; `toolbar` appended Nov 17 2026); `id` is 1 to 160 characters,
+- A segment is `kind:id`; `kind` is one of the fourteen above (`CONSOLE_CONTROL_KINDS`, append-only; `toolbar` appended Nov 17 2026, `widget` Nov 18 2026); `id` is 1 to 160 characters,
   any character but `/` (a `/` inside an id is written `%2F`, a literal `%` as `%25`; `formatAddress` encodes, `parseAddress` decodes).
 - Order is outermost first and each kind may follow only its parents (`CONSOLE_CONTROL_PARENTS`): `row` under `grid`, `step` under
   `row` or `grid`, `grid` also under `row` (a grid inside a row's detail), `subtab` under `tab` (or a deeper `subtab`), everything else under `view` or at the top. The reference parser refuses the wrong order
@@ -174,6 +175,13 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
   {button, value?, confirm?}`; MCP `console_control_toolbar {toolbar?, button?, value?, confirm?, open?, view?}`; control@1 target
   `console.toolbars` (list / get / act press | open); CLI `axf console toolbar list [--view v] | get <id> | press <id> <button> [--confirm]`;
   voice "press run now on the auto-lander toolbar", "what's on the gate rules toolbar".
+- Toolbar widgets (toolbar-widgets@1, Nov 18 2026): `state` on `toolbar:<id>/widget:all` answers every widget row (drawn / hidden /
+  addable, side, place, size, show, shape), the person's slots and the style defaults; `open` on it is the deep link to the Toolbar
+  widgets dialog. `press` / `set` on `toolbar:<id>/widget:<type:id>` takes `attach[:side[:size[:shape]]]`, `move:<side>[:<index|prev|next>]`,
+  `style:<field>:<value>`, `hide`, `show` or `reset`; `press` on `…/button:detach` is destructive (`confirm`). The settings behind it
+  are `setting:axf.toolbar.<id>.widgets` and `setting:axf.toolbar.<id>.widgetStyle`. Shortcuts: REST `/api/plugins/toolbar-widgets/widgets…`,
+  MCP `toolbar_widgets_*`, CLI `axf toolbar widgets …`, console actions `toolbar.widget.attach|detach|move|style`, voice
+  "attach the CPU widget to the settings toolbar".
 
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.

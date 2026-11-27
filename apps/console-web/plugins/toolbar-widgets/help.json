@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "toolbar-widgets-help",
+  "name": "Toolbar widgets help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Toolbar widgets (help@1): the Attach widget menu, the Widgets tab and the widget dialog.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:toolbar-widgets",
+    "entries": [
+      {
+        "target": "axf.toolbar.widgets",
+        "title": "Toolbar widgets",
+        "text": "Every widget on this toolbar: switch one off to hide it, the arrows move it, the gear sets its size, what it shows and its shape, the cross detaches it. Attach a widget puts another one on."
+      },
+      {
+        "target": "toolbar-widget-attach",
+        "title": "Attach widget…",
+        "text": "Right-click or long-press any toolbar to put a widget on it (clock, status, counter, search bar…), banner style, at its start or end."
+      },
+      {
+        "target": "toolbar-widget-detach",
+        "title": "Detach",
+        "text": "Takes the widget off this toolbar. One the toolbar or a plugin put there is hidden instead and can be switched back on."
+      }
+    ]
+  }
+}

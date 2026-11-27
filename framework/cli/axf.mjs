@@ -63,6 +63,7 @@
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
  *   axf console chrome get|set|reset|open <type> <id> [key] [value]   one chrome instance's Interface settings
  *   axf console place [get|restore] [--from loaded|saved]            the place kept for a reload: read it, or put it back
+ *   axf toolbar widgets list [toolbar] | attach|detach|move|style|open <toolbar> <type:id> …   widgets on any toolbar (toolbar-widgets@1, framework/cli/toolbar-widgets.mjs)
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
@@ -91,6 +92,11 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
+}
+// `axf toolbar widgets list|attach|detach|move|style|open …` (toolbar-widgets@1): one console-control command to the open console
+if (cmd === 'toolbar' && rest[0] === 'widgets') {
+  const { main } = await import('./toolbar-widgets.mjs');
+  process.exit(await main(rest.slice(1)));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome', 'place'].includes(rest[0] ?? '')) {
