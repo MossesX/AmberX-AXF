@@ -11,10 +11,11 @@ The base project, AmberX AXF, keeps every original path; any other project keeps
 """
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 from typing import Any, Callable
+
+import data_store
 
 PROJECTS_REL = "framework/plan/projects.json"
 PROJECTS_SUBDIR = "projects"
@@ -84,14 +85,17 @@ class Projects:
         self.active_profile = active_profile
 
     def _file(self) -> Path:
+        """The hub copy (on axf-data when the data layer maps it: never the checkout's file instead), else the repo's."""
         pr = self.persist_root()
         hub = Path(pr) / PROJECTS_REL if pr else None
-        return hub if hub and hub.exists() else self.root / PROJECTS_REL
+        if hub is not None and (data_store.key_for(hub) or hub.exists()):
+            return hub
+        return self.root / PROJECTS_REL
 
     def registry(self) -> dict[str, Any]:
         try:
-            raw = json.loads(self._file().read_text("utf-8"))
-        except (OSError, ValueError):
+            raw = data_store.read_json(self._file(), {})
+        except data_store.DataStoreError:
             raw = {}
         return normalize_registry(raw)
 

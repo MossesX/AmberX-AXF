@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Self-test for server/data_store.py: the storage-shaped data layer in local, shadow, cutover and rollback mode, against
-an in-process axf-data (services/axf-data, FastAPI TestClient as the transport).
+"""Self-test for server/data_store.py: Postgres is the one store. Every mapped path is a key on axf-data only (no local
+file, no shadow or dual write, no fallback to a stale file); only a path the map keeps local is a file. Runs against an
+in-process axf-data (services/axf-data, FastAPI TestClient as the transport), and checks the console server's own
+readers and writers (state, alerts, build profiles, projects, host mode) go through the layer.
 
     python3 apps/console-web/server/test_data_store.py
 """
@@ -75,67 +77,77 @@ check(ds.key_for(plans) == "planner/plans/p1.json" and ds.key_for(items) == "ui-
 check(ds.key_for(journal) == "builds/journal/2099-01" and ds.kind_of("builds/journal/2099-01") == "journal", "build journals are journals")
 check(ds.key_for("/etc/passwd") is None, "a path outside every root stays local")
 
-print("data_store: local (default) = storage, nothing remote")
-ds.write_json(plans, {"title": "one"})
-check(ds.read_json(plans, None) == {"title": "one"} and json.loads(plans.read_text()) == {"title": "one"}, "write/read the file")
-check(client.get("/v1/planner/plans/p1.json", headers={"authorization": "Bearer t"}).status_code == 404, "axf-data untouched in local")
-check(ds.read_json(P / "missing.json", {"d": 1}) == {"d": 1}, "missing → a copy of the default")
-
-print("data_store: shadow mirrors writes, never fails the caller")
-set_mode("planner", "shadow")
-ds.write_json(plans, {"title": "two"})
-r = client.get("/v1/planner/plans/p1.json", headers={"authorization": "Bearer t"})
-check(r.status_code == 200 and r.json() == {"title": "two"}, "write lands locally and on axf-data")
-ds.write_json(plans, {"title": "three"})
-check(client.get("/v1/planner/plans/p1.json", headers={"authorization": "Bearer t"}).json() == {"title": "three"}, "a second write re-reads the etag")
-check(ds.read_json(plans, None) == {"title": "three"}, "reads come from the file")
-ds.drain()
-check(not (tmp / "console/data-store/drift/planner.jsonl").exists(), "equal sides log no drift")
+H = {"authorization": "Bearer t"}
+DOWN = ds.Remote("http://axf-data:7700", "t", lambda *a: (_ for _ in ()).throw(OSError("down")))
 saved = ds.REMOTE
-ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda *a: (_ for _ in ()).throw(OSError("down"))))
 orig_sleep = time.sleep
-time.sleep = lambda s: None
-ds.write_json(plans, {"title": "four"})
-time.sleep = orig_sleep
-ds.set_remote(saved)
-check(json.loads(plans.read_text()) == {"title": "four"}, "axf-data down: the local write still succeeds")
-drift = (tmp / "console/data-store/drift/planner.jsonl").read_text().splitlines()
-check(len(drift) == 1 and json.loads(drift[0])["kind"] == "write-failed", "…and a write-failed drift line is logged")
-# a read finds the difference (local four, remote three)
-ds.read_json(plans, None)
-ds.drain()
-lines = (tmp / "console/data-store/drift/planner.jsonl").read_text().splitlines()
-check(len(lines) == 2 and json.loads(lines[1])["kind"] == "etag", "a shadow read that differs logs an etag drift")
+
+
+def remote(key: str):
+    r = client.get(f"/v1/{key}", headers=H)
+    return r.json() if r.status_code == 200 else None
+
+
+def down(fn):
+    """Run fn with axf-data unreachable; return the DataStoreError code it raised (or None)."""
+    ds.set_remote(DOWN)
+    time.sleep = lambda s: None
+    try:
+        fn()
+        return None
+    except ds.DataStoreError as e:
+        return e.code
+    finally:
+        time.sleep = orig_sleep
+        ds.set_remote(saved)
+
+
+ds.STORE_MODE = "cutover"  # the map's `store.mode` (framework/schemas/data-store-paths.json): Postgres is the one store
+
+print("data_store: a path the map keeps local is a file")
+scratch = tmp / "elsewhere/x.json"
+check(ds.key_for(scratch) is None, "a path outside every root has no key")
+ds.write_json(scratch, {"a": 1})
+check(json.loads(scratch.read_text()) == {"a": 1} and ds.read_json(scratch, None) == {"a": 1}, "…and is read and written as a file")
+check(ds.read_json(tmp / "elsewhere/missing.json", {"d": 1}) == {"d": 1}, "missing → a copy of the default")
+
+print("data_store: a mapped path is axf-data only")
+check(ds.mode_of("planner/plans/p1.json") == "cutover", "store.mode cutover: every mapped key is cutover")
+ds.write_json(plans, {"title": "one"})
+check(not plans.exists(), "a write leaves no file")
+check(remote("planner/plans/p1.json") == {"title": "one"}, "…it is a row on axf-data")
+ds.write_json(plans, {"title": "two"})
+check(remote("planner/plans/p1.json") == {"title": "two"}, "a second write re-reads the etag")
+plans.parent.mkdir(parents=True, exist_ok=True)
+plans.write_text(json.dumps({"title": "stale"}))
+check(ds.read_json(plans, None) == {"title": "two"}, "reads come from axf-data, never the stale file beside it")
+check(down(lambda: ds.read_json(plans, None)) == "unavailable", "axf-data down: a read raises unavailable (no local fallback)")
+check(down(lambda: ds.write_json(plans, {"title": "x"})) == "unavailable", "axf-data down: a write raises unavailable")
+check(down(lambda: ds.exists(plans)) == "unavailable", "axf-data down: exists raises too")
+check(json.loads(plans.read_text()) == {"title": "stale"}, "the stale file is never written")
+plans.unlink()
+ds.mirror(plans, b'{"title": "mirror"}')
+check(remote("planner/plans/p1.json") == {"title": "two"}, "mirror() does nothing: there is no dual write")
+check(not (tmp / "console/data-store/drift").exists(), "nothing compares or logs drift in the background")
 journal.parent.mkdir(parents=True, exist_ok=True)
-set_mode("builds", "shadow")
+journal.unlink(missing_ok=True)
 ds.append_jsonl(journal, {"rev": 1})
 ds.append_jsonl(journal, {"rev": 2})
-r = client.get("/v1/builds/journal/2099-01?since=0", headers={"authorization": "Bearer t"}).json()
-check([e["entry"] for e in r["entries"]] == [{"rev": 1}, {"rev": 2}] and len(journal.read_text().splitlines()) == 2, "journal appends mirror line for line")
-
-print("data_store: cutover reads and writes axf-data only")
-set_mode("planner", "cutover")
-before = plans.read_text()
-ds.write_json(plans, {"title": "five"})
-check(plans.read_text() == before, "the local copy is left alone (read-only backup)")
-check(ds.read_json(plans, None) == {"title": "five"}, "reads come from axf-data")
-ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda *a: (_ for _ in ()).throw(OSError("down"))))
-time.sleep = lambda s: None
-check(ds.read_json(plans, None) == {"title": "four"}, "axf-data down: reads fall back to the local copy")
-try:
-    ds.write_json(plans, {"title": "six"})
-    check(False, "a cutover write with axf-data down raises")
-except ds.DataStoreError as e:
-    check(e.code == "unavailable", "a cutover write with axf-data down raises unavailable")
-time.sleep = orig_sleep
-ds.set_remote(saved)
-set_mode("builds", "cutover")
-ds.append_jsonl(journal, {"rev": 3})
-check(len(journal.read_text().splitlines()) == 2 and ds.read_text(journal).count("\n") == 3, "cutover appends go to axf-data; reads see all three")
-set_mode("notes", "cutover")
+r = client.get("/v1/builds/journal/2099-01?since=0", headers=H).json()
+check([e["entry"] for e in r["entries"]] == [{"rev": 1}, {"rev": 2}] and not journal.exists(), "journal appends go to axf-data, no file")
+check(ds.read_text(journal).count("\n") == 2, "…and read back line for line")
 ds.write_text(note, "# Hello\n")
 check(not note.exists() and ds.read_text(note) == "# Hello\n", "notes are blobs on axf-data")
-check(client.get("/v1/notes/handoffs/a.md", headers={"authorization": "Bearer t"}).headers["content-type"].startswith("text/markdown"), "…with their content type")
+check(client.get("/v1/notes/handoffs/a.md", headers=H).headers["content-type"].startswith("text/markdown"), "…with their content type")
+check(ds.exists(note) and ds.remove(note) and not ds.exists(note), "exists / remove on the key")
+
+print("data_store: the mode document can't bring a file back")
+set_mode("planner", "local")
+check(ds.mode_of("planner/plans/p1.json") == "cutover", "local in the mode document is still cutover")
+ds.STORE_MODE = ""  # an older map without store.mode
+set_mode("planner", "shadow")
+check(ds.mode_of("planner/plans/p1.json") == "cutover", "shadow (the old dual write) reads as cutover")
+ds.STORE_MODE = "cutover"
 
 print("data_store: rollback holds writes")
 set_mode("planner", "rollback")
@@ -144,32 +156,54 @@ try:
     check(False, "rollback refuses writes")
 except ds.DataStoreError as e:
     check(e.code == "read_only", "rollback refuses writes (read_only)")
-check(ds.read_json(plans, None) == {"title": "five"}, "rollback reads from axf-data")
+check(ds.read_json(plans, None) == {"title": "two"}, "rollback reads from axf-data")
 
 print("data_store: plugin data folders")
-set_mode("ui-review", "shadow")
 pd = ds.plugin("ui-review")
 pd.write_json("items.json", {"items": [1]})
 check(pd.read_json("items.json", None) == {"items": [1]} and pd.key("items.json") == "ui-review/items.json", "a plugin's dataDir through the layer")
-import time as _t
-_mir = None
-for _ in range(50):  # the shadow mirror is written in the background; wait for it (flaky on slow CI runners)
-    _res = client.get("/v1/ui-review/items.json", headers={"authorization": "Bearer t"})
-    try:
-        _mir = _res.json()
-    except ValueError:  # the row is there but its body is not written yet
-        _mir = None
-    if _mir == {"items": [1]}:
-        break
-    _t.sleep(0.1)
-check(_mir == {"items": [1]}, "…mirrored in shadow")
+check(not pd.path("items.json").exists() and remote("ui-review/items.json") == {"items": [1]}, "…a row on axf-data, no file")
 try:
     pd.path("../other/x.json")
     check(False, "a plugin can't leave its folder")
 except ValueError:
     check(True, "a plugin can't leave its folder")
 st = ds.status()
-check(st["configured"] and st["namespaces"]["planner"]["mode"] == "rollback" and st["driftLines"]["planner"] == 3, "status: mode per namespace and drift lines")
+check(st["configured"] and st["namespaces"]["planner"]["mode"] == "rollback" and not st["driftLines"], "status: mode per namespace, no drift lines")
+
+print("data_store: the console server's readers and writers")
+import build_profiles  # noqa: E402
+import projects as projects_mod  # noqa: E402
+import host_mode  # noqa: E402
+hub = P / "amberx-axf/_data"
+repo_root = tmp / "repo"
+(repo_root / "framework/plan").mkdir(parents=True, exist_ok=True)
+(repo_root / "framework/plan/profiles.json").write_text(json.dumps({"active": "repo-copy", "profiles": [{"id": "repo-copy"}]}))
+(repo_root / "framework/plan/projects.json").write_text(json.dumps({"projects": [{"id": "repo-copy"}]}))
+if ds.key_for(hub / "framework/plan/profiles.json"):
+    bp = build_profiles.BuildProfiles(repo_root, lambda: hub)
+    check(bp.registry()["active"] == "all", "build profiles: an empty hub key is the registry, never the checkout's file")
+    ds.write_json(hub / "framework/plan/profiles.json", {"active": "all", "profiles": [{"id": "all"}, {"id": "side"}]})
+    check([x["id"] for x in bp.registry()["profiles"]] == ["all", "side"] and not (hub / "framework/plan/profiles.json").exists(), "…the registry is read from axf-data")
+    check(bp.data_path("framework/plan/pending.json") == hub / "framework/plan/pending.json", "…and the pending list resolves to the hub key")
+    pj = projects_mod.Projects(repo_root, lambda: hub, bp.active)
+    ds.write_json(hub / "framework/plan/projects.json", {"projects": [{"id": "amberx-axf"}, {"id": "side-project"}]})
+    check([x["id"] for x in pj.registry()["projects"]] == ["amberx-axf", "side-project"], "projects: the registry is read from axf-data")
+else:
+    check(False, "the hub's framework/plan documents have a key")
+os.environ["AXF_HOST_MODE_FILE"] = str(hub / "host-services/mode.json")
+if ds.key_for(hub / "host-services/mode.json"):
+    ds.write_json(hub / "host-services/mode.json", {"services": {"x": {"mode": "host"}}})
+    check(host_mode.host_mode("x") == "host" and not host_mode.container_runs("x"), "host mode: the mode document is read from axf-data")
+os.environ.pop("AXF_HOST_MODE_FILE")
+import alerts as alerts_mod  # noqa: E402
+data_root = tmp / "console"
+if ds.key_for(data_root / "alerts.json"):
+    ah = alerts_mod.AlertHub(data_root, plugins={})
+    ah.raise_alert({"source": "system", "severity": "warning", "title": "from the test"}, deliver=False)
+    check(not (data_root / "alerts.json").exists() and [a["title"] for a in remote("console/host/alerts.json")] == ["from the test"], "alerts: the list is a row on axf-data, no file")
+    check([a["title"] for a in alerts_mod.AlertHub(data_root, plugins={}).items] == ["from the test"], "…and read back after a restart")
+check(ds.key_for(data_root / "state.json") == "console/state.json", "console state maps to console/state.json")
 
 journal.unlink(missing_ok=True)
 print(f"data_store: {'all ok' if not fails else f'{fails} failed'}")

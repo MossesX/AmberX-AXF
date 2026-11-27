@@ -31,6 +31,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
+import data_store
 import plugin_services
 from axf_server import github, http as axf_http, storage
 
@@ -226,11 +227,35 @@ def _valid_alert(a: Any) -> bool:
 
 
 def _read_json(p: Path, default: Any) -> Any:
+    """The alert data through the console's data layer (data-store@1: console/host/alerts*.json rows on axf-data). An
+    unreachable axf-data reads as the default: the bell keeps working on what it holds in memory."""
+    try:
+        return data_store.read_json(p, default)
+    except data_store.DataStoreError:
+        return default
+
+
+def _write_data(p: Path, data: Any) -> None:
+    """One key, one row on axf-data (data-store@1). Only a path the map keeps local (a scratch folder) is a file: atomic,
+    0600, the folder keeps its mode when it exists."""
+    data_store.write_json(p, data, dir_mode=None if p.parent.is_dir() else storage.PRIVATE_DIR)
+
+
+def _keep(p: Path, data: Any) -> None:
+    """_write_data for what the hub stores on its own (the alert list, seen CI runs, the run marker): a failed write is
+    retried by the next change and never breaks raising an alert."""
+    try:
+        _write_data(p, data)
+    except (OSError, data_store.DataStoreError):
+        pass
+
+
+def _read_secret(p: Path, default: Any) -> Any:
+    """Credentials (the ntfy token) stay a private 0600 file beside the VAPID key: never data rows."""
     return storage.read_json(p, default)
 
 
-def _write_private(p: Path, data: Any) -> None:
-    """Atomic, 0600 (axf_server.storage). The data folder (.axf-console) keeps its mode when it exists."""
+def _write_secret(p: Path, data: Any) -> None:
     storage.write_json(p, data, dir_mode=None if p.parent.is_dir() else storage.PRIVATE_DIR)
 
 
@@ -354,7 +379,7 @@ class AlertHub:
                         s["ntfyToken"] = tok
                     else:
                         s.pop("ntfyToken", None)
-                    _write_private(self.f_secrets, s)
+                    _write_secret(self.f_secrets, s)
             if isinstance(patch.get("webpush"), dict) and patch["webpush"].get("enabled") is not None:
                 c["webpush"] = {"enabled": bool(patch["webpush"]["enabled"])}
             if isinstance(patch.get("sources"), dict):
@@ -373,11 +398,11 @@ class AlertHub:
                 if u and not re.match(r"^https?://[A-Za-z0-9.-]+(:\d+)?$", u):
                     raise HTTPException(400, "public URL: scheme and host only, e.g. https://console.example.com")
                 c["publicUrl"] = u
-            _write_private(self.f_config, c)
+            _write_data(self.f_config, c)
         return self.public_config()
 
     def _secrets(self) -> dict[str, Any]:
-        return _read_json(self.f_secrets, {})
+        return _read_secret(self.f_secrets, {})
 
     def source_on(self, source: str) -> bool:
         return self.config()["sources"].get(source, True)
@@ -400,7 +425,7 @@ class AlertHub:
 
     def _changed(self) -> None:
         self.version += 1
-        _write_private(self.f_alerts, self.items)
+        _keep(self.f_alerts, self.items)
 
     def raise_alert(self, inp: dict[str, Any], deliver: bool = True) -> tuple[dict[str, Any], str, list[str]]:
         if not self.source_on(inp["source"]):
@@ -530,13 +555,13 @@ class AlertHub:
             raise HTTPException(400, "not a push subscription")
         with self.lock:
             subs = [s for s in self._subs() if s["endpoint"] != ep] + [{"endpoint": ep, "keys": {"p256dh": keys["p256dh"][:200], "auth": keys["auth"][:100]}, "added": _now()}]
-            _write_private(self.f_push, subs[-20:])
+            _write_data(self.f_push, subs[-20:])
             return len(subs[-20:])
 
     def remove_subscription(self, endpoint: str) -> int:
         with self.lock:
             subs = [s for s in self._subs() if s["endpoint"] != endpoint]
-            _write_private(self.f_push, subs)
+            _write_data(self.f_push, subs)
             return len(subs)
 
     def send_webpush(self, alert: dict[str, Any]) -> tuple[bool, str]:
@@ -626,10 +651,7 @@ class AlertHub:
                         self.raise_alert({"source": "deploys", "severity": "success", "key": f"deployed:{repo}:{wf}:{branch}", "title": f"{name} finished on {branch} ({repo})",
                                           "body": str(run.get("display_title") or ""), "link": run.get("html_url") or "", "meta": {"repo": repo, "run": rid}})
         self._seen_runs = set(sorted(seen)[-5000:])
-        try:
-            _write_private(self.f_seen, sorted(self._seen_runs))
-        except OSError:
-            pass
+        _keep(self.f_seen, sorted(self._seen_runs))
 
     def poll_systems(self) -> None:
         if not self.systems or not self.source_on("system"):
@@ -721,7 +743,7 @@ class AlertHub:
         if isinstance(prev, dict) and prev.get("clean") is False and self.source_on("crashes"):
             self.raise_alert({"source": "crashes", "severity": "warning", "key": "crash:restart", "title": "The console restarted without shutting down cleanly",
                               "body": f"Previous start {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(prev.get('startedAt', 0) / 1000))} UTC. Out of memory, a killed container or a host reboot can cause this."})
-        _write_private(self.f_run, {"startedAt": _now(), "pid": os.getpid(), "clean": False})
+        _keep(self.f_run, {"startedAt": _now(), "pid": os.getpid(), "clean": False})
         self._stop.clear()
         for target, name in ((self._worker, "alerts-delivery"), (self._poller, "alerts-sources")):
             t = threading.Thread(target=target, name=name, daemon=True)
@@ -733,7 +755,7 @@ class AlertHub:
         self._outbox.put(None)
         run = _read_json(self.f_run, {})
         if isinstance(run, dict) and run.get("pid") == os.getpid():
-            _write_private(self.f_run, {**run, "clean": True, "stoppedAt": _now()})
+            _keep(self.f_run, {**run, "clean": True, "stoppedAt": _now()})
 
     def _worker(self) -> None:
         """Delivers what was raised, a burst at a time: alerts raised within BURST_WINDOW_S go out as one push per channel."""

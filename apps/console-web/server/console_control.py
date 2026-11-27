@@ -38,13 +38,12 @@ def _generate_inventory() -> bool:
 def publish_inventory(inv: dict[str, Any]) -> str | None:
     """The API / control registry on axf-data: `console/control/inventory.json`, which the Postgres engine keeps as the
     `control_targets` table (one row per target, tabs in `control_tabs`), generated from each plugin's registered targets.
-    Goes through the console's data layer, so it follows the console namespace's mode (local file, shadow, cutover)."""
+    Goes through the console's data layer: a row on axf-data, no file beside it."""
     try:
         import data_store
         path = data_store._roots()["projects"] / "amberx-axf" / "_data" / "control" / "inventory.json"  # noqa: SLF001
         if data_store.key_for(path) != "console/control/inventory.json":
             return None
-        path.parent.mkdir(parents=True, exist_ok=True)
         data_store.write_json(path, inv)
         return "console/control/inventory.json"
     except Exception:  # noqa: BLE001 — the registry file is still served; publishing is best effort at startup
