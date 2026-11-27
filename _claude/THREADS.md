@@ -845,330 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:44 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
-- 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:44 UTC · `emergency-check-can-these-plugins-` s6 undone, note (all) · watchdog
-- 2026-11-27 05:45 UTC · `claude-emergency-access` → building (all) · orchestrator
-- 2026-11-27 05:45 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 05:46 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:48 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 05:49 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 05:49 UTC · `emergency-remove-every-leftover-js` s5 undone, note (all) · watchdog
-- 2026-11-27 05:49 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 05:50 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:51 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:51 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
-- 2026-11-27 05:54 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 05:54 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 05:54 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 05:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:55 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:55 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 05:58 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:58 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 05:58 UTC · `emergency-rip-out-the-7-mb-status-` s6 undone (all) · orchestrator
-- 2026-11-27 05:59 UTC · `emergency-remove-every-leftover-js` s6 undone (all) · orchestrator
-- 2026-11-27 05:59 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:00 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:03 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:03 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` s3 undone (all) · orchestrator
-- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` s7 undone (all) · orchestrator
-- 2026-11-27 06:04 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:04 UTC · `emergency-check-can-these-plugins-` s9 undone, note (all) · watchdog
-- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:06 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:06 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:08 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:08 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:09 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:09 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:09 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:09 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 06:09 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:11 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:11 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:13 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:13 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
-- 2026-11-27 06:14 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:14 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:14 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:14 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:15 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:16 UTC · `emergency-remove-every-leftover-js` s7 done (all) · headless
-- 2026-11-27 06:16 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:16 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:16 UTC · `emergency-check-can-these-plugins-` s9 undone (all) · orchestrator
-- 2026-11-27 06:17 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:17 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:18 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:19 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:19 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:19 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:19 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:19 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:19 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:20 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:20 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:20 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:24 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:24 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:24 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:24 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:24 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:24 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:24 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:26 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:28 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:29 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 06:29 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:29 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:30 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:30 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
-- 2026-11-27 06:31 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:31 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:32 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:34 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:34 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:34 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:34 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:35 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:36 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:36 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:36 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:36 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:37 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:38 UTC · `emergency-check-can-these-plugins-` s10 undone (all) · orchestrator
-- 2026-11-27 06:38 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:38 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 06:38 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:39 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:39 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:39 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:40 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:40 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:40 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:41 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:41 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:41 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:42 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:43 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:44 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:44 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:45 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:45 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:46 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:47 UTC · `claude-emergency-access` s5 undone (all) · orchestrator
-- 2026-11-27 06:48 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:48 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:49 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:49 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:49 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:49 UTC · `emergency-check-can-these-plugins-` s11 undone, note (all) · watchdog
-- 2026-11-27 06:49 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:49 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` → queued, note (all) · watchdog
-- 2026-11-27 06:50 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:50 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:51 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-27 06:52 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:53 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:53 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:53 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:54 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:54 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 06:55 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:55 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:55 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:55 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:56 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:57 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:58 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:59 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` → queued, note (all) · watchdog
-- 2026-11-27 06:59 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 06:59 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 06:59 UTC · `claude-emergency-access` s5 undone, note (all) · watchdog
-- 2026-11-27 07:00 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:00 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:01 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:01 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:02 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:02 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:04 UTC · `claude-emergency-access` s6 undone (all) · orchestrator
-- 2026-11-27 07:04 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 07:04 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:06 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:07 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:07 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:08 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:08 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:09 UTC · `claude-emergency-access` s6 undone (all) · orchestrator
-- 2026-11-27 07:09 UTC · `pending-banner-list-every-pending-build` → queued, note (all) · watchdog
-- 2026-11-27 07:09 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:10 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-27 07:11 UTC · `claude-emergency-access` s5 undone (all) · orchestrator
-- 2026-11-27 07:14 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 07:19 UTC · `toolbars-moved-to-side-become-vertical` → queued, note (all) · watchdog
-- 2026-11-27 07:29 UTC · `plan-studio-collapse-all-expand-all` → queued, note (all) · watchdog
-- 2026-11-27 07:30 UTC · `plan-studio-collapse-all-expand-all` note (all) · pipeline
-- 2026-11-27 07:30 UTC · `plan-studio-collapse-all-expand-all` → running, note (all) · orchestrator
-- 2026-11-27 07:34 UTC · `plan-studio-collapse-all-expand-all` note (all) · orchestrator
-- 2026-11-27 07:34 UTC · `plan-studio-collapse-all-expand-all` note (all) · orchestrator
-- 2026-11-27 07:36 UTC · `plan-studio-collapse-all-expand-all` note (all) · pipeline
-- 2026-11-27 07:37 UTC · `plan-studio-collapse-all-expand-all` note (all) · pipeline
-- 2026-11-27 07:39 UTC · `plugin-settings-placement` → queued, note (all) · watchdog
-- 2026-11-27 07:39 UTC · `plugin-settings-placement` → archived, note (all) · cron
-- 2026-11-27 07:49 UTC · `requests-ledger` → queued, note (all) · watchdog
-- 2026-11-27 07:49 UTC · `requests-ledger` → archived, note (all) · cron
-- 2026-11-27 07:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 07:57 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 07:57 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 07:58 UTC · `bugs-board` → queued, note (all) · watchdog
-- 2026-11-27 07:59 UTC · `emergency-rip-out-the-7-mb-status-` → failed, note (all) · watchdog
-- 2026-11-27 07:59 UTC · `emergency-check-can-these-plugins-` → failed, note (all) · watchdog
-- 2026-11-27 07:59 UTC · `emergency-remove-every-leftover-js` → failed, note (all) · watchdog
-- 2026-11-27 07:59 UTC · `bugs-board` → archived, note (all) · cron
-- 2026-11-27 08:00 UTC · `emergency-rip-out-the-7-mb-status-` → building, note (all) · watchdog
-- 2026-11-27 08:00 UTC · `emergency-check-can-these-plugins-` → building, note (all) · watchdog
-- 2026-11-27 08:00 UTC · `emergency-remove-every-leftover-js` → building, note (all) · watchdog
-- 2026-11-27 08:08 UTC · `follow-amber-switch` → queued, note (all) · watchdog
-- 2026-11-27 08:09 UTC · `follow-amber-switch` → archived, note (all) · cron
-- 2026-11-27 08:18 UTC · `crew-profiles` → queued, note (all) · watchdog
-- 2026-11-27 08:19 UTC · `crew-profiles` → archived, note (all) · cron
-- 2026-11-27 08:28 UTC · `builds-one-page-done` → queued, note (all) · watchdog
-- 2026-11-27 08:29 UTC · `builds-one-page-done` → archived, note (all) · cron
-- 2026-11-27 08:38 UTC · `profile-lists-home-card` → queued, note (all) · watchdog
-- 2026-11-27 08:39 UTC · `profile-lists-home-card` → archived, note (all) · cron
-- 2026-11-27 08:48 UTC · `console-wake-finish` → queued, note (all) · watchdog
-- 2026-11-27 08:49 UTC · `console-wake-finish` → archived, note (all) · cron
-- 2026-11-27 08:58 UTC · `session-history` → fixing, note (all) · watchdog
-- 2026-11-27 09:08 UTC · `amberx-live-audio` → fixing, note (all) · watchdog
-- 2026-11-27 09:18 UTC · `build-docs-walkthroughs` → fixing, note (all) · watchdog
-- 2026-11-27 09:28 UTC · `three-layouts-per-screen` → fixing, note (all) · watchdog
-- 2026-11-27 09:38 UTC · `follow-amber-flash` → fixing, note (all) · watchdog
-- 2026-11-27 09:48 UTC · `hub-runs-approved` merged, note (all) · watchdog
-- 2026-11-27 09:48 UTC · `apps-control-surface` → queued, note (all) · watchdog
-- 2026-11-27 09:49 UTC · `apps-control-surface` → archived, note (all) · cron
-- 2026-11-27 09:58 UTC · `jump-menu-asset` → queued, note (all) · watchdog
-- 2026-11-27 09:58 UTC · `jump-menu-asset` → archived, note (all) · cron
-- 2026-11-27 10:08 UTC · `builds-one-page` → queued, note (all) · watchdog
-- 2026-11-27 10:08 UTC · `builds-one-page` → archived, note (all) · cron
-- 2026-11-27 10:18 UTC · `app-voice-commands` → queued, note (all) · watchdog
-- 2026-11-27 10:18 UTC · `app-voice-commands` → archived, note (all) · cron
-- 2026-11-27 10:28 UTC · `hub-runs-approved` → landed, note (all) · watchdog
-- 2026-11-27 10:28 UTC · `smart-menus` → queued, note (all) · watchdog
-- 2026-11-27 10:29 UTC · `smart-menus` → archived, note (all) · cron
-- 2026-11-27 10:30 UTC · `hub-runs-approved` → complete, note (all) · verify
-- 2026-11-27 10:38 UTC · `readme-rule-every-build` → fixing, note (all) · watchdog
-- 2026-11-27 10:48 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 10:48 UTC · `settings-placement-everywhere` → queued, note (all) · watchdog
-- 2026-11-27 10:48 UTC · `settings-placement-everywhere` → archived, note (all) · cron
-- 2026-11-27 10:51 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 10:52 UTC · `claude-emergency-access` → failed, note (all) · watchdog
-- 2026-11-27 10:53 UTC · `claude-emergency-access` → building, note (all) · watchdog
-- 2026-11-27 10:58 UTC · `full-api-control` → fixing, note (all) · watchdog
-- 2026-11-27 11:08 UTC · `glossary-walkthrough-generator-investor-demos` → fixing, note (all) · watchdog
-- 2026-11-27 11:18 UTC · `real-time-slot-tracking-stale-data-reaper` → fixing, note (all) · watchdog
-- 2026-11-27 11:28 UTC · `fix-owner-check-bug-dead-start-button` → fixing, note (all) · watchdog
-- 2026-11-27 11:38 UTC · `terminal-header-responsive` → fixing, note (all) · watchdog
-- 2026-11-27 11:48 UTC · `live-sessions-plugin` → queued, note (all) · watchdog
-- 2026-11-27 11:48 UTC · `live-sessions-plugin` → archived, note (all) · cron
-- 2026-11-27 11:58 UTC · `account-failover-notify` → fixing, note (all) · watchdog
-- 2026-11-27 12:08 UTC · `ui-api-parity-rule` → fixing, note (all) · watchdog
-- 2026-11-27 12:18 UTC · `model-thinking-audit` → queued, note (all) · watchdog
-- 2026-11-27 12:19 UTC · `model-thinking-audit` → archived, note (all) · cron
-- 2026-11-27 12:28 UTC · `fable-packager` → queued, note (all) · watchdog
-- 2026-11-27 12:28 UTC · `fable-packager` → archived, note (all) · cron
-- 2026-11-27 12:38 UTC · `handoff-2` → queued, note (all) · watchdog
-- 2026-11-27 12:39 UTC · `handoff-2` → archived, note (all) · cron
-- 2026-11-27 12:48 UTC · `grid-column-hiding` → queued, note (all) · watchdog
-- 2026-11-27 12:48 UTC · `grid-column-hiding` → archived, note (all) · cron
-- 2026-11-27 12:58 UTC · `build-optimizer` → queued, note (all) · watchdog
-- 2026-11-27 12:58 UTC · `build-optimizer` → archived, note (all) · cron
-- 2026-11-27 13:04 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 13:04 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 13:04 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 13:08 UTC · `drag-to-tab` → queued, note (all) · watchdog
-- 2026-11-27 13:09 UTC · `drag-to-tab` → archived, note (all) · cron
-- 2026-11-27 13:09 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 13:09 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 13:09 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 13:10 UTC · `emergency-rip-out-the-7-mb-status-` → failed, note (all) · watchdog
-- 2026-11-27 13:10 UTC · `emergency-check-can-these-plugins-` → failed, note (all) · watchdog
-- 2026-11-27 13:10 UTC · `emergency-remove-every-leftover-js` → failed, note (all) · watchdog
-- 2026-11-27 13:11 UTC · `emergency-rip-out-the-7-mb-status-` → building, note (all) · watchdog
-- 2026-11-27 13:11 UTC · `emergency-check-can-these-plugins-` → building, note (all) · watchdog
-- 2026-11-27 13:11 UTC · `emergency-remove-every-leftover-js` → building, note (all) · watchdog
-- 2026-11-27 13:18 UTC · `account-health-failover` → fixing, note (all) · watchdog
-- 2026-11-27 13:28 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` → fixing, note (all) · watchdog
-- 2026-11-27 13:38 UTC · `tabs-api-control` → fixing, note (all) · watchdog
-- 2026-11-27 13:48 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` → fixing, note (all) · watchdog
-- 2026-11-27 13:58 UTC · `plan-studio-receives-a-valid-shipped-feature-man` → fixing, note (all) · watchdog
-- 2026-11-27 14:08 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → fixing, note (all) · watchdog
-- 2026-11-27 14:18 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → fixing, note (all) · watchdog
-- 2026-11-27 14:28 UTC · `changes-chat-log` → queued, note (all) · watchdog
-- 2026-11-27 14:29 UTC · `changes-chat-log` → archived, note (all) · cron
-- 2026-11-27 14:38 UTC · `notes-views` → queued, note (all) · watchdog
-- 2026-11-27 14:39 UTC · `notes-views` → archived, note (all) · cron
-- 2026-11-27 14:48 UTC · `headless-session-efficiency-shared-chain-control` → queued, note (all) · watchdog
-- 2026-11-27 14:49 UTC · `headless-session-efficiency-shared-chain-control` → archived, note (all) · cron
-- 2026-11-27 14:58 UTC · `notes-tasks-sync` → queued, note (all) · watchdog
-- 2026-11-27 14:59 UTC · `notes-tasks-sync` → archived, note (all) · cron
-- 2026-11-27 15:09 UTC · `settings-sections-everywhere` → queued, note (all) · watchdog
-- 2026-11-27 15:09 UTC · `settings-sections-everywhere` → archived, note (all) · cron
-- 2026-11-27 15:19 UTC · `ui-registry-shortcuts` → queued, note (all) · watchdog
-- 2026-11-27 15:19 UTC · `ui-registry-shortcuts` → archived, note (all) · cron
-- 2026-11-27 15:29 UTC · `plan-studio-backfill-12h` → queued, note (all) · watchdog
-- 2026-11-27 15:29 UTC · `plan-studio-backfill-12h` → archived, note (all) · cron
-- 2026-11-27 15:38 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → fixing, note (all) · watchdog
-- 2026-11-27 15:48 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` → fixing, note (all) · watchdog
-- 2026-11-27 15:55 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 15:58 UTC · `orchestrator-self-check-when-stuck-verify-each-a` → fixing, note (all) · watchdog
-- 2026-11-27 16:00 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 16:01 UTC · `claude-emergency-access` → failed, note (all) · watchdog
-- 2026-11-27 16:02 UTC · `claude-emergency-access` → building, note (all) · watchdog
-- 2026-11-27 16:08 UTC · `orchestrator-settings-api-account-limits-and-rou` → fixing, note (all) · watchdog
-- 2026-11-27 16:18 UTC · `account-failover-chain-subscription-next-subscri` → fixing, note (all) · watchdog
-- 2026-11-27 16:28 UTC · `split-builds-pages-build-manager-pending-complet` → fixing, note (all) · watchdog
-- 2026-11-27 16:38 UTC · `split-builds-pages-build-manager-pending-complet-3` → fixing, note (all) · watchdog
-- 2026-11-27 16:49 UTC · `dataset-bar` → queued, note (all) · watchdog
-- 2026-11-27 16:49 UTC · `dataset-bar` → archived, note (all) · cron
 - 2026-11-27 16:58 UTC · `ui-asset-designer` → queued, note (all) · watchdog
 - 2026-11-27 16:59 UTC · `ui-asset-designer` → archived, note (all) · cron
 - 2026-11-27 17:08 UTC · `memory-restructure-chunked-claude-md-store-memor` → queued, note (all) · watchdog
@@ -1245,6 +921,330 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:09 UTC · `amberx-notes` → complete, note (all) · verify
 - 2026-11-27 19:09 UTC · `x.engines` → fixing, note (all) · watchdog
 - 2026-11-27 19:09 UTC · `banner-fix-fallback` → complete, note (all) · verify
+- 2026-11-27 19:10 UTC · `asset-designer` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugin-manager` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `pending-list-manager` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `lib-mcp` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `claude-pick-api-key` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ai-assistant-plugin` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-manager-plugin` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-assets` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `widget-assets` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-manager-history` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `todo-manager-tabs` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `session-close-race` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `syscheck-autofix-jobs` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `syscheck-claude-on-fail` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `push-banner-pull-all` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `push-banner-claude-fix` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `autofix-through-mosses` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `vps-run-terminal-output` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `push-banner-branches-that-can-merge-cleanly` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ai-keys` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `syscheck-live-keys-credits` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `credits-switch-ai-keys` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-studio` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-studio-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-harvest` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-web-rebuild` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `syscheck-rebake` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hubstore-voice-notes` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hubstore-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugin-model-badges-update` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugins-menu` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ashes-ui` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-list-estimates-usd` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-group` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-group-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-web-console-look` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `voicevault-voice-notes` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-working-icon` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-working-icon-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `settings-asset` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `settings-asset-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hubsync` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hub-status-badge` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `appearance-asset-tokens` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `appearance-asset-tokens-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `codebase-changes-resume` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `vinny-offline-commands` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `vinny-app-tokens` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `handoff-session-button` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `changes-grid` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-droid` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `context-menu-designer` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `shared-settings-interface` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `activity-hold-continue` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-details-reveal` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `voice-notes-tab` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `voicevault-mic-actions` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `widget-arrange` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `widget-arrange-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-manager-sessions` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-pages-console-style` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-oauth` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `approval-reasons-go-pass` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `no-login-questions-headless-terminal` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-oauth-config-soft` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-one-line` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-one-line-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-router-clash` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-apply-all-keys` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-apply-all-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `design-package-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-voice-fix` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `shared-look-fix` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `veto-everywhere` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-voice` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-web-host` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orch-pending-sync` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `app-compact` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `screens-compact` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `layout-repeating-slots` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `audio-output-recorder` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `live-key-checks` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ui-review` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plan-studio` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `audio-extract` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-swarm` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-swarm-fable-rebuild` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `watch-live` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-cap` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-walkthrough` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `help-mode` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `stack-walkthrough` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-opus` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-chapters` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `xlayout` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-random-look` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `dock-engine` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `theme-editor` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `token-control` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orch-live-sync` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `land-everything` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `crew-retrain` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `notes-vault` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `kill-patches-pilot` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `headless-tabs` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `whats-new-banner` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-commands` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `model-upgrade-approval` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-wake` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `theme-veto-pass` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `pass-all` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugin-commands-auto` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `menu-scroll` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `auto-land` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `crew-live` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `toolbar-tap-confirm` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `claude-settings` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `follow-amber` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `agent-pick` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ui-review-shots` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `terminal-vps-host` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `window-resize-fix` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `home-cards-live` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ui-review-predicted` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `terminal-sessions-nav` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-prompt-origin` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-ref-links` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-console-commands` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `urgent-main-ci-green` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `whats-new-open-fix` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `terminal-drag-chain-tree` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-nav-submenus` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-banners` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `gizmo-companion` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugin-lazy-load` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `lenny-land-all` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `terminal-no-focus` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `expenses-port` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hotfix-build-manager` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `urgent-land-gizmo-chat` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `merge-queue` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fable-no-approval` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `tab-group-assets` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `urgent-console-perf` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `land-merge-queue-first` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `claude-account-switcher` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `priority-tags` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-own-login` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ai-keys-new-format` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `ui-review-notify-session-audio` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `claude-badge-vps` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `notifications-control-panel` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `gizmo-rebuild-fable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `badges-notify-followup` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `glossary-index-demos` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `profiles-all-finish` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plan-designer` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `idle-alert-phone-flag-when-nothing-is-building` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `workers-api-routing` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `brief-only-headless` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-native-expenses` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `demonstration-designer-plugin-new-standalone` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · builds-live
+- 2026-11-27 19:10 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` → fixing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `skins-own-everything-colour-theme-swaps-independ` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · [demo] `demo-designer-finish-phase-2-s2-s3-resuming-from` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `enforce-the-merge-queue-every-finished-build-goe` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `molly-gap-axhub-cors` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-commands-reliable` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fix-axhub-36-pull-main-in-failed` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-web-app-live-at-axhub-amberxai-com-banner` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orch-self-check-stuck` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `shipped-manifest-api` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `land-batch-1` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `maintenance-plugin-acct2` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `window-resize-fix-threads` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-veto-pass-web` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `md-studio-theme-editor-plan` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `walkthrough-view-fallback` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `xlayout-plan` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `claude-accounts-switch` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `one-look-opus` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-rename-gizmox-ai-studio` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hub-look-all-assets` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `theme-sync-pane` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `leftovers` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `shot-groups` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `shots-tab` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `angel-screens-compact` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `angel-app-compact` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-breaker` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `design-packs` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `feature-matrix-compact` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `plugin-theme-override` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `voice-fix-done` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fix-merge-pr-stdin` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `refactor-profile-today` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `move-status-out-of-claude-md` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `merge-approvals` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `install-tmux-ntfy-tailscale` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-after-129` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `design-package-thread` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-amberx-keep` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-amberx-shell` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-carry-on` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-cleanup` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `banner-apply-all-keys-recheck` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-router-name` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-110-merged` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `threads-oauth-soft` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `approval-reasons` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-oauth-thread` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-139zmj` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-kxgzso` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-usdp87` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-74063i` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-jjbcw6` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-qwqfp4` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-i70ntv` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-24jq9j` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-c4xw4s` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-lmyb8k` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-l3b0qo` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-85vrhz` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-u82s3d` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-5gc822` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-k6ckjv` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-76ubmk` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-y6pzy7` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-jflo9d` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-a21f46` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-tpor29` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-2ijgui` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-1xk0js` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-aaet0t` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-2ijgui-resume` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-2ijgui-patches` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-2ijgui-aikeys` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-2ijgui-restore` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-vfc6wi` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-jx0w7u` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-9jsom2` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-g27t3y` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-1f6dcd` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-1nc43b` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-b088wy` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-7hzl6f` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-28v1xw` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-jg1stb` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-u0oyjm` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-55oakl` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-c4954d` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-farg39` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-tbz3ro` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-web-wall-msg` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-v9io2i` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-j1ri9d` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-1d9f6k` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-32ym2e` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-t9zktq` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `axhub-web-on-hub` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `framework-walkthrough-video-builder-qocfr1` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `laughing-thompson-eqfjw1` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `project-thread-eew3jm` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-cloning-plugin-hzcj78` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `android-approval-overlay-a-small-always-on-float` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `every-skin-ships-light-dark-colour-theme` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fix-build-whose-session-finishes-phase-e` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orchestrator-hold-status-archive-tab` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `owner-recognized-everywhere-veto` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `per-instance-settings-window-picker` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `tab-groups-choose-how-many-rows-tabs` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `all-settings-interfaces-open-floating` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `transparency-token-works-every-dialog` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-app-part-2-native-floating` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orchestrator-custom-groups-custom-tabs` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `skin-axhub-override-switch-greyed-out` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `per-instance-settings-picker-merge-main` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `skins-plugin-merge-main-and-land` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `skin-animations-swatches-skin-switch` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `dispatcher-gate-never-launch-build` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `per-toolbar-settings-fix-failing-chrome` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hotfix-desktop-console-draws-app-menu` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `main-ci-red-test-sandbox-profile-export` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `land-batch-merge-main-each-finished` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `voice-listener-use-claude-when-connected` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `builds-share-one-claude-login-write` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `merge-main-land-change-to-move-amberx` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `merge-main-land-voice-listener-use` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `data-container-axf-data-holds-all` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `gate-rules-plugin-in-the-console` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `build-rules-tab-gate-rules-vps-owns` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `urgent-land-gizmo-chat-report` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hotfix-launcher-splitter` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `overlay-float` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `overlay-pages` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `orch-build-id-40-chars` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `notes-tasks-r2-land` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `context-menu-console-settings` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `test-project-seed` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `hotfix-console-deploy-build-id` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `console-skin-axhub-only` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `fable-rebuild-plan-studio-cleared-out` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `server-auto-lander-fixes-lands` → landing, note (all) · builds-live
+- 2026-11-27 19:10 UTC · `stop-auto-lander-committing-tracking` → landing, note (all) · builds-live
 
 ## Token passes (log)
 
