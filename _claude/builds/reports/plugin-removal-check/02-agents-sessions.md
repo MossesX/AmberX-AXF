@@ -1,7 +1,8 @@
 # Plugin removal check 02: agents and sessions
 
 Build `emergency-check-can-these-plugins-`, step s2. Report only: nothing was deleted or changed.
-Checked on main at `3e39311dc` (Nov 25 2026). Plugins: `agent-slots`, `session-checkin`, `claude-handoff`, `axhub-handoff`
+Checked on main at `3e39311dc` (Nov 25 2026); re-checked on main at `e1e8d3231` (Nov 27 2026): every file:line below still
+matches, no verdict changed, six smaller references added under "Re-check, Nov 27". Plugins: `agent-slots`, `session-checkin`, `claude-handoff`, `axhub-handoff`
 (all under `apps/console-web/plugins/`).
 
 ## Verdicts
@@ -102,3 +103,27 @@ axHub plugins and stays. `apps/axhub-web/` is the archived app (`ARCHIVED.md`).
 1. `claude-handoff` and `axhub-handoff` together, with the reference edits listed (one PR).
 2. `session-checkin`: uninstall the hook on the VPS first, then the folder and its references.
 3. `agent-slots`: only after its panels, the capability and the health item live in `gate`.
+
+## Re-check, Nov 27
+
+Every cited line was read again on the current tree and the whole repo was searched again for the four folder names, plugin
+ids, capability `axf.agent-slots@1`, the `/api/plugins/<folder>` prefixes and the settings-tab ids. The VPS hook file
+`/root/.claude/settings.json` still has the two `session-checkin` entries (lines 50 and 139) and no handoff entry. Verdicts
+stand. References the first pass did not list (none loads plugin code, none changes a verdict):
+
+- `agent-slots`: the two consumers also declare the capability as optional in their manifests,
+  `claude-session/plugin.json:23` and `build-orchestrator/plugin.json:24`. Leave both lines if `gate` takes the capability
+  over; drop them if nothing provides it. The plugin also ships a Home card (`agent-slots/assets/card/home.json`, command
+  `hard-limit`); it goes with the folder, so a Home layout that pinned "Agent cap" loses that card.
+  `build-orchestrator/web/pipeline.tsx:174` (slots used / cap) reads the engine through the orchestrator, not this plugin.
+- `session-checkin`: `sessions/README.md:4,10` tells the reader to browse with this plugin and its `checkin.mjs list`
+  (reword). `framework/spec/fixtures/data-store-migration.json:381` names it as a writer label of the sessions folder (a
+  label only; nothing checks that the plugin exists).
+- `claude-handoff`: `framework/spec/fixtures/page-toolbar-voice.json` carries 15 entries for its two toolbars (regenerate
+  the fixture), `framework/spec/DESIGN-LANGUAGE.md:147,151` lists it (prune), and
+  `framework/spec/fixtures/data-store-migration.json:228,505` names it as a writer label (label only).
+- `axhub-handoff`: `apps/console-web/src/hubPages/route.ts:17,23` maps the hub pages `handoff` and `handoff-run` to its
+  views. It asks `pluginProviding` first, so an old `#/handoff/<run>` link opens nothing instead of failing; the two
+  label entries can be pruned. `framework/catalog/status.json:2476` names it in the notes of the axHub fold-in feature
+  (reword when it goes).
+
