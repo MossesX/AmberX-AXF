@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 16:59 UTC · `ui-asset-designer` → archived, note (all) · cron
-- 2026-11-27 17:08 UTC · `memory-restructure-chunked-claude-md-store-memor` → queued, note (all) · watchdog
-- 2026-11-27 17:09 UTC · `memory-restructure-chunked-claude-md-store-memor` → archived, note (all) · cron
-- 2026-11-27 17:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · watchdog
 - 2026-11-27 17:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → archived, note (all) · cron
 - 2026-11-27 17:29 UTC · `amberx-approvals-fix` → queued, note (all) · watchdog
 - 2026-11-27 17:29 UTC · `amberx-approvals-fix` → archived, note (all) · cron
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:10 UTC · `server-auto-lander-fixes-lands` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `stop-auto-lander-committing-tracking` → landing, note (all) · builds-live
 - 2026-11-27 19:20 UTC · `amberx-voice-center` → landed, note (all) · watchdog
+- 2026-11-27 19:20 UTC · `x.kernel` → fixing, note (all) · watchdog
+- 2026-11-27 19:21 UTC · `orch-pending-sync` note (all) · watchdog
+- 2026-11-27 19:21 UTC · `agent-voice` note (all) · watchdog
+- 2026-11-27 19:21 UTC · `veto-everywhere` note (all) · watchdog
 
 ## Token passes (log)
 

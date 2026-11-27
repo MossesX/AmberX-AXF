@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:20:55.099Z",
+ "updatedAt": "2026-11-27T19:21:17.217Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -64474,7 +64474,7 @@
    "pr": "#176",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-12T03:28:17Z",
+   "updatedAt": "2026-11-27T19:21:12.335Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
@@ -64504,6 +64504,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #176 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 1194d2975e is next.",
+     "at": "2026-11-27T19:21:12.335Z"
     }
    ],
    "approvals": [],
@@ -64707,7 +64711,7 @@
    "pr": "#177",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-11-12T03:28:18Z",
+   "updatedAt": "2026-11-27T19:21:07.737Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
    "notes": [
     {
@@ -64733,6 +64737,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #177 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on ed7aa480ad is next.",
+     "at": "2026-11-27T19:21:07.737Z"
     }
    ],
    "approvals": [],
@@ -66983,7 +66991,7 @@
    "pr": "#143",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "updatedAt": "2026-11-12T03:28:22Z",
+   "updatedAt": "2026-11-27T19:21:00.940Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
    "notes": [
     {
@@ -67009,6 +67017,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #143 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 5348a1bb91 is next.",
+     "at": "2026-11-27T19:21:00.940Z"
     }
    ],
    "approvals": [],
@@ -70732,14 +70744,14 @@
    "title": "Kernel (pure Kotlin + TypeScript core)",
    "category": "Kernel & engines",
    "detail": "The framework core every app gets: asset registry, engines, runtime state, actions, module system. Pure Kotlin on Android (no Android imports, KMP-ready); framework/core on the web.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T19:20:55.409Z",
    "builtAt": "",
    "notes": [
     {
@@ -70749,6 +70761,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T19:20:55.409Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T19:20:55.409Z"
     }
    ],
    "approvals": [],
