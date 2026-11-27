@@ -5,10 +5,16 @@
  * (Node `framework/core/data-files.mjs` readJson/writeJson…, `persist.mjs` readData/writeData, the builds store through
  * `builds-store.mjs`; the console server through `server/data_store.py`), which puts it in axf-data's Postgres tables.
  *
- * A ratchet, not a rewrite: the direct writes that exist today are counted per file in
- * `framework/spec/json-data-writes.baseline.json`; this check fails when a file not in it gains one, or a file's count
- * goes up. Moving a namespace onto the tables lowers the counts: run with `--update` and commit the smaller baseline
- * (an update that RAISES a count is refused unless `--allow-raise`, which a reviewer sees in the diff).
+ * A closed list, not a ratchet with slack (Brett, Nov 25 2026: "Postgres is the one store. … No dual writes, no JSON
+ * backups."): `framework/spec/json-data-writes.baseline.json` holds the few direct writes that stay, per file, each with
+ * the reason it is not data (`kept`: true config, a read-only export, a spool the tables already hold). The check fails
+ * when
+ *   - a file not in the baseline has a direct write, or a file's count is above its baseline (a new JSON data write);
+ *   - a file's count is below its baseline, or a baseline file is gone (the baseline must equal the code: run `--update`
+ *     and commit it, so a removed write can never come back inside the old count);
+ *   - a baseline file has no `kept` reason, or `total` is not the sum (a hand edit).
+ * The baseline never grows: `--update` only lowers counts and drops files; there is no flag that raises one. A write
+ * that truly is not data is marked on its line instead (`axf-data: not data (<reason>)`), which a reviewer sees.
  *
  * What counts (runtime code: apps/<app>/server, apps/<app>/plugins/<p>/{server,*.mjs}, framework/cli, framework/core,
  * deploy, services; never tests, specs, fixtures, baked copies, browser code):
@@ -21,7 +27,7 @@
  *
  *   node framework/spec/check-json-data-writes.mjs             check (CI)
  *   node framework/spec/check-json-data-writes.mjs --list      every counted line
- *   node framework/spec/check-json-data-writes.mjs --update    rewrite the baseline (lower counts only)
+ *   node framework/spec/check-json-data-writes.mjs --update    lower the baseline to what the code has now (never raises, never adds a file)
  */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -31,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const BASELINE = join(ROOT, 'framework/spec/json-data-writes.baseline.json');
 const args = new Set(process.argv.slice(2));
+const NOTE = 'The direct JSON/JSONL writes that stay in runtime code, per file, each with the reason it is not data (kept). Everything else is in Postgres through data-store@1. This list never grows: framework/spec/check-json-data-writes.mjs --update only lowers it.';
 
 export const SCOPE = /^(apps\/[^/]+\/(server|plugins)\/|framework\/(cli|core)\/|deploy\/|services\/)/;
 export const SKIP = /(^|\/)(node_modules|dist|build|src\/axf|web|fixtures|__pycache__)\/|(^|\/)(test[^/]*|[^/]*[._-]test[^/]*|check-[^/]*|conftest\.py)$|\.d\.ts$/;
@@ -82,6 +89,31 @@ export function compare(base, now) {
   return Object.entries(now).filter(([f, n]) => n > (base[f] ?? 0)).map(([f, n]) => ({ file: f, was: base[f] ?? 0, now: n }));
 }
 
+/** Baseline entries the code no longer needs: [{ file, was, now }] for every file whose count went down (or is gone). */
+export function stale(base, now) {
+  return Object.entries(base).filter(([f, n]) => (now[f] ?? 0) < n).map(([f, n]) => ({ file: f, was: n, now: now[f] ?? 0 }));
+}
+
+/** What is wrong with the baseline document itself: files without a `kept` reason, reasons without a file, a wrong total. */
+export function baselineFaults(doc) {
+  const files = doc?.files ?? {}; const kept = doc?.kept ?? {}; const out = [];
+  for (const f of Object.keys(files)) if (typeof kept[f] !== 'string' || !kept[f].trim()) out.push(`${f}: no reason in "kept" (why this write is not data)`);
+  for (const f of Object.keys(kept)) if (!(f in files)) out.push(`${f}: a "kept" reason for a file that is not in "files"`);
+  for (const [f, n] of Object.entries(files)) if (!Number.isInteger(n) || n < 1) out.push(`${f}: count must be a whole number above 0`);
+  const sum = Object.values(files).reduce((a, b) => a + (Number.isInteger(b) ? b : 0), 0);
+  if (doc && doc.total !== sum) out.push(`total is ${doc.total}, the counts add up to ${sum}`);
+  return out;
+}
+
+/** The next baseline from the code: counts as they are now, reasons carried over. Null when a count would go up. */
+export function lowered(doc, now) {
+  const base = doc?.files ?? {};
+  if (compare(base, now).length) return null;
+  const files = Object.fromEntries(Object.keys(now).sort().map((k) => [k, now[k]]));
+  const kept = Object.fromEntries(Object.keys(files).filter((k) => typeof doc?.kept?.[k] === 'string').map((k) => [k, doc.kept[k]]));
+  return { $axf: 'json-data-writes-baseline@2', note: NOTE, total: Object.values(files).reduce((a, b) => a + b, 0), files, kept };
+}
+
 const selfTest = () => {
   const yes = [
     ["writeFileSync(f, JSON.stringify(doc));", 'a.mjs'], ["fs.appendFileSync(join(d, 'log.jsonl'), line);", 'a.mjs'],
@@ -100,6 +132,14 @@ const selfTest = () => {
   if (!SKIP.test('framework/spec/check-x.mjs') && SCOPE.test('framework/spec/check-x.mjs')) throw new Error('self-test: specs are out of scope');
   if (!SKIP.test('apps/console-web/plugins/x/test.py') || !SKIP.test('apps/console-web/server/test_main.py')) throw new Error('self-test: tests are skipped');
   if (compare({ a: 2 }, { a: 2, b: 1 }).length !== 1 || compare({ a: 2 }, { a: 1 }).length !== 0) throw new Error('self-test: compare');
+  if (stale({ a: 2, b: 1 }, { a: 1 }).length !== 2 || stale({ a: 2 }, { a: 2, b: 1 }).length !== 0) throw new Error('self-test: stale');
+  const doc = { total: 3, files: { a: 2, b: 1 }, kept: { a: 'config', b: 'export' } };
+  if (baselineFaults(doc).length !== 0) throw new Error('self-test: a sound baseline has no faults');
+  if (baselineFaults({ ...doc, kept: { a: 'config' } }).length !== 1 || baselineFaults({ ...doc, kept: { ...doc.kept, b: ' ' } }).length !== 1) throw new Error('self-test: every kept file needs a reason');
+  if (baselineFaults({ ...doc, total: 9 }).length !== 1 || baselineFaults({ ...doc, kept: { ...doc.kept, c: 'x' } }).length !== 1) throw new Error('self-test: total and stray reasons');
+  if (lowered(doc, { a: 2, b: 1, c: 1 }) !== null || lowered(doc, { a: 3 }) !== null) throw new Error('self-test: the baseline never grows');
+  const low = lowered(doc, { a: 1 });
+  if (low.total !== 1 || low.files.a !== 1 || 'b' in low.files || 'b' in low.kept || low.kept.a !== 'config') throw new Error('self-test: lowering keeps the reasons of what stays');
 };
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
@@ -107,25 +147,34 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const { files, hits } = countAll();
   const total = Object.values(files).reduce((a, b) => a + b, 0);
   if (args.has('--list')) { for (const [f, h] of Object.entries(hits)) for (const x of h) console.log(`${f}:${x.line}  ${x.text}`); console.log(`${total} direct JSON write(s) in ${Object.keys(files).length} file(s)`); process.exit(0); }
-  let base = {}; try { base = JSON.parse(readFileSync(BASELINE, 'utf8')).files ?? {}; } catch { /* first run */ }
+  let doc = null; try { doc = JSON.parse(readFileSync(BASELINE, 'utf8')); } catch { /* no baseline: nothing is allowed */ }
+  const base = doc?.files ?? {};
   if (args.has('--update')) {
-    const up = compare(base, files);
-    if (up.length && Object.keys(base).length && !args.has('--allow-raise')) {
-      console.error(`json-data-writes: --update refuses to raise counts (${up.map((x) => `${x.file} ${x.was} → ${x.now}`).join(', ')}); move the data onto data-store@1 instead, or pass --allow-raise for a reviewer to see`);
+    const next = lowered(doc, files);
+    if (!next) {
+      console.error(`json-data-writes: --update never raises the baseline (${compare(base, files).map((x) => `${x.file} ${x.was} → ${x.now}`).join(', ')}); move the data onto data-store@1 (data-files.mjs / data_store.py)`);
       process.exit(1);
     }
-    const sorted = Object.fromEntries(Object.keys(files).sort().map((k) => [k, files[k]]));
-    writeFileSync(BASELINE, `${JSON.stringify({ $axf: 'json-data-writes-baseline@1', note: 'Direct JSON/JSONL data writes that existed when no-json-data@1 began (Nov 19 2026). Counts may only go down: framework/spec/check-json-data-writes.mjs.', total, files: sorted }, null, 1)}\n`); // axf-data: not data (the check's own committed baseline)
+    writeFileSync(BASELINE, `${JSON.stringify(next, null, 1)}\n`); // axf-data: not data (the check's own committed baseline)
     console.log(`json-data-writes: baseline written: ${total} write(s) in ${Object.keys(files).length} file(s)`);
+    const faults = baselineFaults(next);
+    if (faults.length) { console.error('✗ the baseline still needs:'); for (const x of faults) console.error(`  ${x}`); process.exit(1); }
     process.exit(0);
   }
-  const up = compare(base, files);
+  const up = compare(base, files); const down = stale(base, files); const faults = baselineFaults(doc ?? { total: 0, files: {} });
   if (up.length) {
     console.error('✗ no-json-data@1: new direct JSON data writes (data goes to Postgres through data-store@1: data-files.mjs / data_store.py):');
     for (const x of up) { console.error(`  ${x.file}: ${x.was} → ${x.now}`); for (const h of hits[x.file] ?? []) console.error(`    :${h.line}  ${h.text}`); }
     console.error('  Not data (a build-time generator, an export of the tables)? Mark the line: // axf-data: not data (<reason>)');
-    process.exit(1);
   }
-  const down = Object.entries(base).filter(([f, n]) => (files[f] ?? 0) < n).length;
-  console.log(`✓ no-json-data@1: ${total} direct JSON write(s) in ${Object.keys(files).length} file(s), none new${down ? ` (${down} file(s) below the baseline: run --update to lock that in)` : ''}`);
+  if (down.length) {
+    console.error('✗ no-json-data@1: the baseline is above the code (a removed write could come back unseen). Run `node framework/spec/check-json-data-writes.mjs --update` and commit the baseline:');
+    for (const x of down) console.error(`  ${x.file}: ${x.was} → ${x.now}`);
+  }
+  if (faults.length) {
+    console.error('✗ no-json-data@1: framework/spec/json-data-writes.baseline.json:');
+    for (const x of faults) console.error(`  ${x}`);
+  }
+  if (up.length || down.length || faults.length) process.exit(1);
+  console.log(`✓ no-json-data@1: ${total} direct JSON write(s) in ${Object.keys(files).length} file(s), all kept with a reason, none new`);
 }
