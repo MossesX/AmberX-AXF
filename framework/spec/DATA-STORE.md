@@ -216,8 +216,8 @@ on axf-data; a revoked `jti` answers `unauthorized`.
 ## Reference client (`framework/core/data-store.mjs`)
 
 ```js
-import { createDataStore, fileBackend, httpBackend, pluginKey } from 'framework/core/data-store.mjs';
-const store = createDataStore({ backend: await fileBackend({ dir: '.axf-console/data-store' }), by: 'svc:console' });
+import { createDataStore, httpBackend, pluginKey } from 'framework/core/data-store.mjs';
+const store = createDataStore({ backend: httpBackend({ url: process.env.AXF_DATA_URL, token }), by: 'svc:console' });
 const rec = await store.get('builds/store.json');                       // null when missing; rec.data, rec.etag, rec.rev
 await store.put('builds/store.json', doc, { ifMatch: rec.etag });       // conflict → DataStoreError('conflict')
 await store.update('builds/store.json', (doc) => ({ ...doc, rev: doc.rev + 1 }));   // re-reads and retries on conflict
@@ -227,10 +227,8 @@ const w = store.watch({ ns: ['builds', 'plugins/ui-review'], since: cursor }, (c
 await store.manifest('plugins/ui-review'); await store.snapshot(['builds', 'notes']);
 ```
 
-- Backends: `httpBackend({ url, token, actor })` (axf-data), `fileBackend({ dir })` (the contract on local files:
-  `<dir>/data/<ns>/<path>` bodies, `<dir>/meta/<ns>/<path>.json` metadata, `<dir>/_changes.jsonl` the feed, atomic
-  rename writes), `memoryBackend()` (tests). File and memory share one engine and answer alike; the fixture replays the
-  same scenario on both.
+- Backends: `httpBackend({ url, token, actor })` (axf-data) and `memoryBackend()` (tests; the fixture replays its
+  scenario on it). There is no local-file backend: nothing keeps a JSON copy of the store beside Postgres.
 - `put` without `ifMatch` / `create` is `precondition_required`; a blob may pass `force`. `update(key, fn)` is the easy
   path: read, apply, write with the etag read, re-read and retry up to `RETRY.conflictTries` on `conflict`.
 - Retries follow the error table: `unauthorized` → `onUnauthorized()` once and retry; `rate_limited` / `unavailable`

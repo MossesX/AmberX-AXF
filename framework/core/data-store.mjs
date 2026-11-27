@@ -4,20 +4,19 @@
  * Brett, Nov 15 2026: "the console goes down, all the data is still available, all the notes are available, and the
  * builds keep running. That's what I need."
  *
- * One API (get / put / update / delete / list / append / read / watch / snapshot / manifest) over three backends:
+ * One API (get / put / update / delete / list / append / read / watch / snapshot / manifest) over two backends:
  *   httpBackend({ url, token })   axf-data over the internal network (spec: framework/spec/DATA-STORE.md)
- *   fileBackend({ dir })          the same contract on local files, so code moves onto this API before the cutover
- *   memoryBackend()               tests and fixtures
- * The file and memory backends share one engine (`engineBackend`) so they answer byte-for-byte alike: the fixture
- * framework/spec/fixtures/data-store.json is replayed on both.
+ *   memoryBackend()               tests and fixtures (the contract engine, `engineBackend`, in memory)
+ * There is no local-file backend: Postgres behind axf-data is the one store, and nothing keeps a JSON copy beside it.
+ * The fixture framework/spec/fixtures/data-store.json is replayed on the memory backend.
  *
  * Keys are `<namespace>/<path>` (registry below, mirrored in framework/schemas/data-store.json). A record is a JSON
  * document ≤ 1 MiB; a blob is bytes; a journal is append-only with a per-key `seq`. Every write of a record or blob
  * carries a precondition (`ifMatch` etag / rev, or `create`): a mismatch is a `conflict` and `update(key, fn)` re-reads,
  * applies and retries. Every change moves the store-wide `cursor`; `watch` follows it.
  *
- * Pure parts (parseKey, etagOf, manifestOf, sameManifest, backoffMs, errorFrame) have no IO; `fileBackend` is the one
- * place that touches a disk, and `httpBackend` the one that touches a network.
+ * Pure parts (parseKey, etagOf, manifestOf, sameManifest, backoffMs, errorFrame) have no IO; `httpBackend` is the one
+ * place that touches a network, and nothing here touches a disk.
  */
 import { createHash } from 'node:crypto';
 
@@ -357,40 +356,6 @@ export function memoryBackend(opts = {}) {
     async idem(key) { return idem.get(key) || null; },
     async setIdem(key, v) { idem.set(key, v); },
   }, { ...opts, name: 'memory' });
-}
-
-/**
- * The same contract on a local folder, so code can use this API before the cutover:
- *   <dir>/data/<ns>/<path>            the body (a journal is NDJSON)
- *   <dir>/meta/<ns>/<path>.json       data-record@1 metadata (+ `entries` for a journal)
- *   <dir>/_changes.jsonl              the change feed (cursor = line number)
- *   <dir>/_idem/<sha>.json            idempotent appends
- * Writes go to a temp file then rename, so a half-written body is never seen.
- */
-export async function fileBackend(opts = {}) {
-  const fs = await import('node:fs/promises');
-  const pathMod = await import('node:path');
-  const dir = pathMod.resolve(String(opts.dir || '.axf-console/data-store'));
-  const P = (...p) => pathMod.join(dir, ...p);
-  const ensure = (f) => fs.mkdir(pathMod.dirname(f), { recursive: true });
-  const writeAtomic = async (f, data) => { await ensure(f); const tmp = `${f}.${process.pid}.${Date.now()}.tmp`; await fs.writeFile(tmp, data); await fs.rename(tmp, f); };
-  const readOr = async (f, fallback) => { try { return await fs.readFile(f); } catch (e) { if (e.code === 'ENOENT') return fallback; throw new DataStoreError('unavailable', `${f}: ${e.message}`); } };
-  const walk = async (root) => { const out = []; let ents; try { ents = await fs.readdir(root, { withFileTypes: true }); } catch (e) { if (e.code === 'ENOENT') return out; throw e; } for (const e of ents) { const f = pathMod.join(root, e.name); if (e.isDirectory()) out.push(...(await walk(f))); else out.push(f); } return out; };
-  const idemFile = (key) => P('_idem', `${sha(utf8(key))}.json`);
-  return engineBackend({
-    async readMeta(ns, p) { const b = await readOr(P('meta', ns, `${p}.json`), null); return b ? JSON.parse(b.toString('utf8')) : null; },
-    async writeMeta(ns, p, m) { await writeAtomic(P('meta', ns, `${p}.json`), JSON.stringify(m)); },
-    async readBody(ns, p) { const b = await readOr(P('data', ns, p), null); return b ? new Uint8Array(b) : null; },
-    async writeBody(ns, p, b) { await writeAtomic(P('data', ns, p), b); },
-    async removeBody(ns, p) { await fs.rm(P('data', ns, p), { force: true }); },
-    async listMeta(ns) { const files = await walk(P('meta', ns)); const out = []; for (const f of files) if (f.endsWith('.json')) out.push(JSON.parse((await fs.readFile(f)).toString('utf8'))); return out; },
-    async appendLines(ns, p, ls) { const f = P('data', ns, p); await ensure(f); await fs.appendFile(f, ls.map((l) => `${l}\n`).join('')); },
-    async readLines(ns, p) { return (await readOr(P('data', ns, p), Buffer.alloc(0))).toString('utf8').split('\n').filter(Boolean); },
-    async appendChange(l) { const f = P('_changes.jsonl'); await ensure(f); await fs.appendFile(f, `${l}\n`); },
-    async readChanges() { return (await readOr(P('_changes.jsonl'), Buffer.alloc(0))).toString('utf8').split('\n').filter(Boolean); },
-    async idem(key) { const b = await readOr(idemFile(key), null); return b ? JSON.parse(b.toString('utf8')) : null; },
-    async setIdem(key, v) { await writeAtomic(idemFile(key), JSON.stringify(v)); },
-  }, { ...opts, name: 'file', dir });
 }
 
 // ─── HTTP backend: axf-data over the internal network ────────────────────────────────────────────────────────────────
