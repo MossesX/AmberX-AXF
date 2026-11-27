@@ -191,7 +191,7 @@ async function run(cmd: string, args: string[]) {
   if (cmd === 'baseline') {
     const keys = (r: Report) => [...r.unchanged, ...r.colourOnly.map((k) => `${k} (colour only)`)];
     const next = { $comment: 'Elements a skin leaves as the default draws them, or changes only the colours of (framework/cli/skin-shots.mts). The gate fails on any new one; shrink this with `skin-shots.mts baseline` after a fix, never grow it to pass.', unchanged: Object.fromEntries(reports.filter((r) => !r.sameAsDefault && keys(r).length).map((r) => [r.id, keys(r)])) };
-    writeFileSync(BASELINE, JSON.stringify(next, null, 2) + '\n');
+    writeFileSync(BASELINE, JSON.stringify(next, null, 2) + '\n'); // axf-data: not data (the screenshot gate's checked-in baseline, written by `baseline`)
     console.log(`skin-shots: baseline written, ${reports.reduce((n, r) => n + (r.sameAsDefault ? 0 : keys(r).length), 0)} entries across ${reports.length} skins`);
     return 0;
   }
