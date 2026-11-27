@@ -3889,7 +3889,7 @@
       "status": "built",
       "wave": 1,
       "module": "axf-ui",
-      "notes": "Build attach-widgets-to-any-toolbar-banner (Nov 2026; Brett: \"Rebuild.\", intent Nov 13: \"I can attach widgets to the toolbar right, just like the banner widgets\"). Every framework toolbar draws its widgets banner style; actions toolbar.widget.attach|detach|move|style; REST /api/plugins/toolbar-widgets/widgets, MCP toolbar_widgets_*, CLI axf toolbar widgets, voice. Kotlin twin deferred (PORTING.md)."
+      "notes": "Build attach-widgets-to-any-toolbar-banner (Nov 2026; Brett: \"Rebuild.\", intent Nov 13: \"I can attach widgets to the toolbar right, just like the banner widgets\"). Every framework toolbar draws its widgets banner style; actions toolbar.widget.attach|detach|move|style; REST /api/plugins/toolbar-widgets/widgets, MCP toolbar_widgets_*, CLI axf toolbar widgets, voice. Kotlin twin deferred (PORTING.md). (axf-plugin:toolbar-widgets)"
     },
     {
       "id": "m.kernel",

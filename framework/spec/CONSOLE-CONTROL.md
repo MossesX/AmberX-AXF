@@ -179,7 +179,7 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
   addable, side, place, size, show, shape), the person's slots and the style defaults; `open` on it is the deep link to the Toolbar
   widgets dialog. `press` / `set` on `toolbar:<id>/widget:<type:id>` takes `attach[:side[:size[:shape]]]`, `move:<side>[:<index|prev|next>]`,
   `style:<field>:<value>`, `hide`, `show` or `reset`; `press` on `…/button:detach` is destructive (`confirm`). The settings behind it
-  are `setting:axf.toolbar.<id>.widgets` and `setting:axf.toolbar.<id>.widgetStyle`. Shortcuts: REST `/api/plugins/toolbar-widgets/widgets…`,
+  are `setting:axf.toolbar.<id>.widgets` and `setting:axf.toolbar.<id>.widgetStyle`. Shortcuts: REST `/api/plugins/toolbar-widgets/widgets…`, <!-- axf-plugin:toolbar-widgets -->
   MCP `toolbar_widgets_*`, CLI `axf toolbar widgets …`, console actions `toolbar.widget.attach|detach|move|style`, voice
   "attach the CPU widget to the settings toolbar".
 

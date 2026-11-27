@@ -2,7 +2,7 @@
 /**
  * Toolbar widgets from the command line (toolbar-widgets@1): attach any widget to any toolbar, banner style, and move,
  * style or detach it. Every command is one console-control@1 command to Brett's open console, the same body the REST
- * routes (/api/plugins/toolbar-widgets/widgets…, apps/console-web/plugins/toolbar-widgets/server `plan`), the MCP tools
+ * routes (/api/plugins/toolbar-widgets/widgets…, apps/console-web/plugins/toolbar-widgets/server `plan`), the MCP tools (axf-plugin:toolbar-widgets)
  * toolbar_widgets_* and voice send, so all four reach the same thing.
  *
  *   axf toolbar widgets list [<toolbar>]                                    every widget row of one toolbar (or every toolbar's widget targets)

@@ -57,6 +57,6 @@ A toolbar is a widget host like the banner. Every toolbar on screen is one insta
 3. Still too wide: widgets that may overflow move into `⋯`, lowest priority first.
 4. Still too wide: the host scrolls sideways and every item is a snap point.
 
-**Reached through:** addresses `toolbar:<id>/widget:all` and `toolbar:<id>/widget:<type:id>` (CONSOLE-CONTROL.md); REST `GET /api/plugins/toolbar-widgets/widgets[?toolbar=]` and `POST …/attach | detach | move | style | open`; MCP `toolbar_widgets_*`; CLI `axf toolbar widgets list | attach | detach | move | style | open`; console actions `toolbar.widget.attach | detach | move | style`; AmberX voice ("attach the CPU widget to the settings toolbar"). Detach is destructive and needs `confirm`.
+**Reached through:** addresses `toolbar:<id>/widget:all` and `toolbar:<id>/widget:<type:id>` (CONSOLE-CONTROL.md); REST `GET /api/plugins/toolbar-widgets/widgets[?toolbar=]` and `POST …/attach | detach | move | style | open`; MCP `toolbar_widgets_*`; CLI `axf toolbar widgets list | attach | detach | move | style | open`; console actions `toolbar.widget.attach | detach | move | style`; AmberX voice ("attach the CPU widget to the settings toolbar"). Detach is destructive and needs `confirm`. Plugin marker: `axf-plugin:toolbar-widgets`.
 
 The Kotlin twin is a deferred gap (PORTING.md).

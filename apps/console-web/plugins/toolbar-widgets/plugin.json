@@ -28,7 +28,14 @@
     "env": [],
     "mentions": [
       "_claude/THREADS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml",
+      "framework/catalog/catalog.json",
+      "framework/catalog/status.json",
+      "tracker.json",
+      "framework/cli/toolbar-widgets.mjs",
+      "framework/spec/BANNER-WIDGETS.md",
+      "framework/spec/CONSOLE-CONTROL.md"
     ]
   },
   "commands": {
