@@ -134,6 +134,8 @@ model="${AXF_MODEL:-}"
 if [[ -z "$model" ]]; then prev=""; for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; [[ "$a" == --model=* ]] && model="${a#--model=}"; prev="$a"; done; fi
 agent="${agent:-$name}"
 hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 "$HDIR" 2>/dev/null; true; } && [[ -w "$HDIR" ]]; }
+# events.jsonl, the meters and chains are the headless session spool beside each run's raw log (AXF_HEADLESS_DIR): no
+# axf-data table or path rule holds them yet, so they stay host-local files (deferred: framework/spec/DATA-INVENTORY.md).
 event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit, $4 = exit kind (end only); one JSON line, never fails the run
   hdir_ready || return 0
   command -v node >/dev/null || return 0

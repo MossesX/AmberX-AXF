@@ -42,15 +42,19 @@
  * worker-state.json (written here, under worker-state.lock): { limits: { name: { at, until, kind, reason } },
  * claims: { session: { account, state: run|queue, at } } }. A limit ends by itself at `until`; a claim goes with its
  * session (release, or the tmux session is gone). Neither file holds a credential, and nothing here prints one.
+ * Both are data: read through framework/core/data-files.mjs and written one row at a time (deploy/data-rows.mjs: a claim,
+ * a limit, a usage record, a rule or an account's settings is one row of axf-data's plugin_claude-accounts table).
  * Paths: AXF_CLAUDE_WORKERS (folder of the files), AXF_HEADLESS_DIR (events.jsonl and meters), and claude-login.mjs's
  * AXF_CLAUDE_ACCOUNTS / AXF_CLAUDE_SEEN. AXF_WORKERS_ALIVE (comma list) stands in for tmux in tests.
  * Exit 0 ok, 2 bad usage or refused.
  */
 import { spawnSync } from 'node:child_process';
-import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { accounts, paths as loginPaths } from './claude-login.mjs';
+import { readJsonSync } from '../framework/core/data-files.mjs';
+import { MAP, writeRows } from './data-rows.mjs';
 import { NAME_RE, SCHEMA, alerts as routingAlerts, decide, normConfig, normJob, normRule, raisedCaps, roster } from './worker-routing.mjs';
 
 export { SCHEMA };
@@ -63,7 +67,15 @@ const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit
 const AUTH_RE = /invalid api key|please run \/login|oauth token (?:has )?expired|authentication_error|not logged in/i;
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
+/** The headless spool (meters): host-local files beside each session's log, read straight from disk. */
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+/** workers.json, worker-state.json, seen.json: data, read through the data layer (axf-data's rows once cut over). */
+const readData = (f) => readJsonSync(f, null);
+/** The rows of each document (services/axf-data/tables.py plugin_doc claude-accounts): every other field is its head. */
+const CONFIG_ROWS = { rules: 'id', perAccount: MAP, api: MAP };
+const STATE_ROWS = { limits: MAP, claims: MAP, usage: MAP };
+/** What each document held when it was read, so a write sends only the rows that changed. */
+const loaded = new WeakMap();
 
 export function paths(env = process.env) {
   const login = loginPaths(env);
@@ -72,21 +84,16 @@ export function paths(env = process.env) {
 }
 
 export function loadConfig(env = process.env) {
-  return normConfig(readJson(paths(env).config));
+  return normConfig(readData(paths(env).config));
 }
-
-const atomic = (f, v) => {
-  mkdirSync(dirname(f), { recursive: true });
-  writeFileSync(`${f}.${process.pid}.tmp`, JSON.stringify(v, null, 1));
-  renameSync(`${f}.${process.pid}.tmp`, f);
-};
 
 /** Write the config. A session may never raise or remove a spend cap (`allowRaise` is the console's owner click). */
 export function saveConfig(next, env = process.env, { allowRaise = false } = {}) {
   const cfg = normConfig(next);
-  const raised = raisedCaps(loadConfig(env), cfg);
+  const raw = readData(paths(env).config) ?? {};
+  const raised = raisedCaps(normConfig(raw), cfg);
   if (raised.length && !allowRaise) throw Object.assign(new Error(`raising a spend cap is Brett's own click in the console (${raised.join('; ')})`), { code: 2 });
-  atomic(paths(env).config, cfg);
+  writeRows(paths(env).config, raw, cfg, CONFIG_ROWS);
   return cfg;
 }
 
@@ -96,10 +103,13 @@ export function editConfig(fn, env = process.env, opts = {}) {
 }
 
 const loadState = (env) => {
-  const s = readJson(paths(env).state);
-  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {}, usage: s?.usage && typeof s.usage === 'object' ? s.usage : {} };
+  const s = readData(paths(env).state);
+  const state = { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {}, usage: s?.usage && typeof s.usage === 'object' ? s.usage : {} };
+  loaded.set(state, structuredClone(state));
+  return state;
 };
-const saveState = (state, env) => atomic(paths(env).state, state);
+/** One row per claim, limit and usage record: only the ones this change touched are written. */
+const saveState = (state, env) => { writeRows(paths(env).state, loaded.get(state) ?? {}, state, STATE_ROWS); loaded.set(state, structuredClone(state)); };
 
 /** One writer at a time on worker-state.json (claims must never hand the last slot to two jobs). Stale after 10 s. */
 export function withLock(env, fn) {
@@ -317,7 +327,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   const p = paths(env);
   const cfg = loadConfig(env);
   const state = loadState(env);
-  const seen = readJson(p.seen) ?? {};
+  const seen = readData(p.seen) ?? {};
   const alive = aliveSet(env);
   const led = ledger(readEvents(env), { cost: (s) => meterCost(env, s), alive });
   const claims = liveClaims(state, alive, now);
@@ -341,7 +351,7 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   const ro = roster(cfg, base);
   // buildPick on every row: the dispatcher reads the rows (or the host's snapshot of them), never workers.json itself
   // buildingSet: the cap was saved (not the built-in default), so it is the one "sessions per account" value (settings-sources@1)
-  const rawCfg = readJson(paths(env).config) ?? {};
+  const rawCfg = readData(paths(env).config) ?? {};
   const buildingSet = (n) => rawCfg?.limits?.building !== undefined || rawCfg?.perAccount?.[n]?.building !== undefined;
   const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, buildingSet: buildingSet(a.name), queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
