@@ -9,13 +9,16 @@
  * which brief block carries it when the session is the doer. `briefBlocks` renders the session's share for dispatch; a
  * vps rule never reaches a brief, so nothing is done twice. Contract: framework/spec/BUILD-RULES.md.
  *
- * Records: build-rule@1, build-rules-store@1, build-rule-history@1 (append-only JSONL), brief-blocks@1.
- * Pure parts take their clock as an argument; the store functions (storeDir, load, save, commit) are the only IO.
+ * Records: build-rule@1, build-rules-store@1, build-rule-history@1 (append-only journal), brief-blocks@1.
+ * Pure parts take their clock as an argument; the store functions (storeDir, load, save, commit, history) are the only
+ * IO, and all of it goes through data-store@1 (data-files.mjs): on axf-data the store is the `build_rules` rows, one per
+ * rule, and a change writes the rows it touched (data-patch@1), never the whole store.
  */
-import { appendFileSync, chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as files from './data-files.mjs';
 
 export const SCHEMA = 'build-rules@1';
 export const RULE_FRAME = 'build-rule@1';
@@ -397,67 +400,96 @@ function lock(f, waitMs = 20000) {
     }
   }
 }
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
-/** Write through a temp file; a rewrite keeps the file's mode (the shared store folder is group-written). */
-function writeJson(f, v) {
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`);
-  try { chmodSync(tmp, statSync(f).mode & 0o777); } catch { /* a new file: the umask decides */ }
-  renameSync(tmp, f);
-}
+const readSeed = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+/** The key a store file has on axf-data when its namespace is served from the tables (cutover / rollback), else ''. */
+const tableKey = (file) => { const key = files.keyFor(file); return key && ['cutover', 'rollback'].includes(files.modeOf(key)) ? key : ''; };
+const keyPath = (key) => key.slice(key.indexOf('/') + 1);
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 /**
- * The store: store.json when it exists, else the seed (`seeded: true`), else empty (`empty: true`).
+ * The store: the live store when it exists, else the seed (`seeded: true`), else empty (`empty: true`).
+ * Read through data-files: the `build_rules` rows on axf-data, or the store file where no table serves the folder.
  * → { store, path, seeded, empty }
  */
 export function load({ dir = storeDir(), seed = seedPath(), at = new Date().toISOString() } = {}) {
   const f = storeFiles(dir);
-  const live = readJson(f.store);
+  const live = files.readJsonSync(f.store, null);
   if (live) return { store: normStore(live, at), path: f.store, seeded: false, empty: false };
-  const s = readJson(seed);
+  const s = readSeed(seed);
   if (s) return { store: normStore(s, at), path: f.store, seeded: true, empty: false, seed };
   return { store: emptyStore(at), path: f.store, seeded: false, empty: true };
 }
 
-/** Write a store and its history lines under the lock. Refuses an invalid store with every error named. */
+/** Outside the tables one writer at a time holds the lock file; on axf-data the row revs do that job. */
+const locked = (f, fn) => {
+  if (tableKey(f.store)) return fn();
+  const unlock = lock(f.lock);
+  try { return fn(); } finally { unlock(); }
+};
+
+/** Write a whole store and its history lines (the seed, the migration, an import). Refuses an invalid store with every error named. */
 export function save(store, entries = [], { dir = storeDir() } = {}) {
   const s = normStore(store);
   const errs = storeErrors(s);
   if (errs.length) throw new Error(`build rules store is invalid: ${errs.join('; ')}`);
+  const lines = (Array.isArray(entries) ? entries : [entries]).filter(Boolean).map(normHistory);
+  for (const e of lines) { const he = historyErrors(e); if (he.length) throw new Error(`history line is invalid: ${he.join('; ')}`); }
   const f = storeFiles(dir);
-  const unlock = lock(f.lock);
-  try {
-    writeJson(f.store, s);
-    const lines = (Array.isArray(entries) ? entries : [entries]).filter(Boolean).map(normHistory);
-    for (const e of lines) { const he = historyErrors(e); if (he.length) throw new Error(`history line is invalid: ${he.join('; ')}`); }
-    if (lines.length) appendFileSync(f.history, lines.map((e) => `${JSON.stringify(e)}\n`).join(''));
-  } finally { unlock(); }
+  locked(f, () => {
+    files.writeJsonSync(f.store, s);
+    for (const e of lines) files.appendJsonlSync(f.history, e);
+  });
   return { store: s, path: f.store };
 }
 
-/** Load, apply one change, save: the one write path the CLI, REST and MCP share. Throws on a refused change. */
+/**
+ * One change as a row-level write (data-patch@1): the rules it changed, each with the rev it was read at, the head
+ * fields that moved and the history line, in one transaction. Nothing else of the store is sent.
+ */
+export function rowPatch(before, after, entry, historyPath) {
+  const was = new Map(before.rules.map((r) => [r.id, r])); const now = new Map(after.rules.map((r) => [r.id, r]));
+  const rules = [];
+  for (const r of after.rules) { const b = was.get(r.id); if (!b || !same(b, r)) rules.push({ key: r.id, ifRev: b ? b.rev : null, item: r }); }
+  for (const b of before.rules) if (!now.has(b.id)) rules.push({ key: b.id, ifRev: b.rev, delete: true });
+  const head = {};
+  for (const [k, v] of Object.entries(after)) if (k !== 'rules' && !same(v, before[k])) head[k] = v;
+  return { head, lists: { rules }, journal: { path: historyPath, entry, idem: `rev-${entry.rev}-${entry.at}` } };
+}
+
+const COMMIT_TRIES = 5;
+/** Load, apply one change, write it: the one write path the CLI, REST and MCP share. Throws on a refused change. */
 export function commit(change, { dir = storeDir(), seed = seedPath(), at = new Date().toISOString(), by = 'session' } = {}) {
   const f = storeFiles(dir);
-  const unlock = lock(f.lock);
-  try {
+  const key = tableKey(f.store);
+  const once = () => {
     const cur = load({ dir, seed, at });
     const r = apply(cur.store, change, { at, by });
     if (r.errors.length) throw new Error(r.errors.join('; '));
     const errs = storeErrors(r.store);
     if (errs.length) throw new Error(`build rules store is invalid: ${errs.join('; ')}`);
-    writeJson(f.store, r.store);
     // a first write on top of the seed records the seed line too, so History starts at the beginning
-    const lines = [...(cur.seeded && !existsSync(f.history) ? [seedStore(cur.store.rules, { at: cur.store.at, by: cur.store.updatedBy || 'migration', from: SEED_REL, pass: cur.store.seededFrom?.pass || 0 }).entry] : []), r.entry];
-    appendFileSync(f.history, lines.map((e) => `${JSON.stringify(e)}\n`).join(''));
+    const first = cur.seeded && !files.existsAnySync(f.history) ? [seedStore(cur.store.rules, { at: cur.store.at, by: cur.store.updatedBy || 'migration', from: SEED_REL, pass: cur.store.seededFrom?.pass || 0 }).entry] : [];
+    if (key && !cur.seeded && !cur.empty) {
+      files.callSync({ op: 'patch', key, body: rowPatch(cur.store, r.store, r.entry, keyPath(files.keyFor(f.history))) });
+    } else {
+      // the first write of a store: every rule is new, so the whole store goes in once (`create`: a second first writer conflicts)
+      if (key) files.callSync({ op: 'put', key, data: r.store, create: true });
+      else files.writeJsonSync(f.store, r.store);
+      for (const e of [...first, r.entry]) files.appendJsonlSync(f.history, e);
+    }
     return { store: r.store, entry: r.entry, path: f.store };
-  } finally { unlock(); }
+  };
+  if (!key) return locked(f, once);
+  for (let i = 0; ; i += 1) {
+    try { return once(); }
+    catch (e) { if (!['conflict', 'exists'].includes(e.code) || i >= COMMIT_TRIES - 1) throw e; }
+  }
 }
 
 /** The history, newest first. Filters: id, action, since (ISO), limit. */
 export function history({ dir = storeDir(), id = '', action = '', since = '', limit = 200 } = {}) {
   const f = storeFiles(dir);
   let lines = [];
-  try { lines = readFileSync(f.history, 'utf8').split('\n').filter(Boolean).map((l) => { try { return normHistory(JSON.parse(l)); } catch { return null; } }).filter(Boolean); } catch { /* none yet */ }
+  lines = String(files.readTextSync(f.history, '') || '').split('\n').filter(Boolean).map((l) => { try { return normHistory(JSON.parse(l)); } catch { return null; } }).filter(Boolean);
   return lines.filter((e) => (!id || e.id === id) && (!action || e.action === action) && (!since || e.at >= since)).reverse().slice(0, Math.max(1, int(limit, 200)));
 }

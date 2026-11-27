@@ -270,7 +270,7 @@ await t('contract: mode transitions refuse shortcuts', async () => {
 });
 
 // ── 7b. data-files: the map (same examples the Python layer checks) and the modes over a memory axf-data ──────────────
-await t('data-files: path map, local unchanged, shadow mirrors, cutover remote-only', async () => {
+await t('data-files: path map, one store per key (local and shadow = the file, cutover = axf-data only, no mirror, no local fallback)', async () => {
   const F = await import('../core/data-files.mjs');
   const ex = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/data-store-paths.json'), 'utf8')).examples;
   for (const [k, want] of Object.entries(ex)) { const i = k.indexOf(':'); assert.equal(F.mapRel(k.slice(0, i), k.slice(i + 1)), want, k); }
@@ -288,7 +288,9 @@ await t('data-files: path map, local unchanged, shadow mirrors, cutover remote-o
     assert.equal(await mem.get('planner/plans/p1.json'), null, 'local: axf-data untouched');
     setMode('planner', 'shadow');
     await F.writeJson(plan, { title: 'two' });
-    assert.deepEqual((await mem.get('planner/plans/p1.json')).data, { title: 'two' }, 'shadow: mirrored');
+    assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'two' }, 'shadow: still the file');
+    assert.equal(await mem.get('planner/plans/p1.json'), null, 'shadow: no write is mirrored');
+    await mem.put('planner/plans/p1.json', { title: 'two' }, { create: true }); // the migration's copy before the cut
     const pd = F.pluginData('shipped-features');
     setMode('plugins/shipped-features', 'shadow');
     await pd.appendJsonl('log.jsonl', { a: 1 });
@@ -297,6 +299,13 @@ await t('data-files: path map, local unchanged, shadow mirrors, cutover remote-o
     await F.updateJson(plan, (d) => ({ ...d, n: 3 }));
     assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'two' }, 'cutover: the local copy stays as it was');
     assert.deepEqual(await F.readJson(plan, null), { title: 'two', n: 3 }, 'cutover: reads come from axf-data');
+    const url0 = process.env.AXF_DATA_URL;
+    try {
+      F.setRemote(null); process.env.AXF_DATA_URL = 'off';
+      await assert.rejects(F.readJson(plan, null), (e) => e.code === 'unavailable', 'cutover without axf-data: the read throws, the file left from before the cut is not served');
+      await assert.rejects(F.writeJson(plan, { title: 'lost' }), (e) => e.code === 'unavailable');
+      assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'two' }, 'cutover without axf-data: nothing written beside it');
+    } finally { if (url0 === undefined) delete process.env.AXF_DATA_URL; else process.env.AXF_DATA_URL = url0; F.setRemote(mem); }
     setMode('planner', 'rollback');
     await assert.rejects(F.writeJson(plan, {}), (e) => e.code === 'read_only');
     F.setRemote(null);

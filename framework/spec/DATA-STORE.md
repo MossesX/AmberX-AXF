@@ -319,6 +319,12 @@ async), `apps/console-web/server/data_store.py` (console), `framework/cli/builds
 | `cutover` | axf-data | axf-data only | read-only backup taken at the cut (`read_only` on write) |
 | `rollback` | axf-data | refused on both sides (`read_only`) while the local copy catches up | being replayed from the change feed since `cursor` |
 
+**One store per key in the Node client (Nov 27 2026, build `emergency-remove-every-leftover-js`; Brett: "Postgres is the
+one store… never run both").** `framework/core/data-files.mjs` no longer keeps a JSON copy next to axf-data: in `shadow`
+it reads and writes the file only (the migration, `framework/cli/migrate-json-leftovers.mjs`, copies and compares the
+files itself, then cuts), and in `cutover` / `rollback` it reads axf-data only. When axf-data cannot answer, the call
+throws `unavailable`; no local copy is read in its place, so an empty answer is never mistaken for the data.
+
 **Drift log** (`data-drift@1`: `{ at, op: read | write | append, key, kind, local, remote, error? }`, kinds
 `missing-remote`, `missing-local`, `etag`, `entries`, `write-failed`, `append-failed`), appended to the local
 `_meta/drift/<ns>` journal; `applyDrift` counts it on the namespace (`drift`, `lastDriftAt`). A read that finds the
