@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 05:43 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 - 2026-11-27 05:44 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
 - 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:09 UTC · `ui-all-assets` note (all) · watchdog
 - 2026-11-27 19:09 UTC · `amberx-notes` → complete, note (all) · verify
 - 2026-11-27 19:09 UTC · `x.engines` → fixing, note (all) · watchdog
+- 2026-11-27 19:09 UTC · `banner-fix-fallback` → complete, note (all) · verify
 
 ## Token passes (log)
 

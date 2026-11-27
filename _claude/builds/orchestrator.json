@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:10:05.268Z",
+ "updatedAt": "2026-11-27T19:10:31.701Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59421,7 +59421,7 @@
    "title": "Systems check: when a Fix fails, a dialog with the Claude connection badge + account, approve Mosses to launch headless Claude Code; no connection = error, fix, VPS command and Vinny Auto fix",
    "category": "Console",
    "detail": "Brett, Oct 28 2026 (claude.ai): \"If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.\" Mosses = the console agent; Vinny = axHub vps.run. Profile refactor, Opus. Built in the AX Notes claude.ai chat (Brett's pick).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -59429,7 +59429,7 @@
    "pr": "#152",
    "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-11-27T19:09:36.238Z",
+   "updatedAt": "2026-11-27T19:09:55.362Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
@@ -59459,6 +59459,10 @@
     {
      "text": "Watchdog: merged and CI is green on 78a599b9a6: landed.",
      "at": "2026-11-27T19:09:36.238Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:09:55.362Z"
     }
    ],
    "approvals": [],
