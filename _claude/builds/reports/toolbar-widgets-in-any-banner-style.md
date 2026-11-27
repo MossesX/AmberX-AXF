@@ -68,6 +68,18 @@ What was missing for toolbars, and is now in the branch: per-instance hosts, the
 
 check-widgets (468), check-toolbar-widgets (127), validate --framework (600 assets), check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, shared-assets check, chrome-settings check, tracker --check, console `tsc --noEmit`, toolbar-widgets plugin tests (24 + 36), console-control server tests (11): all pass.
 
+## CI fixes after the first run (PR #935)
+
+The branch had never been through CI. The first run failed on four things, all fixed in `971a55cb2`:
+
+- `--fx-widget-cap` was not in the token registry (`token-registry.mjs sync --write`).
+- The new `toolbar-widgets` plugin had no default settings interface (`settings-iface.mjs defaults --write`).
+- Framework help coverage fell to 96.8%: six draft entries added and synced to the apps.
+- `check-banner-widgets` read the toolbar widget frame as hard-coded banner chips. Toolbar widgets come through the toolbar's own registry, so the guard now leaves `fx-toolbar__widget` items and `ToolbarWidgetSlot.tsx` alone.
+- Kotlin `ConformanceTest` replays `validation.json`; the two new widget style / shape cases are skipped there as a deferred twin (`DEFERRED_VALIDATION_CASES`, PORTING.md), the same way the opacity tokens are.
+
+Failing only on the VPS, not in CI (Node 20 here, 22 there, or no jsdom / built console): shipped-features test, lander tests, check-help-mode and four other jsdom checks, test_wall_users, session-checkin, check-headless-tabs.
+
 ## Left for the next phase
 
 The Opus steps (s8 to s19) are largely built on this branch already (React slot, CSS, attach UI, drag and drop, addresses, REST, MCP, CLI, voice, tests, re-bake). Still open: the UI Review shots with three option assets, and the wrap-up run. Each Opus step should be checked against the branch before anything is rebuilt.
