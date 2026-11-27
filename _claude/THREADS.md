@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:41 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `stall-watchdog-detect-when-nothing-is-building-a` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `auto-requeue-builds-whose-session-stops-early-go` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `per-agent-api-control-switch-in-each-employee-s` added (3 steps) (all) · foreign-write
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 06:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 06:11 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 06:11 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:13 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 

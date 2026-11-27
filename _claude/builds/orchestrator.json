@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T06:13:04.349Z",
+ "updatedAt": "2026-11-27T06:13:42.703Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -15866,7 +15866,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T06:12:53.003Z",
+   "updatedAt": "2026-11-27T06:13:15.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -16500,6 +16500,10 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s9--paulie, shared account login)",
      "at": "2026-11-27T06:11:48.080Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s10--sully, shared account login)",
+     "at": "2026-11-27T06:13:15.961Z"
     }
    ],
    "approvals": [],
@@ -20896,7 +20900,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s6",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T06:12:37.992Z",
+   "updatedAt": "2026-11-27T06:13:20.194Z",
    "builtAt": "",
    "notes": [
     {

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10459,
- "updatedAt": "2026-11-27T06:13:04.349Z",
+ "rev": 10460,
+ "updatedAt": "2026-11-27T06:13:42.703Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -387422,7 +387422,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T06:12:53.003Z",
+   "updatedAt": "2026-11-27T06:13:15.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -388056,6 +388056,10 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s9--paulie, shared account login)",
      "at": "2026-11-27T06:11:48.080Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s10--sully, shared account login)",
+     "at": "2026-11-27T06:13:15.961Z"
     }
    ],
    "approvals": [],
@@ -389574,12 +389578,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T06:12:42.786Z",
-     "statusAt": "2026-11-27T06:12:42.675Z",
+     "updatedAt": "2026-11-27T06:13:05.114Z",
+     "statusAt": "2026-11-27T06:13:04.875Z",
      "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -389607,9 +389612,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T06:13:04.875Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: emergency-check-can-these-plugins- was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the or"
       }
      ],
-     "status": "sending",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s11",
      "branch": "claude/emergency-check-can-these-plugins---s11"
@@ -389623,7 +389635,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 313,
+   "rev": 315,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -389708,7 +389720,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s6",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T06:12:37.992Z",
+   "updatedAt": "2026-11-27T06:13:20.194Z",
    "builtAt": "",
    "notes": [
     {
@@ -391228,12 +391240,13 @@
      "done": false,
      "doneAt": "",
      "note": "Part 7: 2 plan steps in one session (they touch the same files).",
-     "rev": 13,
+     "rev": 15,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-27T06:12:13.736Z",
-     "statusAt": "2026-11-27T06:12:13.599Z",
+     "updatedAt": "2026-11-27T06:13:20.312Z",
+     "statusAt": "2026-11-27T06:13:20.194Z",
      "statusBy": "orchestrator",
      "attempt": 3,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -391303,13 +391316,21 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T06:13:20.194Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "session exit 1"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
+     "slot": "hl-mwyl4e4i-142",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s7",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s7",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s7--gina",
+     "tmux": "hl-mwyl4e4i-142",
      "tried": [
       "hulu0241"
      ]
@@ -391323,7 +391344,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 271,
+   "rev": 273,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
