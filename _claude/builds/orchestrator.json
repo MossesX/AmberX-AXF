@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:46:18.180Z",
+ "updatedAt": "2026-11-27T04:47:15.994Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14263,7 +14263,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s5",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T04:44:28.575Z",
+   "updatedAt": "2026-11-27T04:46:34.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -14456,8 +14456,11 @@
     },
     {
      "text": "Watchdog: step s5 failed at building, attempt 1: tmux session axf-emergency-remove-every-leftover-js--s5--joey is gone while the step was building.",
-     "at": "2026-11-27T04:44:28.575Z",
-     "by": "watchdog"
+     "at": "2026-11-27T04:44:28.575Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s1--earl, shared account login)",
+     "at": "2026-11-27T04:46:34.696Z"
     }
    ],
    "approvals": [
@@ -15575,7 +15578,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:45:44.122Z",
+   "updatedAt": "2026-11-27T04:46:13.505Z",
    "builtAt": "",
    "notes": [
     {
@@ -20193,7 +20196,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:46:05.947Z",
+   "updatedAt": "2026-11-27T04:46:35.042Z",
    "builtAt": "",
    "notes": [
     {
@@ -20485,8 +20488,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s3",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s3\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s3 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s3 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s3.\n\n## Your step\nMake pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.\n\nFiles: apps/console-web/server/mcp_server.py. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-rip-out-the-7-mb-status---s5",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s5\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s5 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s5.\n\n## Your step\nBuild-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -24369,210 +24372,6 @@
    ]
   },
   {
-   "id": "app-voice-commands",
-   "title": "Voice commands for every app: land Expenses, voice-command@1 contract, forFramework apps generate voice commands for API/MCP/CLI, Molly runs them",
-   "category": "Framework",
-   "detail": "Land Expenses PR #307 (CI fix, grid save merges by entry id, redeploy). voice-command@1 contract + project manifest forFramework. Template, axf init and launcher generate voice commands for forFramework apps; CI check. Molly registers and runs them by voice. Applied to Expenses, console, axHub web, AmberX, Molly, Gizmo. Agent: Reel Rhonda (no Polo card).",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/app-voice-commands",
-   "pr": "#323",
-   "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-27T00:58:43.807Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
-     "at": "2026-11-04T14:43:49.640Z"
-    },
-    {
-     "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
-     "at": "2026-11-04T15:09:08.676Z"
-    },
-    {
-     "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
-     "at": "2026-11-04T15:32:25.522Z"
-    },
-    {
-     "text": "s3 done (console voice-commands plugin + Molly voice-control plugin), s4 done (manifests + generated assets: console 899, AmberX 44, Molly 17, axHub web 8, Walkthrough Studio 5, Expenses 7). Branch claude/app-voice-commands pushed; PR opening.",
-     "at": "2026-11-04T15:43:11.935Z"
-    },
-    {
-     "text": "PR #323 open. UI Review: r-20261104-1b7bca5f (Molly dialog), r-20261104-a4e5d893 (console page), group 'app-voice-commands - Nov 4 10:54 AM'. CI fixes pushed: page head, voice-command before help (Kotlin prefix test), console + Molly re-baked (Docker builds use the committed src/axf).",
-     "at": "2026-11-04T16:15:38.053Z"
-    },
-    {
-     "text": "CI on PR #323: sweep + Gradle green after the type-order fix; console job failed only on CI's ci-example template copy in the voice check, fixed (template copies skipped). Head 745369512 running.",
-     "at": "2026-11-04T17:07:20.954Z"
-    },
-    {
-     "text": "All steps done. PR #323 CI green (head 745369512); auto-merge waits for Brett's UI Review approval (r-20261104-1b7bca5f Molly dialog, r-20261104-a4e5d893 console page). Report _claude/builds/reports/app-voice-commands.md.",
-     "at": "2026-11-04T17:16:50.593Z"
-    },
-    {
-     "text": "Resumed after the merge queue landed (Fable, worktree app-voice-commands-r2): WIP commit dropped, main 554c75a78 merged (no code conflicts, builds files pinned to main), console voice asset regenerated for the push banner merge queue commands (904). Sweep, console tsc, voice-command spec (60) and plugin test (24) green locally. Head 3dd2d03db pushed to PR #323; CI running; #323 added to the merge queue, which holds it until Brett approves UI Review r-20261104-1b7bca5f and r-20261104-a4e5d893.",
-     "at": "2026-11-04T20:25:21.600Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
-     "at": "2026-11-08T16:59:22.752Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #323 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T00:58:43.807Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #323 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T00:58:43.807Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-04T15:32:24.370Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "\"It's voice control too - like I can control it with my voice, right?\" ... \"Anytime I build a new app or port an app like that, it needs to be noted whether it's for the framework development itself, and if so, it needs to build in voice commands for the API and MCP and CLI automatically, so they can be added to Molly and controlled by voice.\"",
-    "at": "2026-11-04T14:38:00.000Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "s1 voice-command@1 contract: phrases + slots per command, confirmation rules for writes/deletes, generated from each app's API/MCP/CLI commands; project manifest field forFramework; schema + both validators + fixtures + PORTING.md (kernel untouched)",
-     "model": "Fable",
-     "why": "cross-port contract + schema",
-     "phase": "Contract",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:09:07.606Z",
-     "note": "",
-     "uid": "st-mw288vhh07t3c0",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    },
-    {
-     "id": "s2",
-     "text": "s0 Land Expenses PR #307: update from main, fix the red plugin-lifecycle CI check, merge, redeploy console (expenses_* MCP tools live); grid save merges by entry id so API/voice adds are not overwritten by an open tab",
-     "model": "Opus",
-     "why": "",
-     "phase": "Land + automate",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:32:24.371Z",
-     "note": "",
-     "uid": "st-mw288vhh087w8r",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    },
-    {
-     "id": "s3",
-     "text": "s2 Automatic: app template, axf init and the build launcher add forFramework and, when true, generate voice commands for every API/MCP/CLI command; CI check fails when a forFramework app has a command without voice phrases",
-     "model": "Opus",
-     "why": "",
-     "phase": "Land + automate",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:32:51.347Z",
-     "note": "",
-     "uid": "st-mw288vhh09e63j",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    },
-    {
-     "id": "s4",
-     "text": "s3 Molly registers every app's voice commands and runs them by voice (AmberX listener / Gizmo voice when available, text-command box fallback); 'what can I say in Expenses?' lists them",
-     "model": "Opus",
-     "why": "",
-     "phase": "Land + automate",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:32:52.322Z",
-     "note": "",
-     "uid": "st-mw288vhh0awe54",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    },
-    {
-     "id": "s5",
-     "text": "s4 Apply to existing apps: Expenses, console, axHub web, AmberX, Molly, Gizmo (forFramework defaults to true for apps in this repo)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Land + automate",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:43:10.891Z",
-     "note": "",
-     "uid": "st-mw288vhh0b68y3",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    },
-    {
-     "id": "s6",
-     "text": "s5 Tests, PRs (merge on green CI), redeploy console / Molly / expenses, report _claude/builds/reports/app-voice-commands.md, rule in _claude/rules/RULES.md",
-     "model": "Opus",
-     "why": "",
-     "phase": "Land + automate",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T17:16:47.198Z",
-     "note": "",
-     "uid": "st-mw288vhh0cvfyx",
-     "createdAt": "2026-11-04T14:43:48.095Z"
-    }
-   ]
-  },
-  {
    "id": "assistant-chat-mode",
    "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
    "category": "Feature",
@@ -24775,6 +24574,210 @@
      "note": "",
      "uid": "st-mw3vzdti0giu87",
      "createdAt": "2026-11-05T18:36:01.932Z"
+    }
+   ]
+  },
+  {
+   "id": "app-voice-commands",
+   "title": "Voice commands for every app: land Expenses, voice-command@1 contract, forFramework apps generate voice commands for API/MCP/CLI, Molly runs them",
+   "category": "Framework",
+   "detail": "Land Expenses PR #307 (CI fix, grid save merges by entry id, redeploy). voice-command@1 contract + project manifest forFramework. Template, axf init and launcher generate voice commands for forFramework apps; CI check. Molly registers and runs them by voice. Applied to Expenses, console, axHub web, AmberX, Molly, Gizmo. Agent: Reel Rhonda (no Polo card).",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/app-voice-commands",
+   "pr": "#323",
+   "createdAt": "2026-11-04T14:43:48.090Z",
+   "updatedAt": "2026-11-27T00:58:43.807Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
+     "at": "2026-11-04T14:43:49.640Z"
+    },
+    {
+     "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
+     "at": "2026-11-04T15:09:08.676Z"
+    },
+    {
+     "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
+     "at": "2026-11-04T15:32:25.522Z"
+    },
+    {
+     "text": "s3 done (console voice-commands plugin + Molly voice-control plugin), s4 done (manifests + generated assets: console 899, AmberX 44, Molly 17, axHub web 8, Walkthrough Studio 5, Expenses 7). Branch claude/app-voice-commands pushed; PR opening.",
+     "at": "2026-11-04T15:43:11.935Z"
+    },
+    {
+     "text": "PR #323 open. UI Review: r-20261104-1b7bca5f (Molly dialog), r-20261104-a4e5d893 (console page), group 'app-voice-commands - Nov 4 10:54 AM'. CI fixes pushed: page head, voice-command before help (Kotlin prefix test), console + Molly re-baked (Docker builds use the committed src/axf).",
+     "at": "2026-11-04T16:15:38.053Z"
+    },
+    {
+     "text": "CI on PR #323: sweep + Gradle green after the type-order fix; console job failed only on CI's ci-example template copy in the voice check, fixed (template copies skipped). Head 745369512 running.",
+     "at": "2026-11-04T17:07:20.954Z"
+    },
+    {
+     "text": "All steps done. PR #323 CI green (head 745369512); auto-merge waits for Brett's UI Review approval (r-20261104-1b7bca5f Molly dialog, r-20261104-a4e5d893 console page). Report _claude/builds/reports/app-voice-commands.md.",
+     "at": "2026-11-04T17:16:50.593Z"
+    },
+    {
+     "text": "Resumed after the merge queue landed (Fable, worktree app-voice-commands-r2): WIP commit dropped, main 554c75a78 merged (no code conflicts, builds files pinned to main), console voice asset regenerated for the push banner merge queue commands (904). Sweep, console tsc, voice-command spec (60) and plugin test (24) green locally. Head 3dd2d03db pushed to PR #323; CI running; #323 added to the merge queue, which holds it until Brett approves UI Review r-20261104-1b7bca5f and r-20261104-a4e5d893.",
+     "at": "2026-11-04T20:25:21.600Z"
+    },
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
+     "at": "2026-11-08T16:59:22.752Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #323 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T00:58:43.807Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #323 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T00:58:43.807Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:32:24.370Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "\"It's voice control too - like I can control it with my voice, right?\" ... \"Anytime I build a new app or port an app like that, it needs to be noted whether it's for the framework development itself, and if so, it needs to build in voice commands for the API and MCP and CLI automatically, so they can be added to Molly and controlled by voice.\"",
+    "at": "2026-11-04T14:38:00.000Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "s1 voice-command@1 contract: phrases + slots per command, confirmation rules for writes/deletes, generated from each app's API/MCP/CLI commands; project manifest field forFramework; schema + both validators + fixtures + PORTING.md (kernel untouched)",
+     "model": "Fable",
+     "why": "cross-port contract + schema",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:09:07.606Z",
+     "note": "",
+     "uid": "st-mw288vhh07t3c0",
+     "createdAt": "2026-11-04T14:43:48.095Z"
+    },
+    {
+     "id": "s2",
+     "text": "s0 Land Expenses PR #307: update from main, fix the red plugin-lifecycle CI check, merge, redeploy console (expenses_* MCP tools live); grid save merges by entry id so API/voice adds are not overwritten by an open tab",
+     "model": "Opus",
+     "why": "",
+     "phase": "Land + automate",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:32:24.371Z",
+     "note": "",
+     "uid": "st-mw288vhh087w8r",
+     "createdAt": "2026-11-04T14:43:48.095Z"
+    },
+    {
+     "id": "s3",
+     "text": "s2 Automatic: app template, axf init and the build launcher add forFramework and, when true, generate voice commands for every API/MCP/CLI command; CI check fails when a forFramework app has a command without voice phrases",
+     "model": "Opus",
+     "why": "",
+     "phase": "Land + automate",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:32:51.347Z",
+     "note": "",
+     "uid": "st-mw288vhh09e63j",
+     "createdAt": "2026-11-04T14:43:48.095Z"
+    },
+    {
+     "id": "s4",
+     "text": "s3 Molly registers every app's voice commands and runs them by voice (AmberX listener / Gizmo voice when available, text-command box fallback); 'what can I say in Expenses?' lists them",
+     "model": "Opus",
+     "why": "",
+     "phase": "Land + automate",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:32:52.322Z",
+     "note": "",
+     "uid": "st-mw288vhh0awe54",
+     "createdAt": "2026-11-04T14:43:48.095Z"
+    },
+    {
+     "id": "s5",
+     "text": "s4 Apply to existing apps: Expenses, console, axHub web, AmberX, Molly, Gizmo (forFramework defaults to true for apps in this repo)",
+     "model": "Opus",
+     "why": "",
+     "phase": "Land + automate",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:43:10.891Z",
+     "note": "",
+     "uid": "st-mw288vhh0b68y3",
+     "createdAt": "2026-11-04T14:43:48.095Z"
+    },
+    {
+     "id": "s6",
+     "text": "s5 Tests, PRs (merge on green CI), redeploy console / Molly / expenses, report _claude/builds/reports/app-voice-commands.md, rule in _claude/rules/RULES.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "Land + automate",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T17:16:47.198Z",
+     "note": "",
+     "uid": "st-mw288vhh0cvfyx",
+     "createdAt": "2026-11-04T14:43:48.095Z"
     }
    ]
   },
@@ -25406,6 +25409,151 @@
    ]
   },
   {
+   "id": "planner-select-items-and-build-them",
+   "title": "Planner: select items and build them",
+   "category": "",
+   "detail": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
+   "status": "archived",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "planner-select-items-and-build-them",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-06T02:30:29.394Z",
+   "updatedAt": "2026-11-12T02:09:11.811Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"Without AI.\" Select and create build must work with no AI: plain UI that assembles the brief from the selected items directly.",
+     "at": "2026-11-06T02:30:34.165Z"
+    },
+    {
+     "text": "Brett: \"So whenever you plan something, it gets a file that writes out what it would prompt AI to say. What it would tell you, but it doesn't say anything until you, unless you add it to a new build.\" Every plan item has a stored, prewritten prompt file. Nothing is sent to AI until the selection is added to a new build, and then those prompts make up the brief.",
+     "at": "2026-11-06T02:31:11.887Z"
+    },
+    {
+     "text": "Brett: \"You can view that file through hooks, the theater. The different steps, maybe the context menu. Or you can do multiple selection, make them rebuild and view the prompt that it generates. Without AI.\" The prompt file can be viewed per step (theater/hover view, context menu). Multi-select, then rebuild or preview the generated prompt before sending. All of it without AI.",
+     "at": "2026-11-06T02:31:32.608Z"
+    },
+    {
+     "text": "Brett: progress tracking applies to ALL builds, not only ones started from the planner (builds already split into steps). Every build_start brief includes the check-off instruction, and the console reads the progress live for every build. Resume from the first unchecked step.",
+     "at": "2026-11-06T02:35:42.521Z"
+    },
+    {
+     "text": "Re-added (lost in an overwrite): (a) AmberX task and checklist rows: click a row to see the text discussed; expandable rows show amendments; send a row straight to its own new build. (b) A build from the planner auto-ticks items as it finishes them; the brief lists the item IDs and tells it to tick them. (c) The console tracks progress live without AI, through the console API or a progress file in the build dir; no stopping or resending context; if a build dies, the next run resumes at the first unchecked item.",
+     "at": "2026-11-06T02:35:47.270Z"
+    },
+    {
+     "text": "CORRECTION from Brett: the build manager already tracks build progress, so drop the console-tracking and progress-file notes above. NEW: every build (anything Amber or anyone starts) automatically creates a plan in Plan Studio and goes into a build registry. That plan uses the same steps the build manager will use, so they stay in sync (one source of truth) and tick off together, along with the linked AmberX checklist rows. Registry and planner are categorized by app, plugin, edit, feature, in collapsible trees with sorting and filters.",
+     "at": "2026-11-06T02:36:59.911Z"
+    },
+    {
+     "text": "Brett: the build manager and the planner both read and write progress in the SAME registry, one source of truth, with no separate copies to sync.",
+     "at": "2026-11-06T02:37:35.506Z"
+    },
+    {
+     "text": "Brett: backfill the registry: import every existing build (the 79 finished-but-not-landed, the running/queued ones, and landed ones, going back as far as the history goes) as plans with their steps and status, read from the build dirs, briefs, logs, and git branches.",
+     "at": "2026-11-06T02:38:13.740Z"
+    },
+    {
+     "text": "Brett: each registry/plan entry shows its addenda and amendments: every later change, note, or restart (e.g. r2/r3 runs), in order with timestamps, in expandable rows. Backfill them too.",
+     "at": "2026-11-06T02:38:32.471Z"
+    },
+    {
+     "text": "OVERLAP: token-usage-log-accounts-plan-studio-control steps 14-15 (orchestrator IDs/registry), 26-29 (parked plans, multi-select, right-click new build, checklist grid) cover much of this. Prompt-file/preview parts not covered.",
+     "at": "2026-11-06T17:41:00.967Z"
+    },
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:11.811Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87vru105ve73",
+     "createdAt": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "id": "s2",
+     "text": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87vru106ker2",
+     "createdAt": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/planner-select-items-and-build-them.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/planner-select-items-and-build-them.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw87vru107m9rw",
+     "createdAt": "2026-11-08T19:20:13.993Z"
+    }
+   ]
+  },
+  {
    "id": "apps-control-surface",
    "title": "Apps control surface: every app on the API, MCP and CLI (AmberX, Molly, axHub web, template), apps_list, Follow Amber app:",
    "category": "Framework",
@@ -25571,151 +25719,6 @@
      "note": "",
      "uid": "st-mw28uz060adk91",
      "createdAt": "2026-11-04T15:00:59.142Z"
-    }
-   ]
-  },
-  {
-   "id": "planner-select-items-and-build-them",
-   "title": "Planner: select items and build them",
-   "category": "",
-   "detail": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
-   "status": "archived",
-   "hidden": false,
-   "source": "mcp",
-   "pendingId": "planner-select-items-and-build-them",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-06T02:30:29.394Z",
-   "updatedAt": "2026-11-12T02:09:11.811Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Brett: \"Without AI.\" Select and create build must work with no AI: plain UI that assembles the brief from the selected items directly.",
-     "at": "2026-11-06T02:30:34.165Z"
-    },
-    {
-     "text": "Brett: \"So whenever you plan something, it gets a file that writes out what it would prompt AI to say. What it would tell you, but it doesn't say anything until you, unless you add it to a new build.\" Every plan item has a stored, prewritten prompt file. Nothing is sent to AI until the selection is added to a new build, and then those prompts make up the brief.",
-     "at": "2026-11-06T02:31:11.887Z"
-    },
-    {
-     "text": "Brett: \"You can view that file through hooks, the theater. The different steps, maybe the context menu. Or you can do multiple selection, make them rebuild and view the prompt that it generates. Without AI.\" The prompt file can be viewed per step (theater/hover view, context menu). Multi-select, then rebuild or preview the generated prompt before sending. All of it without AI.",
-     "at": "2026-11-06T02:31:32.608Z"
-    },
-    {
-     "text": "Brett: progress tracking applies to ALL builds, not only ones started from the planner (builds already split into steps). Every build_start brief includes the check-off instruction, and the console reads the progress live for every build. Resume from the first unchecked step.",
-     "at": "2026-11-06T02:35:42.521Z"
-    },
-    {
-     "text": "Re-added (lost in an overwrite): (a) AmberX task and checklist rows: click a row to see the text discussed; expandable rows show amendments; send a row straight to its own new build. (b) A build from the planner auto-ticks items as it finishes them; the brief lists the item IDs and tells it to tick them. (c) The console tracks progress live without AI, through the console API or a progress file in the build dir; no stopping or resending context; if a build dies, the next run resumes at the first unchecked item.",
-     "at": "2026-11-06T02:35:47.270Z"
-    },
-    {
-     "text": "CORRECTION from Brett: the build manager already tracks build progress, so drop the console-tracking and progress-file notes above. NEW: every build (anything Amber or anyone starts) automatically creates a plan in Plan Studio and goes into a build registry. That plan uses the same steps the build manager will use, so they stay in sync (one source of truth) and tick off together, along with the linked AmberX checklist rows. Registry and planner are categorized by app, plugin, edit, feature, in collapsible trees with sorting and filters.",
-     "at": "2026-11-06T02:36:59.911Z"
-    },
-    {
-     "text": "Brett: the build manager and the planner both read and write progress in the SAME registry, one source of truth, with no separate copies to sync.",
-     "at": "2026-11-06T02:37:35.506Z"
-    },
-    {
-     "text": "Brett: backfill the registry: import every existing build (the 79 finished-but-not-landed, the running/queued ones, and landed ones, going back as far as the history goes) as plans with their steps and status, read from the build dirs, briefs, logs, and git branches.",
-     "at": "2026-11-06T02:38:13.740Z"
-    },
-    {
-     "text": "Brett: each registry/plan entry shows its addenda and amendments: every later change, note, or restart (e.g. r2/r3 runs), in order with timestamps, in expandable rows. Backfill them too.",
-     "at": "2026-11-06T02:38:32.471Z"
-    },
-    {
-     "text": "OVERLAP: token-usage-log-accounts-plan-studio-control steps 14-15 (orchestrator IDs/registry), 26-29 (parked plans, multi-select, right-click new build, checklist grid) cover much of this. Prompt-file/preview parts not covered.",
-     "at": "2026-11-06T17:41:00.967Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-08T19:20:13.993Z"
-    },
-    {
-     "text": "Moved to the Archive from pending (console).",
-     "at": "2026-11-12T02:09:11.811Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw87vru105ve73",
-     "createdAt": "2026-11-08T19:20:13.993Z"
-    },
-    {
-     "id": "s2",
-     "text": "I need to be able to select things in the planner, whether it's depth or the whole plan. I need to be able to select things and create a build out of them.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw87vru106ker2",
-     "createdAt": "2026-11-08T19:20:13.993Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/planner-select-items-and-build-them.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/planner-select-items-and-build-them.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw87vru107m9rw",
-     "createdAt": "2026-11-08T19:20:13.993Z"
     }
    ]
   },
@@ -27740,150 +27743,6 @@
    ]
   },
   {
-   "id": "jump-menu-asset",
-   "title": "Jump menu asset type (jump-menu@1): in-page section index with its own settings, location, display and right-click Settings / Change / Move; Plan Studio first consumer",
-   "category": "Framework",
-   "detail": "New shared optional asset type jump-menu@1 (rules + engine + fixture + schema + 5 starters + defaults.json), per-page settings as control@1 token overrides (tokens.jump), scroll-spy, right-click / long-press Settings / Change jump menu / Move like toolbars and banners, Plan Studio plan view replaces its hard-coded chip row, Assets screen picker, voice controls. Replaces the cancelled plan-studio-section-nav.",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/jump-menu-asset",
-   "pr": "#326",
-   "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-27T00:38:43.664Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "PR #326 open, UI Review r-20261104-2135a0d7 (14 shots, non-blocking per the brief), report _claude/builds/reports/jump-menu-asset.md",
-     "at": "2026-11-04T16:35:39.173Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #326 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T00:38:43.664Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #326 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T00:38:43.664Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "So make the jump menu an asset type. And um, so when you right click on it, you can go to its settings. It has its own settings. It's allow placing it. Allow different options like whether it shows icons or text or whatever. And um, you can select its location.",
-    "at": "2026-11-04T15:00:00.000Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:47:53.756Z",
-     "note": "",
-     "uid": "st-mw29w9v70cz5z4",
-     "createdAt": "2026-11-04T15:29:59.387Z"
-    },
-    {
-     "id": "s2",
-     "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:57:06.659Z",
-     "note": "",
-     "uid": "st-mw29w9v70dwpp9",
-     "createdAt": "2026-11-04T15:29:59.387Z"
-    },
-    {
-     "id": "s3",
-     "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:57:08.626Z",
-     "note": "",
-     "uid": "st-mw29w9v70ehlez",
-     "createdAt": "2026-11-04T15:29:59.387Z"
-    },
-    {
-     "id": "s4",
-     "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:57:09.977Z",
-     "note": "",
-     "uid": "st-mw29w9v70ffnc8",
-     "createdAt": "2026-11-04T15:29:59.387Z"
-    },
-    {
-     "id": "s5",
-     "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T16:35:37.112Z",
-     "note": "",
-     "uid": "st-mw29w9v70g38uh",
-     "createdAt": "2026-11-04T15:29:59.387Z"
-    }
-   ]
-  },
-  {
    "id": "token-usage-log-accounts-plan-studio-control-small-steps",
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
@@ -29006,6 +28865,150 @@
      "note": "",
      "uid": "st-mw52nz5g2w4zv2",
      "createdAt": "2026-11-06T14:13:14.292Z"
+    }
+   ]
+  },
+  {
+   "id": "jump-menu-asset",
+   "title": "Jump menu asset type (jump-menu@1): in-page section index with its own settings, location, display and right-click Settings / Change / Move; Plan Studio first consumer",
+   "category": "Framework",
+   "detail": "New shared optional asset type jump-menu@1 (rules + engine + fixture + schema + 5 starters + defaults.json), per-page settings as control@1 token overrides (tokens.jump), scroll-spy, right-click / long-press Settings / Change jump menu / Move like toolbars and banners, Plan Studio plan view replaces its hard-coded chip row, Assets screen picker, voice controls. Replaces the cancelled plan-studio-section-nav.",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/jump-menu-asset",
+   "pr": "#326",
+   "createdAt": "2026-11-04T15:29:59.385Z",
+   "updatedAt": "2026-11-27T00:38:43.664Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "PR #326 open, UI Review r-20261104-2135a0d7 (14 shots, non-blocking per the brief), report _claude/builds/reports/jump-menu-asset.md",
+     "at": "2026-11-04T16:35:39.173Z"
+    },
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #326 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T00:38:43.664Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #326 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T00:38:43.664Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "So make the jump menu an asset type. And um, so when you right click on it, you can go to its settings. It has its own settings. It's allow placing it. Allow different options like whether it shows icons or text or whatever. And um, you can select its location.",
+    "at": "2026-11-04T15:00:00.000Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:47:53.756Z",
+     "note": "",
+     "uid": "st-mw29w9v70cz5z4",
+     "createdAt": "2026-11-04T15:29:59.387Z"
+    },
+    {
+     "id": "s2",
+     "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:57:06.659Z",
+     "note": "",
+     "uid": "st-mw29w9v70dwpp9",
+     "createdAt": "2026-11-04T15:29:59.387Z"
+    },
+    {
+     "id": "s3",
+     "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:57:08.626Z",
+     "note": "",
+     "uid": "st-mw29w9v70ehlez",
+     "createdAt": "2026-11-04T15:29:59.387Z"
+    },
+    {
+     "id": "s4",
+     "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:57:09.977Z",
+     "note": "",
+     "uid": "st-mw29w9v70ffnc8",
+     "createdAt": "2026-11-04T15:29:59.387Z"
+    },
+    {
+     "id": "s5",
+     "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T16:35:37.112Z",
+     "note": "",
+     "uid": "st-mw29w9v70g38uh",
+     "createdAt": "2026-11-04T15:29:59.387Z"
     }
    ]
   },
@@ -32845,258 +32848,6 @@
    ]
   },
   {
-   "id": "build-optimizer",
-   "title": "Build optimizer: repack waiting steps into fewer builds (Basic + Deep), confirm dialog, drag steps between builds",
-   "category": "Feature",
-   "detail": "Optimize builds (Build manager toolbar, right-click, voice/MCP orchestrator.optimize, owner-only on the primary). Deterministic planner (Basic, zero tokens) shared with fable-packager's build-package@1 core; Deep (AI) mode when an AI connection is there. Confirm dialog with the new package of builds, every step, reasoning, rename/drag/untick, Apply/Cancel; apply = one transaction (new package builds, emptied builds archived, one undo). Drag steps between builds anywhere. Settings + presets + filters, notifications, schedule.",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/build-optimizer",
-   "pr": "#342",
-   "createdAt": "2026-11-04T20:46:33.439Z",
-   "updatedAt": "2026-11-27T02:19:22.095Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #342 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T02:19:22.095Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #342 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T02:19:22.095Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
-    "at": "2026-11-04T20:00:00Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "headless",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": [
-     {
-      "said": "And you can drag steps from one build to another build. If multiple builds are open in different tabs or different windows, you can drag steps from one to the other.",
-      "at": "",
-      "source": "voice",
-      "by": "earl",
-      "verbatim": true
-     },
-     {
-      "said": "This build optimizer needs to be done without AI. It can use AI if AI is connected, but it shouldn't have to have AI.",
-      "at": "",
-      "source": "voice",
-      "by": "earl",
-      "verbatim": true
-     },
-     {
-      "said": "Well, if the AI is on it, it does a much better job. It does a thorough investigation, it does thorough syncing.",
-      "at": "",
-      "source": "voice",
-      "by": "earl",
-      "verbatim": true
-     },
-     {
-      "said": "And you get a notification if AI isn't active. You get a notification either way if you want it. Enable it or turn it off.",
-      "at": "",
-      "source": "voice",
-      "by": "earl",
-      "verbatim": true
-     },
-     {
-      "said": "The optimizer needs a bunch of settings and filters to control how it works.",
-      "at": "",
-      "source": "voice",
-      "by": "earl",
-      "verbatim": true
-     }
-    ]
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Optimizer core (optimizer-core.mjs on packager-core): scope + filters, clusters by dependency chain / area claims / category / app / profile, Fable-Opus split, packing under caps (fewest / balanced / fastest), pack order, naming template, estimates, duplicate/already-built flags",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:13.825Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0abfgr",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s2",
-     "text": "Store ops: applyOptimize (packages + archive emptied builds + run record), undoOptimize (one undo), moveSteps (drag a step between builds, validated, undoable); tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:15.558Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0br73h",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s3",
-     "text": "CLI optimizer.mjs: plan / apply / undo / move / settings / presets; settings@1 + named presets; notifications (alerts + banner chip + AmberX) per the Optimizer notifications setting",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:17.095Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0c4tvh",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s4",
-     "text": "Deep mode: evidence (briefs, addenda, grep of step files, merged PRs, reports, completed builds), AI review through axf.llm@1 with token estimate + budget cap + agent booking, validated suggestions, silent fallback to Basic",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:18.486Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0dj2xz",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s5",
-     "text": "Server routes + MCP/console control orchestrator.optimize (settings + filters by voice), schedule (manual / after a new build / nightly), owner-only on the primary",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:19.855Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0e9ofg",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s6",
-     "text": "Web: Optimize builds button (toolbar + right-click + voice) and confirm dialog (packs with every step and its source, reasoning, rename, drag between packs, untick, summary, mode + notifications line, Apply / Cancel, Undo)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:21.460Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0fa4cs",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s7",
-     "text": "Web: drag steps between builds anywhere (step lists in any view, tab or window, multi-select, drop position = order, warnings with move prerequisites too?, undo)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:23.023Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0gth32",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s8",
-     "text": "Settings page (settings-interface@1 sub-tab) with presets and filters",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:05:24.448Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0h3ihd",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    },
-    {
-     "id": "s9",
-     "text": "Tests (dependency + claim cases), README, UI Review shots (non-blocking), report, PR through the merge queue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:14:27.954Z",
-     "note": "",
-     "uid": "st-mw2l7e2v0ij9t2",
-     "createdAt": "2026-11-04T20:46:33.441Z"
-    }
-   ]
-  },
-  {
    "id": "notes-tasks-calendar",
    "title": "In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We",
    "category": "",
@@ -33450,6 +33201,258 @@
      "note": "",
      "uid": "st-mw5oq3x42yu9m4",
      "createdAt": "2026-11-07T00:48:24.663Z"
+    }
+   ]
+  },
+  {
+   "id": "build-optimizer",
+   "title": "Build optimizer: repack waiting steps into fewer builds (Basic + Deep), confirm dialog, drag steps between builds",
+   "category": "Feature",
+   "detail": "Optimize builds (Build manager toolbar, right-click, voice/MCP orchestrator.optimize, owner-only on the primary). Deterministic planner (Basic, zero tokens) shared with fable-packager's build-package@1 core; Deep (AI) mode when an AI connection is there. Confirm dialog with the new package of builds, every step, reasoning, rename/drag/untick, Apply/Cancel; apply = one transaction (new package builds, emptied builds archived, one undo). Drag steps between builds anywhere. Settings + presets + filters, notifications, schedule.",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/build-optimizer",
+   "pr": "#342",
+   "createdAt": "2026-11-04T20:46:33.439Z",
+   "updatedAt": "2026-11-27T02:19:22.095Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #342 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T02:19:22.095Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #342 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T02:19:22.095Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
+    "at": "2026-11-04T20:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "headless",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "And you can drag steps from one build to another build. If multiple builds are open in different tabs or different windows, you can drag steps from one to the other.",
+      "at": "",
+      "source": "voice",
+      "by": "earl",
+      "verbatim": true
+     },
+     {
+      "said": "This build optimizer needs to be done without AI. It can use AI if AI is connected, but it shouldn't have to have AI.",
+      "at": "",
+      "source": "voice",
+      "by": "earl",
+      "verbatim": true
+     },
+     {
+      "said": "Well, if the AI is on it, it does a much better job. It does a thorough investigation, it does thorough syncing.",
+      "at": "",
+      "source": "voice",
+      "by": "earl",
+      "verbatim": true
+     },
+     {
+      "said": "And you get a notification if AI isn't active. You get a notification either way if you want it. Enable it or turn it off.",
+      "at": "",
+      "source": "voice",
+      "by": "earl",
+      "verbatim": true
+     },
+     {
+      "said": "The optimizer needs a bunch of settings and filters to control how it works.",
+      "at": "",
+      "source": "voice",
+      "by": "earl",
+      "verbatim": true
+     }
+    ]
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Optimizer core (optimizer-core.mjs on packager-core): scope + filters, clusters by dependency chain / area claims / category / app / profile, Fable-Opus split, packing under caps (fewest / balanced / fastest), pack order, naming template, estimates, duplicate/already-built flags",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:13.825Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0abfgr",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s2",
+     "text": "Store ops: applyOptimize (packages + archive emptied builds + run record), undoOptimize (one undo), moveSteps (drag a step between builds, validated, undoable); tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:15.558Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0br73h",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s3",
+     "text": "CLI optimizer.mjs: plan / apply / undo / move / settings / presets; settings@1 + named presets; notifications (alerts + banner chip + AmberX) per the Optimizer notifications setting",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:17.095Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0c4tvh",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s4",
+     "text": "Deep mode: evidence (briefs, addenda, grep of step files, merged PRs, reports, completed builds), AI review through axf.llm@1 with token estimate + budget cap + agent booking, validated suggestions, silent fallback to Basic",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:18.486Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0dj2xz",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s5",
+     "text": "Server routes + MCP/console control orchestrator.optimize (settings + filters by voice), schedule (manual / after a new build / nightly), owner-only on the primary",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:19.855Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0e9ofg",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s6",
+     "text": "Web: Optimize builds button (toolbar + right-click + voice) and confirm dialog (packs with every step and its source, reasoning, rename, drag between packs, untick, summary, mode + notifications line, Apply / Cancel, Undo)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:21.460Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0fa4cs",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s7",
+     "text": "Web: drag steps between builds anywhere (step lists in any view, tab or window, multi-select, drop position = order, warnings with move prerequisites too?, undo)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:23.023Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0gth32",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s8",
+     "text": "Settings page (settings-interface@1 sub-tab) with presets and filters",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:05:24.448Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0h3ihd",
+     "createdAt": "2026-11-04T20:46:33.441Z"
+    },
+    {
+     "id": "s9",
+     "text": "Tests (dependency + claim cases), README, UI Review shots (non-blocking), report, PR through the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:14:27.954Z",
+     "note": "",
+     "uid": "st-mw2l7e2v0ij9t2",
+     "createdAt": "2026-11-04T20:46:33.441Z"
     }
    ]
   },
@@ -55860,6 +55863,75 @@
    ]
   },
   {
+   "id": "amberx-assistant-agents",
+   "title": "AmberX: install the AI assistant + agent manager plugins",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: \"Install assistant and agent manager in amberx\" / \"Why take so much time installing an existing plugin\". The console plugins ai-assistant and agent-manager load in AmberX unchanged (same web code, @console aliases to an AmberX bridge); their server calls go through AmberX server /api/console/plugins/<folder>/* to the console (admins only, console token server-side). Same chats, agents and live sessions as the console; moves to axHub with axhub-agent-host.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-assistant-agents",
+   "pr": "#156",
+   "mergedAt": "2026-10-28T15:54:26Z",
+   "createdAt": "2026-10-28T15:41:17.167Z",
+   "updatedAt": "2026-11-12T03:28:07Z",
+   "builtAt": "2026-10-28T15:54:37.523Z",
+   "notes": [
+    {
+     "text": "Merged PR #156, branch claude/amberx-assistant-agents",
+     "at": "2026-10-28T15:54:37.605Z"
+    },
+    {
+     "text": "Reconciler: PR #156 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-assistant-agents rev 1 sent to Shipped features (backfill): landed b7d2e17e4, 19 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:07Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Install assistant and agent manager in amberx",
+    "at": "2026-10-28",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Bridge + aliases + server proxy + two AmberX plugin folders + Dockerfile + tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:41:17.287Z",
+     "note": "",
+     "uid": "st-xl9cam",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
    "id": "three-layouts-per-screen",
    "title": "Three layouts per screen",
    "category": "Framework",
@@ -56015,75 +56087,6 @@
      "note": "",
      "uid": "st-mw2mtciz0acmmj",
      "createdAt": "2026-11-04T21:31:37.967Z"
-    }
-   ]
-  },
-  {
-   "id": "amberx-assistant-agents",
-   "title": "AmberX: install the AI assistant + agent manager plugins",
-   "category": "AmberX app",
-   "detail": "Brett Oct 28 2026: \"Install assistant and agent manager in amberx\" / \"Why take so much time installing an existing plugin\". The console plugins ai-assistant and agent-manager load in AmberX unchanged (same web code, @console aliases to an AmberX bridge); their server calls go through AmberX server /api/console/plugins/<folder>/* to the console (admins only, console token server-side). Same chats, agents and live sessions as the console; moves to axHub with axhub-agent-host.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-assistant-agents",
-   "pr": "#156",
-   "mergedAt": "2026-10-28T15:54:26Z",
-   "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-11-12T03:28:07Z",
-   "builtAt": "2026-10-28T15:54:37.523Z",
-   "notes": [
-    {
-     "text": "Merged PR #156, branch claude/amberx-assistant-agents",
-     "at": "2026-10-28T15:54:37.605Z"
-    },
-    {
-     "text": "Reconciler: PR #156 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    },
-    {
-     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-amberx-assistant-agents rev 1 sent to Shipped features (backfill): landed b7d2e17e4, 19 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:28:07Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Install assistant and agent manager in amberx",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Bridge + aliases + server proxy + two AmberX plugin folders + Dockerfile + tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "Build",
-     "group": "AmberX",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-28T15:41:17.287Z",
-     "note": "",
-     "uid": "st-xl9cam",
-     "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
   },
@@ -91230,6 +91233,107 @@
    ]
   },
   {
+   "id": "style-rule-every-design-element-overrides-axhub-",
+   "title": "Style rule: every design element overrides axHub's, except the color theme",
+   "category": "",
+   "detail": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+   "status": "archived",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "style-rule-every-design-element-overrides-axhub-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-08T21:29:54.434Z",
+   "updatedAt": "2026-11-12T02:08:49.691Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:49.691Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "All design elements override X hubs except for the color theme.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x601mq28",
+     "createdAt": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "id": "s2",
+     "text": "All design elements override X hubs except for the color theme.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x602ujer",
+     "createdAt": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw8ck6x603razf",
+     "createdAt": "2026-11-08T21:31:11.753Z"
+    }
+   ]
+  },
+  {
    "id": "fix-owner-check-bug-dead-start-button",
    "title": "Fix owner check bug + dead start button",
    "category": "bug fix",
@@ -91367,107 +91471,6 @@
      "note": "",
      "uid": "st-mw9q51n30bird4",
      "createdAt": "2026-11-09T20:39:05.871Z"
-    }
-   ]
-  },
-  {
-   "id": "style-rule-every-design-element-overrides-axhub-",
-   "title": "Style rule: every design element overrides axHub's, except the color theme",
-   "category": "",
-   "detail": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
-   "status": "archived",
-   "hidden": false,
-   "source": "mcp",
-   "pendingId": "style-rule-every-design-element-overrides-axhub-",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-08T21:29:54.434Z",
-   "updatedAt": "2026-11-12T02:08:49.691Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-08T21:31:11.753Z"
-    },
-    {
-     "text": "Moved to the Archive from pending (console).",
-     "at": "2026-11-12T02:08:49.691Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "All design elements override X hubs except for the color theme.",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
-     "model": "Fable",
-     "why": "foundation words in the step",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw8ck6x601mq28",
-     "createdAt": "2026-11-08T21:31:11.753Z"
-    },
-    {
-     "id": "s2",
-     "text": "All design elements override X hubs except for the color theme.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw8ck6x602ujer",
-     "createdAt": "2026-11-08T21:31:11.753Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/style-rule-every-design-element-overrides-axhub-.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw8ck6x603razf",
-     "createdAt": "2026-11-08T21:31:11.753Z"
     }
    ]
   },
@@ -94110,133 +94113,6 @@
    ]
   },
   {
-   "id": "terminal-header-responsive",
-   "title": "Terminal window header: responsive overflow",
-   "category": "Console > Terminal",
-   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/terminal-header-responsive",
-   "pr": "#387",
-   "createdAt": "2026-11-08T16:15:18.411Z",
-   "updatedAt": "2026-11-15T00:44:36.218Z",
-   "builtAt": "2026-11-08T16:32:45.756Z",
-   "notes": [],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
-    "at": "2026-11-08T16:15:18.411Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:20.151Z",
-     "note": "",
-     "uid": "st-mw819yja069qye",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s2",
-     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:22.167Z",
-     "note": "",
-     "uid": "st-mw819yja07bg2c",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s3",
-     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:23.823Z",
-     "note": "",
-     "uid": "st-mw819yja085nup",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s4",
-     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:32:44.170Z",
-     "note": "",
-     "uid": "st-mw819yja097yd5",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s5",
-     "text": "Report, STATUS, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:32:45.753Z",
-     "note": "",
-     "uid": "st-mw819yja0a4pm2",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    }
-   ]
-  },
-  {
    "id": "approve-deny-anywhere-send-in-background-never-navigate",
    "title": "Approve/Deny anywhere: send in background, never navigate",
    "category": "console",
@@ -94453,6 +94329,133 @@
      "note": "",
      "uid": "st-mw9a7flf02ad9o",
      "createdAt": "2026-11-09T13:13:03.324Z"
+    }
+   ]
+  },
+  {
+   "id": "terminal-header-responsive",
+   "title": "Terminal window header: responsive overflow",
+   "category": "Console > Terminal",
+   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-header-responsive",
+   "pr": "#387",
+   "createdAt": "2026-11-08T16:15:18.411Z",
+   "updatedAt": "2026-11-15T00:44:36.218Z",
+   "builtAt": "2026-11-08T16:32:45.756Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
+    "at": "2026-11-08T16:15:18.411Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:20.151Z",
+     "note": "",
+     "uid": "st-mw819yja069qye",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s2",
+     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:22.167Z",
+     "note": "",
+     "uid": "st-mw819yja07bg2c",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s3",
+     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:23.823Z",
+     "note": "",
+     "uid": "st-mw819yja085nup",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:44.170Z",
+     "note": "",
+     "uid": "st-mw819yja097yd5",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s5",
+     "text": "Report, STATUS, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:45.753Z",
+     "note": "",
+     "uid": "st-mw819yja0a4pm2",
+     "createdAt": "2026-11-08T16:15:18.413Z"
     }
    ]
   },

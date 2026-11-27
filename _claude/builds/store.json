@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10446,
- "updatedAt": "2026-11-27T04:46:18.180Z",
+ "rev": 10447,
+ "updatedAt": "2026-11-27T04:47:15.994Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -79216,11 +79216,11 @@
     "all"
    ],
    "order": {
-    "all": 173
+    "all": 174
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86431,11 +86431,11 @@
     "all"
    ],
    "order": {
-    "all": 180
+    "all": 181
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86658,11 +86658,11 @@
     "all"
    ],
    "order": {
-    "all": 186
+    "all": 187
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87086,11 +87086,11 @@
     "all"
    ],
    "order": {
-    "all": 195
+    "all": 196
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87334,11 +87334,11 @@
     "all"
    ],
    "order": {
-    "all": 191
+    "all": 192
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90708,11 +90708,11 @@
     "all"
    ],
    "order": {
-    "all": 213
+    "all": 214
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91490,11 +91490,11 @@
     "all"
    ],
    "order": {
-    "all": 314
+    "all": 315
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118064,11 +118064,11 @@
     "all"
    ],
    "order": {
-    "all": 586
+    "all": 587
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118669,11 +118669,11 @@
     "all"
    ],
    "order": {
-    "all": 602
+    "all": 604
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385450,7 +385450,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s5",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T04:44:28.575Z",
+   "updatedAt": "2026-11-27T04:46:34.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -385643,8 +385643,11 @@
     },
     {
      "text": "Watchdog: step s5 failed at building, attempt 1: tmux session axf-emergency-remove-every-leftover-js--s5--joey is gone while the step was building.",
-     "at": "2026-11-27T04:44:28.575Z",
-     "by": "watchdog"
+     "at": "2026-11-27T04:44:28.575Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s1--earl, shared account login)",
+     "at": "2026-11-27T04:46:34.696Z"
     }
    ],
    "approvals": [
@@ -386408,7 +386411,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 123,
+   "rev": 124,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -386493,7 +386496,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:45:44.122Z",
+   "updatedAt": "2026-11-27T04:46:13.505Z",
    "builtAt": "",
    "notes": [
     {
@@ -387226,12 +387229,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 18,
+     "rev": 19,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T04:44:39.984Z",
-     "statusAt": "2026-11-27T04:44:39.616Z",
+     "updatedAt": "2026-11-27T04:46:13.741Z",
+     "statusAt": "2026-11-27T04:46:13.505Z",
      "statusBy": "orchestrator",
      "attempt": 4,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -387322,9 +387326,16 @@
        "by": "orchestrator",
        "attempt": 4,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:46:13.505Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-emergency-remove-every-leftover-js--s3--earl, axf-emergency-remove-every-leftover-js--s6--lenny, axf-emergency-remove-every-leftover-js--s7--gina, ax"
       }
      ],
-     "status": "sending",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
      "branch": "claude/emergency-check-can-these-plugins---s4",
@@ -387704,7 +387715,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 145,
+   "rev": 146,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387789,7 +387800,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:46:05.947Z",
+   "updatedAt": "2026-11-27T04:46:35.042Z",
    "builtAt": "",
    "notes": [
     {
@@ -388081,8 +388092,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s3",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s3\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s3 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s3 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s3.\n\n## Your step\nMake pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.\n\nFiles: apps/console-web/server/mcp_server.py. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-rip-out-the-7-mb-status---s5",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s5\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s5 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s5.\n\n## Your step\nBuild-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -388919,7 +388930,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 158,
+   "rev": 159,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
