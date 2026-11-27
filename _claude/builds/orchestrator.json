@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:47:15.994Z",
+ "updatedAt": "2026-11-27T04:48:44.353Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20196,7 +20196,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:46:35.042Z",
+   "updatedAt": "2026-11-27T04:48:13.002Z",
    "builtAt": "",
    "notes": [
     {
@@ -20478,6 +20478,10 @@
     {
      "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--lenny: brief only · start 11.9K tokens ($0.01) · cost $0.43 · 10 turns · 6 tools, MCP none",
      "at": "2026-11-27T04:39:46.241Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--joey, shared account login)",
+     "at": "2026-11-27T04:48:13.002Z"
     }
    ],
    "approvals": [],

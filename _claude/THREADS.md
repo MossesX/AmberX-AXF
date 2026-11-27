@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 20:42 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
 - 2026-11-25 23:09 UTC · `flagship-professional-skin-covering` s5 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s26 done, note (all) · foreign-write
 - 2026-11-25 23:09 UTC · `claude-emergency-access` note (all) · foreign-write
 - 2026-11-25 23:09 UTC · `pipeline-fixes-drop-7-mb-status-file` s15 done, s16 done, s17 done, note (all) · foreign-write
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 04:44 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 04:44 UTC · `emergency-remove-every-leftover-js` s5 undone, note (all) · watchdog
 - 2026-11-27 04:46 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:48 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 
 ## Token passes (log)
 
