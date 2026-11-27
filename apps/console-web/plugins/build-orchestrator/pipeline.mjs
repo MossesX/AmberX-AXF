@@ -24,6 +24,13 @@
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
  *                                  list them (dry run), --apply moves them back to the Queue, journalled
+ *   … emergency <id> [--reason "…"] [--asked-by name] [--json]   send a Pipeline 2.0 build to emergency (it skips the
+ *                                  line, builds in the emergency slots and lands first). From a Claude session (CLAUDECODE,
+ *                                  AXF_SURFACE or AXF_SESSION set; Brett, Nov 24 2026) --reason is required and --asked-by
+ *                                  defaults to AXF_AGENT or the session name; refused while the Claude setting
+ *                                  builds.claudeEmergency is off. Logged on the build as `emergency: { by, via, askedBy,
+ *                                  reason, at }` plus a note (via console-token for a session, person otherwise), and a
+ *                                  session's send raises one FYI for Brett. Exit 2 bad request or build, 3 refused.
  *   … launch-state <id>            runs, crashes, launch retries (lastLaunchError, retryAt, gaveUp) and the last clash bounce
  *   … launch-crashed [--requeue]   builds that stopped retrying after launch crashes (the systems check item); --requeue all
  *   … requeue-launch <id>          back to the Queue now, launch retries reset (REST POST /pipeline/requeue-launch, MCP and
@@ -83,7 +90,7 @@
  * Environment for tests: AXF_PIPELINE_LAUNCHER (instead of deploy/claude-headless.sh), AXF_PIPELINE_SPLITTER (a command that
  * reads the prompt on stdin and prints Claude's answer), AXF_PIPELINE_WORKTREES (root of build worktrees, default
  * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_REPO (the repo step worktrees hang off), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
- * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
+ * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused, 3 emergency refused.
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
@@ -110,6 +117,8 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as lock from '../../../../framework/cli/build-lock.mjs';
+import { grantEmergency, revokeEmergency } from '../../../../framework/cli/build-limit.mjs';
+import { refusal as emergencyRefusal } from '../../../../framework/cli/emergency-builds.mjs';
 import * as modelTriage from '../../../../framework/cli/model-triage.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
@@ -2160,6 +2169,75 @@ export function health({ env = process.env, by = 'dispatcher' } = {}) {
   } finally { try { rmSync(files().healthLock, { force: true }); } catch { /* gone */ } }
 }
 
+// ------------------------------------------------------------------ emergency (the CLI's send)
+
+export const EMERGENCY_SETTING = 'builds.claudeEmergency'; // Claude setting, owner-only; a missing key = on
+const oneLine = (v, max) => str(v ?? '', 4000).replace(/\s+/g, ' ').trim().slice(0, max);
+/** Is this process a Claude session (interactive, headless or an agent run)? Its sends are logged as the console token's. */
+export const fromSession = (env = process.env) => !!(env.CLAUDECODE || env.AXF_SURFACE || env.AXF_SESSION);
+
+/**
+ * Send a Pipeline 2.0 build to emergency from the CLI (Brett, Nov 24 2026: Claude may, when he says so, logged with
+ * who asked and why). The same write as the console's POST /pipeline/emergency: the slot grant, then
+ * `emergency: { by, via, askedBy, reason, at }` and a note on the build, through the builds store.
+ *   - a Claude session (fromSession): via 'console-token'. Needs a reason and a name (askedBy, else AXF_AGENT, else
+ *     the session name), and the Claude setting builds.claudeEmergency not switched off. One FYI goes to Brett.
+ *   - anyone else (a person at a shell): via 'person'. No reason needed.
+ * → { ok, id, emergency, already } · throws with code 2 (bad request or build) or 3 (refused).
+ */
+export function sendEmergency(id, { reason = '', askedBy = '', by = '', env = process.env } = {}) {
+  const no = (message, code = 2) => Object.assign(new Error(message), { code });
+  const session = fromSession(env);
+  const via = session ? 'console-token' : 'person';
+  const why = oneLine(reason, 400);
+  let asked = oneLine(askedBy, 80);
+  let who;
+  if (session) {
+    if (claudeSettings(env)[EMERGENCY_SETTING] === false) throw no(`Claude sending builds to emergency is switched off. Brett switches it on in the console: Settings → Plugins → Claude settings → Builds → "Claude can send builds to emergency" (${EMERGENCY_SETTING}). His own signed-in click on Send to emergency still works.`, 3);
+    asked = asked || oneLine(env.AXF_AGENT, 80) || oneLine(env.AXF_SESSION, 80);
+    if (!why) throw no('reason is missing: a session sends a build to emergency only with --reason "why this build goes to emergency" (it is logged on the build and sent to Brett)');
+    if (!asked) throw no('askedBy is missing: name the session or agent that asks with --asked-by <name> (or set AXF_AGENT)');
+    who = asked;
+  } else {
+    who = oneLine(by, 80) || oneLine(env.AXF_APPROVER, 80) || oneLine(env.AXF_ACTOR, 80) || 'cli';
+    asked = asked || who;
+  }
+  if (!oneLine(id, 200)) throw no('usage: emergency <id> [--reason "…"] [--asked-by name]');
+  const found = storeCore.findBuild(loadStore(), id);
+  const cant = emergencyRefusal(found);
+  if (cant) throw no(found ? cant : `no build "${id}"`);
+  const at = nowIso();
+  const raw = { by: who, via, askedBy: asked, ...(why ? { reason: why } : {}), at };
+  const tag = P2.normEmergency?.(raw)?.via ? P2.normEmergency(raw) : raw; // the stored shape, whichever normaliser is here
+  const note = session
+    ? `Sent to emergency by ${asked} (a Claude session, from the CLI). Why: ${why} It skips the line, builds in the emergency slots and lands first.`
+    : `Sent to emergency by ${who}${why ? `. Why: ${why} It skips` : ': it skips'} the line, builds in the emergency slots and lands first.`;
+  let res = null;
+  // the grant first: a tagged build without a grant would be sent out and refused by the hard limit
+  grantEmergency(found.id, { by: who, owner: true });
+  try {
+    withStore((s) => {
+      const b = storeCore.findBuild(s, found.id);
+      const now = emergencyRefusal(b);
+      if (now) throw no(now);
+      if (P2.isEmergency(b)) { res = { ok: true, id: b.id, emergency: b.emergency, already: true }; return s; }
+      b.emergency = tag;
+      b.notes = [...(b.notes ?? []), { text: note, at, by: who }];
+      res = { ok: true, id: b.id, emergency: tag, already: false };
+      return s;
+    }, { by: who, action: 'emergency:send', note: found.id });
+  } catch (e) { if (!P2.isEmergency(storeCore.findBuild(loadStore(), found.id))) revokeEmergency(found.id, { by: 'pipeline' }); throw e; }
+  logLine({ event: 'emergency-sent', build: res.id, via, by: who, askedBy: asked, reason: why, already: res.already });
+  if (session && !res.already) {
+    // one FYI for Brett (notify type build-emergency-by-claude); a notification that fails never undoes the send
+    try {
+      makeConsole(env)('POST', '/api/alerts', { source: 'pipeline', severity: 'info', key: `pipeline:emergency-by-claude:${res.id}`, title: str(`${res.id} sent to emergency`, 200),
+        body: str(`Asked by ${asked} (a Claude session, from the CLI). Why: ${why}`, 600), link: 'view:build-orchestrator', meta: { type: 'build-emergency-by-claude', build: res.id, askedBy: asked, via } });
+    } catch { /* the FYI is best effort */ }
+  }
+  return res;
+}
+
 // ------------------------------------------------------------------ CLI
 
 // pipeline2.mjs uses these (bound here: it is imported by this file, so it can't import them at load time)
@@ -2281,6 +2359,13 @@ async function main(argv) {
     return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s), ${r.total.before} → ${r.total.after} steps`);
   }
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
+  if (cmd === 'emergency') { // emergency <id> [--reason "…"] [--asked-by name]: a session must say why (logged, FYI to Brett)
+    const valued = ['--reason', '--asked-by', '--by'];
+    const id = rest.find((a, i) => !a.startsWith('--') && !(i > 0 && valued.includes(rest[i - 1]))) ?? '';
+    const r = sendEmergency(id, { reason: flag('reason'), askedBy: flag('asked-by'), by: flag('by') });
+    const e = r.emergency ?? {};
+    return out(r, r.already ? `${r.id} is already an emergency build (by ${e.by || '?'} ${e.at || ''})`.trim() : `${r.id} sent to emergency (${e.via}, asked by ${e.askedBy}${e.reason ? `: ${e.reason}` : ''})`);
+  }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
@@ -2346,12 +2431,12 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…] | emergency <id> [--reason "why"] [--asked-by name] (a Claude session must give --reason)'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main(process.argv.slice(2)).catch((e) => {
     if (process.argv.includes('--json')) console.log(JSON.stringify({ ok: false, error: e.message })); else console.error(`pipeline: ${e.message}`);
-    process.exit(e.code === 2 ? 2 : 1);
+    process.exit(e.code === 2 || e.code === 3 ? e.code : 1);
   });
 }
