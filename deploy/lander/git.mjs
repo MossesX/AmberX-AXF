@@ -14,7 +14,7 @@ import * as R from './land-rules.mjs';
 import { numstatLines } from './lander-core.mjs';
 
 export const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-// axf-data: not data (host-local runner files: heartbeat, pause switch, GitHub ETag cache; build state goes to the builds store)
+// axf-data: not data (the GitHub ETag cache, rebuilt when missing; the lander's documents go through data-files in run.mjs, build state through the builds store)
 export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
 
 export function makeGit(cwd) {

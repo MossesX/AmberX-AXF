@@ -54,12 +54,13 @@
  * the update command goes; default: the DOMAIN and AXF_TOKEN lines of <console root>/.axf-console/env).
  */
 import { spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdtempSync, openSync, readdirSync, readFileSync, rmSync, statSync, writeSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, rmSync, statSync, writeSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from './lander-core.mjs';
 import * as G from './git.mjs';
+import { readJsonSync, writeJsonSync } from '../../framework/core/data-files.mjs';
 import { makeStore, memoryStore } from './store.mjs';
 import { FIX_MODEL, defaultFixSession, fixWorktree } from './fix-session.mjs';
 import { crewSay } from '../../framework/cli/crew-say.mjs';
@@ -81,16 +82,24 @@ export function settings() {
   };
 }
 
+/**
+ * The lander's own documents (service heartbeat, control switches, settings) are data: each is one row on axf-data
+ * (console/host/lander/<name>.json through the data layer's path map), read and written whole through data-files.mjs.
+ * A data folder the map does not name (AXF_LANDER_DIR in a test) keeps plain files. The lock and the GitHub cache stay
+ * local files: not data.
+ */
+const readData = (f) => readJsonSync(f, {}) || {};
+const writeData = (f, v) => writeJsonSync(f, v, 1);
 export const files = (s) => ({ service: join(s.dataDir, 'service.json'), control: join(s.dataDir, 'control.json'), config: join(s.dataDir, 'config.json'), lock: join(s.dataDir, 'lander.lock') });
 
 /** The settings in force: deploy/lander/config.json (in the repo), the data folder's config.json on top, then env. */
 export function readConfig(s) {
   const repoCfg = G.readJson(join(HERE, 'config.json'), {}) || {};
-  const local = G.readJson(files(s).config, {}) || {};
+  const local = readData(files(s).config);
   const cap = env('AXF_LANDER_SIZE_CAP', '');
   return L.normConfig({ ...repoCfg, ...local, ...(cap ? { sizeCapLines: cap } : {}) });
 }
-export const readControl = (s) => ({ paused: false, ...(G.readJson(files(s).control, {}) || {}) });
+export const readControl = (s) => ({ paused: false, ...(readData(files(s).control)) });
 
 const LOCK_MAX_MS = 30 * 60e3;
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
@@ -101,7 +110,7 @@ const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { 
  */
 export function takeLock(f) {
   try {
-    G.writeJson(`${f}.probe`, {}); rmSync(`${f}.probe`, { force: true });
+    mkdirSync(dirname(f), { recursive: true }); closeSync(openSync(`${f}.probe`, 'w')); rmSync(`${f}.probe`, { force: true });
     try {
       const st = statSync(f);
       let pid = 0; try { pid = Number(JSON.parse(readFileSync(f, 'utf8')).pid) || 0; } catch { /* an old lock: no pid in it */ }
@@ -229,7 +238,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
   const ctl = readControl(s);
   // paused = no new work; recording what GitHub already did to a PR (syncOnly) is not work
   if (ctl.paused && !syncOnly) { out.waiting = 'paused'; return out; }
-  if (ctl.runRequested && !dry && !syncOnly) G.writeJson(files(s).control, { ...ctl, runRequested: '' });
+  if (ctl.runRequested && !dry && !syncOnly) writeData(files(s).control, { ...ctl, runRequested: '' });
   store ??= dry ? memoryStore((await makeStore()).read()) : await makeStore({ by: 'lander', repo: s.repo });
   const all = store.read();
   const scope = only ? all.filter((b) => b.id === only) : all;
@@ -767,7 +776,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
    * middle of landing; the request is used up once a PR is made (or when fewer than two builds can go together).
    */
   const together = async () => {
-    const clear = () => { const c = readControl(s); delete c.mergeTogether; G.writeJson(files(s).control, c); };
+    const clear = () => { const c = readControl(s); delete c.mergeTogether; writeData(files(s).control, c); };
     const line = L.lineOf(scope).filter((x) => !L.isHeld(x));
     const busy = line.find((x) => x.status !== 'build-complete' && !L.isEmergency(x));
     if (busy || L.isEmergency(pick.build)) { log(`merge together waits: ${(busy || pick.build).id} lands first`); return; }
@@ -851,7 +860,7 @@ export async function syncPrs(opts = {}) {
 /** Status for the console (gate plugin's Auto-lander tab and systems check): service, the build landing, the queue. */
 export async function status(s = settings(), { store } = {}) {
   store ??= await makeStore({ repo: s.repo });
-  const svc = G.readJson(files(s).service, {}) || {};
+  const svc = readData(files(s).service);
   const ctl = readControl(s);
   const builds = store.read();
   const rows = L.queueRows(builds);
@@ -881,7 +890,7 @@ export async function main(argv) {
   const s = settings();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   if (cmd === 'run' && rest.includes('--request')) {
-    G.writeJson(files(s).control, { ...readControl(s), runRequested: nowIso(), runRequestedBy: flag('--by') || 'cli' });
+    writeData(files(s).control, { ...readControl(s), runRequested: nowIso(), runRequestedBy: flag('--by') || 'cli' });
     return print({ ok: true, requested: true }, 'a tick is requested (the timer runs one within a minute)');
   }
   if (cmd === 'tick' || cmd === 'run') {
@@ -889,7 +898,7 @@ export async function main(argv) {
     if (!lock.ok) return print({ ok: true, skipped: 'another tick holds the lock' }, 'another tick is running');
     try {
       const r = await tick({ dry: rest.includes('--dry-run'), only: flag('--only'), log: (l) => { if (!json) console.log(`[lander] ${l}`); } });
-      if (!rest.includes('--dry-run')) G.writeJson(files(s).service, { $axf: 'lander-service@1', at: r.at, result: r.error ? 'error' : r.actions.length ? 'worked' : 'idle', build: r.build, status: r.status, waiting: r.waiting, error: r.error });
+      if (!rest.includes('--dry-run')) writeData(files(s).service, { $axf: 'lander-service@1', at: r.at, result: r.error ? 'error' : r.actions.length ? 'worked' : 'idle', build: r.build, status: r.status, waiting: r.waiting, error: r.error });
       return print({ ok: !r.error, ...r }, `${r.at} ${r.build || '-'} ${r.status || ''} ${r.actions.length ? r.actions.join(' · ') : r.waiting}${r.error ? ` ERROR ${r.error}` : ''}`);
     } finally { lock.release(); }
   }
@@ -899,7 +908,7 @@ export async function main(argv) {
     const only = flag('--builds').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 50);
     const c = readControl(s);
     if (off) delete c.mergeTogether; else c.mergeTogether = { at: nowIso(), by: flag('--by') || 'cli', ...(only.length ? { builds: only } : {}) };
-    G.writeJson(files(s).control, off ? c : { ...c, runRequested: nowIso(), runRequestedBy: flag('--by') || 'cli' });
+    writeData(files(s).control, off ? c : { ...c, runRequested: nowIso(), runRequestedBy: flag('--by') || 'cli' });
     const waiting = off ? [] : lineRows((await makeStore({ repo: s.repo })).read()).filter((r) => r.status === 'build-complete' && (!only.length || only.includes(r.build))).map((r) => r.build);
     const message = off ? 'Merge together: request dropped.' : waiting.length >= 2 ? `Merge together: on its next tick the lander combines ${waiting.join(', ')} into one branch, runs CI once and merges them in one go. A build that clashes is named on its record and lands by itself.` : `Merge together needs two builds waiting to merge; ${waiting.length} ${waiting.length === 1 ? 'waits' : 'wait'} right now.`;
     return print({ ok: true, mergeTogether: !off, builds: waiting, waiting, message }, message);
@@ -919,14 +928,14 @@ export async function main(argv) {
   if (cmd === 'set') {
     const [k, v] = rest.filter((x) => !x.startsWith('--') && x !== flag('--by'));
     if (!k || !(k in L.DEFAULTS) || v === undefined) { process.exitCode = 2; return print({ ok: false, error: `set <${Object.keys(L.DEFAULTS).join('|')}> <value>` }, `usage: set <key> <value>; keys: ${Object.keys(L.DEFAULTS).join(', ')}`); }
-    const cur = G.readJson(files(s).config, {}) || {};
-    G.writeJson(files(s).config, { ...cur, [k]: v, updatedAt: nowIso(), updatedBy: flag('--by') || 'cli' });
+    const cur = readData(files(s).config);
+    writeData(files(s).config, { ...cur, [k]: v, updatedAt: nowIso(), updatedBy: flag('--by') || 'cli' });
     return print({ ok: true, key: k, value: readConfig(s)[k], settings: readConfig(s) }, `${k} = ${readConfig(s)[k]}`);
   }
   if (cmd === 'config' || cmd === 'settings') { const c = readConfig(s); return print({ ok: true, settings: c }, Object.entries(c).map(([k, v]) => `${k} = ${v}`).join('\n')); }
   if (cmd === 'pause' || cmd === 'resume') {
     const c = { ...readControl(s), paused: cmd === 'pause', [`${cmd}dBy`]: flag('--by') || 'cli', [`${cmd}dAt`]: nowIso(), ...(cmd === 'pause' ? { why: flag('--why') } : {}) };
-    G.writeJson(files(s).control, c);
+    writeData(files(s).control, c);
     return print({ ok: true, paused: c.paused }, `lander ${c.paused ? 'paused' : 'resumed'}`);
   }
   if (cmd === 'fix' || cmd === 'retry') {

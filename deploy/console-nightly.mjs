@@ -15,7 +15,7 @@
  *   node deploy/console-nightly.mjs run --dry-run  says what it would do, deploys nothing
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readJsonSync, writeJsonSync } from '../framework/core/data-files.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { crewSay } from '../framework/cli/crew-say.mjs';
@@ -57,8 +57,10 @@ const dir = () => process.env.DIR || join(HERE, '..');
 const stateFile = () => process.env.AXF_NIGHTLY_STATE || join(dir(), '.axf-console', 'nightly.json');
 const logFile = () => process.env.AXF_NIGHTLY_LOG || '/root/axf-builds/nightly-deploy.log';
 const git = (...a) => execFileSync('git', ['-C', dir(), ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
-const readState = () => { try { return JSON.parse(readFileSync(stateFile(), 'utf8')); } catch { return {}; } };
-const writeState = (s) => { mkdirSync(dirname(stateFile()), { recursive: true }); writeFileSync(stateFile(), `${JSON.stringify(s, null, 1)}\n`); };
+// The state is one row on axf-data (console/host/nightly.json, through the data layer's path map); a path the map does
+// not name (AXF_NIGHTLY_STATE in a test) is a plain file.
+const readState = () => readJsonSync(stateFile(), {}) || {};
+const writeState = (s) => writeJsonSync(stateFile(), s, 1);
 
 async function settings() {
   // The live values (hub first); a read that fails leaves the defaults, so a broken read never cancels the deploy.

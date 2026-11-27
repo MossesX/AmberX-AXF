@@ -73,6 +73,7 @@ export function record(ev, env = process.env) {
     result: str(ev.result, 20), detail: str(ev.detail, 300), ...(ev.saved != null ? { saved: Number(ev.saved) || 0 } : {}), ...(ev.shared != null ? { shared: !!ev.shared } : {}) };
   let sent = false;
   try { sent = postAlert(alertOf(e), env); } catch { /* the log line still says it */ }
+  // axf-data: not data (headless session spool beside the session's raw log in AXF_HEADLESS_DIR: no axf-data table or path rule yet, deferred)
   try { mkdirSync(resolve(eventsFile(env), '..'), { recursive: true }); appendFileSync(eventsFile(env), `${JSON.stringify({ ...e, sent })}\n`); } catch { /* best effort */ }
   return { ...e, sent };
 }

@@ -238,6 +238,7 @@ export function createMeter({ session = '', name = '', build = '', agent = '', m
 /** Write JSON atomically (tmp + rename), never throwing: the meter must never stop the session. */
 export function writeJson(file, value) {
   if (!file) return;
+  // axf-data: not data (headless session spool beside the session's raw log in AXF_HEADLESS_DIR: no axf-data table or path rule yet, deferred)
   try { const tmp = `${file}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(value)}\n`); renameSync(tmp, file); } catch { /* disk full / folder gone: keep going */ }
 }
 export const readJson = (file) => { try { return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null; } catch { return null; } };

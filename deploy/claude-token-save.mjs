@@ -43,6 +43,7 @@ const isFile = (f) => { try { return statSync(f).isFile(); } catch { return fals
 
 function writeAtomic(file, doc) {
   const tmp = `${file}.${process.pid}.tmp`;
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(tmp, JSON.stringify(doc), { mode: 0o600 });
   chmodSync(tmp, 0o600);
   renameSync(tmp, file);
@@ -146,6 +147,7 @@ export function beginChain(copyDir, p) {
   const o = readJson(join(copyDir, '.credentials.json'))?.claudeAiOauth;
   const h = tokenHash(o?.refreshToken);
   if (!h) return;
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(join(copyDir, CHAIN), JSON.stringify({ $axf: 'token-chain@1', places: p, chain: [h] }), { mode: 0o600 });
 }
 
@@ -171,6 +173,7 @@ function saveBackLocked(copyDir, dir = copyDir) {
   const renewed = !state.chain.includes(cur);
   if (renewed) {
     state.chain = [...state.chain, cur].slice(-CHAIN_MAX);
+    // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
     writeFileSync(file, JSON.stringify(state), { mode: 0o600 });
   }
   const spent = new Set(state.chain.filter((h) => h !== cur));

@@ -12,13 +12,13 @@
 #   3. through the axHub route: axf-data answers, the note is readable, the builds list comes back
 #   4. axf-molly writes the builds store with framework/cli/builds-store.mjs in cutover (lock = rev check)
 #   5. through the axHub route again: the new build is there
-# The result goes to deploy/dryrun/results/console-down-drill.json (and stdout). Exit 0 = every step passed.
+# The result (console-down-drill@1) goes to stdout only: no result file is kept in the repo or on disk. Exit 0 = every
+# step passed.
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 P="axfdrill$$"
 WORK="$(mktemp -d)"
 KEEP="${1:-}"
-OUT="$DIR/deploy/dryrun/results/console-down-drill.json"
 say() { printf '[drill] %s\n' "$*" >&2; }
 cleanup() { [ "$KEEP" = "--keep" ] || { docker compose -p "$P" -f "$WORK/compose.yaml" down -v --remove-orphans >/dev/null 2>&1 || true; rm -rf "$WORK"; }; }
 trap cleanup EXIT
@@ -77,15 +77,13 @@ STEPS+=("$(molly read-through-hub)")
 STEPS+=("$(molly write)")
 STEPS+=("$(molly read-through-hub)")
 
-mkdir -p "$(dirname "$OUT")"
-python3 - "$OUT" "${STEPS[@]}" <<'PY'
+python3 - "${STEPS[@]}" <<'PY'
 import json, sys, datetime
-out, steps = sys.argv[1], [json.loads(s) for s in sys.argv[2:]]
+steps = [json.loads(s) for s in sys.argv[1:]]
 final = steps[-1]
 ok = all(s.get("ok") for s in steps) and final.get("mollyWriteLanded") is True
 doc = {"$axf": "console-down-drill@1", "at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"), "ok": ok, "steps": steps,
        "said": "the console goes down, all the data is still available, all the notes are available, and the builds keep running."}
-open(out, "w").write(json.dumps(doc, indent=1) + "\n")
 print(json.dumps(doc, indent=1))
 sys.exit(0 if ok else 1)
 PY

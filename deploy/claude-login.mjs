@@ -175,6 +175,7 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
   const kind = apiKey ? 'api' : 'subscription';
   const rec = { $axf: 'build-login@1', account: choice.account, email: choice.email, source: choice.source, token: !!token, kind, session: slug(session),
     ...(shared ? { config } : {}), at: new Date().toISOString() };
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(join(out, MARKER), JSON.stringify(rec, null, 2) + '\n', { mode: 0o600 });
   return { dir: out, config, shared, account: rec.account, email: rec.email, source: rec.source, token: rec.token, kind,
     env: { CLAUDE_CONFIG_DIR: config, ...(apiKey ? { ANTHROPIC_API_KEY: apiKey } : token ? { CLAUDE_CODE_OAUTH_TOKEN: token } : {}) },
@@ -186,6 +187,7 @@ function writeGlobal(p, to, env) {
   const g = readJson(p.global);
   if (!g || typeof g !== 'object') return;
   if (accounts(env).length) delete g.oauthAccount;   // a cached identity that may belong to another account
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(join(to, '.claude.json'), JSON.stringify(g, null, 2), { mode: 0o600 });
 }
 
@@ -221,6 +223,7 @@ export function shareHome(p, choice, env = process.env) {
   withTokenLock(p.accounts, () => seedShared(home, choice.creds, places));   // never between another build's read and write
   if (!existsSync(join(home, '.claude.json'))) writeGlobal(p, home, env);   // Claude Code keeps it up to date from here on
   linkShared(p, home);
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(join(home, SHARED_MARKER), JSON.stringify({ $axf: 'shared-login@1', account: choice.account, email: choice.email, at: new Date().toISOString() }, null, 2) + '\n', { mode: 0o600 });
   return home;
 }
@@ -243,12 +246,14 @@ export function seedShared(home, from, places) {
   if (!take) { if (chain?.$axf !== 'token-chain@1') beginChain(home, places); return 'kept'; }
   writeAtomicJson(dst, { ...(cur && typeof cur === 'object' ? cur : {}), ...src });
   if (chain?.$axf !== 'token-chain@1' || !hs) beginChain(home, places);
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   else if (!known.includes(hs)) writeFileSync(join(home, CHAIN), JSON.stringify({ ...chain, places, chain: [...known, hs].slice(-32) }), { mode: 0o600 });
   return take;
 }
 
 function writeAtomicJson(file, doc) {
   const tmp = `${file}.${process.pid}.tmp`;
+  // axf-data: not data (Claude login credentials and their markers: secrets never go in the data DB, DATA-INVENTORY.md → Not data)
   writeFileSync(tmp, JSON.stringify(doc), { mode: 0o600 }); chmodSync(tmp, 0o600);
   renameSync(tmp, file);
 }
