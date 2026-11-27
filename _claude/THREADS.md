@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 17:39 UTC · `merge-main-land-one-source-truth-console` → archived, note (all) · cron
-- 2026-11-27 17:48 UTC · `toolbar-widgets-in-any-banner-style` → queued, note (all) · watchdog
-- 2026-11-27 17:49 UTC · `toolbar-widgets-in-any-banner-style` note (all) · pipeline
-- 2026-11-27 17:49 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
 - 2026-11-27 17:59 UTC · `plan-studio-collapse-all-expand-all` → fixing, note (all) · watchdog
 - 2026-11-27 18:00 UTC · `toolbar-widgets-in-any-banner-style` PR #935, note (all) · reconciler
 - 2026-11-27 18:08 UTC · `claude-emergency-access` PR 933, note (all) · orchestrator
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 - 2026-11-27 19:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 - 2026-11-27 19:31 UTC · `amberx-handsfree` → landed, note (all) · watchdog
+- 2026-11-27 19:31 UTC · `mosses-build-tools` → landed, note (all) · watchdog
+- 2026-11-27 19:31 UTC · `assistant-no-subagents` → landed, note (all) · watchdog
+- 2026-11-27 19:31 UTC · `refactor-all` → landed, note (all) · watchdog
+- 2026-11-27 19:31 UTC · `enterprise-branding` → landed, note (all) · watchdog
 
 ## Token passes (log)
 

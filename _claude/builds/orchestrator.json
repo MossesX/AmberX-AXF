@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:31:35.569Z",
+ "updatedAt": "2026-11-27T19:32:03.612Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -56691,7 +56691,7 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -56699,7 +56699,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-11-27T18:49:31.677Z",
+   "updatedAt": "2026-11-27T19:31:56.809Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -56777,6 +56777,10 @@
     {
      "text": "Watchdog: PR #166 merged 2026-10-29 03:49 and the build never heard: the merge is recorded, CI on 24227d9669 is next.",
      "at": "2026-11-27T18:49:31.677Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 24227d9669: landed.",
+     "at": "2026-11-27T19:31:56.809Z"
     }
    ],
    "approvals": [
@@ -62013,7 +62017,7 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
@@ -62021,7 +62025,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-11-27T18:49:26.718Z",
+   "updatedAt": "2026-11-27T19:31:50.540Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -62079,6 +62083,10 @@
     {
      "text": "Watchdog: PR #166 merged 2026-10-29 03:49 and the build never heard: the merge is recorded, CI on 24227d9669 is next.",
      "at": "2026-11-27T18:49:26.718Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 24227d9669: landed.",
+     "at": "2026-11-27T19:31:50.540Z"
     }
    ],
    "approvals": [
@@ -63836,7 +63844,7 @@
    "title": "Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + push/PR tools (token stays in the host)",
    "category": "assistant",
    "detail": "Brett Oct 28 21:08: Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -63844,7 +63852,7 @@
    "pr": "#164",
    "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-11-27T18:49:17.149Z",
+   "updatedAt": "2026-11-27T19:31:35.908Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
    "notes": [
     {
@@ -63866,6 +63874,10 @@
     {
      "text": "Watchdog: PR #164 merged 2026-10-29 04:01 and the build never heard: the merge is recorded, CI on 4bf11fee77 is next.",
      "at": "2026-11-27T18:49:17.149Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 4bf11fee77: landed.",
+     "at": "2026-11-27T19:31:35.908Z"
     }
    ],
    "approvals": [],
@@ -63947,7 +63959,7 @@
    "title": "No sub-agents in the AI assistant (Task/Agent denied) + fix build mode crash (env scrub flag)",
    "category": "assistant",
    "detail": "Brett Oct 29 01:41: Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -63955,7 +63967,7 @@
    "pr": "#167",
    "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-11-27T18:49:21.651Z",
+   "updatedAt": "2026-11-27T19:31:43.792Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
    "notes": [
     {
@@ -63977,6 +63989,10 @@
     {
      "text": "Watchdog: PR #167 merged 2026-10-29 06:15 and the build never heard: the merge is recorded, CI on 051b9ca2ec is next.",
      "at": "2026-11-27T18:49:21.651Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 051b9ca2ec: landed.",
+     "at": "2026-11-27T19:31:43.792Z"
     }
    ],
    "approvals": [],
