@@ -2,7 +2,7 @@
 
 Build `emergency-remove-every-leftover-js` (Pipeline 2.0, 7 steps, Nov 27 2026). This report is step s7 (Fable):
 tests, guard and report, taken on the seven step branches merged together
-(s1 `b0583d47a`, s2 `4fc4855c4`, s3 `02bcd6945`, s4 `6ebdb4b1e`, s5 `91eee0622`, s6 `1c014a49f`, on main `a26f2f9b3`).
+(s1 `b0583d47a`, s2 `4fc4855c4`, s3 `d84ea580c`, s4 `6ebdb4b1e`, s5 `91eee0622`, s6 `1c014a49f`, on main `a26f2f9b3`).
 No PR of its own: the lander merges every step into one.
 
 Brett, Nov 25 2026: "Postgres is the one store. Delete every JSON data file the database already covers, plus every
@@ -17,7 +17,7 @@ reader and writer of it. No dual writes, no JSON backups."
 - Migration dry run on the VPS: **17 090 files, 363 111 rows, 44 namespaces, nothing refused**. `--apply` has **not**
   been run: it deletes live files and is the deploy step below.
 - Tests: the data layer, axf-data (SQLite and Postgres), the migration and every framework/spec check that passes on
-  main pass. **5 plugin tests that pass on main fail on the merged build** (listed below with the cause). They are
+  main pass. **6 plugin tests that pass on main fail on the merged build** (listed below with the cause). They are
   in files other steps own and two of those steps were running again while this was written, so they are reported
   here, not changed here.
 
@@ -163,8 +163,8 @@ main `a26f2f9b3`; "after" is the merged build. The box was under load (load aver
 
 | | Before (main) | After (merged build) |
 |---|---|---|
-| Pass | 222 | 220 |
-| Fail or timeout | 16 | 20 = 15 that fail the same way on main + **5 new** |
+| Pass | 222 | 219 |
+| Fail or timeout | 16 | 21 = 15 that fail the same way on main + **6 new** |
 | Fixed by the build | | `framework/spec/check-build-limit.mjs` |
 | `services/axf-data/test_store.py` | all ok | all ok |
 | `services/axf-data/test_pg.py` (throwaway `postgres:16-alpine`) | all ok, 27 cases | all ok, 29 cases |
@@ -174,23 +174,28 @@ main `a26f2f9b3`; "after" is the merged build. The box was under load (load aver
 | `check-json-data-writes` | ok, 218 writes in 116 files against a 222 baseline | ok, 11 in 8, all kept with a reason |
 | `check-tracking-files`, `project.mjs validate --all` | ok | ok |
 
-**The 5 new failures (pass on main, fail on the merged build with no axf-data configured, which is what CI has):**
+**The 6 new failures (pass on main, fail on the merged build with no axf-data configured, which is what CI has):**
 
 | Test | Cause |
 |---|---|
 | `plugins/claude-handoff/test.py` | the server reads `settings/claude-handoff-look.json` through `data_store`; the key is mapped, so it is axf-data only, and the test has none: `DataStoreError: axf-data isn't configured` |
 | `plugins/notes-browser/test.py` | same, on `notes/…` (the Notes store reads and writes through `data_store`) |
 | `plugins/phone-connect/test.py` | same, on `phone/pairings/…` |
+| `plugins/agent-manager/test.py` | same, on the agent memory records. It passed until s3's follow-up `d84ea580c` moved the memory reads onto `data_store` (the right change: the writes were already there) |
 | `plugins/plugin-manager/server/test_lazy.py` | `lazy.py` now does `import data_store`; the test loads the module by path without `apps/console-web/server` on `sys.path`: `ModuleNotFoundError` |
 | `plugins/build-orchestrator/test.py` (1 check of the file: "a bare build id from the store") | the test hands `ConsoleFocus` a scratch `store.json`; the server's builds reader no longer has a file side (s4), so the id is not found |
 
-One cause behind the first three: s3 ran its plugin tests on its own branch, where the path map was not yet
+One cause behind the first four: s3 ran its plugin tests on its own branch, where the path map was not yet
 `cutover` (s2) and `data_store.py` still had a local side (s4). Together, a test whose scratch folder maps to a key
 needs an axf-data. The fix is in the tests: run them against the in-process axf-data that
 `apps/console-web/server/test_data_store.py` already sets up (FastAPI TestClient as the transport,
 `data_store.set_remote(...)`), add the server folder to `sys.path` in `test_lazy.py`, and give the `ConsoleFocus`
 test a scratch builds store the way `test_projects.py` now does. Not fixed in s7: the files belong to s3 and s4,
 and s3 and s5 were running again on their branches at the time.
+
+The full run was taken at s3 `02bcd6945`. s3 then pushed `d84ea580c` (eight plugins: reads, lists and removes follow
+their writes). The tests of those eight plugins and the failing ones were run again on it: seven of the eight pass,
+agent-manager is the sixth failure above, the guard and the tracking check still pass.
 
 The 15 that fail the same way on main (not touched by this build): `plugins/agent-swarm/test.mjs`,
 `plugins/build-orchestrator/pipeline.test.mjs`, `plugins/console-commands/server/test_console_commands.py`,
@@ -211,7 +216,7 @@ only the orchestrator's own `builds/*` writes and change-log records, no test ro
 ## Left, and why
 
 - **`--apply` not run.** Live files are deleted by it; the order is in "Needs doing" above.
-- **5 failing plugin tests** (above). CI on the build PR will be red on them until the tests get an in-process
+- **6 failing plugin tests** (above). CI on the build PR will be red on them until the tests get an in-process
   axf-data.
 - **Tests can reach the live store on the VPS.** Node code with no `AXF_DATA_URL`, `AXF_DATA_DIR` or
   `AXF_BUILDS_STORE` set uses the host env file. Before this build that only mattered for the namespaces already cut
