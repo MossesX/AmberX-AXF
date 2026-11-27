@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T05:48:33.574Z",
+ "updatedAt": "2026-11-27T05:49:24.329Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14263,7 +14263,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:47:23.360Z",
+   "updatedAt": "2026-11-27T05:49:09.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -15754,7 +15754,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:45:26.893Z",
+   "updatedAt": "2026-11-27T05:48:44.213Z",
    "builtAt": "",
    "notes": [
     {
@@ -16228,6 +16228,10 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--paulie, shared account login)",
      "at": "2026-11-27T05:45:26.893Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s1--paulie: brief only · start 12.7K tokens ($0.00) · cost $0.29 · 5 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:48:44.213Z"
     }
    ],
    "approvals": [],
@@ -16260,8 +16264,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:47:40.161Z",
      "note": "",
      "uid": "st-mww38q3o1lgvjq",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -20624,7 +20628,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:48:22.081Z",
+   "updatedAt": "2026-11-27T05:49:12.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -23923,7 +23927,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T05:46:40.098Z",
+   "updatedAt": "2026-11-27T05:48:55.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -24009,6 +24013,14 @@
     {
      "text": "Claude account: hulu0241 (axf-claude-emergency-access--s1--rhonda, shared account login)",
      "at": "2026-11-27T05:45:58.284Z"
+    },
+    {
+     "text": "Headless run axf-claude-emergency-access--s1--rhonda: brief only · start 11.8K tokens ($0.05) · cost $0.32 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:48:44.328Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.32",
+     "at": "2026-11-27T05:48:55.858Z"
     }
    ],
    "approvals": [],
@@ -24042,8 +24054,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:47:54.342Z",
      "note": "",
      "uid": "st-mwv6uqsp1l5oqa",
      "createdAt": "2026-11-24T21:10:08.425Z"

@@ -845,9 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:41 UTC · `tabs-api-control` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` added (6 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `appearance-skins-colour-themes-only-remove-design-packs` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (3 steps) (all) · foreign-write
@@ -1245,6 +1242,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 05:46 UTC · `claude-emergency-access` note (all) · orchestrator
 - 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10455,
- "updatedAt": "2026-11-27T05:48:33.574Z",
+ "rev": 10456,
+ "updatedAt": "2026-11-27T05:49:24.329Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -372643,7 +372643,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T05:46:40.098Z",
+   "updatedAt": "2026-11-27T05:48:55.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -372729,6 +372729,14 @@
     {
      "text": "Claude account: hulu0241 (axf-claude-emergency-access--s1--rhonda, shared account login)",
      "at": "2026-11-27T05:45:58.284Z"
+    },
+    {
+     "text": "Headless run axf-claude-emergency-access--s1--rhonda: brief only · start 11.8K tokens ($0.05) · cost $0.32 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:48:44.328Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.32",
+     "at": "2026-11-27T05:48:55.858Z"
     }
    ],
    "approvals": [],
@@ -372772,13 +372780,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T05:25:00.603Z",
+     "at": "2026-11-27T05:48:11.262Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-claude-emergency-access--s1--gina",
+     "session": "axf-claude-emergency-access--s1--rhonda",
      "phase": ""
     }
    },
@@ -372801,8 +372809,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:47:54.342Z",
      "note": "",
      "triage": {
       "model": "Fable",
@@ -372819,9 +372827,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 15,
+     "rev": 16,
      "createdAt": "2026-11-24T21:10:08.425Z",
-     "updatedAt": "2026-11-27T05:45:12.934Z",
+     "updatedAt": "2026-11-27T05:47:55.571Z",
      "statusAt": "2026-11-27T05:45:12.776Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -373274,7 +373282,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 71,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385567,7 +385575,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:47:23.360Z",
+   "updatedAt": "2026-11-27T05:49:09.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -386767,11 +386775,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 16,
+     "rev": 17,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T05:27:19.353Z",
-     "statusAt": "2026-11-27T05:24:30.797Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T05:49:09.879Z",
+     "statusAt": "2026-11-27T05:49:09.573Z",
+     "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
       {
@@ -386849,9 +386857,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:49:09.573Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s6",
      "branch": "claude/emergency-remove-every-leftover-js--s6",
@@ -386962,7 +386977,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 228,
+   "rev": 229,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387047,7 +387062,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:45:26.893Z",
+   "updatedAt": "2026-11-27T05:48:44.213Z",
    "builtAt": "",
    "notes": [
     {
@@ -387521,6 +387536,10 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--paulie, shared account login)",
      "at": "2026-11-27T05:45:26.893Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s1--paulie: brief only · start 12.7K tokens ($0.00) · cost $0.29 · 5 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:48:44.213Z"
     }
    ],
    "approvals": [],
@@ -387564,13 +387583,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T05:41:28.099Z",
+     "at": "2026-11-27T05:48:11.132Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s6--rhonda",
+     "session": "axf-emergency-check-can-these-plugins---s1--paulie",
      "phase": ""
     }
    },
@@ -387596,12 +387615,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:47:40.161Z",
      "note": "",
-     "rev": 18,
+     "rev": 19,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:07:56.804Z",
+     "updatedAt": "2026-11-27T05:47:40.846Z",
      "statusAt": "2026-11-26T23:07:56.721Z",
      "statusBy": "orchestrator",
      "attempt": 5,
@@ -388847,7 +388866,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 252,
+   "rev": 255,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -388932,7 +388951,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:48:22.081Z",
+   "updatedAt": "2026-11-27T05:49:12.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -390195,13 +390214,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-27T05:48:22.170Z",
-     "statusAt": "2026-11-27T05:48:22.081Z",
+     "updatedAt": "2026-11-27T05:49:12.520Z",
+     "statusAt": "2026-11-27T05:49:12.431Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
-     "failedFrom": "building",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -390243,9 +390261,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:49:12.431Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s6",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s6",
@@ -390336,7 +390361,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 226,
+   "rev": 227,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
