@@ -13,8 +13,10 @@ Written Nov 27 2026 by step s7 (Fable). It covers s7's own work and the checks r
 - **One writer was still alive.** `framework/cli/profiles.mjs` `seedProfile` wrote an empty status file whenever it was
   missing. With the file deleted, two existing server tests (`test_build_profiles.py`, `test_projects.py`) brought it
   back in the checkout on every run. The new server test caught it. The block is removed (see "Outside my files").
-- **Everything asked for passes on the merged tree** (s1 + s2 + s3 + s4 + s5 + s7). s6 had not pushed a branch when this
-  was written, so it is not in the merged run.
+- **Everything asked for passes on the merged tree** (s1–s7 merged together; the seven branches merge with each other
+  without a conflict).
+- **The merge into main will conflict on the file itself.** See Open 1: it needs one `git rm`, and the lander running
+  main's code picks the wrong side by itself.
 
 ## What changed (s7)
 
@@ -83,11 +85,13 @@ Both tests need s1 (Node) and s2 + s3 (server): on main alone they fail on the m
 
 ## Checks run
 
-On the merged tree (s1–s5 + s7), Nov 27 2026:
+On the merged tree, Nov 27 2026. The typecheck, the guard, the two new tests, `check-builds-store`,
+`check-json-data-writes` and `test_build_profiles.py` ran on s1–s7; the rest ran on s1–s5 + s7, before s6 pushed (s6
+changes only the plugin's web UI):
 
 | Check | Result |
 | --- | --- |
-| console typecheck (`tsc --noEmit`, after `sync-data` + `control-inventory`) | pass. Run on main + s7; s1–s5 change no `.ts` / `.tsx` file, so it holds for the merged tree |
+| console typecheck (`tsc --noEmit`, after `sync-data` + `control-inventory`) | pass, on main + s7 and on s1–s7 merged |
 | `check-builds-store.mjs` | pass, 64 checks |
 | `check-json-data-writes.mjs` | pass, 217 writes in 116 files, none new |
 | `check-no-pipeline-status-file.mjs` | pass |
@@ -128,15 +132,19 @@ Two changes outside s7's file list, each its own commit so either can be dropped
 
 ## Open
 
-1. **Landing conflict.** "Builds live" commits on main were still rewriting `orchestrator.json` on Nov 26. Until s1's
-   code runs on the hub, a commit like that after this branch was cut gives a modify/delete conflict on the merge. The
-   answer is always delete (`git rm _claude/builds/orchestrator.json`). s1's lander rule does that by itself once it is
-   live.
+1. **Landing conflict (checked, it is there now).** "Builds live" commits on main still rewrite `orchestrator.json`, and
+   main has done so since this branch was cut. `git merge-tree` of this branch with `origin/main` gives exactly one
+   conflict: modify/delete on `_claude/builds/orchestrator.json`. The answer is always delete
+   (`git rm _claude/builds/orchestrator.json`). The lander that runs today is main's code, where the file is still a
+   tracking file and a conflict on one is settled with main's copy. That would put the file back into the PR, and the
+   guard then fails CI. s1's lander rule (retired files are removed whichever side changed them) only applies once s1
+   is on main. So this first landing needs the conflict settled by hand as a delete, or the hub's builds-live stopped
+   from writing the file first.
 2. **REST route on the console.** s3 registers `GET /api/pipeline-status` on the MCP HTTP app and exports
    `pipeline_status_route`, but nothing in `server/main.py` mounts it on the console API. The test drives the route
    function directly. Whether the path answers on the live console was not checked.
-3. **s6** (orchestrator UI paging) had no branch. Nothing here depends on it, and the guard does not scan for a status
-   file URL in client code beyond the name itself.
+3. **s6** (orchestrator UI paging) pushed late. It merges clean and typechecks; its UI was not opened or reviewed by
+   this step. The guard looks for the file's name in client code, not for any other URL that might serve the same data.
 4. **`framework/spec/fixtures/data-store-migration.json`** still lists the file as a migration source
    (`builds-orchestrator-projection`). It is a fixture outside my files; it is baselined, not changed.
 5. **Still whole-store reads.** As s1 noted: `queryBuilds`, `pipelineSummary` and `data_store.builds_page` return small
