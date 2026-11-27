@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "build-watchdog-panel-lay-mwk6tob9-cards",
+ "name": "build-watchdog-panel-lay-mwk6tob9: Cards: running builds as cards",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Running builds become a card grid (one card per build with its liveness chips) so a stuck one stands out; fixes stay a list below. One column on the phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-watchdog-panel-lay-mwk6tob9",
+  "choice-option:cards"
+ ],
+ "data": {
+  "variant": "card",
+  "header": "plain",
+  "padding": "sm",
+  "elevation": 1,
+  "collapsible": false,
+  "watchdog": {
+   "layout": "cards"
+  }
+ }
+}

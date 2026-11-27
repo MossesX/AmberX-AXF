@@ -24,6 +24,9 @@ import { spawn } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { eventsFromChange, eventsFromJournal, normEvent } from '../core/build-hook.mjs';
+import { journalReadDirs } from './persist.mjs';
+import { gunzipSync } from 'node:zlib';
+import { expandJournal } from '../plan/builds-journal-core.mjs';
 
 const REPO_ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const PLUGINS = join(REPO_ROOT, 'apps/console-web/plugins');
@@ -123,13 +126,19 @@ export async function deliver({ only = '', events = null, to = null, rounds = 20
   return report;
 }
 
-/** Every event since the store began, rebuilt from the builds journal (_claude/builds/journal/*.jsonl). */
-export function journalEvents(dir = join(REPO_ROOT, '_claude/builds/journal')) {
-  const lines = [];
-  let files = []; try { files = readdirSync(dir).filter((f) => f.endsWith('.jsonl')).sort(); } catch { return []; }
-  for (const f of files) for (const l of readFileSync(join(dir, f), 'utf8').split('\n')) { if (!l.trim()) continue; try { lines.push(JSON.parse(l)); } catch { /* torn line */ } }
-  lines.sort((a, b) => (a.rev ?? 0) - (b.rev ?? 0) || String(a.at).localeCompare(String(b.at)));
-  return eventsFromJournal(lines);
+/**
+ * Every event since the store began, rebuilt from the builds journal (builds-journal@1: the hub home, plus the repo's
+ * old parts; persist.mjs journalReadDirs). A line held in both copies counts once.
+ */
+export function journalEvents(dir) {
+  const lines = []; const seen = new Set();
+  for (const d of dir ? [dir] : journalReadDirs()) {
+    let files = []; try { files = readdirSync(d).filter((f) => /\.jsonl(\.gz)?$/.test(f)).sort(); } catch { continue; }
+    // a rotated part is gzipped (builds-store.mjs rotateJournal)
+    for (const f of files) for (const l of (f.endsWith('.gz') ? gunzipSync(readFileSync(join(d, f))).toString('utf8') : readFileSync(join(d, f), 'utf8')).split('\n')) { if (!l.trim() || seen.has(l)) continue; seen.add(l); try { lines.push(JSON.parse(l)); } catch { /* torn line */ } }
+  }
+  // a change is journalled as a diff (builds-journal-core.mjs): rebuilt to before / after here, sorted by rev
+  return eventsFromJournal(expandJournal(lines));
 }
 
 async function main(argv) {

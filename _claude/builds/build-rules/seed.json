@@ -119,6 +119,35 @@
     },
     {
       "$axf": "build-rule@1",
+      "id": "done-means-merged",
+      "title": "Done means merged and working; never stop on a failure",
+      "text": "Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.",
+      "doer": "session",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "node framework/spec/check-done-means-merged.mjs",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+        {
+          "source": "brett:2026-11-17T00:08:19Z",
+          "file": "",
+          "line": 0,
+          "text": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+          "pass": 2
+        }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:30:00Z",
+      "updatedAt": "2026-11-15T14:30:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 17 2026. The VPS enforces it too: the builds store guard (landed / built / complete need the evidence), the dispatcher's failure detector and retry ladder, the auto-lander, the verify runner and the escalation (health@1 + axf.notify@1). Its settings are the retry-policy@1 defaults (framework/core/retry-ladder.mjs)."
+    },
+    {
+      "$axf": "build-rule@1",
       "id": "claude-settings-first",
       "title": "Read Claude settings first and follow them",
       "text": "Claude settings (Brett, Nov 3 2026): at session start and before acting, read Claude settings (`claude_settings_get`, or `node apps/console-web/plugins/claude-settings/claude-settings.mjs get`) and follow them. Owner-only ones (No wait, Include irreversible, launch without asking, default model, UI Review gate, raising caps) change only with Brett's own click in the console.",
@@ -746,7 +775,7 @@
       "kind": "mechanical",
       "phase": "before",
       "enabled": true,
-      "check": "node framework/cli/builds-store.mjs verify",
+      "check": "watchdog:verify",
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
@@ -781,7 +810,7 @@
       "kind": "mechanical",
       "phase": "before",
       "enabled": true,
-      "check": "node framework/cli/build-origin.mjs missing",
+      "check": "watchdog:build-origin",
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
@@ -1598,7 +1627,7 @@
       "kind": "mechanical",
       "phase": "before",
       "enabled": true,
-      "check": "node framework/cli/model-gate.mjs audit",
+      "check": "watchdog:model-gate",
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
@@ -3648,7 +3677,7 @@
       "kind": "mechanical",
       "phase": "before",
       "enabled": true,
-      "check": "node framework/cli/model-gate.mjs audit",
+      "check": "watchdog:model-gate",
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
@@ -4111,6 +4140,6 @@
     "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
     "at": "2026-11-15T14:30:00Z",
     "pass": 2,
-    "count": 118
+    "count": 119
   }
 }

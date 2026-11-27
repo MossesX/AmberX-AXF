@@ -206,6 +206,7 @@ async function readCapped(res, maxBytes) {
 /**
  * A GitHub REST client. `token` is a string or a function read on every call; `base` defaults to GITHUB_API_URL or
  * https://api.github.com. Methods: call(method, path, body?, opts) → { status, headers, body: Buffer },
+ * opts.headers adds request headers (e.g. If-None-Match for ETag caching; the client's own headers win).
  * json(method, path, body?, opts) (GitHubError when not 2xx), get(path, opts), paginate(path, { key, maxPages, maxItems }).
  */
 export function createGitHub({ token = githubToken, base = apiBaseFromEnv(), userAgent = 'axf-cli', timeoutMs = 30_000, maxBytes = DEFAULT_MAX_BYTES, tokenHint = 'GITHUB_TOKEN', fetchImpl = fetch } = {}) {
@@ -214,7 +215,7 @@ export function createGitHub({ token = githubToken, base = apiBaseFromEnv(), use
   const tok = () => { try { return String((typeof token === 'function' ? token() : token) ?? '').trim(); } catch { return ''; } };
   const urlOf = (path) => (/^[a-z][a-z0-9+.-]*:/i.test(path) ? path : `${root}/${String(path).replace(/^\/+/, '')}`);
 
-  async function call(method, path, body, { auth = true, timeoutMs: t = timeoutMs, maxBytes: cap = maxBytes } = {}) {
+  async function call(method, path, body, { auth = true, timeoutMs: t = timeoutMs, maxBytes: cap = maxBytes, headers: extra = {} } = {}) {
     const t0 = tok();
     if (auth && !t0) throw new GitHubError(0, `No GitHub token: set ${tokenHint}`);
     const url = urlOf(path);
@@ -224,7 +225,7 @@ export function createGitHub({ token = githubToken, base = apiBaseFromEnv(), use
       res = await fetchImpl(url, {
         method,
         redirect: 'manual',
-        headers: { Accept: ACCEPT, 'X-GitHub-Api-Version': API_VERSION, 'User-Agent': userAgent, ...(t0 ? { Authorization: `Bearer ${t0}` } : {}), ...(body !== undefined && body !== null ? { 'Content-Type': 'application/json' } : {}) },
+        headers: { ...extra, Accept: ACCEPT, 'X-GitHub-Api-Version': API_VERSION, 'User-Agent': userAgent, ...(t0 ? { Authorization: `Bearer ${t0}` } : {}), ...(body !== undefined && body !== null ? { 'Content-Type': 'application/json' } : {}) },
         body: body !== undefined && body !== null ? JSON.stringify(body) : undefined,
         signal: AbortSignal.timeout(t),
       });

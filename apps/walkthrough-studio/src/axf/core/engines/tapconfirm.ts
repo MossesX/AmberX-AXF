@@ -10,6 +10,8 @@
  * settings tab), read through `tapConfig`, so a per-toolbar override is a setting and never code.
  */
 
+import { CHROME_INSTANCE_KEY, CHROME_TAP_FIELD } from './chrome-settings-rules.mjs';
+
 /** Settings keys. The per-toolbar override lives at `${TAP_KEYS.perToolbar}<toolbar id>.tapConfirm`. */
 export const TAP_KEYS = {
   enabled: 'axf.toolbars.tapConfirm',
@@ -59,6 +61,36 @@ export function tapConfig(get: (key: string) => unknown, toolbarId: string): Tap
   const override: TapOverride = (TAP_OVERRIDES as readonly string[]).includes(raw as string) ? (raw as TapOverride) : 'inherit';
   return { enabled: override === 'inherit' ? global : override === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
 }
+
+/**
+ * Every kind of chrome that taps to confirm (Brett, Nov 12 2026: "tab group settings, navigation menus, application
+ * menus, toolbars, put tap to confirm option in all of them"). The names are the chrome-settings@1 types, so one
+ * item's choice is the `tapConfirm` field of its chrome settings dialog (`axf.chrome.<type>.<instance>`).
+ */
+export const TAP_KINDS = ['toolbar', 'tab-group', 'nav-menu', 'app-menu', 'context-menu', 'banner'] as const;
+export type TapKind = (typeof TAP_KINDS)[number];
+export const TAP_KIND_LABELS: Record<TapKind, string> = { toolbar: 'Toolbars', 'tab-group': 'Tabs and tab groups', 'nav-menu': 'Navigation menus', 'app-menu': 'Application menus', 'context-menu': 'Context menus', banner: 'Banners' };
+export const isTapKind = (v: unknown): v is TapKind => typeof v === 'string' && (TAP_KINDS as readonly string[]).includes(v);
+
+/** The switch for a whole kind (toolbars keep their original key). On unless switched off. */
+export const tapKindKey = (kind: TapKind): string => (kind === 'toolbar' ? TAP_KEYS.enabled : `axf.tapConfirm.${kind}`);
+
+const overrideOf = (raw: unknown): TapOverride => ((TAP_OVERRIDES as readonly string[]).includes(raw as string) ? (raw as TapOverride) : 'inherit');
+
+/**
+ * One item's config: its own choice (the `tapConfirm` field of its chrome settings, `axf.chrome.<kind>.<instance>`;
+ * a toolbar also honours its older `axf.toolbar.<id>.tapConfirm`), else the switch for its kind.
+ */
+export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string): TapConfig {
+  const inst = get(CHROME_INSTANCE_KEY(kind, instance));
+  let own = overrideOf(inst && typeof inst === 'object' ? (inst as Record<string, unknown>)[CHROME_TAP_FIELD] : undefined);
+  if (own === 'inherit' && kind === 'toolbar') own = overrideOf(get(`${TAP_KEYS.perToolbar}${toolbarIdOf({ id: instance })}.tapConfirm`));
+  const global = get(tapKindKey(kind)) !== false;
+  return { enabled: own === 'inherit' ? global : own === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
+}
+
+/** The tip under an armed item (Brett, Addendum 2: the first tap shows what it is and "tap to confirm"). */
+export const TAP_HINT = 'Tap again to confirm';
 
 /**
  * One click on a toolbar button. `target` names the button (stable while the toolbar is on screen), `now` is ms.

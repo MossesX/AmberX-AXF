@@ -1,16 +1,16 @@
 {
   "$axf": "notify-registry@1",
-  "note": "One registry of every notification type. Types a plugin sends live in that plugin's own notify.json, so they leave with it. Everything else (the console core, AmberX, axHub) is here. A type's `match` ties it to the alerts it covers; `enforced` says who really checks it.",
+  "note": "One registry of every notification type. Types a plugin sends live in that plugin's own notify.json, so they leave with it. Everything else (the console core, the phone, axHub) is here. A type's `match` ties it to the alerts it covers; `enforced` says who really checks it.",
   "channels": [
     { "id": "banner", "label": "Banner", "icon": "bell", "app": "console", "description": "The console's alerts bell and its unread count. Off: the alert is still kept in the Alerts list, already marked read." },
-    { "id": "amberx", "label": "AmberX push", "icon": "smartphone", "app": "amberx", "description": "A notification from the AmberX app on the phone." },
+    { "id": "amberx", "label": "Phone push", "icon": "smartphone", "app": "amberx", "description": "A notification on the phone through Phone Connect, when a phone is paired." },
     { "id": "sound", "label": "Sound", "icon": "play", "app": "console", "description": "A short tone in an open console." },
     { "id": "popup", "label": "Console pop-up", "icon": "info", "app": "console", "description": "A pop-up in an open console." },
     { "id": "webpush", "label": "Web push / ntfy", "icon": "cloud", "app": "webpush", "description": "Browser web push and ntfy, when they are set up in Settings → Alerts. Their severity rules there still apply." }
   ],
   "apps": [
     { "id": "console", "label": "Console", "description": "Everything shown in the console: banner, sound and pop-ups." },
-    { "id": "amberx", "label": "AmberX", "description": "Everything the AmberX app shows on the phone." },
+    { "id": "amberx", "label": "Phone", "description": "Everything the paired phone shows (Phone Connect)." },
     { "id": "webpush", "label": "Web push / ntfy", "description": "Browser web push and ntfy." }
   ],
   "groups": [
@@ -22,7 +22,8 @@
     { "id": "accounts", "label": "Accounts and limits", "icon": "key" },
     { "id": "sessions", "label": "Claude sessions", "icon": "sparkles" },
     { "id": "console", "label": "Console", "icon": "terminal" },
-    { "id": "amberx", "label": "AmberX app", "icon": "smartphone" },
+    { "id": "amberx", "label": "Phone (device notices)", "icon": "smartphone" },
+    { "id": "phone", "label": "Phone Connect", "icon": "smartphone" },
     { "id": "banners", "label": "Status banners", "icon": "layout" },
     { "id": "other", "label": "Not in the registry yet", "icon": "help" }
   ],
@@ -48,6 +49,6 @@
     { "id": "amberx.recording", "label": "Recording asked from axHub", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "A session asked to record. Android needs your tap to allow capture.", "enforced": "required", "only": ["amberx"] },
     { "id": "amberx.console-open", "label": "Console opened by Amber", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "Amber asked the phone to open the console. Android needs this notification when the app is in the background.", "enforced": "required", "only": ["amberx"] },
     { "id": "amberx.foreground", "label": "AmberX running notices", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "Watching axHub, the screen recorder and the audio recorder. Android requires these while they run.", "enforced": "required", "only": ["amberx"] },
-    { "id": "axhub.feed", "label": "axHub held calls", "group": "approvals", "app": "axhub", "source": "axHub", "description": "axHub sends no pushes of its own: it holds the call and its feed is read by AmberX and the veto banner. Control them through their own rows.", "enforced": "feed", "only": [] }
+    { "id": "axhub.feed", "label": "axHub held calls", "group": "approvals", "app": "axhub", "source": "axHub", "description": "axHub sends no pushes of its own: it holds the call and its feed is read by the phone and the veto banner. Control them through their own rows.", "enforced": "feed", "only": [] }
   ]
 }

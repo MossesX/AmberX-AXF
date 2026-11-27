@@ -59,6 +59,9 @@ def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
     """The axHub policy tag of a command (CONTROL.md → Recommended axHub policy): reads and navigation `allow` (never a
     veto countdown), writes `veto`, destructive presses `confirm`, deciding presses `person` (never by command)."""
     effect, requires = VERB_RULES.get(cmd.get("verb", ""), ("write", "control.console.write"))
+    if cmd.get("verb") == "press" and cmd.get("address") == cc.PLACE_ADDRESS:
+        # putting the saved place back only moves the screen (view, tabs, scroll): navigation, not a write
+        effect, requires = VERB_RULES["open"]
     tag = "allow" if effect in ("read", "navigate") else "veto"
     destructive = False
     if cmd.get("verb") == "press":
@@ -406,6 +409,87 @@ def router_for(auth: Any) -> APIRouter:
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
+
+    @r.get("/toolbars")
+    async def toolbars_list(request: Request, view: str = "") -> JSONResponse:
+        """Every page toolbar the open console shows (page-toolbar@1), with its buttons; view= narrows to one page. 503 when no console is open."""
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(targets, f"view:{view}" if view else "", [cc.TOOLBAR_KIND], "console", name, audience, grants_of(request)))
+
+    @r.get("/toolbars/{ref}")
+    async def toolbar_get(request: Request, ref: str) -> JSONResponse:
+        """One toolbar's state by settings id (gate.auto-lander): look, buttons with enabled / visible / pressed / badge / action / inMore."""
+        try:
+            address = cc.toolbar_address(ref)
+        except cc.ControlError as e:
+            return fail(e)
+        return await go(request, {"$axf": cc.FRAME, "verb": "state", "address": address})
+
+    @r.post("/toolbars/{ref}/press")
+    async def toolbar_press(request: Request, ref: str) -> JSONResponse:
+        """{button, value?, confirm?, reason?, to?}: press one button of the toolbar; a destructive button answers confirmation_required until confirm is set."""
+        b = await _body(request)
+        try:
+            address = cc.toolbar_button_address(ref, str(b.get("button") or ""))
+        except cc.ControlError as e:
+            return fail(e)
+        return await from_body(request, {**{k: v for k, v in b.items() if k not in ("button",)}, "verb": "press", "address": address})
+
+    @r.get("/place")
+    async def place_get(request: Request, to: str = "recent") -> JSONResponse:
+        """The open console's place (read only): `state.saved` (view, tabs, selection, scroll kept for a reload),
+        `state.loaded` (what this page load found saved), `state.now` (what is on screen) and `state.restoring`."""
+        return await go(request, {"$axf": cc.FRAME, **cc.place_command()}, to)
+
+    @r.post("/place/restore")
+    async def place_restore(request: Request) -> JSONResponse:
+        """{from?: loaded|saved, reason?, to?}: put the place back in the open console (view, tabs, selection, scroll).
+        Default: the place the page loaded with, else the saved one. `unavailable` when there is none."""
+        b = await _body(request)
+        try:
+            cmd = cc.place_command(True, b.get("from"))
+        except cc.ControlError as e:
+            return fail(e)
+        return await from_body(request, {**{k: v for k, v in b.items() if k in ("reason", "to", "by")}, **cmd})
+
+    @r.get("/plugins/{ref}/settings")
+    async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:
+        """One plugin's settings sub-tab, gear, on/off and settings; live=1 also asks the open console for the tab's state."""
+        try:
+            r = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        if live and r.get("tab"):
+            audience, name = audience_of(request)
+            r["live"] = await run_in_threadpool(guarded, {"$axf": cc.FRAME, "verb": "state", "address": r["tab"]["address"]}, name, audience, grants_of(request))
+        return answer(r)
+
+    @r.post("/plugins/{ref}/settings/open")
+    async def plugin_settings_open(request: Request, ref: str) -> JSONResponse:
+        """Open Settings → Plugins → <plugin> in the open console (the same as pressing its gear)."""
+        try:
+            st = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        if not st.get("tab"):
+            return fail(cc.ControlError("not_found", f"{st.get('label')} has no settings sub-tab"))
+        b = await _body(request)
+        return await from_body(request, {**b, "verb": "open", "address": st["tab"]["address"]})
+
+    @r.post("/plugins/{ref}/settings/set")
+    async def plugin_settings_set(request: Request, ref: str) -> JSONResponse:
+        """{key, value}: set one setting in a plugin's sub-tab (the `set` verb on its address, same guards)."""
+        try:
+            st = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        b = await _body(request)
+        key = str(b.get("key") or "")
+        spec = next((x for x in st.get("settings") or [] if key and (x.get("key") == key or x.get("address") == key)), None)
+        if spec is None:
+            return fail(cc.ControlError("not_found", f"{st.get('label')} has no setting {key or '(no key)'}", field="key", nearest=[x.get("key") for x in st.get("settings") or []][:8]))
+        body = {k: v for k, v in b.items() if k not in ("key",)}
+        return await from_body(request, {**body, "verb": "set", "address": spec["address"], "value": b.get("value")})
 
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:

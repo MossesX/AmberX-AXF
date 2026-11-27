@@ -1,0 +1,123 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix907-ci",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-24T12:11:00Z",
+ "build": {
+  "id": "fix907-ci",
+  "title": "Get PR 907 green",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Get PR 907 green\n\nPR 907 (branch claude/pipeline-sync-combined, the pipeline sync fix) fails two CI jobs: 'Build engine sweep (Node)' and 'Web Dev Console (React/TS) + Python API' (run 45347250432). An earlier commit already fixed help coverage and the plan-studio-2 token manifest; these are new failures.\n\n1. Read the failed logs: gh run view 45347250432 --log-failed (or gh api repos/MossesX/AmberX-AXF/actions/jobs/<id>/logs).\n2. Fix every failure properly (no skipping or weakening tests). Run the failing checks locally until they pass.\n3. Push to claude/pipeline-sync-combined (this worktree is on claude/fix907-ci; push with: git push origin HEAD:claude/pipeline-sync-combined). Merge origin/main first if needed.\n4. Watch CI on PR 907 (gh pr checks 907 --watch). If anything is red, fix and push again. Repeat until every check is green.\n5. Do NOT merge the PR. Finish by commenting on PR 907 with what broke and what fixed it.",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix907-ci--rhonda",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-24T10:39:59.412Z",
+   "endedAt": "2026-11-24T12:03:29.615Z",
+   "exit": 0,
+   "costUsd": 8.4485
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Get PR 907 green",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-24T10:39:59.412Z",
+   "doneAt": "2026-11-24T12:03:35.763Z",
+   "actualMin": 84,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix907-ci",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 908,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/908"
+ },
+ "landedCommit": "98e0474a3772b56571424253149f3adf06bfa4de",
+ "commits": [
+  "fc346ed9deafb864b21f544d4155ccbf2c8e8e1f",
+  "e7ef28a9f96b8ad50a45d5eb4230a0a97b517078",
+  "dd60f8f18c36d06ab3638ad4f03d44ed902c0284",
+  "0b96c9424f458c8fb8bff3858e3e4c68a69c853e"
+ ],
+ "mergedAt": "2026-11-24T12:09:54Z",
+ "landedAt": "2026-11-24T12:09:51Z",
+ "files": [
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/server/test_emergency.py",
+  "apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs",
+  "apps/console-web/plugins/build-orchestrator/test/p2-sync.test.mjs",
+  "apps/console-web/plugins/plan-studio-2/live.test.mjs",
+  "apps/console-web/plugins/plan-studio-2/plugin.json",
+  "deploy/claude-workers.test.mjs",
+  "deploy/lander/test/store-contract.test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/server/test_emergency.py",
+    "apps/console-web/plugins/build-orchestrator/test-pipeline-sync.mjs",
+    "apps/console-web/plugins/build-orchestrator/test/p2-sync.test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio-2",
+   "files": [
+    "apps/console-web/plugins/plan-studio-2/live.test.mjs",
+    "apps/console-web/plugins/plan-studio-2/plugin.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-workers.test.mjs",
+    "deploy/lander/test/store-contract.test.mjs"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 8.4485,
+  "estimated": false,
+  "tokens": {
+   "input": 128,
+   "output": 1529,
+   "cacheRead": 3591479,
+   "cacheWrite": 90235
+  }
+ },
+ "report": "",
+ "open": []
+}

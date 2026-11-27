@@ -1,0 +1,114 @@
+{
+  "$axf": "settings-sources@1",
+  "readme": "The build orchestrator's part of settings-sources@1 (framework/schemas/settings-sources.json): settings its pipeline once kept a copy of. Each is stored under one key elsewhere; the pipeline reads it and never stores it again (ALIAS_KEYS in pipeline-core.mjs, migrateSettings() in pipeline.mjs).",
+  "sources": [
+    {
+      "id": "builds.sessionsPerAccount",
+      "label": "Sessions per account",
+      "meaning": "How many sessions one Claude account runs at once: the default for every account, and an account's own number when it has one.",
+      "store": {
+        "file": "<claude-accounts data>/workers.json",
+        "key": "limits.building",
+        "perItem": "perAccount.<name>.building",
+        "module": "deploy/claude-workers.mjs"
+      },
+      "edit": [
+        "Settings → Plugins → Claude accounts → Job routing → Sessions per account",
+        "Builds → Pipeline → Accounts → More sessions / Fewer sessions (an account's own number)",
+        "Claude accounts plugin API: POST routing/settings {building}",
+        "this plugin's API and commands: POST pipeline/settings {parallelPerAccount} (saved as limits.building), POST pipeline/account {name, parallel} (saved as perAccount.<name>.building); pipeline-settings / pipeline-account over MCP and voice",
+        "node deploy/claude-workers.mjs set building=N · pipeline.mjs set parallelPerAccount=N · pipeline.mjs account <name> --parallel N"
+      ],
+      "read": [
+        "this plugin's API: GET pipeline (accounts[].parallel, settings.parallelPerAccount)",
+        "node deploy/claude-workers.mjs config --json · pipeline.mjs settings --json"
+      ],
+      "aliases": [
+        {
+          "key": "parallelPerAccount",
+          "store": "<pipeline dir>/settings.json",
+          "module": "plugin:build-orchestrator/pipeline.mjs",
+          "was": "Parallel per account",
+          "migration": "migrateSettings() in pipeline.mjs → a settings-migrated line in <pipeline dir>/log.jsonl"
+        },
+        {
+          "key": "parallel",
+          "store": "<pipeline dir>/accounts.json (per account)",
+          "module": "plugin:build-orchestrator/pipeline.mjs",
+          "was": "More / Less parallel",
+          "migration": "migrateSettings() in pipeline.mjs"
+        },
+        {
+          "key": "builds.maxParallel",
+          "store": "Claude settings (/projects/_shared/_data/claude/settings.json)",
+          "module": "plugin:claude-settings/registry.json",
+          "was": "Max parallel builds",
+          "migration": "read last by loadSettings() in pipeline.mjs; no longer a registered Claude setting"
+        }
+      ],
+      "retiredWording": [
+        "Max parallel builds",
+        "Jobs building at once, per account",
+        "More parallel",
+        "Less parallel"
+      ]
+    },
+    {
+      "id": "builds.launchWithoutAsking",
+      "label": "Launch builds without asking",
+      "meaning": "New builds go straight to the Queue, without a card asking first.",
+      "store": {
+        "file": "Claude settings (/projects/_shared/_data/claude/settings.json)",
+        "key": "builds.launchWithoutAsking",
+        "module": "plugin:claude-settings/registry.json"
+      },
+      "owner": "Brett only",
+      "edit": [
+        "Settings → Claude → Builds → Launch builds without asking",
+        "Claude settings plugin API: PUT settings {\"builds.launchWithoutAsking\": …}; claude-settings.mjs set builds.launchWithoutAsking=…"
+      ],
+      "read": [
+        "Claude settings plugin API: GET settings",
+        "this plugin's API: GET pipeline/settings (autoQueue)"
+      ],
+      "aliases": [
+        {
+          "key": "autoQueue",
+          "store": "<pipeline dir>/settings.json",
+          "module": "plugin:build-orchestrator/pipeline.mjs",
+          "was": "autoQueue",
+          "migration": "migrateSettings() in pipeline.mjs"
+        }
+      ],
+      "retiredWording": []
+    },
+    {
+      "id": "builds.briefMaxBytes",
+      "label": "Max launch brief size (bytes)",
+      "meaning": "A launch brief bigger than this is trimmed.",
+      "store": {
+        "file": "Claude settings (/projects/_shared/_data/claude/settings.json)",
+        "key": "builds.briefMaxBytes",
+        "module": "plugin:claude-settings/registry.json"
+      },
+      "edit": [
+        "Settings → Claude → Builds → Max launch brief size (bytes)",
+        "Claude settings plugin API: PUT settings {\"builds.briefMaxBytes\": …}; claude-settings.mjs set builds.briefMaxBytes=…"
+      ],
+      "read": [
+        "Claude settings plugin API: GET settings",
+        "this plugin's API: GET pipeline/settings (briefMaxBytes)"
+      ],
+      "aliases": [
+        {
+          "key": "briefMaxBytes",
+          "store": "<pipeline dir>/settings.json",
+          "module": "plugin:build-orchestrator/pipeline.mjs",
+          "was": "briefMaxBytes",
+          "migration": "migrateSettings() in pipeline.mjs"
+        }
+      ],
+      "retiredWording": []
+    }
+  ]
+}

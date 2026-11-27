@@ -6,7 +6,7 @@
       "label": "Auto-lander paused",
       "group": "builds",
       "app": "console",
-      "source": "Gate & rules",
+      "source": "VPS Configuration",
       "description": "The auto-lander was paused (from the Auto-lander tab, the CLI, MCP or voice): nothing new lands until it is resumed. Resolved when it resumes.",
       "match": { "source": "gate", "keyPrefix": "gate:lander-paused" },
       "priority": "high"
@@ -16,9 +16,19 @@
       "label": "PR held by the gate",
       "group": "builds",
       "app": "console",
-      "source": "Gate & rules",
+      "source": "VPS Configuration",
       "description": "A PR waiting to land fails a gate rule and needs a fix (red CI, a failing check, a code clash, UI Review changes). Once per PR and rule; resolved when it passes or leaves the line.",
       "match": { "source": "gate", "keyPrefix": "gate:pr-held:" }
+    },
+    {
+      "id": "gate.auto-lander-escalated",
+      "label": "Auto-lander gave up on a build",
+      "group": "builds",
+      "app": "console",
+      "source": "VPS Configuration",
+      "description": "The server auto-lander tried to fix and land a build maxAttempts times and stopped: what broke, since when and the last attempt's log, with a Fix (reset and start a fix session). Retired with the auto-lander@1 runner (Nov 19 2026): the lander (deploy/lander/run.mjs) never gives up and never escalates, so this is no longer sent; repeated failures show on the systems check instead.",
+      "match": { "source": "gate", "keyPrefix": "gate:auto-lander-escalated:" },
+      "priority": "high"
     }
   ]
 }

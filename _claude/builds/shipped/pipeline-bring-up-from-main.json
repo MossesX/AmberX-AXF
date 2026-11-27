@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-pipeline-bring-up-from-main",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-23T23:06:34Z",
+ "build": {
+  "id": "pipeline-bring-up-from-main",
+  "title": "pipeline-bring-up-from-main",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "# Build: pipeline-bring-up-from-main\n\n## Brett said (voice, Nov 23 2026)\n\"I want to get this pipeline working so we don't have to do these hand builds anymore. I want everything to start going through Plan Studio and through the orchestrator.\" Then, after hearing the findings below: \"Figure out a way to fix all that stuff. Get her done.\"\n\n## Found today (read-only checks, Nov 23 2026)\n1. The only dispatcher running is stale. Container `axf-molly` (image built Nov 18, its code is not on main) runs a tick, a lease, a reconcile and a lander job every minute. It launches through the host service `axf-molly-bridge.service` (active since Nov 15), which runs from `/root/axf-builds/axf-molly-container-orchestrator-gate`, a folder that no longer exists, so every launch ends `exit 127 ... claude-headless.sh: No such file or directory`. Details: `_claude/builds/reports/stop-ghost-builds-live-commits.md` (sections Root cause and Needs Brett).\n2. The build watchdog is off: settings enabled=false, `/etc/cron.d/axf-build-watchdog` not installed, last pass Nov 18.\n3. The lander is off: the container logs `lander: 0 candidate(s) · on false` every 3 minutes. Four green PRs sat unmerged for over an hour today until they were landed by hand with vps.build_land.\n4. Hand builds have no record in the builds store, so they have no steps to tick and nothing to link.\n5. Nine shipped builds still read Queued or Failed (listed in that report).\n6. Stored budgets (builds.budgetPerBuildUsd, builds.budgetDailyUsd) are read by no code (found by the triage gate build).\n7. 16 failed `axf-adopt-*.scope` systemd units are left over.\n\nOn main now: the VPS model triage gate (c6467a334e83), Plan Studio live steps from the store (4b9372ef7fa9), the builds-live ghost-commit fix (afa8c2c87bfe), host services (fable-rebuild-1-2-vps-host-services-move) and the single watchdog (fable-rebuild-2-2-both-watchdogs-one). Read their reports in `_claude/builds/reports/` first.\n\n## Goal\nA plan sent from Plan Studio 2.0 goes through the orchestrator on its own: split, model from the triage gate, launched on a slot, steps checked off live in Plan Studio, PR opened, CI green, landed on main. No hand step anywhere.\n\n## Do, in this order\n1. Work out exactly how main's code expects the dispatcher, the lander, the reconciler and the watchdog to run on this VPS today (host services, cron, container), and why they are not running. Write that down before changing anything.\n2. Bring up the real ones from main (/opt/axf), the way main's own installers and docs say. One dispatcher only: never two ticking at once.\n3. Only after the new dispatcher has taken the lease and ticked cleanly, retire the stale one: stop `axf-molly` and set it not to restart, disable `axf-molly-bridge.service` and remove its unit file. Keep the exact commands to bring the old one back in the report, in case the new one fails.\n4. Turn on the watchdog and install its cron. Turn on the lander. If any of these is an owner-only setting that only Brett's own console click may change, do NOT work around it: say exactly which switch, where it is, and what it does, in the report and as one console alert.\n5. Settle the nine shipped builds whose status never moved, through the store's own commands.\n6. Make hand builds (vps.build_start) get a record in the builds store, so they show on the board, can be linked to their PR and are landed by the lander like any other build.\n7. Make the budgets real: a build that reaches its cap stops and tells Brett; same for the daily cap.\n8. Clear the 16 failed axf-adopt scopes (reset-failed) and say what left them.\n9. Prove it end to end: create a tiny throwaway plan in Plan Studio 2.0 (one trivial, safe change, e.g. a line in a docs file), send it, and follow it to landed on main without touching it. If it stalls anywhere, fix the cause and run it again until it goes through clean. Put the timeline in the report.\n\n## Rules\n- No logic in the console; decisions and state changes run on the VPS.\n- Do not delete build folders.\n- Do not touch the secrets files or print any credential.\n- Keep the VPS light: this box has 8 cores and overloads easily; run heavy checks one at a time.\n\n## Also\n- Tests for what you add (hand-build records, budget stop, lander picks up a green PR).\n- Record this hand build in Plan Studio 2.0 so Brett can see it (CLI apps/console-web/plugins/plan-studio-2/tree.mjs with AXF_PLAN_TREE_DIR=/var/lib/docker/volumes/jghxpzuudkahgznvffiwtwmj-axhub-projects/_data/amberx-axf/_data/plan-studio-2, then chown -R deploy:deploy on that folder).\n\n## Finish\nCommit, open a PR, get CI green (keep fixing and re-running until green), and land it. Report at `_claude/builds/reports/pipeline-bring-up-from-main.md`: what was wrong, what runs now and from where, anything waiting on Brett's own click, the end-to-end test timeline, and how to roll back. Keep code, comments and commits clean and professional.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-pipeline-bring-up-from-main--earl",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-23T20:15:40.870Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 139.0354
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "pipeline-bring-up-from-main",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-23T20:15:40.870Z",
+   "doneAt": "2026-11-23T22:36:19.513Z",
+   "actualMin": 141,
+   "done": true
+  }
+ ],
+ "branch": "claude/pipeline-bring-up-from-main",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 898,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/898"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-23T23:04:05.994Z",
+ "landedAt": "2026-11-23T23:04:05.994Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 139.0354,
+  "estimated": false,
+  "tokens": {
+   "input": 346,
+   "output": 1888,
+   "cacheRead": 49804413,
+   "cacheWrite": 466665
+  }
+ },
+ "report": "",
+ "open": []
+}

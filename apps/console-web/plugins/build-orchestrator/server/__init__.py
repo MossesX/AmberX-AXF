@@ -30,6 +30,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 
 import plugin_services
+import readcache  # server/readcache.py: one shared, single-flight read per source + the cap on node spawns
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "orchestrator.mjs"
@@ -47,17 +48,27 @@ APPROVER_KEYS = ("AXF_APPROVER", "AXF_APPROVER_VIA")
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 
 
+def _node_json(cmd: list[str], timeout: float, **kw: Any) -> dict[str, Any]:
+    """Run a node CLI that prints one JSON line last. A CLI that times out or can't start is an answer
+    ({ok: false, error, timeout?}), never an exception: an uncaught TimeoutExpired was a raw 500 after 30-60 s."""
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout, **kw)
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "timeout": True, "error": f"{Path(cmd[1]).name} took longer than {timeout:g} s (the host is busy); try again"}
+    except OSError as e:
+        return {"ok": False, "error": f"{Path(cmd[1]).name} could not start: {e}"[:600]}
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
 def _run(*args: str, approver: str = "") -> dict[str, Any]:
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}  # never inherited: only Brett's click sets them
     if approver:
         env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
-    proc = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
-    return res
+    return _node_json(["node", str(CLI), *args, "--json"], 60, env=env)
 
 
 def brett_click(request: Request) -> str:
@@ -78,10 +89,31 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+# ---- the one status-driven table (status-table@1, Pipeline 2.0): compact rows from the builds store on axf-data
+TABLE_CLI = Path(__file__).resolve().parent.parent / "status-table.mjs"
+TABLE_CACHE_S = 4  # every open console polls; one store read serves them all
+
+
+@router.get("/table")
+def status_table(queue: bool = False, landed: bool = False, since: int | None = None) -> dict[str, Any]:
+    """Builds as rows (status, steps done/total, model, account, slot, PR, status `at`), the merge queue with queue=1.
+    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new."""
+    # Shared and single-flight: every console and tab polling at once costs one node process per cache miss, and a
+    # stale table is served at once while it refreshes in the background (refresh no longer waits on the CLI).
+    args = [*(["--queue"] if queue else []), *(["--landed"] if landed else [])]
+    res = readcache.cached(f"build-orchestrator:table:{int(queue)}{int(landed)}",
+                           lambda: _node_json(["node", str(TABLE_CLI), *args, "--json"], 60), ttl=TABLE_CACHE_S)
+    if res.get("timeout"):
+        raise HTTPException(503, res["error"])
+    if res.get("ok") and since is not None and res.get("rev") == since:
+        return {"ok": True, "unchanged": True, "rev": since}
+    return res
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5
-_priority_cache: dict[str, Any] = {"at": 0.0, "value": None}
+PRIORITY_KEY = "build-orchestrator:priority"
 
 
 def _priority_sources() -> dict[str, Any]:
@@ -106,28 +138,30 @@ def _priority_sources() -> dict[str, Any]:
     return out
 
 
-def _priority(*args: str, sources: bool = False) -> dict[str, Any]:
+def _priority_raw(*args: str, sources: bool = False) -> dict[str, Any]:
     cmd = ["node", str(PRIORITY_CLI), *args, "--json"]
     if sources:
         cmd.append("--sources")
     body = json.dumps(_priority_sources()) if sources else None
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=30, input=body)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    return _node_json(cmd, 30, input=body)
+
+
+def _checked(res: dict[str, Any]) -> dict[str, Any]:
     if not res.get("ok"):
-        raise HTTPException(404 if "no build" in str(res.get("error")) else 400, str(res.get("error") or "priority failed")[:400])
+        code = 503 if res.get("timeout") else 404 if "no build" in str(res.get("error")) else 400
+        raise HTTPException(code, str(res.get("error") or "priority failed")[:400])
     return res
+
+
+def _priority(*args: str, sources: bool = False) -> dict[str, Any]:
+    return _checked(_priority_raw(*args, sources=sources))
 
 
 @router.get("/priority")
 def priority_list() -> dict[str, Any]:
     """Every build's priority tag and how much waits on it (cached: every tag on every screen reads this one list)."""
-    if _priority_cache["value"] is None or time.time() - _priority_cache["at"] > PRIORITY_CACHE_S:
-        _priority_cache.update(value=_priority("list", sources=True), at=time.time())
-    return _priority_cache["value"]
+    # shared and single-flight: a screen full of tags, in every tab, costs one node process per cache miss
+    return _checked(readcache.cached(PRIORITY_KEY, lambda: _priority_raw("list", sources=True), ttl=PRIORITY_CACHE_S))
 
 
 @router.get("/priority/{build}")
@@ -148,7 +182,7 @@ async def priority_set(request: Request) -> dict[str, Any]:
     if not names or not priority:
         raise HTTPException(400, "needs builds and priority")
     res = _priority("set", *names, priority, "--by", brett_click(request) or "console")
-    _priority_cache.update(value=None)
+    readcache.invalidate(PRIORITY_KEY)
     return res
 
 
@@ -168,12 +202,7 @@ def headless_runs(build: str) -> dict[str, Any]:
     can read them, else the end-of-run notes the launcher wrote on the build."""
     if len(build) > 80 or not build.replace("-", "").replace("_", "").replace(".", "").isalnum():
         raise HTTPException(400, "bad build id")
-    proc = subprocess.run(["node", str(CONTEXT_CLI), "runs", "--build", build, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
-    out = proc.stdout.strip().splitlines()
-    try:
-        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    return _node_json(["node", str(CONTEXT_CLI), "runs", "--build", build, "--json"], 30)
 
 
 @router.post("/act")
@@ -188,7 +217,9 @@ async def act(request: Request) -> dict[str, Any]:
     if not isinstance(change, dict) or not isinstance(change.get("action"), str):
         raise HTTPException(400, "a change needs an action")
     change.pop("approver", None)  # who approves comes from the sign-in, never from the body
-    return _run("act", json.dumps(change), approver=brett_click(request))
+    res = _run("act", json.dumps(change), approver=brett_click(request))
+    readcache.invalidate("build-orchestrator:table:")  # the next table read shows the change, not a stale copy
+    return res
 
 
 # ---- what Brett said (build-origin@1): framework/cli/build-origin.mjs, zero tokens
@@ -198,14 +229,9 @@ SAID_MAX = 8000
 
 
 def _origin(*args: str) -> dict[str, Any]:
-    proc = subprocess.run(["node", str(ORIGIN_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
-    out = proc.stdout.strip().splitlines()
-    try:
-        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
-    except json.JSONDecodeError:
-        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    res = _node_json(["node", str(ORIGIN_CLI), *args, "--json"], 60)
     if not res.get("ok"):
-        raise HTTPException(404 if "no build" in str(res.get("error", "")) else 400, str(res.get("error", "failed")))
+        raise HTTPException(503 if res.get("timeout") else 404 if "no build" in str(res.get("error", "")) else 400, str(res.get("error", "failed")))
     return res
 
 
@@ -279,13 +305,21 @@ def _age_min(iso: str, now: float) -> float:
         return 1e9
 
 
+_LIVE_CACHE: tuple | None = None
+
+
 def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | None = None, now: float | None = None) -> dict[str, Any]:
     """Red: changes stuck before main. Amber: orphans, or the reconciler hasn't run. Green otherwise."""
     now = now if now is not None else time.time()
     if live is None:
         try:
-            p = subprocess.run(["node", str(LIVE_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=20)
-            live = json.loads(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else {}
+            global _LIVE_CACHE
+            if _LIVE_CACHE and now - _LIVE_CACHE[0] < 15:
+                live = _LIVE_CACHE[1]
+            else:
+                p = subprocess.run(["node", str(LIVE_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=20)
+                live = json.loads(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else {}
+                _LIVE_CACHE = (now, live)
         except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, IndexError):
             live = {}
     if report is None:
@@ -306,7 +340,7 @@ def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | No
         return {"status": "warn", "summary": "The builds reconciler hasn't run lately: PRs and branches may not be linked to their builds.", "details": details + [
             "It runs at session start and every 10 min (cron axf-builds-reconcile). Run it: `node framework/cli/builds-reconcile.mjs --apply`."]}
     if report.get("error"):
-        return {"status": "warn", "summary": f"The builds reconciler couldn't read GitHub: {str(report.get('error'))[:200]}", "details": details}
+        return {"status": "warn", "summary": f"The builds reconciler has a problem: {str(report.get('error'))[:200]}", "details": details}
     if prs or branches:
         lines = [f"PR #{p.get('number')} {p.get('branch')}: {p.get('title')}" for p in prs[:12]] + [f"branch {b.get('branch')} ({b.get('ahead')} commits, no PR)" for b in branches[:12]]
         return {"status": "warn", "summary": f"{len(prs)} open PR(s) and {len(branches)} branch(es) belong to no build.", "details": details + lines + [
@@ -364,6 +398,70 @@ def sees_probe(summary: dict[str, Any] | None = None, running: list[str] | None 
     return {"status": "ok", "summary": f"The console sees {total} build(s) ({run_store} running in the store, {len(running)} live in the Build manager).", "details": []}
 
 
+ESCALATED_ID = "builds-escalated"
+
+
+def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """done-means-merged@1: red while any build is escalated (the retry ladder ran out): what broke, every try, since when."""
+    if rows is None:
+        try:
+            r = _pipeline("escalated")
+        except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+            r = None
+        rows = r.get("escalated") if isinstance(r, dict) else None
+        if rows is None:
+            return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck: every failure is being retried or is fixed."}
+    lines = [f"{x.get('id')}: {x.get('why') or x.get('kind')} Tried: {', '.join(x.get('tried') or []) or 'nothing'}. Since {x.get('since')}." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} failed, every option used up: {names}. Press Retry to start the ladder over.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _retry_escalated() -> dict[str, Any]:
+    try:
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")  # axf-not-plugin:systems-check (actor name)
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("retried") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "retry failed")[:200]}
+    return {"state": "done", "message": f"Retrying {len(done)} build(s): the ladder starts over."}
+
+
+LAUNCH_CRASH_ID = "builds-launch-crash"
+
+
+def launch_crash_probe() -> dict[str, Any]:
+    """launch-retry: red while a build stopped retrying after LAUNCH_RETRY_MAX launch crashes in a row (E2BIG, a launcher
+    error, a session that died before its first output): what broke and since when. Requeue = the auto fix."""
+    try:
+        r = _pipeline("launch-crashed")
+    except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+        return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    rows = r.get("crashed") if isinstance(r, dict) else None
+    if not isinstance(rows, list):
+        return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck crashing at launch."}
+    lines = [f"{x.get('id')}: {x.get('retries')} launch crashes in a row, last error: {x.get('lastLaunchError') or 'none printed'} (since {(x.get('launchRetry') or {}).get('at', '?')})." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} keep{'s' if len(rows) == 1 else ''} crashing at launch: {names}. Fix the launcher error, then Requeue.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _requeue_launch_crashed() -> dict[str, Any]:
+    try:
+        r = _pipeline("launch-crashed", "--requeue", "--by", "systems-check")  # axf-not-plugin:systems-check (actor name)
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("requeued") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "requeue failed")[:200]}
+    return {"state": "done", "message": f"Requeued {len(done)} build(s) with fresh launch retries."}
+
+
 _health_done = False
 
 
@@ -385,6 +483,22 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        reg.register({"id": ESCALATED_ID, "label": "Builds that need you", "service": "builds", "order": 54, "severity": "error",
+                      "run": lambda: escalated_probe(), "interval": 60,
+                      "breaks": "A build Brett asked for is not being built: the server tried every retry and stopped.",
+                      "fix": {"type": "action", "label": "Retry"},
+                      "autoFix": {"label": "Retry", "run": _retry_escalated, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs escalated` lists them with every try.",
+                                       "`… pipeline.mjs retry <build> [strategy]` retries one (the ladder starts over); `retry-all` retries every one."]}, FOLDER)
+        reg.register({"id": LAUNCH_CRASH_ID, "label": "Builds crashing at launch", "service": "builds", "order": 53, "severity": "error",
+                      "run": lambda: launch_crash_probe(), "interval": 120,
+                      "breaks": "A queued build never gets started: every launch died before Claude ran (E2BIG, a launcher error), so it stopped retrying.",
+                      "fix": {"type": "action", "label": "Requeue"},
+                      "autoFix": {"label": "Requeue", "run": _requeue_launch_crashed, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs launch-crashed` lists them with the last error.",
+                                       "`… pipeline.mjs requeue-launch <build>` puts one back in the Queue with fresh retries; `launch-crashed --requeue` all."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
@@ -392,6 +506,104 @@ def ensure_health() -> bool:
 
 
 ensure_health()
+
+# ---- the build watchdog (build-watchdogs@1): every watch through one set of routes under /watchdogs and one systems
+# check item (server/watchdogs.py). The two blocks below are the row cleaner's and the session watch's own routes.
+from . import watchdogs as _watchdogs  # noqa: E402
+
+router.include_router(_watchdogs.router_for(FOLDER, brett_click))
+_watchdogs.ensure_health(FOLDER)
+
+# ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
+from . import watchdog as _watchdog  # noqa: E402
+
+router.include_router(_watchdog.router_for(FOLDER, brett_click))
+_watchdog.ensure_health(FOLDER)
+
+
+# The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
+from . import recovery_watchdog as watchdog_mod  # noqa: E402
+
+watchdog_mod.ensure_health()
+
+
+def _watchdog(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
+    res = watchdog_mod.run_cli(*args, actor=who, timeout=timeout)
+    if res.get("ok") is False:
+        err = str(res.get("error") or "watchdog failed")
+        raise HTTPException(400 if "unknown setting" in err or "key=value" in err else 500, err[:400])
+    return res
+
+
+# REST (Brett, Nov 8 2026: "Everything comes with an API"): the same calls as the Watchdog tab, the watchdog_* MCP
+# commands, `axf watchdog …` and voice. In the console container (AXF_WATCHDOG_HOST=request) the host does the work:
+# scan answers with the host's last scan, run asks the host's cron for a pass (it runs within a minute).
+
+
+@router.get("/recovery-watchdog/status")
+def recovery_watchdog_status() -> dict[str, Any]:
+    """watchdog-status@1: on/off, cron, last pass + age (stale after 3 min), the host's last scan, recent fixes, gave-up builds."""
+    return {**_watchdog("status"), "host": watchdog_mod.on_host()}
+
+
+@router.get("/recovery-watchdog/scan")
+def recovery_watchdog_scan() -> dict[str, Any]:
+    """The dry run: every build marked running, what the probe saw, its cause and the planned action. Nothing changes."""
+    if watchdog_mod.on_host():
+        return {**_watchdog("scan"), "ok": True, "source": "live"}
+    st = _watchdog("status")
+    scan = st.get("lastScan") or {"at": "", "builds": []}
+    return {"ok": True, "source": "host-last-pass", "at": scan.get("at", ""), "builds": scan.get("builds", []), "stuck": [b for b in scan.get("builds", []) if b.get("stuck")],
+            "note": "The console can't see the VPS's processes: this is what the host's last watchdog pass saw."}
+
+
+@router.post("/recovery-watchdog/run")
+async def recovery_watchdog_run(request: Request) -> dict[str, Any]:
+    """One pass now ({build?} limits it to one build). On the host it runs here; from the container the host runs it."""
+    body = await _json_body(request)
+    build = _build_id(body["build"]) if body.get("build") else ""
+    who = brett_click(request) or "console"
+    if not watchdog_mod.on_host():
+        r = _watchdog("request", "--by", who, *(["--build", build] if build else []), who=who)
+        return {**r, "ok": True, "requested": True}
+    r = _watchdog("run", *(["--build", build] if build else []), who=who, timeout=300)
+    return {**r, "ok": True, "requested": False}
+
+
+@router.post("/recovery-watchdog/requeue")
+async def recovery_watchdog_requeue(request: Request) -> dict[str, Any]:
+    """Fix (requeue): builds the watchdog gave up on back to the Queue with a fresh retry count ({builds?: [id…]}; none = all)."""
+    body = await _json_body(request)
+    ids = [_build_id(x) for x in (body.get("builds") or [])]
+    who = brett_click(request) or "console"
+    return _watchdog("requeue", *ids, who=who)
+
+
+@router.get("/builds/{build_id}/recoveries")
+def build_recoveries(build_id: str) -> dict[str, Any]:
+    """One build's recoveries[] (watchdog-recovery@1, oldest first) and the retries it has used since its last progress."""
+    try:
+        return _watchdog("recoveries", _build_id(build_id))
+    except HTTPException as e:
+        if "no build" in str(e.detail):
+            raise HTTPException(404, str(e.detail)) from e
+        raise
+
+
+@router.get("/recovery-watchdog/settings")
+def recovery_watchdog_settings() -> dict[str, Any]:
+    """The Watchdog settings (Settings → Plugins → Build orchestrator → Watchdog): {settings, keys, defaults}."""
+    return _watchdog("settings")
+
+
+@router.put("/recovery-watchdog/settings")
+async def recovery_watchdog_settings_set(request: Request) -> dict[str, Any]:
+    """Save a patch of the Watchdog settings ({key: value}; unknown keys → 400). Hot: the next pass reads them."""
+    body = await _json_body(request)
+    if not body:
+        raise HTTPException(400, "send {key: value} (keys: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi, cooldownMin)")
+    who = brett_click(request) or "console"
+    return _watchdog("set", "--patch", json.dumps(body), "--by", who, who=who)
 
 
 
@@ -401,7 +613,7 @@ PIPELINE_CLI = CLI.parent / "pipeline.mjs"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
-def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+def _pipeline_run(*args: str, who: str = "") -> dict[str, Any]:
     """Run the pipeline CLI (reads the store, the slots store, the accounts and the dispatcher's state file; writes go
     through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it."""
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
@@ -418,6 +630,28 @@ def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
         err = str(res.get("error") or "pipeline failed")
         raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err[:400])
     return res
+
+
+import threading as _thr
+_PIPE_CACHE: dict = {}
+_PIPE_LOCK = _thr.Lock()
+_PIPE_READ_ONLY = {("status",), ("launch-crashed",)}
+_PIPE_TTL = 10.0
+
+
+def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+    """Read-only calls (status, launch-crashed) share one Node run per 10 s; any write clears the cache."""
+    key = tuple(args)
+    if key in _PIPE_READ_ONLY and not who:
+        with _PIPE_LOCK:
+            hit = _PIPE_CACHE.get(key)
+            if hit and time.time() - hit[0] < _PIPE_TTL:
+                return hit[1]
+            res = _pipeline_run(*args)
+            _PIPE_CACHE[key] = (time.time(), res)
+            return res
+    _PIPE_CACHE.clear()
+    return _pipeline_run(*args, who=who)
 
 
 def _build_id(v: Any) -> str:
@@ -451,6 +685,19 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     if reason not in SELFCHECK_REASONS:
         reason = "on demand"
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/requeue-stuck")
+async def pipeline_requeue_stuck(request: Request) -> dict[str, Any]:
+    """{apply?: bool}: Pending builds whose last run finished its phase with steps left (parked by the old exit rule):
+    listed (dry run) or, with apply, moved back to the Queue at their place, journalled. Same function as the CLI
+    (pipeline.mjs requeue-stuck), the MCP tool, voice and builds-reconcile --apply."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    apply = bool(isinstance(body, dict) and body.get("apply") is True)
+    return _pipeline("requeue-stuck", *(["--apply"] if apply else []), who=(brett_click(request) or "console")[:80])
 
 
 PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
@@ -494,6 +741,55 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+EMERGENCY_CLI = ROOT / "framework" / "cli" / "emergency-builds.mjs"
+EMERGENCY_ONLY_BRETT = ("Only Brett sends a build to emergency, from his own signed-in console (Build orchestrator or Plan Studio 2.0). "
+                        "The console token, MCP, voice and sessions cannot.")
+
+
+def _emergency(*args: str, approver: str = "") -> dict[str, Any]:
+    """Run framework/cli/emergency-builds.mjs. `approver` (Brett's click) is the only way AXF_APPROVER is ever set."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    proc = subprocess.run(["node", str(EMERGENCY_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(403 if proc.returncode == 3 else 400 if proc.returncode == 2 else 500, str(res.get("error") or "emergency failed")[:400])
+    return res
+
+
+@router.get("/pipeline/emergency")
+def pipeline_emergency_list(request: Request) -> dict[str, Any]:
+    """The emergency builds (sent by Brett: they skip the line, build in the 2 emergency slots and land first), each
+    with its status and whether its slot grant is on file. `canSend` = this request is Brett's own signed-in console."""
+    return {**_emergency("list"), "canSend": bool(brett_click(request))}
+
+
+@router.post("/pipeline/emergency")
+async def pipeline_emergency(request: Request) -> dict[str, Any]:
+    """{id}: send a Pipeline 2.0 build to emergency. Brett only, from his own signed-in console session: the console
+    token (MCP, REST commands, voice) and every session are refused with 403. The build is tagged emergency, skips the
+    one-active-build line, builds in the emergency slot pool (2 places beside the orchestrator's) and lands first."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, EMERGENCY_ONLY_BRETT)
+    body = await _json_body(request)
+    readcache.invalidate("build-orchestrator:table:")
+    return _emergency("send", _build_id(body.get("id")), approver=who)
+
+
+@router.post("/pipeline/emergency/clear")
+async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
+    """{id}: an emergency build becomes an ordinary build again (the tag and the slot grant go; running sessions finish)."""
+    body = await _json_body(request)
+    readcache.invalidate("build-orchestrator:table:")
+    return _emergency("clear", _build_id(body.get("id")))
+
+
 BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
 
 
@@ -519,6 +815,73 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     return _pipeline(*args)
 
 
+@router.get("/attempts/{build}")
+def build_attempts(build: str) -> dict[str, Any]:
+    """done-means-merged@1: every attempt on a build (strategy, model, account, result), the open failure, the merge +
+    CI + verify evidence, the escalation and what the retry ladder tries next (pipeline.mjs attempts)."""
+    return _pipeline("attempts", _build_id(build))
+
+
+RETRY_STRATEGIES = ("retry", "merge-main", "fix:targeted", "fix:regenerate", "fix:redo-step", "fresh-session", "switch-model", "switch-account")
+
+
+@router.post("/retry/{build}")
+async def build_retry(build: str, request: Request) -> dict[str, Any]:
+    """{strategy?, why?}: Retry by hand. The open failure's attempts so far are marked skipped (they stay in the log), the
+    escalation clears and the build is fixing again: the next tick relaunches it on the ladder's first rung, or at once
+    on the strategy given (never above the step's pinned model). A build with no failure goes back to the Queue."""
+    body = await _json_body(request)
+    strategy = str(body.get("strategy") or "").strip()
+    if strategy and strategy not in RETRY_STRATEGIES:
+        raise HTTPException(400, f"strategy is one of {', '.join(RETRY_STRATEGIES)}")
+    args = ["retry", _build_id(build), *([strategy] if strategy else []), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "")[:300]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
+
+
+@router.get("/launch-state/{build}")
+def build_launch_state(build: str) -> dict[str, Any]:
+    """launch-retry + land-clash bounce: runs, crashes, the launch-retry record (lastLaunchError, retries, retryAt,
+    gaveUp) and the last bounce (bounceReason, the merge-main step) of one build (pipeline.mjs launch-state)."""
+    return _pipeline("launch-state", _build_id(build))
+
+
+@router.post("/pipeline/requeue-launch")
+async def pipeline_requeue_launch(request: Request) -> dict[str, Any]:
+    """{id}: put a build that crashed at launch back in the Queue now, launch retries reset (pipeline.mjs requeue-launch)."""
+    body = await _json_body(request)
+    return _pipeline("requeue-launch", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/clash-bounce")
+async def pipeline_clash_bounce(request: Request) -> dict[str, Any]:
+    """{id, files?: [path…], head?}: a build with every step done that clashes with main gets one merge-main step and goes
+    back to the Queue. Without files the server works the clash out with git merge-tree (pipeline.mjs clash-bounce)."""
+    body = await _json_body(request)
+    args = ["clash-bounce", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80]]
+    files = body.get("files")
+    if isinstance(files, list) and files:
+        args += ["--files", ",".join(str(f)[:200] for f in files[:20] if str(f).strip())]
+    head = str(body.get("head") or "").strip()
+    if head:
+        if not re.fullmatch(r"[0-9a-f]{7,40}", head):
+            raise HTTPException(400, "head is a commit sha")
+        args += ["--head", head]
+    return _pipeline(*args)
+
+
+@router.post("/pipeline/dedupe-steps")
+async def pipeline_dedupe_steps(request: Request) -> dict[str, Any]:
+    """{apply?: bool, ids?: [id…]}: collapse repeated steps (a done copy wins), one journal revision per build; a dry run
+    without apply (pipeline.mjs dedupe-steps = builds-store.mjs dedupe-steps)."""
+    body = await _json_body(request)
+    raw = body.get("ids")
+    ids = [_build_id(x) for x in raw[:200]] if isinstance(raw, list) else []
+    return _pipeline("dedupe-steps", *ids, *(["--apply"] if body.get("apply") is True else []), "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no
@@ -529,7 +892,8 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
 
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
-    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
+    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential).
+    `parallel` is the account's Sessions per account: saved as its one key, claude-workers perAccount.<name>.building."""
     body = await _json_body(request)
     name = str(body.get("name") or "").strip()
     if not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", name):
@@ -537,7 +901,7 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     args = ["account", name]
     if body.get("fable") in ("on", "off", "auto"):
         args += ["--fable", str(body["fable"])]
-    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 12:
+    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 20:
         args += ["--parallel", str(body["parallel"])]
     if body.get("use") in ("on", "off"):
         args += ["--use", str(body["use"])]
@@ -551,15 +915,93 @@ def pipeline_settings() -> dict[str, Any]:
     return _pipeline("settings")
 
 
+# Fill every slot (BUILD-PARALLEL): the three Claude settings the fill round follows, by their pipeline names
+FILL_KEYS = {"fillSlots": "builds.fillSlots", "maxParallelPerBuild": "builds.maxParallelPerBuild", "autoQueuePending": "builds.autoQueuePending"}
+STEP_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+
+
+def fill_settings_set(request: Request, body: dict[str, Any]) -> dict[str, Any]:
+    """The fill settings part of POST /pipeline/settings: written as Claude settings through axf.claude-settings@1,
+    which derives the owner approval from the request itself. autoQueuePending is refused here unless the request is
+    Brett's own click (owner-only); fillSlots on and a higher maxParallelPerBuild need him too (claude-settings says so)."""
+    values = {FILL_KEYS[k]: v for k, v in body.items() if k in FILL_KEYS}
+    if not values:
+        return {}
+    if "autoQueuePending" in body and not brett_click(request):
+        raise HTTPException(403, "Auto-queue pending builds is owner-only: only Brett's own click in the console changes it")
+    if "maxParallelPerBuild" in body and not (isinstance(body["maxParallelPerBuild"], int) and 1 <= body["maxParallelPerBuild"] <= 12):
+        raise HTTPException(400, "maxParallelPerBuild is a whole number from 1 to 12")
+    if "fillSlots" in body and not isinstance(body["fillSlots"], bool):
+        raise HTTPException(400, "fillSlots is true or false")
+    svc = plugin_services.get("axf.claude-settings@1")
+    if svc is None:
+        raise HTTPException(503, "the Claude settings plugin is not installed: fill settings can't be changed")
+    r = svc.set_for(request, values) if hasattr(svc, "set_for") else svc.set(values, brett_click(request) or "console")
+    if not r.get("ok"):
+        raise HTTPException(403 if r.get("code") == "denied" else 400, str(r.get("message") or "refused")[:400])
+    return {"changed": r.get("changed", [])}
+
+
+@router.get("/pipeline/fill")
+def pipeline_fill(build: str = "") -> dict[str, Any]:
+    """Fill every slot, read-only: the slots (one row per slot: which build and step, or free), the ready steps, what the
+    next round would launch (planFill dry run, with why the rest waits), the settings; ?build=<id> adds that build's
+    steps with their dependency state (done / running in slot N / ready / waiting on …)."""
+    return _pipeline("fill", "status", *([_build_id(build)] if build else []))
+
+
+@router.post("/pipeline/fill/run")
+async def pipeline_fill_run(request: Request) -> dict[str, Any]:
+    """One dispatcher round now (on the VPS host it runs at once; from the console's container it is filed for the host's
+    next minute)."""
+    return _pipeline("fill", "run", "--by", (brett_click(request) or "console")[:80], who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/fill/settings")
+async def pipeline_fill_settings(request: Request) -> dict[str, Any]:
+    """{fillSlots?, maxParallelPerBuild?, autoQueuePending?}: the fill settings alone (the MCP command
+    pipeline-fill-settings, `pipeline.mjs fill set`, the voice action). Same rules as POST /pipeline/settings."""
+    body = await _json_body(request)
+    if not any(k in FILL_KEYS for k in body):
+        raise HTTPException(400, "send fillSlots, maxParallelPerBuild and/or autoQueuePending")
+    fill = fill_settings_set(request, body)
+    return {"ok": True, **fill, "settings": _pipeline("fill", "status").get("settings")}
+
+
+@router.post("/builds/{build_id}/steps/{step}/deps")
+async def step_deps(build_id: str, step: str, request: Request) -> dict[str, Any]:
+    """{dependsOn: [stepId…]} sets the step's dependencies ([] = independent: it may run in parallel as soon as the build
+    runs); {dependsOn: null} or {sequential: true} = no list (it waits for the step before it). Unknown ids, the step
+    itself and cycles are refused."""
+    body = await _json_body(request)
+    if not STEP_RE.match(step):
+        raise HTTPException(400, "bad step id")
+    deps = body.get("dependsOn", None)
+    if body.get("sequential") is True or deps is None:
+        arg = "sequential"
+    elif isinstance(deps, list) and all(isinstance(x, str) and STEP_RE.match(x) for x in deps):
+        arg = json.dumps(deps)
+    else:
+        raise HTTPException(400, "dependsOn is a list of step ids, or null")
+    who = (brett_click(request) or "console")[:80]
+    return _pipeline("fill", "deps", _build_id(build_id), step, arg, "--by", who, who=who)
+
+
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    """{key: value…} for pipeline-settings@1 (parallelPerAccount, stepsInParallel, fablePlans, useConsoleAccount, maxRuns, idleAfterMin,
+    probeDays, splitProvider, apiOverflow, apiAccounts) and the fill settings (fillSlots, maxParallelPerBuild, autoQueuePending: Claude
+    settings, see fill_settings_set). parallelPerAccount is Sessions per account: saved as its one key, claude-workers
+    limits.building (settings-sources@1); autoQueue and briefMaxBytes are Claude settings and are refused here. Turning the
+    API overflow rule on spends money per token: only Brett's own click does that (a session, MCP or voice may turn it off);
+    so is Auto-queue pending builds, either way."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "stepsInParallel", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    fill = fill_settings_set(request, body)
+    if fill and not any(k in allowed for k in body):
+        return {"ok": True, **fill, "fill": _pipeline("fill", "status").get("settings")}
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -569,7 +1011,8 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     pairs = [f"{k}={val(v)}" for k, v in body.items() if k in allowed]
     if not pairs:
         raise HTTPException(400, "nothing to change")
-    return _pipeline("set", *pairs)
+    res = _pipeline("set", *pairs)
+    return {**res, **fill} if fill else res
 
 
 @router.post("/pipeline/route")
@@ -713,9 +1156,86 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
                          said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
 
 
+P2_CLI = CLI.parent / "pipeline2.mjs"
+P2_ACTIONS = ("queue", "hold", "release", "retry", "rebuild", "run-ci", "land", "cancel")
+CLASH_ANSWERS = ("run-all", "defer")  # build-clash@1: a clash answered by hand (the pipeline answers run-all itself)
+
+
+def build_act(build_id: str, action: str, *, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+    """One tap on a Pipeline 2.0 build or one of its steps (pipeline2.mjs actBuild decides everything): queue, hold,
+    release, retry, rebuild, run-ci, land, cancel, or a clash answered by hand (run-all, defer). A tap that does not fit
+    where the build is → 400 with the reason."""
+    if action not in P2_ACTIONS + CLASH_ANSWERS:
+        raise HTTPException(400, f"action is one of {', '.join(P2_ACTIONS + CLASH_ANSWERS)}")
+    args = ["node", str(P2_CLI), "act", _build_id(build_id), action, "--by", (by or "console")[:80], "--json"]
+    if step:
+        if not ID_RE.match(step):
+            raise HTTPException(400, "bad step id")
+        args += ["--step", step]
+    if why.strip():
+        args += ["--why", why[:300]]
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    env["AXF_ACTOR"] = (by or "console")[:80]
+    try:
+        proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=660, env=env)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(500, f"the orchestrator could not run: {str(e)[:200]}") from None
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "the orchestrator refused")
+        raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err[:400])
+    return res
+
+
+@router.post("/pipeline/act")
+async def pipeline_act(request: Request) -> dict[str, Any]:
+    """{id, action, step?, why?}: one tap on a Pipeline 2.0 build or one of its steps. queue = move it on (split it, give
+    it the active place when it is next); hold / release = a waiting build keeps its place and is skipped; retry = failed
+    parts leave failed forward; rebuild = a failed step is built again, a build that failed while landing is recompiled;
+    run-ci = back to Running CI; land = the lander takes it now; cancel = archived. The VPS decides; a tap that does not
+    fit is refused with the reason."""
+    body = await _json_body(request)
+    return build_act(str(body.get("id") or ""), str(body.get("action") or ""), by=(brett_click(request) or "console"),
+                     why=str(body.get("why") or ""), step=str(body.get("step") or ""))
+
+
+@router.post("/pipeline/clash-answer")
+async def pipeline_clash_answer(request: Request) -> dict[str, Any]:
+    """{id, answer: run-all | defer, why?}: answer a build's clash by hand (build-clash@1). A clash never blocks: the
+    pipeline answers run-all itself and a conflict with main is fixed by a session. run-all = every step runs (also
+    undoes a defer); defer = each clashing step that has not started waits for the build it clashes with and starts by
+    itself when that build lands. Refused with the reason when the build has no clash or a person already answered."""
+    body = await _json_body(request)
+    answer = str(body.get("answer") or body.get("action") or "")
+    if answer not in CLASH_ANSWERS:
+        raise HTTPException(400, f"answer is one of {', '.join(CLASH_ANSWERS)}")
+    return build_act(str(body.get("id") or ""), answer, by=(brett_click(request) or "console"), why=str(body.get("why") or ""))
+
+
+@router.get("/pipeline/clashes")
+def pipeline_clashes() -> dict[str, Any]:
+    """Every Pipeline 2.0 build that carries a clash: what it clashes with, the answer (the pipeline's own or a
+    person's), whether Run all / Defer may still be chosen, and the steps whose session resolves a conflict with main."""
+    try:
+        proc = subprocess.run(["node", str(P2_CLI), "clashes", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        out = proc.stdout.strip().splitlines()
+        return json.loads(out[-1]) if out else {"ok": False, "clashes": [], "error": proc.stderr.strip()[-400:] or "no output"}
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        raise HTTPException(500, f"the orchestrator could not run: {str(e)[:200]}") from None
+
+
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one;
+    act(id, action, by=…, why=…, step=…) is one tap on a Pipeline 2.0 build or step (queue, hold, release, retry,
+    rebuild, run-ci, land, cancel)."""
+
+    def act(self, build_id: str, action: str, by: str = "console", why: str = "", step: str = "") -> dict[str, Any]:
+        return build_act(build_id, action, by=by, why=why, step=step)
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)
@@ -743,20 +1263,16 @@ class ConsoleFocus:
         self._mtime = -1.0
         self._ids: set[str] = set()
 
-    def store(self) -> Path:
-        return ROOT / "_claude" / "builds" / "store.json"
+    REMOTE_TTL_S = 30.0
 
     def ids(self) -> set[str]:
-        try:
-            mt = self.store().stat().st_mtime
-        except OSError:
-            return set()
-        if mt != self._mtime:
-            try:
-                self._ids = {str(b.get("id")) for b in json.loads(self.store().read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
-            except (OSError, ValueError):
-                self._ids = set()
-            self._mtime = mt
+        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
+        # projection), at most every REMOTE_TTL_S seconds
+        import builds_store
+        if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
+            return self._ids
+        self._ids = {str(b.get("id")) for b in builds_store.builds() if b.get("id")}
+        self._mtime = time.monotonic()
         return self._ids
 
     def resolve(self, path: str) -> dict[str, Any] | None:

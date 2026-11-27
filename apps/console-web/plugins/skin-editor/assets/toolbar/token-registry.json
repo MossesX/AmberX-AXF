@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "token-registry",
+  "name": "Token registry",
+  "version": "1.0.0",
+  "description": "The Token registry toolbar: open the Skin editor. The level switch, the token search and the area, element and state picks ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "skin-editor", "tokens"],
+  "data": {
+    "scope": "view:token-registry",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "never", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "registry",
+        "label": "Registry",
+        "items": [
+          { "id": "skin-editor", "icon": "palette", "label": "Edit skins", "action": "handler:token-registry.skin-editor", "priority": 300, "overflow": "never" }
+        ]
+      }
+    ]
+  }
+}

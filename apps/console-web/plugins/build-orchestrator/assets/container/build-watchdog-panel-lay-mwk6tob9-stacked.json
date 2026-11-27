@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "build-watchdog-panel-lay-mwk6tob9-stacked",
+ "name": "build-watchdog-panel-lay-mwk6tob9: Stacked: one section under the other",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Toolbar, Gave up, Marked running (pid / tmux / heartbeat chips per build), Recent fixes, each a full-width list. Densest on desktop, reads top to bottom on the phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-watchdog-panel-lay-mwk6tob9",
+  "choice-option:stacked"
+ ],
+ "data": {
+  "variant": "outline",
+  "header": "plain",
+  "padding": "sm",
+  "elevation": 0,
+  "collapsible": false,
+  "watchdog": {
+   "layout": "stacked"
+  }
+ }
+}

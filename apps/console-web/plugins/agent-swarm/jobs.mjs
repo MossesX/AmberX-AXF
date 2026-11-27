@@ -8,6 +8,7 @@
  *   node apps/console-web/plugins/agent-swarm/jobs.mjs list                         job types, owner, last run, next, cost
  *   … <job-type> [--input k=v]… [--agent <id>] [--dry-run]   route + brief + launch (deploy/claude-headless.sh, session <agent>-<job>)
  *   … run <job-type> [--input k=v]… [--agent <id>] [--dry-run]  same (--agent: this agent, not the router's pick)
+ *   … <job-type> … [--model fable|opus]   this one run on that model tier (the lander: Fable for a code conflict with main)
  *   … book --name <slug> [--agent <id>] [--job feature-build] [--cwd d] [--log f] [--model m] [--sh]
  *                                                a headless launch that is starting now (deploy/claude-headless.sh): book it
  *                                                on the agent given, else the router's pick (never nobody); --sh prints
@@ -81,6 +82,8 @@ export function run(typeId, opts = {}) {
     if (!opts.dry) say([jc.unassignedLine(jt, r.why)]);
     return { ok: false, unassigned: r.unassigned, why: r.why, tried: r.tried, jobType: jt.id };
   }
+  // a caller may name the model tier for this one run (the lander: Fable for a code conflict with main); the run's cap follows it
+  if (core.MODEL_TIERS.includes(opts.model) && opts.model !== r.model) { r.model = opts.model; r.cap = jc.runCap(jt, opts.model, table); }
   const values = jc.checkInputs(jt, opts.inputs ?? {});
   const runId = jc.runIdFor(jt, at); const agent = r.agent;
   const skills = loadSkills(); const skill = skills[jt.data.specialty] ?? skills[agent.skill] ?? null; // the job's skill page, whoever takes it
@@ -245,7 +248,7 @@ export async function main(argv) {
   }
   const typeId = cmd === 'run' ? rest[0] : cmd;
   if (!typeId) throw new Error('which job type? (agent-job.mjs list)');
-  const r = run(typeId, { inputs: parseInputs(args), dry: flag('--dry-run'), agent: val('--agent') });
+  const r = run(typeId, { inputs: parseInputs(args), dry: flag('--dry-run'), agent: val('--agent'), model: val('--model') });
   if (!r.ok) { process.exitCode = 3; return out(r, `${r.unassigned ? 'UNASSIGNED' : 'NOT ROUTED'}: ${r.why}`); }
   return out(r, r.dry ? `would run as ${r.agent} (${r.model}, up to ${core.fmtUsd(r.cap)}), session axf-${r.session}\n\n${r.brief.text}\n\nclaude ${r.args.map((a) => (a.includes(' ') ? JSON.stringify(a) : a)).join(' ')}` : `${r.run.jobId}: ${r.run.agent} on ${r.run.model} · ${r.launched}`);
 }

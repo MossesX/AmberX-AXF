@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-shipped-features-dense",
+  "name": "Shipped features: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-shipped-features",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:shipped-features",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "list",
+        "label": "List",
+        "items": [
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync",
+            "action": "command:shipped-features/sync",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "import",
+            "icon": "download",
+            "label": "Import manifests",
+            "action": "command:shipped-features/import",
+            "priority": 250
+          },
+          {
+            "id": "backfill",
+            "icon": "clock",
+            "label": "Backfill (dry run)",
+            "action": "command:shipped-features/backfill",
+            "args": {
+              "dry": true
+            },
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -25,7 +25,7 @@ import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUser
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -49,6 +49,9 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { isPageToolbar, parseActionRef, parseBadge, parseToolbarScope, parseWhen, toolbarErrors, toolbarStateKeys, whenHolds } from '../core/engines/toolbar-rules.mjs';
+import { migrateToolbar, needsToolbarMigration, toolbarMigrationErrors, toolbarMigrationRecord, toolbarSignature } from '../core/engines/toolbar-migrate.mjs';
+import { TOOLBAR_FIXTURE_CASES, toolbarFixtureOutputs } from './toolbar-actions-cases';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
@@ -636,6 +639,11 @@ write('spacing.json', {
     avatar: AVATAR_SIZE,
     progressWidth: PROGRESS_WIDTH,
     themeSwitch: [['arctic-daylight', 'arctic-daylight', 'amber-ember'], ['amber-ember', 'arctic-daylight', 'amber-ember'], ['neon-tide', 'arctic-daylight', 'amber-ember'], [undefined, 'a', 'b']].map(([active, light, dark]) => ({ active, light, dark, next: themeSwitchNext(active, light, dark) })),
+    // A switch stays inside the light / dark pair of the look in force (skin pass, Nov 2026).
+    themeSwitchPair: ([['arctic-daylight', { light: 'arctic-daylight', dark: 'amber-ember' }], ['saffron-day', { light: 'arctic-daylight', dark: 'amber-ember' }], ['carbon-amber', { light: 'arctic-daylight', dark: 'amber-ember' }], ['neon-tide', { light: 'arctic-daylight', dark: 'amber-ember' }], [undefined, { light: 'a', dark: 'b' }], ['x', { light: 'a', dark: 'b' }]] as Array<[string | undefined, { light: string; dark: string }]>).map(([active, own]) => {
+      const others = [{ light: 'fresh-light', dark: 'fresh-dark' }, { light: 'saffron-day', dark: 'carbon-amber' }, { light: 'x', dark: 'x' }];
+      return { active, own, others, pair: themeSwitchPair(active, own, others) };
+    }),
   };
   // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
   const searchBars: Record<string, unknown> = {
@@ -2506,8 +2514,9 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 // console-control@1 voice intents (core/engines/console-control-voice.mjs; Python twin server/console_control.py voice_intent): phrase → intent → command → reply
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
+    'press run now on the auto-lander toolbar', 'tap the retry button in the auto lander toolbar', "what's on the auto-lander toolbar", 'list the gate rules toolbar', 'show me the builds toolbar',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2524,6 +2533,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+      place: voiceReply({ verb: 'press', address: 'panel:console-place' }, { ok: true, address: 'panel:console-place' }),
     },
   });
 }
@@ -2554,3 +2564,45 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     },
   });
 }
+
+// Toolbar migration (toolbar-list@1 → page-toolbar@1; core/engines/toolbar-migrate.mjs + toolbar-rules.mjs): every starter
+// toolbar migrated with no visible change (signature equal before and after), the grammar parsers, and both shapes' errors.
+{
+  const starters = load('toolbar');
+  const pageToolbar = {
+    variant: 'icons-labels', align: 'start', showSearch: false, scope: 'view:gate', overflow: { when: 'auto', keep: 1 },
+    groups: [
+      { id: 'lander', items: [
+        { id: 'run', icon: 'play', label: 'Run now', action: 'command:gate/lander-run', enabledWhen: ['!paused', 'waiting>0'], badge: 'state:waiting', priority: 200, overflow: 'never' },
+        { id: 'retry', icon: 'refresh', label: 'Retry', action: 'command:gate/lander-retry', args: { build: '$selection.id' }, enabledWhen: 'selection.id' },
+        { id: 'reset', icon: 'trash', label: 'Reset', action: 'command:gate/rules-reset', destructive: true, confirm: 'Reset every rule to the defaults?', priority: 10 },
+        { id: 'pause', icon: 'pause', label: 'Pause', action: 'handler:gate.pause', checked: 'state:paused', visibleWhen: 'status!=off' },
+        { id: 'open', icon: 'settings', label: 'Rules', action: 'control:view:settings/tab:settings.tabs=plugins' },
+        { id: 'legacy', icon: 'home', label: 'Home', action: 'nav:home', badge: 'alerts.unread' },
+      ] },
+    ],
+  };
+  const badToolbar = { variant: 'icons', align: 'start', showSearch: false, scope: 'page:x', overflow: 'sometimes', groups: [{ id: 'g', items: [{ id: 'a', action: 'command:gate', enabledWhen: 'sel count', badge: 'state:', confirm: 7, priority: 5000, overflow: 'x' }, { id: 'a', action: '' }] }, { id: 'h' }] };
+  write('toolbar-migrate.json', {
+    contract: 'page-toolbar@1',
+    starters: Object.fromEntries(starters.map((a) => { const r = migrateToolbar(a); return [a.id, { needed: needsToolbarMigration(a.data), record: toolbarMigrationRecord(a), migrated: r.data, signatureBefore: toolbarSignature(a.data), signatureAfter: toolbarSignature(r.data), errors: toolbarMigrationErrors('toolbar', a.data) }]; })),
+    pageToolbar: { isPage: isPageToolbar(pageToolbar), needed: needsToolbarMigration(pageToolbar), errors: toolbarErrors('toolbar', pageToolbar), stateKeys: toolbarStateKeys(pageToolbar), migrated: migrateToolbar(pageToolbar) },
+    oldShape: { isPage: isPageToolbar(starters[0].data), needed: needsToolbarMigration(starters[0].data) },
+    errors: { bad: toolbarErrors('toolbar', badToolbar), notToolbar: toolbarErrors('button', badToolbar), notObject: toolbarErrors('toolbar', 'nope') },
+    parse: {
+      scope: Object.fromEntries(['app', undefined, 'view:gate', 'plugin:ai.amberx.axf.console.gate', 'page:x', 'view:', 'view', 7].map((s) => [String(s), parseToolbarScope(s)])),
+      action: Object.fromEntries(['file.save', 'nav:home', 'settings.open:appearance', 'swap:layout:next', 'action:file.save', 'command:gate/lander-run', 'command:gate', 'command:/x', 'control:view:settings/tab:settings.tabs=plugins', 'handler:gate.pause', 'handler:', '', '  '].map((s) => [s, parseActionRef(s)])),
+      badge: Object.fromEntries(['alerts.unread', 'counter:alerts.unread', 'state:waiting', 'state:', 'other:x', ''].map((s) => [s, parseBadge(s)])),
+      when: Object.fromEntries(['busy', '!busy', 'selection.count>0', 'status=running', 'status!=off', 'n>=2', 'n<=2', 'n<x', 'sel count', '', ['a', '!b', 'c=1'], Array(9).fill('a')].map((s) => [JSON.stringify(s), parseWhen(s)])),
+    },
+    holds: Object.fromEntries([
+      ['busy', { busy: true }], ['busy', { busy: 0 }], ['!busy', {}], ['selection.count>0', { selection: { count: 2 } }], ['selection.count>0', { selection: { count: 0 } }],
+      ['status=running', { status: 'running' }], ['status!=off', { status: 'off' }], ['n>=2', { n: 2 }], ['n<=2', { n: 3 }], ['list', { list: [] }], ['list', { list: [1] }], [['a', 'b=1'], { a: true, b: 1 }], [['a', 'b=1'], { a: true, b: 2 }],
+    ].map(([w, s]) => [`${JSON.stringify(w)} on ${JSON.stringify(s)}`, whenHolds(parseWhen(w), s)])),
+  });
+}
+
+// Page toolbar engine (page-toolbar@1; core/engines/toolbar-actions.ts): migration of every starter, scope + slot match
+// and the pick, state gating (enabled / visible / badges / toggles / args), overflow plans, invocations, settings ids,
+// readable state. Inputs live in spec/toolbar-actions-cases.ts so the checker replays the same cases.
+write('toolbar-actions.json', toolbarFixtureOutputs(TOOLBAR_FIXTURE_CASES, load('toolbar')));

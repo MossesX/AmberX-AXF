@@ -33,6 +33,12 @@ export interface PluginManifest {
   opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
   /** which UI moves (view:<id> / dialog:<id>) */
   opensUi?: string;
+  /** the console's generic settings sub-tab (PluginDefaultSettingsTab) under Settings → Plugins; parent is always 'plugins' */
+  settingsTab?: { default: true; label?: string; icon?: string; order?: number };
+  /** false = no host settings gear on its screens (needs settingsGearReason); default true */
+  settingsGear?: boolean;
+  /** why a plugin's screens carry no settings gear (required with settingsGear: false) */
+  settingsGearReason?: string;
 }
 
 export interface BundledPlugin {
@@ -228,7 +234,7 @@ export function pluginApi(folder: string, label: string, opts: { tokenHome?: str
 /** Fired on window when a plugin is enabled or disabled, so the shell re-installs plugins. */
 /**
  * The installed plugin that provides a capability service (its plugin.json `provides`, e.g. `service:<name>@1`), or
- * null. Plugins reach each other this way, never by folder name. AmberX's bridge (src/console/plugins.ts) answers the same.
+ * null. Plugins reach each other this way, never by folder name.
  */
 export function pluginProviding(service: string): string | null {
   return bundledPlugins.find((p) => p.manifest.provides?.includes(service))?.folder ?? null;

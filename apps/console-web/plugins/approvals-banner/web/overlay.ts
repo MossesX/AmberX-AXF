@@ -185,3 +185,39 @@ export function overlayBridge(scope: unknown = globalThis): OverlayBridge | null
 
 /** The phone's settings payload (Java `WatchService.setApprovalOverlay`). */
 export const nativeOverlayConfig = (c: OverlayConfig): Record<string, unknown> => ({ ...c });
+
+/** One waiting item as the console app's floating toolbar reads it (overlay@1 `overlayItems`). */
+export interface OverlayItem { id: string; kind: 'held' | 'approval'; title: string; runsAt: number; shelved: boolean }
+
+/**
+ * What waits, one by one, for the console app's toolbar: held calls (with the epoch ms they run at, from the seconds
+ * left when they were read) and approvals. The shell sorts them, runs the countdowns and pops the bar only for new ids.
+ */
+export function overlayItems(
+  held: readonly { id: string; title: string; command: string; secondsLeft: number; readAt: number; shelved: boolean; approvedNow: boolean }[],
+  pending: readonly { id: string; tool: string; summary: string; title?: string }[],
+): OverlayItem[] {
+  const out: OverlayItem[] = [];
+  for (const h of held) {
+    if (h.approvedNow) continue;
+    out.push({ id: `held:${h.id}`, kind: 'held', title: h.title || h.command, runsAt: h.shelved ? 0 : Math.round(h.readAt + h.secondsLeft * 1000), shelved: !!h.shelved });
+  }
+  for (const a of pending) out.push({ id: `approval:${a.id}`, kind: 'approval', title: a.title || a.summary || a.tool, runsAt: 0, shelved: false });
+  return out;
+}
+
+/**
+ * Whether the banner reads the hub's list on this tick. A browser tab reads only while it is visible. Inside the
+ * console app the page is hidden whenever another app is in front, which is exactly when a held call has to reach
+ * Brett, so there it keeps reading.
+ */
+export const readsFeed = (visible: boolean, inConsoleApp: boolean): boolean => visible || inConsoleApp;
+
+/**
+ * The call `approvals.view` opens: the one asked for when it still waits, the first one waiting when none was named,
+ * else null.
+ */
+export function viewTarget(id: string | undefined, waiting: readonly string[]): string | null {
+  if (id) return waiting.includes(id) ? id : null;
+  return waiting[0] ?? null;
+}

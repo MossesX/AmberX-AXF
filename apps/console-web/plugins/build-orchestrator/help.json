@@ -79,15 +79,15 @@
         "kind": "button"
       },
       {
-        "target": "more-parallel",
-        "title": "More parallel",
-        "text": "Lets one more build run on this account at once.",
+        "target": "more-sessions",
+        "title": "More sessions",
+        "text": "Raises this account's Sessions per account by one (its own number, saved with Job routing's).",
         "kind": "button"
       },
       {
-        "target": "less-parallel",
-        "title": "Less parallel",
-        "text": "One fewer build at once on this account.",
+        "target": "fewer-sessions",
+        "title": "Fewer sessions",
+        "text": "Lowers this account's Sessions per account by one.",
         "kind": "button"
       },
       {
@@ -191,6 +191,67 @@
         "kind": "menu"
       },
       {
+        "kind": "button",
+        "target": "fill-now",
+        "title": "Fill now",
+        "text": "Runs one dispatcher round now: ready steps of running builds start in the free agent slots (then Queue builds, and Pending ones when auto-queue is on). From the console it is filed and runs within a minute. Same as the pipeline-fill-run command, `pipeline.mjs fill run` and the voice action."
+      },
+      {
+        "kind": "toggle",
+        "target": "fill-every-slot",
+        "title": "Fill every slot",
+        "text": "On (default): when slots are free, the independent steps of running builds (their dependsOn done, no file shared with a running step) run in parallel, each in its own step worktree, and merge back into the build branch. Anyone may switch it off; only Brett switches it on."
+      },
+      {
+        "kind": "menu",
+        "target": "max-parallel-steps-per-build",
+        "title": "Max parallel steps per build",
+        "text": "How many step sessions one build may run beside its own session (1-12, default 3; a build's own pipeline.maxParallel overrides it). Anyone may lower it; only Brett raises it."
+      },
+      {
+        "kind": "toggle",
+        "target": "auto-queue-pending-builds",
+        "title": "Auto-queue pending builds",
+        "text": "Off by default. On: when slots are still free after every ready step and Queue build has one, split Pending builds that clash with nothing running move to the Queue in priority order (note 'auto-queued: slots free', one alert). Owner-only: greyed out unless it is Brett's own console session."
+      },
+      {
+        "kind": "menu",
+        "target": "slots-strip-layout",
+        "title": "Slots strip layout",
+        "text": "How the Pipeline tab draws the agent slots: chips in a row, a grid, or a list (this browser)."
+      },
+      {
+        "kind": "button",
+        "target": "sequential",
+        "title": "Sequential",
+        "text": "Takes the step's dependency list away: it waits for the step before it, as builds always did, and never runs in parallel."
+      },
+      {
+        "kind": "button",
+        "target": "edit-step-deps",
+        "title": "Edit",
+        "text": "Opens the step's dependencies: pick the earlier steps it waits for (none = independent, it may run in parallel as soon as the build runs), then Save."
+      },
+      {
+        "target": "back-to-queue",
+        "title": "Back to Queue",
+        "text": "This build finished its phase but was parked in Pending by mistake. Sends it back to the Queue (the same as Queue) so its next phase starts when a slot and an account for its model are free.",
+        "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.requeue-stuck",
+        "title": "Requeue builds stuck after a phase",
+        "text": "Lists Pending builds whose last session finished its phase with steps left. Add :apply to move them back to the Queue so their next phase starts.",
+        "kind": "menu"
+      },
+      {
+        "target": "view:build-orchestrator",
+        "title": "Build orchestrator",
+        "text": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Bret",
+        "kind": "screen",
+        "draft": true
+      },
+      {
         "target": "action:build-orchestrator.tab:groups",
         "title": "Groups",
         "text": "Your own groups of builds (Console app, UI, Urgent…): each sorted by state from partial to landed with a count per state. Drag Pending builds in, or pick them and tap Add to group.",
@@ -291,6 +352,136 @@
         "title": "Set for all",
         "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
         "kind": "button"
+      },
+      {
+        "target": "watchdog-on",
+        "title": "Watchdog on",
+        "text": "The build watchdog: every minute it finds builds marked running with no live session (killed exit 143, failed exit 1, out of memory, hung, tmux gone, a usage limit), resets the step, frees the slot and puts them back in the Queue or retries them, fills idle slots, and sends the phone an FYI for each fix. Off = it only reports.",
+        "kind": "toggle"
+      },
+      {
+        "target": "retry-on-another-account",
+        "title": "Retry on another account",
+        "text": "When a build stopped on a usage limit or a dead login, the watchdog marks that account out and plans the retry on the next worker account. Off: the retry goes to whichever account the dispatcher picks.",
+        "kind": "toggle"
+      },
+      {
+        "target": "phone-fyi",
+        "title": "Phone FYI",
+        "text": "Batched: one phone push per watchdog pass listing every fix. One push per fix: a push for each. A build the watchdog gave up on is always its own alert.",
+        "kind": "field"
+      },
+      {
+        "target": "requeue",
+        "title": "Requeue",
+        "text": "Puts a build the watchdog gave up on (past Max retries, or every account tried) back in the Queue; its retry count starts again from zero. Same as the systems check's Fix and POST watchdog/requeue.",
+        "kind": "button"
+      },
+      {
+        "target": "run-now",
+        "title": "Run now",
+        "text": "Runs one watchdog pass now: stuck builds are reset, requeued or retried, slots refilled, the phone told. From the console the VPS runs it within a minute. Same as the voice action watchdog.run and axf watchdog run.",
+        "kind": "button"
+      },
+      {
+        "target": "interval-minutes",
+        "title": "Interval (minutes)",
+        "text": "How often the watchdog makes a pass. The cron ticks every minute and skips until this many minutes have passed since the last pass.",
+        "kind": "field"
+      },
+      {
+        "target": "stale-heartbeat-minutes",
+        "title": "Stale heartbeat (minutes)",
+        "text": "A build marked running whose log and meter have not changed for this long counts as dead (nothing alive) or hung (its process alive: killed and retried).",
+        "kind": "field"
+      },
+      {
+        "target": "max-retries",
+        "title": "Max retries",
+        "text": "How many times a crashed or killed build is retried since it last ticked a step. Past it the build goes back to Pending with a banner item and an alert. Account stops (usage limit, login) never count.",
+        "kind": "field"
+      },
+      {
+        "target": "dry-run-only",
+        "title": "Dry run only",
+        "text": "On: the watchdog decides which rows it would take off the builds lists and records the plan, but changes nothing.",
+        "kind": "toggle"
+      },
+      {
+        "target": "tell-the-phone-what-was-cleaned",
+        "title": "Tell the phone what was cleaned",
+        "text": "On: each watchdog run that cleaned something sends one FYI to the phone (Notifications panel: Watchdog cleaned stale rows).",
+        "kind": "toggle"
+      },
+      {
+        "target": "run-every-minutes",
+        "title": "Run every (minutes)",
+        "text": "How often the watchdog runs, 1 to 120 minutes. Cron fires every 5 minutes; a longer interval skips the ticks in between.",
+        "kind": "field"
+      },
+      {
+        "target": "fresh-session",
+        "title": "Fresh session",
+        "text": "Retries this build's failure now in a fresh session instead of waiting for the next rung of the ladder. The attempts so far stay in the log.",
+        "kind": "button"
+      },
+      {
+        "target": "account",
+        "title": "Account",
+        "text": "Where you set “Account”. Change it and the app uses the new value. Part of Build orchestrator.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-landed",
+        "title": "Show landed",
+        "text": "Turns “Show landed” on or off. It takes effect straight away and is remembered. Part of Build orchestrator.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "run-this-watch",
+        "title": "Run this watch",
+        "text": "Runs this one watch now, whether or not it is due or switched on: build sessions (stuck or killed sessions recovered), stuck statuses (builds standing in landing, fixing or merging pushed to the next action on their ladder) or left-over rows (rows whose PR merged or closed cleaned). From the console the VPS runs it within a minute. Same as POST watchdogs/run {watch}, MCP watchdogs-run and axf watchdog run --watch <id>.",
+        "kind": "button"
+      },
+      {
+        "target": "show-all-builds",
+        "title": "Show all builds",
+        "text": "The Caught list is showing one build only because you came here from that build. This shows what the watchdog caught for every build again.",
+        "kind": "button"
+      },
+      {
+        "target": "caught",
+        "title": "Caught",
+        "text": "Everything the build watchdog caught, newest first: which watch, which build, the status it stood in and for how long, the cause, what the watchdog did (retry, requeue, merge recorded, landed, failure recorded, a ladder rung, escalated, row completed or removed), whether it worked and whether the phone was told. Filter by watch. A dry run's plan shows on top.",
+        "kind": "tab"
+      },
+      {
+        "target": "watches",
+        "title": "Watches",
+        "text": "The watches the one build watchdog runs: build sessions, stuck statuses and left-over rows. For each: what it does, on or off, how often it runs, its last run, how many builds it watches and how many it caught, its last error, Run this watch and Dry run.",
+        "kind": "tab"
+      },
+      {
+        "target": "watchdog-on-every-watch",
+        "title": "Watchdog on (every watch)",
+        "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
+        "kind": "toggle"
+      },
+      {
+        "target": "merge-together",
+        "title": "Merge together",
+        "text": "Merges together. Only through its pull request, once CI is green. Part of Build orchestrator.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "column:triage-model",
+        "title": "Triage model",
+        "text": "The “Triage model” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []

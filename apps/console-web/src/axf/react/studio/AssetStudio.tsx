@@ -64,7 +64,7 @@ export function AssetStudio() {
 function Slot({ type, activeId }: { type: AssetType; activeId: string }) {
   const rt = useRuntime();
   const spec = assetTypeSpecs[type];
-  const assets = rt.registry.list(type);
+  const assets = rt.registry.list(type).filter((a) => rt.slotOk(type, a.id)); // app-menus@1: only this app's menus
   const need = type === 'uac-policy' ? 'uac.manage' : 'assets.swap';
   const locked = !rt.can(need);
   return (

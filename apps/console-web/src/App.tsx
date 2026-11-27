@@ -1,7 +1,12 @@
 import { installConsoleSearch } from './consoleSearch';
 import { installConsoleControl } from './control';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
+import { installNative } from './native/axfNative';
+import { followHubHash, installRouteSync } from './hubPages/route';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { AccountView, AppShell, AssetStudio, bannerSlotDefs, composeAddress, controlRegistry, CONTROL_SCOPE_ATTR, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
+import type { AxfRuntime } from './axf/core';
+import { formatAddress, parseAddress } from './axf/core/engines/console-control';
+import { placeStore, restorePlace, type PlaceHost, type PlaceRestore } from './place/placeState';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -32,10 +37,11 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
+import { withDefaultSettingsTab } from './PluginDefaultSettingsTab';
 import { countingUses, loader, NewVersionNotice, useLoaderVersion } from './pluginLoader';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
-const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
+const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js', navLabel: 'System' });
 // AshesUI (live element inspector): every bundled plugin is known by its axp-<folder> class prefix, with the model that built it
 const ashesLibrary = createAshesLibrary({
   owners: (rt) => ownersFrom(
@@ -44,10 +50,10 @@ const ashesLibrary = createAshesLibrary({
   ),
 });
 
-/** Views the shell can show. The console-nav asset references these ids. */
+/** Views the shell can show. The default-console-web-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
-  tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
+  tracker: { title: 'Tracker', icon: 'chart', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
   build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
@@ -57,12 +63,82 @@ const views: ViewMap = {
   catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },
-  modules: { title: 'Modules', icon: 'package', render: () => <Modules /> },
-  boilerplates: { title: 'Boilerplates', icon: 'layout', render: () => <Boilerplates /> },
+  modules: { title: 'Modules & packages', icon: 'package', render: () => <Modules /> },
+  boilerplates: { title: 'Boilerplates', icon: 'copy', render: () => <Boilerplates /> },
   components: { title: 'Components', icon: 'grid', render: () => <Components /> },
   assets: { title: 'Assets', icon: 'palette', render: () => <AssetStudio /> },
-  account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
+  account: { title: 'Account', icon: 'user', render: () => <AccountView /> },
 };
+
+/** How long a restored view waits for its plugin once the plugin list is in, before the start view opens instead (ms). */
+const RESTORED_VIEW_WAIT = 15000;
+
+/**
+ * The shell as the place store sees it (src/place/placeState.ts): the open view, and every rendered tab row by its
+ * console-control address (`view:<id>/tab:<row>`), read and switched through the row's own control target.
+ */
+function placeHost(rt: AxfRuntime): PlaceHost {
+  const reg = controlRegistry(rt);
+  return {
+    view: () => rt.getState().view,
+    // straight into the main area: on load nothing is placed yet, and a view the host took over is the host's to open
+    show: (view) => { if (!rt.takenByHost({ view })) rt.navigateHere(view); },
+    onView: (fn) => {
+      let last = rt.getState().view;
+      return rt.subscribe(() => { const v = rt.getState().view; if (v !== last) { last = v; fn(); } });
+    },
+    rows: () => {
+      const out: Record<string, string> = {};
+      if (typeof document === 'undefined') return out;
+      document.querySelectorAll('[role="tablist"][data-axf-tab-group]').forEach((el) => {
+        // the address TabGroup registers its row under: the enclosing scope, a `subtab` inside another tab's panel
+        const scope = el.closest(`[${CONTROL_SCOPE_ATTR}]`)?.getAttribute(CONTROL_SCOPE_ATTR) ?? null;
+        const kind = scope && /(^|\/)(tab|subtab):[^/]*$/.test(scope) ? 'subtab' : 'tab';
+        try {
+          const address = formatAddress(parseAddress(composeAddress(scope, `${kind}:${el.getAttribute('data-axf-tab-group')}`)));
+          const value = reg.entry(address)?.def.get?.();
+          if (typeof value === 'string' && value !== '') out[address] = value;
+        } catch { /* a row with no usable address has no place to save */ }
+      });
+      return out;
+    },
+    setTab: (row, value) => {
+      const set = reg.entry(row)?.def.set;
+      if (!set) return false;
+      // a tab row answers nothing when it switched, and says why when it could not (no such tab yet, or disabled)
+      try { return set(value) === undefined; } catch { return false; }
+    },
+    onRows: (fn) => reg.subscribe(fn),
+  };
+}
+
+/** One restore per runtime: the saved view is reopened the first time the app renders (React may render it twice). */
+const placeRestores = new WeakMap<AxfRuntime, PlaceRestore>();
+function placeRestoreOf(rt: AxfRuntime): PlaceRestore | null {
+  // One page of the app inside a host (embed@1 page mode) has no place of its own to keep.
+  if (rt.embedded?.page) return null;
+  let r = placeRestores.get(rt);
+  if (!r) { r = restorePlace(placeStore, placeHost(rt)); placeRestores.set(rt, r); }
+  return r;
+}
+
+/**
+ * Stay put over a reload (pull-down, the Reload button, a refresh pushed by the server): the saved view is open before
+ * anything is drawn, its saved tabs are switched as their rows render (rows already there: before the first paint), and
+ * from then on the view, tabs and scroll offsets are saved as they change. A deep link (`#/…`, `?axf-open=`,
+ * `?axf-ref=`) wins: it is read here, before the link handlers take it off the address.
+ */
+function usePlace(): PlaceRestore | null {
+  const rt = useRuntime();
+  const [restore] = useState(() => placeRestoreOf(rt));
+  useLayoutEffect(() => {
+    if (!restore) return;
+    const offStore = placeStore.install();
+    const offRestore = restore.install();
+    return () => { offRestore(); offStore(); };
+  }, [restore]);
+  return restore;
+}
 
 function OpenSettingsTab({ tab }: { tab: string }) {
   const rt = useRuntime();
@@ -75,8 +151,9 @@ function OpenSettingsTab({ tab }: { tab: string }) {
  * (Brett's rule, Oct 18 2026). Enforced here for every plugin, so a plugin can't opt out by forgetting `parent`.
  */
 function underPlugins(p: BundledPlugin): AxfWebLibrary {
-  const lib = p.library!;
   const m = p.manifest;
+  // plugin.json `settingsTab: { default: true }`: the generic sub-tab (on/off, logs, info, Install & uninstall)
+  const lib = withDefaultSettingsTab(p.folder, m, p.library!);
   // plugin@1 (Oct 23 2026): the model that built it (badges) and where its UI opens (main area by default; the
   // build engine's default rules fill `opens` in every plugin.json, its settings tab gets the "Opens in" choice).
   const out: AxfWebLibrary = {
@@ -87,7 +164,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
-  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l), { id: m.id, name: m.name });
+  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l, { name: m.name, settingsGear: m.settingsGear, defaultTab: m.settingsTab?.default === true }), { id: m.id, name: m.name });
   if (!lib.settingsTabs?.length) return themed(out);
   return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }
@@ -118,6 +195,12 @@ function usePlugins() {
   useEffect(() => installConsoleSearch(rt), [rt]);
   // console-control@1: functions, buttons, plugins and the command channel (src/control)
   useEffect(() => installConsoleControl(rt), [rt]);
+  // the Android console app (apps/console-droid): native bridge, safe area, floating toolbar, ?axf-open= deep links
+  useEffect(() => installNative(rt), [rt]);
+  // The hub's pages (hub-pages@1, src/hubPages): keep each page's parameters in step with the open view, and once the
+  // plugins have loaded, open an old axHub web address (`#/approvals/<id>` …) on the same console page.
+  useEffect(() => installRouteSync(rt), [rt]);
+  useEffect(() => { if (loaded) followHubHash(rt); }, [rt, loaded]);
   // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.
@@ -150,10 +233,10 @@ function usePlugins() {
     return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
   }, [rt, status, loaded, managed, hostIds, lazy]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);
-  return { contributed };
+  return { contributed, ready: loaded || managed };
 }
 
-function Shell() {
+function Shell({ place }: { place: PlaceRestore | null }) {
   const s = useStore();
   const drop = useUndockDrop();
   // Signed in through axHub's wall: the account decides the access role (themes, plugins); see src/account.tsx.
@@ -167,7 +250,17 @@ function Shell() {
   const rtTitle = useRuntime();
   const st = useAxfState();
   const brandName = rtTitle.manifest.app.name || rtTitle.branding()?.name || 'GizmoX AI Studio';
+  // The view put back after a reload may be a plugin's, and plugins arrive after the first paint: until then it is an
+  // empty page (not the start view flashing by). A plugin that never comes (switched off since) gives way to the start view.
+  const awaited = place?.view && st.view === place.view && !plugins.contributed.views[place.view] && !(place.view in views) && place.view !== 'plugins' ? place.view : null;
+  const awaitedReady = !!awaited && plugins.ready;
+  useEffect(() => {
+    if (!awaitedReady) return;
+    const t = setTimeout(() => rtTitle.navigateHere(rtTitle.manifest.startView ?? 'home'), RESTORED_VIEW_WAIT);
+    return () => clearTimeout(t);
+  }, [awaitedReady, rtTitle]);
   const allViews: ViewMap = {
+    ...(awaited ? { [awaited]: { title: '', render: () => null } } : {}),
     ...plugins.contributed.views,
     ...views,
     // Old link: the plugin manager now lives in Settings → Plugins.
@@ -210,5 +303,6 @@ function Shell() {
 }
 
 export function App() {
-  return <ConsoleStoreProvider><Shell /></ConsoleStoreProvider>;
+  const place = usePlace();
+  return <ConsoleStoreProvider><Shell place={place} /></ConsoleStoreProvider>;
 }

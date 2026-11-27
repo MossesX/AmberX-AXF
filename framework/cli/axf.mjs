@@ -17,6 +17,7 @@
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
  *   axf repo create <name> [--private|--public] [--description "…"]
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf data [status|backup|verify|mode <ns> <shadow|cutover|rollback|local>|drift <ns>|migrate|get <key>|list <ns>]   axf-data (framework/cli/data.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -41,18 +42,27 @@
  *   axf install <library> [appDir] [--param key=value …] [--yes]
  *                               add a library to an app: interactive wizard asks for the required parameters,
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
+ *   axf host <list|status|restart|start|stop|run|action|mode|rollback|logs|settings> …   the console's host services
+ *                               (framework/cli/host-services.mjs: the host API socket, else loopback, else the console REST)
  *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
  *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
+ *   axf <word> …                 a word a plugin's "cli" map names besides its folder (e.g. `axf watchdog status|scan|run|set`
+ *                               from the Build orchestrator): found by scanning plugin manifests, never by folder name
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
+ *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
+ *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
- *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
+ *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1);
+ *                               refresh reloads it (--hard clears its caches first) and it comes back on the same screen, tabs and scroll
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
+ *   axf console chrome get|set|reset|open <type> <id> [key] [value]   one chrome instance's Interface settings
+ *   axf console place [get|restore] [--from loaded|saved]            the place kept for a reload: read it, or put it back
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
@@ -83,7 +93,7 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
+if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome', 'place'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
 }
@@ -98,6 +108,21 @@ if (cmd === 'console') {
   if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
+}
+// `axf watchdog status|run [--dry-run] [--force]|log [--kind K] [--action A] [--build B]|set <key> <value>|settings` goes to
+// the stale-row watchdog of the plugin that provides the build orchestrator (service:orchestrator@1), never by folder name.
+if (cmd === 'watchdog') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:orchestrator@1') && exists(joinPath(plugins, d, 'watchdog.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the build orchestrator (service:orchestrator@1) with a watchdog'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'watchdog.mjs')).href);
+  try { await main(rest.length ? rest : ['status']); } catch (e) { console.error(`watchdog: ${e.message}`); process.exit(2); }
+  process.exit(process.exitCode ?? 0);
 }
 // `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
 // by folder name: Claude mode on / off / status / test and the command history.
@@ -116,12 +141,26 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
   const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
   const isPlugin = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(joinPath(plugins, cmd, 'plugin.json'));
+  // a word no command or plugin folder has: the plugin whose "cli" map names it runs it (`axf watchdog status`)
+  if (cmd && !AXF_COMMANDS.has(cmd) && !isPlugin && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(plugins)) {
+    const { pathToFileURL } = await import('node:url');
+    for (const d of readdirSync(plugins).sort()) {
+      let own = '';
+      try { const m = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')); own = d !== cmd && m.cli && typeof m.cli === 'object' ? m.cli[cmd] || '' : ''; } catch { continue; }
+      const file = own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') ? joinPath(plugins, d, own) : '';
+      if (!file || !exists(file)) continue;
+      const words = await import(pathToFileURL(file).href);
+      if (!rest[0] || rest[0] === 'help' || rest[0] === '--help') { console.log(`axf ${cmd} ${(words.cliWords ?? []).join('|')} …`); process.exit(0); }
+      if (words.cliWords?.includes(rest[0])) process.exit((await words.main(rest)) ?? process.exitCode ?? 0);
+      console.error(`axf ${cmd}: ${rest[0]} is not one of ${(words.cliWords ?? []).join(', ')}`); process.exit(2);
+    }
+  }
   if (cmd === 'plugins' || cmd === 'plugin' || isPlugin) {
     const { pathToFileURL } = await import('node:url');
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
@@ -209,6 +248,13 @@ try {
     case 'claude-project': {
       const { run } = await import('./claude-project.mjs');
       await run(process.argv.slice(3));
+      break;
+    }
+    case 'host': {
+      // Host services (host-service@1): delegates to framework/cli/host-services.mjs (list, status, restart, mode, rollback, logs…).
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/host-services.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
       break;
     }
     case 'project': {
@@ -381,6 +427,12 @@ try {
       const { appDir, createRepo } = await import('./github-app.mjs');
       const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
       console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
+      break;
+    }
+    case 'data': {
+      // axf-data (data-store@1): status, backup, verify, mode, drift, migrate, get, list: framework/cli/data.mjs
+      const { main: data } = await import('./data.mjs');
+      process.exitCode = await data(process.argv.slice(3));
       break;
     }
     case 'shot': {

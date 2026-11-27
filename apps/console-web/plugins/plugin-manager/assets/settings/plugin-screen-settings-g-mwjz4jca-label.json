@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "plugin-screen-settings-g-mwjz4jca-label",
+  "name": "plugin-screen-settings-g-mwjz4jca: Gear with the word Settings",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Same row, a quiet button with the gear and the word Settings. Easier to read on a phone, a little wider.",
+  "tags": [
+    "ui-choice",
+    "choice-set:plugin-screen-settings-g-mwjz4jca",
+    "choice-option:label"
+  ],
+  "data": {
+    "placement": "label",
+    "setting": "axf.plugins.settingsGear.placement",
+    "builtFor": "plugin:plugin-manager"
+  }
+}

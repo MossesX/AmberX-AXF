@@ -26,6 +26,9 @@
  * archived…) build is refused even with a valid token, and `still` (exit 3) stops a run that waited (agent-slots queue,
  * hard limit) after its build went back to Pending. agent-slots.mjs drops such a build's waiting slot entry the same way.
  *
+ * Hand builds (hand-build@1, Nov 23 2026): a session started by hand gets its own record (tag `hand`) once it runs.
+ * That record never makes its launch a dispatcher launch: `check` and `still` pass it, as they did before it existed.
+ *
  *   node framework/cli/dispatch-gate.mjs still [--build <id>] [--name <session>] [--brief <file>]   exit 0 may run · 3 not Queued any more
  */
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
@@ -35,12 +38,24 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findBuild } from './model-gate.mjs';
 import { loadStore } from './builds-store.mjs';
+import { isHand } from '../core/pipeline-status.mjs';
 
 export const SCHEMA = 'dispatch-tokens@1';
 export const DISPATCH_TTL_MS = 24 * 3600e3;
 /** The statuses a build may hold a slot in: Queued (the dispatcher takes it) and Running (that dispatch, started). */
-export const SLOT_STATUSES = Object.freeze(['queued', 'running']);
-export const mayHoldSlot = (b) => !b || SLOT_STATUSES.includes(b.status);
+/** builds@1: Queued / Running. pipeline-2@1 (framework/spec/PIPELINE-2.md): a step goes out while its build is sending / building (or failed there, retrying forward). */
+export const SLOT_STATUSES = Object.freeze(['queued', 'running', 'sending', 'building']);
+export const mayHoldSlot = (b) => !b || SLOT_STATUSES.includes(b.status) || (b.flow === 'pipeline-2' && b.status === 'failed' && ['sending', 'building'].includes(b.failedFrom));
+/**
+ * The token a launch spends: the build's, or for a Pipeline 2.0 step its own (`<build>--<step>`, from AXF_BUILD_STEP or
+ * the session name), so steps of one build going out one after another never overwrite each other's token.
+ */
+export function tokenKey(b, { name = '', step = '' } = {}) {
+  if (!b) return '';
+  if (step) return `${b.id}--${step}`;
+  const bare = String(name).replace(/^axf-/, '').replace(/^build:/, '');
+  return bare.startsWith(`${b.id}--`) ? bare : b.id;
+}
 const notQueued = (b) => `refused: ${b.id} is ${b.status || 'not queued'}${b.status === 'pending' ? ' (Pending)' : ''}: only a Queued build takes a slot. Queue it first (Build orchestrator → Pending → Queue, or \`pipeline.mjs queue ${b.id}\`).`;
 
 /** For a run that waited: may the build it belongs to still take its slot? { ok, build, status, why }. */
@@ -48,6 +63,7 @@ export function still({ build = '', name = '', brief = '', store = null } = {}) 
   let s = store; if (!s) { try { s = loadStore(); } catch { return { ok: true, build: '', why: 'builds store unreadable: not judged' }; } }
   const b = findBuild(s, { build, name, brief });
   if (!b) return { ok: true, build: '', why: 'not an orchestrator build' };
+  if (isHand(b)) return { ok: true, build: b.id, status: b.status, why: `${b.id} is a hand build: started by hand` };
   return mayHoldSlot(b) ? { ok: true, build: b.id, status: b.status, why: `${b.id} is ${b.status}` } : { ok: false, build: b.id, status: b.status, why: notQueued(b) };
 }
 
@@ -114,10 +130,13 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
 }
 
 /** The launcher's check. */
-export function check({ build = '', name = '', brief = '', token = '', env = process.env, store = null, now = Date.now() } = {}) {
+export function check({ build = '', name = '', brief = '', token = '', env = process.env, step = env.AXF_BUILD_STEP || '', store = null, now = Date.now() } = {}) {
   let s = store; if (!s) { try { s = loadStore(); } catch { s = { builds: [] }; } }
   const b = findBuild(s, { build, name, brief });
-  const rec = b ? load(env).tokens[b.id] ?? null : null;
+  // a hand build (hand-build@1) is never dispatched: its record was filed by its own launch, and it is started again
+  // by hand after a stop or a crash, so there is no token to ask for
+  if (isHand(b)) return { ok: true, build: '', hand: b.id, why: `${b.id} is a hand build: started by hand, no dispatch needed` };
+  const rec = b ? load(env).tokens[tokenKey(b, { name, step })] ?? null : null;
   return verdict({ b, name, rec, token, now });
 }
 
@@ -127,7 +146,9 @@ export function consume(opts = {}) {
   const v = check(opts);
   if (!v.ok || !v.build) return v;
   const doc = load(env);
-  if (doc.tokens[v.build]) { doc.tokens[v.build].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
+  const b = findBuild(opts.store ?? (() => { try { return loadStore(); } catch { return { builds: [] }; } })(), opts);
+  const key = tokenKey(b, { name: opts.name, step: opts.step ?? env.AXF_BUILD_STEP ?? '' }) || v.build;
+  if (doc.tokens[key]) { doc.tokens[key].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
   return { ...v, consumed: true };
 }
 

@@ -165,6 +165,47 @@ def test_plugins_enable_disable() -> None:
     assert not any(s["verb"].startswith("plugin.") for s in fake.sent), "plugin toggles never need the browser"
 
 
+def test_plugin_settings_state_and_open() -> None:
+    """Every plugin screen's gear (build every-plugin-screen-gets-a-settings-gear): REST read, open, set, MCP. The plugins
+    are picked from the inventory by shape, never by name, so removing one never breaks this test."""
+    reset()
+    inv = cc.inventory()["plugins"]
+    screen = next(p for p in inv if p.get("settingsGear") and p.get("settingsTabId") == p["folder"])
+    sub = screen["settingsTab"]
+    r = client.get(f"{U}/plugins/{screen['folder']}/settings")
+    j = r.json()
+    assert r.status_code == 200 and j["plugin"] == screen["id"] and j["folder"] == screen["folder"]
+    assert j["tab"] == {"address": sub, "id": screen["folder"]} and j["gear"] == f"{screen['view']}/button:settings-gear" and j["enabled"] is True
+    assert j["open"] == {"action": f"plugin.settings.open:{screen['folder']}", "address": sub}
+    assert not fake.sent, "the state read needs no browser"
+    # by name and by id; a library tab a plugin spreads in keeps the library's id; a plugin with no screen has no gear
+    assert client.get(f"{U}/plugins/{screen['label']}/settings").json()["folder"] == screen["folder"]
+    lib = next((p for p in inv if p.get("settingsTabId") and p["settingsTabId"] != p["folder"]), None)
+    if lib is not None:
+        assert client.get(f"{U}/plugins/{lib['id']}/settings").json()["tab"]["id"] == lib["settingsTabId"]
+    headless = next(p for p in inv if p.get("settingsTab") and not p.get("view"))
+    assert "gear" not in client.get(f"{U}/plugins/{headless['folder']}/settings").json(), "no screen, no gear"
+    assert client.get(f"{U}/plugins/nope-nope/settings").status_code == 404
+    # open = the gear's press: console_open on the sub-tab in the open console
+    r = client.post(f"{U}/plugins/{screen['folder']}/settings/open", json={})
+    assert r.status_code == 200 and fake.sent[-1]["verb"] == "open" and fake.sent[-1]["address"] == sub
+    assert r.json()["policy"]["tag"] == "allow", "opening settings only navigates"
+    # set: a setting in a plugin's tab by key; unknown keys name what exists
+    withset = next(p for p in inv if cc.plugin_settings_state(p["id"]).get("settings"))
+    spec = cc.plugin_settings_state(withset["id"])["settings"][0]
+    value = spec["options"][0]["value"] if spec.get("options") else "x"
+    client.post(f"{U}/plugins/{withset['folder']}/settings/set", json={"key": spec["key"], "value": value})
+    assert fake.sent[-1]["verb"] == "set" and fake.sent[-1]["address"] == spec["address"]
+    r = client.post(f"{U}/plugins/{withset['folder']}/settings/set", json={"key": "nope.key", "value": 1})
+    assert r.status_code == 404 and spec["key"] in r.json()["nearest"]
+    # every gear is a static target, and so is every plugin sub-tab (voice finds "open <plugin> settings" with no console open)
+    t = {x["address"]: x for x in cc.static_targets()}
+    assert t[f"{screen['view']}/button:settings-gear"]["opens"] == sub and t[sub]["kind"] == "subtab"
+    fake.open = False
+    r = client.post(f"{U}/voice", json={"text": f"open {screen['label']} settings"})
+    assert sub in str(r.json()), r.json()
+
+
 def test_person_only_and_confirm() -> None:
     reset()
     r = client.post(f"{U}/do", json={"verb": "press", "address": "function:approvals.approve"})
@@ -253,6 +294,73 @@ def test_mcp_tools() -> None:
     fake.open = False
     r = call("console_control_state", {})
     assert r["code"] == "unavailable" and r["openUrl"], "no console: unavailable with the link, not an exception"
+
+
+def test_mcp_plugin_settings() -> None:
+    reset()
+    srv = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True}, console_control=lambda body: api.command(body, "mcp"))
+    tools = {t.name: t for t in asyncio.run(srv.list_tools())}
+    assert tools["console_control_plugin_settings"].annotations.read_only_hint is not True
+    screen = next(p for p in cc.inventory()["plugins"] if p.get("settingsGear"))
+    res = asyncio.run(srv.call_tool("console_control_plugin_settings", {"plugin": screen["id"], "open": True}))
+    if isinstance(res, tuple):  # (content, structured) on older SDKs
+        res = res[1]
+    if isinstance(res, dict):
+        data = res.get("result", res)
+    else:
+        assert not getattr(res, "is_error", False), res.content[0].text if res.content else ""
+        sc = getattr(res, "structured_content", None)
+        data = sc.get("result", sc) if sc else json.loads(res.content[0].text)
+    assert data["gear"] == screen["settingsGear"] and data["done"][0]["verb"] == "open"
+    assert fake.sent[-1]["address"] == screen["settingsTab"]
+
+
+def test_place() -> None:
+    """The saved place: REST, MCP and voice send the console the same command; a restore is navigation (no veto)."""
+    reset()
+    sent = lambda: {k: v for k, v in fake.sent[-1].items() if not k.startswith("_") and k not in ("$axf", "reason")}  # noqa: E731
+    read, restore = {"verb": "state", "address": cc.PLACE_ADDRESS}, {"verb": "press", "address": cc.PLACE_ADDRESS}
+
+    r = client.get(f"{U}/place")
+    assert r.status_code == 200 and r.json()["address"] == cc.PLACE_ADDRESS and sent() == read
+    assert r.json()["policy"]["tag"] == "allow" and r.json()["policy"]["readOnly"] is True
+    r = client.post(f"{U}/place/restore", json={"reason": "put Brett back"})
+    assert r.status_code == 200 and sent() == restore
+    assert r.json()["policy"] == {"tag": "allow", "effect": "navigate", "readOnly": True, "destructive": False}, "moving the screen back is never a veto"
+    r = client.post(f"{U}/place/restore", json={"from": "saved"})
+    assert sent() == {**restore, "value": "saved"}
+    r = client.post(f"{U}/place/restore", json={"from": "yesterday"})
+    assert r.status_code == 400 and r.json()["field"] == "from"
+    r = client.post(f"{U}/do", json=restore)
+    assert r.json()["policy"]["tag"] == "allow" and sent() == restore, "/do with the address is the same command"
+
+    r = client.post(f"{U}/voice", json={"text": "Amber, put me back"})
+    assert r.status_code == 200 and r.json()["command"] == restore and sent() == restore and r.json()["say"] == "Back where you were."
+    for phrase in ("back to where I was", "take me back to where I left off", "restore my place", "where was I"):
+        assert cc.voice_intent(phrase) == restore, phrase
+    assert cc.voice_intent("go back") != restore and cc.voice_intent("go to the top")["verb"] == "scroll"
+
+    srv = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True}, console_control=lambda body: api.command(body, "mcp"))
+    tools = {t.name: t for t in asyncio.run(srv.list_tools())}
+    assert tools["console_control_place"].annotations.read_only_hint is True, "reads or navigates"
+
+    def call(args: dict[str, Any]) -> dict[str, Any]:
+        res = asyncio.run(srv.call_tool("console_control_place", args))
+        if isinstance(res, tuple):  # (content, structured) on older SDKs
+            res = res[1]
+        if isinstance(res, dict):
+            return res.get("result", res)
+        sc = getattr(res, "structured_content", None)
+        return sc.get("result", sc) if sc else json.loads(res.content[0].text)
+
+    assert call({})["address"] == cc.PLACE_ADDRESS and sent() == read
+    assert call({"restore": True})["ok"] and sent() == restore
+    assert call({"restore": True, "source": "loaded"})["ok"] and sent() == {**restore, "value": "loaded"}
+
+    fake.open = False
+    r = client.post(f"{U}/place/restore", json={})
+    assert r.status_code == 503 and r.json()["openUrl"], "no console open: nothing to put back, with the link"
+    assert client.get(f"{U}/place").status_code == 503
 
 
 if __name__ == "__main__":

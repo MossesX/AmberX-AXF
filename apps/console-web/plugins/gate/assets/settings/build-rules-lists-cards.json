@@ -1,21 +1,22 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "build-rules-lists-cards",
- "name": "build-rules-lists: Cards",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "One card per rule with Who, Kind, When, Last result and the on/off Switch as label / value pairs; History under the card. Reads best on a phone.",
- "tags": [
-  "ui-choice",
-  "choice-set:build-rules-lists",
-  "choice-option:cards"
- ],
- "data": {
-  "view": "cards",
-  "settingKey": "gate.view",
-  "appliesTo": [
-   "gate.build-rules"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "build-rules-lists-cards",
+  "name": "build-rules-lists: Cards",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One card per rule with Who, Kind, When, Last result and the on/off Switch as label / value pairs; History under the card. Reads best on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:build-rules-lists",
+    "choice-option:cards"
+  ],
+  "data": {
+    "view": "cards",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.build-rules"
+    ],
+    "builtFor": "plugin:gate"
+  }
 }

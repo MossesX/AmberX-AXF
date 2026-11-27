@@ -2,7 +2,7 @@
   "$axf": "asset@1",
   "type": "help",
   "id": "gate-help",
-  "name": "Gate & rules help",
+  "name": "VPS Configuration help",
   "version": "0.1.0",
   "description": "The gate plugin's Help mode entries (help@1).",
   "author": "Brett",
@@ -14,13 +14,18 @@
     "entries": [
       {
         "target": "view:gate",
-        "title": "Gate & rules",
-        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice.",
+        "title": "VPS Configuration",
+        "text": "How the VPS runs builds (this screen was named Gate & rules): the rules a PR must pass before it lands, the build rules, the auto-lander that lands it, and the history of every change. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice (“open VPS Configuration”).",
         "kind": "screen"
       },
       {
         "target": "gate",
-        "title": "Gate settings",
+        "title": "VPS Configuration settings",
+        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+      },
+      {
+        "target": "vps-configuration",
+        "title": "VPS Configuration settings",
         "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
       },
       {
@@ -81,7 +86,7 @@
       {
         "target": "save",
         "title": "Save",
-        "text": "Saves the changed fields. The change is written to History."
+        "text": "Saves the changed fields. The change is written to History. On Approval rules it sends the draft to axHub from this browser on Brett's own hub session, and only Brett's own click does it."
       },
       {
         "target": "merge-queue",
@@ -136,7 +141,7 @@
       {
         "target": "refresh-every-seconds",
         "title": "Refresh every (seconds)",
-        "text": "How often the open Gate & rules tab asks the lander again (5 to 600)."
+        "text": "How often the open VPS Configuration tab asks the lander again (5 to 600)."
       },
       {
         "target": "history-size-entries-kept",
@@ -146,7 +151,7 @@
       {
         "target": "tab-it-opens-on",
         "title": "Tab it opens on",
-        "text": "The tab Gate & rules opens on, unless you were on another one last time."
+        "text": "The tab VPS Configuration opens on, unless you were on another one last time."
       },
       {
         "target": "gate.view",
@@ -235,19 +240,348 @@
         "title": "axf gate build-rules",
         "text": "The CLI: list, get, add, edit, on, off, delete (two-step), history, runs, run <build> --phase before|after|gate [--dry-run], brief <build>. Also node apps/console-web/plugins/gate/build-rules.mjs.",
         "kind": "control"
+      },
+      {
+        "target": "build-cap",
+        "title": "Build cap",
+        "text": "How many builds the VPS runs at once: Builds at once, the emergency slots and the orchestrator's steps in parallel side by side, with what runs now. A note says so when the numbers disagree. Same values as `axf gate build-cap`, the vps_build_cap MCP tools and “what is the build cap”."
+      },
+      {
+        "target": "view:gate/tab:build-cap",
+        "title": "Build cap",
+        "text": "The hard cap and the emergency slots are the host's limit (only Brett changes them, from his own signed-in console). Steps in parallel is the orchestrator's setting and can be changed from anywhere. The smaller of hard cap and steps in parallel is what really runs at once.",
+        "kind": "screen"
+      },
+      {
+        "target": "builds-at-once",
+        "title": "Builds at once",
+        "text": "The most builds the VPS ever runs at once (1 to 64). The same setting as Settings → Plugins → Agent cap → Builds at once: one stored key. Sessions, MCP and voice can read it; only Brett's signed-in console can change it."
+      },
+      {
+        "target": "emergency-slots",
+        "title": "Emergency slots",
+        "text": "Extra places only an emergency build may take, counted apart from Builds at once (0 to 8, 0 = off). Only Brett's signed-in console can change it."
+      },
+      {
+        "target": "steps-in-parallel",
+        "title": "Steps in parallel",
+        "text": "How many steps of one build the orchestrator sends at once (1 to 12). Above Builds at once it changes nothing: only that many run."
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the numbers again now. The tab also refreshes by itself."
+      },
+      {
+        "target": "undo-edits",
+        "title": "Undo edits",
+        "text": "Puts the fields back to the saved values. Nothing is saved."
+      },
+      {
+        "target": "cli:gate/build-cap",
+        "title": "axf gate build-cap",
+        "text": "`axf gate build-cap` shows the three numbers and the note; `axf gate build-cap set stepsInParallel 4` changes steps in parallel. The hard cap and emergency slots are not settable from the CLI.",
+        "kind": "control"
+      },
+      {
+        "target": "model-triage",
+        "title": "Model triage",
+        "text": "The VPS gate that decides which model every build step, emergency build, hand build and lander fix session runs on. The orchestrator only sends the work; this gate assigns Opus or Fable and records the rule that decided. Same rules as `axf gate model-triage`, the vps_model_triage MCP tools and “what are the model triage rules”."
+      },
+      {
+        "target": "view:gate/tab:model-triage",
+        "title": "Model triage",
+        "text": "An explicit override always wins (a pin on the step, a brief that names its model, the build-wide model in Claude settings). Then the first rule that is on, covers the lane and matches decides. Then the default. Every number and list is a starting point: change it here and the next decision uses it. The tab only shows and sends; the VPS decides.",
+        "kind": "screen"
+      },
+      {
+        "target": "model-triage-gate",
+        "title": "Model triage gate",
+        "text": "The whole gate on or off. Off: every lane gets the default model and no rule is read. An explicit override still wins."
+      },
+      {
+        "target": "when-no-rule-matches",
+        "title": "When no rule matches",
+        "text": "The model for work no rule matched. It starts as Fable (Brett's rule: unsure = Fable). Set it to Opus to make Fable the exception the rules have to earn."
+      },
+      {
+        "target": "the-model-a-hand-launch-asks-for-is",
+        "title": "The model a hand launch asks for",
+        "text": "What the model named by a hand launch (axHub vps.build_start, a console launch) means to the gate. A floor: the gate may raise it, never lower it. A pin: the launch decides. Ignored: only the rules decide."
+      },
+      {
+        "target": "a-brief-or-step-that-names-its-model-wins",
+        "title": "A brief or step that names its model wins",
+        "text": "On: a brief or step that says its model (“Model: Fable”, a leading [Opus], “run it on Fable”, a title ending “(…, Fable)”) gets that model, whatever the rules say. Talking about the models is not naming one."
+      },
+      {
+        "target": "reset-to-starting-rules",
+        "title": "Reset to starting rules",
+        "text": "Puts every rule, number, list and the order back to the starting values, after you confirm. The history keeps what they were."
+      },
+      {
+        "target": "keep-my-rules",
+        "title": "Keep my rules",
+        "text": "Closes the question. Nothing is reset."
+      },
+      {
+        "target": "cli:gate/model-triage",
+        "title": "axf gate model-triage",
+        "text": "`axf gate model-triage` shows the rules; `rule size set files 6`, `rule simple-work off`, `defaults model opus`, `gate off` and `reset` change them; `decide --text '…' --files a,b` asks what the gate would answer; `decisions` and `history` read the logs; `pin <build> <step|all> <opus|fable|none>` puts an explicit override on a build's steps.",
+        "kind": "control"
+      },
+      {
+        "target": "approvals",
+        "title": "Approval rules",
+        "text": "The rules axHub uses to decide each call: which tools run at once, which hold on the veto countdown and for how long, which wait for Brett's confirm and which never run. Same rules as `axf gate approvals`, the vps_approval_rules MCP tools and “what are the approval rules”."
+      },
+      {
+        "target": "view:gate/tab:approvals",
+        "title": "Approval rules",
+        "text": "Each service has an ordered list of rules. A rule names tools (one name, or a pattern where * is anything, like build_* or *), a decision and a hold length. The first rule that matches a tool decides it; a tool with its own entry ignores the rules until Let the rules decide clears it. Edits are a draft: nothing changes on axHub until Brett presses Save.",
+        "kind": "screen"
+      },
+      {
+        "target": "apply-the-default",
+        "title": "Apply the default",
+        "text": "Sets Brett's rule in one go: only shell commands on the VPS hold on the veto countdown (vps run and launch, the console terminal run, Vinny command run). Everything else in the console and the orchestrator runs at once, model upgrades keep their confirm and deletes keep their approval. It takes Brett's own click: a session, MCP, the CLI and voice cannot press it. The tab asks first; Yes, apply the default is the press that does it."
+      },
+      {
+        "target": "yes-apply-the-default",
+        "title": "Yes, apply the default",
+        "text": "The answer to the question Apply the default asked. This press sets the default on axHub. It works from the phone app too: the question is on the page, not a pop-up."
+      },
+      {
+        "target": "yes-save",
+        "title": "Yes, save",
+        "text": "The answer to the question Save asked. This press sends the draft to axHub. If it can't be saved, the reason shows on the tab and the draft is kept."
+      },
+      {
+        "target": "sign-in-to-axhub",
+        "title": "Sign in to axHub",
+        "text": "Shows when this page is not on Brett's axHub sign-in, or when the sign-in ran out during a save. It opens axHub's sign-in and comes back to this tab; the draft waits. Then press Save or Apply the default again."
+      },
+      {
+        "target": "discard-draft",
+        "title": "Discard draft",
+        "text": "Drops every staged edit. axHub was never changed, so nothing is undone there."
+      },
+      {
+        "target": "let-the-rules-decide",
+        "title": "Let the rules decide",
+        "text": "A tool with an entry of its own ignores every rule. On: Save clears those entries for this service so the rules decide. Denied tools and deletes keep theirs."
+      },
+      {
+        "target": "update-rule",
+        "title": "Update rule",
+        "text": "Puts the edited tools pattern and hold length for this rule into the draft. Nothing changes on axHub until Save."
+      },
+      {
+        "target": "move-rule-up",
+        "title": "Move rule up",
+        "text": "Moves the rule one place up. Order matters: the first rule that matches a tool decides it."
+      },
+      {
+        "target": "move-rule-down",
+        "title": "Move rule down",
+        "text": "Moves the rule one place down. A rule under a catch-all (*) decides nothing."
+      },
+      {
+        "target": "remove-rule",
+        "title": "Remove rule",
+        "text": "Takes the rule out of the draft. The tools it decided fall to the next matching rule, or to the service."
+      },
+      {
+        "target": "add-rule-to",
+        "title": "Add rule",
+        "text": "Adds the new rule to this service's draft, above a closing catch-all (*) so it can still decide something."
+      },
+      {
+        "target": "cli:gate/approvals",
+        "title": "axf gate approvals",
+        "text": "`axf gate approvals` shows the rules. `axf gate approvals add vps run veto 60`, `edit vps 1 vetoSeconds 30`, `remove vps 2`, `move vps 3 1`, `clear-own axf-console`, `default` and `discard` stage edits in the draft. Nothing is saved from the CLI: Brett saves from his console.",
+        "kind": "control"
+      },
+      {
+        "target": "passes",
+        "title": "Passes",
+        "text": "The one home for passes: veto passes (start one, approve or deny a request, revoke, undo, the longest pass), the hub's timed passes and the Go pass. Same calls as the pass MCP tools, `axf pass …` and “start a pass for 30 minutes”."
+      },
+      {
+        "target": "view:gate/tab:passes",
+        "title": "Passes",
+        "text": "A veto pass lets commands run without the veto countdown for a while. Pick a scope and the minutes (never more than the longest pass), start it, and revoke or undo it from the list. Passes moved here from Token control and from the axHub passes pages.",
+        "kind": "screen"
+      },
+      {
+        "target": "veto-passes",
+        "title": "Veto passes",
+        "text": "Start a pass, see what is on and waiting per scope, approve, deny, revoke or undo, and set the longest pass."
+      },
+      {
+        "target": "axhub-passes",
+        "title": "axHub passes",
+        "text": "The hub's timed passes: what each covers, time left, extend, revoke, and the calls that ran under it."
+      },
+      {
+        "target": "go-pass",
+        "title": "Go pass",
+        "text": "One pass for a whole Claude session that can't reach axHub: go for some hours, or end it now."
+      },
+      {
+        "target": "scope",
+        "title": "Scope",
+        "text": "What the pass covers. Everything is every command on every plugin; a narrower scope covers only token changes there."
+      },
+      {
+        "target": "minutes",
+        "title": "Minutes",
+        "text": "How long the pass lasts, from 1 to the longest pass. A longer number is cut to the longest pass."
+      },
+      {
+        "target": "reason",
+        "title": "Reason",
+        "text": "Optional: why the pass is needed. It is kept with the pass."
+      },
+      {
+        "target": "include-irreversible-deletes",
+        "title": "Include irreversible deletes",
+        "text": "Hard deletes nothing can bring back also skip the confirm while this pass is on. Off, they still confirm."
+      },
+      {
+        "target": "start-pass",
+        "title": "Start pass",
+        "text": "Starts the pass for the scope and minutes picked. From Brett's signed-in console it is on at once; anyone else files a request he approves."
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Turns a waiting request into a pass."
+      },
+      {
+        "target": "deny",
+        "title": "Deny",
+        "text": "Refuses a waiting request. Nothing changes."
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Puts back every change made under this pass in one go, and says what could not be rolled back."
+      },
+      {
+        "target": "revoke",
+        "title": "Revoke",
+        "text": "Ends the pass now. Calls go back to the veto countdown."
+      },
+      {
+        "target": "longest-pass-minutes",
+        "title": "Longest pass",
+        "text": "How long a veto pass may last at most (1 to 240 minutes). A longer request is cut to this."
+      },
+      {
+        "target": "time-zone",
+        "title": "Time zone",
+        "text": "The time zone the plain answers use (“until 10:42 AM”), for example America/New_York."
+      },
+      {
+        "target": "note-optional-shown-in-the-pass",
+        "title": "Note",
+        "text": "Optional: what the pass is for. Shown in the pass.",
+        "kind": "field"
+      },
+      {
+        "target": "go-for-h",
+        "title": "Go",
+        "text": "Starts the pass for the hours you picked. Sessions without the hub may work until it ends."
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Opens the approvals log filtered to every call that ran under a pass instead of waiting on the veto countdown."
+      },
+      {
+        "target": "min-from-now",
+        "title": "Extend",
+        "text": "Keeps the pass on for that many minutes from now. The calls it covers keep running at once until the new end."
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Opens the approvals log filtered to the calls that ran under this pass."
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "Which service the pass covers, for example axf-console. Only calls from that service run under it.",
+        "kind": "field"
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope",
+        "text": "The control@1 targets the pass covers, comma separated; * matches anything, so tokens.* covers every token. Leave it empty when you list tools instead.",
+        "kind": "field"
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools",
+        "text": "The tools the pass covers, comma separated. Empty means every tool inside the scope. Destructive tools never run under a pass.",
+        "kind": "field"
+      },
+      {
+        "target": "auto-lander-server",
+        "title": "Server auto-lander",
+        "text": "The VPS fixes and lands finished builds by itself, every minute: merges main into a clash, starts a fix session for red CI, sends green PRs to the merge queue. After 3 failed tries of one kind it stops and puts a red item in the systems check with Fix.",
+        "kind": "screen"
+      },
+      {
+        "target": "button:gate-al-fix",
+        "title": "Fix",
+        "text": "Resets the selected build's attempts and starts a fix session for it on the next tick, whatever CI says.",
+        "kind": "control"
+      },
+      {
+        "target": "button:gate-al-retry",
+        "title": "Retry",
+        "text": "Resets the selected build's attempts and escalation; the next tick tries again from attempt 1.",
+        "kind": "control"
+      },
+      {
+        "target": "cli:gate/auto-lander",
+        "title": "axf gate auto-lander",
+        "text": "status, show <build>, run [--now], retry <build>, fix <build>, pause, resume, settings, set <key> <value>. Same as REST /api/plugins/gate/auto-lander and MCP gate_auto_lander_*.",
+        "kind": "control"
+      },
+      {
+        "target": "fix-and-land-by-itself",
+        "title": "Fix and land by itself",
+        "text": "On: the server auto-lander merges main in, starts fix sessions and lands builds by itself every minute. Off: it still reads every build but changes nothing.",
+        "kind": "control"
+      },
+      {
+        "target": "push-to-my-phone-when-it-gives-up",
+        "title": "Push to my phone when it gives up",
+        "text": "One phone push per build the auto-lander gives up on (after the set number of failed tries). The systems check banner item shows either way.",
+        "kind": "control"
+      },
+      {
+        "target": "land-by-itself",
+        "title": "Land by itself",
+        "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of VPS Configuration.",
+        "kind": "toggle",
+        "draft": true
       }
     ],
     "intros": [
       {
         "screen": "gate",
-        "title": "Gate & rules",
+        "title": "VPS Configuration",
         "steps": [
           {
             "say": "Rules: what every PR must pass before it lands. Switch a rule off or change its severity here.",
             "target": "rules"
           },
           {
-            "say": "Auto-lander: the Merge queue switch, what is landing and what waits, and why.",
+            "say": "Auto-lander: Server is the VPS auto-lander that fixes and lands builds by itself; Merge line is the Merge queue switch and what waits.",
             "target": "auto-lander"
           },
           {

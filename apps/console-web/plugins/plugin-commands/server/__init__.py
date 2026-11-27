@@ -36,11 +36,12 @@ FOLDER = "plugin-commands"
 RUNNER = Path(__file__).resolve().parents[1] / "commands.mjs"
 ROOT = RUNNER.parents[4]
 SCAN_ROOT = Path(os.environ.get("AXF_PLUGIN_COMMANDS_ROOT") or ROOT)  # where the plugins are read from (tests: fixtures)
-HOMES = ("apps/console-web/plugins", "apps/amberx-droid/src/plugins", "apps/axhub-web/src/plugins")
+HOMES = ("apps/console-web/plugins",)  # one home since apps/axhub-web folded into the console (Nov 20 2026)
 PROXY_KEYS = ("by", "reason", "confirm", "input")
 GENERIC_TOOLS = ("plugin_commands", "plugin_read", "plugin_run")
 SYNC_SECONDS = 30
 RESULT_MAX = 400_000
+BUNDLE_CHECK_S = 10  # how often the plugin files are checked for a change (a stat of every plugin source file)
 
 router = APIRouter()
 _lock = threading.Lock()
@@ -61,6 +62,99 @@ def _node(args: list[str], stdin: Any = None, timeout: int = 60) -> Any:
         return json.loads(p.stdout)
     except json.JSONDecodeError:
         return json.loads(lines[-1])
+
+
+class _Runner:
+    """One long-lived `node commands.mjs serve` for plan / finish / bundle (a JSON line each way).
+
+    Every command used to start two Node processes (plan, finish); on a console load that was dozens at once. The
+    runner is restarted when a plugin file changes (the registry signature), every RUNNER_MAX_AGE_S, and after any
+    failure; a call that cannot use it falls back to a one-shot `_node` run, so an answer never depends on it."""
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.proc: subprocess.Popen[str] | None = None
+        self.started = 0.0
+        self.sig: str | None = None  # the registry signature the runner holds
+        self.n = 0
+
+    def stop(self) -> None:
+        p, self.proc, self.sig = self.proc, None, None
+        if p is not None:
+            try:
+                p.kill()
+                p.wait(timeout=5)
+            except Exception:  # noqa: BLE001
+                pass
+
+    def _start(self) -> subprocess.Popen[str]:
+        if self.proc is not None and (self.proc.poll() is not None or time.time() - self.started > RUNNER_MAX_AGE_S):
+            self.stop()
+        if self.proc is None:
+            self.proc = subprocess.Popen(["node", str(RUNNER), "serve"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                         cwd=ROOT, text=True, bufsize=1, env={**os.environ, "AXF_ROOT": str(SCAN_ROOT)})
+            self.started = time.time()
+            self.sig = None
+        return self.proc
+
+    def _ask(self, op: str, body: dict[str, Any]) -> dict[str, Any]:
+        import select
+        p = self._start()
+        self.n += 1
+        rid = self.n
+        assert p.stdin is not None and p.stdout is not None
+        p.stdin.write(json.dumps({"id": rid, "op": op, "body": body}) + "\n")
+        p.stdin.flush()
+        end = time.time() + 60
+        while True:
+            if not select.select([p.stdout], [], [], max(0.0, end - time.time()))[0]:
+                raise TimeoutError("the plugin command runner did not answer")
+            line = p.stdout.readline()
+            if not line:
+                raise RuntimeError("the plugin command runner stopped")
+            try:
+                out = json.loads(line)
+            except ValueError:
+                continue  # a stray log line
+            if isinstance(out, dict) and out.get("id") == rid:
+                return out
+
+    def call(self, op: str, body: dict[str, Any], reg: dict[str, Any] | None = None, sig: str | None = None) -> Any:
+        """The runner's answer; raises when it cannot give one (the caller falls back to a one-shot run)."""
+        with self.lock:
+            try:
+                if op == "plan" and sig:
+                    if self.proc is not None and self.sig != sig and self.sig is not None:
+                        self.stop()  # plugin files changed: a fresh runner reads the new code
+                    self._start()
+                    out = self._ask(op, {**body, "registrySig": sig, **({} if self.sig == sig else {"registry": reg})})
+                    if not out.get("ok") and out.get("error") == "registry_needed":
+                        out = self._ask(op, {**body, "registrySig": sig, "registry": reg})
+                    if out.get("ok"):
+                        self.sig = sig
+                else:
+                    out = self._ask(op, body if reg is None else {**body, "registry": reg})
+            except Exception:
+                self.stop()
+                raise
+            if not out.get("ok"):
+                raise RuntimeError(str(out.get("error") or "runner failed")[:600])
+            return out["result"]
+
+
+RUNNER_MAX_AGE_S = 900
+_runner = _Runner()
+_USE_RUNNER = os.environ.get("AXF_PLUGIN_COMMANDS_RUNNER", "1") != "0"
+
+
+def _engine(op: str, body: dict[str, Any], reg: dict[str, Any] | None = None, sig: str | None = None) -> Any:
+    """plan / finish / bundle through the long-lived runner, or a one-shot Node run when it is off or failing."""
+    if _USE_RUNNER:
+        try:
+            return _runner.call(op, body, reg, sig)
+        except Exception:  # noqa: BLE001 — the one-shot run below answers instead
+            pass
+    return _node([op], {**body, **({"registry": reg} if reg is not None else {})})
 
 
 def _enabled() -> dict[str, bool]:
@@ -93,11 +187,12 @@ def bundle(force: bool = False) -> dict[str, Any]:
     """{registry, tools} for the plugins as they are now (rebuilt when a plugin file or an on/off switch changed)."""
     with _lock:
         now = time.time()
-        if not force and _cache["bundle"] is not None and now - _cache["at"] < 3:
+        if not force and _cache["bundle"] is not None and now - _cache["at"] < BUNDLE_CHECK_S:
             return _cache["bundle"]
         sig = _signature()
         if force or sig != _cache["sig"] or _cache["bundle"] is None:
-            _cache["bundle"] = _node(["bundle"], {"enabled": _enabled()})
+            _runner.stop()  # plugin files changed: the next call starts a runner on the new code
+            _cache["bundle"] = _engine("bundle", {"enabled": _enabled()})
             _cache["sig"] = sig
         _cache["at"] = now
         return _cache["bundle"]
@@ -113,23 +208,56 @@ def is_plugin(folder: str) -> bool:
 
 # ---------------------------------------------------------------------- running a command
 
+def _in_process(method: str, path: str, query: dict[str, str], data: str | None, headers: dict[str, str]) -> Any:
+    """The route run inside this server, on its own event loop: no second HTTP request to itself. None when that is
+    not possible here (no running server loop, or the caller is on that loop and cannot wait for it)."""
+    app, loop = getattr(cx, "asgi_app", None), getattr(cx, "server_loop", None)
+    if app is None or loop is None or not loop.is_running():
+        return None
+    import asyncio
+    try:
+        asyncio.get_running_loop()
+        return None  # called on an event loop: waiting here would stall it
+    except RuntimeError:
+        pass
+    import httpx
+    base = f"http://127.0.0.1:{os.environ.get('PORT', '7090')}"
+
+    async def call() -> Any:
+        transport = httpx.ASGITransport(app=app, raise_app_exceptions=False, client=("127.0.0.1", 0))
+        async with httpx.AsyncClient(transport=transport, base_url=base) as c:
+            return await c.request(method, path, params=query, content=data, headers=headers, timeout=120)
+
+    fut = asyncio.run_coroutine_threadsafe(call(), loop)
+    try:
+        return fut.result(timeout=125)
+    except BaseException:
+        fut.cancel()
+        raise
+
+
 def _http(method: str, path: str, query: dict[str, str], body: Any) -> dict[str, Any]:
-    """The route, called on the console itself (loopback, the console token), or in-process when no server listens."""
+    """The route, run in this server's own process (the console token); over loopback HTTP only when that can't be."""
     headers = {"content-type": "application/json"}
     tok = cx.current_token()
     if tok:
         headers["authorization"] = f"Bearer {tok}"
     data = None if body is None else json.dumps(body)
     try:
-        import httpx
-        base = os.environ.get("AXF_CONSOLE_INTERNAL_URL") or f"http://127.0.0.1:{os.environ.get('PORT', '7090')}"
-        r = httpx.request(method, base + path, params=query, content=data, headers=headers, timeout=120)
-    except Exception:  # noqa: BLE001 — no server listening (tests, a bare import): run it in-process
-        app = getattr(cx, "asgi_app", None)
-        if app is None:
-            return {"status": 503, "message": "the console server is not reachable for plugin routes"}
-        from starlette.testclient import TestClient
-        r = TestClient(app, raise_server_exceptions=False).request(method, path, params=query, content=data, headers=headers)
+        r = _in_process(method, path, query, data, headers)
+    except Exception as e:  # noqa: BLE001
+        return {"status": 504 if isinstance(e, TimeoutError) else 500, "message": f"{type(e).__name__}: {e}"[:600] or "the route failed"}
+    if r is None:
+        try:
+            import httpx
+            base = os.environ.get("AXF_CONSOLE_INTERNAL_URL") or f"http://127.0.0.1:{os.environ.get('PORT', '7090')}"
+            r = httpx.request(method, base + path, params=query, content=data, headers=headers, timeout=120)
+        except Exception:  # noqa: BLE001 — no server listening (tests, a bare import): run it in-process
+            app = getattr(cx, "asgi_app", None)
+            if app is None:
+                return {"status": 503, "message": "the console server is not reachable for plugin routes"}
+            from starlette.testclient import TestClient
+            r = TestClient(app, raise_server_exceptions=False).request(method, path, params=query, content=data, headers=headers)
     ctype = r.headers.get("content-type", "")
     if "json" in ctype:
         try:
@@ -174,7 +302,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     except Exception as e:  # noqa: BLE001
         return {"$axf": "control@1", "ok": False, "code": "unexpected", "message": f"plugin registry: {e}"[:600]}
     try:
-        plan = _node(["plan"], {"command": command, "grants": grants, "by": by, "enabled": _enabled(), "registry": reg})
+        plan = _engine("plan", {"command": command, "grants": grants, "by": by, "enabled": _enabled()}, reg, _cache["sig"])
     except Exception as e:  # noqa: BLE001
         return {"$axf": "control@1", "ok": False, "code": "unexpected", "message": str(e)[:600]}
     if "dispatch" not in plan:
@@ -187,7 +315,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
         outcome = _action(plan, grants, who, request)
     if plan.get("effect") != "read":
         cx.log("plugins", f"{who}: {plan.get('name')} — {plan.get('title')} ({plan['command'].get('path')}) {'ok' if outcome.get('ok', 200 <= outcome.get('status', 200) < 300) else 'failed'}")
-    return _node(["finish"], {"command": plan["command"], "outcome": outcome})
+    return _engine("finish", {"command": plan["command"], "outcome": outcome})
 
 
 # ---------------------------------------------------------------------- REST: /api/control/<plugin>/<command>

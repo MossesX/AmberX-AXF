@@ -36,7 +36,8 @@
       "refresh": "navigate",
       "back": "navigate",
       "home": "navigate",
-      "close": "navigate"
+      "close": "navigate",
+      "screenshot": "read"
     },
     "plugins.commands": {
       "run": "write"
@@ -54,6 +55,16 @@
       "set": "write",
       "plugin.enable": "write",
       "plugin.disable": "write"
+    },
+    "console.pluginsettings": {
+      "open": "navigate",
+      "set": "write",
+      "enable": "write",
+      "disable": "write"
+    },
+    "console.toolbars": {
+      "press": "write",
+      "open": "navigate"
     }
   },
   "domains": [
@@ -2171,7 +2182,7 @@
       "irreversible": [
         "remove"
       ],
-      "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
+      "doc": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
       "domain": "amberx",
@@ -2219,7 +2230,7 @@
     },
     "planner.plans": {
       "domain": "planner",
-      "label": "Plan Studio plans",
+      "label": "Plan Studio 2.0 plans",
       "ops": [
         "list",
         "get",
@@ -2281,7 +2292,7 @@
           "text": "string"
         }
       },
-      "doc": "plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build."
+      "doc": "Plan Studio 2.0 plans (plan-tree@1 items of kind plan; console → Plan → Plan Studio 2.0): “put it in a plan for later” lands here as parked; `build` sends one to the orchestrator as a pending build; a removed plan is in the trash and `restore` brings the newest back. Fields the tree has no place for (category, project, owner, dates, the lists) are not stored: summary, goal and why go into the body."
     },
     "planner.builds": {
       "domain": "planner",
@@ -2482,15 +2493,17 @@
         "back": {},
         "home": {},
         "close": {},
-        "refresh": {}
+        "refresh": {},
+        "screenshot": {}
       },
       "actEffect": {
         "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
-        "close": "navigate"
+        "close": "navigate",
+        "screenshot": "read"
       },
-      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), refresh (reload the page). act screenshot captures what the console shows as a PNG (the whole page, or the element input.address or input.selector names; at most 1600 px wide) and answers with the image and the screen state (screen, tabs, dialog, selection, scroll); read-only. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.clients": {
       "domain": "console",
@@ -3141,6 +3154,63 @@
         "restore-hub": {}
       },
       "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
+    },
+    "console.pluginsettings": {
+      "domain": "console",
+      "label": "Plugin settings (sub-tab and gear)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number"
+      },
+      "acts": {
+        "open": {},
+        "set": {
+          "key": "string",
+          "value": "any"
+        },
+        "enable": {},
+        "disable": {
+          "options": "object"
+        }
+      },
+      "actEffect": {
+        "open": "navigate",
+        "set": "write",
+        "enable": "write",
+        "disable": "write"
+      },
+      "doc": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.toolbars": {
+      "domain": "console",
+      "label": "Page toolbars (buttons by settings id)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number",
+        "view": "string"
+      },
+      "acts": {
+        "press": {
+          "button": "string",
+          "value": "any"
+        },
+        "open": {}
+      },
+      "actEffect": {
+        "press": "write",
+        "open": "navigate"
+      },
+      "doc": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press."
     }
   },
   "aliases": {
@@ -3226,7 +3296,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3282,7 +3354,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3339,7 +3413,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3403,7 +3479,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3467,7 +3545,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3531,7 +3611,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3599,7 +3681,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3732,7 +3816,9 @@
       "plugins.reads",
       "tokens.nav",
       "console.control",
-      "tokens.instances"
+      "tokens.instances",
+      "console.pluginsettings",
+      "console.toolbars"
     ]
   },
   "schema": {
@@ -3785,7 +3871,9 @@
           "plugins.reads",
           "tokens.nav",
           "console.control",
-          "tokens.instances"
+          "tokens.instances",
+          "console.pluginsettings",
+          "console.toolbars"
         ]
       },
       "path": {
@@ -4153,7 +4241,7 @@
         "paths": "host"
       },
       "amberx.items": {
-        "description": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
+        "description": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
         "ops": [
           "list",
           "get",
@@ -4382,7 +4470,7 @@
         "paths": "entity"
       },
       "planner.plans": {
-        "description": "plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.",
+        "description": "Plan Studio 2.0 plans (plan-tree@1 items of kind plan; console → Plan → Plan Studio 2.0): “put it in a plan for later” lands here as parked; `build` sends one to the orchestrator as a pending build; a removed plan is in the trash and `restore` brings the newest back. Fields the tree has no place for (category, project, owner, dates, the lists) are not stored: summary, goal and why go into the body.",
         "ops": [
           "list",
           "get",
@@ -4811,7 +4899,7 @@
         "paths": "host"
       },
       "console.nav": {
-        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), refresh (reload the page). act screenshot captures what the console shows as a PNG (the whole page, or the element input.address or input.selector names; at most 1600 px wide) and answers with the image and the screen state (screen, tabs, dialog, selection, scroll); read-only. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "get",
           "act"
@@ -4820,7 +4908,8 @@
           "back": {},
           "home": {},
           "close": {},
-          "refresh": {}
+          "refresh": {},
+          "screenshot": {}
         },
         "paths": [
           "here"
@@ -5067,6 +5156,61 @@
           "restore-hub": {}
         },
         "paths": "pattern"
+      },
+      "console.pluginsettings": {
+        "description": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "open": {},
+          "set": {
+            "key": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "enable": {},
+          "disable": {
+            "options": {
+              "type": "object"
+            }
+          }
+        },
+        "paths": "host"
+      },
+      "console.toolbars": {
+        "description": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          },
+          "view": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "press": {
+            "button": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "open": {}
+        },
+        "paths": "host"
       }
     }
   }

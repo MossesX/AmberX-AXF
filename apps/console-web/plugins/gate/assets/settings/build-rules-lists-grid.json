@@ -1,21 +1,22 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "build-rules-lists-grid",
- "name": "build-rules-lists: Grid, two lines a row",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "DataGrid with the rule's title and its id, check and fixer under it; sortable Who / Kind / When / Last result columns, History opens under the row. Best on desktop; on a phone the right-hand columns scroll.",
- "tags": [
-  "ui-choice",
-  "choice-set:build-rules-lists",
-  "choice-option:grid"
- ],
- "data": {
-  "view": "grid",
-  "settingKey": "gate.view",
-  "appliesTo": [
-   "gate.build-rules"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "build-rules-lists-grid",
+  "name": "build-rules-lists: Grid, two lines a row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "DataGrid with the rule's title and its id, check and fixer under it; sortable Who / Kind / When / Last result columns, History opens under the row. Best on desktop; on a phone the right-hand columns scroll.",
+  "tags": [
+    "ui-choice",
+    "choice-set:build-rules-lists",
+    "choice-option:grid"
+  ],
+  "data": {
+    "view": "grid",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.build-rules"
+    ],
+    "builtFor": "plugin:gate"
+  }
 }

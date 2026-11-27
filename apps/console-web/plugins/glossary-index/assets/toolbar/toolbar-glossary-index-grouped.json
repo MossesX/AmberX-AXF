@@ -1,0 +1,88 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-glossary-index-grouped",
+  "name": "Glossary: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-glossary-index",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:glossary-index",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "find",
+        "label": "Find",
+        "items": [
+          {
+            "id": "search",
+            "icon": "search",
+            "label": "Search",
+            "action": "handler:glossary-index.search",
+            "checked": "state:searching",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "undescribed",
+            "icon": "alert",
+            "label": "Undescribed",
+            "action": "handler:glossary-index.undescribed",
+            "checked": "state:undescribed",
+            "priority": 240
+          },
+          {
+            "id": "drafts",
+            "icon": "edit",
+            "label": "Drafts",
+            "action": "handler:glossary-index.drafts",
+            "checked": "state:drafts",
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "index",
+        "label": "Index",
+        "items": [
+          {
+            "id": "rebuild",
+            "icon": "refresh",
+            "label": "Rebuild index",
+            "action": "command:glossary-index/rebuild",
+            "args": {
+              "reason": "rebuilt from the Glossary toolbar"
+            },
+            "priority": 220,
+            "overflow": "always"
+          },
+          {
+            "id": "demo",
+            "icon": "play",
+            "label": "Make a demo",
+            "action": "command:glossary-index/demo-generate",
+            "args": {
+              "entry": "$selection.id",
+              "save": true
+            },
+            "enabledWhen": "selection.id",
+            "priority": 180,
+            "overflow": "always"
+          }
+        ]
+      }
+    ]
+  }
+}

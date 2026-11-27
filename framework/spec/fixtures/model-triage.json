@@ -1,0 +1,3378 @@
+{
+ "$axf": "model-triage-fixture@1",
+ "registry": {
+  "schema": "model-triage@1",
+  "decision": "model-decision@1",
+  "lanes": [
+   "orchestrator",
+   "emergency",
+   "hand",
+   "lander-fix"
+  ],
+  "laneLabels": {
+   "orchestrator": "Orchestrator steps",
+   "emergency": "Emergency builds",
+   "hand": "Hand builds",
+   "lander-fix": "Lander fix sessions"
+  },
+  "handRequest": [
+   "floor",
+   "pin",
+   "ignore"
+  ],
+  "models": [
+   {
+    "value": "opus",
+    "label": "Opus 5.5"
+   },
+   {
+    "value": "fable",
+    "label": "Fable 5.2"
+   }
+  ],
+  "fixed": [
+   "override",
+   "requested",
+   "default"
+  ],
+  "ruleIds": [
+   "ci-fix",
+   "merge-clash",
+   "second-try",
+   "contracts",
+   "blast-radius",
+   "size",
+   "cross-cutting",
+   "designer",
+   "fable-words",
+   "simple-work"
+  ],
+  "fields": {
+   "ci-fix": [
+    {
+     "key": "phrases",
+     "kind": "list",
+     "label": "Phrases that mark a CI fix",
+     "hint": "Matched on whole words, any case."
+    }
+   ],
+   "merge-clash": [
+    {
+     "key": "phrases",
+     "kind": "list",
+     "label": "Phrases that mark a merge clash",
+     "hint": "Matched on whole words, any case."
+    }
+   ],
+   "second-try": [
+    {
+     "key": "failures",
+     "kind": "number",
+     "min": 1,
+     "max": 10,
+     "label": "Failed tries before it goes up",
+     "hint": "A session that ran and ended in an error counts. A launch that never started or a usage limit does not."
+    }
+   ],
+   "contracts": [
+    {
+     "key": "paths",
+     "kind": "list",
+     "label": "Contract paths",
+     "hint": "A path prefix, or a pattern with * (framework/spec/, *.schema.json)."
+    },
+    {
+     "key": "phrases",
+     "kind": "list",
+     "label": "Contract words",
+     "hint": "Matched on whole words, any case."
+    }
+   ],
+   "blast-radius": [
+    {
+     "key": "dependents",
+     "kind": "number",
+     "min": 1,
+     "max": 1000,
+     "label": "Files that depend on what it touches",
+     "hint": "Counted on the VPS from the step's files."
+    }
+   ],
+   "size": [
+    {
+     "key": "lines",
+     "kind": "number",
+     "min": 0,
+     "max": 100000,
+     "label": "Lines changed",
+     "hint": "0 = off. Used when the size is known (a fix on an open PR)."
+    },
+    {
+     "key": "files",
+     "kind": "number",
+     "min": 0,
+     "max": 500,
+     "label": "Files touched",
+     "hint": "0 = off."
+    },
+    {
+     "key": "minutes",
+     "kind": "number",
+     "min": 0,
+     "max": 600,
+     "label": "Estimated minutes",
+     "hint": "0 = off."
+    }
+   ],
+   "cross-cutting": [
+    {
+     "key": "areas",
+     "kind": "number",
+     "min": 0,
+     "max": 50,
+     "label": "Areas touched",
+     "hint": "0 = off. An area is one plugin, one app or one framework folder."
+    },
+    {
+     "key": "phrases",
+     "kind": "list",
+     "label": "Architecture words",
+     "hint": "Matched on whole words, any case."
+    }
+   ],
+   "designer": [
+    {
+     "key": "keepOpus",
+     "kind": "toggle",
+     "label": "Keep the splitter's Opus as well",
+     "hint": "On: a step the splitting stage judged simple stays on Opus unless a rule above matched. Off: its suggestion only raises."
+    }
+   ],
+   "fable-words": [],
+   "simple-work": []
+  }
+ },
+ "defaults": {
+  "$axf": "model-triage@1",
+  "rev": 0,
+  "at": "",
+  "by": "",
+  "enabled": true,
+  "defaults": {
+   "model": "fable",
+   "handRequest": "floor",
+   "briefWords": true
+  },
+  "rules": [
+   {
+    "id": "ci-fix",
+    "title": "CI failures",
+    "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "phrases": [
+      "ci is red",
+      "red ci",
+      "ci red",
+      "fix ci",
+      "ci fix",
+      "ci failure",
+      "ci failures",
+      "ci failed",
+      "failing check",
+      "failing checks",
+      "main is red"
+     ]
+    }
+   },
+   {
+    "id": "merge-clash",
+    "title": "Merge clashes",
+    "text": "A merge that conflicts in code needs both sides understood.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "phrases": [
+      "merge conflict",
+      "merge conflicts",
+      "merge clash",
+      "merge clashes",
+      "conflicts with main",
+      "clash with main",
+      "resolve the conflicts",
+      "resolve conflicts",
+      "rebase conflict"
+     ]
+    }
+   },
+   {
+    "id": "second-try",
+    "title": "Second try",
+    "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "failures": 1
+    }
+   },
+   {
+    "id": "contracts",
+    "title": "Contracts",
+    "text": "Touching a schema, a spec, the builds store or shared core code.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "paths": [
+      "framework/spec/",
+      "framework/schemas/",
+      "framework/core/",
+      "framework/plan/",
+      "framework/cli/builds-store",
+      "*.schema.json",
+      "*/schema.json"
+     ],
+     "phrases": [
+      "schema",
+      "schemas",
+      "asset type",
+      "asset types",
+      "contract",
+      "contracts",
+      "builds store",
+      "spec",
+      "specs",
+      "kernel",
+      "engine",
+      "engines",
+      "protocol",
+      "protocols",
+      "cross-app"
+     ]
+    }
+   },
+   {
+    "id": "blast-radius",
+    "title": "Blast radius",
+    "text": "Many other files or plugins depend on what the step touches.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "dependents": 10
+    }
+   },
+   {
+    "id": "size",
+    "title": "Size",
+    "text": "A step over a set size.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "lines": 400,
+     "files": 8,
+     "minutes": 0
+    }
+   },
+   {
+    "id": "cross-cutting",
+    "title": "Cross-cutting or architectural",
+    "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {
+     "areas": 3,
+     "phrases": [
+      "architecture",
+      "architectural",
+      "cross-cutting",
+      "refactor",
+      "redesign",
+      "rewrite",
+      "every plugin",
+      "all plugins",
+      "every app",
+      "all apps"
+     ]
+    }
+   },
+   {
+    "id": "designer",
+    "title": "Splitter's suggestion",
+    "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency"
+    ],
+    "settings": {
+     "keepOpus": true
+    }
+   },
+   {
+    "id": "fable-words",
+    "title": "Work that might need Fable",
+    "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+    "enabled": true,
+    "model": "fable",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {}
+   },
+   {
+    "id": "simple-work",
+    "title": "Clearly simple work",
+    "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+    "enabled": true,
+    "model": "opus",
+    "lanes": [
+     "orchestrator",
+     "emergency",
+     "hand",
+     "lander-fix"
+    ],
+    "settings": {}
+   }
+  ]
+ },
+ "decisions": [
+  {
+   "name": "a contract path",
+   "work": {
+    "text": "Change how it is stored",
+    "files": [
+     "framework/spec/GATE.md"
+    ]
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "contracts",
+    "why": "Contracts: it touches framework/spec/GATE.md",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a contract word",
+   "work": {
+    "text": "Add a field to the plan schema",
+    "files": [
+     "apps/console-web/plugins/x/a.mjs"
+    ]
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "contracts",
+    "why": "Contracts: it says \"schema\"",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "clearly simple work",
+   "work": {
+    "text": "Rename the tab label",
+    "files": [
+     "apps/ui/a.tsx"
+    ]
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "nothing says either way",
+   "work": {
+    "text": "Add a button to the page",
+    "files": [
+     "apps/ui/a.tsx"
+    ]
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "no rule matched: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a CI fix by kind",
+   "work": {
+    "lane": "lander-fix",
+    "kind": "ci-red",
+    "text": "CI is red on the PR"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "ci-fix",
+    "why": "CI failures: a CI fix",
+    "lane": "lander-fix",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a CI fix by words",
+   "work": {
+    "text": "Main is red: find the failing check"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "ci-fix",
+    "why": "CI failures: it says \"main is red\"",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a merge clash by kind",
+   "work": {
+    "lane": "lander-fix",
+    "kind": "clash-main",
+    "text": "main no longer merges"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "merge-clash",
+    "why": "Merge clashes: a merge clash",
+    "lane": "lander-fix",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a second try",
+   "work": {
+    "text": "Rename the tab label",
+    "priorFailures": 1,
+    "current": "Opus"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "second-try",
+    "why": "Second try: 1 failed try (limit 1)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 1
+    },
+    "from": "Opus"
+   }
+  },
+  {
+   "name": "blast radius at the limit",
+   "work": {
+    "text": "Tidy the helper",
+    "files": [
+     "apps/x/helper.mjs"
+    ],
+    "dependents": 10
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "blast-radius",
+    "why": "Blast radius: 10 files depend on what it touches (limit 10)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": 10,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "blast radius under the limit",
+   "work": {
+    "text": "Tidy the helper",
+    "files": [
+     "apps/x/helper.mjs"
+    ],
+    "dependents": 9
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"tidy\" clearly doesn't need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": 9,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "blast radius not measured",
+   "work": {
+    "text": "Tidy the helper",
+    "files": [
+     "apps/x/helper.mjs"
+    ],
+    "dependents": null
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"tidy\" clearly doesn't need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "size by files",
+   "work": {
+    "text": "Tidy the labels",
+    "files": [
+     "a/1",
+     "a/2",
+     "a/3",
+     "a/4",
+     "a/5",
+     "a/6",
+     "a/7",
+     "a/8"
+    ]
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "size",
+    "why": "Size: 8 files (limit 8)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 8,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "size by lines",
+   "work": {
+    "text": "Tidy the labels",
+    "lines": 400
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "size",
+    "why": "Size: 400 lines (limit 400)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": 400,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "minutes are off by default",
+   "work": {
+    "text": "Tidy the labels",
+    "minutes": 30
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"tidy\" clearly doesn't need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": 30,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "three areas",
+   "work": {
+    "text": "Tidy the labels",
+    "files": [
+     "apps/console-web/plugins/a/x",
+     "apps/console-web/plugins/b/x",
+     "deploy/lander/x"
+    ]
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "cross-cutting",
+    "why": "Cross-cutting or architectural: it spans 3 areas (limit 3)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 3,
+     "areas": 3,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "an architecture word",
+   "work": {
+    "text": "Tidy every plugin so the labels match"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "cross-cutting",
+    "why": "Cross-cutting or architectural: it says \"every plugin\"",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "the splitter said Fable",
+   "work": {
+    "text": "Tidy the labels",
+    "suggested": "Fable",
+    "suggestedBy": "splitter"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "designer",
+    "why": "Splitter's suggestion: marked Fable when it was split",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "the splitter said Opus",
+   "work": {
+    "text": "Add a button to the page",
+    "suggested": "Opus",
+    "suggestedBy": "splitter"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "designer",
+    "why": "Splitter's suggestion: the splitting stage judged it Opus work",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "an older record said Opus",
+   "work": {
+    "text": "Add a button to the page",
+    "suggested": "Opus"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "no rule matched: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a Fable word",
+   "work": {
+    "text": "Audit the dispatcher"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "fable-words",
+    "why": "Work that might need Fable: \"audit\" might need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a pin beats a contract",
+   "work": {
+    "text": "Change the schema",
+    "files": [
+     "framework/spec/GATE.md"
+    ],
+    "pin": {
+     "model": "Opus",
+     "by": "Brett"
+    }
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "override",
+    "why": "pinned to Opus by Brett",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a step that names its model",
+   "work": {
+    "text": "[Fable] Rename the tab label"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "override",
+    "why": "the step names Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a build-wide model",
+   "work": {
+    "text": "Change the schema",
+    "buildPin": {
+     "model": "opus",
+     "by": "Claude settings"
+    }
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "override",
+    "why": "every build runs on Opus (Claude settings)",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a pin beats the build-wide model",
+   "work": {
+    "text": "Rename",
+    "pin": "Fable",
+    "buildPin": {
+     "model": "opus"
+    }
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "override",
+    "why": "pinned to Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "hand: the request is a floor",
+   "work": {
+    "lane": "hand",
+    "text": "Rename the tab label",
+    "requested": "claude-fable-5-2"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "requested",
+    "why": "the launch asked for Fable (Clearly simple work: \"rename\" clearly doesn't need Fable; the request is a floor)",
+    "lane": "hand",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "hand: the gate raises a low request",
+   "work": {
+    "lane": "hand",
+    "text": "Change the builds store schema",
+    "requested": "opus"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "contracts",
+    "why": "Contracts: it says \"builds store\"",
+    "lane": "hand",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "hand: the brief names its model",
+   "work": {
+    "lane": "hand",
+    "title": "Hand build: tidy (Earl, Fable)",
+    "text": "Rename the labels",
+    "requested": "opus"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "override",
+    "why": "the brief names Fable",
+    "lane": "hand",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "emergency: the same rules",
+   "work": {
+    "lane": "emergency",
+    "text": "Rename the banner label"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+    "lane": "emergency",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "the designer rule does not cover the hand lane",
+   "work": {
+    "lane": "hand",
+    "text": "Add a button",
+    "suggested": "Opus",
+    "suggestedBy": "splitter"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "no rule matched: Fable by default",
+    "lane": "hand",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  }
+ ],
+ "held": [
+  {
+   "name": "a raise is held",
+   "work": {
+    "text": "Change the schema",
+    "files": [
+     "framework/spec/GATE.md"
+    ],
+    "current": "Opus"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "contracts",
+    "why": "Contracts: it touches framework/spec/GATE.md. Held on Opus: Fable upgrades need Brett's approval",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    },
+    "held": true,
+    "wanted": "Fable"
+   }
+  },
+  {
+   "name": "a first assignment is held at the suggestion",
+   "work": {
+    "text": "Fix CI",
+    "suggested": "Opus"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "ci-fix",
+    "why": "CI failures: it says \"fix ci\". Held on Opus: Fable upgrades need Brett's approval",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    },
+    "held": true,
+    "wanted": "Fable"
+   }
+  },
+  {
+   "name": "nothing to hold",
+   "work": {
+    "text": "Rename the tab label"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "simple-work",
+    "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "an override is never held",
+   "work": {
+    "text": "Rename",
+    "pin": {
+     "model": "Fable",
+     "by": "Brett"
+    },
+    "current": "Opus"
+   },
+   "decision": {
+    "model": "Fable",
+    "rule": "override",
+    "why": "pinned to Fable by Brett",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    },
+    "from": "Opus"
+   }
+  },
+  {
+   "name": "hand: held at the request",
+   "work": {
+    "lane": "hand",
+    "text": "Change the schema",
+    "requested": "opus"
+   },
+   "decision": {
+    "model": "Opus",
+    "rule": "contracts",
+    "why": "Contracts: it says \"schema\". Held on Opus: Fable upgrades need Brett's approval",
+    "lane": "hand",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    },
+    "held": true,
+    "wanted": "Fable"
+   }
+  }
+ ],
+ "tuned": {
+  "config": {
+   "$axf": "model-triage@1",
+   "rev": 7,
+   "at": "2026-11-23T12:00:00Z",
+   "by": "check",
+   "enabled": true,
+   "defaults": {
+    "model": "opus",
+    "handRequest": "pin",
+    "briefWords": false
+   },
+   "rules": [
+    {
+     "id": "simple-work",
+     "title": "Clearly simple work",
+     "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+     "enabled": false,
+     "model": "opus",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {}
+    },
+    {
+     "id": "ci-fix",
+     "title": "CI failures",
+     "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+     "enabled": true,
+     "model": "opus",
+     "lanes": [
+      "lander-fix"
+     ],
+     "settings": {
+      "phrases": [
+       "ci is red",
+       "red ci",
+       "ci red",
+       "fix ci",
+       "ci fix",
+       "ci failure",
+       "ci failures",
+       "ci failed",
+       "failing check",
+       "failing checks",
+       "main is red"
+      ]
+     }
+    },
+    {
+     "id": "merge-clash",
+     "title": "Merge clashes",
+     "text": "A merge that conflicts in code needs both sides understood.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "phrases": [
+       "merge conflict",
+       "merge conflicts",
+       "merge clash",
+       "merge clashes",
+       "conflicts with main",
+       "clash with main",
+       "resolve the conflicts",
+       "resolve conflicts",
+       "rebase conflict"
+      ]
+     }
+    },
+    {
+     "id": "second-try",
+     "title": "Second try",
+     "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "failures": 1
+     }
+    },
+    {
+     "id": "contracts",
+     "title": "Contracts",
+     "text": "Touching a schema, a spec, the builds store or shared core code.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "paths": [
+       "framework/spec/",
+       "docs/*.md"
+      ],
+      "phrases": [
+       "schema"
+      ]
+     }
+    },
+    {
+     "id": "blast-radius",
+     "title": "Blast radius",
+     "text": "Many other files or plugins depend on what the step touches.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "dependents": 10
+     }
+    },
+    {
+     "id": "size",
+     "title": "Size",
+     "text": "A step over a set size.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "lines": 0,
+      "files": 3,
+      "minutes": 0
+     }
+    },
+    {
+     "id": "cross-cutting",
+     "title": "Cross-cutting or architectural",
+     "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {
+      "areas": 3,
+      "phrases": [
+       "architecture",
+       "architectural",
+       "cross-cutting",
+       "refactor",
+       "redesign",
+       "rewrite",
+       "every plugin",
+       "all plugins",
+       "every app",
+       "all apps"
+      ]
+     }
+    },
+    {
+     "id": "designer",
+     "title": "Splitter's suggestion",
+     "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency"
+     ],
+     "settings": {
+      "keepOpus": false
+     }
+    },
+    {
+     "id": "fable-words",
+     "title": "Work that might need Fable",
+     "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+     "enabled": true,
+     "model": "fable",
+     "lanes": [
+      "orchestrator",
+      "emergency",
+      "hand",
+      "lander-fix"
+     ],
+     "settings": {}
+    }
+   ]
+  },
+  "decisions": [
+   {
+    "name": "a contract path",
+    "decision": {
+     "model": "Fable",
+     "rule": "contracts",
+     "why": "Contracts: it touches framework/spec/GATE.md",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a contract word",
+    "decision": {
+     "model": "Fable",
+     "rule": "contracts",
+     "why": "Contracts: it says \"schema\"",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "clearly simple work",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "nothing says either way",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a CI fix by kind",
+    "decision": {
+     "model": "Opus",
+     "rule": "ci-fix",
+     "why": "CI failures: a CI fix",
+     "lane": "lander-fix",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a CI fix by words",
+    "decision": {
+     "model": "Fable",
+     "rule": "fable-words",
+     "why": "Work that might need Fable: \"failing\" might need Fable",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a merge clash by kind",
+    "decision": {
+     "model": "Fable",
+     "rule": "merge-clash",
+     "why": "Merge clashes: a merge clash",
+     "lane": "lander-fix",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a second try",
+    "decision": {
+     "model": "Fable",
+     "rule": "second-try",
+     "why": "Second try: 1 failed try (limit 1)",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 1
+     },
+     "from": "Opus"
+    }
+   },
+   {
+    "name": "blast radius at the limit",
+    "decision": {
+     "model": "Fable",
+     "rule": "blast-radius",
+     "why": "Blast radius: 10 files depend on what it touches (limit 10)",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": 10,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "blast radius under the limit",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": 9,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "blast radius not measured",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "size by files",
+    "decision": {
+     "model": "Fable",
+     "rule": "size",
+     "why": "Size: 8 files (limit 3)",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 8,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "size by lines",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": 400,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "minutes are off by default",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": 30,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "three areas",
+    "decision": {
+     "model": "Fable",
+     "rule": "size",
+     "why": "Size: 3 files (limit 3)",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 3,
+      "areas": 3,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "an architecture word",
+    "decision": {
+     "model": "Fable",
+     "rule": "cross-cutting",
+     "why": "Cross-cutting or architectural: it says \"every plugin\"",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "the splitter said Fable",
+    "decision": {
+     "model": "Fable",
+     "rule": "designer",
+     "why": "Splitter's suggestion: marked Fable when it was split",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "the splitter said Opus",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "an older record said Opus",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a Fable word",
+    "decision": {
+     "model": "Fable",
+     "rule": "fable-words",
+     "why": "Work that might need Fable: \"audit\" might need Fable",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a pin beats a contract",
+    "decision": {
+     "model": "Opus",
+     "rule": "override",
+     "why": "pinned to Opus by Brett",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 1,
+      "areas": 1,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a step that names its model",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a build-wide model",
+    "decision": {
+     "model": "Opus",
+     "rule": "override",
+     "why": "every build runs on Opus (Claude settings)",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "a pin beats the build-wide model",
+    "decision": {
+     "model": "Fable",
+     "rule": "override",
+     "why": "pinned to Fable",
+     "lane": "orchestrator",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "hand: the request is a floor",
+    "decision": {
+     "model": "Fable",
+     "rule": "override",
+     "why": "the launch asked for Fable",
+     "lane": "hand",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "hand: the gate raises a low request",
+    "decision": {
+     "model": "Opus",
+     "rule": "override",
+     "why": "the launch asked for Opus",
+     "lane": "hand",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "hand: the brief names its model",
+    "decision": {
+     "model": "Opus",
+     "rule": "override",
+     "why": "the launch asked for Opus",
+     "lane": "hand",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "emergency: the same rules",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "emergency",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   },
+   {
+    "name": "the designer rule does not cover the hand lane",
+    "decision": {
+     "model": "Opus",
+     "rule": "default",
+     "why": "no rule matched: Opus by default",
+     "lane": "hand",
+     "facts": {
+      "files": 0,
+      "areas": 0,
+      "minutes": null,
+      "lines": null,
+      "dependents": null,
+      "priorFailures": 0
+     }
+    }
+   }
+  ]
+ },
+ "off": [
+  {
+   "name": "a contract path",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a contract word",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "clearly simple work",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "nothing says either way",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a CI fix by kind",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "lander-fix",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a CI fix by words",
+   "decision": {
+    "model": "Fable",
+    "rule": "default",
+    "why": "the gate is off: Fable by default",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a pin beats a contract",
+   "decision": {
+    "model": "Opus",
+    "rule": "override",
+    "why": "pinned to Opus by Brett",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 1,
+     "areas": 1,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  },
+  {
+   "name": "a step that names its model",
+   "decision": {
+    "model": "Fable",
+    "rule": "override",
+    "why": "the step names Fable",
+    "lane": "orchestrator",
+    "facts": {
+     "files": 0,
+     "areas": 0,
+     "minutes": null,
+     "lines": null,
+     "dependents": null,
+     "priorFailures": 0
+    }
+   }
+  }
+ ],
+ "edits": [
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "settings": {
+     "files": 3,
+     "lines": 0
+    }
+   },
+   "errors": [],
+   "rev": 1,
+   "what": "rule size"
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "simple-work",
+    "enabled": false
+   },
+   "errors": [],
+   "rev": 2,
+   "what": "rule simple-work"
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "ci-fix",
+    "model": "opus",
+    "lanes": [
+     "lander-fix"
+    ]
+   },
+   "errors": [],
+   "rev": 3,
+   "what": "rule ci-fix"
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "contracts",
+    "settings": {
+     "paths": "framework/spec/, docs/*.md",
+     "phrases": [
+      "schema"
+     ]
+    }
+   },
+   "errors": [],
+   "rev": 4,
+   "what": "rule contracts"
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "designer",
+    "settings": {
+     "keepOpus": false
+    }
+   },
+   "errors": [],
+   "rev": 5,
+   "what": "rule designer"
+  },
+  {
+   "edit": {
+    "op": "move",
+    "id": "simple-work",
+    "to": 0
+   },
+   "errors": [],
+   "rev": 6,
+   "what": "move simple-work"
+  },
+  {
+   "edit": {
+    "op": "defaults",
+    "model": "opus",
+    "handRequest": "pin",
+    "briefWords": false
+   },
+   "errors": [],
+   "rev": 7,
+   "what": "defaults"
+  },
+  {
+   "edit": {
+    "op": "enabled",
+    "enabled": false
+   },
+   "errors": [],
+   "rev": 8,
+   "what": "enabled"
+  },
+  {
+   "edit": {
+    "op": "reset"
+   },
+   "errors": [],
+   "rev": 9,
+   "what": "reset"
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "nope",
+    "enabled": true
+   },
+   "errors": [
+    "no rule nope (ci-fix, merge-clash, second-try, contracts, blast-radius, size, cross-cutting, designer, fable-words, simple-work)"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "settings": {
+     "files": -1
+    }
+   },
+   "errors": [
+    "size.files: a whole number from 0 to 500"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "settings": {
+     "files": 2.5
+    }
+   },
+   "errors": [
+    "size.files: a whole number from 0 to 500"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "settings": {
+     "words": 3
+    }
+   },
+   "errors": [
+    "size has no setting words (lines, files, minutes)"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "model": "sonnet"
+   },
+   "errors": [
+    "model: Opus or Fable, not sonnet"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size",
+    "lanes": [
+     "moon"
+    ]
+   },
+   "errors": [
+    "lanes: a list of orchestrator, emergency, hand, lander-fix"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "rule",
+    "id": "size"
+   },
+   "errors": [
+    "nothing to change: send enabled, model, lanes or settings"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "move",
+    "id": "size",
+    "to": 99
+   },
+   "errors": [
+    "to: a place from 0 to 9"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "defaults",
+    "model": "haiku"
+   },
+   "errors": [
+    "defaults.model: Opus or Fable, not haiku"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "defaults",
+    "handRequest": "maybe"
+   },
+   "errors": [
+    "defaults.handRequest: one of floor, pin, ignore"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "enabled",
+    "enabled": "yes"
+   },
+   "errors": [
+    "enabled: true or false"
+   ],
+   "rev": 9,
+   "what": ""
+  },
+  {
+   "edit": {
+    "op": "explode"
+   },
+   "errors": [
+    "op: one of rule, move, defaults, enabled, reset"
+   ],
+   "rev": 9,
+   "what": ""
+  }
+ ],
+ "norm": [
+  {
+   "raw": null,
+   "config": {
+    "$axf": "model-triage@1",
+    "rev": 0,
+    "at": "",
+    "by": "",
+    "enabled": true,
+    "defaults": {
+     "model": "fable",
+     "handRequest": "floor",
+     "briefWords": true
+    },
+    "rules": [
+     {
+      "id": "ci-fix",
+      "title": "CI failures",
+      "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "ci is red",
+        "red ci",
+        "ci red",
+        "fix ci",
+        "ci fix",
+        "ci failure",
+        "ci failures",
+        "ci failed",
+        "failing check",
+        "failing checks",
+        "main is red"
+       ]
+      }
+     },
+     {
+      "id": "merge-clash",
+      "title": "Merge clashes",
+      "text": "A merge that conflicts in code needs both sides understood.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "merge conflict",
+        "merge conflicts",
+        "merge clash",
+        "merge clashes",
+        "conflicts with main",
+        "clash with main",
+        "resolve the conflicts",
+        "resolve conflicts",
+        "rebase conflict"
+       ]
+      }
+     },
+     {
+      "id": "second-try",
+      "title": "Second try",
+      "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "failures": 1
+      }
+     },
+     {
+      "id": "contracts",
+      "title": "Contracts",
+      "text": "Touching a schema, a spec, the builds store or shared core code.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "paths": [
+        "framework/spec/",
+        "framework/schemas/",
+        "framework/core/",
+        "framework/plan/",
+        "framework/cli/builds-store",
+        "*.schema.json",
+        "*/schema.json"
+       ],
+       "phrases": [
+        "schema",
+        "schemas",
+        "asset type",
+        "asset types",
+        "contract",
+        "contracts",
+        "builds store",
+        "spec",
+        "specs",
+        "kernel",
+        "engine",
+        "engines",
+        "protocol",
+        "protocols",
+        "cross-app"
+       ]
+      }
+     },
+     {
+      "id": "blast-radius",
+      "title": "Blast radius",
+      "text": "Many other files or plugins depend on what the step touches.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "dependents": 10
+      }
+     },
+     {
+      "id": "size",
+      "title": "Size",
+      "text": "A step over a set size.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "lines": 400,
+       "files": 8,
+       "minutes": 0
+      }
+     },
+     {
+      "id": "cross-cutting",
+      "title": "Cross-cutting or architectural",
+      "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "areas": 3,
+       "phrases": [
+        "architecture",
+        "architectural",
+        "cross-cutting",
+        "refactor",
+        "redesign",
+        "rewrite",
+        "every plugin",
+        "all plugins",
+        "every app",
+        "all apps"
+       ]
+      }
+     },
+     {
+      "id": "designer",
+      "title": "Splitter's suggestion",
+      "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency"
+      ],
+      "settings": {
+       "keepOpus": true
+      }
+     },
+     {
+      "id": "fable-words",
+      "title": "Work that might need Fable",
+      "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     },
+     {
+      "id": "simple-work",
+      "title": "Clearly simple work",
+      "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+      "enabled": true,
+      "model": "opus",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     }
+    ]
+   }
+  },
+  {
+   "raw": {},
+   "config": {
+    "$axf": "model-triage@1",
+    "rev": 0,
+    "at": "",
+    "by": "",
+    "enabled": true,
+    "defaults": {
+     "model": "fable",
+     "handRequest": "floor",
+     "briefWords": true
+    },
+    "rules": [
+     {
+      "id": "ci-fix",
+      "title": "CI failures",
+      "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "ci is red",
+        "red ci",
+        "ci red",
+        "fix ci",
+        "ci fix",
+        "ci failure",
+        "ci failures",
+        "ci failed",
+        "failing check",
+        "failing checks",
+        "main is red"
+       ]
+      }
+     },
+     {
+      "id": "merge-clash",
+      "title": "Merge clashes",
+      "text": "A merge that conflicts in code needs both sides understood.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "merge conflict",
+        "merge conflicts",
+        "merge clash",
+        "merge clashes",
+        "conflicts with main",
+        "clash with main",
+        "resolve the conflicts",
+        "resolve conflicts",
+        "rebase conflict"
+       ]
+      }
+     },
+     {
+      "id": "second-try",
+      "title": "Second try",
+      "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "failures": 1
+      }
+     },
+     {
+      "id": "contracts",
+      "title": "Contracts",
+      "text": "Touching a schema, a spec, the builds store or shared core code.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "paths": [
+        "framework/spec/",
+        "framework/schemas/",
+        "framework/core/",
+        "framework/plan/",
+        "framework/cli/builds-store",
+        "*.schema.json",
+        "*/schema.json"
+       ],
+       "phrases": [
+        "schema",
+        "schemas",
+        "asset type",
+        "asset types",
+        "contract",
+        "contracts",
+        "builds store",
+        "spec",
+        "specs",
+        "kernel",
+        "engine",
+        "engines",
+        "protocol",
+        "protocols",
+        "cross-app"
+       ]
+      }
+     },
+     {
+      "id": "blast-radius",
+      "title": "Blast radius",
+      "text": "Many other files or plugins depend on what the step touches.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "dependents": 10
+      }
+     },
+     {
+      "id": "size",
+      "title": "Size",
+      "text": "A step over a set size.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "lines": 400,
+       "files": 8,
+       "minutes": 0
+      }
+     },
+     {
+      "id": "cross-cutting",
+      "title": "Cross-cutting or architectural",
+      "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "areas": 3,
+       "phrases": [
+        "architecture",
+        "architectural",
+        "cross-cutting",
+        "refactor",
+        "redesign",
+        "rewrite",
+        "every plugin",
+        "all plugins",
+        "every app",
+        "all apps"
+       ]
+      }
+     },
+     {
+      "id": "designer",
+      "title": "Splitter's suggestion",
+      "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency"
+      ],
+      "settings": {
+       "keepOpus": true
+      }
+     },
+     {
+      "id": "fable-words",
+      "title": "Work that might need Fable",
+      "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     },
+     {
+      "id": "simple-work",
+      "title": "Clearly simple work",
+      "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+      "enabled": true,
+      "model": "opus",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     }
+    ]
+   }
+  },
+  {
+   "raw": {
+    "rules": [
+     {
+      "id": "size",
+      "settings": {
+       "files": "x",
+       "lines": 10
+      }
+     },
+     {
+      "id": "ghost"
+     },
+     {
+      "id": "size",
+      "enabled": false
+     }
+    ],
+    "defaults": {
+     "model": "sonnet",
+     "handRequest": "x"
+    }
+   },
+   "config": {
+    "$axf": "model-triage@1",
+    "rev": 0,
+    "at": "",
+    "by": "",
+    "enabled": true,
+    "defaults": {
+     "model": "fable",
+     "handRequest": "floor",
+     "briefWords": true
+    },
+    "rules": [
+     {
+      "id": "size",
+      "title": "Size",
+      "text": "A step over a set size.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "lines": 10,
+       "files": 8,
+       "minutes": 0
+      }
+     },
+     {
+      "id": "ci-fix",
+      "title": "CI failures",
+      "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "ci is red",
+        "red ci",
+        "ci red",
+        "fix ci",
+        "ci fix",
+        "ci failure",
+        "ci failures",
+        "ci failed",
+        "failing check",
+        "failing checks",
+        "main is red"
+       ]
+      }
+     },
+     {
+      "id": "merge-clash",
+      "title": "Merge clashes",
+      "text": "A merge that conflicts in code needs both sides understood.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "merge conflict",
+        "merge conflicts",
+        "merge clash",
+        "merge clashes",
+        "conflicts with main",
+        "clash with main",
+        "resolve the conflicts",
+        "resolve conflicts",
+        "rebase conflict"
+       ]
+      }
+     },
+     {
+      "id": "second-try",
+      "title": "Second try",
+      "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "failures": 1
+      }
+     },
+     {
+      "id": "contracts",
+      "title": "Contracts",
+      "text": "Touching a schema, a spec, the builds store or shared core code.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "paths": [
+        "framework/spec/",
+        "framework/schemas/",
+        "framework/core/",
+        "framework/plan/",
+        "framework/cli/builds-store",
+        "*.schema.json",
+        "*/schema.json"
+       ],
+       "phrases": [
+        "schema",
+        "schemas",
+        "asset type",
+        "asset types",
+        "contract",
+        "contracts",
+        "builds store",
+        "spec",
+        "specs",
+        "kernel",
+        "engine",
+        "engines",
+        "protocol",
+        "protocols",
+        "cross-app"
+       ]
+      }
+     },
+     {
+      "id": "blast-radius",
+      "title": "Blast radius",
+      "text": "Many other files or plugins depend on what the step touches.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "dependents": 10
+      }
+     },
+     {
+      "id": "cross-cutting",
+      "title": "Cross-cutting or architectural",
+      "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "areas": 3,
+       "phrases": [
+        "architecture",
+        "architectural",
+        "cross-cutting",
+        "refactor",
+        "redesign",
+        "rewrite",
+        "every plugin",
+        "all plugins",
+        "every app",
+        "all apps"
+       ]
+      }
+     },
+     {
+      "id": "designer",
+      "title": "Splitter's suggestion",
+      "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency"
+      ],
+      "settings": {
+       "keepOpus": true
+      }
+     },
+     {
+      "id": "fable-words",
+      "title": "Work that might need Fable",
+      "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     },
+     {
+      "id": "simple-work",
+      "title": "Clearly simple work",
+      "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+      "enabled": true,
+      "model": "opus",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     }
+    ]
+   }
+  },
+  {
+   "raw": {
+    "enabled": false,
+    "rules": [
+     {
+      "id": "simple-work",
+      "model": "fable",
+      "lanes": [
+       "hand",
+       "moon"
+      ]
+     }
+    ]
+   },
+   "config": {
+    "$axf": "model-triage@1",
+    "rev": 0,
+    "at": "",
+    "by": "",
+    "enabled": false,
+    "defaults": {
+     "model": "fable",
+     "handRequest": "floor",
+     "briefWords": true
+    },
+    "rules": [
+     {
+      "id": "simple-work",
+      "title": "Clearly simple work",
+      "text": "The model policy's word list: renames, copy edits, file moves, simple styling, docs, boilerplate.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "hand"
+      ],
+      "settings": {}
+     },
+     {
+      "id": "ci-fix",
+      "title": "CI failures",
+      "text": "A red CI is fixed on the stronger model: find the real cause and check nearby code for the same break.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "ci is red",
+        "red ci",
+        "ci red",
+        "fix ci",
+        "ci fix",
+        "ci failure",
+        "ci failures",
+        "ci failed",
+        "failing check",
+        "failing checks",
+        "main is red"
+       ]
+      }
+     },
+     {
+      "id": "merge-clash",
+      "title": "Merge clashes",
+      "text": "A merge that conflicts in code needs both sides understood.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "phrases": [
+        "merge conflict",
+        "merge conflicts",
+        "merge clash",
+        "merge clashes",
+        "conflicts with main",
+        "clash with main",
+        "resolve the conflicts",
+        "resolve conflicts",
+        "rebase conflict"
+       ]
+      }
+     },
+     {
+      "id": "second-try",
+      "title": "Second try",
+      "text": "The lower model already tried this step and failed or was sent back: the retry goes up.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "failures": 1
+      }
+     },
+     {
+      "id": "contracts",
+      "title": "Contracts",
+      "text": "Touching a schema, a spec, the builds store or shared core code.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "paths": [
+        "framework/spec/",
+        "framework/schemas/",
+        "framework/core/",
+        "framework/plan/",
+        "framework/cli/builds-store",
+        "*.schema.json",
+        "*/schema.json"
+       ],
+       "phrases": [
+        "schema",
+        "schemas",
+        "asset type",
+        "asset types",
+        "contract",
+        "contracts",
+        "builds store",
+        "spec",
+        "specs",
+        "kernel",
+        "engine",
+        "engines",
+        "protocol",
+        "protocols",
+        "cross-app"
+       ]
+      }
+     },
+     {
+      "id": "blast-radius",
+      "title": "Blast radius",
+      "text": "Many other files or plugins depend on what the step touches.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "dependents": 10
+      }
+     },
+     {
+      "id": "size",
+      "title": "Size",
+      "text": "A step over a set size.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "lines": 400,
+       "files": 8,
+       "minutes": 0
+      }
+     },
+     {
+      "id": "cross-cutting",
+      "title": "Cross-cutting or architectural",
+      "text": "Work that spans several plugins or apps, or changes how parts fit together.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {
+       "areas": 3,
+       "phrases": [
+        "architecture",
+        "architectural",
+        "cross-cutting",
+        "refactor",
+        "redesign",
+        "rewrite",
+        "every plugin",
+        "all plugins",
+        "every app",
+        "all apps"
+       ]
+      }
+     },
+     {
+      "id": "designer",
+      "title": "Splitter's suggestion",
+      "text": "The splitting stage designed the step and judged which model it needs. The rules above still raise it; a model that only came with an older record raises and never lowers.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency"
+      ],
+      "settings": {
+       "keepOpus": true
+      }
+     },
+     {
+      "id": "fable-words",
+      "title": "Work that might need Fable",
+      "text": "The model policy's word list: audits, debugging, pipeline and lander code, security, Android, judgment calls.",
+      "enabled": true,
+      "model": "fable",
+      "lanes": [
+       "orchestrator",
+       "emergency",
+       "hand",
+       "lander-fix"
+      ],
+      "settings": {}
+     }
+    ]
+   }
+  }
+ ],
+ "says": [
+  {
+   "text": "Model: Fable",
+   "model": "fable"
+  },
+  {
+   "text": "**Model:** opus",
+   "model": "opus"
+  },
+  {
+   "text": "Tidy the docs. Model: Fable",
+   "model": "fable"
+  },
+  {
+   "text": "[Opus] Rename it",
+   "model": "opus"
+  },
+  {
+   "text": "Please run this build on Fable.",
+   "model": "fable"
+  },
+  {
+   "text": "Pinned to Opus.",
+   "model": "opus"
+  },
+  {
+   "text": "Hand build: Gates UI (Earl, Fable)",
+   "model": "fable"
+  },
+  {
+   "text": "Fix (Opus)",
+   "model": "opus"
+  },
+  {
+   "text": "The gate decides which model each step runs on (Opus, Fable, ...)",
+   "model": ""
+  },
+  {
+   "text": "A brief that says Fable wins",
+   "model": ""
+  },
+  {
+   "text": "Model: Opus or Fable",
+   "model": ""
+  },
+  {
+   "text": "Model: Fable\nRun it on Opus",
+   "model": ""
+  },
+  {
+   "text": "It goes to Fable instead of Opus",
+   "model": ""
+  },
+  {
+   "text": "",
+   "model": ""
+  }
+ ],
+ "paths": [
+  {
+   "path": "framework/spec/GATE.md",
+   "pattern": "framework/spec/",
+   "match": true
+  },
+  {
+   "path": "framework/specs/x",
+   "pattern": "framework/spec/",
+   "match": false
+  },
+  {
+   "path": "a/b/plan.schema.json",
+   "pattern": "*.schema.json",
+   "match": true
+  },
+  {
+   "path": "plugin/schema.json",
+   "pattern": "*/schema.json",
+   "match": true
+  },
+  {
+   "path": "schema.json",
+   "pattern": "*/schema.json",
+   "match": true
+  },
+  {
+   "path": "framework/cli/builds-store.mjs",
+   "pattern": "framework/cli/builds-store",
+   "match": true
+  },
+  {
+   "path": "apps/x/y.ts",
+   "pattern": "framework/",
+   "match": false
+  },
+  {
+   "path": "./framework/core/a.mjs",
+   "pattern": "framework/core/",
+   "match": true
+  }
+ ],
+ "areas": [
+  {
+   "path": "apps/console-web/plugins/sample/web/a.tsx",
+   "area": "apps/console-web/plugins/sample"
+  },
+  {
+   "path": "apps/console-web/server/x.py",
+   "area": "apps/console-web"
+  },
+  {
+   "path": "framework/core/a.mjs",
+   "area": "framework/core"
+  },
+  {
+   "path": "deploy/lander/run.mjs",
+   "area": "deploy/lander"
+  },
+  {
+   "path": "README.md",
+   "area": "README.md"
+  },
+  {
+   "path": "services/axf-data/x",
+   "area": "services/axf-data"
+  },
+  {
+   "path": "",
+   "area": ""
+  }
+ ],
+ "normDecision": [
+  {
+   "model": "Fable",
+   "rule": "contracts",
+   "why": "Contracts: it touches framework/spec/GATE.md",
+   "lane": "orchestrator",
+   "at": "2026-11-23T12:00:00Z",
+   "facts": {
+    "files": 1,
+    "areas": 1,
+    "priorFailures": 0
+   }
+  },
+  null,
+  {
+   "model": "Fable",
+   "rule": "size",
+   "why": "w",
+   "lane": "orchestrator",
+   "at": "",
+   "held": true,
+   "wanted": "Opus",
+   "suggested": "Opus",
+   "suggestedBy": "splitter",
+   "facts": {
+    "files": 2
+   }
+  },
+  null
+ ]
+}

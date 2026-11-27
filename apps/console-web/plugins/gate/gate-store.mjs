@@ -72,7 +72,7 @@ export function createStore(opts = {}) {
     /** The rule set; until the first change it is migrated from the lander's config (gate-rules migrate). Reads never write. */
     readRules() {
       const raw = readJson(f('rules.json'), null);
-      if (raw && raw.$axf === gate.SET_FRAME) return gate.normRuleSet(raw, iso());
+      if (raw && raw.$axf === gate.SET_FRAME) return gate.joinDefaults(raw, { at: iso() }); // a default rule added later (auto-lander) joins a saved set
       return gate.migrate(store.landerConfig(), { at: iso(), by: 'migration' });
     },
     /** Save the rule set (rev + 1) and mirror the keys the cron lander reads. Returns the saved set. */

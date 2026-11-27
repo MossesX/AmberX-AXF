@@ -38,6 +38,7 @@ import * as core from './web/review-core.mjs';
 import * as cf from './web/conform.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as ch from '../../../../framework/core/ui-choices.mjs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -45,8 +46,9 @@ const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
 export const dataDir = () => resolve(process.env.AXF_UI_REVIEW_DIR || join(ROOT, manifest.lifecycle.dataDir));
 const IMG = /\.(png|jpe?g|webp)$/i;
 
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
+// data-store@1: the data folder follows the ui-review namespace onto axf-data (framework/core/data-files.mjs)
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+const writeJson = (f, v) => dataFiles.writeTextSync(f, JSON.stringify(v, null, 1));
 const itemsFile = () => join(dataDir(), 'items.json');
 /** items.json → working records (+ design-pack decisions as pack:<id> records, + the groups). */
 export function loadDoc() {
@@ -128,6 +130,24 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
   for (const x of r.missing.filter((x) => /^pack:[a-z0-9][a-z0-9-]{0,60}$/.test(x))) { r.items.push(core.decide({ id: x, kind: core.DESIGN_KIND, status: 'waiting', comment: '', history: [] }, decision, { comment, by, at })); r.changed.push(x); }
   doc.items = r.items; saveDoc(doc);
   return { changed: r.changed, missing: r.missing.filter((x) => !r.changed.includes(x)) };
+}
+
+/**
+ * Close review items whose PR is gone (stale-row watchdog, stale-row@1): `landed` = { at, how: 'landed' | 'removed',
+ * pr, by, why } on each item. The status is kept as Brett left it (never approved); a closed item no longer holds a
+ * merge and leaves the open list. Items already closed or not found are returned in `skipped`.
+ */
+export function closeLanded(ids, { how = 'landed', pr = 0, by = 'watchdog', why = '' } = {}) {
+  const want = new Set(ids.map(String)); const at = new Date().toISOString();
+  const doc = loadDoc(); const changed = []; const skipped = [];
+  for (const it of doc.items) {
+    if (!want.has(String(it.id))) continue;
+    if (it.landed) { skipped.push(it.id); continue; }
+    it.landed = { at, how: how === 'removed' ? 'removed' : 'landed', pr: Number(pr) || Number(it.pr) || 0, by: String(by).slice(0, 80), why: String(why).slice(0, 300) };
+    changed.push(it.id);
+  }
+  if (changed.length) saveDoc(doc);
+  return { changed, skipped: [...skipped, ...[...want].filter((x) => !changed.includes(x) && !skipped.includes(x))] };
 }
 
 /** A linked git worktree has a .git file (not a folder) at its root. */

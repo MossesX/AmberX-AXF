@@ -79,6 +79,29 @@ X.markLimit('console', { kind: 'usage' }, env, now);
 ok(X.route({}, env, now) === '', 'every account out = nothing free');
 rmSync(join(W, 'worker-state.json'));
 
+console.log('pipeline-2@1: the real reset, usage left, never an account marked out');
+ok(new Date(X.parseReset("You've hit your weekly limit · resets Nov 21, 3am (UTC)", now)).toISOString() === '2026-11-21T03:00:00.000Z', 'the weekly message of Nov 19 2026');
+ok(new Date(X.parseReset('resets 3pm (America/New_York)', now)).toISOString() === '2026-11-07T20:00:00.000Z', 'a time zone');
+ok(new Date(X.parseReset('resets Mon 9:30am', now)).toISOString() === '2026-11-09T09:30:00.000Z', 'a weekday');
+ok(new Date(X.parseReset('resets in 3 days', now)).toISOString() === '2026-11-10T12:00:00.000Z', 'in N days');
+ok(new Date(X.parseReset('Claude AI usage limit reached|1795503600', now)).getTime() === 1795503600e3, 'an epoch');
+{ const l2 = X.markLimit('w1', { kind: 'usage', text: "You've hit your weekly limit · resets Nov 21, 3am (UTC)" }, env, now);
+  ok(l2.until === '2026-11-21T03:00:00.000Z' && l2.resetFrom === 'message', 'benched until the real reset, days away (not 5 h)');
+  ok(Date.parse(X.markLimit('w1', { kind: 'usage', text: 'weekly limit' }, env, now).until) === now + 24 * 3600e3, 'a weekly limit with no reset = a day, not 5 h'); }
+{ const raw = JSON.stringify({ type: 'rate_limit_event', rate_limit_info: { status: 'allowed', resetsAt: 1795503600, rateLimitType: 'seven_day', unifiedWindows: { seven_day: { utilization: 0.97, resetsAt: 1795503600, status: 'allowed' } } } });
+  const info = X.rateLimitOf(`x\n${raw}\n`); ok(info.utilization === 0.97 && info.window === 'seven_day' && info.resetsAt === 1795503600e3, 'the stream\'s rate_limit_event is read');
+  X.recordUsage('w2', info, env, now); ok(Math.abs(X.status(env, now).accounts.find((a) => a.name === 'w2').usageLeft - 0.03) < 1e-9, 'usage left on the status row');
+  X.recordUsage('w2', { ...info, utilization: 1 }, env, now);
+  ok(X.route({ exclude: ['w1', 'w3', 'console'] }, env, now) === '', 'no usage left = never routed (usage checked before routing)');
+  X.recordUsage('w2', { ...info, status: 'rejected' }, env, now);
+  ok(X.status(env, now).accounts.find((a) => a.name === 'w2').limited?.until === new Date(1795503600e3).toISOString(), 'a rejected rate_limit_event benches it until the reset');
+  // the CLI reads the wall clock, so bench w2 against it: the fixed reset above is a real date, and it passes
+  X.recordUsage('w2', { ...info, status: 'rejected', resetsAt: Date.now() + 24 * 3600e3 }, env);
+  const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), ...a], { env: { ...process.env }, encoding: 'utf8' });
+  ok(cli('out', 'w2').status === 0 && /out until/.test(cli('out', 'w2').stdout) && cli('out', 'w3').status === 1, 'CLI out: a marked-out account says so (the launcher skips it)'); }
+for (let i = 0; i < 5; i += 1) ok(!['w1', 'w2'].includes(X.claim(`never-${i}`, {}, {}, env, now).account), `claim ${i}: never an account marked out`);
+rmSync(join(W, 'worker-state.json'));
+
 console.log('one build account');
 writeFileSync(join(W, 'workers.json'), JSON.stringify({ $axf: X.SCHEMA, workers: ['w1', 'w2'] }));
 ok(X.setBuildAccount('w3', env) === 'w3' && X.route({}, env, now) === 'w3', 'build-account w3: every job goes to w3');

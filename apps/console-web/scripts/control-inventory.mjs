@@ -9,11 +9,15 @@
  * the console can search screens that are not rendered yet.
  *
  *   node apps/console-web/scripts/control-inventory.mjs            write src/control/inventory.json
- *   node apps/console-web/scripts/control-inventory.mjs --check    exit 1 when the committed file is stale (CI)
+ *   node apps/console-web/scripts/control-inventory.mjs --check    write it when missing or stale, print the counts (CI, the lander)
  *   node apps/console-web/scripts/control-inventory.mjs --json     print it
  *
- * The file is generated: never edit it by hand. The scan is textual (literal ids only); a tab row whose id is built at
- * run time is listed with `dynamic: true` and is still addressable once rendered (the registry knows it then).
+ * The file is generated, never edited by hand and (since build axf-data-postgres-real-tables-own) never committed: builds
+ * used to clash on it. `npm run dev` / `npm run build` write it before vite runs, the console server writes it when it is
+ * missing and publishes it to axf-data as `console/control/inventory.json`, which the Postgres engine keeps as the
+ * `control_targets` table (one row per target, tabs in `control_tabs`): the API / control registry, generated from each
+ * plugin's registered targets. The scan is textual (literal ids only); a tab row whose id is built at run time is listed
+ * with `dynamic: true` and is still addressable once rendered (the registry knows it then).
  */
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -147,18 +151,40 @@ function settingsTabs(files, ps) {
   const block = std.slice(std.indexOf('export const SETTINGS_TABS = {'), std.indexOf('} as const;', std.indexOf('export const SETTINGS_TABS = {')));
   for (const m of block.matchAll(/\{ id: '([\w.-]+)', label: '([^']+)'(?:, icon: '[^']+')?(?:, parent: '([\w-]+)')?/g)) out.set(m[1], { id: m[1], label: m[2], parent: m[3] ?? null, plugin: null });
   out.set('general', out.get('general') ?? { id: 'general', label: 'General', parent: null, plugin: null });
+  // a plugin's constants are read across its whole web/ folder (FOLDER, VIEW, SETTINGS_TAB are often imported)
+  const pluginConsts = new Map();
+  const constsFor = (f, src) => {
+    const owner = ownerOf(f, ps);
+    if (!owner) return constsOf(src);
+    if (!pluginConsts.has(owner.folder)) {
+      const all = new Map();
+      for (const g of files.filter((x) => x.startsWith(owner.dir + '/'))) for (const [k, v] of constsOf(read(g))) if (!all.has(k)) all.set(k, v);
+      pluginConsts.set(owner.folder, all);
+    }
+    return new Map([...pluginConsts.get(owner.folder), ...constsOf(src)]);
+  };
   for (const f of files) {
     const src = read(f);
-    const consts = constsOf(src);
+    const consts = constsFor(f, src);
     for (const m of src.matchAll(/settingsTabs: \[([\s\S]*?)\]/g)) {
-      for (const t of m[1].matchAll(/\{ id: (?:'([\w.-]+)'|(\w+)), label: (?:'([^']+)'|`([^`]+)`)(?:[^}]*?parent: '([\w-]+)')?/g)) {
-        const id = t[1] ?? consts.get(t[2]);
-        if (!id || out.has(id)) continue;
+      for (const t of m[1].matchAll(/\{ id: (?:'([\w.-]+)'|(\w+)), label: (?:'([^']+)'|`([^`]+)`|"([^"]+)")(?:[^}]*?parent: '([\w-]+)')?/g)) {
         const owner = ownerOf(f, ps);
+        const id = t[1] ?? consts.get(t[2]) ?? (t[2] === 'FOLDER' && owner ? owner.folder : undefined);
+        if (!id || out.has(id)) continue;
         // every plugin settings tab is a sub-tab of Settings → Plugins (App.tsx underPlugins)
-        out.set(id, { id, label: t[3] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[5] ?? null, plugin: owner?.m.id ?? null });
+        out.set(id, { id, label: t[3] ?? t[5] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[6] ?? null, plugin: owner?.m.id ?? null });
       }
     }
+  }
+  // a framework library's tab a plugin spreads in and declares (`settings-tab:mcp` from libs/mcp) is that plugin's sub-tab
+  for (const p of ps) for (const pr of p.m.provides ?? []) {
+    const t = pr.startsWith('settings-tab:') ? out.get(pr.slice(13)) : undefined;
+    if (t && !t.plugin) out.set(t.id, { ...t, parent: 'plugins', plugin: p.m.id });
+  }
+  // plugin.json `settingsTab: { default: true }` with no tab of its own: the console's default sub-tab, id = folder
+  for (const p of ps) {
+    if (p.m.settingsTab?.default !== true || [...out.values()].some((t) => t.plugin === p.m.id) || out.has(p.folder)) continue;
+    out.set(p.folder, { id: p.folder, label: p.m.settingsTab.label ?? p.m.name, parent: 'plugins', plugin: p.m.id });
   }
   return [...out.values()].map((t) => ({ ...t, address: tabAddress(t.id, t.parent) }));
 }
@@ -323,7 +349,9 @@ function pluginTargets(ps, sTabs, viewOfPlugin) {
       detail: `Plugin${m.kind ? ` · ${m.kind}` : ''}`, keywords: words(short, m.name, (m.description ?? '').split(/[.:]/)[0]?.slice(0, 80)),
       aliases: [...new Set([short, p.folder, m.name.toLowerCase()])],
       ...(m.lazy?.core ? { core: true } : {}), ...(m.enabledByDefault === false ? { enabledByDefault: false } : {}),
-      ...(view ? { view: `view:${enc(view)}` } : {}), ...(tab ? { settingsTab: tab.address } : {}),
+      ...(view ? { view: `view:${enc(view)}` } : {}), ...(tab ? { settingsTab: tab.address, settingsTabId: tab.id } : {}),
+      // the host settings gear on its screen (src/PluginSettingsGear.tsx), unless plugin.json opts out
+      ...(view && tab && m.settingsGear !== false ? { settingsGear: `view:${enc(view)}/button:settings-gear` } : {}),
       provides: (m.provides ?? []).filter((x) => x.startsWith('service:')), requires: m.requires ?? [], optional: m.optional ?? [],
     };
   });
@@ -335,7 +363,7 @@ export function buildInventory() {
   const ps = plugins();
   const views = [];
   const seen = new Set();
-  const nav = json(join(APP, 'src/assets/nav-menu/console-nav.json')).data.sections ?? [];
+  const nav = json(join(APP, 'src/assets/nav-menu/default-console-web-nav.json')).data.sections ?? [];
   const navOf = new Map();
   for (const s of nav) for (const it of s.items ?? []) if (it.view) navOf.set(it.view, { section: s.label, label: it.label, id: it.id });
 
@@ -401,9 +429,10 @@ if (isMain) {
   const text = JSON.stringify(inv, null, 2) + '\n';
   if (process.argv.includes('--json')) process.stdout.write(text);
   else if (process.argv.includes('--check')) {
+    // generated and untracked: a missing or stale copy is written, never a failure (the registry is what the generator says)
     const now = existsSync(OUT) ? read(OUT) : '';
-    if (now !== text) { console.error(`${rel(OUT)} is stale: run node apps/console-web/scripts/control-inventory.mjs`); process.exit(1); }
-    console.log(`${rel(OUT)} current (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);
+    if (now !== text) writeFileSync(OUT, text);
+    console.log(`${rel(OUT)} ${now === text ? 'current' : now ? 'refreshed' : 'written'} (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);
   } else {
     writeFileSync(OUT, text);
     console.log(`wrote ${rel(OUT)} (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);

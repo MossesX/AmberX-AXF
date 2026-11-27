@@ -128,11 +128,10 @@
         "draft": true
       },
       {
-        "target": "jobs-building-at-once-per-account",
-        "title": "Jobs building at once, per account",
-        "text": "Where you set “Jobs building at once, per account”. Change it and the app uses the new value. Part of Claude accounts.",
-        "kind": "field",
-        "draft": true
+        "target": "sessions-per-account",
+        "title": "Sessions per account",
+        "text": "How many sessions one Claude account runs at once (default 3). One setting for the worker launcher and the build pipeline; an account can have its own number (Builds → Pipeline → Accounts → More / Fewer sessions).",
+        "kind": "field"
       },
       {
         "target": "jobs-waiting-per-account",
@@ -284,8 +283,8 @@
       {
         "target": "one-claude-account",
         "title": "One Claude account",
-        "kind": "field",
-        "text": "Pick one account and the console and every VPS build use only it; every other account is off for builds. Off means every worker takes builds. It applies from the next build on; running builds keep their account."
+        "text": "Pick one account and the console and every VPS build use only it; every other account is off for builds. Off means every worker takes builds. It applies from the next build on; running builds keep their account.",
+        "kind": "field"
       }
     ]
   }

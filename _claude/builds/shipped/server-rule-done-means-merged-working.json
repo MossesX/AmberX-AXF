@@ -1,0 +1,478 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-server-rule-done-means-merged-working",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-20T00:10:37Z",
+ "build": {
+  "id": "server-rule-done-means-merged-working",
+  "title": "Server rule: done means merged and working, never stop on failure",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+  "verbatim": true,
+  "at": "2026-11-17T00:08:19.686Z",
+  "source": "",
+  "by": "server-rule-done-means-merged-working",
+  "addenda": []
+ },
+ "brief": "# Build: server-rule-done-means-merged-working\n\n## Brett said (verbatim)\nAt: 2026-11-17T00:08:19.686Z\n> We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\n\n## What to build\nContinue build \"Server rule: done means merged and working, never stop on failure\" (server-rule-done-means-merged-working) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 00:08):\n\"We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/server-rule-done-means-merged-working\nSteps in this phase (13 left, ~2.0 h):\n[ ] s4 (~8 min) Check script framework/spec/check-done-means-merged.mjs: status-transition guards (built and complete are refused without merge, green CI and verify), the migration loses nothing, the ladder never repeats a failed strategy, and escalation only comes after N different attempts. Wire it into the CI workflow\n[ ] s5 (~8 min) Make the builds store enforce the guard: builds-store.mjs / builds-live.mjs refuse a set-status of built or complete unless the PR is merged, CI on main is green and verify passed, and record the refusal as a note\n[ ] s6 (~7 min) Add a gate rule 'done-means-merged' to the build-rules@1 store (VPS-side) with its brief text for every build brief: never stop on failure, retry, never mark done until merged + green + verified. Update framework/spec/BUILD-RULES.md\n[ ] s7 (~10 min) Failure detector in the dispatcher: pipeline.mjs tick classifies crash, red CI, clash, push failure, stalled (no heartbeat) and fell-to-pending for every running or queued build, appends an attempt record and sets the status to fixing\n[ ] s8 (~10 min) Auto-retry: pipeline.mjs asks retry-ladder for the next strategy and relaunches through deploy/claude-headless.sh with the strategy in the brief (a fix-strategy addendum, a fresh session, or --account/model per policy; never above the step's pinned model), logging each attempt\n[ ] s9 (~10 min) Share with the auto-lander: it writes its CI-red/clash fix attempts into the same attempts[] (one log) and sets landing and landed; after the merge it marks complete only once CI on main is green\n[ ] s10 (~10 min) Feature verify after merge: run the build's verify command (from its brief/build record, defaulting to its checks) against main or the deployed console; a pass sets complete, a fail opens a fixing attempt\n[ ] s11 (~10 min) Escalation: once the ladder says escalate, register one health@1 banner item (what broke, every attempt tried, since when, a Retry/Fix button) and send one phone push through axf.notify@1; declare it in notify.json. Never re-push the same escalation\n[ ] s12 (~10 min) UI: the build views show the real status chip (building, fixing, landing, landed, escalated) and an Attempts tab listing every attempt with its strategy, model, account and result. Tokens and framework controls only, TabGroup asset, control@1 targets registered\n[ ] s13 (~10 min) API parity: REST routes GET /attempts/<id> and POST /retry/<id> (with strategy), MCP through plugin-commands, CLI orchestrator.mjs attempts|retry, voice actions, deep link row:<build>/tab:attempts for console_show; check-console-control passes\n[ ] s14 (~10 min) Tests: Python route tests plus a pipeline tick simulation (crash then red CI then different strategy then escalation; and the merged + green + verified path to complete). Run check-builds-store, check-build-steps and check-done-means-merged\n[ ] s15 (~8 min) UI Review: submit 3 options for the Attempts tab and status chip (choices JSON, assets in plugins/build-orchestrator/assets/), and say in the PR that it is waiting there\n[ ] s16 (~10 min) Final: run the full checks, write the report _claude/builds/reports/server-rule-done-means-merged-working.md (contract, ladder, API reach for each feature, before/after), add the THREADS row, push the branch and open the PR, link it with builds-live.mjs, and land it through the merge queue\nRead first: framework/spec/check-done-means-merged.mjs, .github/workflows/android.yml, framework/cli/builds-store.mjs, framework/cli/builds-live.mjs, framework/spec/BUILD-RULES.md, apps/console-web/plugins/gate/, build-rules/, apps/console-web/plugins/build-orchestrator/pipeline.mjs, deploy/claude-headless.sh, apps/console-web/plugins/auto-lander/, apps/console-web/plugins/build-orchestrator/verify.mjs, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/systems-check/, apps/console-web/plugins/build-orchestrator/server/, apps/console-web/plugins/build-orchestrator/web/, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/test.py, framework/spec/, apps/console-web/plugins/build-orchestrator/assets/, _claude/builds/reports/server-rule-done-means-merged-working.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-rule-done-means-merged-working <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-rule-done-means-merged-working \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-server-rule-done-means-merged-working--earl",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-17T00:15:21.627Z",
+   "endedAt": "2026-11-17T04:16:39.108Z",
+   "exit": 0,
+   "costUsd": 27.7646
+  }
+ ],
+ "steps": [
+  {
+   "id": "s17",
+   "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s1",
+   "text": "Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:15:21.627Z",
+   "doneAt": "2026-11-17T00:23:53.408Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Schema and migration design: add the new statuses and an attempts[] field (attempt@1: n, kind, strategy, model, account, session, startedAt, endedAt, result, log link) to builds@1 in framework/core/build-pipeline.mjs and the builds-store normaliser so normBuild keeps them. Migrate existing built/complete records with no merged PR back to landing or fixing. Add fixture framework/spec/fixtures/done-means-merged.json",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:23:53.408Z",
+   "doneAt": "2026-11-17T00:41:36.207Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Retry-strategy engine framework/core/retry-ladder.mjs: given a build's attempts and the failure kind, return the next strategy (same approach retry, then a different fix strategy, then a fresh session, then another model/account, then escalate). Pure and deterministic, with a configurable max-attempt count, checked against the fixture",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:41:36.207Z",
+   "doneAt": "2026-11-17T00:46:37.580Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Check script framework/spec/check-done-means-merged.mjs: status-transition guards (built and complete are refused without merge, green CI and verify), the migration loses nothing, the ladder never repeats a failed strategy, and escalation only comes after N different attempts. Wire it into the CI workflow",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:46:37.580Z",
+   "doneAt": "2026-11-17T03:35:37.646Z",
+   "actualMin": 169,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Make the builds store enforce the guard: builds-store.mjs / builds-live.mjs refuse a set-status of built or complete unless the PR is merged, CI on main is green and verify passed, and record the refusal as a note",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T03:35:37.646Z",
+   "doneAt": "2026-11-17T03:38:50.452Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Add a gate rule 'done-means-merged' to the build-rules@1 store (VPS-side) with its brief text for every build brief: never stop on failure, retry, never mark done until merged + green + verified. Update framework/spec/BUILD-RULES.md",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-17T03:38:50.452Z",
+   "doneAt": "2026-11-17T03:41:13.736Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Failure detector in the dispatcher: pipeline.mjs tick classifies crash, red CI, clash, push failure, stalled (no heartbeat) and fell-to-pending for every running or queued build, appends an attempt record and sets the status to fixing",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:41:13.736Z",
+   "doneAt": "2026-11-17T03:43:53.575Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Auto-retry: pipeline.mjs asks retry-ladder for the next strategy and relaunches through deploy/claude-headless.sh with the strategy in the brief (a fix-strategy addendum, a fresh session, or --account/model per policy; never above the step's pinned model), logging each attempt",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:43:53.575Z",
+   "doneAt": "2026-11-17T03:49:09.262Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Share with the auto-lander: it writes its CI-red/clash fix attempts into the same attempts[] (one log) and sets landing and landed; after the merge it marks complete only once CI on main is green",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:49:09.262Z",
+   "doneAt": "2026-11-17T03:53:23.872Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Feature verify after merge: run the build's verify command (from its brief/build record, defaulting to its checks) against main or the deployed console; a pass sets complete, a fail opens a fixing attempt",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:53:23.872Z",
+   "doneAt": "2026-11-17T03:55:23.008Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Escalation: once the ladder says escalate, register one health@1 banner item (what broke, every attempt tried, since when, a Retry/Fix button) and send one phone push through axf.notify@1; declare it in notify.json. Never re-push the same escalation",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:55:23.008Z",
+   "doneAt": "2026-11-17T03:58:40.930Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "UI: the build views show the real status chip (building, fixing, landing, landed, escalated) and an Attempts tab listing every attempt with its strategy, model, account and result. Tokens and framework controls only, TabGroup asset, control@1 targets registered",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T03:58:40.930Z",
+   "doneAt": "2026-11-17T04:03:50.879Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "API parity: REST routes GET /attempts/<id> and POST /retry/<id> (with strategy), MCP through plugin-commands, CLI orchestrator.mjs attempts|retry, voice actions, deep link row:<build>/tab:attempts for console_show; check-console-control passes",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:03:50.879Z",
+   "doneAt": "2026-11-17T04:07:10.216Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Tests: Python route tests plus a pipeline tick simulation (crash then red CI then different strategy then escalation; and the merged + green + verified path to complete). Run check-builds-store, check-build-steps and check-done-means-merged",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:07:10.216Z",
+   "doneAt": "2026-11-17T04:11:37.655Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "UI Review: submit 3 options for the Attempts tab and status chip (choices JSON, assets in plugins/build-orchestrator/assets/), and say in the PR that it is waiting there",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T04:11:37.655Z",
+   "doneAt": "2026-11-17T04:13:38.448Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Final: run the full checks, write the report _claude/builds/reports/server-rule-done-means-merged-working.md (contract, ladder, API reach for each feature, before/after), add the THREADS row, push the branch and open the PR, link it with builds-live.mjs, and land it through the merge queue",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T04:13:38.448Z",
+   "doneAt": "2026-11-17T04:16:04.981Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/server-rule-done-means-merged-working",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 771,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/771"
+ },
+ "landedCommit": "",
+ "commits": [
+  "d84d1de609cebc25392bbe72be8f4ea4309c06b3",
+  "ca0c7b1b9ad716bbd2aa01a7e26005980ff8c33b",
+  "518f4249921e467238233652865c06e8ec0417f9",
+  "b80c6f0bdc55dbf8544297965d59cb72fc0dcdb2",
+  "8c38841fe9111f39363ff3c02bdc26164d6fff2a",
+  "99e544f1079b541eeee28ae17327c71f26497387",
+  "34b85ab3ef65bd6cff110aad158d9bf059cbe545",
+  "9ce00fb44168dd59975c9776d5b7920a58532b4c",
+  "0673f36e3f00f228fb025eba3930f8345d33a8d4",
+  "18619288a06c8c4288eb29061400d7f027b85a7d",
+  "7c71a0578e3581fee9d936fd92f04517cf7002cf",
+  "7a5cdc95579a3972726b6b99c673909a1488c6be",
+  "f254141003e5dc2cc8674bd1385d62376e57f1cd",
+  "c9abaaab874299df321576804c608ffd684aa3fe",
+  "06d6d7c383f2853f297a74622096965323c433bb",
+  "9952ce789216ba4be15661e643f258de50439b87",
+  "92eeb1e36521f71663b4469c4a43c4ea674ba874",
+  "d1a7c6be79fb738fbc0f6dd7d5b086765fa1f146"
+ ],
+ "mergedAt": "2026-11-17T19:06:28Z",
+ "landedAt": "2026-11-17T19:06:28Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/build-rules/seed.json",
+  "_claude/builds/journal/2026-11-p12.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/reports/server-rule-done-means-merged-working.choices.json",
+  "_claude/builds/reports/server-rule-done-means-merged-working.md",
+  "_claude/builds/store.json",
+  "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-dot-timeline.json",
+  "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-icon-grouped.json",
+  "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-pill-grid.json",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/verify.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/attempts.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/push-banner/land/land-core.mjs",
+  "apps/console-web/plugins/push-banner/land/land.mjs",
+  "apps/console-web/src/control/inventory.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/build-rules-migrate.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/core/build-hook.mjs",
+  "framework/core/build-pipeline.mjs",
+  "framework/core/build-priority.mjs",
+  "framework/core/feature-ledger.mjs",
+  "framework/core/retry-ladder.mjs",
+  "framework/plan/builds-merge-core.mjs",
+  "framework/plan/builds-reconcile-core.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/schemas/build-hook.json",
+  "framework/schemas/json/build-event.schema.json",
+  "framework/schemas/retry-ladder.json",
+  "framework/spec/BUILD-RULES.md",
+  "framework/spec/DONE-MEANS-MERGED.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-pipeline.mjs",
+  "framework/spec/check-build-rules.mjs",
+  "framework/spec/check-builds-live.mjs",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/check-done-means-merged.mjs",
+  "framework/spec/check-feature-ledger.mjs",
+  "framework/spec/fixtures/build-pipeline-exit.json",
+  "framework/spec/fixtures/build-rules.json",
+  "framework/spec/fixtures/done-means-merged.json",
+  "framework/spec/fixtures/feature-ledger.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-dot-timeline.json",
+    "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-icon-grouped.json",
+    "apps/console-web/plugins/build-orchestrator/assets/badge/build-attempts-status-pill-grid.json",
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/verify.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/attempts.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BUILD-RULES.md",
+    "framework/spec/DONE-MEANS-MERGED.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-pipeline.mjs",
+    "framework/spec/check-build-rules.mjs",
+    "framework/spec/check-builds-live.mjs",
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/check-done-means-merged.mjs",
+    "framework/spec/check-feature-ledger.mjs",
+    "framework/spec/fixtures/build-pipeline-exit.json",
+    "framework/spec/fixtures/build-rules.json",
+    "framework/spec/fixtures/done-means-merged.json",
+    "framework/spec/fixtures/feature-ledger.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/build-rules/seed.json",
+    "_claude/builds/journal/2026-11-p12.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/reports/server-rule-done-means-merged-working.choices.json",
+    "_claude/builds/reports/server-rule-done-means-merged-working.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-hook.mjs",
+    "framework/core/build-pipeline.mjs",
+    "framework/core/build-priority.mjs",
+    "framework/core/feature-ledger.mjs",
+    "framework/core/retry-ladder.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/build-rules-migrate.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-merge-core.mjs",
+    "framework/plan/builds-reconcile-core.mjs",
+    "framework/plan/builds-store-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-hook.json",
+    "framework/schemas/json/build-event.schema.json",
+    "framework/schemas/retry-ladder.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/land-core.mjs",
+    "apps/console-web/plugins/push-banner/land/land.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261117-yj8u501",
+   "name": "Build status chip and Attempts tab",
+   "status": "waiting",
+   "group": "g-20261117-38ebac6f",
+   "url": "/review/r-20261117-yj8u501"
+  }
+ ],
+ "cost": {
+  "usd": 27.7646,
+  "estimated": false,
+  "tokens": {
+   "input": 1882,
+   "output": 4314,
+   "cacheRead": 54746032,
+   "cacheWrite": 621113
+  }
+ },
+ "report": "_claude/builds/reports/server-rule-done-means-merged-working.md",
+ "open": [
+  "s17: Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path",
+  "A `ci-red` on main after a merge relaunches on the build's own branch, with the failure (merge commit) in the brief. The spec's fix branch off main is not built yet.",
+  "The retry policy is always the defaults: build-rule@1 has no `settings` field yet.",
+  "Kotlin twin of the ladder / guard: deferred (PORTING.md; Android on hold).",
+  "The UI choice (pill + grid is built) waits for Brett in UI Review."
+ ]
+}

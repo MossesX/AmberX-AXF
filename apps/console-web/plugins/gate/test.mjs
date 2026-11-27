@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Gate & rules self-test: the gate-rules core against its fixtures, the store and lander adapters against a temp
+ * VPS Configuration self-test: the gate-rules core against its fixtures, the store and lander adapters against a temp
  * lander data folder (config.json, merge-queue.json, land.json, a fake land.mjs that records what it was asked), the
  * History log, the ops (rules, reset confirm, check, settings), and CLI-vs-API parity (what the REST routes and so the
  * MCP tools run): the same input gives the same record.
@@ -60,7 +60,7 @@ try {
   const s = createStore();
   t('rules are migrated from the lander config on read, and a read writes nothing', () => {
     const set = s.readRules();
-    assert.equal(set.$axf, 'gate-rule-set@1'); assert.equal(set.rules.length, 8); assert.ok(set.migratedFrom.keys.includes('mergeQueue'));
+    assert.equal(set.$axf, 'gate-rule-set@1'); assert.equal(set.rules.length, 9); assert.ok(set.migratedFrom.keys.includes('mergeQueue'));
     assert.equal(set.rules.find((r) => r.id === 'merge-queue-only').settings.mode, 'stack');
     assert.throws(() => readFileSync(join(GATE, 'rules.json')));
   });
@@ -139,7 +139,7 @@ try {
   seed();
   const g = createGate();
   t('rules ops: list, get, set, toggle, errors in words', () => {
-    assert.equal(g.run('rules_list', { enabled: 'true' }).rules.length, 8);
+    assert.equal(g.run('rules_list', { enabled: 'true' }).rules.length, 9);
     assert.equal(g.run('rules_get', { id: 'clash' }).default.id, 'clash');
     const set = g.run('rules_set', { id: 'theme', severity: 'warn', settings: { check: 'x.mjs' }, by: 'test' });
     assert.equal(set.rule.severity, 'warn'); assert.equal(set.before.severity, 'block'); assert.equal(set.rule.settings.check, 'x.mjs');
@@ -199,6 +199,232 @@ try {
     same(['lander', 'pause', '--why', 'parity', '--by', 'parity'], 'lander_pause');
     same(['settings'], 'settings_get');
     same(['settings', 'set', 'defaultTab', 'history'], 'settings_set');
+  });
+  t('build cap: the three numbers side by side, the note when they disagree, ranges, owner-only keys', async () => {
+    const C = await import('./build-cap.mjs');
+    assert.deepEqual(C.capNote({ hardCap: 4, stepsInParallel: 6 }), { effective: 4, note: 'Steps in parallel is 6 but Builds at once is 4: only 4 run at once.' });
+    assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 4 }).note, '');
+    assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 2 }).effective, 2);
+    assert.deepEqual(C.capNote({ hardCap: null, stepsInParallel: undefined }), { effective: null, note: '' });
+    const c = C.buildCap({ max: 4, live: 1, free: 3, emergency: { max: 2, live: 0 }, limit: { maxBuilds: 4, emergencySlots: 2, setBy: 'brett', setAt: '2026-11-18T00:00:00Z' } }, { stepsInParallel: 6 });
+    assert.equal(c.$axf, 'build-cap@1'); assert.equal(c.hardCap, 4); assert.equal(c.emergencySlots, 2); assert.equal(c.stepsInParallel, 6); assert.equal(c.effective, 4); assert.equal(c.setBy, 'brett');
+    assert.deepEqual(c.ownerOnly, ['maxBuilds', 'emergencySlots']);
+    assert.equal(C.checkValue('stepsInParallel', '3'), 3);
+    assert.throws(() => C.checkValue('stepsInParallel', 13), /1 to 12/); assert.throws(() => C.checkValue('stepsInParallel', '2.5'), /whole number/); assert.throws(() => C.checkValue('nope', 1), /unknown setting/);
+    assert.match(C.line(c), /builds at once 4 .* emergency slots 2 .* steps in parallel 6\nSteps in parallel is 6/);
+    // the CLI never writes an owner-only key, and says who can
+    const r = spawnSync(process.execPath, [join(HERE, 'build-cap.mjs'), 'set', 'maxBuilds', '9', '--json'], { encoding: 'utf8' });
+    assert.equal(r.status, 1); assert.equal(JSON.parse(r.stdout).code, 'forbidden');
+  });
+  t('model triage: the tab shows and sends, the VPS decides (routes, MCP tools, CLI word, targets, actions)', async () => {
+    const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
+    const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+    const cmds = Object.fromEntries(manifest.commands.items.map((c) => [c.id, c]));
+    assert.deepEqual(['model-triage', 'model-triage-set', 'model-triage-decisions', 'model-triage-history', 'model-triage-decide'].map((id) => [cmds[id].route, cmds[id].tool, cmds[id].readOnly === true]), [
+      ['GET /model-triage', 'vps_model_triage', true], ['POST /model-triage', 'vps_model_triage_set', false], ['GET /model-triage/decisions', 'vps_model_triage_decisions', true],
+      ['GET /model-triage/history', 'vps_model_triage_history', true], ['POST /model-triage/decide', 'vps_model_triage_decide', true]]);
+    const routes = readFileSync(join(HERE, 'server', 'routes.py'), 'utf8');
+    for (const r of ['@router.get("/model-triage")', '@router.post("/model-triage")', '@router.get("/model-triage/decisions")', '@router.get("/model-triage/history")', '@router.post("/model-triage/decide")']) assert.ok(routes.includes(r), r);
+    const { cliWords } = await import('./gate.mjs'); assert.ok(cliWords.includes('model-triage')); assert.match(web('GateView.tsx'), /tab === 'model-triage' && <ModelTriageTab/);
+    // no logic in the console: the tab and its state import no rule engine and never name a rule; every label comes from the VPS
+    for (const f of ['ModelTriageTab.tsx', 'modelTriageState.ts']) {
+      const src = web(f).replace(/\/\*[\s\S]*?\*\//g, '');
+      assert.ok(!/model-triage\.mjs|model-policy|framework\/core/.test(src), `${f} imports no engine`);
+      for (const id of ['ci-fix', 'merge-clash', 'second-try', 'blast-radius', 'cross-cutting', 'fable-words', 'simple-work']) assert.ok(!src.includes(`'${id}'`), `${f} does not name rule ${id}`);
+    }
+    assert.match(web('modelTriageState.ts'), /gateCall<Triage>\('model-triage'\)/); assert.match(web('modelTriageState.ts'), /gateCall\('model-triage', 'POST'/);
+    for (const a of ['vps.model-triage.open', 'vps.model-triage.status', 'vps.model-triage.rule', 'vps.model-triage.default']) assert.ok(web('modelTriageState.ts').includes(`'${a}'`), a);
+    assert.match(web('ModelTriageTab.tsx'), /role="toolbar" aria-label="Model triage"/);
+    // `axf gate model-triage` is the VPS gate's own CLI, on a scratch store
+    const dir = mkdtempSync(join(tmpdir(), 'axf-gate-triage-'));
+    const env = { ...process.env, AXF_MODEL_TRIAGE_DIR: dir, AXF_CLAUDE_SETTINGS_FILE: join(dir, 'none.json'), AXF_FABLE_UPGRADE_APPROVAL: '' };
+    const run = (...a) => spawnSync(process.execPath, [join(HERE, 'gate.mjs'), 'model-triage', ...a, '--json'], { encoding: 'utf8', env });
+    const st = JSON.parse(run('status').stdout);
+    assert.equal(st.$axf, 'model-triage@1'); assert.equal(st.config.rules.length, 10); assert.equal(st.stored, false);
+    assert.equal(JSON.parse(run('rule', 'blast-radius', 'set', 'dependents', '25', '--by', 'test').stdout).config.rules.find((r) => r.id === 'blast-radius').settings.dependents, 25);
+    const bad = run('rule', 'blast-radius', 'set', 'dependents', 'many'); assert.equal(bad.status, 2); assert.equal(JSON.parse(bad.stdout).code, 'invalid');
+    assert.equal(JSON.parse(run('decide', '--text', 'Rename the tab label').stdout).decision.rule, 'simple-work');
+    rmSync(dir, { recursive: true, force: true });
+  });
+  t('approval rules: patterns, first match wins, own entries first, guarded tools, the draft and the save', async () => {
+    const A = await import('./web/approval-core.mjs');
+    // the hub's own pattern test (axHub packages/core/test/policy-rules.test.ts holds the same cases)
+    for (const [p, n, want] of [['run', 'run', true], ['run', 'runner', false], ['*', 'x', true], ['build_*', 'build_land', true], ['build_*', 'rebuild_land', false], ['*_run', 'console_terminal_sessions_run', true], ['a*b*c', 'a-b-c', true], ['a*b*c', 'a-c', false], ['ab*ba', 'aba', false], ['a.c', 'abc', false], ['', '', false]]) assert.equal(A.matches(p, n), want, `${p} ~ ${n}`);
+    assert.equal(A.ruleProblem({ match: 'build_*', policy: 'allow' }), '');
+    assert.match(A.ruleProblem({ match: 'a b', policy: 'allow' }), /no spaces/); assert.match(A.ruleProblem({ match: 'x', policy: 'sure' }), /one of/);
+    assert.match(A.ruleProblem({ match: 'x', vetoSeconds: 5 }), /10 to 1800/); assert.match(A.ruleProblem({ match: 'x' }), /a decision, a hold, or both/); assert.match(A.ruleProblem({ match: '' }), /which tools/);
+    assert.deepEqual(A.cleanRule({ match: ' run ', policy: 'veto', vetoSeconds: '30', extra: 1 }), { match: 'run', policy: 'veto', vetoSeconds: 30 });
+    assert.throws(() => A.cleanRules([{ match: 'ok', policy: 'allow' }, { match: 'x' }]), /rule 2:/);
+
+    const tool = (name, policy, more = {}) => ({ name, policy, ...more });
+    const table = { veto: { defaultSeconds: 90, min: 10, max: 1800 }, services: [
+      { namespace: 'vps', type: 'ssh', enabled: true, rules: [], tools: [tool('run', 'veto', { explicit: 'veto', annotations: { destructive: true } }), tool('launch', 'veto', { explicit: 'veto' }), tool('check', 'allow', { explicit: 'allow', annotations: { readOnly: true } })] },
+      { namespace: 'axf-console', type: 'mcp', enabled: true, rules: [], tools: [
+        tool('console_show', 'veto'), tool('console_open', 'allow', { explicit: 'allow' }), tool('console_terminal_sessions_run', 'veto', { explicit: 'veto' }),
+        tool('agent_manager_vinny_commands_by_cid_run', 'veto'), tool('orchestrator_upgrade_approve', 'veto', { explicit: 'confirm' }),
+        tool('builds_delete', 'confirm', { annotations: { destructive: true } }), tool('secret_tool', 'deny', { explicit: 'deny' }), tool('overlay_open', 'veto') ] },
+      { namespace: 'github', type: 'rest', enabled: true, rules: [{ match: 'get_*', policy: 'allow' }], tools: [tool('get_repo', 'allow', { rule: 'get_*' })] },
+    ] };
+    const live = { hub: 'https://hub.test', available: true, table };
+
+    // no draft: the live rules, nothing to save
+    let v = A.view(live, null);
+    assert.equal(v.$axf, 'approval-rules@1'); assert.equal(v.available, true); assert.equal(v.pending, 0); assert.equal(v.save, null); assert.equal(v.default.applied, false);
+    assert.deepEqual(v.services.map((s) => s.service), ['vps', 'axf-console', 'github']);
+    assert.equal(v.services[2].rules[0].decides, 1); assert.deepEqual(v.hold, { default: 90, min: 10, max: 1800 });
+
+    // add / edit / move / remove in the draft; a new rule goes above a closing catch-all
+    let d = A.stage({}, table, { op: 'add', service: 'axf-console', rule: { match: '*', policy: 'allow' } });
+    d = A.stage(d, table, { op: 'add', service: 'axf-console', rule: { match: '*_run', policy: 'veto', vetoSeconds: '20' } });
+    assert.deepEqual(d['axf-console'].rules, [{ match: '*_run', policy: 'veto', vetoSeconds: 20 }, { match: '*', policy: 'allow' }]);
+    v = A.view(live, { services: d });
+    const con = v.services[1];
+    assert.equal(con.changed, true); assert.equal(v.pending, 1);
+    // own entries win (console_open, the terminal run, the upgrade, the deny); an allow pattern never decides a destructive tool
+    assert.deepEqual(con.rules.map((r) => r.decides), [1, 2]); assert.deepEqual(con.rules[0].sample, ['agent_manager_vinny_commands_by_cid_run']); assert.deepEqual(con.rules[1].sample, ['console_show', 'overlay_open']);
+    assert.equal(con.own, 3, 'clearable own entries: never a deny, never a guarded tool');
+    assert.deepEqual(v.save, { rules: [{ service: 'axf-console', rules: d['axf-console'].rules }], reason: 'Approval rules' });
+    d = A.stage(d, table, { op: 'edit', service: 'axf-console', index: 0, rule: { vetoSeconds: '', match: '*run' } });
+    assert.deepEqual(d['axf-console'].rules[0], { match: '*run', policy: 'veto' });
+    d = A.stage(d, table, { op: 'move', service: 'axf-console', index: 1, to: 0 });
+    assert.equal(d['axf-console'].rules[0].match, '*');
+    assert.equal(A.view(live, { services: d }).services[1].rules[1].decides, 0, 'a rule under a catch-all decides nothing, and the view says so');
+    d = A.stage(d, table, { op: 'remove', service: 'axf-console', index: 0 });
+    assert.deepEqual(d['axf-console'].rules, [{ match: '*run', policy: 'veto' }]);
+    assert.throws(() => A.stage(d, table, { op: 'remove', service: 'axf-console', index: 4 }), /rule number/);
+    assert.throws(() => A.stage(d, table, { op: 'add', service: 'nope', rule: { match: 'x', policy: 'allow' } }), /no service "nope"/);
+    assert.throws(() => A.stage(d, table, { op: 'add', service: 'vps', rule: { match: 'x y', policy: 'allow' } }), /no spaces/);
+    assert.throws(() => A.stage(d, table, { op: 'explode' }), /say what to do/);
+    // editing a service with live rules starts from them; the draft that equals live saves nothing
+    d = A.stage({}, table, { op: 'edit', service: 'github', index: 0, rule: { policy: 'allow' } });
+    assert.equal(A.saveBody(table, { services: d }), null);
+    assert.deepEqual(A.stage(d, table, { op: 'discard', service: 'github' }), {}); assert.deepEqual(A.stage(d, table, { op: 'discard' }), {});
+    // let the rules decide: clears own entries on save, never a deny or a guarded tool
+    d = A.stage({}, table, { op: 'clear-own', service: 'axf-console' });
+    assert.deepEqual(A.saveBody(table, { services: d }).changes.map((c) => c.tool), ['console_open', 'console_terminal_sessions_run', 'orchestrator_upgrade_approve']);
+    assert.ok(A.saveBody(table, { services: d }).changes.every((c) => c.policy === null));
+
+    // Brett's default: veto only on VPS shell commands, upgrades confirm, everything else in the console at once
+    d = A.stage({}, table, { op: 'default' });
+    assert.deepEqual(Object.keys(d), ['vps', 'axf-console'], 'the default touches only the VPS and the console');
+    assert.deepEqual(d.vps, { rules: [{ match: 'run', policy: 'veto' }, { match: 'launch', policy: 'veto' }], clearOwn: false });
+    assert.deepEqual(d['axf-console'].rules.map((r) => `${r.match}=${r.policy}`), ['console_terminal_sessions_run=veto', 'agent_manager_vinny_commands_by_cid_run=veto', 'orchestrator_upgrade_approve=confirm', '*=allow']);
+    v = A.view(live, { services: d, by: 'test', at: '2026-11-21T00:00:00Z', reason: A.DEFAULT.reason });
+    const after = v.services[1];
+    assert.deepEqual(after.rules.map((r) => r.decides), [1, 1, 1, 3], 'screen opens, overlays and navigation fall to * = allow');
+    assert.deepEqual(after.rules[3].sample, ['console_show', 'console_open', 'overlay_open']);
+    assert.ok(!v.save.changes.some((c) => c.tool === 'secret_tool' || c.tool === 'builds_delete'), 'a deny and a delete keep their own');
+    assert.ok(!v.save.changes.some((c) => c.service === 'vps'), "the VPS tools' own entries stay");
+    assert.equal(v.save.reason, A.DEFAULT.reason); assert.equal(v.draft.by, 'test');
+    // once the hub holds it, the default reads as applied and there is nothing to save
+    const applied = { ...table, services: table.services.map((s) => (d[s.namespace] ? { ...s, rules: d[s.namespace].rules, tools: s.tools.map((x) => (x.explicit && x.explicit !== 'deny' && !x.annotations?.destructive && s.namespace === 'axf-console' ? { ...x, explicit: undefined } : x)) } : s)) };
+    assert.equal(A.onDefault(applied), true); assert.equal(A.view({ ...live, table: applied }, null).default.applied, true);
+    // a rule Brett added himself survives Apply the default, above the catch-all
+    const mine = { ...table, services: table.services.map((s) => (s.namespace === 'axf-console' ? { ...s, rules: [{ match: 'plan_*', policy: 'confirm' }] } : s)) };
+    assert.deepEqual(A.defaultDraft(mine)['axf-console'].rules.map((r) => r.match).slice(-2), ['plan_*', '*']);
+
+    // an older hub, or none: said plainly, never a stale copy
+    assert.match(A.view({ hub: 'h', available: false, message: 'axHub answered 502.' }, null).message, /502/);
+    assert.match(A.view({ hub: 'h', available: true, table: { services: [{ namespace: 'vps', tools: [] }] } }, null).message, /decision 121/);
+    assert.match(A.lines(A.view(live, null)).join('\n'), /github: 1\. get_\* → allow[\s\S]*The default is not applied\./);
+
+    // the save goes from the browser with the session cookie, and says why it failed
+    const calls = [];
+    const fetchOk = async (url, init) => { calls.push([url, init]); return { ok: true, status: 200, json: async () => ({ ok: true }) }; };
+    assert.equal((await A.putRules('https://hub.test', v.save, { fetch: fetchOk })).ok, true);
+    assert.equal(calls[0][0], 'https://hub.test/auth/api/policy'); assert.equal(calls[0][1].method, 'PUT'); assert.equal(calls[0][1].credentials, 'include');
+    assert.deepEqual(Object.keys(JSON.parse(calls[0][1].body)), ['changes', 'rules', 'reason']);
+    assert.match((await A.putRules('h', v.save, { fetch: async () => ({ ok: false, status: 401, json: async () => ({}) }) })).message, /Sign in to axHub/);
+    assert.match((await A.putRules('h', v.save, { fetch: async () => ({ ok: false, status: 403, json: async () => ({ error: { message: 'owner-only' } }) }) })).message, /owner-only/);
+    assert.equal((await A.putRules('h', null)).ok, false);
+  });
+  t('approval rules: every surface stages into one draft, and nothing but Brett\'s own click saves', async () => {
+    const R = await import('./approval-rules.mjs');
+    const dir = mkdtempSync(join(tmpdir(), 'axf-approvals-'));
+    const env = { AXF_GATE_DIR: dir };
+    const table = { services: [{ namespace: 'vps', type: 'ssh', enabled: true, rules: [], tools: [{ name: 'run', policy: 'veto', explicit: 'veto' }] }] };
+    const read = async () => ({ hub: 'https://hub.test', available: true, table });
+    const out = []; const io = { env, read, out: (x) => out.push(x), err: (x) => out.push(x) };
+    assert.equal(await R.main(['status', '--json'], io), 0); assert.equal(JSON.parse(out.pop()).pending, 0);
+    assert.equal(await R.main(['add', 'vps', 'build_*', 'allow', '--by', 'paulie', '--json'], io), 0);
+    let v = JSON.parse(out.pop());
+    assert.equal(v.staged, true); assert.match(v.message, /Nothing changed on axHub yet: Brett saves it/); assert.equal(v.draft.by, 'paulie');
+    assert.deepEqual(v.save.rules, [{ service: 'vps', rules: [{ match: 'build_*', policy: 'allow' }] }]);
+    assert.equal(await R.main(['add', 'vps', 'run', 'hold', '45', '--at', '1', '--json'], io), 0);
+    assert.deepEqual(JSON.parse(out.pop()).services[0].rules.map((r) => [r.match, r.policy, r.vetoSeconds]), [['run', undefined, 45], ['build_*', 'allow', undefined]]);
+    assert.equal(await R.main(['edit', 'vps', '1', 'vetoSeconds', '-', '--json'], io), 2, 'a rule left with nothing to set is refused'); out.pop();
+    assert.equal(await R.main(['edit', 'vps', '1', 'policy', 'veto', '--json'], io), 0); out.pop();
+    assert.equal(await R.main(['move', 'vps', '2', '1', '--json'], io), 0); out.pop();
+    assert.equal(await R.main(['remove', 'vps', '2', '--json'], io), 0);
+    assert.deepEqual(JSON.parse(out.pop()).save.rules[0].rules, [{ match: 'build_*', policy: 'allow' }]);
+    assert.equal(await R.main(['stage', '--op', JSON.stringify({ op: 'set', service: 'vps', rules: [{ match: '*', policy: 'deny' }], clearOwn: true }), '--json'], io), 0);
+    v = JSON.parse(out.pop()); assert.equal(v.services[0].clearOwn, true); assert.deepEqual(v.save.changes, [{ service: 'vps', tool: 'run', policy: null }]);
+    assert.equal(R.readDraft(env).$axf, 'approval-rules-draft@1');
+    // saving is never a command
+    for (const w of ['save', 'apply']) { assert.equal(await R.main([w, '--json'], io), 1); const r = JSON.parse(out.pop()); assert.equal(r.code, 'forbidden'); assert.match(r.message, /Only Brett saves/); }
+    assert.equal(await R.main(['nonsense', '--json'], io), 2); out.pop();
+    assert.equal(await R.main(['stage', '--op', 'not json', '--json'], io), 2); out.pop();
+    assert.equal(await R.main(['discard', '--json'], io), 0); assert.equal(JSON.parse(out.pop()).pending, 0); assert.equal(R.readDraft(env), null);
+    // the hub not answering: nothing is staged, and it says so
+    const down = { ...io, read: async () => ({ hub: 'h', available: false, message: 'axHub answered 502.' }) };
+    assert.equal(await R.main(['default', '--json'], down), 1); assert.match(JSON.parse(out.pop()).message, /nothing was staged: axHub answered 502/);
+    assert.equal(await R.main(['status'], down), 0); assert.match(out.pop(), /can't be shown: axHub answered 502/);
+    // the read itself: a bearer GET, never a stale copy, plain words when it fails
+    const hubEnv = { AXHUB_URL: 'https://hub.test/mcp', AXHUB_TOKEN: ' tok ' };
+    const seen = [];
+    const okRead = await R.readPolicy({ env: hubEnv, fetch: async (url, init) => { seen.push([url, init]); return { ok: true, status: 200, json: async () => table }; } });
+    assert.equal(okRead.available, true); assert.equal(seen[0][0], 'https://hub.test/auth/api/policy'); assert.equal(seen[0][1].headers.Authorization, 'Bearer tok'); assert.equal(seen[0][1].method, undefined, 'a GET');
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => ({ ok: false, status: 404 }) })).message, /doesn't have the policy API yet/);
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => ({ ok: false, status: 401 }) })).message, /answered 401/);
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => { throw new Error('down'); } })).message, /Can't reach axHub: down/);
+    assert.match((await R.readPolicy({ env: { HOME: dir } })).message, /No axHub token here/);
+    rmSync(dir, { recursive: true, force: true });
+
+    // the wiring: tab, routes, MCP tools, CLI word, targets, actions; Save and Apply the default want the real click
+    const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
+    const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'passes', 'history'\]/);
+    const cmds = Object.fromEntries(manifest.commands.items.map((c) => [c.id, c]));
+    assert.equal(cmds['approval-rules'].tool, 'vps_approval_rules'); assert.equal(cmds['approval-rules'].readOnly, true); assert.equal(cmds['approval-rules'].route, 'GET /approval-rules');
+    assert.equal(cmds['approval-rules-stage'].tool, 'vps_approval_rules_stage'); assert.equal(cmds['approval-rules-stage'].route, 'POST /approval-rules/draft');
+    assert.ok(!manifest.commands.items.some((c) => /approval-rules/.test(c.id) && /save|apply/.test(c.id)), 'no command saves the rules');
+    const routes = readFileSync(join(HERE, 'server/routes.py'), 'utf8');
+    assert.ok(routes.includes('@router.get("/approval-rules")') && routes.includes('@router.post("/approval-rules/draft")'));
+    assert.ok(!/@router\.(put|post)\("\/approval-rules"\)/.test(routes), 'the console server has no route that writes the policy');
+    const { cliWords } = await import('./gate.mjs'); assert.ok(cliWords.includes('approvals'));
+    const state = web('approvalRulesState.ts');
+    for (const a of ['open', 'status', 'add', 'edit', 'remove', 'move', 'clear-own', 'discard']) assert.ok(state.includes(`'vps.approvals.${a}'`), `action vps.approvals.${a}`);
+    assert.ok(!/'vps\.approvals\.(save|apply|default)'/.test(state), 'saving and applying the default are not actions');
+    assert.match(state, /if \(!ownClick\(click\)\) throw new SaveError\(OWNER_ONLY, 'owner'\);\n  const cur = await loadApprovals\(\);/, 'the trusted click is checked before anything is read or sent');
+    assert.match(state, /if \(!cur\.canSave\) throw new SaveError\(NOT_SIGNED_IN, 'signin'\);/, 'no hub session: the save says so and asks for a sign-in');
+    assert.match(state, /r\.code === 'unauthenticated' \? new SaveError\(/, "a session that ran out before the PUT asks for a sign-in too");
+    assert.match(state, /\/auth\/login\?rd=\$\{encodeURIComponent\(back\)\}/, 'the sign-in comes back to this page');
+    assert.match(state, /e\.nativeEvent\.isTrusted === true/);
+    const tab = web('ApprovalRulesTab.tsx');
+    for (const id of ['vps-approvals-refresh', 'vps-approvals-discard', 'vps-approvals-save', 'vps-approvals-default', 'vps-approvals-confirm', 'vps-approvals-cancel', 'vps-approvals-signin']) assert.ok(tab.includes(`id="${id}"`), `button ${id}`);
+    // the overlay WebView of the console app cannot draw confirm(): the question is asked on the tab
+    assert.ok(!/\bconfirm=/.test(tab) && !/(window|globalThis)\.confirm/.test(tab), 'no browser confirm() on the Approval rules tab');
+    assert.match(tab, /id="vps-approvals-confirm"[^>]*onClick=\{answer\}/, "the answer's own click is the one that saves");
+    assert.match(tab, /e instanceof SaveError && e\.code === 'signin'/, 'a missing session shows Sign in');
+    assert.match(tab, /if \(what === 'save' \|\| what === 'default'\) rt\.toast\(message, 'danger', T\)/, 'a failed save is said twice: on the tab and as a toast');
+    for (const f of ['match', 'policy', 'vetoSeconds']) assert.ok(tab.includes('data-axf-target={`${address}.' + f + '`}'), `target ${f}`);
+    assert.match(tab, /saveApprovals\(e\)/); assert.match(tab, /await stageApproval\(\{ op: 'default' \}\); await saveApprovals\(e, DEFAULT\.reason\)/);
+  });
+  t('passes have one home: the Passes tab is here, Token control keeps only the banner, the axHub pass pages keep their addresses', () => {
+    const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
+    const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'model-triage', 'approvals', 'passes', 'history'\]/);
+    for (const v of ['view:gate', 'view:vps-configuration', 'view:axhub-passes', 'view:axhub-go-pass', 'action:axhub-passes.open', 'action:axhub-go-pass.open']) assert.ok(manifest.provides.includes(v), `provides ${v}`);
+    const state = web('passesState.ts');
+    for (const a of ['vps.passes.open', 'vps.passes.status', 'vps.passes.grant', 'vps.passes.revoke', 'vps.passes.max', 'axhub-passes.open', 'axhub-go-pass.open']) assert.ok(state.includes(`'${a}'`), `action ${a}`);
+    for (const k of ['maxMinutes', 'timeZone']) assert.ok(state.includes(`setting:vps.passes.${k}`), `target ${k}`);
+    const tab = web('PassesTab.tsx');
+    for (const id of ['vps-pass-start', 'vps-pass-settings-save', 'vps-pass-approve-', 'vps-pass-deny-', 'vps-pass-undo-', 'vps-pass-revoke-']) assert.ok(tab.includes(id), `button ${id}`);
+    assert.match(tab, /clampMinutes\(minutes, longest\)/, 'a new pass is held to the longest-pass setting');
+    const tc = (f) => readFileSync(join(HERE, '../token-control/web', f), 'utf8'); // axf-plugin:token-control
+    assert.ok(!/PassesTab|PassSettings/.test(tc('index.tsx') + tc('pass.tsx')), 'Token control no longer draws the passes');
+    assert.ok(tc('index.tsx').includes('PassBanner') && tc('index.tsx').includes("vps.passes.open:veto"), 'Token control keeps the banner and links here');
+    assert.ok(web('index.tsx').includes("'vps.open'") === false && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'vps.open'") && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'gate.open'"), 'vps.open is the new address, gate.open still works');
   });
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);

@@ -23,7 +23,7 @@ function Sample({ skin, fallback }: { skin: SkinRow | undefined; fallback: strin
 export function SkinPreview({ skin, fallback, frame, onFrame }: { skin: SkinRow | undefined; fallback: string; frame: Frame; onFrame: (f: Frame) => void }) {
   return (
     <Container title={skin ? `Preview: ${skin.name}` : 'Preview'} icon="eye" className="axp-skin-gallery__preview">
-      <div role="toolbar" aria-label="Preview size" className="axp-skin-gallery__frames">
+      <div role="group" aria-label="Preview size" className="axp-skin-gallery__frames">
         <Segmented label="Preview size" value={frame} onChange={onFrame} options={[
           { value: 'both', label: 'Both', icon: 'grid' },
           { value: 'desktop', label: 'Desktop', icon: 'monitor' },

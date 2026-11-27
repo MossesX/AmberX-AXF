@@ -22,7 +22,7 @@ import { appMenu } from './menu';
 function AssistantView() {
   const s = useStatus();
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted axp-ai-assistant__lede" title="Chat with the framework's assistant or a specialist agent; anything that writes asks you first.">Chat with the assistant or an agent; writes ask you first.</p></div></header>
       <ChatPanel />
     </div>
@@ -64,7 +64,7 @@ export const plugin: AxfWebLibrary = {
       render: (props, close) => <div className="axp-ai-assistant__dialog"><ChatPanel compact initialContext={(props as Ctx).note || (props as Ctx).view ? (props as Ctx) : undefined} onClose={close} start={(props as { start?: ChatStart }).start} openId={(props as { open?: string }).open} /></div>,
     },
   },
-  nav: { label: 'Plugins', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
+  nav: { label: 'AI & agents', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
   settingsTabs: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', order: 30, description: 'Providers, defaults, personality, prompts and usage for the AI assistant. Keys stay on the console server.' }],
   settings: [
     { id: 'ai-assistant.titlebar', label: 'Title bar', icon: 'shield', tab: 'ai-assistant', order: 6, settings: [

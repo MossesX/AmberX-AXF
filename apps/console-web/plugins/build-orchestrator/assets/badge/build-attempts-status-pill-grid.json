@@ -1,0 +1,50 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "build-attempts-status-pill-grid",
+ "name": "build-attempts-status: Pill chips + attempts grid (what is built now)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Status as a toned pill chip (building, fixing, landing, landed, complete, escalated); the Attempts tab is a DataGrid, newest first: #, failure, strategy, model, account, result chip, what happened. Densest; reads like the Steps grid next to it.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-attempts-status",
+  "choice-option:pill-grid"
+ ],
+ "data": {
+  "icon": "refresh",
+  "label": "fixing",
+  "tone": "warning",
+  "shape": "pill",
+  "statuses": {
+   "running": [
+    "building",
+    "accent"
+   ],
+   "fixing": [
+    "fixing",
+    "warning"
+   ],
+   "landing": [
+    "landing",
+    "accent"
+   ],
+   "landed": [
+    "landed",
+    "success"
+   ],
+   "complete": [
+    "complete",
+    "success"
+   ],
+   "escalated": [
+    "escalated",
+    "danger"
+   ]
+  },
+  "attempts": {
+   "layout": "grid",
+   "order": "newest-first"
+  }
+ }
+}

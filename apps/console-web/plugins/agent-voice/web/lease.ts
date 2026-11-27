@@ -1,11 +1,10 @@
 /**
  * The shared microphone lease (mic-lease@1): one holder at a time, on `globalThis.__axfMicLease`.
  *
- * Everything in a page that listens (AmberX dictation, Speak a command, voice notes, the Assistant microphone) takes
+ * Everything in a page that listens (dictation, Speak a command, voice notes, the Assistant microphone) takes
  * the lease before it opens the microphone and releases it after, so two of them never fight over the recognizer.
  * Nobody imports anybody: whoever loads first puts the object on globalThis and everyone else uses that one, so either
  * side can be removed. A holder that forgets to release loses the lease after its time-to-live (default 2 minutes).
- * AmberX's own copy lives in `apps/amberx-droid/src/miclease.ts` (same contract, same key).
  */
 export interface MicLease {
   readonly $axf: 'mic-lease@1';

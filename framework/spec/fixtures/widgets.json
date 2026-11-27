@@ -978,6 +978,157 @@
         "dark": "b",
         "next": "b"
       }
+    ],
+    "themeSwitchPair": [
+      {
+        "active": "arctic-daylight",
+        "own": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        }
+      },
+      {
+        "active": "saffron-day",
+        "own": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "saffron-day",
+          "dark": "carbon-amber"
+        }
+      },
+      {
+        "active": "carbon-amber",
+        "own": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "saffron-day",
+          "dark": "carbon-amber"
+        }
+      },
+      {
+        "active": "neon-tide",
+        "own": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "arctic-daylight",
+          "dark": "amber-ember"
+        }
+      },
+      {
+        "own": {
+          "light": "a",
+          "dark": "b"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "a",
+          "dark": "b"
+        }
+      },
+      {
+        "active": "x",
+        "own": {
+          "light": "a",
+          "dark": "b"
+        },
+        "others": [
+          {
+            "light": "fresh-light",
+            "dark": "fresh-dark"
+          },
+          {
+            "light": "saffron-day",
+            "dark": "carbon-amber"
+          },
+          {
+            "light": "x",
+            "dark": "x"
+          }
+        ],
+        "pair": {
+          "light": "a",
+          "dark": "b"
+        }
+      }
     ]
   }
 }

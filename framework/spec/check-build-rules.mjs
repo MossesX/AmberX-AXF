@@ -182,15 +182,16 @@ t('the real inventory → the committed seed: every rule present, valid, and the
 t('briefBlocks: a plugin UI build gets Look, API and the Rules bullets; VPS and interactive rules are skipped with the reason', () => {
   const b = actual.briefBlocks.pluginUi;
   assert.equal(b.$axf, B.BLOCKS_FRAME); assert.equal(b.build, 'notes-settings-tab'); assert.equal(b.ui, true);
-  assert.deepEqual(b.picked, ['ui-asset-tokens', 'api-everything', 'toolbars', 'plugin-lifecycle', 'phone-readable']);
-  assert.deepEqual(b.skipped, [{ id: 'home-card', why: 'the VPS does it' }, ...M.VPS_RULES.map((r) => ({ id: r.id, why: 'the VPS does it' })), { id: 'hard-build-limit', why: 'the VPS does it' }, { id: 'ask-with-cards', why: 'interactive only' }, { id: 'merge-queue-only', why: 'the VPS does it' }]);
+  assert.deepEqual(b.picked, ['done-means-merged', 'ui-asset-tokens', 'api-everything', 'toolbars', 'plugin-lifecycle', 'phone-readable']);
+  assert.deepEqual(b.skipped, [{ id: 'home-card', why: 'the VPS does it' }, ...M.VPS_RULES.filter((r) => r.doer === 'vps').map((r) => ({ id: r.id, why: 'the VPS does it' })), { id: 'hard-build-limit', why: 'the VPS does it' }, { id: 'ask-with-cards', why: 'interactive only' }, { id: 'merge-queue-only', why: 'the VPS does it' }]);
   assert.match(b.blocks.look, /^Look: UI code/); assert.match(b.blocks.api, /^API: Everything comes with an API/); assert.equal(b.blocks.checkpoints, '');
-  assert.equal(b.blocks.rules.split('\n')[0], '## Rules for this job'); assert.equal(b.blocks.rules.split('\n').length, 4);
+  assert.equal(b.blocks.rules.split('\n')[0], '## Rules for this job'); assert.equal(b.blocks.rules.split('\n').length, 5);
+  assert.match(b.blocks.rules, /^- Done means merged and working/m);
   assert.equal(b.text, [b.blocks.look, b.blocks.api, b.blocks.rules].join('\n')); assert.equal(b.chars, b.text.length); assert.equal(b.tokens, Math.ceil(b.chars / 4));
 });
 t('briefBlocks: an engine-only build leaves out the UI-only and plugin-keyword rules', () => {
   const b = actual.briefBlocks.engineOnly;
-  assert.equal(b.ui, false); assert.deepEqual(b.picked, ['ui-asset-tokens', 'api-everything', 'phone-readable']);
+  assert.equal(b.ui, false); assert.deepEqual(b.picked, ['done-means-merged', 'ui-asset-tokens', 'api-everything', 'phone-readable']);
   assert.ok(b.skipped.some((s) => s.id === 'toolbars' && s.why === 'UI only')); assert.ok(b.skipped.some((s) => s.id === 'plugin-lifecycle' && /keywords: none of plugin/.test(s.why)));
   assert.equal(actual.whyNot['ui-asset-tokens'], ''); assert.equal(actual.whyNot['merge-queue-only'], 'the VPS does it');
 });

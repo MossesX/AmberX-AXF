@@ -38,8 +38,15 @@ UI Review hold through `ui-review@1`, conflicts, hand holds) and never changes a
 "Check a PR" and the voice line "can 705 land?" call.
 
 Rule ids are fixed by the default set (`merge-queue-only`, `ci-green`, `tests`, `theme`, `controls`, `toolbars`,
-`ui-review`, `clash`); `custom` rules may be added later through `rules_set` with a new id (same schema), never through
-the UI alone.
+`ui-review`, `clash`, `auto-lander`); `custom` rules may be added later through `rules_set` with a new id (same schema),
+never through the UI alone. A saved set that predates a default rule gains it on read (`joinDefaults`), so a new server
+rule reaches every store without a reset.
+
+`auto-lander` (Nov 16 2026, Brett: "Make the server do it automatically without the console") is the server's policy,
+not a gate check: severity `info`, always `pass`. Its `settings` are `auto-lander-policy@1` (`maxAttempts`, `backoff`,
+`attemptTimeoutMin`, `mergeMain`, `fixSessions`, `land`, `escalateTo`) and its `enabled` is the lander's own switch; the
+VPS runner reads it through `auto-lander.policyFromRules` and obeys it with or without the console. Contract:
+`framework/spec/AUTO-LANDER.md`.
 
 ## lander.*  — the auto-lander
 

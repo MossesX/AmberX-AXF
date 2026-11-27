@@ -16,6 +16,7 @@ import type { Rect, ResizeEdge, SnapZone } from '../../core/engines/windows';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime, MenuEntry } from '../../core';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
+import { WS_TOOLBAR_FOLD_KEY, wsToolbarAttrs, wsToolbarLook } from './look';
 import { DragLayer, registerZone, startDrag } from '../dnd';
 import { AREAS, FLOAT_DEFAULT, Workspace, useWorkspace, type Area, type Dock, type FloatRect, type ToolbarDef, type WorkspaceOptions } from './store';
 import spec from './library.json';
@@ -235,25 +236,34 @@ function ToolbarDock({ ws, edge, list, describe, zone, rt, phone }: { ws: Worksp
 }
 
 function Toolbar({ ws, tb, vertical, describe, zone, rt, onGrip }: { ws: Workspace; tb: ToolbarDef; vertical?: boolean; describe: Describe; zone: string; rt: AxfRuntime; onGrip?: (e: RPointerEvent) => void }) {
+  useAxfState(); // a settings change (its Settings dialog, chrome.set) redraws it at once
+  const [q, setQ] = useState('');
+  const look = wsToolbarLook((k) => rt.settings.get(k), tb);
+  const folded = look.collapsible && rt.settings.get(WS_TOOLBAR_FOLD_KEY(tb.id)) === true;
+  const fold = (on: boolean) => { if (on) rt.settings.set(WS_TOOLBAR_FOLD_KEY(tb.id), true); else rt.settings.clear(WS_TOOLBAR_FOLD_KEY(tb.id)); };
+  const needle = look.showSearch ? q.trim().toLowerCase() : '';
   const grip = onGrip ?? ((e: RPointerEvent) => config.floatingToolbars && detach(e, ws, tb, (e.currentTarget as HTMLElement).closest('.axf-ws') as HTMLElement | null));
   return (
-    <div className={`axf-ws-toolbar ${vertical ? 'axf-ws-toolbar--v' : ''}`} role="toolbar" aria-label={tb.name} data-fx-ctx-target={`axf-ws-toolbar:${ws.id}`} data-fx-ctx-payload={tb.id}>
+    <div className={`axf-ws-toolbar ${vertical ? 'axf-ws-toolbar--v' : ''}`} role="toolbar" aria-label={tb.name} data-fx-ctx-target={`axf-ws-toolbar:${ws.id}`} data-fx-ctx-payload={tb.id} {...wsToolbarAttrs(look, folded)}>
       <span className="axf-ws-grip axf-dnd-grip" onPointerDown={grip} title={config.floatingToolbars ? `${tb.name}: drag to float, drop on an edge to dock` : tb.name}><Icon name="more" size={14} /></span>
-      {tb.items.map((s, i) => {
+      {!folded && tb.items.map((s, i) => {
         const key = `${tb.id}#${i}`;
-        if (s === '|') return <span key={i} className="axf-ws-sep" data-axf-drop={`${zone}:item`} data-axf-drop-id={key} onPointerDown={(e) => startDrag(e, { kind: `${zone}:item`, id: key, label: 'Separator', icon: 'minus', trashable: true, onTrash: () => ws.removeItem(tb.id, i) })} />;
+        if (s === '|') return needle ? null : <span key={i} className="axf-ws-sep" data-axf-drop={`${zone}:item`} data-axf-drop-id={key} onPointerDown={(e) => startDrag(e, { kind: `${zone}:item`, id: key, label: 'Separator', icon: 'minus', trashable: true, onTrash: () => ws.removeItem(tb.id, i) })} />;
         const d = describe(s);
         const shown = d.active ?? { icon: d.icon, label: d.label };
+        if (needle && !d.label.toLowerCase().includes(needle)) return null;
         return (
           <span key={i} className={`axf-ws-item ${d.checked || d.active ? 'is-on' : ''}`} data-axf-drop={`${zone}:item`} data-axf-drop-id={key}
             onPointerDown={(e) => { if (e.pointerType === 'mouse') startDrag(e, { kind: `${zone}:item`, id: key, label: d.label, icon: d.icon, trashable: true, onTrash: () => ws.removeItem(tb.id, i) }); }}>
-            <button type="button" className={`fx-btn fx-btn--sm ${tb.labels ? 'fx-btn--ghost' : 'fx-btn--quiet'}`} disabled={d.disabled} aria-pressed={d.checked ?? undefined}
-              title={`${d.label}${d.shortcut ? ` (${d.shortcut})` : ''}`} onClick={() => rt.dispatch(s)}>
-              <Icon name={shown.icon} size={15} />{tb.labels && <span>{shown.label}</span>}
+            <button type="button" className={`fx-btn fx-btn--sm ${look.variant !== 'icons' ? 'fx-btn--ghost' : 'fx-btn--quiet'}`} disabled={d.disabled} aria-pressed={d.checked ?? undefined}
+              aria-label={d.label} title={`${d.label}${d.shortcut ? ` (${d.shortcut})` : ''}`} onClick={() => rt.dispatch(s)}>
+              {look.variant !== 'labels' && <Icon name={shown.icon} size={15} />}{look.variant !== 'icons' && <span>{shown.label}</span>}
             </button>
           </span>
         );
       })}
+      {!folded && look.showSearch && <TextField className="axf-ws-toolbar__search" label={`Find in ${tb.name}`} value={q} onChange={setQ} placeholder="Find…" />}
+      {look.collapsible && <IconButton icon={folded ? 'chevron-down' : 'chevron-up'} label={folded ? `Unfold ${tb.name}` : `Fold ${tb.name}`} onClick={() => fold(!folded)} />}
       <span className="axf-ws-end" data-axf-drop={`${zone}:end`} data-axf-drop-id={tb.id} />
     </div>
   );

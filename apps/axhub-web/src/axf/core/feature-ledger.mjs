@@ -91,11 +91,11 @@ export const laterStatus = (a, b) => { const x = normStatus(a); const y = normSt
 export function statusFromBuild({ status = '', pr = '', mergedAt = '', live = false, deleted = false } = {}) {
   const s = str(status, 20);
   if (live) return { status: 'live', stalled: false };
-  if (mergedAt || s === 'complete') return { status: 'merged', stalled: false };
+  if (mergedAt || s === 'complete' || s === 'landed') return { status: 'merged', stalled: false };
   if (deleted === true || s === 'archived') return { status: 'cancelled', stalled: false };
-  if (s === 'built' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: s === 'failed' || s === 'blocked' };
-  if (s === 'running') return { status: 'building', stalled: false };
-  if (s === 'failed') return { status: 'building', stalled: true };
+  if (s === 'built' || s === 'landing' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: s === 'failed' || s === 'blocked' || s === 'escalated' };
+  if (s === 'running' || s === 'fixing') return { status: 'building', stalled: false };
+  if (s === 'failed' || s === 'escalated') return { status: 'building', stalled: true };
   if (s === 'blocked' || s === 'waiting' || s === 'queued') return { status: 'queued', stalled: s === 'blocked' };
   return { status: 'planned', stalled: false };
 }

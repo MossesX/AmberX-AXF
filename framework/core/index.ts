@@ -27,6 +27,8 @@ export * from './engines/behavior';
 export * from './engines/swatches';
 export * from './engines/tapconfirm';
 export * from './engines/chrome-settings-rules.mjs';
+export * from './engines/settings-iface-rules.mjs';
+export * from './engines/app-menus-rules.mjs';
 export * from './engines/scale';
 export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
@@ -34,12 +36,16 @@ export * from './engines/demo-rules.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';
+// page-toolbar@1 (toolbar assets bound to a page, buttons bound to action refs): rules shared with the build engine
+export * from './engines/toolbar-rules.mjs';
+export * from './engines/toolbar-migrate.mjs';
+export * from './engines/toolbar-actions';
 export * from './engines/help';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerwidgets';
 export * from './engines/bannerhide';
-export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, normalizeArrangement, moveOnHost, snapIndex, ARRANGEMENT_MAX, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostArrangement, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
+export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, normalizeArrangement, moveOnHost, snapIndex, ARRANGEMENT_MAX, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, themeSwitchPair, type HostAttachment, type HostArrangement, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
 export * from './engines/search';
 export * from './engines/appmenu';
 export * from './engines/menufit';

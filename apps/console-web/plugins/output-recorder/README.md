@@ -1,5 +1,10 @@
 # Audio Output Recorder
 
+The phone side now runs in Phone Connect (`apps/phone-connect`, phone-connect@1 `recorder.*`); the AmberX Android app
+that first hosted it was retired on Nov 19 2026 (its code is on the `archive/amberx-droid` branch). The notes below on
+the switch, tile, chunks and offline queue describe how the phone records; this plugin is the console side: the
+recordings list, transcripts and search.
+
 Records everything the phone **plays** while it's on and keeps it on axHub. **The mic only when you turn it on** (opt-in "Record my mic too", below).
 
 - **Turn it on:** AmberX → Media → Audio out → the switch, or the quick-settings tile **Record audio out**, or say
@@ -18,9 +23,8 @@ Records everything the phone **plays** while it's on and keeps it on axHub. **Th
 - **Offline:** chunks wait on the phone (app-private, not in the gallery) and retry 30 s → 15 min, at once when the
   network comes back or AmberX opens. Phone cap 200 MB (setting); when full it **stops** recording (default, nothing
   lost) or drops the oldest unsent chunk (setting). Signed out / hub full: it stops trying and the page says so.
-- **Recordings list** (AmberX and the Dev Console, by day): play in the page, share (AmberX; the console downloads),
-  delete, and **Audio Extract** (AmberX: the recording is saved to Music/AmberX Recorder and handed over like
-  Share → AmberX, for trimming or WAV). The data server has no delete: Delete marks the index and empties every part.
+- **Recordings list** (the Dev Console, by day): play in the page, download,
+  delete. The data server has no delete: Delete marks the index and empties every part.
 
 ## Every session, automatically (Nov 6 2026)
 
@@ -52,10 +56,8 @@ quality. A binary upload endpoint on axHub (bigger files, real delete) would lif
 
 - Server: `server/transcripts.py` (the worker), `server/whisper_job.py` (one transcription), `server/__init__.py` (status, run, health).
 - Web: `web/core.ts` (rules, hub client, transcript search), `web/store.ts` (controller), `web/index.tsx` (page, settings), `web/bridge.ts`.
-- Native (AmberX shell, `apps/amberx-droid/android/…/ai/amberx/droid/`): `OutputRecordService` (capture → AAC → chunks),
-  `OutputRecordQueue` (settings + local chunks), `OutputRecordUploader` (parts → axHub, confirm, retry, cap),
-  `OutputRecordStartActivity` (the one consent flow), `OutputRecordTile`, `OutputRecorderPlugin` (the bridge).
-  The capture path is Audio Extract's (PR #187) without the screen; `AudioExtractPlugin.offer` takes the hand-over.
+- Phone: Phone Connect's recorder (`apps/phone-connect/app/src/main/kotlin/…/phoneconnect/recorder/`) uploads to the
+  same hub paths. `web/bridge.ts` stays as the seam for a phone shell that provides an `OutputRecorder` plugin.
 - Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`), `python3 apps/console-web/plugins/output-recorder/test_transcripts.py`.
 
 ## Opt-in mic ("Record my mic too", Nov 1 2026)

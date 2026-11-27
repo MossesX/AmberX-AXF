@@ -398,6 +398,18 @@
         "title": "Open Skins gallery",
         "text": "Opens the Skins gallery, where you preview skins and switch the one in force for the hub, this app, a screen or a plugin.",
         "kind": "button"
+      },
+      {
+        "target": "reset-this",
+        "title": "Reset this chrome",
+        "text": "Puts this toolbar, menu, nav, tab group or banner back to its default settings. The number is how many of its settings you changed; those changes go.",
+        "kind": "button"
+      },
+      {
+        "target": "this-settings-window-every",
+        "title": "This settings window",
+        "text": "Opens the choice of which settings interface every settings window of this kind uses, the shared default or a custom copy. It changes the settings window, not the chrome.",
+        "kind": "button"
       }
     ],
     "intros": []

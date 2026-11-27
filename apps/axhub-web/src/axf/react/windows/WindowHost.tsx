@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
@@ -6,6 +6,10 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { surfaceVars } from '../../core/engines/theme';
+
+/** A window's own Background setting (WindowSettings.surface) overrides the theme's settings-surface token for it. */
+const windowSurface = (w: WindowSpec): CSSProperties => (typeof w.settings.surface === 'number' ? surfaceVars('settings', w.settings.surface) as CSSProperties : {});
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -345,7 +349,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
   return (
     <WindowCtx.Provider value={w}>
       <FrameCtx.Provider value={hooks}>
-        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
+        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER, opacity: w.settings.opacity, ...windowSurface(w) }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
           {frame === 'standard' && (
             <div className="fx-window__title" onPointerDown={startMove} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
               {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
@@ -439,6 +443,8 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
       <label>Minimize corner <select value={st.corner} onChange={(e) => setSt({ ...st, corner: e.target.value as Corner })}>{CORNERS.map((c) => <option key={c} value={c}>{c}</option>)}</select></label>
       <label>Minimized title bars <select value={st.mode} onChange={(e) => setSt({ ...st, mode: e.target.value as 'stacked' | 'lined' })}><option value="stacked">Stacked</option><option value="lined">Lined up</option></select></label>
       <label>Opacity <input type="range" min={0.3} max={1} step={0.05} value={st.opacity} onChange={(e) => setSt({ ...st, opacity: Number(e.target.value) })} /></label>
+      <label><input type="checkbox" checked={typeof st.surface !== 'number'} onChange={(e) => setSt({ ...st, surface: e.target.checked ? null : 1 })} /> Background follows the theme (Window opacity token)</label>
+      {typeof st.surface === 'number' && <label>Background <input type="range" min={0} max={1} step={0.05} value={st.surface} onChange={(e) => setSt({ ...st, surface: Number(e.target.value) })} aria-label="Window background opacity" /></label>}
       <label><input type="checkbox" checked={st.alwaysOnTop} onChange={(e) => setSt({ ...st, alwaysOnTop: e.target.checked })} /> Always on top</label>
       <p className="fx-muted">Type {w.type} · toolbars {w.toolbarsAllowed ? (forcesToolbar(w) ? 'forced on' : w.toolbarEnabled ? 'on' : 'off') : 'not allowed'}</p>
       <div className="fx-form__actions"><button className="fx-btn" onClick={close}>Cancel</button><button className="fx-btn fx-btn--primary" onClick={() => { wm.setSettings(windowId, st); close(); }}>Apply</button></div>

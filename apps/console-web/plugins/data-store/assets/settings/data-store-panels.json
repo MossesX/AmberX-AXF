@@ -1,0 +1,33 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Data store plugin",
+  "id": "data-store-panels",
+  "name": "Data store: three panels",
+  "description": "Three panels in order: where the data is (a table of namespaces with mode, keys on axf-data, drift and next step), backups (last backup, verify result, Backup now / Verify), and move a namespace (pick one, then Shadow / Cut over / Roll back with confirm, drift log under it).",
+  "tags": [
+    "data-store",
+    "ui-choices:data-store-tab"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "view": "panels",
+    "order": [
+      "status",
+      "backups",
+      "mode"
+    ],
+    "open": [
+      "status",
+      "backups",
+      "mode"
+    ],
+    "builtFor": "plugin:data-store"
+  }
+}

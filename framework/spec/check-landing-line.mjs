@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../core/landing-line.mjs';
+import { clashBounceStep } from '../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs'; // land-clash bounce: the dispatcher's side of a conflict (axf-plugin:build-orchestrator)
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FIX = join(ROOT, 'framework/spec/fixtures/landing-line-migrate.json');
@@ -343,6 +344,18 @@ t('red: a code conflict while merging main files a conflict fix with the files',
   assert.match(e.fix.text, /conflicts in code \(framework\/ui\/axf.css, apps\/console-web\/src\/x.tsx\)/);
   assert.equal(e.attempts[0].result, 'conflict');
   assert.equal(L.next(l).id, 'pr-702');
+});
+t('land-clash bounce: a conflict fix\'s files and head give a done build one merge-main step, once per head', () => {
+  let l = L.transition(fresh(), { type: 'start', id: 'pr-701', at: T(1), head: 'abc1234abc1234abc1234abc1234abc1234abc12' });
+  l = L.transition(l, { type: 'conflict', id: 'pr-701', at: T(2), files: ['framework/spec/check-ci-scope.mjs'] });
+  const fix = l.entries[0].fix;
+  const steps = Array.from({ length: 27 }, (_, i) => ({ id: `s${i + 1}`, text: `step ${i + 1}`, done: true }));
+  const b = { id: 'phone-connect', branch: 'claude/phone-connect', steps };
+  const st = clashBounceStep(b, { files: fix.files, head: fix.head });
+  assert.equal(st.model, 'Opus');
+  assert.match(st.text, /^Merge main into claude\/phone-connect and resolve conflicts in framework\/spec\/check-ci-scope\.mjs \(clash at abc1234\)/);
+  assert.equal(clashBounceStep({ ...b, steps: [...steps, { id: 's28', ...st, done: true }] }, { files: fix.files, head: fix.head }), null, 'the same clash never adds a second step');
+  assert.equal(clashBounceStep({ ...b, steps: [...steps, { id: 's28', ...st }] }, { files: fix.files, head: 'fff0000fff' }), null, 'steps open: no bounce');
 });
 t('main moved / merge rejected: the same entry goes round again, a new attempt, nothing else starts', () => {
   let l = fly(fresh(), 'pr-701', 1);

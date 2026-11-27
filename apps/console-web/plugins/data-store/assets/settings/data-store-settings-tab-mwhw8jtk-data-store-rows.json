@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "data-store-settings-tab-mwhw8jtk-data-store-rows",
+  "name": "data-store-settings-tab-mwhw8jtk: One row per namespace, next action on the row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One list: every namespace is a row with its mode chip, keys, drift and the one next action as a button on the row (Shadow, Cut over or Roll back, each with confirm). Backups shrink to one line with Backup now / Verify at the top.",
+  "tags": [
+    "ui-choice",
+    "choice-set:data-store-settings-tab-mwhw8jtk",
+    "choice-option:data-store-rows"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "levels": true,
+    "defaultLevel": "basic",
+    "view": "rows",
+    "order": [
+      "backups",
+      "status"
+    ],
+    "open": [
+      "status"
+    ],
+    "builtFor": "plugin:data-store"
+  }
+}

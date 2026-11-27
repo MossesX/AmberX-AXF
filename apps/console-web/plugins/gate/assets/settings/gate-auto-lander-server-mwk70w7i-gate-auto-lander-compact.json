@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "gate-auto-lander-server-mwk70w7i-gate-auto-lander-compact",
+  "name": "gate-auto-lander-server-mwk70w7i: Compact grid, one line a row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One line per build: state, attempt count and the last result; fits the most builds on screen.",
+  "tags": [
+    "ui-choice",
+    "choice-set:gate-auto-lander-server-mwk70w7i",
+    "choice-option:gate-auto-lander-compact"
+  ],
+  "data": {
+    "view": "compact",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.auto-lander"
+    ],
+    "builtFor": "plugin:gate"
+  }
+}

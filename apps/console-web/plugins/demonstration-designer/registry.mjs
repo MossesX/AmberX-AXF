@@ -21,7 +21,7 @@ import { normalizeTopic, searchTopics } from './engine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = process.env.AXF_REPO_ROOT || join(HERE, '../../../..');
-const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio', 'molly', 'demo'];
+const UI_REGISTRY_APPS = ['console-web', 'axhub-web', 'walkthrough-studio', 'molly', 'demo'];
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
 const listJson = (dir) => (existsSync(dir) ? readdirSync(dir).filter((n) => n.endsWith('.json')).sort().map((n) => join(dir, n)) : []);

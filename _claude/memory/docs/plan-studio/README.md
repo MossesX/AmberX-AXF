@@ -1,10 +1,15 @@
 # Plan Studio (Oct 30 2026, Opus, Angel orchestrator `plan-studio`, branch `claude/plans`)
 
+> **Removed Nov 21 2026** (build `rip-out-plan-studio-1-keep-only-plan`). The plugin is gone; its last code is the git tag
+> `archive/plan-studio-1`, its hub data (`/projects/amberx-axf/_data/plan-studio/`) stays as a read-only archive, and its 8
+> remaining plans were moved into Plan Studio 2.0 ("From Plan Studio 1"). Plan Studio 2.0 (`plan-studio-2`) is the one
+> Plan Studio and provides `plans@1`. Report: `_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md`. What
+> follows describes the removed plugin, kept for the record.
+
 Brett (voice, Oct 30): a planning studio to store and view every plan, entered by hand, categorized; every plugin and
 app listed with its features checked off as have or planned. Plus (14:20) plain-English AI that edits plans, and
 (14:22) voice planning in AmberX "like I'm talking to you".
 
-Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `axf-console` + `amberx-droid`). <!-- axf-plugin:plan-studio -->
 
 ## What's in it
 
@@ -22,7 +27,6 @@ Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `ax
 Where plans live: the hub's shared data `/projects/amberx-axf/_data/plan-studio/` (`plans/<id>.json`,
 `history/<id>.json`, `categories.json`, `templates.json`, `views.json`, `catalog-seen.json`). claude.ai sessions:
 `axhub.memory_read` / `memory_write`, project `amberx-axf`, area `data`, path `plan-studio/plans/<id>.json`. Off the hub
-it's the plugin data folder `.axf-console/plugins/plan-studio/`. <!-- axf-plugin:plan-studio -->
 
 Quick capture: banner **+ Plan**, Builds ▸ New plan…, right-click ▸ New plan…, the global search ("New plan").
 
@@ -48,8 +52,6 @@ plan is done; `tracker.mjs` regenerates).
 
 ## Checks
 
-`python3 apps/console-web/plugins/plan-studio/test.py` (15 server checks, then `test.mjs`: 26 checks) · <!-- axf-plugin:plan-studio -->
-`npx -y tsx apps/console-web/plugins/plan-studio/test.mjs` · console `tsc --noEmit` + `vite build` · AmberX `tsc`, <!-- axf-plugin:plan-studio -->
 `test.mjs` (1990/1990), `vite build` (bundles plan-studio) and a typecheck of the plugin against AmberX's baked
 framework · `check-theme`, `check-controls`, `check-plugin-pages`, `plugin-lifecycle check plan-studio`, `menu-reach`,
 `plugins.mjs --check` (main profile).
@@ -78,8 +80,15 @@ Taken before two small fixes (section chips no longer wrap on a phone; apps show
 
 ## Page layouts, IDE panes, Collapse all (Nov 16 2026, build plan-studio-collapse-all-expand-all)
 
-- Switcher on Plan Studio's toolbar (main page and plan editor): **Nav menu** (sections stacked + section links, the original), **Tabs** (framework TabGroup `plan-studio.sections`), **IDE** (dockable panes, each a TabGroup `plan-studio.pane`). Setting `plan-studio.pageLayout`, per user.
-- IDE: drag a tab onto another pane's tab row or centre to move it, onto a pane edge to split, along its own row to reorder; drag splitters (or arrow keys) to resize; × closes a tab or pane, "Reopen…" brings sections back; "Arrange panes…" applies any `dock-layout` asset. State `plan-studio.dock` (JSON), per user.
-- Collapse all / Expand all (toolbar, both screens): every plan row, sub-grid, category, editor section and step. State `plan-studio.fold` = `{ all, items }`, per user; hand toggles after a Collapse/Expand all are kept as overrides.
-- API (REST `/api/console-control`, `console_control_*` MCP, `axf console`, voice): actions `plan-studio.layout:<nav|tabs|ide or words>[:<dock-layout id>]`, `plan-studio.dock:<move|split|close-pane|close|reopen|show|reorder|reset>:…`, `plan-studio.collapse-all`, `plan-studio.expand-all`; settings above are readable.
-- Engine: `apps/console-web/plugins/plan-studio/web/layout-core.mjs` (pure, tested in test.mjs; open layout registry). Plan Studio 2.0 reuses it as-is.
+Built first on this plugin, then superseded by its removal on Nov 21: everything the build asked for ships in Plan
+Studio 2.0 (`apps/console-web/plugins/plan-studio-2`), and the 1.0 code from the build branch was dropped when main was
+merged in.
+
+- Collapse all / Expand all: toolbar asset `plan-studio-2/assets/toolbar/plan-studio-2.json` (buttons `expand`,
+  `collapse`), actions `plan-studio-2.collapse-all` / `plan-studio-2.expand-all`, REST `POST /collapse {all: true,
+  collapsed}`, voice "collapse all" / "expand <item>". The folded state is stored on the plan tree itself, so it holds
+  across sessions and devices.
+- Page layouts (nav menu, tabs, IDE dockable panes) with drag between panes, edge split, reorder, close / reopen:
+  `plan-studio-2/web/layout-core.mjs`, actions `plan-studio-2.layout:…` and `plan-studio-2.dock:…`, settings
+  `plan-studio-2.pageLayout` and `plan-studio-2.dock` (per user).
+- Report: `_claude/builds/reports/plan-studio-collapse-all-expand-all.md`.

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, PageToolbar, Segmented, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -238,6 +238,29 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const toggleOpen = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
   const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device, reload: load };
 
+  // the queue toolbar (page-toolbar@1, assets/toolbar/ui-review-queue.json); Approve / Reject stay person-only (BulkBar)
+  const one = sel.length === 1 ? all.find((x) => x.id === sel[0]) : undefined;
+  const oneChoices = one ? choicesOf(one)?.options.length ?? 0 : 0;
+  const prUrl = one?.pr ? `https://github.com/${typeof one.repo === 'string' && /^[\w.-]+\/[\w.-]+$/.test(one.repo) ? one.repo : REPO}/pull/${one.pr}` : '';
+  // the Screenshots tab publishes its own state on this page while it shows (one owner at a time)
+  usePublishPageState(tab === 'review' ? 'ui-review' : null, {
+    tab, view, shown: rows.length, grouped: view === 'groups', comparing: view === 'compare',
+    groupByLabel: view === 'groups' ? GROUP_BYS.find((g) => g.id === groupBy)?.label ?? '' : '',
+    selection: { count: sel.length, id: one?.id ?? '', pr: prUrl, choices: oneChoices },
+  });
+  useToolbarHandlers('ui-review', {
+    'ui-review.group-by': () => {
+      if (view !== 'groups') { setView('groups'); return { view: 'groups', by: groupBy }; }
+      const i = GROUP_BYS.findIndex((g) => g.id === groupBy);
+      const next = GROUP_BYS[(i + 1) % GROUP_BYS.length]!.id;
+      setGroupBy(next);
+      return { view: 'groups', by: next };
+    },
+    'ui-review.compare': () => { const next: ViewId = view === 'compare' ? 'grid' : 'compare'; setView(next); return { view: next }; },
+    'ui-review.open-pr': () => { if (prUrl) window.open(prUrl, '_blank', 'noopener'); return prUrl || null; },
+    'ui-review.open-choices': () => { if (one && !open.includes(one.id)) toggleOpen(one.id); return one ? { id: one.id, options: oneChoices } : null; },
+  });
+
   if (!data) return <LoadingSkeleton rows={6} label="Loading UI Review" />;
   const c = counts[''] ?? { total: 0, waiting: 0 };
   const visibleIds = rows.map((x) => x.id);
@@ -246,7 +269,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
 
   return (
     <Ctx.Provider value={ctx}>
-      <div className="fx-stack axp-ui-review">
+      <div className="fx-stack fx-stack--lg axp-ui-review">
         <header className="fx-pagehead">
           <div>
             <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>
@@ -278,6 +301,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
             <Button size="sm" tone="quiet" onClick={() => setGroupId('')}>Show everything</Button>
           </div>
         )}
+        <PageToolbar view="ui-review" slot="queue" />
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">

@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "changes-grid",
+  "name": "Changes & features",
+  "version": "1.0.0",
+  "description": "The Changes & features toolbar: reload the change log and the feature list, and collapse every open row. The search, the Both / Changes / Features switch and the sort ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "changes-grid", "builds"],
+  "data": {
+    "scope": "view:changes-grid",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "grid",
+        "label": "Grid",
+        "items": [
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:changes-grid.reload", "enabledWhen": "loaded", "priority": 300, "overflow": "never" },
+          { "id": "collapse", "icon": "chevron-up", "label": "Collapse all", "action": "handler:changes-grid.collapse", "badge": "state:expanded", "enabledWhen": "expanded", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

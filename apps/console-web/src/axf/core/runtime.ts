@@ -20,6 +20,19 @@ import { normalizeDockLayout } from './engines/dock';
 import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
 /** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
+
+/**
+ * app-menus@1 (engines/app-menus-rules.mjs): an app on its own menus (its manifest names default-<app>-nav /
+ * default-<app>-appmenu) only ever uses a nav-menu or app-menu built for it (data.builtFor = app:<app>). Shared,
+ * generic menus and other apps' menus are refused everywhere a slot is set (saved picks, the hub's look, swaps), so a
+ * pick saved before the app had its own menus falls back to its default. Apps not on app-menus@1 keep any menu.
+ */
+function slotAllowed(registry: { has(t: AssetType, id: string): boolean; get(t: AssetType, id: string): unknown }, defaults: Record<string, unknown>, t: AssetType, id: string | undefined): boolean {
+  if (!id || !registry.has(t, id)) return false;
+  if (!menuKindOf(t)) return true;
+  const app = appOfDefaults(defaults);
+  return !app || menuAllowed(app, registry.get(t, id) as never);
+}
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -32,7 +45,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
@@ -44,6 +57,7 @@ import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpI
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
 import { OutputTerminal } from './terminal';
+import { appOfDefaults, menuAllowed, menuKindOf } from './engines/app-menus-rules.mjs';
 import {
   ASSET_TYPES,
   OPTIONAL_TYPES,
@@ -454,7 +468,7 @@ export class AxfRuntime {
       // the user's choices), the new default wins once; the user's later swaps persist as usual.
       const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== opts.manifest.defaults[t];
       const candidates = [appChanged ? undefined : saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
-      const pick = candidates.find((id) => id && this.registry.has(t, id));
+      const pick = candidates.find((id) => slotAllowed(this.registry, opts.manifest.defaults as Record<string, unknown>, t, id));
       if (!pick && (OPTIONAL_TYPES as readonly string[]).includes(t)) { active[t] = ''; continue; } // optional type, none shipped
       if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
       active[t] = pick;
@@ -607,7 +621,8 @@ export class AxfRuntime {
       for (const t of ASSET_TYPES) {
         if (t === 'uac-policy' || t === SKIN_TYPE) continue; // never slots of a document: the policy is the account's, the skin is the look document's
         const want = r.slots[t] ?? this.manifest.defaults[t];
-        if (want && this.registry.has(t, want)) active[t] = want;
+        if (want && this.slotOk(t, want)) active[t] = want;
+        else if (want && menuKindOf(t) && this.slotOk(t, this.manifest.defaults[t])) active[t] = this.manifest.defaults[t]!; // app-menus@1: a shared / other app's menu → this app's default
         else if (!want && (OPTIONAL_TYPES as readonly string[]).includes(t)) active[t] = '';
       }
       // Skins only (Nov 10 2026): a design package in force is the skin of that id, so the `design-package` slot names
@@ -694,7 +709,7 @@ export class AxfRuntime {
     const look = this.lookLayerOn() ? store.get() : null;
     if (look) {
       const global = globalSkinOf(this.lastAppearance);
-      const inForce = resolveLookSkin(look, global, null);
+      const inForce = resolveLookSkin(look, global, null, this.hubDefaultSkin());
       // a colour theme pick under a skin is switched inside that skin: the skin itself is never changed or copied
       this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null, inForce.from === 'global' ? global?.colorTheme ?? '' : ''));
       // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
@@ -1032,6 +1047,9 @@ export class AxfRuntime {
   /** The hub-wide skin the shared document carries (null = none). */
   globalSkin(): { id: string; overrides?: Record<string, string> } | null { return globalSkinOf(this.lastAppearance); }
 
+  /** The hub default skin the shared document carries (`defaultSkin`; null = none): the floor every app stands on without opting in. */
+  hubDefaultSkin(): { id: string; overrides?: Record<string, string>; colorTheme?: string } | null { return hubDefaultOf(this.lastAppearance); }
+
   /**
    * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
    * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
@@ -1051,7 +1069,7 @@ export class AxfRuntime {
 
   /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
   skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
-    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id }, this.hubDefaultSkin());
   }
 
   /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
@@ -1075,10 +1093,10 @@ export class AxfRuntime {
     if (!isSubScopeKey(key)) return null;
     const look = this.lookInForce();
     if (!look) return null;
-    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
+    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id), this.hubDefaultSkin());
     // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
     // for a moment after a pick): a colour theme switched inside the skin must not make every screen a scope of its own
-    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id });
+    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id }, this.hubDefaultSkin());
     if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {
@@ -1380,7 +1398,7 @@ export class AxfRuntime {
     const active = { ...this.state.active };
     for (const t of ASSET_TYPES) {
       const id = saved?.active?.[t];
-      if (t === 'uac-policy' || !id || id === active[t] || !this.registry.has(t, id)) continue;
+      if (t === 'uac-policy' || !id || id === active[t] || !this.slotOk(t, id)) continue;
       active[t] = id;
       slots.push(t);
     }
@@ -1397,6 +1415,14 @@ export class AxfRuntime {
   }
 
   /* ---------------- assets ---------------- */
+
+  /** Whether a slot may hold this asset: it exists and, for nav-menu / app-menu, is built for this app (app-menus@1). */
+  slotOk(type: AssetType, id: string | undefined): boolean {
+    return slotAllowed(this.registry, this.manifest.defaults as Record<string, unknown>, type, id);
+  }
+
+  /** This app's name on app-menus@1 (from its default-<app>-nav), or null when it is not on its own menus. */
+  menuApp(): string | null { return appOfDefaults(this.manifest.defaults); }
 
   asset<K extends AssetType>(type: K): Asset<K> {
     return this.registry.get(type, this.state.active[type] ?? '')!;
@@ -1689,7 +1715,7 @@ export class AxfRuntime {
       this.toast(`${assetTypeSpecs[type]?.label ?? type} is part of the skin now. Pick a skin in Settings → Appearance.`, 'info', 'Skin');
       return false;
     }
-    const list = this.registry.list(type);
+    const list = this.registry.list(type).filter((a) => this.slotOk(type, a.id)); // app-menus@1: only this app's menus
     const idx = list.findIndex((a) => a.id === this.state.active[type]);
     let next: string | undefined;
     if (target === 'next') next = list[(idx + 1) % list.length]?.id;
@@ -1699,6 +1725,11 @@ export class AxfRuntime {
       next = others[Math.floor(Math.random() * others.length)]?.id ?? list[0]?.id;
     } else if (target === 'default') next = (this.manifest.defaults as Record<string, string | undefined>)[type] ?? list[0]?.id;
     else next = target;
+    if (next && this.registry.has(type, next) && !this.slotOk(type, next)) {
+      this.terminal.warn('hot-swap', `${type} → "${next}": not built for this app (app-menus@1)`);
+      this.toast(`"${next}" is not built for this app. Every app uses its own ${assetTypeSpecs[type]?.label.toLowerCase() ?? type}.`, 'warning', 'Swap refused');
+      return false;
+    }
     if (!next || !this.registry.has(type, next)) {
       this.terminal.error('hot-swap', `${type} → "${target}": no such asset`);
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');

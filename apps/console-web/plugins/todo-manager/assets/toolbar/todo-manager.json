@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "todo-manager",
+  "name": "Todos",
+  "version": "1.0.0",
+  "description": "The open list's toolbar: add a task, add a group inside the list and show or hide the filters (its badge says when a filter is on). The other entry kinds, the search and the tree / grid switch ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "todo-manager", "todos"],
+  "data": {
+    "scope": "view:todo-manager",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "add",
+        "label": "Add",
+        "items": [
+          { "id": "new-task", "icon": "plus", "label": "New task", "action": "handler:todo-manager.new-task", "priority": 300, "overflow": "never" },
+          { "id": "new-group", "icon": "folder", "label": "New group", "action": "handler:todo-manager.new-group", "priority": 220 }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          { "id": "filters", "icon": "sliders", "label": "Filters", "action": "handler:todo-manager.filters", "checked": "state:showFilters", "badge": "state:filtersOn", "priority": 260 }
+        ]
+      }
+    ]
+  }
+}

@@ -27,7 +27,7 @@ s = c.apply(s, { action: 'step', id: 'demo-build', step: 's3' }).state;
 t('ticking a downgrade phase records the downgrade (by auto)', () => { const a = b().approvals.find((x) => x.phase === 1); assert.equal(a.kind, 'downgrade'); assert.equal(a.by, 'auto'); assert.equal(a.to, 'Opus'); });
 t('upgrade Opus → Fable waits for Brett, even with the approveModelSwitch rule off', () => {
   assert.equal(c.nextUp(b()).needsApproval, true); assert.equal(c.nextUp(b(), { ...s.rules, approveModelSwitch: false }).needsApproval, true); assert.equal(b().status, 'waiting');
-  const br = c.brief(b(), s.rules); assert.match(br, /STOP: demo-build: phase 3 upgrades Opus 5\.5 → Fable 5\.1/); assert.match(br, /request-upgrade demo-build 2/); assert.doesNotMatch(br, /act approve/);
+  const br = c.brief(b(), s.rules); assert.match(br, /STOP: demo-build: phase 3 upgrades Opus 5\.5 → Fable 5\.2/); assert.match(br, /request-upgrade demo-build 2/); assert.doesNotMatch(br, /act approve/);
 });
 t('ticking a step of an unapproved upgrade is refused', () => assert.throws(() => c.apply(s, { action: 'step', id: 'demo-build', step: 's4' }), /needs Brett's approval/));
 t('approving an upgrade without Brett is refused (session, orchestrator, forged via)', () => {
@@ -61,19 +61,19 @@ t('deny-upgrade needs Brett too', () => {
   assert.equal(c.apply(x, { action: 'deny-upgrade', id: 'u', phase: 1, approver: BRETT }).state.builds[0].upgradeRequests[0].state, 'denied');
 });
 s = c.apply(s, { action: 'step', id: 'demo-build', step: 's4' }).state;
-t('all done → complete with builtAt', () => { assert.equal(b().status, 'complete'); assert.ok(b().builtAt); });
+t('all done → landing with builtAt (done-means-merged@1: landed once merged, complete once verified)', () => { assert.equal(b().status, 'landing'); assert.ok(b().builtAt); });
 t('estimates', () => { assert.equal(c.estimateMinutes('2 h'), 120); assert.equal(c.estimateMinutes('1.5 d'), 720); assert.equal(c.estimateMinutes('x'), null); });
-t('10-minute steps: a ceiling the rule can lower, never raise; older steps keep 30', () => {
-  assert.equal(c.DEFAULT_RULES.maxStepMinutes, 10); assert.equal(c.maxStep({ maxStepMinutes: 30 }), 10); assert.equal(c.maxStep({ maxStepMinutes: 5 }), 5); assert.equal(c.maxStep({}), 10);
-  assert.equal(c.stepLimit({ createdAt: '2026-11-01T00:00:00.000Z' }, c.DEFAULT_RULES), 30); assert.equal(c.stepLimit({ createdAt: '2026-11-20T00:00:00.000Z' }, c.DEFAULT_RULES), 10); assert.equal(c.stepLimit({}, c.DEFAULT_RULES), 10);
-  const r = c.apply(c.emptyState(), { action: 'add', title: 'Mid', steps: [{ text: 'twelve', estimate: '12 min' }] }); assert.deepEqual(c.splitCheck(r.state.builds[0]).reasons, ['step 1 is 12 min (limit 10 min)']);
+t('15-minute steps (the one step cap, pipeline-2@1 STEP_MAX_MINUTES): a ceiling the rule can lower, never raise; older steps keep 30', () => {
+  assert.equal(c.STEP_MINUTES, 15); assert.equal(c.DEFAULT_RULES.maxStepMinutes, 15); assert.equal(c.maxStep({ maxStepMinutes: 30 }), 15); assert.equal(c.maxStep({ maxStepMinutes: 5 }), 5); assert.equal(c.maxStep({}), 15);
+  assert.equal(c.stepLimit({ createdAt: '2026-11-01T00:00:00.000Z' }, c.DEFAULT_RULES), 30); assert.equal(c.stepLimit({ createdAt: '2026-11-20T00:00:00.000Z' }, c.DEFAULT_RULES), 15); assert.equal(c.stepLimit({}, c.DEFAULT_RULES), 15);
+  const r = c.apply(c.emptyState(), { action: 'add', title: 'Mid', steps: [{ text: 'twenty', estimate: '20 min' }] }); assert.deepEqual(c.splitCheck(r.state.builds[0]).reasons, ['step 1 is 20 min (limit 15 min)']);
   const kept = c.normalizeState({ builds: [{ id: 'old', title: 'Old', steps: [{ text: 'old step', estimate: '30 min', createdAt: '2026-11-01T00:00:00.000Z' }] }] }); assert.equal(c.splitCheck(kept.builds[0]).needsSplit, false, 'createdAt survives normalisation');
-  assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 30 } }).state.rules.maxStepMinutes, 10, 'the rule cannot raise the ceiling');
+  assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 30 } }).state.rules.maxStepMinutes, 15, 'the rule cannot raise the ceiling');
   assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 6 } }).state.rules.maxStepMinutes, 6);
 });
 t('steps are checkpoints inside one session: the brief says commit + push + tick per step, no relaunch', () => {
   const fresh = c.apply(c.emptyState(), { action: 'add', title: 'Fresh', steps: [{ text: 'first', model: 'Opus', estimate: '10 min' }] }).state.builds[0];
-  const br = c.brief(fresh, undefined, { blocks: seedBlocks(fresh) }); assert.match(br, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(br, /teps ≤ 10 min/); assert.match(br, /Tick each step right after its commit/);
+  const br = c.brief(fresh, undefined, { blocks: seedBlocks(fresh) }); assert.match(br, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(br, /teps ≤ 15 min/); assert.match(br, /Tick each step right after its commit/);
   assert.doesNotMatch(c.brief(fresh), /Checkpoints:/, 'no store blocks = no rule text of its own');
   assert.match(c.CHECKPOINT_RULE, /ONE session/); assert.match(c.CHECKPOINT_RULE, /commit it on your branch, push, then tick it done/); assert.match(c.CHECKPOINT_RULE, /Never ask for a new prompt or a relaunch per step/);
 });
@@ -125,7 +125,7 @@ t('CLI: a session can ask for an upgrade (axHub confirm call) but not approve it
   assert.equal(c.nextUp(b2).needsApproval, true);
 });
 t('every change shows on Pending builds at once (one store, no sync)', () => { const it = loadPending().items.find((x) => x.id === 'cli'); assert.ok(it); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].text, '[Opus] one'); assert.equal(it.subPrompts[0].done, true); });
-t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.equal(f.$axf, 'builds@1'); assert.ok(f.rev >= 2); assert.equal(f.builds.find((b) => b.id === 'cli').status, 'complete'); });
+t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.equal(f.$axf, 'builds@1'); assert.ok(f.rev >= 2); assert.equal(f.builds.find((b) => b.id === 'cli').status, 'landing'); }); // done-means-merged@1: every step done = landing until merged
 // the orchestrator's own builds in the real store keep the small-steps rule (Pending-only items are warned about by pending.mjs --check-steps)
 const store = JSON.parse(readFileSync(new URL('../../../../_claude/builds/store.json', import.meta.url), 'utf8'));
 // same scope as before the store: the Main framework orchestrator's builds, plus builds added through the orchestrator since

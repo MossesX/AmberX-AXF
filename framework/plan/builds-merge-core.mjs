@@ -10,11 +10,14 @@
  * Each of them is mergeStores(): per build and per step, the NEWER copy wins (updatedAt, then rev, then done), so a
  * stale copy can never undo a step another session ticked, and a status never regresses because a branch merged late.
  *
- * Build status after a merge is derived again from the merged steps (liveStatus): explicit blocked / failed / archived
- * stay; all steps done = complete, or `built` (built, awaiting merge) while the build's PR is open and not merged.
+ * Build status after a merge is derived again from the merged steps (liveStatus): explicit blocked / failed / archived /
+ * fixing / escalated stay; all steps done = `landing` until the PR is merged, `landed` once merged (done-means-merged@1;
+ * `complete` only through the verify runner).
  */
-import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
+import { STATUSES, dedupeSteps, normBuild, normalizeStore, stepKey } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { markLine } from '../core/demo-build.mjs';
+import { BUILD_FIELDS as P2_BUILD_FIELDS, FLOW as P2_FLOW, STEP_FIELDS as P2_STEP_FIELDS } from '../core/pipeline-status.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -32,13 +35,20 @@ export function newer(a, b) {
  * 2026: built-awaiting-merge until the PR merges, complete once merged). A build without a PR stays complete.
  */
 export function liveStatus(b) {
-  if (['blocked', 'failed', 'archived'].includes(b.status)) return b.status;
-  if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged: done, even with steps left unticked
+  if (b.flow === P2_FLOW) return b.status; // pipeline-2@1: the flow owns the status, never derived from ticks
+  // done-means-merged@1: fixing, escalated and landed are set by the pipeline / lander with their records; steps never override them
+  if (['blocked', 'failed', 'archived', 'fixing', 'escalated'].includes(b.status)) return b.status;
+  if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged and verified: done, even with steps left unticked
+  if (b.status === 'landed' && str(b.mergedAt)) return 'landed';
   const steps = (b.steps ?? []).filter((s) => !s.skip);
-  if (!steps.length) return b.status === 'built' && str(b.mergedAt) ? 'complete' : b.status;
+  const settled = ['built', 'landing', 'landed', 'complete'].includes(b.status);
+  // a complete record with no PR, no branch and no merge is unprovable (pre-pipeline): left as it is, like migrateDone does
+  const unprovable = b.status === 'complete' && !str(b.mergedAt) && !str(b.pr) && !str(b.branch);
+  if (!steps.length) return settled && str(b.mergedAt) && b.status !== 'complete' ? 'landed' : settled && !str(b.mergedAt) && !unprovable ? 'landing' : b.status;
   const done = steps.filter((s) => s.done).length;
-  if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
-  if (!done && (b.status === 'complete' || b.status === 'built')) return b.status; // built without ticking its steps
+  // every step done: landed once merged (complete only through the verify), else landing (the auto-lander's), never built
+  if (done === steps.length) return str(b.mergedAt) ? 'landed' : unprovable ? 'complete' : 'landing';
+  if (!done && settled) return str(b.mergedAt) || unprovable ? b.status : 'landing'; // built without ticking its steps: still not proven merged
   if (b.status === 'waiting') return 'waiting';
   if (b.status === 'queued') return done > 0 ? 'running' : 'queued'; // in the Queue until the dispatcher's session ticks a step
   // a pending build with ticked steps stays pending (paused: nothing is running it); a tick through the Builds page or
@@ -51,10 +61,29 @@ export function settleStatus(b, now = new Date().toISOString()) {
   const st = liveStatus(b);
   if (st === b.status || !STATUSES.includes(st)) return false;
   b.status = st;
-  if ((st === 'complete' || st === 'built') && !b.builtAt) b.builtAt = now;
-  if (st !== 'complete' && st !== 'built') b.builtAt = '';
+  const finished = ['complete', 'built', 'landing', 'landed'].includes(st);
+  if (finished && !b.builtAt) b.builtAt = now;
+  if (!finished) b.builtAt = '';
   return true;
 }
+
+/**
+ * pipeline-2@1 contract fields of a step or build (status, statusAt, attempt, statusLog, worktree, tmux, account…) come
+ * from the copy whose status changed last (statusAt), whichever copy won on updatedAt / rev; a runtime field the other
+ * copy has and the chosen one lacks is never blanked. Nov 20 2026: a session ticked a step in its stale store copy
+ * (newer rev, no tmux / worktree / account), the merge took that step whole, and the watchdog failed the running step.
+ */
+function keepFlowFields(out, a, b, fields) {
+  // newer statusAt; on a tie the longer status log, then the copy whose status is its own last log line (a copy that
+  // changed status outside the contract, with no stamp, never wins over one that went through it)
+  const rank = (x) => [str(x?.statusAt), Array.isArray(x?.statusLog) ? x.statusLog.length : 0, x?.statusLog?.at?.(-1)?.status === x?.status ? 1 : 0];
+  const ra = rank(a); const rb = rank(b);
+  const bWins = rb[0] !== ra[0] ? rb[0] > ra[0] : rb[1] !== ra[1] ? rb[1] > ra[1] : rb[2] > ra[2];
+  const [st, other] = bWins ? [b, a] : [a, b];
+  for (const k of fields) { if (st?.[k] !== undefined) out[k] = clone(st[k]); else if (other?.[k] !== undefined && !['failedFrom', 'tried'].includes(k)) out[k] = clone(other[k]); else delete out[k]; }
+  return out;
+}
+const isFlow = (x) => x?.flow === P2_FLOW;
 
 /**
  * Merge two copies of one build record. Build-level fields come from the newer copy; steps are merged by uid, each
@@ -69,16 +98,30 @@ export function mergeBuild(a, b) {
   const [win, lose] = newer(a, b) >= 0 ? [a, b] : [b, a];
   const out = clone(win);
   const other = new Map(lose.steps.map((s) => [s.uid, s]));
+  // step-dedupe: a copy that gave the same step another uid (a re-split, an export without uids) is still that step,
+  // matched by its text; without this every merge kept both and the list doubled
+  const byText = new Map(); for (const s of lose.steps) { const k = stepKey(s.text); if (k && !byText.has(k)) byText.set(k, s); }
+  const matched = new Set();
   let combined = false;
-  out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
+  out.steps = win.steps.map((s) => {
+    const o = other.get(s.uid) ?? (() => { const t = byText.get(stepKey(s.text)); return t && !matched.has(t.uid) && !win.steps.some((w) => w.uid === t.uid) ? t : null; })();
+    if (!o) return clone(s);
+    matched.add(o.uid);
+    const flow = isFlow(a) || isFlow(b);
+    if (o.uid !== s.uid && o.done && !s.done) { combined = true; const t = { ...clone(o), id: s.id }; return flow ? keepFlowFields(t, s, o, P2_STEP_FIELDS) : t; } // the tick survives the uid split
+    if (o.uid === s.uid && newer(o, s) > 0) { combined = true; const t = clone(o); return flow ? keepFlowFields(t, s, o, P2_STEP_FIELDS) : t; }
+    return flow ? keepFlowFields(clone(s), s, o, P2_STEP_FIELDS) : clone(s);
+  });
   const have = new Set(out.steps.map((s) => s.uid));
-  lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  lose.steps.forEach((s, i) => { if (!have.has(s.uid) && !matched.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  { const d = dedupeSteps(out.steps); if (d.dropped) { out.steps = d.steps; combined = true; } }
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority', 'alias']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }
+  if (isFlow(a) || isFlow(b)) keepFlowFields(out, a, b, P2_BUILD_FIELDS);
   out.rev = Math.max(num(a.rev), num(b.rev));
   // a status set by hand on the newer copy stays; one derived from steps that came from both copies is derived again
   if (combined) settleStatus(out, out.updatedAt);
@@ -171,7 +214,63 @@ export function changeLines(entry) {
       if (a.deleted && !b.deleted) what.push('removed');
     }
     if (!what.length) continue;
-    out.push(`- ${when} UTC · \`${c.id}\` ${what.join(', ')} (${(a.profiles ?? []).join(', ')}) · ${str(entry.by) || 'cli'}`);
+    // demo-build@1: a demo build's line carries the mark, so the builds-live commit says demo-only on main
+    out.push(`- ${when} UTC · ${markLine(c.id, `\`${c.id}\` ${what.join(', ')}`)} (${(a.profiles ?? []).join(', ')}) · ${str(entry.by) || 'cli'}`);
   }
   return out;
+}
+
+// ------------------------------------------------------------------ real changes (what is worth a commit on main)
+
+/** Statuses of a build whose work is over: nothing but a status move, a link or a removal is news about it. */
+const DONE_STATUSES = ['complete', 'archived'];
+/** Statuses a shipped build may still move into (its record catching up with the landing). */
+const SHIPPED_MOVES = ['landed', 'built', 'complete', 'archived'];
+/** Build fields rewritten on every tick: stamps, counters, hashes and the dispatcher's run bookkeeping. */
+const VOLATILE_BUILD = ['updatedAt', 'rev', 'journalHash', 'defaultSteps', 'statusAt', 'statusBy', 'statusLog', 'pipeline', 'notes', 'steps'];
+const VOLATILE_STEP = ['updatedAt', 'rev', 'statusAt', 'statusBy', 'statusLog', 'tried'];
+/** The part of `pipeline` a person sets (hold, route, limits); the rest is launch and heartbeat bookkeeping. */
+const PIPELINE_STATE = ['heldAt', 'heldBy', 'heldWhy', 'route', 'maxParallel', 'budgetUsd'];
+const canon = (v) => (Array.isArray(v) ? v.map(canon) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v);
+const same = (a, b) => JSON.stringify(canon(a ?? null)) === JSON.stringify(canon(b ?? null));
+const without = (o, keys) => Object.fromEntries(Object.entries(o ?? {}).filter(([k]) => !keys.includes(k)));
+/** The named fields, an unset one and an empty one ('' or 0) reading the same: a record with no `pipeline` yet equals a blank one. */
+const only = (o, keys) => Object.fromEntries(keys.map((k) => [k, o?.[k] || null]));
+
+/** A build whose work is over: it has a shipped manifest (shipped-manifest@1) or is complete / archived. */
+export const isSettled = (b) => !!b && (!!b.shipped?.id || DONE_STATUSES.includes(b.status));
+
+/**
+ * What really changed between two copies of a build, as a list of words ([] = nothing worth publishing). Stamps,
+ * revisions, the dispatcher's run bookkeeping (`pipeline` except what a person sets) and a note whose text the build
+ * already holds are not changes: a watchdog or a failed launch repeating itself every minute rewrote them without the
+ * build moving, and each rewrite used to reach main as a status commit. A settled build (isSettled) changes only by a
+ * status move, a link, its landing evidence or its removal; a shipped one only moves forward (SHIPPED_MOVES), so a
+ * dispatcher flapping it between queued and running is not news either.
+ */
+export function realChanges(before, after) {
+  if (!after) return before ? ['removed'] : [];
+  if (!before) return ['added'];
+  const what = [];
+  if (isSettled(before)) {
+    const moved = before.status !== after.status && (!before.shipped?.id || DONE_STATUSES.includes(before.status) || SHIPPED_MOVES.includes(after.status));
+    if (moved) what.push('status');
+    for (const k of ['deleted', 'hidden', 'branch', 'pr', 'mergedAt', 'landed', 'shipped']) if (!same(before[k], after[k])) what.push(k);
+    return what;
+  }
+  for (const k of new Set([...Object.keys(before), ...Object.keys(after)])) if (!VOLATILE_BUILD.includes(k) && !same(before[k], after[k])) what.push(k);
+  if (!same(only(before.pipeline, PIPELINE_STATE), only(after.pipeline, PIPELINE_STATE))) what.push('pipeline');
+  const stepKeyOf = (s) => str(s.uid) || str(s.id);
+  const old = new Map((before.steps ?? []).map((s) => [stepKeyOf(s), s]));
+  const steps = after.steps ?? [];
+  if (steps.length !== old.size || steps.some((s, i) => stepKeyOf(s) !== stepKeyOf(before.steps[i]) || !same(without(old.get(stepKeyOf(s)), VOLATILE_STEP), without(s, VOLATILE_STEP)))) what.push('steps');
+  const had = new Set((before.notes ?? []).map((n) => str(n.text)));
+  if ((after.notes ?? []).some((n) => !had.has(str(n.text)))) what.push('note');
+  return what;
+}
+
+/** A journal entry with only the builds that really changed (realChanges), or null when none did. */
+export function realEntry(entry) {
+  const builds = (entry?.builds ?? []).filter((c) => realChanges(c.before, c.after).length);
+  return builds.length ? { ...entry, builds } : null;
 }

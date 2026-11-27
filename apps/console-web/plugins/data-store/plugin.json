@@ -1,0 +1,221 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.data-store",
+  "name": "Data store",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "axf-data holds all console data: the mode of each namespace (local, shadow, cutover, rollback), counts, backups, the drift log, and Backup now / Verify / Shadow / Cut over / Roll back. Brett, Nov 15 2026: \"the console goes down, all the data is still available, all the notes are available, and the builds keep running.\"",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:data-store"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/data-store",
+    "env": [
+      "AXF_DATA_URL",
+      "AXF_DATA_TOKEN"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/decisions.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "state",
+        "route": "GET /state",
+        "title": "Data store state",
+        "description": "Where the console's data is: axf-data reachable, keys per namespace on axf-data, each namespace's mode (local / shadow / cutover / rollback), drift count and next step, and the last backup with its verify result. Same as Settings → Plugins → Data store.",
+        "output": "data-store-state@1",
+        "readOnly": true
+      },
+      {
+        "id": "drift",
+        "route": "GET /drift",
+        "title": "Drift log of a namespace",
+        "description": "The last data-drift@1 lines of one namespace (what shadow found different, failed mirror writes).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ns": {
+              "type": "string",
+              "description": "a namespace: settings, changes, notes, planner, ui-review, sessions, console, builds, or plugins/<folder>"
+            },
+            "tail": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          "required": [
+            "ns"
+          ],
+          "additionalProperties": false
+        },
+        "readOnly": true
+      },
+      {
+        "id": "backup",
+        "route": "POST /backup",
+        "title": "Back up axf-data now",
+        "description": "Starts a backup on axf-data (SQLite online backup + blobs, verified against the live store, 14 days plus weekly copies kept). The state shows the job and the result."
+      },
+      {
+        "id": "verify",
+        "route": "POST /verify",
+        "title": "Verify the newest backup",
+        "description": "Re-checks the newest axf-data backup: integrity, blob hashes and key counts against the live store."
+      },
+      {
+        "id": "mode",
+        "route": "POST /mode",
+        "title": "Move a namespace (shadow / cut over / roll back / back to local)",
+        "description": "Staged move of one namespace onto axf-data with the same guards as the CLI: shadow needs equal manifests; cutover needs zero drift (or acceptDrift after reading it) and a quiet window (minutes, default 30); rollback replays axf-data's changes onto the local copy and returns to local.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ns": {
+              "type": "string",
+              "description": "a namespace: settings, changes, notes, planner, ui-review, sessions, console, builds, or plugins/<folder>"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "shadow",
+                "cutover",
+                "rollback",
+                "local"
+              ]
+            },
+            "window": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "acceptDrift": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ns",
+            "to"
+          ],
+          "additionalProperties": false
+        },
+        "destructive": true,
+        "confirm": "Move this namespace of console data?"
+      },
+      {
+        "id": "tables",
+        "route": "GET /tables",
+        "title": "The Postgres tables",
+        "description": "data-tables@1: every table axf-data keeps on Postgres (builds + build_steps, ui_review_items, planner_items, settings, notes, control_targets, journal, history, the ledger_* and chats_* mirrors…) with rows, bytes and what each holds, plus the newest SQLite mirror runs.",
+        "output": "data-tables@1",
+        "readOnly": true
+      },
+      {
+        "id": "sync-tables",
+        "route": "POST /tables/sync",
+        "title": "Mirror a SQLite file into rows now",
+        "description": "Copies a SQLite file the console still writes (chats = the Chat viewer db, ledger = the Shipped features ledger) into Postgres rows (<prefix>_<table>, full refresh, counts checked). Runs nightly anyway; this is the on-demand run.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "chats | ledger | a mirrored key (plugins/chat-viewer/chats.db, plugins/shipped-features/ledger.sqlite)"
+            }
+          },
+          "required": [
+            "source"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "engine",
+        "route": "GET /engine",
+        "title": "Store engine",
+        "description": "data-engine@1: whether axf-data reads from sqlite, shadow (SQLite reads, Postgres mirrored, drift logged) or postgres; drift count and the last drift lines; counts on both sides; the next move.",
+        "output": "data-engine@1",
+        "readOnly": true
+      },
+      {
+        "id": "engine-move",
+        "route": "POST /engine",
+        "title": "Move the store engine",
+        "description": "sqlite → shadow (needs equal counts: run migrate_pg.py first) → postgres (needs zero drift since shadow started, or acceptDrift after reading it); shadow → sqlite and postgres → shadow are always allowed. The same guards as POST /v1/_meta/engine on axf-data.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "sqlite",
+                "shadow",
+                "postgres"
+              ]
+            },
+            "acceptDrift": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "destructive": true,
+        "confirm": "Move the axf-data store engine?"
+      },
+      {
+        "id": "voice",
+        "route": "POST /voice",
+        "title": "Say it",
+        "description": "A spoken phrase → the Data store action it means: 'back up the data', 'verify the backup', 'where is the data', 'shadow the planner', 'cut settings over', 'roll back the builds', 'what tables are there', 'which engine', 'cut over to postgres', 'sync the chats'. Moves (namespace or engine) and mirror runs answer with what they would do and need confirm: true to run.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "phrase": {
+              "type": "string"
+            },
+            "confirm": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "phrase"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-15"
+  },
+  "help": "help.json",
+  "opens": false
+}

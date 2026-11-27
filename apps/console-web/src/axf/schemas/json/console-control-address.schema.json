@@ -6,7 +6,7 @@
   "anyOf": [
     {
       "type": "string",
-      "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+      "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
       "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
     },
     {
@@ -41,7 +41,8 @@
                   "row",
                   "step",
                   "panel",
-                  "scroll"
+                  "scroll",
+                  "toolbar"
                 ]
               },
               "id": {
@@ -77,7 +78,8 @@
             "row",
             "step",
             "panel",
-            "scroll"
+            "scroll",
+            "toolbar"
           ]
         },
         "id": {

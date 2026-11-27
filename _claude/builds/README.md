@@ -15,7 +15,8 @@ Every build of every profile is ONE record in `_claude/builds/store.json`, owned
 `framework/plan/builds-store-core.mjs`, IO `framework/cli/builds-store.mjs`). A build's profiles are a field
 (`profiles: [...]`, `order` per profile); Pending is a status; the build queue is the order of plan-epic builds. Every
 step is its own record (`uid` never changes; `title` = rename). Every write is versioned: store `rev`, record `rev`,
-and a journal line in `_claude/builds/journal/<YYYY-MM>.jsonl` (each changed build before and after).
+and a journal line in `_claude/builds/journal/<YYYY-MM>.jsonl` (each changed build before and after; moving to the
+hub data store, see *The journal leaves git* below).
 `orchestrator.mjs`, `pending.mjs`, `build-queue.mjs`, the console, the MCP tools and the Builds page read and write
 projections of it. The per-profile `orchestrator.json` files and `framework/plan/**/{pending,build-queue}.json` are
 read-only exports regenerated after every write; a direct write by an old-style session is taken in newer-only.
@@ -25,10 +26,85 @@ node framework/cli/builds-store.mjs                     # rev, builds and % per 
 node framework/cli/builds-store.mjs verify              # every build, step, note and status of the old files is in the store
 node framework/cli/builds-store.mjs history <id>        # every journal revision of a build
 node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was (itself versioned)
+node framework/cli/builds-store.mjs demo <id>           # demo-build@1: is it a demo (throwaway) build? exit 1 if not
 ```
+
+**Demo builds (demo-build@1, since Nov 17 2026, build `guided-live-demo-test-watch-orchestrator`):** the guided live
+demo plays on throwaway builds whose id starts with `demo-`; the store tags them `demo: true` on read (no migration:
+older records load unchanged, a `demo-` id gets the tag, nothing else ever does). Every projection, the dispatcher, the
+auto-lander, alerts, builds-live commit lines and the console rows mark them demo-only, and a demo action (a write with
+`demo: true` in its meta, `set-status … --demo`) on any build without the tag is refused whole. Spec:
+`framework/spec/BUILDS.md` → Demo builds; core `framework/core/demo-build.mjs`.
 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
+
+## The journal leaves git (builds-journal@1, designed Nov 17 2026)
+
+Build `stop-auto-lander-committing-tracking`, step s1 (Fable): the design and migration contract. Steps s8–s10 of the
+same build implement it; until they land, the journal is still the repo folder described above. Contract text:
+`framework/spec/BUILDS.md` → *Journal home*.
+
+**Why.** The journal is 911 MiB in 13 parts (`2026-11.jsonl`, `-p2` … `-p12`), all committed. Every live status commit
+rewrote an 80 MiB part, every clone and worktree carries the lot, the auto-lander kept committing the parts into build
+branches, and a PR's checks pulled 70 MiB files it never read. The journal is history data, not code: it belongs on the
+hub data store with the rest of the shared data (`persist.mjs`), and the repo keeps only a pointer and checksums.
+
+**Where it lives.** One home: `<data root>/builds/journal/<YYYY-MM>[-pN].jsonl`, i.e. `/projects/amberx-axf/_data/builds/journal/`
+where `/projects` is mounted (VPS sessions, worktrees, `/opt/axf`, the console container). Same file names, same 80 MiB
+parts (`journalPart`), same one-line-per-write format, append-only. Every writer appends under one lock shared across
+checkouts (`<journal dir>/.lock`, same `lock()` helper as the store, 30 s stale), so two worktrees never interleave a
+line. New files take the folder's owner and mode (`deploy`, 0664, like `writeKeepingOwner`), never root-only.
+
+**What the repo keeps.** `_claude/builds/journal.json` (builds-journal@1), committed, next to the store:
+
+```
+{ $axf: 'builds-journal@1', home: 'hub', dir: 'builds/journal', updatedAt, storeRev,
+  parts: { '2026-11-p3': { bytes, lines, sha256, sealed: true, firstAt, lastAt },
+           '2026-11-p12': { bytes, lines, sha256, sealed: false, firstAt, lastAt } } }
+```
+
+A **sealed** part is full (`journalPart` moved on): its entry is final and its checksum is exact forever. The **open**
+part's entry is a floor: the hub file must be at least that long and its first `bytes` bytes must hash to `sha256`
+(append-only makes a prefix hash sound). The live publisher refreshes the pointer in the same status-only commit as the
+store (hashing only a part whose size changed); it merges newer-wins per part through the `axf-builds` driver (higher
+`lastAt` wins, keys unioned), is in `BUILDS_PATHS` and in the lander's tracking-paths list (s2), and is the only
+journal file main ever carries. No journal line goes to main again.
+
+**Reads.** `journalDir()` resolves the home in this order: `AXF_BUILDS_STORE` set → `<store>.journal/` (tests,
+unchanged); `AXF_BUILDS_JOURNAL=<dir>` → that folder; `persistRoot()` non-null (hub mounted, or `AXF_DATA_DIR` scratch)
+→ `<root>/builds/journal`; otherwise the local **spool** `_claude/builds/journal/` (git-ignored). `history <id>` and
+`restore <id> <rev>` read the home (newest part first) plus any spool lines not yet drained; when the home is the spool
+they say so (`journal home not reachable: N local line(s) only`) and `restore` refuses a revision it cannot see.
+`verify` adds the journal: every part in the pointer exists on the hub, sealed parts hash exactly, the open part meets
+its floor, and every line of the spool is on the hub. Home not mounted = `verify` reports `journal: not checked (hub
+not mounted)` as a warning, not a failure; CI (s10) runs the checks on a fixture journal under `AXF_BUILDS_STORE`.
+`build-hooks.mjs journalEvents()` defaults to `journalDir()` instead of the repo path.
+
+**Writes without the hub.** A checkout without `/projects` (laptop, claude.ai, CI) appends to the spool. The live flush
+drains it: `POST /journal/append` on the build-orchestrator plugin (plugin-commands@1, so REST, MCP `journal-append`,
+`axf build-orchestrator journal-append`, voice), which appends on the hub under the same lock and returns the part it
+landed in; lines stay in the spool until the hub (direct or API) took them, then the spool file is truncated. No hub and
+no console = the lines wait, exactly like the live outbox; `builds-live.mjs status` shows `journal spool: N line(s)`
+and the systems check item *Builds reach main live* turns amber after 15 min. The API also offers `GET /journal/history/{id}`,
+`GET /journal/verify` and `POST /journal/restore` so history and restore work from the console, MCP, CLI and voice
+without a checkout. Nothing a build writes in a worktree is ever staged on its branch (s4/s5 cover the store; the spool
+is git-ignored).
+
+**Migration (s9, `builds-store.mjs journal migrate [--apply]`), once, on the VPS.**
+1. For each repo part: union (`mergeJournalText`, line set) of the repo copy, the hub `_data` copy if any, and the stale
+   claude-sync copy under `/projects/amberx-axf/_claude/builds/journal/` (325 MiB, partial), written to the home.
+2. Seal every part that is full or belongs to a past month; hash each; write `journal.json`; `verify` must pass.
+3. `git rm --cached _claude/builds/journal/*.jsonl`, `_claude/builds/journal/` into `.gitignore`, the
+   `journal/*.jsonl merge=axf-builds` line out of `.gitattributes`, `journal.json` in; one commit on the branch.
+4. Prune the stale `_claude/builds/journal` copy on the hub (a hub delete: veto call through axHub with a reason) and
+   make sure claude-sync never carries the spool there again.
+5. Dry run first (`--dry` prints parts, line counts, bytes and which copy contributed what); the apply refuses to run
+   while the pointer already says `home: 'hub'`.
+
+**Not in this build.** Git history still holds the 911 MiB in old commits; a history rewrite needs a force push and a
+re-clone of every checkout and worktree, so it is Brett's call (Pending item `shrink-git-history-drop-old-builds`). A per-build index for fast
+`history` (today a full scan of every part) is a deferred gap noted in the spec.
 
 ## What Brett said (build-origin@1, since Nov 3 2026)
 
@@ -45,16 +121,26 @@ session on code from before build-origin@1 can't drop it: the next read heals th
 the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
 `axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
 
-## Live on main (since Nov 3 2026)
+## Live on main (since Nov 3 2026; one snapshot per landing since Nov 21 2026)
 
-Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".
-Every store write that changes a build (step ticked, status, note, branch, PR) is published to **main** at once as its
-own status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on (`framework/cli/builds-live.mjs`):
-fetched main + this checkout's changed builds, merged per build and per step **newer wins**
-(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
-log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
-come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
-through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
+The store is the live copy: the console, the banners and every session read it, and a write shows there at once. Main
+only holds a **projection** of it for history. Until Nov 21 2026 every store write was pushed to main as its own
+status-only commit; that put 896 `Builds live: … [skip ci]` commits on main in 24 hours (audit finding B4-06), so main
+moved about every 90 seconds and every PR was always behind it. Now (`framework/cli/builds-live.mjs`):
+
+- every store write that changes a build is **queued** in the outbox next to the store: no commit, no push. With a file
+  store the console's checkout (`/opt/axf`) takes the changed builds at once as a file copy; on the tables it has them;
+- the outbox goes to main as **one** status-only commit (`Builds live: … [skip ci]`) when a build in it reaches
+  `landed`, when it has held changes for a day (the daily snapshot, `AXF_BUILDS_LIVE_SNAPSHOT_HOURS`, default 24) or
+  when it has grown past `AXF_BUILDS_LIVE_OUTBOX_MAX_MB` (default 16); `builds-live.mjs flush` or `sync --now` publish
+  on demand. `sync` without `--now` (session start, the reconciler) only takes main's newer builds;
+- a publish is what it was: fetched main + this checkout's changed builds, merged per build and per step **newer wins**
+  (`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
+  log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+  come back into the checkout and into the console's checkout;
+- `AXF_BUILDS_LIVE_PUSH=every` restores a push per write (the checks use it; not for production).
+
+Code still goes through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
 
 - **Status:** `built` = every step done, the build's PR not merged yet ("Built · awaiting merge"); `complete` once the
   PR merged (`mergedAt`) or when the build has no PR.
@@ -64,11 +150,11 @@ through the branch and its PR. The console's auto-update skips the rebuild when 
   start (`.claude/settings.json` hook), every 10 min on the VPS (cron `axf-builds-reconcile`), and by hand.
 - **Merging a branch:** the builds files merge newer-wins through the `axf-builds` git driver (`.gitattributes`,
   registered per clone by `builds-live.mjs install`); a PR that conflicts only there: `builds-live.mjs heal <branch>`.
-- **Broken:** changes that can't reach main stay queued (`builds-live.mjs status`); the systems check item
-  **Builds reach main live** turns red after 15 min, amber for orphan PRs/branches or a reconciler that hasn't run.
+- **Broken:** a publish that can't reach main keeps the outbox and says why (`builds-live.mjs status`: `stuck`, last
+  error). Changes waiting for the next landing are normal (`queued`, `due` empty), not a fault.
 
 ```bash
-node framework/cli/builds-live.mjs sync                 # session start: send what is newer here, take main's newer builds
+node framework/cli/builds-live.mjs sync [--now]         # session start: take main's newer builds (--now: publish first)
 node framework/cli/builds-live.mjs status | flush       # outbox, last publish, last error / publish now
 node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
@@ -87,10 +173,96 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
   how many run on each, limits), the agent slots and the Queue, and starts the next build when a slot and an account for
   its next phase's model are free: `deploy/claude-headless.sh --account <acct>` in `/root/axf-builds/<id>`. Status
   `queued` → `running` (**Building**). It never starts a session right away.
-- A session end moves the build on: built / complete; the Queue again (next phase, or a crash, up to 3 runs); Pending
-  (stopped early, for Brett); failed. Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
+- A session end moves the build on (`nextStatusOnExit()` in build-pipeline@1): every step done = built / complete. Its
+  **phase done with steps left = back to the Queue at its place** (reason `phase-done`, journalled "phase <n> done,
+  requeued for <model>"), and the next phase **launches by itself**: `claude-headless.sh` reports the exit
+  (`pipeline.mjs exit <id> --kind phase-done|crash|stopped --phase <p>`, under the cron's lock) and that runs one
+  dispatcher tick at once, no wait for the cron. A crash = the Queue again until 3 crashes, then Pending (Errors tab).
+  **Pending only when Brett is needed**: the crash limit, an upgrade he has not approved (while that setting is on), the
+  session said it needs him, or it stopped mid-phase. Builds the old rule parked in Pending after a finished phase:
+  `pipeline.mjs requeue-stuck [--apply]` (also every `builds-reconcile.mjs --apply`, REST `POST /pipeline/requeue-stuck`,
+  MCP / voice `pipeline-requeue-stuck`). Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
+
+## Step dependencies and claims: fill every slot (since Nov 13 2026)
+
+Brett: "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them,
+and auto-queue pending builds." Two optional fields on a step (builds@1, `framework/schemas/builds.json`; contract
+`framework/core/build-pipeline.mjs`; spec `framework/spec/BUILD-PARALLEL.md`):
+
+- **`after: [stepId]`** — the steps of the same build that must be done (or skipped) first. A step **without** the
+  field is implicitly sequential: it waits for the step before it, so every older build runs exactly as before.
+  `after: []` means independent. Ids name steps of the same build; a step never names itself; cycles and ids that
+  point at no step are refused by the store check.
+- **`claim: { runId, slot, account, branch, at, model, expiresAt }`** — the session working the step right now.
+  Model-aware (`model` = the step's pinned model, never higher); a claim expires after a TTL (45 min) so a dead session
+  frees its step; ticking a step done releases it. `branch` is the step's worktree branch for a parallel step
+  (`<build-branch>--s<n>`) or the build branch.
+- **`dependsOn: [stepId]`** is the same list under the splitter's and the API's name: accepted on input, stored as `after`.
+- **`parallel: never`** keeps a step in the build's own session even when its dependencies are done (absent = auto).
+- **`files`** (the existing step field) also gates parallel runs: two steps that share a file never run at once, and
+  auto-queue skips a Pending build while a running build is on one of its files.
+
+The dispatcher's fill planner (`planFill`) uses them to put a ready step of a running build in every free slot before it
+takes the next Queue build, and Pending builds last when auto-queue is on. Per build, `pipeline.maxParallel` caps its
+parallel sessions and `pipeline.budgetUsd` / `spentUsd` cap what its API runs may cost.
+
+## Pipeline: fill every slot (since Nov 13 2026)
+
+<!-- axf-plugin:build-orchestrator -->
+The dispatcher (`pipeline.mjs tick`, every minute) runs a **fill round** after its build launches: `planFill` puts a
+ready step of a running build in every free agent slot, then the next Queue build, then (auto-queue on) Pending builds.
+
+- **Parallel step session**: a step with a `dependsOn` list whose dependencies are done is claimed on the build
+  (builds-live carries the claim to main), gets its own worktree `/root/axf-builds/<build>--<step>` on branch
+  `<build-branch>--<step>`, and starts with `claude-headless.sh --step <step>`: a step-scoped brief (only that step, what
+  its dependencies produced, its files), its own agent slot and a per-step model gate. When it ticks the step, the
+  dispatcher merges the branch back (`git merge --no-ff` in the build's worktree, under the store lock); a conflict
+  sends the step back `blocked` to re-run after the steps it clashed with, in the build's own session (branch kept). A
+  step session that ends without ticking goes back to ready, at most 3 runs.
+- **Reconciler**: a step session that is no longer alive is reset to ready (worktree kept); a build counts as built only
+  when every done parallel step's branch has merged back.
+- **Settings** (Claude settings, Settings → Plugins → Build orchestrator → Fill every slot): `builds.fillSlots` (on;
+  anyone switches it off, only Brett on), `builds.maxParallelPerBuild` (3; only Brett raises it), `builds.autoQueuePending`
+  (off; owner-only).
+- **Splitter**: the Opus split asks for `dependsOn` (default: the previous step) and `files` per step; an unknown id, a
+  later step or a cycle refuses the split. Hand-written steps are left as they are.
+- **Migration**: `builds-store.mjs migrate-deps [--dry]` (run by the dispatcher's first tick) leaves older builds without
+  a list and stamps `meta.versions.stepDeps` in the journal; `verify` names missing dependencies and cycles.
+
+| Reach it | Read the slots and the plan | One round now | Set a step's dependsOn | Fill settings |
+|---|---|---|---|---|
+| REST (`/api/plugins/build-orchestrator`) | `GET /pipeline/fill[?build=]` | `POST /pipeline/fill/run` | `POST /builds/:id/steps/:step/deps` `{dependsOn}` | `POST /pipeline/fill/settings` (also `POST /pipeline/settings`) |
+| MCP (plugin commands) | `pipeline-fill-status` | `pipeline-fill-run` | `pipeline-step-deps` | `pipeline-fill-settings` |
+| CLI | `pipeline.mjs fill status [build]`, `agent-slots.mjs fill` | `pipeline.mjs fill run` | `pipeline.mjs fill deps <build> <step> <s1,s2\|none\|sequential>` | `pipeline.mjs fill set k=v…` |
+| Voice / console actions | `build-orchestrator.pipeline-fill-status[:build]` | `build-orchestrator.pipeline-fill-run` | `build-orchestrator.pipeline-step-deps:<build>/<step>/<deps>` | `build-orchestrator.pipeline-fill-settings:<k=v,…>` |
+| Deep link (`console_show`) | `build-orchestrator/pipeline/slots` | | `build-orchestrator/<id>/steps` | `settings/plugins/build-orchestrator#fill` |
+
+Auto-queue pending builds is refused on every path unless the request is Brett's own console session.
+
+## When a build gets stuck: the watchdog recovers it (since Nov 17 2026)
+
+Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking …
+Never wait for Brett to notice."
+
+- Every run's end is evidence: `claude-headless.sh` writes exit code, signal, exit kind, a usage / login stop, account
+  and time onto the build (`pipeline.runEnd`, `builds-live.mjs run-end`, live) and into `<slots dir>/runs/<build>.json`
+  the moment claude exits, even when it was killed.
+- The **watchdog** (`apps/console-web/plugins/build-orchestrator/watchdog.mjs`, cron `axf-watchdog` every minute) probes
+  every build marked running (`agent-slots.mjs alive <build>`: claude pid, tmux, heartbeat) and decides by build-watchdog@1
+  (`framework/core/build-watchdog.mjs`). Killed 143, OOM 137, failed 1, tmux or claude gone, a stale heartbeat (hung:
+  killed first) = **retry**: the step reset, the slot, worker claim and build lock freed, back in the Queue at its place.
+  A usage limit or dead login = retry on the **next worker account**. A missed clean end = the normal exit transition.
+- **At most Max retries (3)** since the build last ticked a step; then **Pending**, Errors tab, a systems check banner item
+  with **Requeue**, and an alert. Brett's requeue starts the count again. A live or just-started build is never touched.
+- Every fix is a `recoveries[]` record on the build (watchdog-recovery@1: when, step, cause, exit, action, attempt,
+  account, notified; journal action `watchdog-recover`) and a phone FYI (`watchdog.fix`, batched per pass), then the
+  dispatcher ticks while slots are free and the Queue has work (idle slots with Queue work = an `idle-slots` fix).
+- See it: Build orchestrator → **Watchdog** (and each build's Recoveries); settings in Settings → Plugins → Build
+  orchestrator → Watchdog; `axf watchdog status|scan|run`, REST `watchdog/*`, MCP `watchdog-*`, voice `watchdog.run`.
+  The systems check's **Build watchdog** item goes red when no pass ran for 3 minutes (Auto fix reinstalls the cron).
+- A session never recovers builds by hand: the watchdog does it, under its locks, with the record.
 
 ## Own Claude login per build (since Nov 5 2026)
 

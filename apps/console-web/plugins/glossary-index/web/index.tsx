@@ -14,7 +14,7 @@
  * (player.tsx) are the other views of this plugin.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, SelectField, Switch, TabGroup, TextField, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -228,6 +228,13 @@ function GlossaryPage() {
   const biggestKind = useMemo(() => { const n: Record<string, number> = {}; for (const e of results) n[e.kind] = (n[e.kind] ?? 0) + 1; return Math.max(0, ...Object.values(n)); }, [results]);
   const open = (id: string) => { setSelected(id); document.querySelector('.axp-glossary-index__detail')?.scrollIntoView({ block: 'nearest' }); };
 
+  // the Glossary toolbar (page-toolbar@1, assets/toolbar/glossary-index.json)
+  usePublishPageState('glossary-index', { searching: !!q.trim(), undescribed, drafts, shown: results.length, selection: entry ? { id: entry.id, kind: entry.kind } : null });
+  useToolbarHandlers('glossary-index', {
+    'glossary-index.search': () => { const el = document.querySelector<HTMLInputElement>('.axp-glossary-index input[type="search"], .axp-glossary-index input'); el?.focus(); el?.select(); return { q }; },
+    'glossary-index.undescribed': () => { setUndescribed(!undescribed); return { undescribed: !undescribed }; },
+    'glossary-index.drafts': () => { setDrafts(!drafts); return { drafts: !drafts }; },
+  });
   const kindOptions = cat ? Object.entries(cat.kinds).filter(([k]) => cat.counts[k]).map(([value, label]) => ({ value, label: `${label} (${cat.counts[value]})` })) : [];
   return (
     <div className="fx-stack fx-stack--lg axp-glossary-index">
@@ -238,6 +245,7 @@ function GlossaryPage() {
           <p className="fx-muted">Everything in AmberX AXF in one place: every plugin, feature, screen, control, setting, command, asset and tool, defined, indexed and linked.</p>
         </div>
       </header>
+      <PageToolbar view="glossary-index" />
 
       <div className="axp-glossary-index__bar">
         <TextField label="Search" value={q} onChange={setQ} placeholder="Search terms, summaries and keywords" className="axp-glossary-index__search" />
@@ -312,9 +320,9 @@ export const plugin: AxfWebLibrary = {
     [ADD_TO_BOOK_DIALOG]: { title: 'Add to a book', icon: 'file', searchable: false, render: (props, close) => <AddToBook props={props} close={close} /> },
   },
   tabs: { [PLAYER_TAB]: () => <PlayerWindow /> },
-  nav: { label: 'Plugins', items: [
+  nav: { label: 'Docs & media', items: [
     { id: 'glossary-index', label: 'Glossary & Index', icon: 'list', view: 'glossary-index' },
-    { id: 'demo-designer', label: 'Demonstration Designer', icon: 'play', view: 'demo-designer' },
+    { id: 'demo-designer', label: 'Glossary demos', icon: 'play', view: 'demo-designer' },
     { id: 'book-builder', label: 'Book Builder', icon: 'file', view: 'book-builder' },
   ] },
   settingsTabs: [{ id: 'glossary-index', label: 'Glossary & Index', icon: 'list', order: 92, parent: 'plugins' }],

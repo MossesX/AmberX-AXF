@@ -2534,12 +2534,28 @@
                   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
                 },
                 {
+                  "id": "cx.settings.onesource",
+                  "title": "One true source: every console setting is stored under one key with one wording; old keys are read aliases, a CI check stops a second copy (settings-sources@1)"
+                },
+                {
+                  "id": "cx.buildengine.emergency",
+                  "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code"
+                },
+                {
+                  "id": "cx.buildengine.statuscontract",
+                  "title": "Pipeline 2.0 status contract owns every limit: the attempt ceiling, the 15 minute step cap, the archive rule, fixed steps and whole refusals; one watchdog and one dispatcher read it"
+                },
+                {
                   "id": "cx.buildengine.buildids",
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
                 {
                   "id": "cx.buildengine.groups",
                   "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
+                },
+                {
+                  "id": "cx.buildengine.statustable",
+                  "title": "One status-driven builds table (Pipeline 2.0): no tabs, builds as rows expandable to their steps, filters on the toolbar, one colour per status, live timers, a read-only merge queue view of the same rows"
                 },
                 {
                   "id": "cx.buildengine.sectionowners",
@@ -2614,9 +2630,104 @@
               "suggests": []
             },
             {
+              "id": "cx.datastore",
+              "title": "axf-data: one container holds all console data, so notes, builds and settings stay available and builds keep running when the console is down",
+              "note": "Brett, Nov 15 2026: \"the console goes down, all the data is still available, all the notes are available, and the builds keep running.\"",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.datastore.contract",
+                  "title": "data-store@1 contract + reference client: namespaces, rev/etag writes, append-only journals, watch, manifests; memory, file and HTTP backends (framework/core/data-store.mjs)"
+                },
+                {
+                  "id": "cx.datastore.service",
+                  "title": "axf-data service: FastAPI on SQLite + content-addressed blobs, token auth, per-key history + restore, SSE watch, MCP tools (services/axf-data)"
+                },
+                {
+                  "id": "cx.datastore.deploy",
+                  "title": "Private deploy: internal network, named volume, no port or domain, service tokens, Coolify compose (deploy/install-data.sh)"
+                },
+                {
+                  "id": "cx.datastore.backups",
+                  "title": "Daily verified backups of axf-data (14 days + weekly), restore, systems check item with Auto fix"
+                },
+                {
+                  "id": "cx.datastore.clients",
+                  "title": "Data layer on every writer: console server (data_store.py), Node (data-files.mjs), builds store, settings, planner, UI Review, notes, changes log, SQLite ledgers"
+                },
+                {
+                  "id": "cx.datastore.migrate",
+                  "title": "Migration: dry-run plan, backup first, copy, count + hash manifests, refuses on mismatch (data-migrate.mjs)"
+                },
+                {
+                  "id": "cx.datastore.modes",
+                  "title": "Staged move per namespace: local \u2192 shadow (drift log) \u2192 cutover \u2192 rollback, guarded (data-mode.mjs)"
+                },
+                {
+                  "id": "cx.datastore.ui",
+                  "title": "Settings \u2192 Plugins \u2192 Data store with REST, MCP commands, axf data CLI, voice and deep link"
+                },
+                {
+                  "id": "cx.datastore.hub",
+                  "title": "axHub route to axf-data (route only, token kept in axHub) and the console-down drill"
+                },
+                {
+                  "id": "cx.datastore.postgres",
+                  "title": "axf-data on Postgres in its own container: real tables for builds + steps, journal, UI reviews, planner items, settings, notes and the control registry; SQLite ledgers mirrored table for table (services/axf-data/pg.py, tables.py)"
+                },
+                {
+                  "id": "cx.datastore.postgres.move",
+                  "title": "SQLite axf-data → Postgres staged inside the service: migrate_pg.py (backup first, counts + manifests), shadow with drift, cut over, roll back (engine.py); pg_dump backups"
+                },
+                {
+                  "id": "cx.datastore.registry",
+                  "title": "The API / control registry is a generated table (control_targets), published from each plugin's targets; inventory.json is no longer committed"
+                }
+              ],
               "id": "cx.gate",
               "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
               "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md; build-rules@1, framework/spec/BUILD-RULES.md): Rules / Build rules / Auto-lander / History tabs, the VPS build rules runner and fixers (home card, help stub, Shipped features manifest, API parity, THREADS + tracker, CI checks, PR open + link), gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.modeltriage",
+              "title": "Model triage gate: the VPS decides which model every build step, emergency build, hand build and lander fix session runs on, from measurable, editable rules; every decision logged with the rule that fired; REST, MCP, CLI and voice",
+              "note": "framework/core/model-triage.mjs + framework/cli/model-triage.mjs (model-triage@1, framework/spec/MODEL-TRIAGE.md): explicit overrides first (a pin, a brief that names its model, the build-wide model), then ordered rules (CI failures, merge clashes, second try, contracts, blast radius, size, cross-cutting, the splitter's suggestion, the model policy's word lists), then the default; respects Fable upgrades need my approval. Asked by the dispatcher (split, assigning-models, retries), the headless launcher (hand builds) and the lander (fix sessions). Builds \u2192 VPS Configuration \u2192 Model triage shows and edits it; no logic in the console.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.phone",
+              "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/phone-connect + apps/phone-connect (phone-connect@1, framework/spec/PHONE-CONNECT.md): Settings \u2192 Plugins \u2192 Phone Connect, capability axf.phone@1, alert hub \u2192 phone push, systems check item, axHub amberx.* tools answered by the paired phone; replaces the AmberX app (code removal staged: remove-amberx-app-code-once-phone); Kotlin engine twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.axhubpages",
+              "title": "axHub's pages in the console: module axHub, one removable plugin per hub feature (approvals + held calls + log, passes, apps, users, handoff, account) over a hub-pages relay that takes only a wall admin's browser",
+              "note": "apps/console-web/plugins/axhub-* + src/hubPages + server/hub_pages.py (Nov 20 2026, fold of apps/axhub-web, which is archived); axHub server unchanged",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.statusstyles",
+              "title": "Status styles: animations and styling for every status (whole row or text only, a preset library, own presets, a style per status, moving or still badges)",
+              "note": "apps/console-web/plugins/status-styles (Nov 21 2026): display only, a generated token-only stylesheet keyed on data-status; off under reduced motion",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.consoleopen",
+              "title": "Console opens go straight to the screen: a loaded console is never reloaded to its home screen, a wake lands on the target, a queued open is never lost, answers come in seconds",
+              "note": "apps/console-web/plugins/console-commands (server + web), src/native, apps/console-droid WebHost / ShellRules (Nov 23 2026); framework/spec/CONTROL.md \u2192 Straight to the screen",
               "tag": "",
               "recommended": true,
               "suggests": []

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Audio Output Recorder installer (plugin-lifecycle@1). Enables it on the console (the axHub recordings list); AmberX
- * loads it by itself through its `amberx-droid` target, and its native half ships in the AmberX APK.
+ * Audio Output Recorder installer (plugin-lifecycle@1). Enables it on the console: the recordings the paired phone
+ * sends to axHub, their transcripts and search.
  *   node apps/console-web/plugins/output-recorder/install.mjs [--json]
  */
 import { main } from '../../../../framework/cli/plugin-lifecycle.mjs';

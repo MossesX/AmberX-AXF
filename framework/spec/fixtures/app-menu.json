@@ -16,7 +16,8 @@
       "order",
       "before",
       "after",
-      "spacer"
+      "spacer",
+      "place"
     ],
     "defaultMenu": "more",
     "assetOrigin": "asset"

@@ -21,14 +21,22 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
+import readcache  # server/readcache.py: one shared, single-flight read per source + the cap on node spawns
 
 router = APIRouter()
+READ_TTL_S = 3.0  # the project list is read by the banner of every open console; one node process serves them all
+READ_KEY = "project-switcher:"
 
 
 def _cli(*args: str, actor: str = "console:projects") -> dict[str, Any]:
     cli = cx.ROOT / "framework" / "cli" / "projects.mjs"
     env = {**os.environ, "AXF_ACTOR": actor}
-    proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=60, env=env)
+    try:
+        proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=60, env=env)
+    except subprocess.TimeoutExpired:  # was uncaught: a raw 500 after a minute on a busy host
+        return {"ok": False, "timeout": True, "error": "projects.mjs took longer than 60 s (the host is busy); try again"}
+    except OSError as e:
+        return {"ok": False, "error": f"projects.mjs could not start: {e}"[:600]}
     out = proc.stdout.strip().splitlines()
     try:
         res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
@@ -37,12 +45,21 @@ def _cli(*args: str, actor: str = "console:projects") -> dict[str, Any]:
     return res if isinstance(res, dict) else {"ok": False, "error": "unexpected answer"}
 
 
+def _read(*args: str) -> dict[str, Any]:
+    """A read every console makes (state, current): shared and single-flight, the last answer served while it refreshes."""
+    res = readcache.cached(READ_KEY + " ".join(args), lambda: _cli(*args), ttl=READ_TTL_S)
+    if not res.get("ok"):
+        raise HTTPException(503 if res.get("timeout") else 500, res.get("error", "failed"))
+    return res
+
+
 def _text(v: Any, n: int = 600) -> str:
     return v.strip()[:n] if isinstance(v, str) else ""
 
 
 def _change(change: dict[str, Any]) -> dict[str, Any]:
     res = _cli("act", json.dumps(change))
+    readcache.invalidate(READ_KEY)  # the next list shows the change
     for line in res.get("log", []) or []:
         cx.log("projects", str(line))
     if not res.get("ok"):
@@ -67,17 +84,17 @@ def _project(b: dict[str, Any]) -> str:
 
 @router.get("/")
 def list_projects() -> dict[str, Any]:
-    res = _cli("state")
-    if not res.get("ok"):
-        raise HTTPException(500, res.get("error", "failed"))
-    return res
+    return _read("state")
+
+
+# The same list without the trailing slash: a plugin command route "GET /" is asked as /api/plugins/<folder>, which
+# answered 404 (the Home card and the `list` read on every console load).
+router.add_api_route("", list_projects, methods=["GET"], include_in_schema=False)
 
 
 @router.get("/current")
 def current() -> dict[str, Any]:
-    res = _cli("current")
-    if not res.get("ok"):
-        raise HTTPException(500, res.get("error", "failed"))
+    res = _read("current")
     return {"ok": True, "project": res.get("project")}
 
 

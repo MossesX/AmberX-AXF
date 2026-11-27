@@ -15,8 +15,12 @@
  * build whose session is alive. The launcher (deploy/claude-headless.sh) checks tmux and pids (not the lock, which the
  * dispatcher wrote for that very launch) before it opens a tmux session, instead of starting a renamed second one.
  * Parallel sub-builds each have their own build id, worktree and branch, so they never share a lock.
+ * Pipeline 2.0 steps (Nov 20 2026): the steps of one build run at once, each in its own worktree, so a step launch asks
+ * about its own step only (`--step <id>`): tmux axf-<build>--<step>[--agent], claude pids in its worktree or carrying
+ * AXF_BUILD_ID=<build> and AXF_BUILD_STEP=<step>. Without it every sibling step's session counted as "live" and every
+ * launch after the first was refused, so a split build ran one step at a time.
  *
- *   node framework/cli/build-lock.mjs check <build> [--dir <worktree>] [--no-lock] [--json]   exit 0 free · 3 live
+ *   node framework/cli/build-lock.mjs check <build> [--step <id>] [--dir <worktree>] [--no-lock] [--json]   exit 0 free · 3 live
  *   node framework/cli/build-lock.mjs acquire <build> --dir <worktree> [--session s] [--account a]   exit 0 · 3 live
  *   node framework/cli/build-lock.mjs beat <build> --dir <worktree> [--session s]
  *   node framework/cli/build-lock.mjs release <build> --dir <worktree>
@@ -32,6 +36,7 @@ export const SCHEMA = 'build-lock@1';
 export const LOCK_FILE = '.axf-build.lock';
 export const LOCK_STALE_MS = 20 * 60e3;
 const ID_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/;
+const STEP_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$/;
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const nowIso = () => new Date().toISOString();
 
@@ -50,8 +55,8 @@ function tmuxNames(env) {
   return r.stdout.split('\n').map((s) => s.trim()).filter(Boolean);
 }
 
-/** tmux sessions alive for build `id`. */
-export function tmuxSessions(id, env = process.env) { return tmuxNames(env).filter((n) => sessionOf(id, n)); }
+/** tmux sessions alive for build `id` (with `step`: that step's sessions only, axf-<id>--<step>[--agent]). */
+export function tmuxSessions(id, env = process.env, step = '') { const key = step ? `${id}--${step}` : id; return tmuxNames(env).filter((n) => sessionOf(key, n)); }
 
 const real = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
 function ancestors() {
@@ -63,8 +68,11 @@ function ancestors() {
   return out;
 }
 
-/** claude processes alive for build `id`: cwd is the worktree, or AXF_BUILD_ID=<id> in their environment. */
-export function claudePids(id, dir = '', env = process.env) {
+/**
+ * claude processes alive for build `id`: cwd is the worktree, or AXF_BUILD_ID=<id> in their environment (with `step`,
+ * AXF_BUILD_STEP=<step> as well: a sibling step of the same build is not this launch's business).
+ */
+export function claudePids(id, dir = '', env = process.env, step = '') {
   if (env.AXF_BUILD_LOCK_PIDS === 'off' || !existsSync('/proc')) return [];
   const want = dir ? real(dir) : ''; const mine = ancestors(); const out = [];
   let ents = []; try { ents = readdirSync('/proc'); } catch { return []; }
@@ -76,7 +84,7 @@ export function claudePids(id, dir = '', env = process.env) {
     if (!args.some((a) => /(^|\/)claude$/.test(a) || /@anthropic-ai\/claude-code\//.test(a))) continue;
     let hit = false;
     if (want) { try { const cwd = realpathSync(`/proc/${e}/cwd`); hit = cwd === want || cwd.startsWith(`${want}/`); } catch { /* not ours to read */ } }
-    if (!hit) { try { hit = readFileSync(`/proc/${e}/environ`, 'utf8').split('\0').includes(`AXF_BUILD_ID=${id}`); } catch { /* not ours to read */ } }
+    if (!hit) { try { const ev = readFileSync(`/proc/${e}/environ`, 'utf8').split('\0'); hit = ev.includes(`AXF_BUILD_ID=${id}`) && (!step || ev.includes(`AXF_BUILD_STEP=${step}`)); } catch { /* not ours to read */ } }
     if (hit) out.push(Number(e));
   }
   return out;
@@ -99,18 +107,20 @@ export function lockFresh(lock, now = Date.now(), staleMs = LOCK_STALE_MS) {
  * Is anything alive for this build? { live, build, dir, sessions, pids, lock, lockFresh, why }.
  * `useLock: false` judges by tmux and pids only (the launcher, whose own lock the dispatcher just wrote).
  */
-export function liveness(id, { dir = '', useLock = true, env = process.env, now = Date.now() } = {}) {
-  const sessions = tmuxSessions(id, env);
-  const pids = claudePids(id, dir, env);
+export function liveness(id, { dir = '', step = '', useLock = true, env = process.env, now = Date.now() } = {}) {
+  if (step && !STEP_RE.test(step)) step = '';
+  const sessions = tmuxSessions(id, env, step);
+  const pids = claudePids(id, dir, env, step);
   const lock = useLock ? readLock(dir) : null;
   const fresh = useLock && lockFresh(lock, now) && (!lock.build || lock.build === id);
   const live = sessions.length > 0 || pids.length > 0 || fresh;
-  const why = !live ? `${id}: no live session` : `${id} already has a live session: ${[
+  const what = step ? `${id}--${step}` : id;
+  const why = !live ? `${what}: no live session` : `${what} already has a live session: ${[
     sessions.length ? `tmux ${sessions.join(', ')}` : '',
     pids.length ? `claude pid ${pids.join(', ')}` : '',
     fresh ? `lock ${lock.session || 'launching'} (heartbeat ${lock.beat || lock.at})` : '',
   ].filter(Boolean).join('; ')}`;
-  return { live, build: id, dir, sessions, pids, lock, lockFresh: fresh, why };
+  return { live, build: id, ...(step ? { step } : {}), dir, sessions, pids, lock, lockFresh: fresh, why };
 }
 
 function writeLock(dir, lock) {
@@ -148,15 +158,15 @@ function arg(argv, flag) { const i = argv.indexOf(flag); return i >= 0 ? argv[i 
 function main(argv) {
   const [cmd, id = ''] = argv; const dir = arg(argv, '--dir'); const json = argv.includes('--json');
   const say = (o, line, code = 0) => { console.log(json ? JSON.stringify(o) : line); return code; };
-  if (!ID_RE.test(id)) { console.error('usage: build-lock.mjs check|acquire|beat|release <build> [--dir <worktree>] [--no-lock] [--json]'); return 2; }
-  if (cmd === 'check') { const l = liveness(id, { dir, useLock: !argv.includes('--no-lock') }); return say(l, l.live ? `refused: ${l.why}` : l.why, l.live ? 3 : 0); }
+  if (!ID_RE.test(id)) { console.error('usage: build-lock.mjs check|acquire|beat|release <build> [--step <id>] [--dir <worktree>] [--no-lock] [--json]'); return 2; }
+  if (cmd === 'check') { const l = liveness(id, { dir, step: arg(argv, '--step'), useLock: !argv.includes('--no-lock') }); return say(l, l.live ? `refused: ${l.why}` : l.why, l.live ? 3 : 0); }
   if (cmd === 'acquire') {
     try { const l = acquire(id, { dir, session: arg(argv, '--session'), account: arg(argv, '--account'), by: arg(argv, '--by') || 'cli' }); return say(l, `locked ${id} in ${dir}`); }
     catch (e) { if (e.code === 'live') return say(e.liveness, e.message, 3); console.error(e.message); return 2; }
   }
   if (cmd === 'beat') { const l = beat(id, { dir, session: arg(argv, '--session') }); return say(l, l ? `beat ${id} ${l.beat}` : `no worktree ${dir}`, l ? 0 : 2); }
   if (cmd === 'release') { const ok = release(id, { dir }); return say({ released: ok }, ok ? `released ${id}` : `no lock for ${id}`); }
-  console.error('usage: build-lock.mjs check|acquire|beat|release <build> [--dir <worktree>] [--no-lock] [--json]'); return 2;
+  console.error('usage: build-lock.mjs check|acquire|beat|release <build> [--step <id>] [--dir <worktree>] [--no-lock] [--json]'); return 2;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = main(process.argv.slice(2));

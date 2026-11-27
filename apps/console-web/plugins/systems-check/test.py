@@ -713,9 +713,21 @@ svc = plugin_services.get("axf.health@1")
 check(svc is mod.REGISTRY and {"git-push", "ci-main", "builds-stuck", "disk", "push-path", "veto-calls"} <= set(svc.checks()), "axf.health@1 provided with the built-in checks")
 for k in ("git-push", "ci-main", "disk", "containers", "builds-stuck"):
     mod.REGISTRY.checks()[k]["run"] = (lambda: {"status": "ok", "summary": "fake"})
+# The background monitor's first run probes the real disk: on a host over its limit it tries the real Auto fix (mode 'on'
+# by default) and that attempt would show on the item below. Stop it and forget what it found; 'ask' is saved before the
+# disk turns red, so no run in between can act on the old mode.
+mod.MONITOR.stop()
+for _ in range(100):  # an attempt already started finishes (or fails) within a moment; then its record is dropped
+    if (mod.MONITOR.autofix_state("disk") or {}).get("state") != "running":
+        break
+    time.sleep(0.05)
+mod.MONITOR.forget("disk")
+with mod.MONITOR._lock:  # noqa: SLF001
+    mod.MONITOR._load().pop("disk", None)  # noqa: SLF001
+    mod.MONITOR._save()  # noqa: SLF001
+check(c.put("/p/settings", json={"autoFix": {"disk": "ask"}}).json()["autoFix"] == {"disk": "ask"}, "auto-fix setting saved per check")
 mod.REGISTRY._checks["disk"]["run"] = lambda: {"status": "error", "summary": "Disk is 91% full."}  # noqa: SLF001
 mod.MONITOR.last_run = 0
-check(c.put("/p/settings", json={"autoFix": {"disk": "ask"}}).json()["autoFix"] == {"disk": "ask"}, "auto-fix setting saved per check")
 h = c.post("/p/health/run").json()
 disk = next(i for i in h["items"] if i["id"] == "disk")
 check(disk["status"] == "error" and disk["breaks"] and disk["since"] and disk["fix"]["type"] == "host", "Check now runs health; red disk item has breaks, since and a fix")

@@ -39,6 +39,9 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
+import data_store
+import host_mode
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
@@ -96,6 +99,7 @@ def _manifest_rows(c: sqlite3.Connection, sql: str, *args: Any) -> list[dict[str
 
 def _connect() -> sqlite3.Connection | None:
     f = db_file()
+    data_store.sqlite_hydrate(f)  # data-store@1: in cutover the newest ledger comes from axf-data
     if not f.exists():
         return None
     c = sqlite3.connect(f"file:{f}?mode=ro", uri=True, timeout=5)
@@ -131,6 +135,10 @@ def _background(kind: str, args: list[str]) -> bool:
 
 
 def _maybe_sync() -> None:
+    # host-service shipped-features (framework/spec/HOST-SERVICES.md): in host mode the host runner keeps the ledger
+    # current every SYNC_S whether the console is up or not; this copy only reads.
+    if not host_mode.container_runs("shipped-features"):
+        return
     if time.time() - _state["syncAt"] > SYNC_S and not _state["importing"]:
         _background("sync", ["sync"])
 
