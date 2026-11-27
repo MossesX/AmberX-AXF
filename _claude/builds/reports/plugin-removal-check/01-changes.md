@@ -1,6 +1,6 @@
 # Plugin removal check 01: codebase-changes, changes-grid, activity
 
-Report only. Nothing was deleted or changed. Checked on `main` at `3e39311dc`, Nov 25 2026. Re-audited from scratch on Nov 26 2026 (branch head `d417dfc62`): same verdicts, one correction (the VPS does have both plugins' Claude Code hooks installed, see Evidence).
+Report only. Nothing was deleted or changed. Checked on `main` at `3e39311dc`, Nov 25 2026. Re-audited from scratch on Nov 26 2026 (branch head `d417dfc62`): same verdicts, one correction (the VPS does have both plugins' Claude Code hooks installed, see Evidence). Audited a third time on Nov 27 2026 (branch head `e2515aaf4`): every file:line below still holds, same verdicts, one more hard break confirmed (the token baseline, see Evidence).
 
 Verdicts: **SAFE** = nothing kept depends on it. **MOVE FIRST** = a kept screen, check or script uses a piece of it. **KEEP** = still needed.
 
@@ -27,4 +27,5 @@ Verdicts: **SAFE** = nothing kept depends on it. **MOVE FIRST** = a kept screen,
 - **Console core:** `apps/console-web/src` (outside the synced `src/axf/`) and `apps/console-web/server` contain no reference to `axf.changes@1`, `axf.activity@1` or any of the three folders except `lazyEngine.ts:55-56`. `server/mcp_server.py` exposes no MCP tool from any of the three (plugin routes are never on the console MCP).
 - **CI:** `.github/workflows/` names none of the three folders. CI reaches them through `check-builds-store-data.mjs` (android.yml:172), `test_pg.py` and `check-data-tables.mjs` (168, 170, table only), the lazy-loader check, the page-toolbar-voice fixture check (329), the glossary catalog check (234) and the plugin lifecycle loop (258-261).
 - **Other apps:** `apps/phone-connect` carries only the copied job-type asset (`app/src/main/assets/axf/assets/job-type/banner-cleanup.json:32`). `apps/walkthrough-studio/src/studio/seed.ts:133` describes the Activity banner in demo text. No AmberX app code calls any of the three.
-- **Not verified here:** whether `token-manifest-baseline.json` and the help file fail CI on a stale name or only need a regenerate; hook state on Brett's other machines; nothing was run against the live console.
+- **Token baseline (confirmed Nov 27 2026):** `framework/cli/token-registry.mjs:260` reports any folder in `framework/spec/token-manifest-baseline.json` that is no longer a plugin ("is not a plugin folder; drop it"), and `framework/spec/check-token-registry.mjs` runs in CI at `.github/workflows/android.yml:346`. So each removal PR must drop its folder name from the baseline (lines 5-7) in the same PR, for all three plugins: this is a hard break like `KNOWN_BANNERS`, not a regenerate.
+- **Not verified here:** whether the help file fails CI on a stale target or only needs a regenerate; hook state on Brett's other machines; nothing was run against the live console.
