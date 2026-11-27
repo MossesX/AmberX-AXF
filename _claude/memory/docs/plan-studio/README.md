@@ -77,3 +77,18 @@ Taken before two small fixes (section chips no longer wrap on a phone; apps show
 - Voice with the screen off relies on AmberX's own hands-free foreground service; Plan Studio's loop runs in the page.
 - Attachments are kept inline (data URLs, 2 MB cap each); big files should be links.
 - UI Review submission waits until this is on main.
+
+## Page layouts, IDE panes, Collapse all (Nov 16 2026, build plan-studio-collapse-all-expand-all)
+
+Built first on this plugin, then superseded by its removal on Nov 21: everything the build asked for ships in Plan
+Studio 2.0 (`apps/console-web/plugins/plan-studio-2`), and the 1.0 code from the build branch was dropped when main was
+merged in.
+
+- Collapse all / Expand all: toolbar asset `plan-studio-2/assets/toolbar/plan-studio-2.json` (buttons `expand`,
+  `collapse`), actions `plan-studio-2.collapse-all` / `plan-studio-2.expand-all`, REST `POST /collapse {all: true,
+  collapsed}`, voice "collapse all" / "expand <item>". The folded state is stored on the plan tree itself, so it holds
+  across sessions and devices.
+- Page layouts (nav menu, tabs, IDE dockable panes) with drag between panes, edge split, reorder, close / reopen:
+  `plan-studio-2/web/layout-core.mjs`, actions `plan-studio-2.layout:…` and `plan-studio-2.dock:…`, settings
+  `plan-studio-2.pageLayout` and `plan-studio-2.dock` (per user).
+- Report: `_claude/builds/reports/plan-studio-collapse-all-expand-all.md`.
