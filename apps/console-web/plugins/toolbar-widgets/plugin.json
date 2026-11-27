@@ -33,6 +33,7 @@
       "framework/catalog/catalog.json",
       "framework/catalog/status.json",
       "tracker.json",
+      "framework/plan/plan.json",
       "framework/cli/toolbar-widgets.mjs",
       "framework/spec/BANNER-WIDGETS.md",
       "framework/spec/CONSOLE-CONTROL.md"
