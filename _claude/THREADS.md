@@ -845,8 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 01:58 UTC · `handoff-2` → fixing, note (all) · watchdog
-- 2026-11-27 02:08 UTC · `grid-column-hiding` → fixing, note (all) · watchdog
 - 2026-11-27 02:19 UTC · `build-optimizer` → fixing, note (all) · watchdog
 - 2026-11-27 02:28 UTC · `drag-to-tab` → fixing, note (all) · watchdog
 - 2026-11-27 02:38 UTC · `changes-chat-log` → fixing, note (all) · watchdog
@@ -1245,6 +1243,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 10:18 UTC · `app-voice-commands` → queued, note (all) · watchdog
 - 2026-11-27 10:18 UTC · `app-voice-commands` → archived, note (all) · cron
 - 2026-11-27 10:28 UTC · `hub-runs-approved` → landed, note (all) · watchdog
+- 2026-11-27 10:28 UTC · `smart-menus` → queued, note (all) · watchdog
+- 2026-11-27 10:29 UTC · `smart-menus` → archived, note (all) · cron
 
 ## Token passes (log)
 

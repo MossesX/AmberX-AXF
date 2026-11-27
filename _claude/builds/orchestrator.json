@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T10:28:51.035Z",
+ "updatedAt": "2026-11-27T10:29:11.417Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -56431,11 +56431,135 @@
    ]
   },
   {
+   "id": "trim-asset",
+   "title": "New asset type: trim (a layout + a colour theme in one asset)",
+   "category": "Assets",
+   "detail": "Brett, Oct 27 2026: new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/trim-asset",
+   "pr": "",
+   "createdAt": "2026-10-27T19:11:22.026Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator). Queued in PR #130.",
+     "at": "2026-10-27T23:01:35.765Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "`trim` in asset-types.json + JSON schema ({layout, colorTheme}: id or inline); design-package accepts `trim` in place of layout + colour; validators (ts + mjs), PORTING.md gap",
+     "model": "Fable",
+     "why": "",
+     "phase": "Phase 1 · Trim contract",
+     "group": "Contract",
+     "estimate": "30 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/core/engines/designpackage.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-6zj66w",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s2",
+     "text": "core/engines/trim.ts: resolve a trim into layout + colour swaps; rt trim slot; design-package engine resolves trim refs; roll/hide rules; fixtures spec/fixtures/trim.json + checker",
+     "model": "Fable",
+     "why": "",
+     "phase": "Phase 1 · Trim contract",
+     "group": "Engine",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-14slha2",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s3",
+     "text": "Settings → Appearance Trim picker, theme manager Save as trim, 6 starter trims from existing layouts + colour themes, defaults.json",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 2 · Trim UI",
+     "group": "UI",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-u19ozg",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests, screenshots, docs, CLAUDE.md status, THREADS.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 2 · Trim UI",
+     "group": "Wrap-up",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-vx3epu",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
    "id": "smart-menus",
    "title": "Smart menus: dynamic Suggested / Talking about / context / Pinned sections in every app and context menu (Menus plugin)",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice) + addenda 1-3. Framework-level dynamic SECTIONS on top of fixed menu items (static items never reorder): Pinned, Suggested (frecency + time-of-day + Markov, zero tokens), Talking about (console_context MCP topics), context section (when-conditions). App menu bar and context menus. All controlled by one Menus plugin (customization tokens, presets, reset learning). Agent: Earl the Ear.",
-   "status": "fixing",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -56443,7 +56567,7 @@
    "pr": "#281",
    "priority": "P0",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-27T01:08:50.685Z",
+   "updatedAt": "2026-11-27T10:29:05.559Z",
    "builtAt": "",
    "notes": [
     {
@@ -56469,6 +56593,14 @@
     {
      "text": "Watchdog: landing for 23 days: PR #281 was closed without merging and nothing moved it. The retry ladder answers it.",
      "at": "2026-11-27T01:08:50.685Z"
+    },
+    {
+     "text": "Watchdog: fixing (push-fail) with nothing tried for 9 h: retry now, through the Queue. Added s8 (Opus) and moved it back to the Queue: attempt 1.",
+     "at": "2026-11-27T10:28:50.493Z"
+    },
+    {
+     "text": "Watchdog: Queued build smart-menus → Remove: Its PR was closed without a merge (PR #281 closed; build smart-menus: queued; branch claude/smart-menus deleted) (queued → archived)",
+     "at": "2026-11-27T10:29:05.559Z"
     }
    ],
    "approvals": [],
@@ -56479,10 +56611,10 @@
     "source": "voice",
     "session": "",
     "link": "",
-    "by": "backfill",
-    "brief": "# Build: smart-menus (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.\" Assigned agent: **Earl the Ear** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in Urgent (id `smart-menus`) + banner entry.\n\n## Build (framework level: every context menu in every app, existing and future)\n- s1 **Context-aware drawing:** the context menu engine builds the menu at open time from: the target under the pointer (element kind, hook@1 / control@1 target, plugin, screen), its state (selected, running, failed, waiting on approval, has PR, etc.), the current screen, device (phone/desktop). Plugins contribute items with `when` conditions (state predicates) so irrelevant items never show; runtime context items stay the contribution path.\n- s2 **Learning ranking, zero tokens:** record every pick locally + synced to axHub per user: (context key = target kind + state + screen, item id, time). Rank with frecency (frequency x recency decay) per context, plus time-of-day and 'what I just did' sequence boosts (simple Markov next-action counts). Top section 'Suggested' = top 3-5 predicted items; the rest grouped below in stable order so muscle memory still works. Plain code, NO LLM calls (test fails if the engine imports an LLM client).\n- s3 Pinned items always first (from the pending `context-menu-editor` idea: user pins), then Suggested, then the rest; destructive items never auto-promoted to the top.\n- s4 Settings (Settings > Menus, and a 'Menu settings' hook in every context menu): learning on/off, number of suggestions, reset learning (per menu / all), show why it's suggested (tiny hint), privacy: data stays on his axHub.\n- s5 Works with menu-scroll (#268) placement and the toolbar build's hook@1/drop-target@1 if on main (don't edit their files). Commands declared once -> REST + MCP + CLI (get suggestions, reset, pin).\n- s6 Tests (ranking math, context keys, when-conditions, reset, destructive never top), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/smart-menus.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice, before start): dynamic SECTIONS, not the whole menu\nDon't make the whole menu dynamic. Each context menu keeps its normal fixed items in their fixed order (muscle memory). Add dynamic SECTIONS on top of that:\n- A 'Suggested' section at the top (learned/predicted items, 3-5, per s2) - can be turned off.\n- A context section (items that only apply to this target/state, per s1 'when' conditions), clearly grouped.\n- Pinned items (user pins).\nThe rest of the menu is static and never reorders. A menu asset declares which dynamic sections it shows and where; the default is Suggested at top + context section, static items below.\n\n## Addendum 2 (Brett, Nov 3 2026, voice): application menus too + 'what we're talking about' goes to the top\n- The dynamic sections apply to the **application menu bar** too (every top-level menu: Builds, View, Tools, etc.), not just context menus. Permanent items stay fixed; each menu can declare dynamic sections.\n- New dynamic section **'Talking about'** at the top of every menu (app menus + context menus): items relevant to what Brett and Amber (Claude) are currently talking about. Example: open Builds in the app menu while we're discussing the toolbar build -> that build (open it, its PR, its UI Review, its agent, stop it) is at the top.\n- How it knows: add MCP tool `console_context` (policy ALLOW, navigation-only, no data change) on axf-console: {topics: [{kind: build|plugin|screen|pr|agent|setting|profile|note, id, label}], ttl_min?}. Amber calls it whenever the conversation moves to something (and console_show / follow-amber can feed it too). The console keeps a short rolling 'current topics' list per user (decays after ~30 min or when replaced), synced live to every open console client.\n- Each menu maps topics to its relevant actions via plugins' contributed items with `when` conditions + the control@1 command registry (e.g. a build topic -> Builds menu shows Open build / Open PR / Open UI Review / Agent / Stop). Plain code, zero tokens.\n- Settings > Menus: 'Talking about' section on/off, how long topics stay.\n- Rule in shared RULES.md + CLAUDE.md: 'When the conversation moves to something in the console, call console_context with it.'\n\n## Addendum 3 (Brett, Nov 3 2026, voice): all of it lives in ONE Menus plugin with tons of customization\n- Everything in this build (dynamic sections in app menus + context menus, Suggested, Talking about, context section, pins, learning) is controlled by a **Menus plugin** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Menus + a 'Menu settings' hook in every menu's context menu). Removing the plugin falls back to plain static menus.\n- **Customization (tokens/assets only, saved per user on axHub, live preview, presets, reset, export/import as a menu-style asset):**\n  - Colours: menu background, text, hover/selected, section headers, separators, icons, per-section accent (Suggested / Talking about / Pinned / context), badge colours, shadow, border, blur/glass, opacity.\n  - Fonts: family, size, weight, letter spacing, section header style, icon size, density/row height, padding, corner radius, width min/max.\n  - Animations: open/close (fade, scale, slide, drop, none), duration + easing, submenu reveal, item stagger, hover effect, highlight pulse for 'Talking about' items, reduced-motion respected.\n  - Sections: order, on/off, max items each, labels, icons, collapse/expand, show 'why suggested' hint.\n  - Behaviour: learning on/off + reset, topic lifetime, open on hover vs click (desktop), long-press time (phone), keyboard shortcuts.\n  - Per-menu overrides (each app menu / context menu can have its own look and sections) from the hook in that menu.\n- Works with menu-scroll (#268) placement and the Toolbars plugin (toolbar-tap-confirm build) through framework APIs - don't edit their files; share the hook@1 / drop-target@1 contract if it's on main.\n- Commands declared once -> REST + MCP + CLI (get/set menu settings, presets, reset learning, topics).\n",
-    "verbatim": false,
-    "from": "brief",
+    "by": "smart-menus",
+    "brief": "# Build: smart-menus\n\n## Brett said (verbatim)\nSource: voice · At: 2026-11-03\n> I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.\n\n## Addendum 1 (Brett, 2026-11-03)\n> Don't make the whole menu dynamic. Each context menu keeps its normal fixed items in their fixed order (muscle memory). Add dynamic SECTIONS on top of that:\n> - A 'Suggested' section at the top (learned/predicted items, 3-5, per s2) - can be turned off.\n> - A context section (items that only apply to this target/state, per s1 'when' conditions), clearly grouped.\n> - Pinned items (user pins).\n> The rest of the menu is static and never reorders. A menu asset declares which dynamic sections it shows and where; the default is Suggested at top + context section, static items below.\n## Addendum 2 (Brett, 2026-11-03)\n> - The dynamic sections apply to the **application menu bar** too (every top-level menu: Builds, View, Tools, etc.), not just context menus. Permanent items stay fixed; each menu can declare dynamic sections.\n> - New dynamic section **'Talking about'** at the top of every menu (app menus + context menus): items relevant to what Brett and Amber (Claude) are currently talking about. Example: open Builds in the app menu while we're discussing the toolbar build -> that build (open it, its PR, its UI Review, its agent, stop it) is at the top.\n> - How it knows: add MCP tool `console_context` (policy ALLOW, navigation-only, no data change) on axf-console: {topics: [{kind: build|plugin|screen|pr|agent|setting|profile|note, id, label}], ttl_min?}. Amber calls it whenever the conversation moves to something (and console_show / follow-amber can feed it too). The console keeps a short rolling 'current topics' list per user (decays after ~30 min or when replaced), synced live to every open console client.\n> - Each menu maps topics to its relevant actions via plugins' contributed items with `when` conditions + the control@1 command registry (e.g. a build topic -> Builds menu shows Open build / Open PR / Open UI Review / Agent / Stop). Plain code, zero tokens.\n> - Settings > Menus: 'Talking about' section on/off, how long topics stay.\n> - Rule in shared RULES.md + CLAUDE.md: 'When the conversation moves to something in the console, call console_context with it.'\n## Addendum 3 (Brett, 2026-11-03)\n> - Everything in this build (dynamic sections in app menus + context menus, Suggested, Talking about, context section, pins, learning) is controlled by a **Menus plugin** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Menus + a 'Menu settings' hook in every menu's context menu). Removing the plugin falls back to plain static menus.\n> - **Customization (tokens/assets only, saved per user on axHub, live preview, presets, reset, export/import as a menu-style asset):**\n>   - Colours: menu background, text, hover/selected, section headers, separators, icons, per-section accent (Suggested / Talking about / Pinned / context), badge colours, shadow, border, blur/glass, opacity.\n>   - Fonts: family, size, weight, letter spacing, section header style, icon size, density/row height, padding, corner radius, width min/max.\n>   - Animations: open/close (fade, scale, slide, drop, none), duration + easing, submenu reveal, item stagger, hover effect, highlight pulse for 'Talking about' items, reduced-motion respected.\n>   - Sections: order, on/off, max items each, labels, icons, collapse/expand, show 'why suggested' hint.\n>   - Behaviour: learning on/off + reset, topic lifetime, open on hover vs click (desktop), long-press time (phone), keyboard shortcuts.\n>   - Per-menu overrides (each app menu / context menu can have its own look and sections) from the hook in that menu.\n> - Works with menu-scroll (#268) placement and the Toolbars plugin (toolbar-tap-confirm build) through framework APIs - don't edit their files; share the hook@1 / drop-target@1 contract if it's on main.\n> - Commands declared once -> REST + MCP + CLI (get/set menu settings, presets, reset learning, topics).\n\n## What to build\nBuild \"Smart menus: dynamic Suggested / Talking about / context / Pinned sections in every app and context menu (Menus plugin)\" (smart-menus) is complete.\n\n## Pipeline\nParallel steps: steps with a dependsOn list may run in step sessions beside you (Fill every slot). Before you start a step, run `node apps/console-web/plugins/build-orchestrator/pipeline.mjs fill status smart-menus`: skip any step it shows running elsewhere and every step waiting on one, and leave their files alone; their branches merge into yours by themselves.\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step smart-menus <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note smart-menus \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n\n## Retry: attempt 1 (done-means-merged@1)\nThe last run failed: the push or the PR failed (landing for 23 days: PR #281 was closed without merging and nothing moved it).\nThis attempt: retry. Run the same approach again: the failure looked transient. Pick up at the first open step.\nNever stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.\n",
+    "verbatim": true,
+    "from": "",
     "addenda": [
      {
       "said": "Don't make the whole menu dynamic. Each context menu keeps its normal fixed items in their fixed order (muscle memory). Add dynamic SECTIONS on top of that:\n- A 'Suggested' section at the top (learned/predicted items, 3-5, per s2) - can be turned off.\n- A context section (items that only apply to this target/state, per s1 'when' conditions), clearly grouped.\n- Pinned items (user pins).\nThe rest of the menu is static and never reorders. A menu asset declares which dynamic sections it shows and where; the default is Suggested at top + context section, static items below.",
@@ -56640,101 +56772,15 @@
      "note": "",
      "uid": "st-mw13kt350eenav",
      "createdAt": "2026-11-03T19:45:20.636Z"
-    }
-   ]
-  },
-  {
-   "id": "trim-asset",
-   "title": "New asset type: trim (a layout + a colour theme in one asset)",
-   "category": "Assets",
-   "detail": "Brett, Oct 27 2026: new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "claude/trim-asset",
-   "pr": "",
-   "createdAt": "2026-10-27T19:11:22.026Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator). Queued in PR #130.",
-     "at": "2026-10-27T23:01:35.765Z"
     },
     {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    },
-    {
-     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "`trim` in asset-types.json + JSON schema ({layout, colorTheme}: id or inline); design-package accepts `trim` in place of layout + colour; validators (ts + mjs), PORTING.md gap",
-     "model": "Fable",
-     "why": "",
-     "phase": "Phase 1 · Trim contract",
-     "group": "Contract",
-     "estimate": "30 min",
-     "files": [
-      "framework/schemas/asset-types.json",
-      "framework/core/engines/designpackage.ts"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-6zj66w",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s2",
-     "text": "core/engines/trim.ts: resolve a trim into layout + colour swaps; rt trim slot; design-package engine resolves trim refs; roll/hide rules; fixtures spec/fixtures/trim.json + checker",
-     "model": "Fable",
-     "why": "",
-     "phase": "Phase 1 · Trim contract",
-     "group": "Engine",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-14slha2",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s3",
-     "text": "Settings → Appearance Trim picker, theme manager Save as trim, 6 starter trims from existing layouts + colour themes, defaults.json",
+     "id": "s8",
+     "text": "Land this build (watchdog, attempt 1: retry). The push or the PR failed (landing for 23 days: PR #281 was closed without merging and nothing moved it). Run the same approach again: the failure looked transient. Merge origin/main into claude/smart-menus, get every check green and push; the PR is #281.",
      "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Trim UI",
-     "group": "UI",
-     "estimate": "30 min",
+     "why": "watchdog ladder: retry",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -56743,27 +56789,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-u19ozg",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s4",
-     "text": "Tests, screenshots, docs, CLAUDE.md status, THREADS.md",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Trim UI",
-     "group": "Wrap-up",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-vx3epu",
-     "createdAt": "2026-10-31T23:41:15.585Z"
+     "uid": "st-mwyu9l1g1lc1hf",
+     "createdAt": "2026-11-27T10:28:50.493Z"
     }
    ]
   },
