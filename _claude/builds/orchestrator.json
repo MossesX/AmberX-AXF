@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T18:59:14.893Z",
+ "updatedAt": "2026-11-27T18:59:39.284Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -60878,113 +60878,6 @@
    ]
   },
   {
-   "id": "pr-only-merge",
-   "title": "Every change through a PR, pulled up to date with main before it merges (push banner 0.5.0)",
-   "category": "git",
-   "detail": "Brett Oct 30 2026 (voice): \"I want everything to need a PR and to pull against main before it is merged.\" Push banner 0.5.0: autoPr (a PR for every branch ahead of main), no direct merge-branch, auto-merge oldest first, pull main in when behind and wait for CI on the new head, one merge per round, branch protection on main (or a systems check item with Auto fix).",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/pr-only-merge",
-   "pr": "#183",
-   "mergedAt": "2026-10-31T07:26:36Z",
-   "createdAt": "2026-10-30T17:55:48.511Z",
-   "updatedAt": "2026-11-12T03:28:19Z",
-   "builtAt": "2026-10-30T18:04:28.210Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
-     "at": "2026-10-30T18:04:28.290Z"
-    },
-    {
-     "text": "Reconciler: PR #183; PR #183 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    },
-    {
-     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-pr-only-merge rev 1 sent to Shipped features (backfill): landed 23aea3d73, 14 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:28:19Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "I want everything to need a PR and to pull against main before it is merged.",
-    "at": "2026-10-30",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Server: autoPr round, merge-branch refused, behind -> pull -> wait -> merge, one merge per round, oldest first",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T18:04:28.053Z",
-     "note": "",
-     "uid": "st-3cjnbb",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s2",
-     "text": "Branch protection on main (set when the token can; systems check item with Auto fix otherwise) + web (Open PR instead of Merge, autoPr switch)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T18:04:28.131Z",
-     "note": "",
-     "uid": "st-1glta61",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s3",
-     "text": "test.py + checks (tsc, check-theme, check-controls, lifecycle), rules, README, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-30T18:04:28.209Z",
-     "note": "",
-     "uid": "st-1q96nor",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    }
-   ]
-  },
-  {
    "id": "apply-all-levels",
    "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
    "category": "App",
@@ -65497,6 +65390,121 @@
    ]
   },
   {
+   "id": "pr-only-merge",
+   "title": "Every change through a PR, pulled up to date with main before it merges (push banner 0.5.0)",
+   "category": "git",
+   "detail": "Brett Oct 30 2026 (voice): \"I want everything to need a PR and to pull against main before it is merged.\" Push banner 0.5.0: autoPr (a PR for every branch ahead of main), no direct merge-branch, auto-merge oldest first, pull main in when behind and wait for CI on the new head, one merge per round, branch protection on main (or a systems check item with Auto fix).",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/pr-only-merge",
+   "pr": "#183",
+   "mergedAt": "2026-10-31T07:26:36Z",
+   "createdAt": "2026-10-30T17:55:48.511Z",
+   "updatedAt": "2026-11-27T18:59:23.646Z",
+   "builtAt": "2026-10-30T18:04:28.210Z",
+   "notes": [
+    {
+     "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
+     "at": "2026-10-30T18:04:28.290Z"
+    },
+    {
+     "text": "Reconciler: PR #183; PR #183 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-pr-only-merge rev 1 sent to Shipped features (backfill): landed 23aea3d73, 14 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:19Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #183 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 23aea3d73b is next.",
+     "at": "2026-11-27T18:59:23.646Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want everything to need a PR and to pull against main before it is merged.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server: autoPr round, merge-branch refused, behind -> pull -> wait -> merge, one merge per round, oldest first",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T18:04:28.053Z",
+     "note": "",
+     "uid": "st-3cjnbb",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s2",
+     "text": "Branch protection on main (set when the token can; systems check item with Auto fix otherwise) + web (Open PR instead of Merge, autoPr switch)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T18:04:28.131Z",
+     "note": "",
+     "uid": "st-1glta61",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "id": "s3",
+     "text": "test.py + checks (tsc, check-theme, check-controls, lifecycle), rules, README, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T18:04:28.209Z",
+     "note": "",
+     "uid": "st-1q96nor",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
    "id": "walkthrough-random-look",
    "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
    "category": "Plugin",
@@ -66393,7 +66401,7 @@
    "title": "Fresh look: new default style theme + fresh appearance package",
    "category": "App",
    "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "fresh-look",
@@ -66401,7 +66409,7 @@
    "pr": "#120",
    "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-11-27T18:19:32.777Z",
+   "updatedAt": "2026-11-27T18:59:18.914Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -66431,6 +66439,10 @@
     {
      "text": "Watchdog: PR #120 merged 2026-10-27 22:25 and the build never heard: the merge is recorded, CI on c455fd8cfd is next.",
      "at": "2026-11-27T18:19:32.777Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on c455fd8cfd: landed.",
+     "at": "2026-11-27T18:59:18.914Z"
     }
    ],
    "approvals": [],
@@ -66665,7 +66677,7 @@
    "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
    "category": "App",
    "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-appearance-lock",
@@ -66673,7 +66685,7 @@
    "pr": "#126",
    "mergedAt": "2026-10-27T19:22:41Z",
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-11-27T18:19:22.781Z",
+   "updatedAt": "2026-11-27T18:59:13.783Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
@@ -66707,6 +66719,10 @@
     {
      "text": "Watchdog: PR #126 merged 2026-10-27 19:22 and the build never heard: the merge is recorded, CI on 6f87efc9ee is next.",
      "at": "2026-11-27T18:19:22.781Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 6f87efc9ee: landed.",
+     "at": "2026-11-27T18:59:13.783Z"
     }
    ],
    "approvals": [],
@@ -70019,14 +70035,14 @@
    "title": "Asset system (asset@1, 13 core types, open registry)",
    "category": "Kernel & engines",
    "detail": "Every visual is a JSON asset (color theme, style theme, layout, menus, toolbar, nav, context menu, dialog, popup, button, slider, container, UAC policy). Ports read the same files; new types register at runtime.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T18:59:27.990Z",
    "builtAt": "",
    "notes": [
     {
@@ -70036,6 +70052,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T18:59:27.990Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T18:59:27.990Z"
     }
    ],
    "approvals": [],

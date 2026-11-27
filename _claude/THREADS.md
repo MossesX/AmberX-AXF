@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 05:29 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 05:29 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:30 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
-- 2026-11-27 05:30 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 05:32 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 05:35 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 05:35 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 18:59 UTC · `emergency-check-can-these-plugins-` → building, note (all) · watchdog
 - 2026-11-27 18:59 UTC · `emergency-rip-out-the-7-mb-status-` → building, note (all) · watchdog
 - 2026-11-27 18:59 UTC · `build-orchestrator` → landed, note (all) · watchdog
+- 2026-11-27 18:59 UTC · `amberx-appearance-lock` → landed, note (all) · watchdog
+- 2026-11-27 18:59 UTC · `fresh-look` → landed, note (all) · watchdog
+- 2026-11-27 18:59 UTC · `pr-only-merge` note (all) · watchdog
+- 2026-11-27 18:59 UTC · `x.assets` → fixing, note (all) · watchdog
 
 ## Token passes (log)
 
