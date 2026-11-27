@@ -131,14 +131,6 @@
           "requires": "assets.swap"
         },
         {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
-          "requires": "assets.swap"
-        },
-        {
           "id": "s2",
           "separator": true
         },

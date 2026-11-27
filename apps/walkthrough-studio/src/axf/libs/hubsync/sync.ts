@@ -4,7 +4,7 @@
 import { HubAppearanceSource } from '../../react/hubAppearance';
 import type { AppearanceSource, AxfRuntime } from '../../core/runtime';
 import type { AppearanceSourceState } from '../../core/engines/appearance';
-import { isAppearanceSetting } from '../../core/engines/designpackage';
+import { isAppearanceSetting } from '../../core/engines/looksettings';
 import { HubData, HubSettings, type HubState } from '../hubstore';
 import { HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY } from '../../core/engines/help-rules.mjs';
 import { CONNECTION_KEY, dataFolderFor, describeSync, followState, resolveHubSync, settingsFileFor, type HubSyncConfig } from './core';

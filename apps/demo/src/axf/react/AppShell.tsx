@@ -1,17 +1,24 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
+import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
+import { bannerWidgetsDialog } from './components/BannerWidgets';
+import { chromeDialogs, installChrome } from './components/ChromeContext';
+import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
+import { BannerStripPage, useBannerStripFollower } from './components/BannerStrip';
+import { BANNER_STRIP_VIEW } from './bannerStrip';
 import { WaitingForHub } from './components/Waiting';
+import { ControlScope, useViewTargets } from './controlTargets';
 import { Note } from './components/Forms';
 import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
@@ -51,6 +58,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const slots = compileSlots(layout);
   // Hidden slots (Settings → Appearance → Assets → Hidden) drop out the same way.
   const rt = useRuntime();
+  // Inside a host that shows this app's banner strip, views its banner items open come here (components/BannerStrip.tsx).
+  useBannerStripFollower();
   // Placed UIs (engines/placement.ts): a plugin's page shown in a dialog / window / tab group, or its dialog as a page.
   const placed = placedParts(rt, declaredViews, declaredDialogs);
   const views = { ...placed.views, ...declaredViews };
@@ -60,9 +69,13 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
+  // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
+  installChrome(rt);
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
+  // console-control@1: every view is an addressable target (`view:<id>`); what a view renders composes under it.
+  useViewTargets(views);
   const view = views[state.view] ?? Object.values(views)[0];
   // Kept views (`keep`): mounted the first time they're shown, then only hidden, so their state (a frame) survives.
   const [kept, setKept] = useState<string[]>([]);
@@ -72,6 +85,10 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
+  // The main area is one scroll container for every view: a new view starts at its top instead of wherever the last
+  // one was scrolled to (its page head was landing off screen after a long list).
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => { mainRef.current?.scrollTo?.({ top: 0 }); }, [state.view]);  // scrollTo is missing where there is no layout (tests, old web views)
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
   // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).
@@ -88,7 +105,9 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   // A view page (`view:<id>`, e.g. a tabable plugin shown as a host's tab) names one view; a missing view (its plugin is
   // off or not loaded yet) shows a note instead of the whole app.
   const pageView = embedPageView(rt.embedded?.page);
-  const page = rt.embedded?.page ? views[pageView ?? rt.embedded.page] ?? (pageView ? { title: pageView, render: () => <MissingPage view={pageView} host={embedHostLabel(rt.embedded)} /> } : undefined) : undefined;
+  // The banner strip (`view:axf-banners`, bannerStrip.ts): only this app's banners, for a host that shows them as its one
+  // banner region.
+  const page = pageView === BANNER_STRIP_VIEW ? { title: 'Banners', render: () => <BannerStripPage /> } : rt.embedded?.page ? views[pageView ?? rt.embedded.page] ?? (pageView ? { title: pageView, render: () => <MissingPage view={pageView} host={embedHostLabel(rt.embedded)} /> } : undefined) : undefined;
   if (page) {
     return (
       <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
@@ -130,7 +149,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     <Slot name="app.frame.top" />
     <div className="fx-shell">
       {showToolbar && (
-        <div className="fx-region fx-region--toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
+        <div className="fx-region fx-region--toolbar" data-axf-not-toolbar="layout region; the Toolbar inside it is the toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
           <Toolbar views={views} />
         </div>
       )}
@@ -139,15 +158,16 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           <NavMenu views={views} />
         </div>
       )}
-      <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+      <main ref={mainRef} className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+        {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
-            {views[id]?.render()}
+            <SkinScope kind="ui" id={id} className="fx-ui-scope"><ControlScope address={`view:${id}`}>{views[id]?.render()}</ControlScope></SkinScope>
           </div>
         ))}
         {!keep.includes(state.view) && (
-          <div className="fx-main__inner" key={state.view}>
-            {view?.render()}
+          <div className="fx-main__inner" key={state.view} data-axf-view={state.view}>
+            <SkinScope kind="ui" id={state.view} className="fx-ui-scope"><ControlScope address={`view:${state.view}`}>{view?.render()}</ControlScope></SkinScope>
           </div>
         )}
       </main>

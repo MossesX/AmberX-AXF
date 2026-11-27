@@ -54,16 +54,16 @@
         "id": "look",
         "items": [
           {
+            "id": "next-skin",
+            "icon": "palette",
+            "label": "Next skin",
+            "action": "skin.next"
+          },
+          {
             "id": "color",
             "icon": "palette",
             "label": "Next colour theme",
             "action": "swap:color-theme:next"
-          },
-          {
-            "id": "skin",
-            "icon": "sparkles",
-            "label": "Next skin",
-            "action": "skin.use:next"
           },
           {
             "id": "random",

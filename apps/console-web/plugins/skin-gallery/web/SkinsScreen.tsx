@@ -80,7 +80,7 @@ export function SkinsScreen() {
           {skins.map((s) => (
             <Button key={s.id} tone="quiet" className={`axp-skin-gallery__card${s.id === picked ? ' is-picked' : ''}`} role="option" aria-selected={s.id === picked} title={s.description} data-skin={s.id} onClick={() => setPicked(s.id === picked ? '' : s.id)}>
               <strong className="axp-skin-gallery__line">{s.name}</strong>
-              <span className="fx-muted axp-skin-gallery__line">{s.kind === 'design-package' ? 'Design package' : s.iconPack ? `Icons: ${s.iconPack}` : 'Skin'}</span>
+              <span className="fx-muted axp-skin-gallery__line">{s.iconPack ? `Icons: ${s.iconPack}` : 'Skin'}</span>
               <span className="fx-muted axp-skin-gallery__line">Covers {s.coverage?.covered ?? 0} of {s.coverage?.total ?? 0} asset types{s.parts.length ? ` · styles ${s.parts.length} part(s)` : ''}</span>
               {s.inForceAt.length > 0 && <Chip tone="accent">In use: {s.inForceAt.map(scopeLabel).join(', ')}</Chip>}
             </Button>

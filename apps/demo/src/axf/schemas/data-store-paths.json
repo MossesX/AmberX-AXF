@@ -1,0 +1,195 @@
+{
+  "$axf": "data-store-paths@1",
+  "note": "Where each file the console writes today lives in data-store@1 (framework/spec/DATA-STORE.md → Migration; the same map as framework/spec/fixtures/data-store-migration.json, as rules a client can run). Roots are tried in this order; inside a root the first rule whose regex matches the path relative to the root wins; `{1}`, `{2}` are its groups; `to: null` keeps the file local (rebuilt, not copied). A path no rule maps, or whose key is not a valid data-store key, stays local. Read by framework/core/data-store-paths.mjs and apps/console-web/server/data_store.py.",
+  "roots": {
+    "plugins": "<repo>/.axf-console/plugins: plugin-lifecycle@1 dataDir root (AXF_PLUGINS_DATA_DIR)",
+    "data": "<repo>/.axf-console: the console's own state (dirname of AXF_STATE)",
+    "repo": "the console's checkout (AXF_ROOT)",
+    "projects": "axHub's volume (AXHUB_PROJECTS_DIR, /projects)"
+  },
+  "order": [
+    "plugins",
+    "data",
+    "repo",
+    "projects"
+  ],
+  "rules": {
+    "plugins": [
+      {
+        "re": "^ui-review/(.+)$",
+        "to": "ui-review/{1}"
+      },
+      {
+        "re": "^phone-connect/log\\.jsonl$",
+        "to": "phone/log"
+      },
+      {
+        "re": "^phone-connect/(.+)$",
+        "to": "phone/{1}"
+      },
+      {
+        "re": "^([a-z0-9][a-z0-9-]*)/(.+)$",
+        "to": "plugins/{1}/{2}"
+      }
+    ],
+    "data": [
+      {
+        "re": "^state\\.json$",
+        "to": "console/state.json"
+      },
+      {
+        "re": "^deploys/log\\.jsonl$",
+        "to": "console/deploys/log"
+      },
+      {
+        "re": "^data-store/.*$",
+        "to": null
+      }
+    ],
+    "repo": [
+      {
+        "re": "^_claude/builds/journal/([^/]+)\\.jsonl$",
+        "to": "builds/journal/{1}"
+      },
+      {
+        "re": "^_claude/builds/store\\.json\\.exports\\.json$",
+        "to": "builds/store.exports.json"
+      },
+      {
+        "re": "^_claude/builds/(.+)$",
+        "to": "builds/{1}"
+      }
+    ],
+    "projects": [
+      {
+        "re": "^amberx-axf/_data/pipeline/(.+)$",
+        "to": "builds/pipeline/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/builds/(.+)$",
+        "to": "builds/reconcile/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/build-orchestrator/(.+)$",
+        "to": "builds/dup-check/{1}"
+      },
+      {
+        "re": "^_shared/_claude/notes/\\.history/(.+)$",
+        "to": "notes/_history/{1}"
+      },
+      {
+        "re": "^_shared/_claude/notes/(.+)/\\.history/(.+)$",
+        "to": "notes/_history/{1}/{2}"
+      },
+      {
+        "re": "^_shared/_claude/notes/(.+)$",
+        "to": "notes/{1}"
+      },
+      {
+        "re": "^_shared/_claude/(memory|rules|instructions|project-notes)/(.+)$",
+        "to": "notes/_claude/{1}/{2}"
+      },
+      {
+        "re": "^_shared/_data/settings/(.+)$",
+        "to": "settings/{1}"
+      },
+      {
+        "re": "^_shared/_data/claude/settings\\.json$",
+        "to": "settings/claude/settings.json"
+      },
+      {
+        "re": "^_shared/_data/(handoff|notifications|dns)/(.+)$",
+        "to": "console/shared/{1}/{2}"
+      },
+      {
+        "re": "^_shared/_data/quick-docs\\.md$",
+        "to": "console/shared/quick-docs.md"
+      },
+      {
+        "re": "^_shared/_data/(app-catalog|plugin-catalog)/.*$",
+        "to": null
+      },
+      {
+        "re": "^amberx-axf/_data/plan-studio/shipped-log\\.jsonl$",
+        "to": "planner/shipped-log"
+      },
+      {
+        "re": "^amberx-axf/_data/plan-studio/(.+)$",
+        "to": "planner/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/plan-studio-2/(.+)$",
+        "to": "planner/v2/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/sessions/(.+)$",
+        "to": "sessions/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/changes/README\\.md$",
+        "to": null
+      },
+      {
+        "re": "^amberx-axf/_data/changes/(.+)$",
+        "to": "changes/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/(home-cards|agents|agent-slots|agent-swarm|listeners|amberx-notes|token-log|companion|walkthrough|framework|chat-viewer|control)/(.+)$",
+        "to": "console/{1}/{2}"
+      },
+      {
+        "re": "^amberx-axf/_data/tracker\\.json$",
+        "to": null
+      },
+      {
+        "re": "^amberx-axf/_data/(project\\.manifest\\.json)$",
+        "to": "console/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/.*$",
+        "to": null
+      },
+      {
+        "re": "^([A-Za-z0-9][A-Za-z0-9._-]*)/_data/(.+)$",
+        "to": "console/projects/{1}/{2}"
+      }
+    ]
+  },
+  "examples": {
+    "plugins:ui-review/items.json": "ui-review/items.json",
+    "plugins:shipped-features/ledger.sqlite": "plugins/shipped-features/ledger.sqlite",
+    "plugins:glossary-index/index.json": "plugins/glossary-index/index.json",
+    "plugins:phone-connect/devices/phone-0123456789abcdef.json": "phone/devices/phone-0123456789abcdef.json",
+    "plugins:phone-connect/pairings/K7M3R9XP.json": "phone/pairings/K7M3R9XP.json",
+    "plugins:phone-connect/commands/5c2a9d1e-3b4f-4a6c-8d7e-9f0a1b2c3d4e.json": "phone/commands/5c2a9d1e-3b4f-4a6c-8d7e-9f0a1b2c3d4e.json",
+    "plugins:phone-connect/log.jsonl": "phone/log",
+    "data:state.json": "console/state.json",
+    "data:deploys/log.jsonl": "console/deploys/log",
+    "data:data-store/mode.json": null,
+    "repo:_claude/builds/store.json": "builds/store.json",
+    "repo:_claude/builds/journal/2026-11.jsonl": "builds/journal/2026-11",
+    "repo:_claude/builds/store.json.exports.json": "builds/store.exports.json",
+    "repo:_claude/builds/shipped/b1.json": "builds/shipped/b1.json",
+    "repo:framework/core/data-store.mjs": null,
+    "projects:_shared/_claude/notes/handoffs/2026-11-14.md": "notes/handoffs/2026-11-14.md",
+    "projects:_shared/_claude/notes/handoffs/.history/2026-11-14.md.jsonl": "notes/_history/handoffs/2026-11-14.md.jsonl",
+    "projects:_shared/_claude/memory/decisions.md": "notes/_claude/memory/decisions.md",
+    "projects:_shared/_data/settings/apps/amberx-droid.json": "settings/apps/amberx-droid.json",
+    "projects:_shared/_data/claude/settings.json": "settings/claude/settings.json",
+    "projects:_shared/_data/app-catalog/x.apk": null,
+    "projects:amberx-axf/_data/plan-studio/plans/p1.json": "planner/plans/p1.json",
+    "projects:amberx-axf/_data/plan-studio/shipped-log.jsonl": "planner/shipped-log",
+    "projects:amberx-axf/_data/plan-studio-2/tree.json": "planner/v2/tree.json",
+    "projects:amberx-axf/_data/changes/2026/11/c1.json": "changes/2026/11/c1.json",
+    "projects:amberx-axf/_data/home-cards/brett.json": "console/home-cards/brett.json",
+    "projects:amberx-axf/_data/tracker.json": null,
+    "projects:amberx-axf/_data/control/inventory.json": "console/control/inventory.json",
+    "projects:amberx-axf/_data/unknown/x.json": null,
+    "projects:voicevault/_data/a/b.json": "console/projects/voicevault/a/b.json",
+    "projects:amberx-axf/_data/pipeline/run 1.json": null,
+    "repo:_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md": "builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of--cb101e72623838cc.md",
+    "projects:amberx-axf/_data/changes/README.md": null,
+    "projects:amberx-axf/_data/plan-studio/history/approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc.json": "planner/history/approvals-no-window-spam-on-approve-veto-only-for-vps-wri--6d3ac999cb491573.json"
+  },
+  "longSegments": "A mapped key segment over 80 characters (long build ids) becomes its first characters + '--' + the first 16 hex of the SHA-256 of the whole segment + its extension (up to 8 characters after the last dot, kept so the kind stays the same), 80 characters in all: a valid, stable key, the same on every client."
+}

@@ -517,7 +517,7 @@
                 "id": "next-skin",
                 "label": "Next skin",
                 "icon": "sparkles",
-                "action": "skin.use:next",
+                "action": "skin.next",
                 "requires": "assets.swap",
                 "order": 11
               },
@@ -525,9 +525,17 @@
                 "id": "prev-skin",
                 "label": "Previous skin",
                 "icon": "sparkles",
-                "action": "skin.use:prev",
+                "action": "skin.prev",
                 "requires": "assets.swap",
                 "order": 12
+              },
+              {
+                "id": "random-skin",
+                "label": "A random skin",
+                "icon": "shuffle",
+                "action": "skin.random",
+                "requires": "assets.swap",
+                "order": 13
               },
               {
                 "id": "s1",

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/swarm-job.schema.json",
+  "title": "AmberX AXF planned swarm job (swarm-job@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. One build step planned for one agent: model, leases, budget and its place in the waves.",
+  "type": "object",
+  "required": [
+    "id",
+    "buildId",
+    "stepId",
+    "agent",
+    "skill",
+    "model",
+    "leases",
+    "leaseKind",
+    "budget"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "swarm-job@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "stepId": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "estimate": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,39}$"
+    },
+    "skill": {
+      "type": "string"
+    },
+    "tier": {
+      "enum": [
+        "opus",
+        "fable"
+      ]
+    },
+    "model": {
+      "enum": [
+        "opus",
+        "fable"
+      ]
+    },
+    "match": {
+      "type": "number"
+    },
+    "leases": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "string",
+        "maxLength": 400
+      }
+    },
+    "leaseKind": {
+      "enum": [
+        "files",
+        "area",
+        "all"
+      ]
+    },
+    "shared": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "string",
+        "maxLength": 400
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "tokens",
+        "maxTurns"
+      ],
+      "properties": {
+        "tokens": {
+          "type": "number",
+          "minimum": 1000,
+          "maximum": 10000000
+        },
+        "maxTurns": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 200
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      }
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "after": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "string",
+        "maxLength": 120
+      }
+    },
+    "fixes": {
+      "type": "string"
+    }
+  }
+}

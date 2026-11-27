@@ -2,7 +2,7 @@
  * Interface roller (interface-roller s4–s5): one seeded, coherent roll of a whole interface — every slot, not a
  * random mix. Given the app's current assets (for structure: its actions, pages and menu items are never dropped)
  * and the asset-type registry (enums and the ranges known assets use), `rollInterface(seed, env, locks)` returns a
- * complete set of new assets plus a design package and an interface that ties them together:
+ * complete set of new assets plus a skin and an interface that ties them together:
  *
  *   look        colour theme (harmonised palette, contrast-checked for the scheme), style theme (type pairing,
  *               radii / density / elevation / motion families), behaviour theme, layout
@@ -39,7 +39,7 @@ export type RollLocks = Partial<Record<RollPart, boolean>>;
 export interface RollResult {
   id: string;
   name: string;
-  /** every generated asset, in dependency order (themes, controls, chrome, brand, design package, interface) */
+  /** every generated asset, in dependency order (sections, controls, chrome, brand, skin, interface) */
   assets: RollerAsset[];
   /** slot → asset id the interface sets (generated or kept) */
   slots: Record<string, string>;
@@ -311,14 +311,16 @@ export function rollInterface(seed: string, env: RollerEnv, locks: RollLocks = {
     assets.push(asset('branding', id('brand'), `Rolled ${env.app.name} brand`, branding, `A new mark, lockup, animated mark${iconPack ? ', icon pack' : ''} and decorations (seed ${seed}).`));
     slots.branding = id('brand'); notes.push(`brand: new mark + lockup + animation${iconPack ? ' + icon pack' : ''}`);
   }
-  // package + interface
+  // skin + interface: the rolled sections and controls as one skin (skin@2), the interface over it
   const themeOf = (t: string) => slots[t] ?? env.active[t] ?? '';
-  const pkg = { 'style-theme': themeOf('style-theme'), 'color-theme': themeOf('color-theme'), layout: themeOf('layout'), 'behavior-theme': themeOf('behavior-theme') };
-  assets.push(asset('design-package', id('design'), `Rolled design ${sid}`, pkg, `The rolled themes as a design package (seed ${seed}).`));
+  const skinAssets: Record<string, string> = {};
+  for (const [t, v] of Object.entries(slots)) if (!['style-theme', 'color-theme', 'layout', 'behavior-theme', 'branding'].includes(t)) skinAssets[t] = v;
+  const skin = { colorTheme: themeOf('color-theme'), styleTheme: themeOf('style-theme'), layoutTheme: themeOf('layout'), behaviorTheme: themeOf('behavior-theme'), assets: skinAssets };
+  assets.push(asset('skin', id('skin'), `Rolled skin ${sid}`, skin, `The rolled sections and controls as a skin (seed ${seed}).`));
   const ifaceSlots: Record<string, string> = {};
   for (const [t, v] of Object.entries(slots)) if (!['style-theme', 'color-theme', 'layout', 'behavior-theme', 'branding'].includes(t)) ifaceSlots[t] = v;
-  const iface = { design: id('design'), branding: slots.branding ?? env.active.branding ?? '', slots: ifaceSlots, spacing: pick(rnd, ['tight', 'compact', 'regular']), tab: { label: `Roll ${sid}`, icon: 'sparkles' }, tagline: notes.slice(0, 2).join(' · ') };
+  const iface = { skin: id('skin'), branding: slots.branding ?? env.active.branding ?? '', slots: ifaceSlots, spacing: pick(rnd, ['tight', 'compact', 'regular']), tab: { label: `Roll ${sid}`, icon: 'sparkles' }, tagline: notes.slice(0, 2).join(' · ') };
   if (!iface.branding) delete (iface as { branding?: string }).branding;
   assets.push(asset('interface', id('iface'), `Rolled interface ${sid}`, iface, `A whole interface rolled from seed ${seed}: ${rolled.join(', ')}${kept.length ? ` (kept: ${kept.join(', ')})` : ''}.`));
-  return { id: id('iface'), name: `Rolled interface ${sid}`, assets, slots: { ...slots, 'design-package': id('design'), interface: id('iface') }, rolled, kept, notes };
+  return { id: id('iface'), name: `Rolled interface ${sid}`, assets, slots: { ...slots, skin: id('skin'), interface: id('iface') }, rolled, kept, notes };
 }

@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "kiosk-display",
+  "name": "Kiosk Display",
+  "version": "2.0.0",
+  "description": "Chrome-free, big-target and forgiving: for kiosks, wall displays and shared screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "kiosk",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "saffron-day",
+    "styleTheme": "soft-touch",
+    "layoutTheme": "kiosk",
+    "behaviorTheme": "kiosk",
+    "assets": {
+      "button": "kiosk-bold",
+      "container": "kiosk-bold",
+      "slider": "kiosk-bold",
+      "dialog": "kiosk-bold",
+      "popup": "kiosk-bold",
+      "tab-group": "kiosk-bold",
+      "gauge": "level-bar",
+      "meter": "steps",
+      "toolbar": "kiosk-lite",
+      "context-menu": "locked-down",
+      "typography": "standard",
+      "density": "roomy",
+      "sizing": "touch"
+    },
+    "extras": {
+      "spacing": "regular"
+    }
+  }
+}

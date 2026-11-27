@@ -222,39 +222,34 @@
         "showSearch": false,
         "groups": [
           {
-            "id": "package",
+            "id": "skin",
             "items": [
               {
-                "id": "next-package",
-                "icon": "package",
-                "label": "Next design package",
-                "action": "design.package:next",
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "skin.next",
                 "requires": "assets.swap"
-              }
-            ]
-          },
-          {
-            "id": "themes",
-            "items": [
+              },
+              {
+                "id": "prev-skin",
+                "icon": "palette",
+                "label": "Previous skin",
+                "action": "skin.prev",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "random-skin",
+                "icon": "shuffle",
+                "label": "A random skin",
+                "action": "skin.random",
+                "requires": "assets.swap"
+              },
               {
                 "id": "next-color",
                 "icon": "palette",
                 "label": "Next colour theme",
                 "action": "swap:color-theme:next",
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "swap:style-theme:next",
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "swap:layout:next",
                 "requires": "assets.swap"
               }
             ]
@@ -321,51 +316,43 @@
         ],
         "groups": [
           {
-            "id": "package",
+            "id": "skin",
             "label": null,
             "provider": null,
             "max": null,
             "items": [
               {
-                "id": "next-package",
-                "icon": "package",
-                "label": "Next design package",
-                "action": "action:design.package:next",
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
                 "badge": null,
                 "checked": null,
                 "requires": "assets.swap"
-              }
-            ]
-          },
-          {
-            "id": "themes",
-            "label": null,
-            "provider": null,
-            "max": null,
-            "items": [
+              },
+              {
+                "id": "prev-skin",
+                "icon": "palette",
+                "label": "Previous skin",
+                "action": "action:skin.prev",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "random-skin",
+                "icon": "shuffle",
+                "label": "A random skin",
+                "action": "action:skin.random",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
               {
                 "id": "next-color",
                 "icon": "palette",
                 "label": "Next colour theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": "assets.swap"
@@ -428,51 +415,43 @@
         ],
         "groups": [
           {
-            "id": "package",
+            "id": "skin",
             "label": null,
             "provider": null,
             "max": null,
             "items": [
               {
-                "id": "next-package",
-                "icon": "package",
-                "label": "Next design package",
-                "action": "action:design.package:next",
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
                 "badge": null,
                 "checked": null,
                 "requires": "assets.swap"
-              }
-            ]
-          },
-          {
-            "id": "themes",
-            "label": null,
-            "provider": null,
-            "max": null,
-            "items": [
+              },
+              {
+                "id": "prev-skin",
+                "icon": "palette",
+                "label": "Previous skin",
+                "action": "action:skin.prev",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
+              {
+                "id": "random-skin",
+                "icon": "shuffle",
+                "label": "A random skin",
+                "action": "action:skin.random",
+                "badge": null,
+                "checked": null,
+                "requires": "assets.swap"
+              },
               {
                 "id": "next-color",
                 "icon": "palette",
                 "label": "Next colour theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
-              {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": "assets.swap"
@@ -2457,16 +2436,16 @@
             "id": "look",
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "skin.next"
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Theme",
                 "action": "swap:color-theme:next"
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Layout",
-                "action": "swap:layout:next"
               }
             ]
           },
@@ -2541,19 +2520,19 @@
             "max": null,
             "items": [
               {
-                "id": "color",
+                "id": "next-skin",
                 "icon": "palette",
-                "label": "Theme",
-                "action": "action:swap:color-theme:next",
+                "label": "Next skin",
+                "action": "action:skin.next",
                 "badge": null,
                 "checked": null,
                 "requires": null
               },
               {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Layout",
-                "action": "action:swap:layout:next",
+                "id": "color",
+                "icon": "palette",
+                "label": "Theme",
+                "action": "action:swap:color-theme:next",
                 "badge": null,
                 "checked": null,
                 "requires": null
@@ -2632,19 +2611,19 @@
             "max": null,
             "items": [
               {
-                "id": "color",
+                "id": "next-skin",
                 "icon": "palette",
-                "label": "Theme",
-                "action": "action:swap:color-theme:next",
+                "label": "Next skin",
+                "action": "action:skin.next",
                 "badge": null,
                 "checked": null,
                 "requires": null
               },
               {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Layout",
-                "action": "action:swap:layout:next",
+                "id": "color",
+                "icon": "palette",
+                "label": "Theme",
+                "action": "action:swap:color-theme:next",
                 "badge": null,
                 "checked": null,
                 "requires": null
@@ -4813,22 +4792,16 @@
             "id": "view",
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "skin.next"
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "swap:color-theme:next"
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "swap:style-theme:next"
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "swap:layout:next"
               },
               {
                 "id": "random",
@@ -4952,28 +4925,19 @@
             "max": null,
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": null
@@ -5097,28 +5061,19 @@
             "max": null,
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": null
@@ -5747,13 +5702,6 @@
             "id": "layout",
             "items": [
               {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "swap:layout:next",
-                "requires": "assets.swap"
-              },
-              {
                 "id": "toggle-nav",
                 "icon": "list",
                 "label": "Show or hide navigation",
@@ -5795,15 +5743,6 @@
             "max": null,
             "items": [
               {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
-              {
                 "id": "toggle-nav",
                 "icon": "list",
                 "label": "Show or hide navigation",
@@ -5840,15 +5779,6 @@
             "provider": null,
             "max": null,
             "items": [
-              {
-                "id": "next-layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
-                "badge": null,
-                "checked": null,
-                "requires": "assets.swap"
-              },
               {
                 "id": "toggle-nav",
                 "icon": "list",
@@ -5945,22 +5875,16 @@
             "id": "view",
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "skin.next"
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "swap:color-theme:next"
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "swap:style-theme:next"
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "swap:layout:next"
               },
               {
                 "id": "random",
@@ -6084,28 +6008,19 @@
             "max": null,
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": null
@@ -6229,28 +6144,19 @@
             "max": null,
             "items": [
               {
+                "id": "next-skin",
+                "icon": "palette",
+                "label": "Next skin",
+                "action": "action:skin.next",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              },
+              {
                 "id": "color",
                 "icon": "palette",
                 "label": "Next color theme",
                 "action": "action:swap:color-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "style",
-                "icon": "type",
-                "label": "Next style theme",
-                "action": "action:swap:style-theme:next",
-                "badge": null,
-                "checked": null,
-                "requires": null
-              },
-              {
-                "id": "layout",
-                "icon": "layout",
-                "label": "Next layout",
-                "action": "action:swap:layout:next",
                 "badge": null,
                 "checked": null,
                 "requires": null

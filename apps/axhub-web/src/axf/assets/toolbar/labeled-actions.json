@@ -35,16 +35,16 @@
         "id": "look",
         "items": [
           {
+            "id": "next-skin",
+            "icon": "palette",
+            "label": "Next skin",
+            "action": "skin.next"
+          },
+          {
             "id": "color",
             "icon": "palette",
             "label": "Theme",
             "action": "swap:color-theme:next"
-          },
-          {
-            "id": "layout",
-            "icon": "layout",
-            "label": "Layout",
-            "action": "swap:layout:next"
           }
         ]
       },

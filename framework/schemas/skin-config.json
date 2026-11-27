@@ -26,7 +26,7 @@
     "options": 1151,
     "limits": 4,
     "sections": [
-      "Themes",
+      "Skin sections",
       "Navigation",
       "Overlays",
       "Controls",
@@ -34,6 +34,7 @@
       "Widgets",
       "System",
       "Brand",
+      "Themes",
       "Demos",
       "Look"
     ]
@@ -42,7 +43,7 @@
     {
       "type": "color-theme",
       "label": "Color theme",
-      "section": "Themes",
+      "section": "Skin sections",
       "by": "slot",
       "groups": [
         {
@@ -79,7 +80,7 @@
     {
       "type": "style-theme",
       "label": "Style theme",
-      "section": "Themes",
+      "section": "Skin sections",
       "by": "slot",
       "groups": [
         {
@@ -115,7 +116,7 @@
     {
       "type": "layout",
       "label": "Layout",
-      "section": "Themes",
+      "section": "Skin sections",
       "by": "slot",
       "groups": [
         {
@@ -3029,7 +3030,7 @@
     {
       "type": "behavior-theme",
       "label": "Behaviour theme",
-      "section": "Themes",
+      "section": "Skin sections",
       "by": "slot",
       "groups": [
         {

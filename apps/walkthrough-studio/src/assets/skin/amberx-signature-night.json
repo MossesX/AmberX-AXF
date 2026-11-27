@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "amberx-signature-night",
+  "name": "AmberX Signature Night",
+  "version": "2.0.0",
+  "description": "The AmberX house look after dark: molten gold on carbon, with the same signature set.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "brand",
+    "amber",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "carbon-amber",
+    "styleTheme": "geometric",
+    "layoutTheme": "signature-dock",
+    "behaviorTheme": "amber",
+    "assets": {
+      "button": "amber-signature",
+      "container": "amber-signature",
+      "slider": "amber-signature",
+      "dialog": "amber-signature",
+      "popup": "amber-signature",
+      "tab-group": "amber-signature",
+      "gauge": "classic-arc",
+      "meter": "striped-pill",
+      "toolbar": "amberx-signature",
+      "nav-menu": "amber-signature",
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    }
+  }
+}

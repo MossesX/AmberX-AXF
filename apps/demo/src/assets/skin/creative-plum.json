@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "creative-plum",
+  "name": "Creative Plum",
+  "version": "2.0.0",
+  "description": "Geometric type on plum-black, gradient controls and cinematic motion for creative suites.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "creative",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "plum-noir",
+    "styleTheme": "geometric",
+    "layoutTheme": "canvas-studio",
+    "behaviorTheme": "cinematic",
+    "assets": {
+      "button": "gradient-pop",
+      "container": "gradient-pop",
+      "slider": "gradient-pop",
+      "dialog": "gradient-pop",
+      "popup": "gradient-pop",
+      "tab-group": "gradient-pop",
+      "gauge": "ring",
+      "meter": "striped-pill",
+      "toolbar": "appearance-studio",
+      "context-menu": "appearance-quick"
+    }
+  }
+}

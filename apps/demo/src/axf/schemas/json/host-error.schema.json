@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/host-error.schema.json",
+  "title": "host-error@1 (host-services@1) — the body of every non-2xx host API answer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "code",
+    "message"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "host-error@1"
+    },
+    "code": {
+      "enum": [
+        "host_service_down",
+        "unknown_service",
+        "unknown_action",
+        "unknown_setting",
+        "invalid_body",
+        "invalid_manifest",
+        "unauthorized",
+        "confirm_required",
+        "forbidden_command",
+        "mode_refused",
+        "busy",
+        "timeout",
+        "internal"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "retryAfterMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requestId": {
+      "type": "string"
+    }
+  }
+}

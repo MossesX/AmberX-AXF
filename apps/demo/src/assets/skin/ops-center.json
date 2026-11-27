@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "ops-center",
+  "name": "Ops Center",
+  "version": "2.0.0",
+  "description": "Condensed industrial type, mint on graphite, a command-center frame and attention-getting notices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "ops",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "graphite-mint",
+    "styleTheme": "industrial",
+    "layoutTheme": "command-center",
+    "behaviorTheme": "alert",
+    "assets": {
+      "button": "command-deck",
+      "container": "command-deck",
+      "slider": "command-deck",
+      "dialog": "command-deck",
+      "popup": "command-deck",
+      "tab-group": "command-deck",
+      "gauge": "digital",
+      "meter": "segments",
+      "toolbar": "ops-monitor",
+      "nav-menu": "ops-monitor"
+    }
+  }
+}

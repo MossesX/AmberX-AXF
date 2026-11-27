@@ -78,22 +78,16 @@
         "id": "view",
         "items": [
           {
+            "id": "next-skin",
+            "icon": "palette",
+            "label": "Next skin",
+            "action": "skin.next"
+          },
+          {
             "id": "color",
             "icon": "palette",
             "label": "Next color theme",
             "action": "swap:color-theme:next"
-          },
-          {
-            "id": "style",
-            "icon": "type",
-            "label": "Next style theme",
-            "action": "swap:style-theme:next"
-          },
-          {
-            "id": "layout",
-            "icon": "layout",
-            "label": "Next layout",
-            "action": "swap:layout:next"
           },
           {
             "id": "random",

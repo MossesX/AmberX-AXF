@@ -88,7 +88,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   // The main area is one scroll container for every view: a new view starts at its top instead of wherever the last
   // one was scrolled to (its page head was landing off screen after a long list).
   const mainRef = useRef<HTMLElement>(null);
-  useEffect(() => { mainRef.current?.scrollTo({ top: 0 }); }, [state.view]);
+  useEffect(() => { mainRef.current?.scrollTo?.({ top: 0 }); }, [state.view]);  // scrollTo is missing where there is no layout (tests, old web views)
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
   // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).

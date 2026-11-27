@@ -29,8 +29,8 @@ export const LOOK_BACKUPS_MAX = 5;
 export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
-/** Slots a skin never sets. */
-export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+/** Slots a skin never sets (the retired package types stay listed so an old document naming one is dropped, never applied). */
+export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'style-package', 'interface'];
 /** The section of a skin that is switched on its own: the colour theme slot. Kept as `colorTheme`, never in `overrides`. */
 export const SKIN_COLOR_SLOT = 'color-theme';
 /** The three per-level choices. */
@@ -46,11 +46,12 @@ export const SKIN_SECTION_FIELDS = { colors: 'colorTheme', style: 'styleTheme', 
 /** The one section a user still swaps inside a skin (the theme switch, "Next colour theme"): the skin and its colour theme. */
 export const SKIN_SWAPPABLE_SECTION = 'color-theme';
 /**
- * The retired bundle types a skin replaced: a slot or setting naming one reads as the skin of the same id. A style
- * package (one matched set of controls) is not here yet: it becomes a skin when skin@2 lands (PR #430); until then it
- * stays a swappable set of control slots.
+ * The retired bundle types a skin replaced (skin@2, design and style packages removed): a design or appearance package
+ * slot reads as the skin of the same id; a style package slot is dropped (its controls are a skin's `assets` now).
  */
-export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package'];
+export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package', 'style-package'];
+/** The retired types whose id names a skin (`migrateLegacyLook`). */
+const RETIRED_PACKAGES = ['design-package', 'appearance-package'];
 /** The scale picks (density / sizing / typography): the skin's `assets` name them; they are never picked on their own. */
 export const SKIN_SCALE_TYPES = ['typography', 'density', 'sizing'];
 export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);
@@ -69,6 +70,30 @@ const SPACINGS = ['tight', 'compact', 'regular'];
 function idMap(raw, never = []) {
   const out = {};
   if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (ID.test(k) && typeof v === 'string' && ID.test(v) && !never.includes(k)) out[k] = v;
+  return out;
+}
+
+/**
+ * A look document written before design packs went (Nov 10 2026): the `design-package` slot it carried (in the snapshot
+ * or the own picks) becomes the skin's id when none is picked yet, and the slot goes. `use` is left as it was: the
+ * four section slots the document also carries still resolve (they are the skin's section presets), so the look on
+ * screen is exactly what it was; the picker simply shows which skin that look came from. A `style-package` slot goes
+ * too (its member controls are already in the document as slots of their own). Idempotent. Not on the read path: the
+ * runtime folds an old look once with look-migration@1 (look-preserving); this stays a pure helper for tools and ports.
+ */
+export function migrateLegacyLook(look) {
+  if (!look) return look;
+  let legacy = '';
+  const strip = (part) => {
+    if (!part?.slots) return part;
+    const slots = { ...part.slots };
+    for (const t of RETIRED_PACKAGES) { if (ID.test(slots[t] ?? '')) legacy = slots[t]; delete slots[t]; }
+    delete slots['style-package'];
+    return { ...part, slots };
+  };
+  const out = { ...look, default: strip(look.default), own: strip(look.own) };
+  if (look.undo) out.undo = { ...look.undo, own: strip(look.undo.own) };
+  if (legacy && !out.skin.id) out.skin = { ...out.skin, id: legacy };
   return out;
 }
 function boolMap(raw) {
@@ -191,7 +216,10 @@ export function normalizeLookBackup(raw) {
   return { id: String(raw.id || at), at, by: String(raw.by ?? ''), reason: String(raw.reason ?? '').slice(0, 200), own: normalizeLookPart(raw.own), skin: normalizeSkinState(raw.skin), scopes: normalizeScopes(raw.scopes) };
 }
 
-/** A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting. */
+/**
+ * A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting. A retired package slot in
+ * the snapshot stays until look-migration@1 folds it (it needs the slot to know what the screen showed).
+ */
 export function newAppLook(app, snapshot) {
   return { $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {}, undo: null };
 }

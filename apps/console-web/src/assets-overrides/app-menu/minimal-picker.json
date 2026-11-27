@@ -4,7 +4,7 @@
   "id": "minimal-picker",
   "name": "Minimal Picker",
   "version": "1.0.0",
-  "description": "Two compact menus with direct theme, style and layout pickers.",
+  "description": "Two compact menus with a direct skin picker.",
   "author": "AmberX AXF",
   "tags": [
     "minimal"
@@ -63,77 +63,33 @@
         "label": "Look",
         "items": [
           {
-            "id": "colors",
-            "label": "Color theme",
+            "id": "skin",
+            "label": "Skin",
             "icon": "palette",
             "items": [
               {
-                "id": "color-theme-amber-ember",
-                "label": "Amber Ember",
+                "id": "skin-next",
+                "label": "Next skin",
                 "icon": "palette",
-                "action": "swap:color-theme:amber-ember"
+                "action": "skin.next"
               },
               {
-                "id": "color-theme-arctic-daylight",
-                "label": "Arctic Daylight",
+                "id": "skin-prev",
+                "label": "Previous skin",
                 "icon": "palette",
-                "action": "swap:color-theme:arctic-daylight"
+                "action": "skin.prev"
               },
               {
-                "id": "color-theme-neon-tide",
-                "label": "Neon Tide",
-                "icon": "palette",
-                "action": "swap:color-theme:neon-tide"
-              }
-            ]
-          },
-          {
-            "id": "styles",
-            "label": "Style theme",
-            "icon": "type",
-            "items": [
-              {
-                "id": "style-theme-soft-studio",
-                "label": "Soft Studio",
-                "icon": "type",
-                "action": "swap:style-theme:soft-studio"
+                "id": "skin-random",
+                "label": "A random skin",
+                "icon": "shuffle",
+                "action": "skin.random"
               },
               {
-                "id": "style-theme-sharp-terminal",
-                "label": "Sharp Terminal",
-                "icon": "type",
-                "action": "swap:style-theme:sharp-terminal"
-              },
-              {
-                "id": "style-theme-glass-orbit",
-                "label": "Glass Orbit",
-                "icon": "type",
-                "action": "swap:style-theme:glass-orbit"
-              }
-            ]
-          },
-          {
-            "id": "layouts",
-            "label": "Layout",
-            "icon": "layout",
-            "items": [
-              {
-                "id": "layout-classic-ide",
-                "label": "Classic IDE",
-                "icon": "layout",
-                "action": "swap:layout:classic-ide"
-              },
-              {
-                "id": "layout-focus-top",
-                "label": "Focus Top",
-                "icon": "layout",
-                "action": "swap:layout:focus-top"
-              },
-              {
-                "id": "layout-studio-dock",
-                "label": "Studio Dock",
-                "icon": "layout",
-                "action": "swap:layout:studio-dock"
+                "id": "skin-restore",
+                "label": "Default skin",
+                "icon": "refresh",
+                "action": "skin.restore"
               }
             ]
           },

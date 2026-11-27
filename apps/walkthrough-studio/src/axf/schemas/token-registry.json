@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-21",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -2591,10 +2591,10 @@
       "level": "advanced",
       "description": "Navigation style: accent.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2608,10 +2608,10 @@
       "level": "advanced",
       "description": "Navigation style: navs when active.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2625,10 +2625,10 @@
       "level": "advanced",
       "description": "Navigation style: text colour when active.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2642,10 +2642,10 @@
       "level": "advanced",
       "description": "Navigation style: background.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2687,10 +2687,10 @@
       "level": "advanced",
       "description": "Navigation style: navs when hover.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2746,10 +2746,10 @@
       "level": "advanced",
       "description": "Navigation style: submenu.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2763,10 +2763,10 @@
       "level": "advanced",
       "description": "Navigation style: text colour.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]

@@ -23,7 +23,6 @@
     "styleTheme": "geometric",
     "behaviorTheme": "amber",
     "assets": {
-      "style-package": "amber-signature",
       "toolbar": "amberx-signature",
       "nav-style": "accordion",
       "banner": "amberx-branded",
@@ -37,7 +36,10 @@
       "theme-switch": "fresh-day-night",
       "typography": "compact",
       "density": "compact",
-      "sizing": "compact"
+      "sizing": "compact",
+      "slider": "amber-signature",
+      "gauge": "classic-arc",
+      "meter": "striped-pill"
     },
     "preview": {
       "caption": "AmberX gold, signature dock, compact console chrome."

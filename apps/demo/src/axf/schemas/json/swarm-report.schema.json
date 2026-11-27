@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/swarm-report.schema.json",
+  "title": "AmberX AXF agent report (swarm-report@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. What an agent reports at the end of a run (the last fenced json block of its final message).",
+  "type": "object",
+  "required": [
+    "status"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "swarm-report@1"
+    },
+    "status": {
+      "enum": [
+        "done",
+        "failed",
+        "blocked"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "files": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      }
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "ok"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "ok": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "handoff": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "question": {
+      "type": "string",
+      "maxLength": 600
+    }
+  }
+}
