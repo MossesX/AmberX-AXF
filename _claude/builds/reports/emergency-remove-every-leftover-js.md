@@ -2,7 +2,7 @@
 
 Build `emergency-remove-every-leftover-js` (Pipeline 2.0, 7 steps, Nov 27 2026). This report is step s7 (Fable):
 tests, guard and report, taken on the seven step branches merged together
-(s1 `b0583d47a`, s2 `4fc4855c4`, s3 `d84ea580c`, s4 `6ebdb4b1e`, s5 `91eee0622`, s6 `1c014a49f`, on main `a26f2f9b3`).
+(s1 `5db54a89c`, s2 `4fc4855c4`, s3 `d84ea580c`, s4 `6ebdb4b1e`, s5 `91eee0622`, s6 `1c014a49f`, on main `a26f2f9b3`).
 No PR of its own: the lander merges every step into one.
 
 Brett, Nov 25 2026: "Postgres is the one store. Delete every JSON data file the database already covers, plus every
@@ -12,9 +12,9 @@ reader and writer of it. No dual writes, no JSON backups."
 
 - Direct JSON data writes in runtime code: **222 in 118 files → 11 in 8 files**. The 11 are a closed list, each with
   its reason; 7 of them are the pipeline folder that build `pipeline-fixes-drop-7-mb-status-file` owns.
-- axf-data: **21 tables → 103** (`TABLES_VERSION 4`). Every leftover document has rows; one change is one row.
+- axf-data: **21 tables → 107** (`TABLES_VERSION 4`). Every leftover document has rows; one change is one row.
 - The path map is `store.mode: cutover`: no file fallback, no shadow write, no drift compare, in Node and in Python.
-- Migration dry run on the VPS: **17 090 files, 363 111 rows, 44 namespaces, nothing refused**. `--apply` has **not**
+- Migration dry run on the VPS: **17 151 files, 363 204 rows, 44 namespaces, nothing refused**. `--apply` has **not**
   been run: it deletes live files and is the deploy step below.
 - Tests: the data layer, axf-data (SQLite and Postgres), the migration and every framework/spec check that passes on
   main pass. **6 plugin tests that pass on main fail on the merged build** (listed below with the cause). They are
@@ -31,8 +31,8 @@ reader and writer of it. No dual writes, no JSON backups."
    the first mismatch and leaves its files. Exit 0 = nothing left.
 3. Start the console and the pipeline.
 
-Why the order: five namespaces are still `local` on the VPS (`builds` 25 files, `console` 202, `phone` 1 452,
-`plugins/activity` 19, `plugins/skin-editor` 2). They have no copy in axf-data. New code reads axf-data only, so
+Why the order: five namespaces are still `local` on the VPS (`builds` 25 files, `console` 203, `phone` 1 452,
+`plugins/activity` 18, `plugins/skin-editor` 2). They have no copy in axf-data. New code reads axf-data only, so
 started before step 2 it would read them as empty and write fresh rows over nothing. Deleting hub files is Brett's
 call (veto item in the old inventory), which is why s7 ran the dry run only.
 
@@ -40,7 +40,7 @@ call (veto item in the old inventory), which is why s7 ran the dry run only.
 
 | Area | Step | What changed | Counted writes before → after |
 |---|---|---|---|
-| `services/axf-data` | s1 | 82 tables added (below); row get / put / delete on every family; backfill on connect | (the layer, not counted) |
+| `services/axf-data` | s1 | 86 tables added (below); row get / put / delete on every family; backfill on connect | (the layer, not counted) |
 | `framework/schemas/data-store-paths.json` | s2 | `store.mode: cutover`; every `to: null` rule carries its reason; rules for auto-lander, build-rules, host-services, model-triage and the console's host documents | — |
 | `framework/cli` | s2 | agent-slots, build-limit, build-hooks cursors, builds-live status, builds-reconcile, engine-rpc, persist, plan, plugin-lifecycle, profiles, projects, reaper, rules-brief, shipped-files, skins, watch-live write through `data-files.mjs`; their temp-file and rename code, the agent-slots shadow copy and `data local` are gone; new `migrate-json-leftovers.mjs` | 118 in 49 → 4 in 4 |
 | `framework/core` | s5 | `build-rules.mjs`: a change is one row patch, no `store.json` / `history.jsonl` / `store.lock`; `data-files.mjs`: no mirror on write, no drift compare, no file fallback; `data-store.mjs`: no local-file backend | 3 in 1 → 0 |
@@ -80,13 +80,14 @@ Repo and manifest (s7):
   its reason and where that reason is enforced, every file of the old inventory marked gone with its table, and the
   tables added.
 
-## Tables added (`services/axf-data/tables.py`, 21 → 103)
+## Tables added (`services/axf-data/tables.py`, 21 → 107)
 
-- 59 document tables `plugin_<folder>__<document>` (one row per item, `section = <document>#<list>`): agent-manager
+- 63 document tables `plugin_<folder>__<document>` (one row per item, `section = <document>#<list>`): agent-manager
   (addons, agents, hub_runs, lingo, personas, runs, skills, tools, training, workflows), agent-swarm (state, runs,
   chats_index, chats_mentions), agent-voice, ai-assistant (config, usage), auto-lander, build-orchestrator (advice,
   bugs, build_rules_seed, dup_check_checks, matrices, merge_review, origins, pipeline_accounts_host,
-  pipeline_dispatch, pipeline_merge_banner, pipeline_routes, watchdog_github_etags), build-rules, claude-accounts
+  pipeline_dispatch, pipeline_merge_banner, pipeline_routes, pipeline_watchdogs, pipeline_watchdogs_stale,
+  pipeline_watchdog2_memory, pipeline_watchdog2_audits, watchdog_github_etags), build-rules, claude-accounts
   (orgs, worker_state, workers), claude-badge, claude-handoff, claude-session, console-terminal (feeds, settings),
   feature-matrix, glossary-index (catalog, changes), host-services, molly-guide, phone-connect, plugin-manager,
   push-banner (done, failed, land, land_control, landing_line, merge_queue, merge_queue_control), systems-check
@@ -101,21 +102,21 @@ Repo and manifest (s7):
 
 ## Migration result
 
-`node framework/cli/migrate-json-leftovers.mjs --dry-run` on the VPS, Nov 27 2026 05:15 UTC, exit 0, nothing refused.
+`node framework/cli/migrate-json-leftovers.mjs --dry-run` on the VPS, Nov 27 2026 06:25 UTC (run again after s1's last commit), exit 0, nothing refused.
 `--check`: "cutover only, every local rule has its reason, every example maps as written".
 
 | Namespace | Mode on the VPS today | Files | Rows |
 |---|---|---|---|
 | `builds` | local | 25 | 15 898 |
-| `changes` | shadow | 2 608 | 2 608 |
-| `console` | local | 202 | 324 334 |
+| `changes` | shadow | 2 641 | 2 641 |
+| `console` | local | 203 | 324 354 |
 | `phone` | local | 1 452 | 1 452 |
 | `planner` | cutover | 279 | 290 |
-| `sessions` | shadow | 11 956 | 11 956 |
+| `sessions` | shadow | 11 987 | 11 987 |
 | `settings` | shadow | 9 | 9 |
 | `ui-review` | shadow | 150 | 150 |
-| `plugins/*` (36 namespaces; `activity` and `skin-editor` local, the rest shadow) | | 409 | 6 414 |
-| **Total (44 namespaces)** | | **17 090** | **363 111** |
+| `plugins/*` (36 namespaces; `activity` and `skin-editor` local, the rest shadow) | | 405 | 6 423 |
+| **Total (44 namespaces)** | | **17 151** | **363 204** |
 
 The dry run counts from file sizes and line counts; contents are compared at `--apply` (copy, read back, switch,
 compare once more, delete). Not applied in this step.
@@ -167,7 +168,7 @@ main `a26f2f9b3`; "after" is the merged build. The box was under load (load aver
 | Fail or timeout | 16 | 21 = 15 that fail the same way on main + **6 new** |
 | Fixed by the build | | `framework/spec/check-build-limit.mjs` |
 | `services/axf-data/test_store.py` | all ok | all ok |
-| `services/axf-data/test_pg.py` (throwaway `postgres:16-alpine`) | all ok, 27 cases | all ok, 29 cases |
+| `services/axf-data/test_pg.py` (throwaway `postgres:16-alpine`) | all ok, 27 cases | all ok, 29 cases (incl. `test_watchdog_state_is_rows`) |
 | `apps/console-web/server/test_data_store.py` | ok | ok (rewritten for the one-store model) |
 | `check-data-store`, `check-builds-store-data`, `check-agent-slots-data`, `check-data-tables`, `check-data-migrate` | ok | ok (68, 16, 7, 5, 16 checks) |
 | `check-migrate-json-leftovers`, `check-build-rules-data` | (new) | ok (8 checks; 5 checks) |
@@ -196,6 +197,12 @@ and s3 and s5 were running again on their branches at the time.
 The full run was taken at s3 `02bcd6945`. s3 then pushed `d84ea580c` (eight plugins: reads, lists and removes follow
 their writes). The tests of those eight plugins and the failing ones were run again on it: seven of the eight pass,
 agent-manager is the sixth failure above, the guard and the tracking check still pass.
+
+s1 then pushed `5db54a89c` (four build-watchdog documents as rows: `tables.py` and `test_pg.py` only). Run again on
+it: the guard, `check-data-tables`, `check-data-store`, `check-data-migrate`, `check-migrate-json-leftovers`,
+`check-builds-store-data`, `check-agent-slots-data`, `check-build-rules-data`, `check-tracking-files`,
+`project.mjs validate --all`, `test_store.py`, `test_pg.py` on Postgres 16 and the dry run: all pass. The plugin
+and console server tests were not run again for it (no plugin or server file changed).
 
 The 15 that fail the same way on main (not touched by this build): `plugins/agent-swarm/test.mjs`,
 `plugins/build-orchestrator/pipeline.test.mjs`, `plugins/console-commands/server/test_console_commands.py`,

@@ -22,7 +22,7 @@ it are the Nov 18–19 inventory, kept as the record of where each file was, wit
   added" below). One change is one row (data-patch@1), never a whole-document write.
 - The files on the VPS are moved and deleted by one command, `node framework/cli/migrate-json-leftovers.mjs --apply`
   (copy key by key, read every row back, switch the namespace, delete the file; no backup copy). Dry run on the VPS,
-  Nov 27 2026: **17 090 files, 363 111 rows, 44 namespaces, nothing refused**. Until `--apply` has run on a machine its
+  Nov 27 2026: **17 151 files, 363 204 rows, 44 namespaces, nothing refused**. Until `--apply` has run on a machine its
   files are still on disk and nothing reads them: **run it before the console and the pipeline start on this code**
   (a namespace the dry run shows as `local` has no copy in axf-data yet and would read empty).
 - Guard: `framework/spec/check-json-data-writes.mjs` (CI). The baseline `json-data-writes.baseline.json` is a closed
@@ -91,9 +91,9 @@ they are rows, and `persist.mjs push | pull` no longer copies them between the r
 | 7. Repo `_claude/handoff/*.json` | 8 files (`plugins/claude-handoff`) | **gone** | `plugin_claude_handoff__*`, `plugin_docs` |
 | 8. Other projects `/projects/<name>/_data/project.manifest.json` | — | rows since Nov 19 | `projects` |
 
-### Tables added (`services/axf-data/tables.py`, `TABLES_VERSION 4`: 21 tables before, 103 now)
+### Tables added (`services/axf-data/tables.py`, `TABLES_VERSION 4`: 21 tables before, 107 now)
 
-- `plugin_<folder>__<document>`: 59 documents as rows, one table per document, `section = <document>#<list>`, one row
+- `plugin_<folder>__<document>`: 63 documents as rows, one table per document, `section = <document>#<list>`, one row
   per item (agent-manager, agent-swarm, agent-voice, ai-assistant, auto-lander, build-orchestrator, build-rules,
   claude-accounts, claude-badge, claude-handoff, claude-session, console-terminal, feature-matrix, glossary-index,
   host-services, molly-guide, phone-connect, plugin-manager, push-banner, systems-check, todo-manager, token-control,
