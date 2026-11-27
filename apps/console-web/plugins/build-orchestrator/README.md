@@ -177,21 +177,71 @@ cron and runs one pass, through axHub `vps.run`) and **Builds the watchdog gave 
 
 ## Emergency builds
 
-Two emergency slots beside the orchestrator's (Brett, Nov 20 2026), for work he rams through by hand.
+Two emergency slots beside the orchestrator's (Brett, Nov 20 2026), for work that has to be rammed through. Brett
+sends a build there himself, or a Claude session does when he says so (Brett, Nov 24 2026; this replaced the
+Brett-only rule, under which the console token got 403).
 
-- **Start.** Only from Brett's own signed-in console: **Send to emergency** on a build's expanded row in the builds
-  table (`POST pipeline/emergency {id}`), or in Plan Studio 2.0's Send dialog. The server takes it from a signed-in hub
-  admin's session only; the console token (REST commands, MCP, the CLI, voice) and every session get 403. The button is
-  never a toolbar button, a registered action or a console-control target, so nothing can press it for him.
-- **What it does.** The build is tagged `emergency: { at, by }` and gets an emergency grant on the VPS hard limit. It
-  skips the one-active-build line (`pipeline2.mjs` emergency lane) and its steps go out to the emergency slot pool:
+- **Who may send.**
+  - **Brett's own click.** **Send to emergency** on a build's expanded row in the builds table, or in Plan Studio
+    2.0's Send dialog. The server reads a signed-in hub admin's session as his click: no reason needed. The button is
+    never a toolbar button or a console-control target, so nothing presses it for him.
+  - **Claude, when Brett says so.** The console token through REST, MCP, the CLI, console control or voice. Every send
+    carries why and who asked, is logged on the build, and sends one FYI to Brett's phone. The owner-only Claude
+    setting `builds.claudeEmergency` ("Claude can send builds to emergency", Settings → Plugins → Claude settings →
+    Builds; default on, a missing key counts as on) switches it off: only Brett's own click in the console changes it.
+  - A signed-in hub user who is not an admin: 403.
+- **Contract: `POST pipeline/emergency`.** Body `{ id, reason, askedBy }`.
+
+  | Field | For the console token | Meaning |
+  | --- | --- | --- |
+  | `id` | required | The Pipeline 2.0 build. |
+  | `reason` | required (max 400 chars) | Why this build goes to emergency, in Brett's words when he said them. |
+  | `askedBy` | required (max 80 chars) | The session or agent that asks. Falls back to the `X-Axhub-Session` or `AXF-Agent` header. |
+
+  | Answer | When |
+  | --- | --- |
+  | 200 `{ ok, id, emergency, already }` | Sent. `already: true` = it was an emergency build before this call: nothing is written and no FYI goes out. |
+  | 400 | The console token without a `reason`, or with no `askedBy` in the body or the headers. The message names the missing field. |
+  | 403 | The console token while `builds.claudeEmergency` is off, or a signed-in hub user who is not an admin. |
+
+  Brett's own click sends `{ id }`; a `reason` is optional there.
+- **The `emergency` record** on the build (`normEmergency`, `framework/core/pipeline-status.mjs`):
+
+  ```json
+  { "at": "2026-11-24T21:08:59.649Z", "by": "opus-session-12", "via": "console-token", "askedBy": "opus-session-12", "reason": "Brett: the login fix goes out now" }
+  ```
+
+  | Field | Meaning |
+  | --- | --- |
+  | `at` | When it was sent (ISO time). |
+  | `by` | Who sent it: Brett's hub account for his click, the asking session for the console token. |
+  | `via` | `person` (Brett's own signed-in click, or a person at a shell) or `console-token` (a Claude session). |
+  | `askedBy` | The session or agent that asked (for a `person` send, the same as `by`). |
+  | `reason` | Why (always there for `console-token`, optional for `person`). |
+
+  Records written before Nov 24 2026 hold only `{ at, by }` and stay valid. Every send also adds a note to the build
+  ("Sent to emergency by … Why: …") and a builds-store journal entry (`emergency:send`).
+- **FYI.** A console-token send raises one alert (source `pipeline`, key `pipeline:emergency-by-claude:<build>`,
+  severity info) that the notify type `build-emergency-by-claude` (`notify.json`: push on, normal priority) routes to
+  Brett's phone: the build, who asked and why. Nothing to approve. A notification that fails never undoes the send.
+  Brett's own click sends no FYI.
+- **What it does.** The build gets an emergency grant on the VPS hard limit, then the tag. It skips the
+  one-active-build line (`pipeline2.mjs` emergency lane) and its steps go out to the emergency slot pool:
   `emergencySlots` places (default 2), counted apart from `maxBuilds` (Settings → Plugins → Agent cap). The orchestrator
   never uses those slots for an ordinary build.
 - **Landing.** The lander takes emergency builds first. Any build about to merge on a head that lacks main's newest
   code pulls main again and re-runs CI first (`framework/spec/PIPELINE-2.md` rules 8 and 9).
 - **Table.** An Emergency badge on the row; emergency builds in flight sort to the top.
-- `GET pipeline/emergency` lists them; `POST pipeline/emergency/clear {id}` makes one ordinary again.
-  CLI: `node framework/cli/emergency-builds.mjs list | clear <build>` (`send` works only with Brett's console click).
+- `GET pipeline/emergency` lists them: `{ builds: [{ id, title, status, emergency, granted }], canSend, claudeCanSend }`
+  (`canSend`: this request is Brett's own click; `claudeCanSend`: the setting is on).
+  `POST pipeline/emergency/clear {id}` makes one ordinary again.
+
+| Surface | Send a build to emergency |
+| --- | --- |
+| REST | `POST pipeline/emergency { id, reason, askedBy }` |
+| MCP | plugin command `pipeline-emergency` (`id`, `reason`, `askedBy`) |
+| CLI | `node apps/console-web/plugins/build-orchestrator/pipeline.mjs emergency <id> --reason "…" [--asked-by name]` (in a session `--reason` is required and `--asked-by` defaults to `AXF_AGENT` or the session name; exit 2 bad request or build, 3 refused). `node framework/cli/emergency-builds.mjs list \| clear <build>` lists and clears. |
+| Voice / actions | `build-orchestrator.emergency:<build>\|<reason>[\|asked by]` ("send the login fix build to emergency") |
 
 ## Hand builds
 
@@ -231,9 +281,9 @@ default until Brett saves a number; only he raises a cap or removes it.
 dispatcher), `node --test deploy/lander/test/hand.test.mjs` (the lander lands a hand build on green CI) and
 `node framework/spec/check-build-budget.mjs` (the budget engine against its fixture).
 
-`node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs` (emergency builds: the console-only start,
-the emergency lane beside the active build, the two pools) and `python3 …/server/test_emergency.py` (the routes: 403 for
-everything but Brett's signed-in click).
+`node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs` (emergency builds: the start,
+the emergency lane beside the active build, the two pools) and `python3 …/server/test_emergency.py` (the routes:
+Brett's signed-in click, the console token with a reason and a name, 400 without them, 403 while the setting is off).
 
 
 `node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs` (pure rules and the CLI end to end on a scratch
