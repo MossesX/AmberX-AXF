@@ -106,8 +106,14 @@ retry-policy@1 defaults until build-rule@1 grows a settings field. Contract: `DO
 
 The store lives in one folder behind one function, `storeDir()` in the engine: `AXF_BUILD_RULES_DIR` when set, else
 `/projects/amberx-axf/_data/build-rules` where the hub is mounted, else `~/.axf/build-rules` (a checkout with no hub).
-When the console moves to axf-data the function changes, nothing else. Files: `store.json` (build-rules-store@1),
-`history.jsonl` (build-rule-history@1), `store.lock` (an exclusive create; stale after 30 s). `load()` returns the
+Every read and write of that folder goes through data-store@1 (`framework/core/data-files.mjs`). The hub folder maps to
+`console/build-rules/…` on axf-data: there the store is the `build_rules` rows, one per rule, the history is a journal,
+and `commit()` sends one row-level patch (data-patch@1: the rules the change touched, each with the rev it was read at,
+the head fields that moved and the history line, in one transaction; a stale row is a conflict and the change is
+re-read and re-applied). No `store.json`, `history.jsonl` or `store.lock` is written beside the tables, and when
+axf-data cannot answer the call throws. A folder no table serves (`AXF_BUILD_RULES_DIR` in tests, the home folder of a
+checkout with no hub) keeps `store.json` (build-rules-store@1), `history.jsonl` (build-rule-history@1) and
+`store.lock` (an exclusive create; stale after 30 s). Check: `framework/spec/check-build-rules-data.mjs`. `load()` returns the
 normalised store, or the seed `_claude/builds/build-rules/seed.json` when the store does not exist yet (and says so with
 `seeded: true`). `save(store, { by, reason, action, id, before })` validates, bumps `rev`, writes atomically under the
 lock and appends the history line; it refuses an invalid store with every error named.
