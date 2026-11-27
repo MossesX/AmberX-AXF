@@ -186,6 +186,42 @@
         "target": "veto-passes-are-in-vps-configuration",
         "title": "Veto passes are in VPS Configuration",
         "text": "Opens Builds → VPS Configuration → Passes, where passes are started, approved, revoked and undone, and the longest pass is set. The pass banner still shows here while a pass is on."
+      },
+      {
+        "target": "switch-to",
+        "title": "Switch to …",
+        "text": "Changes how long Auto-approve stays on (1 hour, 2 hours or until you turn it off) without turning it off first.",
+        "kind": "button"
+      },
+      {
+        "target": "irreversible-deletes-too",
+        "title": "Irreversible deletes too",
+        "text": "When on, Auto-approve also skips the confirm for hard deletes that nothing can bring back. Off by default: those still ask you.",
+        "kind": "toggle"
+      },
+      {
+        "target": "turn-off",
+        "title": "Turn off",
+        "text": "Turns Auto-approve off. Held calls wait on the countdown again and approvals need your tap again.",
+        "kind": "button"
+      },
+      {
+        "target": "1-hour",
+        "title": "1 hour",
+        "text": "Turns Auto-approve on for one hour. Every held call runs at once instead of waiting on the countdown. Destructive tools still ask.",
+        "kind": "button"
+      },
+      {
+        "target": "2-hours",
+        "title": "2 hours",
+        "text": "Turns Auto-approve on for two hours. Every held call runs at once instead of waiting on the countdown. Destructive tools still ask.",
+        "kind": "button"
+      },
+      {
+        "target": "until-i-turn-it-off",
+        "title": "Until I turn it off",
+        "text": "Turns Auto-approve on with no end time. It stays on until you tap Turn off in the same container.",
+        "kind": "button"
       }
     ],
     "intros": [

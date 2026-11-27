@@ -400,6 +400,30 @@
         "title": "Pick a password",
         "text": "Choose the password for this account.",
         "kind": "field"
+      },
+      {
+        "target": "turn-off",
+        "title": "Turn off",
+        "text": "Turns Auto-approve off. Held calls wait on the countdown again and approvals need your tap again.",
+        "kind": "button"
+      },
+      {
+        "target": "1-hour",
+        "title": "1 hour",
+        "text": "Turns Auto-approve on for one hour. Every held call runs at once instead of waiting on the countdown. Destructive tools still ask.",
+        "kind": "button"
+      },
+      {
+        "target": "2-hours",
+        "title": "2 hours",
+        "text": "Turns Auto-approve on for two hours. Every held call runs at once instead of waiting on the countdown. Destructive tools still ask.",
+        "kind": "button"
+      },
+      {
+        "target": "until-i-turn-it-off",
+        "title": "Until I turn it off",
+        "text": "Turns Auto-approve on with no end time. It stays on until you tap Turn off in the same container.",
+        "kind": "button"
       }
     ],
     "intros": [
