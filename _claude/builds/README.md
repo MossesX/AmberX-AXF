@@ -1,8 +1,14 @@
 # Build tracker (orchestrator@1)
 
-`orchestrator.json` is the build orchestrator's tracker: every build broken into steps of 30 minutes or less, each
+> **No status file (Nov 25 2026).** `_claude/builds/orchestrator.json`, the whole-document export of every build, is
+> deleted and stays deleted: a build's status is its row in the builds store on Postgres (`builds-store.mjs`
+> `readBuild` / `withBuild` / `queryBuilds` / `pipelineSummary`; the console's `pipeline_status` tool and
+> `GET /api/pipeline-status`). `framework/spec/check-no-pipeline-status-file.mjs` fails CI if the file comes back.
+> Where this page still says `orchestrator.json`, read "the builds store".
+
+The build orchestrator's tracker (orchestrator@1): every build broken into steps of 30 minutes or less, each
 pinned to **Fable** or **Opus**. Consecutive same-model steps are a *phase*; a phase that switches model waits for
-Brett's approval. It lives in the repo (and syncs with the hub through `claude-sync`) so any session, on any machine
+Brett's approval. It lives in the builds store, so any session, on any machine
 or Claude account, can pick a build up where the last one stopped. <!-- axf-plugin:build-orchestrator -->
 
 ## Levels

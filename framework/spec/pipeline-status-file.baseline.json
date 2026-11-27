@@ -1,0 +1,30 @@
+{
+ "$axf": "pipeline-status-file-baseline@1",
+ "note": "Source files that still name the retired pipeline status file (code and config lines, comment lines not counted) when it was deleted on Nov 25 2026: the code that retires it, tests that assert it stays away, the old migration and profile paths. A file not listed here may not name it and a count may only go down: framework/spec/check-no-pipeline-status-file.mjs (--update lowers the counts).",
+ "files": {
+  ".gitattributes": 2,
+  "apps/console-web/plugins/agent-manager/addons/gizmo/addon.json": 1,
+  "apps/console-web/plugins/agent-manager/addons/molly/addon.json": 1,
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py": 1,
+  "apps/console-web/plugins/build-orchestrator/test.mjs": 1,
+  "apps/console-web/plugins/feature-matrix/test.mjs": 1,
+  "apps/console-web/plugins/glossary-index/terms.json": 1,
+  "apps/console-web/server/data_store.py": 3,
+  "apps/console-web/server/test_data_store.py": 6,
+  "apps/console-web/server/tests/test_pipeline_status_summary.py": 2,
+  "deploy/lander/test/lander-core.test.mjs": 6,
+  "framework/cli/builds-live.mjs": 5,
+  "framework/cli/builds-store.mjs": 1,
+  "framework/cli/land-resolve.py": 3,
+  "framework/cli/persist.mjs": 2,
+  "framework/cli/profiles.mjs": 1,
+  "framework/core/tracking-paths.mjs": 4,
+  "framework/schemas/data-store-paths.json": 3,
+  "framework/spec/check-builds-live.mjs": 7,
+  "framework/spec/check-builds-store-data.mjs": 3,
+  "framework/spec/check-builds-store.mjs": 3,
+  "framework/spec/check-profiles.mjs": 3,
+  "framework/spec/check-store-encoding.mjs": 1,
+  "framework/spec/fixtures/data-store-migration.json": 3
+ }
+}

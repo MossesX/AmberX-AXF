@@ -16,10 +16,10 @@
  *                           still carries on main (EXEMPT) are named here with the reason; nothing else may grow into
  *                           the next status file.
  *
- * Scope of 2: tracked source and config (js, ts, py, sh, yaml, json, toml, kt, .gitattributes). Not read: this guard and
- * its baseline, history and notes (`changes/`, `sessions/`, `_claude/`, `assets.log`), plan data (`framework/plan/*.json`:
- * build briefs quote whatever Brett said), baked framework copies (`apps/<app>/src/axf/`, regenerated from
- * framework/core) and markdown.
+ * Scope of 2: code and config lines (a comment-only line is not counted) of tracked source and config (js, ts, py, sh,
+ * yaml, json, toml, kt, .gitattributes). Not read: this guard and its baseline, history and notes (`changes/`,
+ * `sessions/`, `_claude/`, `assets.log`), plan data (`framework/plan/*.json`: build briefs quote whatever Brett said),
+ * baked framework copies (`apps/<app>/src/axf/`, regenerated from framework/core) and markdown.
  *
  *   node framework/spec/check-no-pipeline-status-file.mjs             check (CI)
  *   node framework/spec/check-no-pipeline-status-file.mjs --list      every line that names the file
@@ -60,6 +60,8 @@ export function scan(text) {
   const out = [];
   const lines = text.split('\n');
   for (let i = 0; i < lines.length; i += 1) {
+    const t = lines[i].trim();
+    if (t.startsWith('//') || t.startsWith('#') || t.startsWith('*') || t.startsWith('/*')) continue; // a comment line tells the story, it reads nothing
     const n = lines[i].match(NAME)?.length ?? 0;
     for (let k = 0; k < n; k += 1) out.push({ line: i + 1, text: lines[i].trim().slice(0, 160) });
   }

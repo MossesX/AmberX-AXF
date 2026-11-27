@@ -89,6 +89,7 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-pipeline-status-rows.mjs     # pipeline status as store rows: a status write changes one build row and writes no status file; a page by status / project has the right rows, totals and counts
       - run: node framework/spec/check-build-id.mjs                # build-id@1: new build ids fit the vps tools' 40-char pattern, collisions get suffixes, legacy long ids get aliases
       - run: node framework/spec/check-store-encoding.mjs           # store transport and encoding (deep audit part B): multi-byte text across 64 KB chunks byte for byte, unknown fields kept, store version, journal diffs + gzip, mojibake repair
       - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
@@ -119,6 +120,7 @@ jobs:
       - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → landing; fixtures/build-pipeline-exit.json
       - run: node framework/spec/check-done-means-merged.mjs        # done-means-merged@1: built / complete refused without merge + green CI + verify, migration loses nothing, the retry ladder never repeats a failed strategy, escalation only after N different attempts
       - run: node framework/spec/check-json-data-writes.mjs         # no-json-data@1: no new direct JSON/JSONL data write in runtime code (data goes to Postgres through data-store@1); counts per file may only go down (json-data-writes.baseline.json)
+      - run: node framework/spec/check-no-pipeline-status-file.mjs  # no pipeline status file: fails when the retired builds status export (or any copy) exists in the checkout, a source file names it beyond the baseline (counts only go down), or a tracked runtime .json under _claude/builds passes 2 MB
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -443,6 +445,7 @@ jobs:
             python apps/console-web/plugins/host-services/test.py  # host-services plugin routes (MCP commands): down state, confirm on destructive presses  # axf-plugin:host-services
             python apps/console-web/server/tests/test_host_services.py  # host services, console half: client down state + endpoint order, REST + plugin routes (confirm on destructive presses), live host API, health@1 items, capability
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
+            python apps/console-web/server/tests/test_pipeline_status_summary.py  # pipeline_status (MCP + REST): under 32 KB with 600 heavy builds seeded, limit / offset honoured, no status file on disk afterwards
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
