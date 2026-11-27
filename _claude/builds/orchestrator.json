@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:32:59.148Z",
+ "updatedAt": "2026-11-27T04:33:30.823Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14211,6 +14211,47 @@
    "steps": []
   },
   {
+   "id": "claude-accounts-switch",
+   "title": "claude-accounts-switch",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/claude-accounts-switch",
+   "pr": "",
+   "mergedAt": "2026-11-02T16:16:23Z",
+   "createdAt": "2026-11-02T16:16:23Z",
+   "updatedAt": "2026-11-12T03:31:34Z",
+   "builtAt": "2026-11-02T16:16:23Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 88f412791.",
+     "at": "2026-11-12T03:31:34Z"
+    },
+    {
+     "text": "Shipped manifest sm-claude-accounts-switch rev 1 sent to Shipped features (backfill): landed 88f412791, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:34Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "claude-accounts-switch",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
    "id": "emergency-remove-every-leftover-js",
    "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it",
    "category": "",
@@ -14576,47 +14617,6 @@
      "createdAt": "2026-11-25T12:03:52.352Z"
     }
    ]
-  },
-  {
-   "id": "claude-accounts-switch",
-   "title": "claude-accounts-switch",
-   "category": "",
-   "detail": "",
-   "status": "complete",
-   "hidden": false,
-   "source": "shipped",
-   "pendingId": "",
-   "branch": "claude/claude-accounts-switch",
-   "pr": "",
-   "mergedAt": "2026-11-02T16:16:23Z",
-   "createdAt": "2026-11-02T16:16:23Z",
-   "updatedAt": "2026-11-12T03:31:34Z",
-   "builtAt": "2026-11-02T16:16:23Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 88f412791.",
-     "at": "2026-11-12T03:31:34Z"
-    },
-    {
-     "text": "Shipped manifest sm-claude-accounts-switch rev 1 sent to Shipped features (backfill): landed 88f412791, 16 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:31:34Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "claude-accounts-switch",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": false,
-    "from": "report",
-    "addenda": []
-   },
-   "steps": []
   },
   {
    "id": "xlayout-plan",
@@ -20110,7 +20110,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:32:52.310Z",
+   "updatedAt": "2026-11-27T04:32:59.330Z",
    "builtAt": "",
    "notes": [
     {
@@ -20364,6 +20364,10 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-27T04:29:27.718Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--paulie, shared account login)",
+     "at": "2026-11-27T04:32:59.330Z"
     }
    ],
    "approvals": [],
@@ -31866,150 +31870,6 @@
    ]
   },
   {
-   "id": "drag-to-tab",
-   "title": "Drag to tab",
-   "category": "Feature",
-   "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "drag-to-tab",
-   "branch": "claude/drag-to-tab",
-   "pr": "#344",
-   "createdAt": "2026-11-04T20:44:51.127Z",
-   "updatedAt": "2026-11-27T02:28:55.767Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
-     "at": "2026-11-08T16:59:19.175Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #344 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T02:28:55.767Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #344 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T02:28:55.767Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
-    "at": "2026-11-04T00:00:00Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Base: branch on #328 + #327 merged; read windows@1 / dock@1 / TabGroup drag code",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T20:50:54.971Z",
-     "note": "",
-     "uid": "st-mw2lcyxh1d1brf",
-     "createdAt": "2026-11-04T20:44:39.946Z"
-    },
-    {
-     "id": "s2",
-     "text": "Engine: drag payload (nav item / tab) + drop resolution (strip index, pane edge split, float) in dock@1 with fixture cases",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T20:53:29.864Z",
-     "note": "",
-     "uid": "st-mw2lcyxh1ejngz",
-     "createdAt": "2026-11-04T20:44:39.946Z"
-    },
-    {
-     "id": "s3",
-     "text": "React: shared draggable nav items + drop highlights on tab strips and pane edges; float on drop outside",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:26:35.072Z",
-     "note": "",
-     "uid": "st-mw2lcyxh1fyhmv",
-     "createdAt": "2026-11-04T20:44:39.946Z"
-    },
-    {
-     "id": "s4",
-     "text": "Touch long-press drag, undo toast after every drop; wire Molly, console and the shared nav",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:26:36.211Z",
-     "note": "",
-     "uid": "st-mw2lcyxh1gtdeh",
-     "createdAt": "2026-11-04T20:44:39.946Z"
-    },
-    {
-     "id": "s5",
-     "text": "Tests, README, UI Review shots, report, PR through the merge queue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T21:26:36.966Z",
-     "note": "",
-     "uid": "st-mw2lcyxh1hu8jz",
-     "createdAt": "2026-11-04T20:44:39.946Z"
-    }
-   ]
-  },
-  {
    "id": "claude-settings-tabs-veto",
    "title": "Claude settings: tabs, views, Approvals & veto tab",
    "category": "Builds",
@@ -32265,6 +32125,150 @@
      "note": "",
      "uid": "st-mw5ose5l06ojd4",
      "createdAt": "2026-11-07T00:50:11.152Z"
+    }
+   ]
+  },
+  {
+   "id": "drag-to-tab",
+   "title": "Drag to tab",
+   "category": "Feature",
+   "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "drag-to-tab",
+   "branch": "claude/drag-to-tab",
+   "pr": "#344",
+   "createdAt": "2026-11-04T20:44:51.127Z",
+   "updatedAt": "2026-11-27T02:28:55.767Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
+     "at": "2026-11-08T16:59:19.175Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #344 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T02:28:55.767Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #344 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T02:28:55.767Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
+    "at": "2026-11-04T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Base: branch on #328 + #327 merged; read windows@1 / dock@1 / TabGroup drag code",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T20:50:54.971Z",
+     "note": "",
+     "uid": "st-mw2lcyxh1d1brf",
+     "createdAt": "2026-11-04T20:44:39.946Z"
+    },
+    {
+     "id": "s2",
+     "text": "Engine: drag payload (nav item / tab) + drop resolution (strip index, pane edge split, float) in dock@1 with fixture cases",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T20:53:29.864Z",
+     "note": "",
+     "uid": "st-mw2lcyxh1ejngz",
+     "createdAt": "2026-11-04T20:44:39.946Z"
+    },
+    {
+     "id": "s3",
+     "text": "React: shared draggable nav items + drop highlights on tab strips and pane edges; float on drop outside",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:26:35.072Z",
+     "note": "",
+     "uid": "st-mw2lcyxh1fyhmv",
+     "createdAt": "2026-11-04T20:44:39.946Z"
+    },
+    {
+     "id": "s4",
+     "text": "Touch long-press drag, undo toast after every drop; wire Molly, console and the shared nav",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:26:36.211Z",
+     "note": "",
+     "uid": "st-mw2lcyxh1gtdeh",
+     "createdAt": "2026-11-04T20:44:39.946Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests, README, UI Review shots, report, PR through the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T21:26:36.966Z",
+     "note": "",
+     "uid": "st-mw2lcyxh1hu8jz",
+     "createdAt": "2026-11-04T20:44:39.946Z"
     }
    ]
   },
@@ -33331,154 +33335,6 @@
    ]
   },
   {
-   "id": "notes-views",
-   "title": "Notes views",
-   "category": "Feature",
-   "detail": "Console Notes: Classic view with collapsible sections + Grid view with expandable rows; AmberX notes source; shared FoldSections framework component.",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/notes-views",
-   "pr": "#349",
-   "createdAt": "2026-11-04T21:58:47.815Z",
-   "updatedAt": "2026-11-27T02:49:12.628Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Follow-up: the AmberX app Notes screen (apps/amberx-droid notes plugin) does not share the console component; re-bake AmberX, then use FoldSections in its item view and add the Grid view there. Report _claude/builds/reports/notes-views.md.",
-     "at": "2026-11-04T22:39:38.350Z"
-    },
-    {
-     "text": "Clash with notes-tasks-sync: console Notes route moved to the shared notes-tasks plugin; notes-browser is now the Claude files page (view claude-files). Rebase needs that one-line change; Classic/Grid belong on the shared page next.",
-     "at": "2026-11-06T19:41:27.667Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #349 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T02:49:12.628Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #349 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T02:49:12.628Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "\"Make the sections in your note collapsible.\" (Asked: just this note or every note?) \"Yeah, make a couple of views. One view is the same way it is now, but with collapsible sections, and another view is the notes in a grid with expandable rows that shows the note.\"",
-    "at": "2026-11-04T21:40:00Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Shared collapsible-section renderer (framework/react FoldSections + parser, tests)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:39:34.805Z",
-     "note": "",
-     "uid": "st-mw2nsa4d06abua",
-     "createdAt": "2026-11-04T21:58:47.816Z"
-    },
-    {
-     "id": "s2",
-     "text": "Notes server: AmberX notes source through control@1 + view settings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:39:35.750Z",
-     "note": "",
-     "uid": "st-mw2nsa4d07n7wc",
-     "createdAt": "2026-11-04T21:58:47.816Z"
-    },
-    {
-     "id": "s3",
-     "text": "Classic view: fold sections, expand/collapse all, fold memory, search hits",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:39:36.582Z",
-     "note": "",
-     "uid": "st-mw2nsa4d08dnuu",
-     "createdAt": "2026-11-04T21:58:47.816Z"
-    },
-    {
-     "id": "s4",
-     "text": "Grid view: DataGrid rows, sort/filter/hide, expandable rows, actions, phone cards",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:39:37.509Z",
-     "note": "",
-     "uid": "st-mw2nsa4d09ft3c",
-     "createdAt": "2026-11-04T21:58:47.816Z"
-    },
-    {
-     "id": "s5",
-     "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:42:30.158Z",
-     "note": "",
-     "uid": "st-mw2nsa4d0a54sn",
-     "createdAt": "2026-11-04T21:58:47.816Z"
-    }
-   ]
-  },
-  {
    "id": "icon-browser-manager",
    "title": "Icon Browser plugin + Icon Manager (icon library, icon maps, icon packs)",
    "category": "Assets",
@@ -34286,39 +34142,47 @@
    ]
   },
   {
-   "id": "changes-chat-log",
-   "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
-   "category": "Console > Builds",
-   "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
+   "id": "notes-views",
+   "title": "Notes views",
+   "category": "Feature",
+   "detail": "Console Notes: Classic view with collapsible sections + Grid view with expandable rows; AmberX notes source; shared FoldSections framework component.",
    "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/changes-chat-log",
-   "pr": "#347",
-   "createdAt": "2026-11-04T21:53:46.271Z",
-   "updatedAt": "2026-11-27T02:38:54.125Z",
+   "branch": "claude/notes-views",
+   "pr": "#349",
+   "createdAt": "2026-11-04T21:58:47.815Z",
+   "updatedAt": "2026-11-27T02:49:12.628Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Follow-up: the AmberX app Notes screen (apps/amberx-droid notes plugin) does not share the console component; re-bake AmberX, then use FoldSections in its item view and add the Grid view there. Report _claude/builds/reports/notes-views.md.",
+     "at": "2026-11-04T22:39:38.350Z"
+    },
+    {
+     "text": "Clash with notes-tasks-sync: console Notes route moved to the shared notes-tasks plugin; notes-browser is now the Claude files page (view claude-files). Rebase needs that one-line change; Classic/Grid belong on the shared page next.",
+     "at": "2026-11-06T19:41:27.667Z"
+    },
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
     },
     {
-     "text": "Fixing: the push failed (landing for 22 days: PR #347 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T02:38:54.125Z"
+     "text": "Fixing: the push failed (landing for 22 days: PR #349 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T02:49:12.628Z"
     },
     {
-     "text": "Watchdog: landing for 22 days: PR #347 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T02:38:54.125Z"
+     "text": "Watchdog: landing for 22 days: PR #349 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T02:49:12.628Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
-    "said": "This needs to be displayed like the chat log.",
-    "at": "2026-11-04T21:53:46.271Z",
-    "source": "",
+    "said": "\"Make the sections in your note collapsible.\" (Asked: just this note or every note?) \"Yeah, make a couple of views. One view is the same way it is now, but with collapsible sections, and another view is the notes in a grid with expandable rows that shows the note.\"",
+    "at": "2026-11-04T21:40:00Z",
+    "source": "voice",
     "session": "",
     "link": "",
     "by": "",
@@ -34330,98 +34194,98 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
+     "text": "Shared collapsible-section renderer (framework/react FoldSections + parser, tests)",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T22:04:39.681Z",
+     "doneAt": "2026-11-04T22:39:34.805Z",
      "note": "",
-     "uid": "st-mw2nlthg06ptfh",
-     "createdAt": "2026-11-04T21:53:46.272Z"
+     "uid": "st-mw2nsa4d06abua",
+     "createdAt": "2026-11-04T21:58:47.816Z"
     },
     {
      "id": "s2",
-     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
+     "text": "Notes server: AmberX notes source through control@1 + view settings",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T22:04:41.459Z",
+     "doneAt": "2026-11-04T22:39:35.750Z",
      "note": "",
-     "uid": "st-mw2nlthg07r09v",
-     "createdAt": "2026-11-04T21:53:46.272Z"
+     "uid": "st-mw2nsa4d07n7wc",
+     "createdAt": "2026-11-04T21:58:47.816Z"
     },
     {
      "id": "s3",
-     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
+     "text": "Classic view: fold sections, expand/collapse all, fold memory, search hits",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T22:04:43.435Z",
+     "doneAt": "2026-11-04T22:39:36.582Z",
      "note": "",
-     "uid": "st-mw2nlthg08a1yr",
-     "createdAt": "2026-11-04T21:53:46.272Z"
+     "uid": "st-mw2nsa4d08dnuu",
+     "createdAt": "2026-11-04T21:58:47.816Z"
     },
     {
      "id": "s4",
-     "text": "Build manager row expansion uses the same component",
+     "text": "Grid view: DataGrid rows, sort/filter/hide, expandable rows, actions, phone cards",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T22:04:45.451Z",
+     "doneAt": "2026-11-04T22:39:37.509Z",
      "note": "",
-     "uid": "st-mw2nlthg0968y7",
-     "createdAt": "2026-11-04T21:53:46.272Z"
+     "uid": "st-mw2nsa4d09ft3c",
+     "createdAt": "2026-11-04T21:58:47.816Z"
     },
     {
      "id": "s5",
-     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
+     "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T22:09:41.397Z",
+     "doneAt": "2026-11-04T22:42:30.158Z",
      "note": "",
-     "uid": "st-mw2nlthg0act8j",
-     "createdAt": "2026-11-04T21:53:46.272Z"
+     "uid": "st-mw2nsa4d0a54sn",
+     "createdAt": "2026-11-04T21:58:47.816Z"
     }
    ]
   },
@@ -34672,6 +34536,146 @@
      "note": "",
      "uid": "st-mw5xh9eb089u7v",
      "createdAt": "2026-11-07T04:53:28.340Z"
+    }
+   ]
+  },
+  {
+   "id": "changes-chat-log",
+   "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
+   "category": "Console > Builds",
+   "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/changes-chat-log",
+   "pr": "#347",
+   "createdAt": "2026-11-04T21:53:46.271Z",
+   "updatedAt": "2026-11-27T02:38:54.125Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #347 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T02:38:54.125Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #347 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T02:38:54.125Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "This needs to be displayed like the chat log.",
+    "at": "2026-11-04T21:53:46.271Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:39.681Z",
+     "note": "",
+     "uid": "st-mw2nlthg06ptfh",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s2",
+     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:41.459Z",
+     "note": "",
+     "uid": "st-mw2nlthg07r09v",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s3",
+     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:43.435Z",
+     "note": "",
+     "uid": "st-mw2nlthg08a1yr",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s4",
+     "text": "Build manager row expansion uses the same component",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:45.451Z",
+     "note": "",
+     "uid": "st-mw2nlthg0968y7",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s5",
+     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:09:41.397Z",
+     "note": "",
+     "uid": "st-mw2nlthg0act8j",
+     "createdAt": "2026-11-04T21:53:46.272Z"
     }
    ]
   },
@@ -38497,146 +38501,6 @@
    ]
   },
   {
-   "id": "notes-tasks-sync",
-   "title": "Notes, tasks and to-do: one shared plugin and one store (console + AmberX)",
-   "category": "Apps > Notes",
-   "detail": "",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/notes-tasks-sync",
-   "pr": "#363",
-   "createdAt": "2026-11-06T19:31:41.894Z",
-   "updatedAt": "2026-11-27T03:09:08.655Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 20 days: PR #363 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T03:09:08.655Z"
-    },
-    {
-     "text": "Watchdog: landing for 20 days: PR #363 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T03:09:08.655Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.",
-    "at": "2026-11-06T19:31:41.894Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
-    "verbatim": true,
-    "from": "brief",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Map where each copy stores data; report",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "15 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T19:31:42.685Z",
-     "note": "",
-     "uid": "st-mw5detc906th8a",
-     "createdAt": "2026-11-06T19:31:41.895Z"
-    },
-    {
-     "id": "s2",
-     "text": "Plugin notes-tasks: move AmberX notes + tasks code, host seam, loads in console and AmberX",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T19:38:05.742Z",
-     "note": "",
-     "uid": "st-mw5detc907xauy",
-     "createdAt": "2026-11-06T19:31:41.895Z"
-    },
-    {
-     "id": "s3",
-     "text": "Live sync: head poll, Claude files read alongside through axf.notes@1",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T19:38:06.409Z",
-     "note": "",
-     "uid": "st-mw5detc908ze6s",
-     "createdAt": "2026-11-06T19:31:41.895Z"
-    },
-    {
-     "id": "s4",
-     "text": "Migration with backup: todo-store@1 into the one store; retire todo-manager; console Notes route goes to the shared page",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T19:38:07.064Z",
-     "note": "",
-     "uid": "st-mw5detc909m1ti",
-     "createdAt": "2026-11-06T19:31:41.895Z"
-    },
-    {
-     "id": "s5",
-     "text": "Tests, README, report, UI Review shots, PR to the merge queue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-06T19:42:51.161Z",
-     "note": "",
-     "uid": "st-mw5detc90ar182",
-     "createdAt": "2026-11-06T19:31:41.895Z"
-    }
-   ]
-  },
-  {
    "id": "whats-new-banner",
    "title": "What's new banner",
    "category": "Banners",
@@ -39632,6 +39496,146 @@
      "note": "",
      "uid": "st-mw0uj4uc0mytjc",
      "createdAt": "2026-11-03T15:32:06.060Z"
+    }
+   ]
+  },
+  {
+   "id": "notes-tasks-sync",
+   "title": "Notes, tasks and to-do: one shared plugin and one store (console + AmberX)",
+   "category": "Apps > Notes",
+   "detail": "",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/notes-tasks-sync",
+   "pr": "#363",
+   "createdAt": "2026-11-06T19:31:41.894Z",
+   "updatedAt": "2026-11-27T03:09:08.655Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 20 days: PR #363 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T03:09:08.655Z"
+    },
+    {
+     "text": "Watchdog: landing for 20 days: PR #363 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T03:09:08.655Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.",
+    "at": "2026-11-06T19:31:41.894Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: notes-tasks-sync\n\nBrett (voice, verbatim): \"They need to be synced. The task manager and the to-do list all needs to be synced. Make the, it needs to be a plugin. The notes, task manager, to-do, it needs to be a plugin.\"\n\nProblem: AmberX's notes (https://amberx.amberxai.com/#/notes) show different notes than the Dev Console's Notes page. Same for tasks and to-dos.\n\nDo:\n1. Find where each copy stores data now (AmberX notes/tasks plugins, console notes, todo-manager, tasks). Report it.\n2. Make notes, task manager and to-do ONE shared plugin (or one plugin per kind, same code) that both the console and AmberX load, reading and writing ONE store on the server (console API / axHub shared data). No per-app copies.\n3. Migrate: merge existing AmberX and console data into the one store, no data lost (back up first).\n4. Live sync: a change on one shows on the other without reload.\n5. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly; everything goes through the merge queue.\n\nHeads up: paused build amberx-slim-queue-r2 also touches AmberX's plugin list (keep list includes notes, tasks); keep notes/tasks/to-do on AmberX's keep list. Don't load the full CLAUDE.md chain; one session for the whole build; read only files you need.",
+    "verbatim": true,
+    "from": "brief",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Map where each copy stores data; report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T19:31:42.685Z",
+     "note": "",
+     "uid": "st-mw5detc906th8a",
+     "createdAt": "2026-11-06T19:31:41.895Z"
+    },
+    {
+     "id": "s2",
+     "text": "Plugin notes-tasks: move AmberX notes + tasks code, host seam, loads in console and AmberX",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T19:38:05.742Z",
+     "note": "",
+     "uid": "st-mw5detc907xauy",
+     "createdAt": "2026-11-06T19:31:41.895Z"
+    },
+    {
+     "id": "s3",
+     "text": "Live sync: head poll, Claude files read alongside through axf.notes@1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T19:38:06.409Z",
+     "note": "",
+     "uid": "st-mw5detc908ze6s",
+     "createdAt": "2026-11-06T19:31:41.895Z"
+    },
+    {
+     "id": "s4",
+     "text": "Migration with backup: todo-store@1 into the one store; retire todo-manager; console Notes route goes to the shared page",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T19:38:07.064Z",
+     "note": "",
+     "uid": "st-mw5detc909m1ti",
+     "createdAt": "2026-11-06T19:31:41.895Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests, README, report, UI Review shots, PR to the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-06T19:42:51.161Z",
+     "note": "",
+     "uid": "st-mw5detc90ar182",
+     "createdAt": "2026-11-06T19:31:41.895Z"
     }
    ]
   },
@@ -56234,6 +56238,75 @@
    ]
   },
   {
+   "id": "amberx-claude-tokens",
+   "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: \"Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default\". Cause: the save never reached the AmberX server (no POST in the amberx-web log) and the error went to the top of the settings page, off-screen on the phone. Fix: errors shown next to the button, clear sign-in/timeout messages; new Claude plan tokens list (add name + access + optional refresh, saved and tested in one tap, Test each / Test all, star = primary). Server: POST /api/ai/profiles (add with key, atomic), POST /api/ai/primary/{id}.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-claude-tokens",
+   "pr": "#157",
+   "mergedAt": "2026-10-28T17:04:30Z",
+   "createdAt": "2026-10-28T16:55:24.086Z",
+   "updatedAt": "2026-11-12T03:28:09Z",
+   "builtAt": "2026-10-28T17:04:41.490Z",
+   "notes": [
+    {
+     "text": "Merged PR #157, branch claude/amberx-claude-tokens",
+     "at": "2026-10-28T17:04:41.549Z"
+    },
+    {
+     "text": "Reconciler: PR #157 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-claude-tokens rev 1 sent to Shipped features (backfill): landed b5d2492b2, 7 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:09Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default",
+    "at": "2026-10-28",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server add-with-key + primary routes + tests; page: inline errors + Claude tokens list",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-28T16:55:24.189Z",
+     "note": "",
+     "uid": "st-h9rf2m",
+     "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
    "id": "follow-amber-flash",
    "title": "Follow Amber flash",
    "category": "Feature",
@@ -56343,75 +56416,6 @@
      "note": "",
      "uid": "st-mw2n6o6w08rbna",
      "createdAt": "2026-11-04T21:41:59.598Z"
-    }
-   ]
-  },
-  {
-   "id": "amberx-claude-tokens",
-   "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
-   "category": "AmberX app",
-   "detail": "Brett Oct 28 2026: \"Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default\". Cause: the save never reached the AmberX server (no POST in the amberx-web log) and the error went to the top of the settings page, off-screen on the phone. Fix: errors shown next to the button, clear sign-in/timeout messages; new Claude plan tokens list (add name + access + optional refresh, saved and tested in one tap, Test each / Test all, star = primary). Server: POST /api/ai/profiles (add with key, atomic), POST /api/ai/primary/{id}.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-claude-tokens",
-   "pr": "#157",
-   "mergedAt": "2026-10-28T17:04:30Z",
-   "createdAt": "2026-10-28T16:55:24.086Z",
-   "updatedAt": "2026-11-12T03:28:09Z",
-   "builtAt": "2026-10-28T17:04:41.490Z",
-   "notes": [
-    {
-     "text": "Merged PR #157, branch claude/amberx-claude-tokens",
-     "at": "2026-10-28T17:04:41.549Z"
-    },
-    {
-     "text": "Reconciler: PR #157 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    },
-    {
-     "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Shipped manifest sm-amberx-claude-tokens rev 1 sent to Shipped features (backfill): landed b5d2492b2, 7 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:28:09Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Server add-with-key + primary routes + tests; page: inline errors + Claude tokens list",
-     "model": "Opus",
-     "why": "",
-     "phase": "Build",
-     "group": "AmberX",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-10-28T16:55:24.189Z",
-     "note": "",
-     "uid": "st-h9rf2m",
-     "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
   },
@@ -91248,146 +91252,6 @@
    ]
   },
   {
-   "id": "account-failover-notify",
-   "title": "Account failover + phone alerts + one home per login",
-   "category": "Claude accounts",
-   "detail": "Builds that die on an account's auth (expired/unrefreshable login) or usage limit are moved to the next account at once (workers, then the interactive account; API accounts per routing rules), the account is marked out with why/until, Brett gets an AmberX push saying which account, what failed, where the build went and what to do; each login has exactly one home store that every refresh writes back to; the Claude accounts screen shows out/why/until and the last refresh per login. Absorbs steps 3-5 of running-builds-follow-the-active-claude-account-fail-over-when-it-dies. Branch claude/account-failover-notify, stacked on PR #389 (workers-api-routing).",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/account-failover-notify",
-   "pr": "#392",
-   "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-15T00:44:32.473Z",
-   "builtAt": "2026-11-08T17:26:34.358Z",
-   "notes": [
-    {
-     "text": "PR #392 (stacked on #389: land #389 first). UI Review r-20261108-d22f9202. Live fix: account-1 excluded from workers.json (dead login) until Brett signs it in.",
-     "at": "2026-11-08T17:26:36.592Z"
-    },
-    {
-     "text": "Worker accounts: account-3: 1 run, $12.90",
-     "at": "2026-11-08T17:27:08.719Z"
-    },
-    {
-     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/account-failover-notify/index.lock (stale)",
-     "at": "2026-11-10T03:34:03.927Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Brief (headless launch, no verbatim block): Account failover + phone alerts + one home per login. 1. Automatic failover: when a build fails on an account for auth (expired/unrefreshable login) or usage limit, immediately mark that account out and relaunch the same build on the next available account (workers, then the interactive account; API accounts only per routing rules). No build should die and stay dead because of one account. Today three builds died in 1 s each on account-1 (OAuth expired) and nothing retried. 2. Phone notification (AmberX) on every such problem: which account, what failed (expired login / limit / no credits), which build moved where, and what Brett needs to do (e.g. sign account-1 in). 3. One home per login: each account's credentials live in exactly ONE store; every token refresh from any build, console or session writes back to that same place. No duplicate copies that can spend a refresh token and leave others dead. Audit claude-login.mjs / claude-token-save.mjs / claude-headless.sh and the console AI keys store for duplicates; find why account-1's refresh failed (spent by another copy vs idle expiry) and report it. 4. Status in the console Claude accounts screen: out/why/until, last refresh time per login.",
-    "at": "2026-11-08T16:59:53.289Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Failover engine: classify auth / limit / no-credits from the run log, mark the account out (why, until), pick the next account (workers, then interactive, API per routing); launcher relaunches on any account, not only workers; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:11:04.073Z",
-     "note": "",
-     "uid": "st-mw82vah306qt7z",
-     "createdAt": "2026-11-08T16:59:53.290Z"
-    },
-    {
-     "id": "s2",
-     "text": "Phone alert on every account problem through axf.notify@1 / the alert hub (AmberX push): account, what failed, where the build went, what Brett must do; notify.json entry; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:13:50.613Z",
-     "note": "",
-     "uid": "st-mw82vah307p2ny",
-     "createdAt": "2026-11-08T16:59:53.290Z"
-    },
-    {
-     "id": "s3",
-     "text": "One home per login: audit claude-login / token-save / headless / AI keys copies, make ~/.claude-accounts/<name> the single home every refresh writes to, record last refresh per login; find why account-1's refresh failed; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:13:51.746Z",
-     "note": "",
-     "uid": "st-mw82vah308kzpu",
-     "createdAt": "2026-11-08T16:59:53.290Z"
-    },
-    {
-     "id": "s4",
-     "text": "Console: Claude accounts status (out / why / until, last refresh), routes + MCP/voice commands, settings section (failover + alerts); tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:21:37.384Z",
-     "note": "",
-     "uid": "st-mw82vah309d7dp",
-     "createdAt": "2026-11-08T16:59:53.290Z"
-    },
-    {
-     "id": "s5",
-     "text": "UI Review (3 options as assets), report, STATUS, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:26:34.357Z",
-     "note": "",
-     "uid": "st-mw82vah30a41pn",
-     "createdAt": "2026-11-08T16:59:53.290Z"
-    }
-   ]
-  },
-  {
    "id": "style-rule-every-design-element-overrides-axhub-",
    "title": "Style rule: every design element overrides axHub's, except the color theme",
    "category": "",
@@ -91611,25 +91475,38 @@
    ]
   },
   {
-   "id": "terminal-header-responsive",
-   "title": "Terminal window header: responsive overflow",
-   "category": "Console > Terminal",
-   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
+   "id": "account-failover-notify",
+   "title": "Account failover + phone alerts + one home per login",
+   "category": "Claude accounts",
+   "detail": "Builds that die on an account's auth (expired/unrefreshable login) or usage limit are moved to the next account at once (workers, then the interactive account; API accounts per routing rules), the account is marked out with why/until, Brett gets an AmberX push saying which account, what failed, where the build went and what to do; each login has exactly one home store that every refresh writes back to; the Claude accounts screen shows out/why/until and the last refresh per login. Absorbs steps 3-5 of running-builds-follow-the-active-claude-account-fail-over-when-it-dies. Branch claude/account-failover-notify, stacked on PR #389 (workers-api-routing).",
    "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/terminal-header-responsive",
-   "pr": "#387",
-   "createdAt": "2026-11-08T16:15:18.411Z",
-   "updatedAt": "2026-11-15T00:44:36.218Z",
-   "builtAt": "2026-11-08T16:32:45.756Z",
-   "notes": [],
+   "branch": "claude/account-failover-notify",
+   "pr": "#392",
+   "createdAt": "2026-11-08T16:59:53.289Z",
+   "updatedAt": "2026-11-15T00:44:32.473Z",
+   "builtAt": "2026-11-08T17:26:34.358Z",
+   "notes": [
+    {
+     "text": "PR #392 (stacked on #389: land #389 first). UI Review r-20261108-d22f9202. Live fix: account-1 excluded from workers.json (dead login) until Brett signs it in.",
+     "at": "2026-11-08T17:26:36.592Z"
+    },
+    {
+     "text": "Worker accounts: account-3: 1 run, $12.90",
+     "at": "2026-11-08T17:27:08.719Z"
+    },
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/account-failover-notify/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
-    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
-    "at": "2026-11-08T16:15:18.411Z",
+    "said": "Brief (headless launch, no verbatim block): Account failover + phone alerts + one home per login. 1. Automatic failover: when a build fails on an account for auth (expired/unrefreshable login) or usage limit, immediately mark that account out and relaunch the same build on the next available account (workers, then the interactive account; API accounts only per routing rules). No build should die and stay dead because of one account. Today three builds died in 1 s each on account-1 (OAuth expired) and nothing retried. 2. Phone notification (AmberX) on every such problem: which account, what failed (expired login / limit / no credits), which build moved where, and what Brett needs to do (e.g. sign account-1 in). 3. One home per login: each account's credentials live in exactly ONE store; every token refresh from any build, console or session writes back to that same place. No duplicate copies that can spend a refresh token and leave others dead. Audit claude-login.mjs / claude-token-save.mjs / claude-headless.sh and the console AI keys store for duplicates; find why account-1's refresh failed (spent by another copy vs idle expiry) and report it. 4. Status in the console Claude accounts screen: out/why/until, last refresh time per login.",
+    "at": "2026-11-08T16:59:53.289Z",
     "source": "",
     "session": "",
     "link": "",
@@ -91642,7 +91519,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
+     "text": "Failover engine: classify auth / limit / no-credits from the run log, mark the account out (why, until), pick the next account (workers, then interactive, API per routing); launcher relaunches on any account, not only workers; tests",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -91654,14 +91531,14 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T16:24:20.151Z",
+     "doneAt": "2026-11-08T17:11:04.073Z",
      "note": "",
-     "uid": "st-mw819yja069qye",
-     "createdAt": "2026-11-08T16:15:18.413Z"
+     "uid": "st-mw82vah306qt7z",
+     "createdAt": "2026-11-08T16:59:53.290Z"
     },
     {
      "id": "s2",
-     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
+     "text": "Phone alert on every account problem through axf.notify@1 / the alert hub (AmberX push): account, what failed, where the build went, what Brett must do; notify.json entry; tests",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -91673,14 +91550,14 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T16:24:22.167Z",
+     "doneAt": "2026-11-08T17:13:50.613Z",
      "note": "",
-     "uid": "st-mw819yja07bg2c",
-     "createdAt": "2026-11-08T16:15:18.413Z"
+     "uid": "st-mw82vah307p2ny",
+     "createdAt": "2026-11-08T16:59:53.290Z"
     },
     {
      "id": "s3",
-     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
+     "text": "One home per login: audit claude-login / token-save / headless / AI keys copies, make ~/.claude-accounts/<name> the single home every refresh writes to, record last refresh per login; find why account-1's refresh failed; tests",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -91692,14 +91569,14 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T16:24:23.823Z",
+     "doneAt": "2026-11-08T17:13:51.746Z",
      "note": "",
-     "uid": "st-mw819yja085nup",
-     "createdAt": "2026-11-08T16:15:18.413Z"
+     "uid": "st-mw82vah308kzpu",
+     "createdAt": "2026-11-08T16:59:53.290Z"
     },
     {
      "id": "s4",
-     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
+     "text": "Console: Claude accounts status (out / why / until, last refresh), routes + MCP/voice commands, settings section (failover + alerts); tests",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -91711,14 +91588,14 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T16:32:44.170Z",
+     "doneAt": "2026-11-08T17:21:37.384Z",
      "note": "",
-     "uid": "st-mw819yja097yd5",
-     "createdAt": "2026-11-08T16:15:18.413Z"
+     "uid": "st-mw82vah309d7dp",
+     "createdAt": "2026-11-08T16:59:53.290Z"
     },
     {
      "id": "s5",
-     "text": "Report, STATUS, THREADS, PR",
+     "text": "UI Review (3 options as assets), report, STATUS, THREADS, PR",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -91730,10 +91607,10 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-08T16:32:45.753Z",
+     "doneAt": "2026-11-08T17:26:34.357Z",
      "note": "",
-     "uid": "st-mw819yja0a4pm2",
-     "createdAt": "2026-11-08T16:15:18.413Z"
+     "uid": "st-mw82vah30a41pn",
+     "createdAt": "2026-11-08T16:59:53.290Z"
     }
    ]
   },
@@ -91903,138 +91780,6 @@
    ]
   },
   {
-   "id": "account-health-failover",
-   "title": "Account health probe + failover + phone alerts",
-   "category": "Claude accounts",
-   "detail": "A (new): probe every Claude account (subscriptions + API keys) on console load and on a schedule with a tiny headless session (no rules, no CLAUDE.md, no MCP): login valid, usage left (5-hour + weekly, resets; API balance/spend vs cap), models it can use. One shared account-status store every plugin reads (usage badge, Claude accounts screen, routing); routing only sends a job to an account the store says can take it with the model it needs. E: phone notification before and after the probe (type account-status). B/C/D are built by account-failover-notify (same branch line); this build stacks on it.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/account-health-failover",
-   "pr": "#394",
-   "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-15T00:44:27.044Z",
-   "builtAt": "2026-11-08T17:50:32.552Z",
-   "notes": [
-    {
-     "text": "Claude account: live (axf-account-health-failover--earl, own login copy)",
-     "at": "2026-11-08T17:52:31.717Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Account health probe + failover + phone alerts (Brett). A. Health probe (new): On console load and on a schedule, the orchestrator probes EVERY Claude account (subscriptions + API keys): a tiny headless session with a minimal brief, NO rules, NO CLAUDE.md, no MCP. It checks: login valid, credits/usage available (5-hour + weekly used/left, reset times; API: balance or last-known spend vs cap), which models it can use (opus/fable/etc.). It saves each account's status in ONE shared store all plugins read (status: ok / limited / no credits / login expired; credits left; models; checked at). Usage badge, Claude accounts screen and routing all read it. Keep probe cost near zero. The orchestrator only sends a job to an account that the store says can take it, with the model it needs. B. Failover: If a build still fails on auth or limit, mark the account out, update the store, and relaunch the same build on the next able account. Today 5 builds died in 1-3 s on account-1 (expired) and account-3 Hulu (no credits) and nothing retried. C. Phone alerts (AmberX): Notify on every account problem: which account, what (expired / limit / no credits), which build moved where, what Brett must do. D. One home per login: Each account's credentials live in exactly ONE store; every token refresh from any build/console/session writes back there. Audit claude-login.mjs, claude-token-save.mjs, claude-headless.sh, console AI keys for duplicate copies; find why account-1's refresh failed and report. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (probe interval, alerts); tests; report, STATUS, THREADS. E. Probe notifications (Brett): When the console loads: send a phone notification that the account checks are about to run; when done, send another with the result per account (ok / limited / no credits / expired, credits left, models). Uses the AmberX notification panel (build amberx-notify-panel) as its type 'account-status'.",
-    "at": "2026-11-08T17:24:55.214Z",
-    "source": "console",
-    "session": "",
-    "link": "",
-    "by": "headless",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Account status store (account-status@1, one file in the claude-accounts data dir) + reader/writer lib; routing only picks an account the store says can take the job with the model it needs; failover writes the store; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:35:47.169Z",
-     "note": "",
-     "uid": "st-mw83rhes06xkri",
-     "createdAt": "2026-11-08T17:24:55.216Z"
-    },
-    {
-     "id": "s2",
-     "text": "Probe runner: tiny headless session per subscription (bare: no rules, no CLAUDE.md, no MCP) reading login, 5-hour/weekly usage + resets, models; API keys via the free models list + last-known spend vs cap; on console load + schedule; near-zero cost; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:35:48.900Z",
-     "note": "",
-     "uid": "st-mw83rhes07toju",
-     "createdAt": "2026-11-08T17:24:55.216Z"
-    },
-    {
-     "id": "s3",
-     "text": "Probe notifications (E): before/after push through axf.notify@1 type account-status (AmberX notification panel), per-account result lines; status-change alerts; notify.json; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:44:27.179Z",
-     "note": "",
-     "uid": "st-mw83rhes08vxyv",
-     "createdAt": "2026-11-08T17:24:55.216Z"
-    },
-    {
-     "id": "s4",
-     "text": "Console: status store on the Claude accounts screen + usage badge, routes, MCP/voice/CLI commands (probe, status), settings sections (probe interval, alerts); tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:44:28.366Z",
-     "note": "",
-     "uid": "st-mw83rhes098zy5",
-     "createdAt": "2026-11-08T17:24:55.216Z"
-    },
-    {
-     "id": "s5",
-     "text": "UI Review (3 options as assets), report, STATUS, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T17:50:32.551Z",
-     "note": "",
-     "uid": "st-mw83rhes0ap05c",
-     "createdAt": "2026-11-08T17:24:55.216Z"
-    }
-   ]
-  },
-  {
    "id": "briefs-list-the-existing-files-each-step-needs",
    "title": "Briefs list the existing files each step needs",
    "category": "",
@@ -92133,6 +91878,133 @@
      "note": "",
      "uid": "st-mw8jm4p503zkfj",
      "createdAt": "2026-11-09T00:48:39.428Z"
+    }
+   ]
+  },
+  {
+   "id": "terminal-header-responsive",
+   "title": "Terminal window header: responsive overflow",
+   "category": "Console > Terminal",
+   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-header-responsive",
+   "pr": "#387",
+   "createdAt": "2026-11-08T16:15:18.411Z",
+   "updatedAt": "2026-11-15T00:44:36.218Z",
+   "builtAt": "2026-11-08T16:32:45.756Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
+    "at": "2026-11-08T16:15:18.411Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:20.151Z",
+     "note": "",
+     "uid": "st-mw819yja069qye",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s2",
+     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:22.167Z",
+     "note": "",
+     "uid": "st-mw819yja07bg2c",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s3",
+     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:23.823Z",
+     "note": "",
+     "uid": "st-mw819yja085nup",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:44.170Z",
+     "note": "",
+     "uid": "st-mw819yja097yd5",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s5",
+     "text": "Report, STATUS, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:45.753Z",
+     "note": "",
+     "uid": "st-mw819yja0a4pm2",
+     "createdAt": "2026-11-08T16:15:18.413Z"
     }
    ]
   },
@@ -92383,6 +92255,138 @@
      "note": "",
      "uid": "st-mw8kwaea03voem",
      "createdAt": "2026-11-09T01:24:33.057Z"
+    }
+   ]
+  },
+  {
+   "id": "account-health-failover",
+   "title": "Account health probe + failover + phone alerts",
+   "category": "Claude accounts",
+   "detail": "A (new): probe every Claude account (subscriptions + API keys) on console load and on a schedule with a tiny headless session (no rules, no CLAUDE.md, no MCP): login valid, usage left (5-hour + weekly, resets; API balance/spend vs cap), models it can use. One shared account-status store every plugin reads (usage badge, Claude accounts screen, routing); routing only sends a job to an account the store says can take it with the model it needs. E: phone notification before and after the probe (type account-status). B/C/D are built by account-failover-notify (same branch line); this build stacks on it.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/account-health-failover",
+   "pr": "#394",
+   "createdAt": "2026-11-08T17:24:55.214Z",
+   "updatedAt": "2026-11-15T00:44:27.044Z",
+   "builtAt": "2026-11-08T17:50:32.552Z",
+   "notes": [
+    {
+     "text": "Claude account: live (axf-account-health-failover--earl, own login copy)",
+     "at": "2026-11-08T17:52:31.717Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Account health probe + failover + phone alerts (Brett). A. Health probe (new): On console load and on a schedule, the orchestrator probes EVERY Claude account (subscriptions + API keys): a tiny headless session with a minimal brief, NO rules, NO CLAUDE.md, no MCP. It checks: login valid, credits/usage available (5-hour + weekly used/left, reset times; API: balance or last-known spend vs cap), which models it can use (opus/fable/etc.). It saves each account's status in ONE shared store all plugins read (status: ok / limited / no credits / login expired; credits left; models; checked at). Usage badge, Claude accounts screen and routing all read it. Keep probe cost near zero. The orchestrator only sends a job to an account that the store says can take it, with the model it needs. B. Failover: If a build still fails on auth or limit, mark the account out, update the store, and relaunch the same build on the next able account. Today 5 builds died in 1-3 s on account-1 (expired) and account-3 Hulu (no credits) and nothing retried. C. Phone alerts (AmberX): Notify on every account problem: which account, what (expired / limit / no credits), which build moved where, what Brett must do. D. One home per login: Each account's credentials live in exactly ONE store; every token refresh from any build/console/session writes back there. Audit claude-login.mjs, claude-token-save.mjs, claude-headless.sh, console AI keys for duplicate copies; find why account-1's refresh failed and report. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (probe interval, alerts); tests; report, STATUS, THREADS. E. Probe notifications (Brett): When the console loads: send a phone notification that the account checks are about to run; when done, send another with the result per account (ok / limited / no credits / expired, credits left, models). Uses the AmberX notification panel (build amberx-notify-panel) as its type 'account-status'.",
+    "at": "2026-11-08T17:24:55.214Z",
+    "source": "console",
+    "session": "",
+    "link": "",
+    "by": "headless",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Account status store (account-status@1, one file in the claude-accounts data dir) + reader/writer lib; routing only picks an account the store says can take the job with the model it needs; failover writes the store; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T17:35:47.169Z",
+     "note": "",
+     "uid": "st-mw83rhes06xkri",
+     "createdAt": "2026-11-08T17:24:55.216Z"
+    },
+    {
+     "id": "s2",
+     "text": "Probe runner: tiny headless session per subscription (bare: no rules, no CLAUDE.md, no MCP) reading login, 5-hour/weekly usage + resets, models; API keys via the free models list + last-known spend vs cap; on console load + schedule; near-zero cost; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T17:35:48.900Z",
+     "note": "",
+     "uid": "st-mw83rhes07toju",
+     "createdAt": "2026-11-08T17:24:55.216Z"
+    },
+    {
+     "id": "s3",
+     "text": "Probe notifications (E): before/after push through axf.notify@1 type account-status (AmberX notification panel), per-account result lines; status-change alerts; notify.json; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T17:44:27.179Z",
+     "note": "",
+     "uid": "st-mw83rhes08vxyv",
+     "createdAt": "2026-11-08T17:24:55.216Z"
+    },
+    {
+     "id": "s4",
+     "text": "Console: status store on the Claude accounts screen + usage badge, routes, MCP/voice/CLI commands (probe, status), settings sections (probe interval, alerts); tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T17:44:28.366Z",
+     "note": "",
+     "uid": "st-mw83rhes098zy5",
+     "createdAt": "2026-11-08T17:24:55.216Z"
+    },
+    {
+     "id": "s5",
+     "text": "UI Review (3 options as assets), report, STATUS, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T17:50:32.551Z",
+     "note": "",
+     "uid": "st-mw83rhes0ap05c",
+     "createdAt": "2026-11-08T17:24:55.216Z"
     }
    ]
   },
@@ -168339,6 +168343,210 @@
    ]
   },
   {
+   "id": "fix-console-deep-links-open-page-lands",
+   "title": "Fix console deep links so open-page lands on the right screen",
+   "category": "",
+   "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/fix-console-deep-links-open-page-lands",
+   "pr": "#721",
+   "priority": "P0",
+   "createdAt": "2026-11-16T16:31:15.510Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T16:31:18.631Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-console-deep-links-open-page-lands--rhonda.",
+     "at": "2026-11-16T16:34:58.770Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-console-deep-links-open-page-lands--rhonda, shared account login)",
+     "at": "2026-11-16T16:35:07.906Z"
+    },
+    {
+     "text": "Reconciler: PR #721",
+     "at": "2026-11-16T17:01:41.126Z"
+    },
+    {
+     "text": "Headless run axf-fix-console-deep-links-open-page-lands--rhonda: brief only · start 15.6K tokens ($0.05) · cost $4.31 · 113 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:01:43.397Z"
+    },
+    {
+     "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
+     "at": "2026-11-16T19:27:54.276Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:01:59.903Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-fix-console-deep-links-open-page-lands--gina.",
+     "at": "2026-11-17T12:28:44.870Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-console-deep-links-open-page-lands--gina, shared account login)",
+     "at": "2026-11-17T12:28:51.223Z"
+    },
+    {
+     "text": "Headless run axf-fix-console-deep-links-open-page-lands--gina: brief only · start 16.0K tokens ($0.05) · cost $4.01 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-17T13:19:14.210Z"
+    },
+    {
+     "text": "Session axf-fix-console-deep-links-open-page-lands--gina on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-17T13:19:16.232Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:21.790Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:02.348Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-console-deep-links-open-page-lands → Remove: Its PR was closed without a merge (PR #721 closed; not on main; build fix-console-deep-links-open-page-lands: pending) (pending → archived)",
+     "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 781 → Remove: The build was cancelled (PR #781 open; not on main; build fix-console-deep-links-open-page-lands: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
+    "at": "2026-11-16T16:31:15.510Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "fix-console-deep-links-open-page-lands",
+    "brief": "# Build: fix-console-deep-links-open-page-lands\n\n## Brett said (verbatim)\nAt: 2026-11-16T16:31:15.510Z\n> You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\n\n## What to build\nContinue build \"Fix console deep links so open-page lands on the right screen\" (fix-console-deep-links-open-page-lands) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 16:31):\n\"You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-console-deep-links-open-page-lands · PR #721\nSteps in this phase (2 left, ~20 min):\n[x] s1 (~10 min) Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.\n[x] s2 (~10 min) You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\n[x] s3 (~10 min) Tests green, report _claude/builds/reports/fix-console-deep-links-open-page-lands.md, THREADS row, commit, push, PR\n[ ] s5 (~10 min) Remote open never lands on home: console_show (search/open/dialog), console_refresh and every console-control open go straight to the exact screen, tab and dialog asked for, no reload to the console home first. If a reload is needed, restore the target address after it. Test: open Gate → Auto-lander remotely, it lands there directly.\n[ ] s4 (~10 min) Brett Nov 16: a browser refresh reloads exactly where he is (same screen, tab, sub-tab, open dialog, scroll), never the console home. Keep the current address in the URL as he navigates (view:/tab:...), restore it on load and after sign-in. Test: navigate to Gate > Auto-lander, reload, assert same screen and tab. Merge main, push, let the orchestrator land it.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-console-deep-links-open-page-lands <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-console-deep-links-open-page-lands <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-console-deep-links-open-page-lands \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-16T16:48:10.590Z",
+     "note": "",
+     "uid": "st-mwjhhozy0125xy",
+     "createdAt": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "id": "s2",
+     "text": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-16T16:59:16.018Z",
+     "note": "",
+     "uid": "st-mwjhhozy02bkd8",
+     "createdAt": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/fix-console-deep-links-open-page-lands.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-console-deep-links-open-page-lands.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-16T17:01:22.643Z",
+     "note": "",
+     "uid": "st-mwjhhozy03nmug",
+     "createdAt": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "id": "s5",
+     "text": "Remote open never lands on home: console_show (search/open/dialog), console_refresh and every console-control open go straight to the exact screen, tab and dialog asked for, no reload to the console home first. If a reload is needed, restore the target address after it. Test: open Gate → Auto-lander remotely, it lands there directly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T12:48:45.001Z",
+     "note": "",
+     "uid": "st-mwjuxzil01ndup",
+     "createdAt": "2026-11-16T22:51:15.161Z"
+    },
+    {
+     "id": "s4",
+     "text": "Brett Nov 16: a browser refresh reloads exactly where he is (same screen, tab, sub-tab, open dialog, scroll), never the console home. Keep the current address in the URL as he navigates (view:/tab:...), restore it on load and after sign-in. Test: navigate to Gate > Auto-lander, reload, assert same screen and tab. Merge main, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T13:18:55.298Z",
+     "note": "",
+     "uid": "st-mwjnot7l014zyy",
+     "createdAt": "2026-11-16T19:28:10.716Z"
+    }
+   ]
+  },
+  {
    "id": "merge-main-land-one-source-truth-console",
    "title": "Merge main and land one-source-truth-console-shows-only-what",
    "category": "",
@@ -168567,210 +168775,6 @@
      "note": "",
      "uid": "st-mwh1v5xp092kco",
      "createdAt": "2026-11-14T23:41:43.500Z"
-    }
-   ]
-  },
-  {
-   "id": "fix-console-deep-links-open-page-lands",
-   "title": "Fix console deep links so open-page lands on the right screen",
-   "category": "",
-   "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "archived",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/fix-console-deep-links-open-page-lands",
-   "pr": "#721",
-   "priority": "P0",
-   "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T19:56:32.078Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-16T16:31:18.631Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
-     "at": "2026-11-16T16:34:41.229Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-console-deep-links-open-page-lands--rhonda.",
-     "at": "2026-11-16T16:34:58.770Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-console-deep-links-open-page-lands--rhonda, shared account login)",
-     "at": "2026-11-16T16:35:07.906Z"
-    },
-    {
-     "text": "Reconciler: PR #721",
-     "at": "2026-11-16T17:01:41.126Z"
-    },
-    {
-     "text": "Headless run axf-fix-console-deep-links-open-page-lands--rhonda: brief only · start 15.6K tokens ($0.05) · cost $4.31 · 113 turns · 6 tools, MCP none",
-     "at": "2026-11-16T17:01:43.397Z"
-    },
-    {
-     "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
-     "at": "2026-11-16T19:27:54.276Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-16T20:01:59.903Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-17T00:02:44.120Z"
-    },
-    {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-fix-console-deep-links-open-page-lands--gina.",
-     "at": "2026-11-17T12:28:44.870Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fix-console-deep-links-open-page-lands--gina, shared account login)",
-     "at": "2026-11-17T12:28:51.223Z"
-    },
-    {
-     "text": "Headless run axf-fix-console-deep-links-open-page-lands--gina: brief only · start 16.0K tokens ($0.05) · cost $4.01 · 92 turns · 6 tools, MCP none",
-     "at": "2026-11-17T13:19:14.210Z"
-    },
-    {
-     "text": "Session axf-fix-console-deep-links-open-page-lands--gina on hulu0241 ended (exit 0); the build was already built.",
-     "at": "2026-11-17T13:19:16.232Z"
-    },
-    {
-     "text": "Brett: land after orchestrator-runs-long-builds-across",
-     "at": "2026-11-17T15:07:21.790Z"
-    },
-    {
-     "text": "Brett: land after orchestrator-runs-long-builds-across",
-     "at": "2026-11-17T15:09:02.348Z"
-    },
-    {
-     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-17T19:11:35.654Z"
-    },
-    {
-     "text": "Watchdog: Pending build fix-console-deep-links-open-page-lands → Remove: Its PR was closed without a merge (PR #721 closed; not on main; build fix-console-deep-links-open-page-lands: pending) (pending → archived)",
-     "at": "2026-11-17T19:50:36.284Z"
-    },
-    {
-     "text": "Watchdog: Merge queue entry 781 → Remove: The build was cancelled (PR #781 open; not on main; build fix-console-deep-links-open-page-lands: archived)",
-     "at": "2026-11-17T19:56:32.078Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
-    "at": "2026-11-16T16:31:15.510Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "fix-console-deep-links-open-page-lands",
-    "brief": "# Build: fix-console-deep-links-open-page-lands\n\n## Brett said (verbatim)\nAt: 2026-11-16T16:31:15.510Z\n> You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\n\n## What to build\nContinue build \"Fix console deep links so open-page lands on the right screen\" (fix-console-deep-links-open-page-lands) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 16:31):\n\"You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-console-deep-links-open-page-lands · PR #721\nSteps in this phase (2 left, ~20 min):\n[x] s1 (~10 min) Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.\n[x] s2 (~10 min) You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.\n[x] s3 (~10 min) Tests green, report _claude/builds/reports/fix-console-deep-links-open-page-lands.md, THREADS row, commit, push, PR\n[ ] s5 (~10 min) Remote open never lands on home: console_show (search/open/dialog), console_refresh and every console-control open go straight to the exact screen, tab and dialog asked for, no reload to the console home first. If a reload is needed, restore the target address after it. Test: open Gate → Auto-lander remotely, it lands there directly.\n[ ] s4 (~10 min) Brett Nov 16: a browser refresh reloads exactly where he is (same screen, tab, sub-tab, open dialog, scroll), never the console home. Keep the current address in the URL as he navigates (view:/tab:...), restore it on load and after sign-in. Test: navigate to Gate > Auto-lander, reload, assert same screen and tab. Merge main, push, let the orchestrator land it.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-console-deep-links-open-page-lands <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-console-deep-links-open-page-lands <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-console-deep-links-open-page-lands \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-16T16:48:10.590Z",
-     "note": "",
-     "uid": "st-mwjhhozy0125xy",
-     "createdAt": "2026-11-16T16:34:41.229Z"
-    },
-    {
-     "id": "s2",
-     "text": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-16T16:59:16.018Z",
-     "note": "",
-     "uid": "st-mwjhhozy02bkd8",
-     "createdAt": "2026-11-16T16:34:41.229Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/fix-console-deep-links-open-page-lands.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/fix-console-deep-links-open-page-lands.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-16T17:01:22.643Z",
-     "note": "",
-     "uid": "st-mwjhhozy03nmug",
-     "createdAt": "2026-11-16T16:34:41.229Z"
-    },
-    {
-     "id": "s5",
-     "text": "Remote open never lands on home: console_show (search/open/dialog), console_refresh and every console-control open go straight to the exact screen, tab and dialog asked for, no reload to the console home first. If a reload is needed, restore the target address after it. Test: open Gate → Auto-lander remotely, it lands there directly.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T12:48:45.001Z",
-     "note": "",
-     "uid": "st-mwjuxzil01ndup",
-     "createdAt": "2026-11-16T22:51:15.161Z"
-    },
-    {
-     "id": "s4",
-     "text": "Brett Nov 16: a browser refresh reloads exactly where he is (same screen, tab, sub-tab, open dialog, scroll), never the console home. Keep the current address in the URL as he navigates (view:/tab:...), restore it on load and after sign-in. Test: navigate to Gate > Auto-lander, reload, assert same screen and tab. Merge main, push, let the orchestrator land it.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T13:18:55.298Z",
-     "note": "",
-     "uid": "st-mwjnot7l014zyy",
-     "createdAt": "2026-11-16T19:28:10.716Z"
     }
    ]
   },

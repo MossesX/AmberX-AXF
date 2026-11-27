@@ -845,7 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` added (0 steps) (all) · console
 - 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` note, removed (all) · console
 - 2026-11-25 12:01 UTC · `emergency-remove-every-leftover-js` added (0 steps) (all) · admin
 - 2026-11-25 12:01 UTC · `emergency-remove-every-leftover-js` note (all) · admin
@@ -1245,6 +1244,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 04:29 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 04:31 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 04:32 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:33 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 
 ## Token passes (log)
 

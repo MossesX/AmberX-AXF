@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10443,
- "updatedAt": "2026-11-27T04:32:59.148Z",
+ "rev": 10444,
+ "updatedAt": "2026-11-27T04:33:30.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -90387,11 +90387,11 @@
     "all"
    ],
    "order": {
-    "all": 207
+    "all": 209
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91649,11 +91649,11 @@
     "all"
    ],
    "order": {
-    "all": 316
+    "all": 317
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92481,11 +92481,11 @@
     "all"
    ],
    "order": {
-    "all": 220
+    "all": 222
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -92686,11 +92686,11 @@
     "all"
    ],
    "order": {
-    "all": 215
+    "all": 220
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -102224,11 +102224,11 @@
     "all"
    ],
    "order": {
-    "all": 237
+    "all": 242
    },
    "kind": "build",
    "planRef": "notes-tasks-sync",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118669,11 +118669,11 @@
     "all"
    ],
    "order": {
-    "all": 589
+    "all": 592
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119867,11 +119867,11 @@
     "all"
    ],
    "order": {
-    "all": 586
+    "all": 589
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120556,11 +120556,11 @@
     "all"
    ],
    "order": {
-    "all": 591
+    "all": 594
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126270,11 +126270,11 @@
     "all"
    ],
    "order": {
-    "all": 616
+    "all": 617
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233720,11 +233720,11 @@
     "all"
    ],
    "order": {
-    "all": 913
+    "all": 914
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -386238,11 +386238,11 @@
     "all"
    ],
    "order": {
-    "all": 105
+    "all": 106
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387515,7 +387515,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:32:52.310Z",
+   "updatedAt": "2026-11-27T04:32:59.330Z",
    "builtAt": "",
    "notes": [
     {
@@ -387769,6 +387769,10 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-27T04:29:27.718Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--paulie, shared account login)",
+     "at": "2026-11-27T04:32:59.330Z"
     }
    ],
    "approvals": [],
@@ -388532,7 +388536,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
