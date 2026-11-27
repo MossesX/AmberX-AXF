@@ -33,10 +33,10 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   BASE_PROFILE, PROFILED, PROFILES_REL, TRACKER_REL, PROFILE_ID, REPO_ROOT, activeProfile, baseDataPath, emptyProfileFile,
-  orchestratorPath, persistRoot, profileRel, readProfiles,
+  persistRoot, profileRel, readProfiles,
 } from './persist.mjs';
 import { MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
-import { mergeRetiredNow } from './builds-store.mjs';
+import { mergeRetiredNow, queryBuilds } from './builds-store.mjs';
 
 export const SCHEMA = 'build-profiles@1';
 const now = () => new Date().toISOString();
@@ -60,7 +60,7 @@ function saveRegistry(reg) {
 export function profileFiles(id) {
   const root = persistRoot() ?? REPO_ROOT;
   const files = Object.fromEntries(PROFILED.map((rel) => [rel, id === BASE_PROFILE ? baseDataPath(rel) : join(root, profileRel(id, rel))]));
-  return { ...files, [TRACKER_REL]: baseDataPath(TRACKER_REL), orchestrator: orchestratorPath(id) };
+  return { ...files, [TRACKER_REL]: baseDataPath(TRACKER_REL) };
 }
 
 /** Start a profile's files: copies of `from`, or empty ones. Never overwrites a file that is already there. */
@@ -77,13 +77,7 @@ function seedProfile(id, from) {
     const empty = emptyProfileFile(rel);
     if (empty) writeJson(to, empty);
   }
-  if (!existsSync(dst.orchestrator)) {
-    let rules = null;
-    try { rules = JSON.parse(readFileSync(profileFiles(from ?? BASE_PROFILE).orchestrator, 'utf8')).rules; } catch { /* defaults */ }
-    let builds = [];
-    if (src) { try { builds = JSON.parse(readFileSync(src.orchestrator, 'utf8')).builds ?? []; } catch { /* none */ } }
-    writeJson(dst.orchestrator, { $axf: 'orchestrator@1', updatedAt: now(), ...(rules ? { rules } : {}), builds });
-  }
+  // no status file is seeded (Nov 25 2026): a profile's builds are rows of the builds store, never an orchestrator.json
 }
 
 /**
@@ -180,6 +174,9 @@ export function state() {
   const rel = (f) => relative(REPO_ROOT, f).startsWith('..') ? f : relative(REPO_ROOT, f);
   const count = (f, pick) => { try { return pick(JSON.parse(readFileSync(f, 'utf8'))); } catch { return null; } };
   const effective = activeProfile().id;
+  const openBuilds = (id) => {
+    try { return Object.entries(queryBuilds({ project: id, limit: 1 }).counts).reduce((n, [st, c]) => n + (['built', 'complete', 'archived'].includes(st) ? 0 : c), 0); } catch { return null; }
+  };
   return {
     ...reg,
     effective, // differs from `active` only when AXF_BUILD_PROFILE is set for this process
@@ -193,7 +190,7 @@ export function state() {
           pending: count(f['framework/plan/pending.json'], (j) => (j.items ?? []).filter((i) => i.status !== 'complete').length),
           plan: count(f['framework/plan/plan.json'], (j) => (j.features ?? []).length),
           queue: count(f['framework/plan/build-queue.json'], (j) => (j.order ?? []).length),
-          orchestrator: count(f.orchestrator, (j) => (j.builds ?? []).filter((b) => !['built', 'complete', 'archived'].includes(b.status)).length),
+          orchestrator: openBuilds(p.id), // open builds of the profile, counted from the builds store (no status file)
           tracked: count(f[TRACKER_REL], (j) => (j.items ?? []).length), // the one framework tracker
         },
         files: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, rel(v)])),
